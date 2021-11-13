@@ -3,7 +3,6 @@
         <b-taginput
                 icon="magnify"
                 size="is-small"
-                v-model="selected"
                 :data="options"
                 autocomplete
                 expanded
@@ -46,16 +45,15 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel, wp as wpAxios } from '../../../js/axios';
+    import { isCancel } from '../../../js/axios';
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
-    import qs from 'qs';
 
     export default {
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         data() {
             return {
                 results:'',
-                selected:[],
+                selected:[], // Simple array of IDs, no more objects and not bound to the taginput
                 options: [],
                 relatedCollectionId: '',
                 searchQuery: '',
@@ -113,10 +111,6 @@
                     return;
 
                 let promise = null;
-                let valuesToIgnore = [];
-
-                for (let val of this.selected)
-                    valuesToIgnore.push( val.value );
 
                 // Cancels previous Request
                 if (this.getOptionsValuesCancel != undefined)
@@ -126,7 +120,7 @@
                     promise = this.getValuesRelationship({
                         search: this.searchQuery,
                         isRepositoryLevel: this.isRepositoryLevel,
-                        valuesToIgnore: valuesToIgnore,
+                        valuesToIgnore: this.selected,
                         offset: this.searchOffset,
                         number: this.searchNumber
                     });
@@ -135,7 +129,7 @@
                         metadatumId: this.metadatumId,
                         search: this.searchQuery,
                         isRepositoryLevel: this.isRepositoryLevel,
-                        valuesToIgnore: valuesToIgnore,
+                        valuesToIgnore: this.selected,
                         offset: this.searchOffset,
                         number: this.searchNumber
                     });
@@ -157,7 +151,6 @@
                 
             }, 500),
             searchMore: _.debounce(function () {
-                this.shouldAddOptions = true;
                 this.search(this.searchQuery);
             }, 250),
             updateSelectedValues() {
@@ -165,91 +158,23 @@
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
                     return false;
 
-                let index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
+                // Cleared either way, we might be coming from a situation where all the filters were removed.
+                this.selected = [];
+
+                const index = this.query.metaquery.findIndex(newMetadatum => newMetadatum.key == this.metadatumId );
                 if (index >= 0) {
-                    let metadata = this.query.metaquery[ index ];
-
-                    if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship') {
-                        let query = qs.stringify({ postin: metadata.value, fetch_only: 'title,thumbnail,document_mimetype', fetch_only_meta: '' });
-                        let endpoint = '/items/';
-
-                        if (this.relatedCollectionId != '')
-                            endpoint = '/collection/' + this.relatedCollectionId + endpoint; 
-
-                        axios.get(endpoint + '?' + query)
-                            .then( res => {
-                                if (res.data.items) {
-                                    this.selected = [];
-                                    for (let item of res.data.items) {
-                                        let existingItem = this.selected.findIndex((anItem) => item.id == anItem.id);
-                                        if (existingItem < 0) {
-                                            this.selected.push({ 
-                                                label: item.title, 
-                                                value: item.id, 
-                                                img: item.thumbnail ? this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype) : null 
-                                            });
-                                        }
-                                    }
-                                    this.$emit( 'sendValuesToTags', { 
-                                        label: this.selected.map((option) => option.label), 
-                                        value: this.selected.map((option) => option.value),
-                                        metadatumName: this.metadatumName
-                                    });
-                                }
-                            })
-                            .catch(error => {
-                                this.$console.log(error);
-                            });
-                    } else if (this.metadatumType === 'Tainacan\\Metadata_Types\\User') {
-                        let query = qs.stringify({ include: metadata.value });
-                        let endpoint = '/users/';
-
-                        wpAxios.get(endpoint + '?' + query)
-                            .then( res => {
-                                if (res.data) {
-                                    this.selected = [];
-                                    for (let user of res.data) {
-                                        let existingUser = this.selected.findIndex((anUser) => user.id == anUser.id);
-                                        if (existingUser < 0) {
-                                            this.selected.push({ 
-                                                label: user.name, 
-                                                value: user.id, 
-                                                img: user.avatar_urls && user.avatar_urls['24'] ? user.avatar_urls['24'] : null 
-                                            });
-                                        }
-                                    }
-                                    this.$emit( 'sendValuesToTags', { 
-                                        label: this.selected.map((option) => option.label), 
-                                        value: this.selected.map((option) => option.value),
-                                        metadatumName: this.metadatumName
-                                    });
-                                }
-                            })
-                            .catch(error => {
-                                this.$console.log(error);
-                            });
-                    } else {
-                        this.selected = [];
-                        for (let item of metadata.value)
-                            this.selected.push({ label: item, value: item, img: null });
-                        
-                        this.$emit( 'sendValuesToTags', { 
-                            label: this.selected.map((option) => option.label), 
-                            value: this.selected.map((option) => option.value),
-                            metadatumName: this.metadatumName
-                        });
-                    }
-                } else {
-                    this.selected = [];
+                    const metadata = this.query.metaquery[ index ];
+                    for (let item of metadata.value)
+                        this.selected.push(item);
                 }
             },
-            onSelect() {
+            onSelect(selection) {
                 this.$emit('input', {
                     filter: 'taginput',
                     compare: 'IN',
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
-                    value: this.selected.map((option) => option.value)
+                    value: _.union(this.selected, selection.map(anOption => anOption.value))
                 });
             }
         }

@@ -38,6 +38,8 @@ class REST_Items_Controller extends REST_Controller {
 		$this->collections_repository = Repositories\Collections::get_instance();
 		$this->metadatum_repository = Repositories\Metadata::get_instance();
 		$this->terms_repository = \Tainacan\Repositories\Terms::get_instance();
+		$this->filters_repository = \Tainacan\Repositories\Filters::get_instance();
+		$this->taxonomies_repository = \Tainacan\Repositories\Taxonomies::get_instance();
 	}
 
 	/**
@@ -408,6 +410,163 @@ class REST_Items_Controller extends REST_Controller {
 		return $rest_response;
 	}
 
+
+	/**
+	 * @param array $args — array of query arguments.
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	private function prepare_filters_arguments ( $args, $collection_id = false ) {
+		$filters_arguments = array();
+		$meta_query = isset($args['meta_query']) ? $args['meta_query'] : [];
+		$tax_query = isset($args['tax_query']) ? $args['tax_query'] : [];
+
+		foreach($tax_query as $tax) {
+
+			$taxonomy = $tax['taxonomy'];
+			$taxonomy_id = $this->taxonomies_repository->get_id_by_db_identifier($taxonomy);
+			$terms_id = is_array($tax['terms']) ? $tax['terms']: [$tax['terms']];
+			$terms_name = array_map(function($term_id) { 
+				$t = is_numeric($term_id) ? get_term($term_id) : get_term_by('slug', $term_id);
+				return $t != false ? $t->name : '--';
+			}, $terms_id);
+
+			$metas = $this->metadatum_repository->fetch(array(
+				'meta_query' => [
+					[
+						'key'     => 'collection_id',
+						'value'   => empty($collection_id) ? 'default' : $collection_id,
+						'compare' => '='
+					],
+					[
+						'key'     => '_option_taxonomy_id',
+						'value'   => $taxonomy_id,
+						'compate' => '='
+					]
+				]
+			), 'OBJECT' );
+
+			if( !empty($metas) ) {
+				$meta_query[] = array(
+					'key' => $metas[0]->get_id(),
+					'value' => $terms_id,
+					'label' => $terms_name,
+				);
+			}
+		}
+
+		foreach($meta_query as $meta) {
+
+			if ( !isset($meta['key']) || !isset($meta['value']) )
+				continue;
+
+			$meta_id = $meta['key'];
+			$meta_value = is_array($meta['value']) ? $meta['value'] : [$meta['value']];
+			$meta_label = isset($meta['label']) ? $meta['label'] : $meta_value;
+			$filter_type_component = false;
+			$arg_type = 'meta';
+			$f = false;
+			$m = false;
+
+			if ($meta_id === 'collection_id') {
+
+				$arg_type = 'collection';
+				$meta_label = array_map(function($collection_id) {
+					$collection = $this->collections_repository->fetch($collection_id);
+					return $collection->get_name();
+				}, $meta_value);
+
+			} else {
+
+				$filter = $this->filters_repository->fetch([
+					'meta_query' => array(
+						[
+							'key'     => 'metadatum_id',
+							'value'   => $meta_id,
+							'compare' => '='
+						]
+					)
+					], 'OBJECT'
+				);
+	
+				if ( !empty($filter) ) {
+					$f = $filter[0]->_toArray();
+					$filter_type_component = $filter[0]->get_filter_type_object()->get_component();
+					$m = $f['metadatum'];
+				} else {
+					$metadatum = $this->metadatum_repository->fetch($meta_id, 'OBJECT');
+					if(!empty($metadatum)) {
+						$m = $metadatum->_toArray();
+						$meta_object = $metadatum->get_metadata_type_object();
+						if (is_object($meta_object)) {
+							$m['metadata_type_object'] = $meta_object->_toArray();
+						}
+					}
+				}
+	
+				if ($m !== false) {
+					switch ($m['metadata_type_object']['primitive_type']) {
+						case 'date':
+							$meta_label = array_map(function($date) {
+								$date_format = get_option( 'date_format' ) != false ? get_option( 'date_format' ) : 'Y-m-d';
+								return empty($date) == false ? mysql2date($date_format, $date) : "";
+							}, $meta_label);
+							break;
+						case 'item':
+							$meta_label = array_map(function($item_id) {
+								$_post = get_post($item_id);
+								if ( ! $_post instanceof \WP_Post) {
+									return;
+								}
+								return $_post->post_title;
+							}, $meta_label);
+							break;
+						case 'control':
+							$control_metadatum = $m['metadata_type_object']['options']['control_metadatum'];
+							$metadata_type_object = new \Tainacan\Metadata_Types\Control();
+							$meta_label = array_map(function($control_value) use ($metadata_type_object, $control_metadatum) {
+								return $metadata_type_object->get_control_metadatum_value($control_value, $control_metadatum, 'string' );
+							}, $meta_label);
+							break;
+						case 'user':
+							$meta_label = array_map(function($user_id) {
+								$name = get_the_author_meta( 'display_name', $user_id );
+								return apply_filters("tainacan-item-get-author-name", $name);
+							}, $meta_label);
+							break;
+					}
+				}
+			}
+
+			$filter_name = is_string($filter_type_component) 
+				? "tainacan-api-items-${filter_type_component}-filter-arguments"
+				: 'tainacan-api-items-filter-arguments';
+
+			$filters_arguments[] = apply_filters($filter_name, array(
+				'filter' => $f,
+				'metadatum' => $m,
+				'arg_type' => $arg_type,
+				'value' => $meta_value,
+				'label' => $meta_label,
+				'compare' => isset($meta['compare']) ? $meta['compare'] : '='
+			));
+		}
+
+		if (isset($args['post__in'])) {
+			$filters_arguments[] = array(
+				'filter' => false,
+				'metadatum' => false,
+				'arg_type' => 'postin',
+				'value' => $args['post__in'],
+				'label' => count($args['post__in']),
+				'compare' => 'IN'
+			);
+		}
+
+		return $filters_arguments;
+	}
+
 	/**
 	 * @param \WP_REST_Request $request
 	 *
@@ -436,6 +595,7 @@ class REST_Items_Controller extends REST_Controller {
 		if($request['collection_id']) {
 			$collection_id = $request['collection_id'];
 		}
+		$filters_args = $this->prepare_filters_arguments($args, $collection_id);
 
 		$max_items_per_page = $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 		if ( $max_items_per_page > -1 ) {
@@ -454,6 +614,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		// Filter right after the ->fetch() method. Elastic Search integration relies on this on its 'last_aggregations' hook
 		$response['filters'] = apply_filters('tainacan-api-items-filters-response', [], $request);
+		$response['filters_arguments'] = apply_filters('tainacan-api-items-filters-arguments-response', $filters_args, $args);
 
 		$query_end = microtime(true);
 

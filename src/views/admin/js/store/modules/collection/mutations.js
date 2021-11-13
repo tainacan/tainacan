@@ -84,3 +84,7 @@ export const setAttachments = ( state, attachments ) => {
 export const cleanAttachments = (state) => {
     state.attachments = [];
 }
+
+export const setFilterTags = ( state, filterTags ) => {
+    state.filter_tags = filterTags;
+}
