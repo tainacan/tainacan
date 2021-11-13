@@ -126,7 +126,7 @@ class REST_Items_Controller extends REST_Controller {
 							'type'        => 'integer'
 						),
 						'status' => array(
-							'description' => __('Try to assign the informed status to the duplicates if they validate. By default it will save them as drafts.', 'tainacan'),
+							'description' => __('Try to assign the specified status to the duplicates if they validate. By default it will save them as drafts.', 'tainacan'),
 							'type'        => 'string'
 						),
 					)
@@ -364,7 +364,7 @@ class REST_Items_Controller extends REST_Controller {
 		$args['post_parent'] = $item_id;
 		$args['post_type'] = 'attachment';
 		$args['post_status'] = 'any';
-		
+
 		unset($args['perm']);
 
 		$posts_query  = new \WP_Query();
@@ -1027,7 +1027,7 @@ class REST_Items_Controller extends REST_Controller {
 								$item_metadata_child = $this->submission_item_metadata($item_metadata_child, $request);
 								if ($item_metadata_child instanceof \WP_REST_Response) {
 									return $item_metadata_child;
-								}	
+								}
 								$parent_meta_id = $item_metadata_child->get_parent_meta_id();
 							}
 						}
@@ -1083,7 +1083,7 @@ class REST_Items_Controller extends REST_Controller {
 							'error_message' => __('unable to create submission ID.', 'tainacan'),
 						], 400);
 					}
-					
+
 				} else {
 					$this->submission_rollback_new_terms();
 					return new \WP_REST_Response([
@@ -1122,7 +1122,7 @@ class REST_Items_Controller extends REST_Controller {
 		$collection = $this->collections_repository->fetch($collection_id);
 		$default_status = $collection->get_submission_default_status();
 		$item->set_status($default_status);
-		
+
 		$TainacanMedia = \Tainacan\Media::get_instance();
 		$files = $request->get_file_params();
 

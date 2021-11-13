@@ -42,7 +42,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		if (!isset($params['collection_id']) || !is_numeric($params['collection_id'])) {
-			throw new \Exception('Collection ID must be informed when creating a group.');
+			throw new \Exception('Collection ID must be specified when creating a group.');
 		}
 
 		$this->set_group_id(uniqid());

@@ -405,7 +405,7 @@ class CSV extends Importer {
 								<h5><?php _e('Empty value', 'tainacan'); ?></h5>
 							</div>
 							<div class="help-tooltip-body">
-								<p><?php _e('The string representing a value not informed for the metadata. (e.g. \EMPTY)', 'tainacan'); ?></p>
+								<p><?php _e('The string representing a value not specified for the metadata. (e.g. \EMPTY)', 'tainacan'); ?></p>
 							</div>
 						</div>
 					</span>
