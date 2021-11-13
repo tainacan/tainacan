@@ -620,7 +620,12 @@ a.pswp__share--download:hover {
   width: 100%;
   height: auto;
   display: block;
-  background-color: var(--tainacan-media-background, transparent); }
+  background-color: var(--tainacan-media-background, transparent);
+  box-sizing: border-box; }
+  .tainacan-media-component .swiper-slide,
+  .tainacan-media-component .swiper-slide::after,
+  .tainacan-media-component .swiper-slide::before {
+    box-sizing: border-box; }
 
 /* Style valid for both cases of carousel, main and thumbs */
 .tainacan-media-component__swiper-main .swiper-button-prev::after,
@@ -658,6 +663,8 @@ a.pswp__share--download:hover {
       .tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid='']) li.swiper-slide .swiper-slide-content video,
       .tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid='']) li.swiper-slide .swiper-slide-content audio {
         pointer-events: none; }
+      .tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid='']) li.swiper-slide .swiper-slide-content a {
+        cursor: zoom-in !important; }
   .tainacan-media-component__swiper-main li.swiper-slide {
     height: 100%;
     max-width: 100%;

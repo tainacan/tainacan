@@ -21,10 +21,6 @@ export default {
                         this.addMetaquery(data);
                 });
 
-                this.$on('sendValuesToTags', data => {
-                   this.$store.dispatch('search/addFilterTag', data);
-                });
-
                 this.$root.$on('closeAdvancedSearch', () => {
                     this.$store.dispatch('search/setPage', 1);
                     
@@ -190,7 +186,7 @@ export default {
                         if (to.fullPath != from.fullPath) {
                             this.loadItems(to);
                         }
-                    }                      
+                    }
                 }
             },
             methods: {
@@ -214,22 +210,26 @@ export default {
 
                     if (filterTag.singleLabel != undefined || filterTag.label != undefined) {
                         
-                        if (filterTag.taxonomy) {
-                            this.$store.dispatch('search/remove_taxquery', {
-                                filterId: filterTag.filterId,
-                                label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
-                                isMultiValue: filterTag.singleLabel ? false : true,
-                                taxonomy: filterTag.taxonomy,
-                                value: filterTag.value
-                            });
+                        if (filterTag.argType !== 'postin') {
+                            if (filterTag.taxonomy) {
+                                this.$store.dispatch('search/remove_taxquery', {
+                                    filterId: filterTag.filterId,
+                                    label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
+                                    isMultiValue: filterTag.singleLabel ? false : true,
+                                    taxonomy: filterTag.taxonomy,
+                                    value: filterTag.value
+                                });
+                            } else {
+                                this.$store.dispatch('search/remove_metaquery', {
+                                    filterId: filterTag.filterId,
+                                    label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
+                                    isMultiValue: filterTag.singleLabel ? false : true,
+                                    metadatum_id: filterTag.metadatumId,
+                                    value: filterTag.value
+                                });
+                            }
                         } else {
-                            this.$store.dispatch('search/remove_metaquery', {
-                                filterId: filterTag.filterId,
-                                label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
-                                isMultiValue: filterTag.singleLabel ? false : true,
-                                metadatum_id: filterTag.metadatumId,
-                                value: filterTag.value
-                            });
+                            this.$store.dispatch('search/remove_postin');
                         }
                         this.$store.dispatch('search/removeFilterTag', filterTag);
                     }
@@ -340,7 +340,7 @@ export default {
                     if (singleSelection)
                         this.$store.dispatch('search/cleanSelectedItems');
 
-                    this.$store.dispatch('search/setSelectedItems', selectedItems);    
+                    this.$store.dispatch('search/setSelectedItems', selectedItems);
  
                     let currentSelectedItems = this.$store.getters['search/getSelectedItems'];
 
@@ -356,6 +356,10 @@ export default {
                 },
                 cleanSelectedItems() {
                     this.$store.dispatch('search/cleanSelectedItems');
+                },
+                filterBySelectedItems(selectedItems) {
+                    this.$router.replace({ query: {} });
+                    this.$router.replace({ query: { postin: selectedItems } });
                 },
                 highlightsItem(itemId) {
                     this.$store.dispatch('search/highlightsItem', itemId);
@@ -416,7 +420,7 @@ export default {
                 },
                 clearAllFilters() {
                     this.$store.dispatch('search/cleanFilterTags');
-                    this.$store.dispatch('search/cleanMetaQueries');
+                    this.$store.dispatch('search/cleanMetaQueries', { keepCollections: true });
                     this.$store.dispatch('search/cleanTaxQueries');
                     this.updateURLQueries();
                 }

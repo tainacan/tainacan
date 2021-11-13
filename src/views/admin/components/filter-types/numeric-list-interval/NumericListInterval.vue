@@ -53,7 +53,6 @@
                     });
                     this.valueEnd = null;
                     this.valueInit = null;
-                    this.$emit('sendValuesToTags', { label: '', value: null, metadatumName: this.metadatumName });
                 }
             },
             // emit the operation for listeners
@@ -67,11 +66,6 @@
                     collection_id: this.collectionId,
                     value: values
                 });
-
-                if (values[0] != undefined && values[1] != undefined && this.selectedInterval !== '') {
-                    let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? ` (${values[0]}-${values[1]})` : '');
-                    this.$emit('sendValuesToTags', { label: labelValue, value: values, metadatumName: this.metadatumName });
-                }
             },
             updateSelectedValues(){
                 if ( !this.query || !this.query.metaquery || !Array.isArray( this.query.metaquery ) )
@@ -95,10 +89,6 @@
                     );
                     this.selectedInterval = this.selectedInterval >= 0 ? this.selectedInterval : '';
 
-                    if (this.selectedInterval !== '') {
-                        let labelValue = this.filterTypeOptions.intervals[this.selectedInterval].label + (this.filterTypeOptions.showIntervalOnTag ? ` (${this.valueInit}-${this.valueEnd})` : '');
-                        this.$emit('sendValuesToTags', { label: labelValue, value: [ this.valueInit, this.valueEnd ], metadatumName: this.metadatumName });
-                    }
                 } else {
                     this.valueInit = null;
                     this.valueEnd = null;

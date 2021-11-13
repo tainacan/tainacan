@@ -131,13 +131,6 @@
                         const dateValueEnd = new Date(metadata.value[1].replace(/-/g, '/'));
                         this.dateEnd = moment(dateValueEnd, moment.ISO_8601).toDate();
                     }
-
-                    if (metadata.value[0] != undefined && metadata.value[1] != undefined)
-                        this.$emit('sendValuesToTags', { 
-                            label: this.parseDateToNavigatorLanguage(metadata.value[0]) + ' - ' + this.parseDateToNavigatorLanguage(metadata.value[1]),
-                            value: [metadata.value[0], metadata.value[1]],
-                            metadatumName: this.metadatumName
-                        });
                 } else {
                     this.dateInit = null;
                     this.dateEnd = null; 
@@ -167,13 +160,6 @@
                     collection_id: this.collectionId,
                     value: values
                 });
-
-                if (values[0] != undefined && values[1] != undefined)
-                    this.$emit( 'sendValuesToTags', { 
-                        label: this.parseDateToNavigatorLanguage(values[0]) + ' - ' + this.parseDateToNavigatorLanguage(values[1]),
-                        value: [ values[0], values[1] ],
-                        metadatumName: this.metadatumName
-                    });
             }
         }
     }

@@ -174,12 +174,6 @@
                         
                         const dateValue = new Date(textValue.replace(/-/g, '/'));
                         this.value = moment(dateValue, moment.ISO_8601).toDate();
-                        
-                        this.$emit('sendValuesToTags', { 
-                            label: this.comparator + ' ' + this.parseDateToNavigatorLanguage(textValue), 
-                            value: textValue,
-                            metadatumName: this.metadatumName
-                        });
                     }
 
                 } else {
@@ -220,11 +214,6 @@
                     metadatum_id: this.metadatumId,
                     collection_id: this.collectionId,
                     value: valueQuery
-                });
-                this.$emit('sendValuesToTags', { 
-                    label: this.comparator + ' ' + moment(this.value, moment.ISO_8601).format(this.dateFormat), 
-                    value: valueQuery,
-                    metadatumName: this.metadatumName
                 });
             },
             onChangeComparator(newComparator) {
