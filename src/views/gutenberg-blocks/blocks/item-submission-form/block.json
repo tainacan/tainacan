@@ -135,7 +135,7 @@
             "type": "String",
             "default": "Go to the item page"
         },
-        "helpInfoBelowLabel": {
+        "helpInfoBellowLabel": {
             "type": "Boolean",
             "default": false
         },

@@ -111,7 +111,7 @@ export default (element) => {
                     metadataSectionLabel: '',
                     showItemLinkButton: false,
                     itemLinkButtonLabel: '',
-                    helpInfoBelowLabel: false,
+                    helpInfoBellowLabel: false,
                     showItemLinkButton: false,
                     termsAgreementMessage: ''
                 },
@@ -140,7 +140,7 @@ export default (element) => {
                     if (this.$el.attributes['hide-metadata-types'] != undefined)
                         this.hideMetadataTypes = this.isParameterTrue('hide-metadata-types');
                     if (this.$el.attributes['help-info-bellow-label'] != undefined)
-                        this.helpInfoBelowLabel = this.isParameterTrue('help-info-bellow-label');
+                        this.helpInfoBellowLabel = this.isParameterTrue('help-info-bellow-label');
 
                     // Form sections labels
                     if (this.$el.attributes['document-section-label'] != undefined)

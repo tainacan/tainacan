@@ -128,7 +128,7 @@ export default [
                 "type": "String",
                 "default": "Go to the item page"
             },
-            "helpInfoBelowLabel": {
+            "helpInfoBellowLabel": {
                 "type": "Boolean",
                 "default": false
             }
@@ -168,7 +168,7 @@ export default [
                 sentFormMessage,
                 showItemLinkButton,
                 itemLinkButtonLabel,
-                helpInfoBelowLabel
+                helpInfoBellowLabel
             } = attributes;
 
             return <div
@@ -207,7 +207,7 @@ export default [
                         metadata-section-label={ metadataSectionLabel }
                         show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
                         item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
-                        help-info-bellow-label={ helpInfoBelowLabel ? helpInfoBelowLabel.toString() : 'false' } >
+                        help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' } >
                 </div>
             </div>
         }
@@ -339,7 +339,7 @@ export default [
                 type: String,
                 default: __( 'Go to the item page', 'tainacan' )
             },
-            helpInfoBelowLabel: {
+            helpInfoBellowLabel: {
                 type: Boolean,
                 default: false
             },
@@ -379,7 +379,7 @@ export default [
                 sentFormMessage,
                 showItemLinkButton,
                 itemLinkButtonLabel,
-                helpInfoBelowLabel
+                helpInfoBellowLabel
             } = attributes;
 
             return <div
@@ -417,12 +417,12 @@ export default [
                         metadata-section-label={ metadataSectionLabel }
                         show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
                         item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
-                        help-info-bellow-label={ helpInfoBelowLabel ? helpInfoBelowLabel.toString() : 'false' } >
+                        help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' } >
                 </div>
             </div>
         }
     },
-    /* Depecrated on Tainacan 0.18.3, due to the introduction of helpInfoBelowLabel */
+    /* Depecrated on Tainacan 0.18.3, due to the introduction of helpInfoBellowLabel */
     {
         attributes: {
             collectionId: {
