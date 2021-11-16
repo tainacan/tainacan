@@ -375,7 +375,7 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['paged'] = array(
-			'description' => __("The results page to be return.", 'tainacan'),
+			'description' => __("The results page to be returned.", 'tainacan'),
 			'type'        => 'integer',
 		);
 

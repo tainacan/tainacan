@@ -450,12 +450,12 @@ class REST_Terms_Controller extends REST_Controller {
 				$endpoint_args['metadatum_id'] = [
 					'required' => false,
 					'type' => 'integer',
-					'description' => __('If term is being created in the context of a Taxonomy metadatum, inform its ID')
+					'description' => __('If term is being created in the context of a Taxonomy metadatum, specify its ID')
 				];
 				$endpoint_args['item_id'] = [
 					'required' => false,
 					'type' => 'integer',
-					'description' => __('If term is being created in the context of a Taxonomy metadatum, inform the ID of the item being edited')
+					'description' => __('If term is being created in the context of a Taxonomy metadatum, specify the ID of the item being edited')
 				];
 			}
 

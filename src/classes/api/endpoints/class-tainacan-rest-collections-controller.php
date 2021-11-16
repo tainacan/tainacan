@@ -87,7 +87,7 @@ class REST_Collections_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
 				'args'                => [
 					'metadata_order' => [
-						'description' => __( 'The order of the metadata in the collection, an array of objects with integer id and bool enabled.', 'tainacan' ),
+						'description' => __( 'The order of the metadata in the collection, an array of objects with integer ID and bool enabled.', 'tainacan' ),
 						'required' => true,
 						'validate_callback' => [$this, 'validate_filters_metadata_order']
 					]
@@ -102,7 +102,7 @@ class REST_Collections_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'update_filters_order_permissions_check'),
 				'args'                => [
 					'filters_order' => [
-						'description' => __( 'The order of the filters in the collection, an array of objects with integer id and bool enabled.', 'tainacan' ),
+						'description' => __( 'The order of the filters in the collection, an array of objects with integer ID and bool enabled.', 'tainacan' ),
 						'required' => true,
 						'validate_callback' => [$this, 'validate_filters_metadata_order']
 					]
@@ -353,7 +353,7 @@ class REST_Collections_Controller extends REST_Controller {
 
 		if(empty($body)){
 			return new \WP_REST_Response([
-				'error_message' => __('Body can not be empty.', 'tainacan'),
+				'error_message' => __('Body cannot be empty.', 'tainacan'),
 				'collection'    => $body
 			], 400);
 		}

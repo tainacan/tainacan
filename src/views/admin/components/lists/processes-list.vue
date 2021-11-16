@@ -77,11 +77,11 @@
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process'),
+                                    content: bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process'),
                                     autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
-                            {{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
+                            {{ bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process') }}</p>
                     </span>
             <!-- Progress -->
             <span

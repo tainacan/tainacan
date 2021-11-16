@@ -14,8 +14,8 @@ import 'swiper/css/swiper.min.css';
 
 export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
     let {
-        collections, 
-        content, 
+        collections,
+        content,
         isModalOpen,
         itemsRequestSource,
         selectedCollections,
@@ -36,7 +36,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
-    
+
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
 
@@ -45,18 +45,18 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         maxCollectionsPerScreen = 6;
         setAttributes({ maxCollectionsPerScreen: maxCollectionsPerScreen });
     }
-    if (cropImagesToSquare === undefined) {  
-        cropImagesToSquare = true;    
+    if (cropImagesToSquare === undefined) {
+        cropImagesToSquare = true;
         setAttributes({ cropImagesToSquare: cropImagesToSquare });
-    }   
-    
+    }
+
     const thumbHelper = ThumbnailHelperFunctions();
 
     function prepareItem(collection, collectionItems) {
         return (
-            <li 
+            <li
                 key={ collection.id }
-                className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>   
+                className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>
                 { tainacan_blocks.wp_version < '5.4' ?
                     <IconButton
                         onClick={ () => removeItemOfId(collection.id) }
@@ -68,35 +68,35 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         icon="no-alt"
                         label={__('Remove', 'tainacan')}/>
                 }
-                <a 
+                <a
                     id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
                     href={ collection.url }>
-                    { !showCollectionThumbnail ? 
+                    { !showCollectionThumbnail ?
                         <div class="collection-items-grid">
-                            <img 
+                            <img
                                 src={ collectionItems[0] ? thumbHelper.getSrc(collectionItems[0]['thumbnail'], 'tainacan-medium', collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                 srcSet={ collectionItems[0] ? thumbHelper.getSrcSet(collectionItems[0]['thumbnail'], 'tainacan-medium', collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                 alt={ collectionItems[0] && collectionItems[0].thumbnail_alt ? collectionItems[0].thumbnail_alt : (collectionItems[0] && collectionItems[0].name ? collectionItems[0].name : __( 'Thumbnail', 'tainacan' )) } />
-                            <img 
+                            <img
                                     src={ collectionItems[1] ? thumbHelper.getSrc(collectionItems[1]['thumbnail'], 'tainacan-medium', collectionItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     srcSet={ collectionItems[1] ? thumbHelper.getSrcSet(collectionItems[1]['thumbnail'], 'tainacan-medium', collectionItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     alt={ collectionItems[1] && collectionItems[1].thumbnail_alt ? collectionItems[1].thumbnail_alt : (collectionItems[1] && collectionItems[1].name ? collectionItems[1].name : __( 'Thumbnail', 'tainacan' )) } />
-                            <img 
+                            <img
                                     src={ collectionItems[2] ? thumbHelper.getSrc(collectionItems[2]['thumbnail'], 'tainacan-medium', collectionItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     srcSet={ collectionItems[2] ? thumbHelper.getSrcSet(collectionItems[2]['thumbnail'], 'tainacan-medium', collectionItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     alt={ collectionItems[2] && collectionItems[2].thumbnail_alt ? collectionItems[2].thumbnail_alt : (collectionItems[2] && collectionItems[2].name ? collectionItems[2].name : __( 'Thumbnail', 'tainacan' )) } />
                         </div>
                         :
                         <img
-                            src={ 
-                                collection.thumbnail && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
+                            src={
+                                collection.thumbnail && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0]
                                     ?
-                                collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
+                                collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0]
                                     :
                                 (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
-                                    ?    
-                                collection.thumbnail['thumbnail'][0] 
-                                    : 
+                                    ?
+                                collection.thumbnail['thumbnail'][0]
+                                    :
                                 `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
                             }
                             alt={ collection.name ? collection.name : __( 'Thumbnail', 'tainacan' ) }/>
@@ -126,7 +126,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
             .then(response => {
 
                 if (showCollectionThumbnail) {
-                    for (let collection of response.data) { 
+                    for (let collection of response.data) {
                         collections.push(prepareItem(collection));
                     }
                     setAttributes({
@@ -137,12 +137,12 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                     });
                 } else {
                     let promises = [];
-                    for (let collection of response.data) {  
+                    for (let collection of response.data) {
                         promises.push(
                             tainacan.get('/collection/' + collection.id + '/items?perpage=3&fetch_only=name,url,thumbnail')
                                 .then(response => { return({ collection: collection, collectionItems: response.data.items }) })
                                 .catch((error) => console.log(error))
-                        );                      
+                        );
                     }
                     axios.all(promises).then((results) => {
                         for (let result of results) {
@@ -154,14 +154,14 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             isLoading: false,
                             itemsRequestSource: itemsRequestSource
                         });
-                    })  
+                    })
                 }
             });
     }
 
     function openCarouselModal() {
         isModalOpen = true;
-        setAttributes( { 
+        setAttributes( {
             isModalOpen: isModalOpen
         } );
     }
@@ -175,11 +175,11 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         let existingSelectedItemIndex = selectedCollections.findIndex((existingSelectedItem) => existingSelectedItem.id == itemId);
         if (existingSelectedItemIndex >= 0)
             selectedCollections.splice(existingSelectedItemIndex, 1);
-    
-        setAttributes({ 
+
+        setAttributes({
             selectedCollections: selectedCollections,
             collections: collections,
-            content: <div></div> 
+            content: <div></div>
         });
     }
 
@@ -187,7 +187,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
     if(content && content.length && content[0].type)
         setContent();
 
-    return content == 'preview' ? 
+    return content == 'preview' ?
             <div className={className}>
                 <img
                         width="100%"
@@ -198,7 +198,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
             { collections.length ?
                 <BlockControls>
-                    { 
+                    {
                         TainacanBlocksCompatToolbar({
                             label: __('Add more collections', 'tainacan'),
                             icon: <svg
@@ -229,7 +229,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                             onClick={ () => {
                                                     showCollectionThumbnail = false;
                                                     setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
-                                                    setContent();    
+                                                    setContent();
                                                 }
                                             }
                                             className={'collection-carousel-view-mode-grid' + (showCollectionThumbnail ? '' : ' is-active')}>
@@ -244,13 +244,13 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                             onClick={ () => {
                                                     showCollectionThumbnail = true;
                                                     setAttributes({ showCollectionThumbnail: showCollectionThumbnail });
-                                                    setContent();    
+                                                    setContent();
                                                 }
                                             }
                                             className={'collection-carousel-view-mode-thumbnail' + (showCollectionThumbnail ? ' is-active' : '')}>
                                         <div />
                                         <label>{ __('Thumbnail', 'tainacan') }</label>
-                                    </button>    
+                                    </button>
                                 </div>
                             </BaseControl>
                             <RangeControl
@@ -260,12 +260,12 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     onChange={ ( aMaxCollectionsPerScreen ) => {
                                         maxCollectionsPerScreen = aMaxCollectionsPerScreen;
                                         setAttributes( { maxCollectionsPerScreen: aMaxCollectionsPerScreen } );
-                                        setContent(); 
+                                        setContent();
                                     }}
                                     min={ 1 }
                                     max={ 9 }
                                 />
-                            { showCollectionThumbnail ? 
+                            { showCollectionThumbnail ?
                                 <ToggleControl
                                         label={__('Crop Images', 'tainacan')}
                                         help={ cropImagesToSquare && maxCollectionsPerScreen > 4 ? __('Do not use square cropeed version of the collection thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the collection thumbnail.', 'tainacan') }
@@ -274,7 +274,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                                 cropImagesToSquare = isChecked;
                                                 setAttributes({ cropImagesToSquare: cropImagesToSquare });
                                                 setContent();
-                                            } 
+                                            }
                                         }
                                     />
                             : null }
@@ -296,7 +296,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                             hideName = isChecked;
                                             setAttributes({ hideName: hideName });
                                             setContent();
-                                        } 
+                                        }
                                     }
                                 />
                             <ToggleControl
@@ -306,7 +306,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     onChange={ ( isChecked ) => {
                                             loopSlides = isChecked;
                                             setAttributes({ loopSlides: loopSlides });
-                                        } 
+                                        }
                                     }
                                 />
                             <ToggleControl
@@ -316,17 +316,17 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     onChange={ ( isChecked ) => {
                                             autoPlay = isChecked;
                                             setAttributes({ autoPlay: autoPlay });
-                                        } 
+                                        }
                                     }
                                 />
-                            { 
-                                autoPlay ? 
+                            {
+                                autoPlay ?
                                     <RangeControl
-                                        label={__('Seconds before translating to next', 'tainacan')}
+                                        label={__('Seconds before transitioning to next', 'tainacan')}
                                         value={ autoPlaySpeed ? autoPlaySpeed : 3 }
                                         onChange={ ( aAutoPlaySpeed ) => {
                                             autoPlaySpeed = aAutoPlaySpeed;
-                                            setAttributes( { autoPlaySpeed: aAutoPlaySpeed } ) 
+                                            setAttributes( { autoPlaySpeed: aAutoPlaySpeed } )
                                         }}
                                         min={ 1 }
                                         max={ 5 }
@@ -341,9 +341,9 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     { label: __('Left', 'tainacan'), value: 'left' },
                                     { label: __('Right', 'tainacan'), value: 'right' }
                                 ] }
-                                onChange={ ( aPosition ) => { 
+                                onChange={ ( aPosition ) => {
                                     arrowsPosition = aPosition;
-                                    setAttributes({ arrowsPosition: arrowsPosition }); 
+                                    setAttributes({ arrowsPosition: arrowsPosition });
                                 }}/>
                             <SelectControl
                                 label={__('Arrows icon style', 'tainacan')}
@@ -352,9 +352,9 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     { label: __('Default', 'tainacan'), value: 'type-1' },
                                     { label: __('Alternative', 'tainacan'), value: 'type-2' }
                                 ] }
-                                onChange={ ( aStyle ) => { 
+                                onChange={ ( aStyle ) => {
                                     arrowsStyle = aStyle;
-                                    setAttributes({ arrowsStyle: arrowsStyle }); 
+                                    setAttributes({ arrowsStyle: arrowsStyle });
                                 }}/>
                             <ToggleControl
                                 label={__('Large arrows', 'tainacan')}
@@ -363,7 +363,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 onChange={ ( isChecked ) => {
                                         largeArrows = isChecked;
                                         setAttributes({ largeArrows: largeArrows });
-                                    } 
+                                    }
                                 }
                             />
                             <RangeControl
@@ -380,24 +380,24 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                 </InspectorControls>
             </div>
 
-            { isSelected ? 
+            { isSelected ?
                 (
                 <div>
-                    { isModalOpen ? 
+                    { isModalOpen ?
                         <CarouselCollectionsModal
                             selectedCollectionsObject={ selectedCollections }
                             onApplySelection={ (aSelectionOfCollections) => {
-                                selectedCollections = aSelectionOfCollections; 
+                                selectedCollections = aSelectionOfCollections;
                                 setAttributes({
                                     selectedCollections: aSelectionOfCollections,
                                     isModalOpen: false
                                 });
                                 setContent();
                             }}
-                            onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
+                            onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/>
                         : null
                     }
-                    
+
                 </div>
                 ) : null
             }
@@ -426,29 +426,29 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         type="button"
                         onClick={ () => openCarouselModal() }>
                         {__('Select Collections', 'tainacan')}
-                    </Button>   
+                    </Button>
                 </Placeholder>
                 ) : null
             }
-            
-            { isLoading ? 
+
+            { isLoading ?
                 <div class="spinner-container">
                     <Spinner />
                 </div> :
                 <div>
-                    { isSelected && collections.length ? 
+                    { isSelected && collections.length ?
                         <div class="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
                         : null
                     }
-                    {  collections.length ? ( 
+                    {  collections.length ? (
                         <div
                                 className={'collections-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
                                 style={{
                                     '--spaceBetweenCollections': !isNaN(spaceBetweenCollections) ? (spaceBetweenCollections + 'px') : '32px',
                                     '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
                                 }}>
-                            <button 
-                                    class="swiper-button-prev" 
+                            <button
+                                    class="swiper-button-prev"
                                     slot="button-prev"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg
@@ -469,8 +469,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             <ul className={'collections-list-edit'}>
                                 { collections }
                             </ul>
-                            <button 
-                                    class="swiper-button-next" 
+                            <button
+                                    class="swiper-button-next"
                                     slot="button-next"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg

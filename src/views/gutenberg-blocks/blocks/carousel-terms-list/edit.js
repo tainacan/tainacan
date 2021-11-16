@@ -14,8 +14,8 @@ import 'swiper/css/swiper.min.css';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }){
     let {
-        terms, 
-        content, 
+        terms,
+        content,
         isModalOpen,
         itemsRequestSource,
         selectedTerms,
@@ -39,7 +39,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
-    
+
     // Sets some defaults that were not working
     if (maxTermsPerScreen === undefined) {
         maxTermsPerScreen = 6;
@@ -50,9 +50,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
     function prepareItem(term, termItems) {
         return (
-            <li 
+            <li
                 key={ term.id }
-                className={ 'term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid ' : '') + (maxTermsPerScreen ? ' max-terms-per-screen-' + maxTermsPerScreen : '') }>   
+                className={ 'term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid ' : '') + (maxTermsPerScreen ? ' max-terms-per-screen-' + maxTermsPerScreen : '') }>
                 { tainacan_blocks.wp_version < '5.4' ?
                     <IconButton
                         onClick={ () => removeItemOfId(term.id) }
@@ -64,20 +64,20 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         icon="no-alt"
                         label={__('Remove', 'tainacan')}/>
                 }
-                <a 
+                <a
                     id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
                     href={ term.url }>
-                    { !showTermThumbnail ? 
+                    { !showTermThumbnail ?
                         <div class="term-items-grid">
-                            <img 
+                            <img
                                 src={ termItems[0] ? thumbHelper.getSrc(termItems[0]['thumbnail'], 'tainacan-medium', termItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                 srcSet={ termItems[0] ? thumbHelper.getSrcSet(termItems[0]['thumbnail'], 'tainacan-medium', termItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                 alt={ termItems[0] && termItems[0].thumbnail_alt ? termItems[0].thumbnail_alt : (termItems[0] && termItems[0].name ? termItems[0].name : __( 'Thumbnail', 'tainacan' )) } />
-                            <img 
+                            <img
                                     src={ termItems[1] ? thumbHelper.getSrc(termItems[1]['thumbnail'], 'tainacan-medium', termItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     srcSet={ termItems[1] ? thumbHelper.getSrcSet(termItems[1]['thumbnail'], 'tainacan-medium', termItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     alt={ termItems[1] && termItems[1].thumbnail_alt ? termItems[1].thumbnail_alt : (termItems[1] && termItems[1].name ? termItems[1].name : __( 'Thumbnail', 'tainacan' )) } />
-                            <img 
+                            <img
                                     src={ termItems[2] ? thumbHelper.getSrc(termItems[2]['thumbnail'], 'tainacan-medium', termItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     srcSet={ termItems[2] ? thumbHelper.getSrcSet(termItems[2]['thumbnail'], 'tainacan-medium', termItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     alt={ termItems[2] && termItems[2].thumbnail_alt ? termItems[2].thumbnail_alt : (termItems[2] && termItems[2].name ? termItems[2].name : __( 'Thumbnail', 'tainacan' )) } />
@@ -112,7 +112,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             .then(response => {
 
                 if (showTermThumbnail) {
-                    for (let term of response.data) { 
+                    for (let term of response.data) {
                         terms.push(prepareItem(term));
                     }
                     setAttributes({
@@ -123,12 +123,12 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     });
                 } else {
                     let promises = [];
-                    for (let term of response.data) {  
+                    for (let term of response.data) {
                         promises.push(
                             tainacan.get('/items/?perpage=3&fetch_only=name,url,thumbnail&taxquery[0][taxonomy]=tnc_tax_' + taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
                                 .then(response => { return({ term: term, termItems: response.data.items }) })
                                 .catch((error) => console.log(error))
-                        );                      
+                        );
                     }
                     axios.all(promises).then((results) => {
                         for (let result of results) {
@@ -140,14 +140,14 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             isLoading: false,
                             itemsRequestSource: itemsRequestSource
                         });
-                    })  
+                    })
                 }
             });
     }
 
     function openCarouselModal() {
         isModalOpen = true;
-        setAttributes( { 
+        setAttributes( {
             isModalOpen: isModalOpen
         } );
     }
@@ -161,11 +161,11 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         let existingSelectedItemIndex = selectedTerms.findIndex((existingSelectedItem) => existingSelectedItem.id == itemId);
         if (existingSelectedItemIndex >= 0)
             selectedTerms.splice(existingSelectedItemIndex, 1);
-    
-        setAttributes({ 
+
+        setAttributes({
             selectedTerms: selectedTerms,
             terms: terms,
-            content: <div></div> 
+            content: <div></div>
         });
     }
 
@@ -173,7 +173,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
     if(content && content.length && content[0].type)
         setContent();
 
-    return content == 'preview' ? 
+    return content == 'preview' ?
             <div className={className}>
                 <img
                         width="100%"
@@ -215,7 +215,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             onClick={ () => {
                                                     showTermThumbnail = false;
                                                     setAttributes({ showTermThumbnail: showTermThumbnail });
-                                                    setContent();    
+                                                    setContent();
                                                 }
                                             }
                                             className={'term-carousel-view-mode-grid' + (showTermThumbnail ? '' : ' is-active')}>
@@ -230,13 +230,13 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             onClick={ () => {
                                                     showTermThumbnail = true;
                                                     setAttributes({ showTermThumbnail: showTermThumbnail });
-                                                    setContent();    
+                                                    setContent();
                                                 }
                                             }
                                             className={'term-carousel-view-mode-thumbnail' + (showTermThumbnail ? ' is-active' : '')}>
                                         <div />
                                         <label>{ __('Thumbnail', 'tainacan') }</label>
-                                    </button>    
+                                    </button>
                                 </div>
                             </BaseControl>
                             <RangeControl
@@ -246,7 +246,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     onChange={ ( aMaxTermsPerScreen ) => {
                                         maxTermsPerScreen = aMaxTermsPerScreen;
                                         setAttributes( { maxTermsPerScreen: aMaxTermsPerScreen } );
-                                        setContent(); 
+                                        setContent();
                                     }}
                                     min={ 1 }
                                     max={ 9 }
@@ -269,7 +269,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             hideName = isChecked;
                                             setAttributes({ hideName: hideName });
                                             setContent();
-                                        } 
+                                        }
                                     }
                                 />
                             <ToggleControl
@@ -279,7 +279,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     onChange={ ( isChecked ) => {
                                             loopSlides = isChecked;
                                             setAttributes({ loopSlides: loopSlides });
-                                        } 
+                                        }
                                     }
                                 />
                             <ToggleControl
@@ -289,17 +289,17 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     onChange={ ( isChecked ) => {
                                             autoPlay = isChecked;
                                             setAttributes({ autoPlay: autoPlay });
-                                        } 
+                                        }
                                     }
                                 />
-                            { 
-                                autoPlay ? 
+                            {
+                                autoPlay ?
                                     <RangeControl
-                                        label={__('Seconds before translating to next', 'tainacan')}
+                                        label={__('Seconds before transitioning to next', 'tainacan')}
                                         value={ autoPlaySpeed ? autoPlaySpeed : 3 }
                                         onChange={ ( aAutoPlaySpeed ) => {
                                             autoPlaySpeed = aAutoPlaySpeed;
-                                            setAttributes( { autoPlaySpeed: aAutoPlaySpeed } ) 
+                                            setAttributes( { autoPlaySpeed: aAutoPlaySpeed } )
                                         }}
                                         min={ 1 }
                                         max={ 5 }
@@ -314,10 +314,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     { label: __('Left', 'tainacan'), value: 'left' },
                                     { label: __('Right', 'tainacan'), value: 'right' }
                                 ] }
-                                onChange={ ( aPosition ) => { 
+                                onChange={ ( aPosition ) => {
                                     arrowsPosition = aPosition;
 
-                                    setAttributes({ arrowsPosition: arrowsPosition }); 
+                                    setAttributes({ arrowsPosition: arrowsPosition });
                                 }}/>
                             <SelectControl
                                 label={__('Arrows icon style', 'tainacan')}
@@ -326,9 +326,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     { label: __('Default', 'tainacan'), value: 'type-1' },
                                     { label: __('Alternative', 'tainacan'), value: 'type-2' }
                                 ] }
-                                onChange={ ( aStyle ) => { 
+                                onChange={ ( aStyle ) => {
                                     arrowsStyle = aStyle;
-                                    setAttributes({ arrowsStyle: arrowsStyle }); 
+                                    setAttributes({ arrowsStyle: arrowsStyle });
                                 }}/>
                             <ToggleControl
                                 label={__('Large arrows', 'tainacan')}
@@ -337,7 +337,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 onChange={ ( isChecked ) => {
                                         largeArrows = isChecked;
                                         setAttributes({ largeArrows: largeArrows });
-                                    } 
+                                    }
                                 }
                             />
                             <RangeControl
@@ -354,31 +354,31 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 </InspectorControls>
             </div>
 
-            { isSelected ? 
+            { isSelected ?
                 (
                 <div>
-                    { isModalOpen ? 
+                    { isModalOpen ?
                             <TermsModal
                                 replaceTermId={ false } // The Terms modal adds `term-id-` string to terms ids. Here we dont' need it
-                                existingTaxonomyId={ taxonomyId } 
-                                selectedTermsObject={ selectedTerms } 
+                                existingTaxonomyId={ taxonomyId }
+                                selectedTermsObject={ selectedTerms }
                                 onSelectTaxonomy={ (selectedTaxonomyId) => {
                                     taxonomyId = selectedTaxonomyId;
                                     setAttributes({ taxonomyId: taxonomyId });
                                 }}
                                 onApplySelection={ (aSelectionOfTerms) =>{
                                     selectedTerms = aSelectionOfTerms;
-                                    
+
                                     setAttributes({
                                         selectedTerms: selectedTerms,
                                         isModalOpen: false
                                     });
                                     setContent();
                                 }}
-                                onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
+                                onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/>
                             : null
                     }
-                    
+
                 </div>
                 ) : null
             }
@@ -407,29 +407,29 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         type="button"
                         onClick={ () => openCarouselModal() }>
                         {__('Select Terms', 'tainacan')}
-                    </Button>   
+                    </Button>
                 </Placeholder>
                 ) : null
             }
-            
-            { isLoading ? 
+
+            { isLoading ?
                 <div class="spinner-container">
                     <Spinner />
                 </div> :
                 <div>
-                    { isSelected && terms.length ? 
+                    { isSelected && terms.length ?
                         <div class="preview-warning">{__('Warning: this is just a demonstration. To see the carousel in action, either preview or publish your post.', 'tainacan')}</div>
                         : null
                     }
-                    {  terms.length ? ( 
+                    {  terms.length ? (
                         <div
                                 className={'terms-list-edit-container ' + (arrowsPosition ? 'has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
                                 style={{
                                     '--spaceBetweenTerms': !isNaN(spaceBetweenTerms) ? (spaceBetweenTerms + 'px') : '32px',
                                     '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
                                 }}>
-                            <button 
-                                    class="swiper-button-prev" 
+                            <button
+                                    class="swiper-button-prev"
                                     slot="button-prev"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg
@@ -444,14 +444,14 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     }
                                     <path
                                             d="M0 0h24v24H0z"
-                                            fill="none"/>                         
+                                            fill="none"/>
                                 </svg>
                             </button>
                             <ul className={'terms-list-edit'}>
                                 { terms }
                             </ul>
-                            <button 
-                                    class="swiper-button-next" 
+                            <button
+                                    class="swiper-button-next"
                                     slot="button-next"
                                     style={{ cursor: 'not-allowed' }}>
                                 <svg
@@ -466,7 +466,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     }
                                     <path
                                             d="M0 0h24v24H0z"
-                                            fill="none"/>                        
+                                            fill="none"/>
                                 </svg>
                             </button>
                         </div>

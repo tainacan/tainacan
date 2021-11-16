@@ -42,7 +42,7 @@ class Numeric_List_Interval extends Filter_Type {
 			</div>
 		');
 	}
-	
+
 	public function get_form_labels() {
 		return [
 			'intervals' => [
@@ -51,7 +51,7 @@ class Numeric_List_Interval extends Filter_Type {
 			],
 			'showIntervalOnTag' => [
 				'title' => __('Interval on tags', 'tainacan'),
-				'description' => __('Whether the applyed interval values should appear on filter tags.')
+				'description' => __('Whether the applied interval values should appear on filter tags.')
 			]
 		];
 	}

@@ -10,7 +10,7 @@
                     v-show="!isLoading && !isSubmitting && !isUploading"
                     class="tainacan-form"
                     label-width="120px">
-        
+
                 <!-- Hook for extra Form options -->
                 <template
                         v-if="formHooks != undefined &&
@@ -24,7 +24,7 @@
 
                 <!-- Document -------------------------------- -->
                 <template v-if="!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton">
-                    <div 
+                    <div
                             v-if="documentSectionLabel"
                             class="section-label">
                         <label>{{ documentSectionLabel }}</label>
@@ -38,13 +38,13 @@
                             {{ $i18n.getHelperMessage('items', 'document') }}
                         </p>
                     </div>
-                    <div 
+                    <div
                             class="section-box document-field"
                             id="tainacan-item-metadatum_id-document">
                         <div v-if="form.document_type != '' && form.document_type != undefined && form.document_type != null && form.document_type != 'empty'">
                             <div v-if="form.document_type == 'attachment'">
                                 <b-upload
-                                        expanded 
+                                        expanded
                                         v-if="!form.document"
                                         v-model="form.document"
                                         drag-drop>
@@ -59,10 +59,10 @@
                                         </div>
                                     </section>
                                 </b-upload>
-                                <div 
+                                <div
                                         v-else
                                         class="files-list">
-                                    <b-tag 
+                                    <b-tag
                                             rounded
                                             closable
                                             attached
@@ -72,20 +72,20 @@
                                         {{ form.document.name }}
                                     </b-tag>
                                 </div>
-                                <p 
-                                        v-if="documentErrorMessage" 
+                                <p
+                                        v-if="documentErrorMessage"
                                         class="help is-danger">
                                     {{ documentErrorMessage }}
                                 </p>
                             </div>
                             <div v-if="form.document_type == 'text'">
-                                <b-input 
+                                <b-input
                                         type="textarea"
                                         v-model="form.document" />
-                                <br v-if="hasMoreThanOneDocumentTypeOption">                      
+                                <br v-if="hasMoreThanOneDocumentTypeOption">
                             </div>
                             <div v-if="form.document_type == 'url'">
-                                <b-input 
+                                <b-input
                                         :placeholder="$i18n.get('instruction_insert_url')"
                                         type="url"
                                         v-model="form.document" />
@@ -94,37 +94,37 @@
                                         :label="$i18n.get('label_document_option_forced_iframe')">
                                         &nbsp;
                                     <b-switch
-                                            size="is-small" 
+                                            size="is-small"
                                             v-model="form.document_options.forced_iframe" />
                                     <help-button
                                             :title="$i18n.get('label_document_option_forced_iframe')"
                                             :message="$i18n.get('info_document_option_forced_iframe')" />
                                 </b-field>
-                                <b-field 
+                                <b-field
                                         v-if="form.document_options && form.document_options.forced_iframe"
                                         grouped>
-                                    <b-field 
+                                    <b-field
                                             style="padding: 0"
                                             :label="$i18n.get('label_document_option_iframe_width')">
                                         <b-numberinput
                                                 :aria-minus-label="$i18n.get('label_decrease')"
                                                 :aria-plus-label="$i18n.get('label_increase')"
-                                                min="1" 
+                                                min="1"
                                                 v-model="form.document_options.forced_iframe_width"
                                                 step="1" />
                                     </b-field>
-                                    <b-field 
+                                    <b-field
                                             style="padding: 0; margin-left: 12px;"
                                             :label="$i18n.get('label_document_option_iframe_height')">
                                         <b-numberinput
                                                 :aria-minus-label="$i18n.get('label_decrease')"
                                                 :aria-plus-label="$i18n.get('label_increase')"
-                                                min="1" 
+                                                min="1"
                                                 v-model="form.document_options.forced_iframe_height"
                                                 step="1" />
                                     </b-field>
                                 </b-field>
-                                <p 
+                                <p
                                         class="metadatum-description-help-info"
                                         v-if="form.document_options.forced_iframe"
                                         style="padding: 0px 0px 0px 34px">
@@ -136,7 +136,7 @@
                                         :label="$i18n.get('label_document_option_is_image')">
                                         &nbsp;
                                     <b-switch
-                                            size="is-small" 
+                                            size="is-small"
                                             v-model="form.document_options.is_image" />
                                     <help-button
                                             :title="$i18n.get('label_document_option_is_image')"
@@ -185,12 +185,12 @@
                             </li>
                         </ul>
                     </div>
-                
+
                 </template>
 
                 <!-- Thumbnail -------------------------------- -->
                 <template v-if="!hideThumbnailSection">
-                    <div 
+                    <div
                             v-if="thumbnailSectionLabel"
                             class="section-label">
                         <label>{{ thumbnailSectionLabel }}</label>
@@ -215,11 +215,11 @@
                             </b-switch>
                         </div>
                     </div>
-                    <div 
+                    <div
                             v-if="!isLoading && showThumbnailInput"
                             class="section-box section-thumbnail"
                             id="tainacan-item-metadatum_id-thumbnail">
-                        <b-upload 
+                        <b-upload
                                 expanded
                                 v-if="!form.thumbnail"
                                 v-model="form.thumbnail"
@@ -235,10 +235,10 @@
                                 </div>
                             </section>
                         </b-upload>
-                        <div 
+                        <div
                                 v-else
                                 class="files-list">
-                            <b-tag 
+                            <b-tag
                                     rounded
                                     closable
                                     attached
@@ -248,8 +248,8 @@
                                 {{ form.thumbnail.name }}
                             </b-tag>
                         </div>
-                        <p 
-                                v-if="thumbnailErrorMessage" 
+                        <p
+                                v-if="thumbnailErrorMessage"
                                 class="help is-danger">
                             {{ thumbnailErrorMessage }}
                         </p>
@@ -269,7 +269,7 @@
 
                 <!-- Attachments ------------------------------------------ -->
                 <template v-if="!hideAttachmentsSection">
-                    
+
                     <div class="section-label">
                         <label v-if="attachmentsSectionLabel">
                             <span>{{ attachmentsSectionLabel }}</span>
@@ -277,13 +277,13 @@
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
                             </span>
                         </label>
-                    </div>                
+                    </div>
 
-                    <div 
+                    <div
                             v-if="itemSubmission != undefined"
                             class="section-box"
                             id="tainacan-item-metadatum_id-attachments">
-                        <b-upload 
+                        <b-upload
                                 expanded
                                 v-model="form.attachments"
                                 multiple
@@ -299,10 +299,10 @@
                                 </div>
                             </section>
                         </b-upload>
-                        <div 
+                        <div
                                 v-if="form.attachments && form.attachments.length"
                                 class="files-list">
-                            <b-tag 
+                            <b-tag
                                     v-for="(attachment, index) of form.attachments"
                                     :key="index"
                                     rounded
@@ -314,14 +314,14 @@
                                 {{ attachment.name }}
                             </b-tag>
                         </div>
-                        <p 
-                                v-if="attachmentsErrorMessage" 
+                        <p
+                                v-if="attachmentsErrorMessage"
                                 class="help is-danger">
                             {{ attachmentsErrorMessage }}
                         </p>
                     </div>
                 </template>
-            
+
                 <!-- Hook for extra Form options -->
                 <template
                         v-if="formHooks != undefined &&
@@ -405,18 +405,18 @@
 
                 <!-- Google reCAPTCHA -->
                 <template v-if="useCaptcha == 'yes'">
-                    <div 
+                    <div
                             class="g-recaptcha"
                             id="tainacan-g-recaptcha"
                             :data-sitekey="captchaSiteKey" />
                     <br>
                 </template>
 
-                <div 
+                <div
                         v-if="showTermsAgreementCheckbox"
                         class="terms-agreement-confirmation-section">
                     <b-field>
-                        <b-checkbox 
+                        <b-checkbox
                                 v-model="userHasAgreedToTerms"
                                 size="is-medium">
                             <span v-html="termsAgreementMessage" />
@@ -437,7 +437,7 @@
 
                             <span class="help is-danger">
                                 {{ formErrorMessage }}
-                                <item-metadatum-errors-tooltip 
+                                <item-metadatum-errors-tooltip
                                         v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length"
                                         :form-errors="formErrors" />
                             </span>
@@ -453,7 +453,7 @@
             </form>
 
             <!-- Message displayed when the form is being submitted -->
-            <section 
+            <section
                     v-if="isSubmitting || isUploading"
                     class="section">
                 <div class="content has-text-grey has-text-centered">
@@ -471,7 +471,7 @@
             </section>
 
             <!-- Message displayed once the form is submitted -->
-            <section 
+            <section
                     v-if="hasSentForm"
                     class="section">
                 <div class="content has-text-grey has-text-centered">
@@ -484,7 +484,7 @@
                     <h2 v-if="sentFormHeading">{{ sentFormHeading }}</h2>
                     <p v-if="sentFormMessage">{{ sentFormMessage }}</p>
                     <p v-if="showItemLinkButton && linkToCreatedItem">
-                        <a 
+                        <a
                                 style="text-decoration: none"
                                 :href="linkToCreatedItem"
                                 class="button is-secondary">
@@ -498,7 +498,7 @@
         </template>
 
         <!-- Message displayed if the collection could not be loaded -->
-        <section 
+        <section
                 v-else
                 class="section">
             <div class="content has-text-grey has-text-centered">
@@ -632,7 +632,7 @@ export default {
 
                 // Initialize clear data from store
                 this.clearItemSubmission();
-                
+
                 eventBusItemMetadata.clearAllErrors();
                 this.formErrorMessage = '';
                 this.form.collection_id = this.collectionId;
@@ -688,7 +688,7 @@ export default {
         ]),
         onSubmit() {
 
-            // Puts loading on Item edition
+            // Puts loading on Item edit
             this.isSubmitting = true;
 
             let data = this.form;
@@ -699,10 +699,10 @@ export default {
             // Clear errors so we don't have them duplicated from api
             eventBusItemMetadata.errors = [];
 
-            this.submitItemSubmission({ 
+            this.submitItemSubmission({
                     itemSubmission: this.itemSubmission,
                     itemSubmissionMetadata: this.itemSubmissionMetadata,
-                    captchaResponse: (this.useCaptcha == 'yes' && grecaptcha) ? grecaptcha.getResponse() : null 
+                    captchaResponse: (this.useCaptcha == 'yes' && grecaptcha) ? grecaptcha.getResponse() : null
                 })
                 .then((fakeItemId) => {
 
@@ -717,34 +717,34 @@ export default {
 
                                 this.linkToCreatedItem = item.url;
                             })
-                            .catch((errors) => { 
+                            .catch((errors) => {
                                 if (errors.errors) {
                                     for (let error of errors.errors) {
                                         for (let metadatum of Object.keys(error)) {
-                                            eventBusItemMetadata.errors.push({ 
+                                            eventBusItemMetadata.errors.push({
                                                 metadatum_id: metadatum,
                                                 errors: error[metadatum]
                                             });
-                                        }  
+                                        }
                                     }
                                 }
                                 this.formErrorMessage = errors.error_message;
-                                
+
                                 this.isSubmitting =  false;
                                 this.hasSentForm = false;
                                 this.isUploading = false;
                             });
                     }
                 })
-                .catch((errors) => { 
+                .catch((errors) => {
                     if (errors.errors) {
                         for (let error of errors.errors) {
                             for (let metadatum of Object.keys(error)) {
-                                eventBusItemMetadata.errors.push({ 
+                                eventBusItemMetadata.errors.push({
                                     metadatum_id: metadatum,
                                     errors: error[metadatum]
                                 });
-                            }   
+                            }
                         }
                     }
                     this.formErrorMessage = errors.error_message;
@@ -757,7 +757,7 @@ export default {
         onDiscard() {
             // Initialize clear data from store
             this.clearItemSubmission();
-            
+
             eventBusItemMetadata.clearAllErrors();
             this.formErrorMessage = '';
             this.form.collection_id = this.collectionId;
@@ -787,7 +787,7 @@ export default {
                     for (let i = 0; i < metadata.length; i++) {
                         this.metadataCollapses.push(false);
                         this.metadataCollapses[i] = true;
-                    }                
+                    }
                     this.setItemSubmissionMetadata( metadata.map((metadatum) => { return { metadatum_id: metadatum.id, value: null } }) );
                     this.couldLoadCollection = true;
                     this.isLoading = false;
@@ -887,7 +887,7 @@ export default {
             padding: 0;
             display: flex;
             flex-wrap: wrap;
-            
+
             li {
                 margin-left: 0.25em;
                 margin-right: 1.5em;
@@ -906,8 +906,8 @@ export default {
                         cursor: pointer;
                     }
                 }
-                p { 
-                    color: var(--tainacan-secondary); 
+                p {
+                    color: var(--tainacan-secondary);
                     font-size: 0.8125em;
                 }
             }

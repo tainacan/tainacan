@@ -18,7 +18,7 @@
         }
         .button.is-primary, .button.is-secondary, .button.is-success {
             .icon {
-                color: var(--taincan-background-color);
+                color: var(--tainacan-background-color);
             }
         }
         .dropdown.is-disabled {
@@ -34,7 +34,7 @@
         border: none;
         z-index: 999991;
         background-color: var(--tainacan-input-background-color);
-        
+
         .dropdown-content {
             padding: 0px 0px 1px 0px;
             border-radius: 0px !important;
@@ -67,7 +67,7 @@
                 .media {
                     display: flex;
                     align-items: center;
-                
+
                     .media-left {
                         margin-right: 0.5em;
                         display: flex;
@@ -85,7 +85,7 @@
                     }
                 }
             }
-        } 
+        }
     }
     &.is-mobile-modal {
         @media screen and (max-width: 768px) {
@@ -97,7 +97,7 @@
                 .dropdown-item {
                     padding: 0.75em !important;
                 }
-            }  
+            }
         }
     }
 }
@@ -137,8 +137,8 @@
     &:focus, &:active {
         border: 1px solid transparent !important;
     }
-    .input { 
-        margin-bottom: 0px !important; 
+    .input {
+        margin-bottom: 0px !important;
         text-overflow: ellipsis;
         background-color: var(--tainacan-input-background-color);
     }
@@ -160,11 +160,11 @@
             &::after {
                 height: 47% !important;
                 width: 1px !important;
-            } 
+            }
             &::before {
                 width: 47% !important;
                 height: 1px !important;
-            } 
+            }
             &:hover, &:focus {
                 background-color: var(--tainacan-background-color);
                 color: var(--tainacan-label-color);
@@ -197,11 +197,11 @@
             &::after {
                 height: 30% !important;
                 width: 1px !important;
-            } 
+            }
             &::before {
                 width: 30% !important;
                 height: 1px !important;
-            } 
+            }
             &:hover, &:focus {
                 background-color: var(--tainacan-background-color);
                 color: var(--tainacan-label-color);
@@ -215,7 +215,7 @@
 
     .datepicker-content {
         height: auto;
-        
+
         input {
             height: auto;
         }
@@ -245,14 +245,14 @@
         @media screen and (max-width: 768px) {
             .field.has-addons {
                 font-size: 1.125em;
-            } 
+            }
         }
     }
 
     .dropdown-menu {
         background: transparent;
         border: none;
-        
+
         .dropdown-item {
             background-color: var(--tainacan-background-color) !important;
         }
@@ -301,7 +301,7 @@
         padding: 0;
         margin: 0px;
         width: 100%;
-        
+
         .datepicker-cell {
             border: none !important;
             padding: 0.5em 0.75em;
@@ -343,11 +343,11 @@
             margin-bottom: 0.5em;
             padding-top: 0.15em;
             padding-bottom: 0.5em;
-            
+
             .pagination {
                 font-size: 1.1em;
                 flex-wrap: nowrap;
-            
+
                 .pagination-list {
                     margin-bottom: 0.5em;
 
@@ -355,8 +355,8 @@
                         width: 100% !important;
 
                         .control {
-                            select { 
-                                border: none !important; 
+                            select {
+                                border: none !important;
                                 min-height: 26px;
                             }
                         }
@@ -381,7 +381,7 @@
 
                 .pagination-next {
                     margin: 0;
-                    height: 1.5em; 
+                    height: 1.5em;
                     padding: 0;
                     min-height: 24px;
                     margin-bottom: 0.35em;
@@ -401,7 +401,7 @@
         .datepicker-table {
             margin-bottom: 0px;
         }
-        
+
         .select {
             select {
                 display: unset;
@@ -411,7 +411,7 @@
             }
         }
 
-        .dropdown-content { 
+        .dropdown-content {
             border-radius: 2px !important;
             padding: 0px;
             max-height: inherit !important;

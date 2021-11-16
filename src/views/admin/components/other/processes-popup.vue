@@ -51,7 +51,7 @@
                                         class="tainacan-icon tainacan-icon-18px"
                                         :class="{ 'tainacan-icon-arrowdown': processesCollapses[index], 'tainacan-icon-arrowright': !processesCollapses[index] }" />
                             </span>  
-                            <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
+                            <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process') }}</p>
                         </div>
                         <!-- <span 
                                 v-if="bgProcess.done <= 0 && bgProcess.status == 'closed'"

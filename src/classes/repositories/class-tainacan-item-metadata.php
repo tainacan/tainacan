@@ -165,7 +165,7 @@ class Item_Metadata extends Repository {
 
 			if ( $taxonomy ) {
 
-				// We can not simply use wp_set_object_terms() because it uses term_exists() which is not reliable 
+				// We cannot simply use wp_set_object_terms() because it uses term_exists() which is not reliable 
 				// see https://core.trac.wordpress.org/ticket/45333 and https://core.trac.wordpress.org/ticket/47099
 				// $success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
 				

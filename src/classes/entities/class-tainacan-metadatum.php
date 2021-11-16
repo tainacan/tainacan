@@ -462,7 +462,7 @@ class Metadatum extends Entity {
 		if ( $this->get_parent() > 0 && $this->get_metadata_type_object()->get_primitive_type() == 'term' ) {
 			$parent_metadatum = new \Tainacan\Entities\Metadatum($this->get_parent());
 			if ( $parent_metadatum->is_multiple() ) {
-				$this->add_error($this->get_id(), __('Taxonomy metadata can not be used inside Compound metadata with multiple values', 'tainacan'));
+				$this->add_error($this->get_id(), __('Taxonomy metadata cannot be used inside Compound metadata with multiple values', 'tainacan'));
 				return false;
 			}
 		}
@@ -478,7 +478,7 @@ class Metadatum extends Entity {
 				, 'OBJECT');
 			
 			if ( sizeof($children_taxonomy) > 0 ) {
-				$this->add_error($this->get_id(), __('Taxonomy metadata can not be used inside Compound metadata with multiple values', 'tainacan'));
+				$this->add_error($this->get_id(), __('Taxonomy metadata cannot be used inside Compound metadata with multiple values', 'tainacan'));
 				return false;
 			}
 

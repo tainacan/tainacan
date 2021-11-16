@@ -288,7 +288,7 @@ class Filter extends Entity {
             if ($metadatum) {
                 $metadatum_status_obj = get_post_status_object($metadatum->get_status());
                 if ( ! $metadatum_status_obj->public ) {
-                    $this->add_error('status', __('Filter can not be public because the related metadatum is private', 'tainacan'));
+                    $this->add_error('status', __('Filter cannot be public because the related metadatum is private', 'tainacan'));
                     return false;
                 }
             }

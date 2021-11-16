@@ -170,8 +170,8 @@ export default [
                 itemLinkButtonLabel,
                 helpInfoBellowLabel
             } = attributes;
-            
-            return <div 
+
+            return <div
                         style={{
                             'font-size': baseFontSize + 'px',
                             '--tainacan-base-font-size': baseFontSize + 'px',
@@ -185,7 +185,7 @@ export default [
                             '--tainacan-secondary': secondaryColor
                         }}
                         className={ className }>
-                <div 
+                <div
                         id="tainacan-item-submission-form"
                         data-module="item-submission-form"
                         collection-id={ collectionId }
@@ -381,8 +381,8 @@ export default [
                 itemLinkButtonLabel,
                 helpInfoBellowLabel
             } = attributes;
-            
-            return <div 
+
+            return <div
                         style={{
                             'font-size': baseFontSize + 'px',
                             '--tainacan-base-font-size': baseFontSize + 'px',
@@ -396,7 +396,7 @@ export default [
                             '--tainacan-secondary': secondaryColor
                         }}
                         className={ className }>
-                <div 
+                <div
                         id="tainacan-item-submission-form"
                         collection-id={ collectionId }
                         hide-file-modal-button={ hideFileModalButton.toString() }
@@ -586,8 +586,8 @@ export default [
                 showItemLinkButton,
                 itemLinkButtonLabel
             } = attributes;
-            
-            return <div 
+
+            return <div
                         style={{
                             'font-size': baseFontSize + 'px',
                             '--tainacan-base-font-size': baseFontSize + 'px',
@@ -601,7 +601,7 @@ export default [
                             '--tainacan-secondary': secondaryColor
                         }}
                         className={ className }>
-                <div 
+                <div
                         id="tainacan-item-submission-form"
                         collection-id={ collectionId }
                         hide-file-modal-button={ hideFileModalButton.toString() }
@@ -780,8 +780,8 @@ export default [
                 sentFormHeading,
                 sentFormMessage,
             } = attributes;
-            
-            return <div 
+
+            return <div
                         style={{
                             'font-size': baseFontSize + 'px',
                             '--tainacan-base-font-size': baseFontSize + 'px',
@@ -795,7 +795,7 @@ export default [
                             '--tainacan-secondary': secondaryColor
                         }}
                         className={ className }>
-                <div 
+                <div
                         id="tainacan-item-submission-form"
                         collection-id={ collectionId }
                         hide-file-modal-button={ hideFileModalButton.toString() }

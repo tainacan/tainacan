@@ -246,7 +246,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         if ( !isset($body['status']) || ($body['status'] != 'open' && $body['status'] != 'closed') ) {
             return new \WP_REST_Response([
-                'error_message' => __('Status must be informed', 'tainacan' ),
+                'error_message' => __('Status must be specified', 'tainacan' ),
                 'session_id' => $id
             ], 400);
         }

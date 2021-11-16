@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 
-const { 
+const {
     Button,
     TextControl,
     TextareaControl,
@@ -91,7 +91,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
     function openCollectionModal() {
         isCollectionModalOpen = true;
-        setAttributes( { 
+        setAttributes( {
             isCollectionModalOpen: isCollectionModalOpen
         } );
     }
@@ -116,7 +116,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
                 isLoadingCollectionMetadata = false;
 
-                setAttributes({ 
+                setAttributes({
                     isLoadingCollectionMetadata : isLoadingCollectionMetadata,
                     collectionMetadata: collectionMetadata,
                     enabledMetadata: enabledMetadata
@@ -124,7 +124,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
             });
     }
 
-    return collectionId == 'preview' ? 
+    return collectionId == 'preview' ?
         <div className={className}>
             <img
                     width="100%"
@@ -133,13 +133,13 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         : (
             <div className={className}>
 
-                { collectionId ? 
+                { collectionId ?
                     <BlockControls>
                         {
                             TainacanBlocksCompatToolbar({
                                 label: __('Change target collection', 'tainacan'),
-                                icon: <svg 
-                                            xmlns="http://www.w3.org/2000/svg" 
+                                icon: <svg
+                                            xmlns="http://www.w3.org/2000/svg"
                                             viewBox="-2 -2 12 12"
                                             height="24px"
                                             width="24px">
@@ -183,10 +183,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 onChange={ ( isChecked ) => {
                                         showItemLinkButton = isChecked;
                                         setAttributes({ showItemLinkButton: isChecked });
-                                    }  
+                                    }
                                 }
                             />
-                            { showItemLinkButton ? 
+                            { showItemLinkButton ?
                                 <TextControl
                                     label={ __('Label for the item button', 'tainacan') }
                                     value={ itemLinkButtonLabel }
@@ -240,18 +240,18 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         <PanelBody
                                 title={__('Metadata Input', 'tainacan')}
                                 initialOpen={ true } >
-                            { !isLoadingCollectionMetadata ? 
+                            { !isLoadingCollectionMetadata ?
                                 <BaseControl
                                     id="metadata-checkbox-list"
                                     label={ __('Metadata input shown on the list', 'tainacan') }
                                     help={ __('Uncheck the metadata that you do not want to be shown on the form', 'tainacan') }
                                 >
                                 <ul id="metadata-checkbox-list">
-                                    { enabledMetadata.length ? 
+                                    { enabledMetadata.length ?
                                         enabledMetadata.map((isMetadatumEnabled, index) => {
                                             return (
                                                 <li>
-                                                    <CheckboxControl 
+                                                    <CheckboxControl
                                                         label={ collectionMetadata[index].name + (collectionMetadata[index].required == 'yes' ? ' *' : '') }
                                                         disabled={ collectionMetadata[index].required == 'yes' }
                                                         checked={ isMetadatumEnabled ? true : false }
@@ -262,9 +262,9 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                             )
                                         })
                                         :
-                                    <p>{ __('No public metadata was found in this collection', 'tainacan') }</p> 
+                                    <p>{ __('No public metadata was found in this collection', 'tainacan') }</p>
                                     }
-                                </ul>    
+                                </ul>
                                 </BaseControl>
                             : <Spinner /> }
                         </PanelBody>
@@ -280,7 +280,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     onChange={ ( isChecked ) => {
                                             hideFileModalButton = isChecked;
                                             setAttributes({ hideFileModalButton: isChecked });
-                                        }  
+                                        }
                                     }
                                 />
                             <ToggleControl
@@ -290,7 +290,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     onChange={ ( isChecked ) => {
                                             hideTextModalButton = isChecked;
                                             setAttributes({ hideTextModalButton: isChecked });
-                                        }  
+                                        }
                                     }
                                 />
                             <ToggleControl
@@ -300,7 +300,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 onChange={ ( isChecked ) => {
                                         hideLinkModalButton = isChecked;
                                         setAttributes({ hideLinkModalButton: isChecked });
-                                    }  
+                                    }
                                 }
                             />
                             <ToggleControl
@@ -310,7 +310,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 onChange={ ( isChecked ) => {
                                         hideThumbnailSection = isChecked;
                                         setAttributes({ hideThumbnailSection: isChecked });
-                                    }  
+                                    }
                                 }
                             />
                             <ToggleControl
@@ -320,7 +320,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 onChange={ ( isChecked ) => {
                                         hideAttachmentsSection = isChecked;
                                         setAttributes({ hideAttachmentsSection: isChecked });
-                                    }  
+                                    }
                                 }
                             />
                             <ToggleControl
@@ -330,17 +330,17 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 onChange={ ( isChecked ) => {
                                         showAllowCommentsSection = isChecked;
                                         setAttributes({ showAllowCommentsSection: isChecked });
-                                    }  
+                                    }
                                 }
                             />
                             <ToggleControl
                                 label={__('Hide the metadata collapses', 'tainacan')}
-                                help={ hideCollapses ? __('Do not show collapsable controls for each metadatum.', 'tainacan') : __('Toggle to show collapsable controls on each metadatum.', 'tainacan')}
+                                help={ hideCollapses ? __('Do not show collapsible controls for each metadatum.', 'tainacan') : __('Toggle to show collapsible controls on each metadatum.', 'tainacan')}
                                 checked={ hideCollapses }
                                 onChange={ ( isChecked ) => {
                                         hideCollapses = isChecked;
                                         setAttributes({ hideCollapses: isChecked });
-                                    }  
+                                    }
                                 }
                             />
                             <ToggleControl
@@ -350,7 +350,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 onChange={ ( isChecked ) => {
                                         hideHelpButtons = isChecked;
                                         setAttributes({ hideHelpButtons: isChecked });
-                                    }  
+                                    }
                                 }
                             />
 
@@ -361,7 +361,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 onChange={ ( isChecked ) => {
                                         helpInfoBellowLabel = isChecked;
                                         setAttributes({ helpInfoBellowLabel: isChecked });
-                                    }  
+                                    }
                                 }
                             />
                             <ToggleControl
@@ -371,7 +371,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 onChange={ ( isChecked ) => {
                                         hideMetadataTypes = isChecked;
                                         setAttributes({ hideMetadataTypes: isChecked });
-                                    }  
+                                    }
                                 }
                             />
                         </PanelBody>
@@ -385,7 +385,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     onChange={ ( isChecked ) => {
                                             showTermsAgreementCheckbox = isChecked;
                                             setAttributes({ showTermsAgreementCheckbox: isChecked });
-                                        }  
+                                        }
                                     }
                                 />
                         </PanelBody>
@@ -525,8 +525,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 alt="Tainacan Logo"/>
                         )}>
                         <p>
-                            <svg 
-                                    xmlns="http://www.w3.org/2000/svg" 
+                            <svg
+                                    xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 10 10"
                                     height="24px"
                                     width="24px">
@@ -542,15 +542,15 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             onClick={ () => openCollectionModal() }>
                             { __('Select a target Collection', 'tainacan')}
                         </Button>
-                        
+
                     </Placeholder>
                     ) : (
-                        
+
                         <div style={{ fontSize: (baseFontSize - 2) + 'px' }}>
                             <div class="preview-warning">
                                 { __('Warning: this is just a demonstration. To see the submission form, either preview or publish your post.', 'tainacan') }
                             </div>
-                            <div 
+                            <div
                                     style={{
                                         '--tainacan-background-color': 'rgba(' + backgroundColor.r + ',' + backgroundColor.g + ',' + backgroundColor.b + ',' + backgroundColor.a + ')',
                                         '--tainacan-input-color': inputColor,
@@ -562,13 +562,13 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         '--tainacan-secondary': secondaryColor
                                     }}
                                     class="item-submission-form-placeholder">
-                
+
                                 <div>
-                                    { 
-                                        (!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton) ? 
+                                    {
+                                        (!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton) ?
                                         (
                                         <div>
-                                            { documentSectionLabel ? 
+                                            { documentSectionLabel ?
                                                 <span>
                                                     <span style={{ display: 'flex', alignItems: 'baseline', marginBottom: '5px' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
                                                     { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
@@ -590,16 +590,16 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                                         (hideFileModalButton && hideTextModalButton && !hideLinkModalButton) ?
                                                             <span class="fake-input" style={{ width: '100%' }}></span>
                                                         : null
-                                                    )  
+                                                    )
                                                 )
                                             )}
                                         </div>
-                                        ) : null 
+                                        ) : null
                                     }
-                                    { !hideThumbnailSection ? 
+                                    { !hideThumbnailSection ?
                                     (
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            { !thumbnailSectionLabel ? 
+                                            { !thumbnailSectionLabel ?
                                                 <span>
                                                     <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
                                                     { (!hideHelpButtons && helpInfoBellowLabel) ? <div><span class="fake-text fake-text-help-description"></span></div> : null }
@@ -609,11 +609,11 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         </div>
                                     ) : null
                                     }
-                                    { !hideAttachmentsSection ? 
+                                    { !hideAttachmentsSection ?
                                     (
                                     <div>
-                                        { !attachmentsSectionLabel ? 
-                                        <span 
+                                        { !attachmentsSectionLabel ?
+                                        <span
                                                 style={{ position: 'relative' }}
                                                 class="fake-text section-label">
                                             <div class="fake-tooltip"><div class="fake-link"></div></div>
@@ -623,10 +623,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                             <div class="fake-image-uploader"></div>
                                         </div>
                                     </div>
-                                    ) : null 
+                                    ) : null
                                     }
-                                    { 
-                                    showAllowCommentsSection ? 
+                                    {
+                                    showAllowCommentsSection ?
                                     (
                                         <div>
                                             <span style={{ display: 'flex', alignItems: 'baseline' }}><span class="fake-text section-label"></span>{ !hideHelpButtons && !helpInfoBellowLabel ? <span class="fake-text fake-help-button"></span> : null }</span>
@@ -641,9 +641,9 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     :null }
                                     { !hideCollapses ? <div class="fake-link"></div> : null }
                                     <div class="metadata-section">
-                                        { enabledMetadata.length ? 
+                                        { enabledMetadata.length ?
                                             enabledMetadata.map( (isEnabled) => {
-                                                return isEnabled ? 
+                                                return isEnabled ?
                                                     <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
                                                         { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
                                                         <span style={{ lineHeight: '0em' }}>
@@ -653,7 +653,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                                         <span class="fake-input"></span>
                                                     </div>
                                                 : null
-                                            }) : 
+                                            }) :
                                             Array(12).fill().map( () => {
                                                 return <div class={ 'fake-metadata' + (!hideCollapses ? ' has-collapse' : '') }>
                                                     { !hideCollapses ? <span class="fake-collapse-arrow"></span> : null }
@@ -664,8 +664,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         }
                                     </div>
                                 </div>
-                                
-                                { showTermsAgreementCheckbox ? 
+
+                                { showTermsAgreementCheckbox ?
                                     <div class="fake-checkbox-confirmation">
                                         <span class="fake-checkbox"></span>
                                         <RichText
@@ -673,12 +673,12 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                                 tagName="p"
                                                 value={ termsAgreementMessage }
                                                 onChange={ ( inputContent ) => setAttributes( { termsAgreementMessage: inputContent } ) }
-                                                placeholder={ __( 'Type here a message requiring the user to agree with certain conditions.' ) }
+                                                placeholder={ __( 'Type a message requiring the user to agree with certain conditions.' ) }
                                             />
                                     </div>
                                     : null
                                 }
-                                
+
                                 <div class="form-footer">
                                     <span class="fake-button outline"><span class="fake-text"></span></span>
                                     <span class="fake-text"></span>
@@ -686,11 +686,11 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 </div>
                             </div>
                         </div>
-                        
+
                     )
                 }
 
-                { isCollectionModalOpen ? 
+                { isCollectionModalOpen ?
                     <CollectionModal
                         filterOptionsBy={ { allows_submission: 'yes' } }
                         existingCollectionId={ collectionId }
@@ -702,7 +702,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             });
                             loadCollectionMetadata(collectionId);
                         }}
-                        onCancelSelection={ () => setAttributes({ isCollectionModalOpen: false }) }/> 
+                        onCancelSelection={ () => setAttributes({ isCollectionModalOpen: false }) }/>
                     : null
                 }
 

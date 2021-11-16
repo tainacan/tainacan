@@ -128,7 +128,7 @@ class REST_Items_Controller extends REST_Controller {
 							'type'        => 'integer'
 						),
 						'status' => array(
-							'description' => __('Try to assign the informed status to the duplicates if they validate. By default it will save them as drafts.', 'tainacan'),
+							'description' => __('Try to assign the specified status to the duplicates if they validate. By default it will save them as drafts.', 'tainacan'),
 							'type'        => 'string'
 						),
 					)
@@ -366,7 +366,7 @@ class REST_Items_Controller extends REST_Controller {
 		$args['post_parent'] = $item_id;
 		$args['post_type'] = 'attachment';
 		$args['post_status'] = 'any';
-		
+
 		unset($args['perm']);
 
 		$posts_query  = new \WP_Query();
@@ -798,7 +798,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		if(empty($item)){
 			return new \WP_REST_Response([
-				'error_message' => __('Body can not be empty.', 'tainacan'),
+				'error_message' => __('Body cannot be empty.', 'tainacan'),
 				'item'          => $item
 			], 400);
 		}
@@ -1046,7 +1046,7 @@ class REST_Items_Controller extends REST_Controller {
 
 	}
 
-	private function submission_item_metadada ( \Tainacan\Entities\Item_Metadata_Entity &$item_metadata, $request) {
+	private function submission_item_metadata ( \Tainacan\Entities\Item_Metadata_Entity &$item_metadata, $request) {
 		$collection_id = $item_metadata->get_item()->get_collection_id();
 		$item = $item_metadata->get_item();
 		$collection = $this->collections_repository->fetch($collection_id);
@@ -1125,7 +1125,7 @@ class REST_Items_Controller extends REST_Controller {
 
 		if(empty($item) || empty($metadata)) {
 			return new \WP_REST_Response([
-				'error_message' => __('Body can not be empty.', 'tainacan'),
+				'error_message' => __('Body cannot be empty.', 'tainacan'),
 				'item'          => $item
 			], 400);
 		}
@@ -1163,7 +1163,7 @@ class REST_Items_Controller extends REST_Controller {
 									$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
 									$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
 									$item_metadata_child->set_value($child_value);
-									$item_metadata_child = $this->submission_item_metadada($item_metadata_child, $request);
+									$item_metadata_child = $this->submission_item_metadata($item_metadata_child, $request);
 									if ($item_metadata_child instanceof \WP_REST_Response) {
 										return $item_metadata_child;
 									}
@@ -1185,10 +1185,10 @@ class REST_Items_Controller extends REST_Controller {
 								$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
 								$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
 								$item_metadata_child->set_value($child_value);
-								$item_metadata_child = $this->submission_item_metadada($item_metadata_child, $request);
+								$item_metadata_child = $this->submission_item_metadata($item_metadata_child, $request);
 								if ($item_metadata_child instanceof \WP_REST_Response) {
 									return $item_metadata_child;
-								}	
+								}
 								$parent_meta_id = $item_metadata_child->get_parent_meta_id();
 							}
 						}
@@ -1207,7 +1207,7 @@ class REST_Items_Controller extends REST_Controller {
 						} else {
 							$item_metadata->set_value( is_array($value) ? implode(' ', $value) : $value);
 						}
-						$item_metadata = $this->submission_item_metadada($item_metadata, $request);
+						$item_metadata = $this->submission_item_metadata($item_metadata, $request);
 						if ($item_metadata instanceof \WP_REST_Response) {
 							return $item_metadata;
 						}
@@ -1222,7 +1222,7 @@ class REST_Items_Controller extends REST_Controller {
 						} else {
 							$item_metadata->set_value( is_array($value) ? implode(' ', $value) : $value);
 						}
-						$item_metadata = $this->submission_item_metadada($item_metadata, $request);
+						$item_metadata = $this->submission_item_metadata($item_metadata, $request);
 						if ($item_metadata instanceof \WP_REST_Response) {
 							return $item_metadata;
 						}
@@ -1241,10 +1241,10 @@ class REST_Items_Controller extends REST_Controller {
 					} else {
 						$this->submission_rollback_new_terms();
 						return new \WP_REST_Response([
-							'error_message' => __('unable create submission ID.', 'tainacan'),
+							'error_message' => __('unable to create submission ID.', 'tainacan'),
 						], 400);
 					}
-					
+
 				} else {
 					$this->submission_rollback_new_terms();
 					return new \WP_REST_Response([
@@ -1274,7 +1274,7 @@ class REST_Items_Controller extends REST_Controller {
 		$item_id = get_transient('tnc_transient_submission_' . $submission_id);
 		if($item_id === false) {
 			return new \WP_REST_Response([
-				'error_message' => __('submission ID not exist.', 'tainacan'),
+				'error_message' => __('submission ID does not exist.', 'tainacan'),
 			], 400);
 		}
 		$this->new_terms_ids = get_transient('tnc_transient_submission_' . $submission_id . '_new_terms_ids');
@@ -1283,7 +1283,7 @@ class REST_Items_Controller extends REST_Controller {
 		$collection = $this->collections_repository->fetch($collection_id);
 		$default_status = $collection->get_submission_default_status();
 		$item->set_status($default_status);
-		
+
 		$TainacanMedia = \Tainacan\Media::get_instance();
 		$files = $request->get_file_params();
 

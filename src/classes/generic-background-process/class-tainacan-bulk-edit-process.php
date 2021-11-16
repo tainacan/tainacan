@@ -23,8 +23,8 @@ class Bulk_Edit_Process extends Generic_Process {
 		$this->item_metadata_repository = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$this->steps = [
 			[
-				'name' => __('Bulk edit control metadada', 'tainacan'),
-				'progress_label' => __('Creating bulk edit control metadada', 'tainacan'),
+				'name' => __('Bulk edit control metadata', 'tainacan'),
+				'progress_label' => __('Creating bulk edit control metadata', 'tainacan'),
 				'callback' => 'add_control_metadata'
 			],[
 				'name' => __('Bulk edit', 'tainacan'),
@@ -42,7 +42,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		if (!isset($params['collection_id']) || !is_numeric($params['collection_id'])) {
-			throw new \Exception('Collection ID must be informed when creating a group.');
+			throw new \Exception('Collection ID must be specified when creating a group.');
 		}
 
 		$this->set_group_id(uniqid());
@@ -241,7 +241,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			return false;
 		}
 
-		$this->add_log( sprintf( __('Bulk edit has process the item ID: "%d"', 'tainacan'), $item->get_id() ) );
+		$this->add_log( sprintf( __('Bulk edit has processed the item ID: "%d"', 'tainacan'), $item->get_id() ) );
 		$add_steps = $this->$method($item);
 		if ( is_int($add_steps) ) {
 			$count = $count + $add_steps;
@@ -310,7 +310,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			$unique = !$compoundItem->is_multiple();
 			$compoundValue = $compoundItem->get_value();
 			if ( $unique && !empty($compoundValue) ) {
-				$key = array_keys($compoundValue)[0]; // get the first metadata ID, if the argument metadata does not exist  
+				$key = array_keys($compoundValue)[0]; // get the first metadata ID, if the argument metadata does not exist
 				$parent_meta_id = $compoundValue[$key]->get_parent_meta_id();
 				return $parent_meta_id;
 			} // elseif ((is_array($compoundValue) && sizeof($compoundValue) > 0))
@@ -359,10 +359,10 @@ class Bulk_Edit_Process extends Generic_Process {
 			return $this->save_item_metadata($item_metadata, $item);
 		} else {
 			$metadatum_from = $this->metadatum_repository->fetch($metadatum_id_from);
-			if ( $metadatum_from->get_metadata_type() == $metadatum->get_metadata_type() && 
+			if ( $metadatum_from->get_metadata_type() == $metadatum->get_metadata_type() &&
 						( $metadatum_from->is_multiple() == false || $metadatum_from->is_multiple() == $metadatum->is_multiple() ) ) {
 				$item_metadata_from = new Entities\Item_Metadata_Entity( $item, $metadatum_from );
-				
+
 				$value = $item_metadata_from->get_value();
 				if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
 					if ( $metadatum_from->is_multiple() ) {
@@ -379,7 +379,7 @@ class Bulk_Edit_Process extends Generic_Process {
 				return $this->save_item_metadata($item_metadata, $item);
 			}
 		}
-		
+
 		$this->add_error_log( __('Not possible to copy metadata values of different types', 'tainacan') );
 		return false;
 	}
@@ -435,7 +435,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		if ($new_value == $old_value) {
-			$this->add_error_log( __( 'Old value and new value can not be the same', 'tainacan' ) );
+			$this->add_error_log( __( 'Old value and new value cannot be the same', 'tainacan' ) );
 			return false;
 		}
 
@@ -445,7 +445,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
 				$values = is_array($item_metadata->get_value()) ? $item_metadata->get_value() : [$item_metadata->get_value()];
-				
+
 				if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
 					$new_term = is_string($new_value) ? $new_value : \Tainacan\Repositories\Terms::get_instance()->fetch($new_value, $metadatum->get_metadata_type_object()->get_taxonomy());
 					$values = array_map( function ($term) use ($old_value, $new_term) {
@@ -453,7 +453,7 @@ class Bulk_Edit_Process extends Generic_Process {
 							($term == $old_value ? $new_term : $term) :
 							($term->get_id() == $old_value ? $new_term : $term);
 					}, $values );
-					
+
 					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $new_term );
 					return $this->save_item_metadata($item_metadata, $item);
 				} else {
