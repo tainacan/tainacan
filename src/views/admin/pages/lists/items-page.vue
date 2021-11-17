@@ -1008,7 +1008,6 @@
                                     // Loads user prefs object as we'll need to check if there's something configured by user 
                                     let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
                                     let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
-
                                     let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).split(',') : [];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
@@ -1097,10 +1096,10 @@
                                         }
                                     }
                                     
-                                    let modificationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != 'null') : true;
-                                    let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != 'null') : true;
-                                    let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != 'null') : true;
-                                    
+                                    let modificationDateMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ) ? (prefsFetchOnlyObject.indexOf('modification_date') >= 0) : true;
+                                    let creationDateMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ) ? (prefsFetchOnlyObject.indexOf('creation_date') >= 0) : true;
+                                    let authorNameMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ) ? (prefsFetchOnlyObject.indexOf('author_name') >= 0) : true;
+           
                                     // Creation date and author name should appear only on admin.
                                     metadata.push({
                                         name: this.$i18n.get('label_modification_date'),
