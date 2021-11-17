@@ -709,8 +709,10 @@ class Items extends Repository {
 				$meta_id = $meta['key'];
 				$metadata = $Tainacan_Metadata->fetch($meta_id);
 				if(
-					$metadata->get_metadata_type() === 'Tainacan\\Metadata_Types\\Relationship'
-					&& (isset($meta['compare']) && !in_array($meta['compare'], ['IN', 'NOT IN', '=']))
+					isset($metadata) &&
+					$metadata instanceof \Tainacan\Entities\Metadatum &&
+					$metadata->get_metadata_type() === 'Tainacan\\Metadata_Types\\Relationship' &&
+					(isset($meta['compare']) && !in_array($meta['compare'], ['IN', 'NOT IN', '=']))
 				) {
 					$options  = $metadata->get_metadata_type_options();
 					if( isset($options) && isset($options['search']) ) {
