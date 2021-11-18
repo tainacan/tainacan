@@ -1953,9 +1953,9 @@ export default {
             }
         }
 
-        .b-tabs {
-            overflow: hidden !important;
-        }
+        // .b-tabs {
+        //     overflow: hidden !important;
+        // }
     }
 
     .section-label {
