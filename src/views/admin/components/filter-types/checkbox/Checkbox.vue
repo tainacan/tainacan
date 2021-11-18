@@ -226,5 +226,6 @@
         text-overflow: ellipsis;
         overflow: hidden;
         line-height: 1.45em;
+        break-inside: avoid;
     }
 </style>

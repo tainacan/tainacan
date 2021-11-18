@@ -140,7 +140,7 @@
             background-color: var(--tainacan-input-background-color) !important;
             border: 1px solid var(--tainacan-input-border-color) !important;
             &:focus>option:checked, &:focus>option:hover {
-                background-color: var(--tainacan-turquoise1) !important;
+                background-color: var(--tainacan-primary) !important;
             }
             &[disabled=disabled] {
                 border: 1px solid var(--tainacan-gray1) !important;

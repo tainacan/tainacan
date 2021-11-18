@@ -1177,11 +1177,11 @@
     }
 
     .tainacan-li-checkbox-last-active {
-        background-color: var(--tainacan-turquoise1);
+        background-color: var(--tainacan-primary);
     }
 
     .tainacan-li-checkbox-parent-active {
-        background-color: var(--tainacan-turquoise1);
+        background-color: var(--tainacan-primary);
     }
 
     .b-checkbox .control-label {
@@ -1195,6 +1195,7 @@
         .checkbox-label-text {
             line-height: 1.25em;
             padding-right: 3px;
+            break-inside: avoid;
         }
     }
 
