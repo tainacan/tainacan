@@ -35,8 +35,10 @@ input[type="week"].input {
 
     &:focus, &:active {
         box-shadow: none !important;
-        background-color: var(--tainacan-input-background-color);
+    }  
+    &:not(.is-danger):focus, &:not(.is-danger):active {
         border: 1px solid var(--tainacan-gray4) !important;
+        background-color: var(--tainacan-input-background-color);
     }  
     &:hover {
         border: 1px solid var(--tainacan-gray3);
@@ -65,4 +67,8 @@ input[type="week"].input {
         font-size: 0.875em;
         color: var(--tainacan-info-color) !important;
     }
+}
+textarea.textarea, 
+.textarea {
+    line-height: 1.35em;
 }
