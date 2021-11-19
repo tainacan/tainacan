@@ -424,6 +424,17 @@ class Admin {
 			$post->post_name = sanitize_title($name ? $name : $title, $post->ID);
 
 		$post->post_name = wp_unique_post_slug($post->post_name, $post->ID, $post->post_status, $post->post_type, $post->post_parent);
+		if ( $post->post_type === \Tainacan\Entities\Taxonomy::$post_type ) {
+			$post_name = $post->post_name;
+			$tax = \get_taxonomies(array('name' => $post_name));
+			$suffix = 2;
+			while ( !empty($tax) ) {
+				$post_name = _truncate_post_slug( $post_name, 200 - ( strlen( $suffix ) + 1 ) ) . "-$suffix";
+				$tax = \get_taxonomies(array('name' => $post_name));
+				$suffix++;
+			};
+			$post->post_name = $post_name;
+		}
 
 		$post->filter = 'sample';
 
