@@ -10,7 +10,7 @@
                 v-model="dateValue"
                 @input.native="onInput"
                 @blur="onBlur"
-                :placeholder="dateFormat.toLowerCase()" />
+                :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : dateFormat.toLowerCase()" />
         <p
                 v-if="isInvalidDate && dateValue"
                 style="font-size: 0.75em;"

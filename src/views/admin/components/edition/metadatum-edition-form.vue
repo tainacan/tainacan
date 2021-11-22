@@ -71,6 +71,23 @@
                 </b-field>
 
                 <b-field
+                        v-if="editForm.metadata_type_object.component != 'tainacan-compound'"
+                        :addons="false"
+                        :type="formErrors['placeholder'] != undefined ? 'is-danger' : ''"
+                        :message="formErrors['placeholder'] != undefined ? formErrors['placeholder'] : ''">
+                    <label class="label is-inline">
+                        {{ $i18n.getHelperTitle('metadata', 'placeholder') }}
+                        <help-button
+                                :title="$i18n.getHelperTitle('metadata', 'placeholder')"
+                                :message="$i18n.getHelperMessage('metadata', 'placeholder')"/>
+                    </label>
+                    <b-input
+                            v-model="editForm.placeholder"
+                            name="placeholder"
+                            @focus="clearErrors('placeholder')"/>
+                </b-field>
+
+                <b-field
                         v-if="editForm.parent == 0"
                         :addons="false"
                         :type="formErrors['status'] != undefined ? 'is-danger' : ''"

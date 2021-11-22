@@ -13,7 +13,7 @@
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
                 autocomplete
                 attached
-                :placeholder="$i18n.get('instruction_type_search_users')"
+                :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_search_users')"
                 keep-first
                 open-on-focus
                 :remove-on-keys="[]"

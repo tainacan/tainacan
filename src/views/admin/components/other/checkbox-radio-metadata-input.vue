@@ -30,7 +30,7 @@
                     <b-input
                             expanded
                             autocomplete="on"
-                            :placeholder="expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search')"
+                            :placeholder="metadatum.placeholder ? metadatum.placeholder : ( expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search') )"
                             :aria-label="expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search')"
                             v-model="optionName"
                             @input="autoComplete"
