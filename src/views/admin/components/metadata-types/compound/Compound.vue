@@ -55,6 +55,7 @@
                         v-show="(metadataNameFilterString == '' || filterByMetadatumName(childItemMetadatum))"
                         :key="groupIndex + '-' + childIndex"
                         :item-metadatum="childItemMetadatum"
+                        :hide-collapses="hideCollapses"
                         :is-collapsed="childItemMetadatum.collapse"
                         @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
                         :class="{ 'is-last-input': childIndex == childItemMetadata.length - 1}"
@@ -107,6 +108,7 @@
             itemMetadatum: Object,
             value: [String, Number, Array],
             disabled: false,
+            hideCollapses: false,
             metadataNameFilterString: ''
         },
         data() {
