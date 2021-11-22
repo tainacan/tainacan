@@ -8,6 +8,7 @@
                 v-model="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNewFromOptions"
+                :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_term')"
                 :taxonomy-id="taxonomyId"
                 :item-metadatum="itemMetadatum"
                 @showAddNewTerm="openTermCreationModal"

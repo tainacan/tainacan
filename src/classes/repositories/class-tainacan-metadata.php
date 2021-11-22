@@ -92,6 +92,13 @@ class Metadata extends Repository {
 				//'on_error'   => __('The description should be a text value', 'tainacan'),
 				//'validation' => v::stringType()->notEmpty(),
 			],
+			'placeholder'     => [
+				'map'         => 'meta',
+				'title'       => __( 'Placeholder', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The metadatum placeholder. This is a simple message that will appear inside textual input and may indicate to the user what kind of information is expected.', 'tainacan' ),
+				'default'     => '',
+			],
 			'metadata_type'         => [
 				'map'         => 'meta',
 				'title'       => __( 'Type', 'tainacan' ),
@@ -736,21 +743,19 @@ class Metadata extends Repository {
 	private function get_data_core_metadata( Entities\Collection $collection ) {
 
 		return $data_core_metadata = [
-			'core_description' => [
-				'name'            => 'Description',
-				'description'     => 'description',
-				'collection_id'   => $collection->get_id(),
-				'metadata_type'   => 'Tainacan\Metadata_Types\Core_Description',
-				'status'          => 'publish',
-			],
 			'core_title'       => [
-				'name'            => 'Title',
-				'description'     => 'title',
+				'name'            => __('Title', 'tainacan'),
 				'collection_id'   => $collection->get_id(),
 				'metadata_type'   => 'Tainacan\Metadata_Types\Core_Title',
 				'status'          => 'publish',
 				'display'		  => 'yes',
 			],
+			'core_description' => [
+				'name'            => __('Description', 'tainacan'),
+				'collection_id'   => $collection->get_id(),
+				'metadata_type'   => 'Tainacan\Metadata_Types\Core_Description',
+				'status'          => 'publish',
+			]
 		];
 
 	}

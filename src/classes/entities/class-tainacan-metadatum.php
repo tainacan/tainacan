@@ -14,6 +14,7 @@ class Metadatum extends Entity {
 		$order,
 		$parent,
 		$description,
+		$placeholder,
 		$required,
 		$multiple,
 		$display,
@@ -109,6 +110,15 @@ class Metadatum extends Entity {
 	 */
 	function get_description() {
 		return $this->get_mapped_property('description');
+	}
+
+	/**
+	 * Return the metadatum placeholder
+	 *
+	 * @return string
+	 */
+	function get_placeholder() {
+		return $this->get_mapped_property('placeholder');
 	}
 
 	/**
@@ -286,6 +296,16 @@ class Metadatum extends Entity {
 	 */
 	function set_description($value) {
 		$this->set_mapped_property('description', $value);
+	}
+
+	/**
+	 * Set metadatum placeholder
+	 *
+	 * @param [string] $value The text placeholder
+	 * @return void
+	 */
+	function set_placeholder($value) {
+		$this->set_mapped_property('placeholder', $value);
 	}
 
 	/**
