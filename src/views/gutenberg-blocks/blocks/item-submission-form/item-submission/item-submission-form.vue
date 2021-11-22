@@ -948,6 +948,10 @@ export default {
                 margin: 0;
             }
         }
+        /deep/ .control-label {
+            white-space: normal !important;
+            overflow: visible;
+        }
     }
 
     .form-submission-footer {
