@@ -1,7 +1,7 @@
 <template>
 <div class="child-metadata-inputs">
     <a
-            v-if="childItemMetadataGroups.length > 0"
+            v-if="!hideCollapses && childItemMetadataGroups.length > 0"
             class="collapse-all"
             @click="toggleCollapseAllChildren()">
         {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}

@@ -162,6 +162,8 @@
                     (this.hideCollapses ? ' has-collapses-hidden' : '') + 
                     (this.isHighlightedMetadatum ? ' hightlighted-metadatum' : '') + 
                     (this.metadatumComponent ? ' tainacan-metadatum-component--' + this.metadatumComponent : '') +
+                    (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.placeholder ? ' has-placeholder' : '') +  
+                    (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.description ? ' has-description' : '') +  
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '');  
             }
         },
