@@ -1980,6 +1980,7 @@ export default {
 
     .collapse-all {
         font-size: 0.75em;
+        white-space: nowrap;
         .icon {
             vertical-align: bottom;
         }

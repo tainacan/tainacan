@@ -65,3 +65,8 @@
         font-style: italic;
     }     
 }
+@media screen and (max-width: 782px) {
+    .select select {
+        line-height: 2em !important;
+    }
+}

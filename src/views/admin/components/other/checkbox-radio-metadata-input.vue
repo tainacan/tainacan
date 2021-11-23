@@ -793,6 +793,8 @@
         visibility: hidden;
     }
     .hidden-tabs-section /deep/ .tab-content {
+        padding-top: 0 !important;
+
         .tainacan-finder-columns-container {
             border: none;
         }
