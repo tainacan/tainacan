@@ -95,7 +95,7 @@ module.exports = {
             'PhotoSwipe': 'PhotoSwipe'
         }),
         new MomentLocalesPlugin({
-            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
+            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
         })
     ]
 };

@@ -61,10 +61,10 @@
                     let dateISO = '';
                     
                     if ($event && $event instanceof Date)
-                        dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment(this.dateValue, this.dateFormat).toISOString().split('T')[0] : false;
+                        dateISO = moment(this.dateValue, this.dateFormat).toISOString(true) ? moment(this.dateValue, this.dateFormat).toISOString(true).split('T')[0] : false;
                     else if ($event.target.value && $event.target.value.length === this.dateMask.length)
-                        dateISO = moment(this.dateValue, this.dateFormat).toISOString() ? moment($event.target.value,  this.dateFormat).toISOString().split('T')[0] : false;
-
+                        dateISO = moment($event.target.value, this.dateFormat).toISOString(true) ? moment($event.target.value,  this.dateFormat).toISOString(true).split('T')[0] : false;
+                    
                     if (dateISO == false){
                         this.isInvalidDate = true;
                         return;
@@ -83,10 +83,3 @@
         }
     }
 </script>
-
-<style scoped lang="scss">
-.control {
-    padding: 0 !important;
-    height: 2.0em;
-}
-</style>
