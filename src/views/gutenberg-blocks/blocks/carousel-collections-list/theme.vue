@@ -43,12 +43,8 @@
                                         : 
                                     `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                 "
-                                :class="maxCollectionsPerScreen <= 4 ? 'swiper-lazy' : ''"
                                 :alt="collection.name ? collection.name : $root.__('Thumbnail', 'tainacan')">
                             <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
-                            <div 
-                                    v-if="maxCollectionsPerScreen <= 4"
-                                    class="swiper-lazy-preloader swiper-lazy-preloader-white"/>
                         </a>
                         <a 
                                 v-else
@@ -299,43 +295,26 @@ export default {
 
             this.collectionsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collections?'+ qs.stringify({ postin: this.selectedCollections, perpage: this.selectedCollections.length }) + '&fetch_only=name,url,thumbnail';
+            let endpoint = '/collections?'+ qs.stringify({ postin: this.selectedCollections, perpage: this.selectedCollections.length, fetch_preview_image_items: this.showCollectionThumbnail ? 0 : 3 }) + '&fetch_only=name,url,thumbnail';
 
             this.tainacanAxios.get(endpoint, { cancelToken: this.collectionsRequestSource.token })
                 .then(response => {
 
-                    if (this.showCollectionThumbnail) {
-                        for (let collection of response.data)
-                            this.collections.push(collection);
-
-                        this.isLoading = false;
-                    } else {
-                        let promises = [];
-                        for (let collection of response.data) {  
-                            promises.push(
-                                this.tainacanAxios.get('/collection/' + collection.id + '/items?perpage=3&fetch_only=name,url,thumbnail')
-                                    .then(response => { return({ collectionId: collection.id, collectionItems: response.data.items }) })
-                            );    
-                            this.collections.push(collection);
-                        }
-                        axios.all(promises).then((results) => {
-                            for (let result of results) {
-                                this.collectionItems[result.collectionId] = result.collectionItems;
-                            }
-                            
-                            this.isLoading = false;
-                        }) 
+                    for (let collection of response.data) {
+                        this.collections.push(collection);
+                        if (!this.showCollectionThumbnail)
+                            this.collectionItems[collection.id] = collection.preview_image_items ? collection.preview_image_items : [];
                     }
-                    
+
+                    this.isLoading = false;
                     this.totalCollections = response.headers['x-wp-total'];
 
                 }).catch((error) => { 
                     this.isLoading = false;
-                     if (error.response && error.response.status && error.response.status == 401)
-                            this.errorMessage = 'Not allowed to see these collections.'
+                    if (error.response && error.response.status && error.response.status == 401)
+                        this.errorMessage = 'Not allowed to see these collections.'
 
                 });
-            
         },
     }
 }

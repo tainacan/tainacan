@@ -330,13 +330,15 @@ class REST_Terms_Controller extends REST_Controller {
 				]);
 
 				$item_arr['total_children'] = count($children);
-				if(isset($request['fetch_preview_image_items']) && $request['fetch_preview_image_items'] != 0) {
-					$item_arr['preview_image_items'] = $this->get_preview_image_items($item, $request['fetch_preview_image_items']);
-				}
+				
 			} else {
 				$attributes_to_filter = $request['fetch_only'];
 
 				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
+			}
+
+			if(isset($request['fetch_preview_image_items']) && $request['fetch_preview_image_items'] != 0) {
+				$item_arr['preview_image_items'] = $this->get_preview_image_items($item, $request['fetch_preview_image_items']);
 			}
 
 			/**

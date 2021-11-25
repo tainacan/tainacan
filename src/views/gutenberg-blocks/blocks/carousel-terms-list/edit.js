@@ -67,7 +67,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 <a
                     id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
                     href={ term.url }>
-                    { !showTermThumbnail ?
+                    { ( !showTermThumbnail && Array.isArray(termItems) ) ?
                         <div class="term-items-grid">
                             <img
                                 src={ termItems[0] ? thumbHelper.getSrc(termItems[0]['thumbnail'], 'tainacan-medium', termItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
@@ -93,9 +93,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         );
     }
 
-    function setContent(){
-        isLoading = true;
+    function setContent() {
 
+        isLoading = true;
         setAttributes({
             isLoading: isLoading
         });
@@ -107,41 +107,20 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
         terms = [];
 
-        let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms.map((term) => { return term.id; }) }) + '&order=asc&fetch_only=id,name,url,header_image';
+        let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms.map((term) => { return term.id; }), fetch_preview_image_items: showTermThumbnail ? 0 : 3 }) + '&order=asc';
         tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
             .then(response => {
 
-                if (showTermThumbnail) {
-                    for (let term of response.data) {
-                        terms.push(prepareItem(term));
-                    }
-                    setAttributes({
-                        content: <div></div>,
-                        terms: terms,
-                        isLoading: false,
-                        itemsRequestSource: itemsRequestSource
-                    });
-                } else {
-                    let promises = [];
-                    for (let term of response.data) {
-                        promises.push(
-                            tainacan.get('/items/?perpage=3&fetch_only=name,url,thumbnail&taxquery[0][taxonomy]=tnc_tax_' + taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
-                                .then(response => { return({ term: term, termItems: response.data.items }) })
-                                .catch((error) => console.log(error))
-                        );
-                    }
-                    axios.all(promises).then((results) => {
-                        for (let result of results) {
-                            terms.push(prepareItem(result.term, result.termItems));
-                        }
-                        setAttributes({
-                            content: <div></div>,
-                            terms: terms,
-                            isLoading: false,
-                            itemsRequestSource: itemsRequestSource
-                        });
-                    })
-                }
+                for (let term of response.data)
+                    terms.push(prepareItem(term, (!showTermThumbnail && term.preview_image_items) ? term.preview_image_items : []));
+                
+                isLoading = false;
+                setAttributes({
+                    content: <div></div>,
+                    terms: terms,
+                    isLoading: isLoading,
+                    itemsRequestSource: itemsRequestSource
+                });
             });
     }
 
