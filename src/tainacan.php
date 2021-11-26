@@ -71,7 +71,7 @@ function tainacan_add_admin_bar_items ( WP_Admin_Bar $admin_bar ) {
 						'id'    => 'tainacan-item-edition-link',
 						'parent' => null,
 						'group'  => null,
-						'title' => _( 'Edit item', 'tainacan' ),
+						'title' => __( 'Edit item', 'tainacan' ),
 						'href'  => $url,
 						'meta' => [
 							'title' => __( 'Edit this item on Tainacan Admin', 'tainacan' )
@@ -96,7 +96,7 @@ function tainacan_add_admin_bar_items ( WP_Admin_Bar $admin_bar ) {
 					'id'    => 'tainacan-collection-edition-link',
 					'parent' => null,
 					'group'  => null,
-					'title' => _( 'Edit collection', 'tainacan' ),
+					'title' => __( 'Edit collection', 'tainacan' ),
 					'href'  => $url,
 					'meta' => [
 						'title' => __( 'Edit this collection on Tainacan Admin', 'tainacan' )
@@ -112,7 +112,7 @@ function tainacan_add_admin_bar_items ( WP_Admin_Bar $admin_bar ) {
 					'id'    => 'tainacan-collections-edition-link',
 					'parent' => null,
 					'group'  => null,
-					'title' => _( 'Edit collections', 'tainacan' ),
+					'title' => __( 'Edit collections', 'tainacan' ),
 					'href'  => $url,
 					'meta' => [
 						'title' => __( 'Edit the collections on Tainacan Admin', 'tainacan' )
