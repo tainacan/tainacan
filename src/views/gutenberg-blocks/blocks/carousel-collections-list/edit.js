@@ -71,7 +71,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                 <a
                     id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
                     href={ collection.url }>
-                    { !showCollectionThumbnail ?
+                    { ( !showCollectionThumbnail && Array.isArray(collectionItems) ) ?
                         <div class="collection-items-grid">
                             <img
                                 src={ collectionItems[0] ? thumbHelper.getSrc(collectionItems[0]['thumbnail'], 'tainacan-medium', collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
@@ -107,9 +107,9 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         );
     }
 
-    function setContent(){
-        isLoading = true;
+    function setContent() {
 
+        isLoading = true;
         setAttributes({
             isLoading: isLoading
         });
@@ -121,41 +121,20 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
         collections = [];
 
-        let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections.map((collection) => { return collection.id }), perpage: selectedCollections.length }) + '&fetch_only=name,url,thumbnail';
+        let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections.map((collection) => { return collection.id }), perpage: selectedCollections.length, fetch_preview_image_items: showCollectionThumbnail ? 0 : 3 }) + '&fetch_only=name,url,thumbnail';
         tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
             .then(response => {
 
-                if (showCollectionThumbnail) {
-                    for (let collection of response.data) {
-                        collections.push(prepareItem(collection));
-                    }
-                    setAttributes({
-                        content: <div></div>,
-                        collections: collections,
-                        isLoading: false,
-                        itemsRequestSource: itemsRequestSource
-                    });
-                } else {
-                    let promises = [];
-                    for (let collection of response.data) {
-                        promises.push(
-                            tainacan.get('/collection/' + collection.id + '/items?perpage=3&fetch_only=name,url,thumbnail')
-                                .then(response => { return({ collection: collection, collectionItems: response.data.items }) })
-                                .catch((error) => console.log(error))
-                        );
-                    }
-                    axios.all(promises).then((results) => {
-                        for (let result of results) {
-                            collections.push(prepareItem(result.collection, result.collectionItems));
-                        }
-                        setAttributes({
-                            content: <div></div>,
-                            collections: collections,
-                            isLoading: false,
-                            itemsRequestSource: itemsRequestSource
-                        });
-                    })
-                }
+                for (let collection of response.data)
+                    collections.push(prepareItem(collection, (!showCollectionThumbnail && collection.preview_image_items) ? collection.preview_image_items : []));
+            
+                isLoading = false;
+                setAttributes({
+                    content: <div></div>,
+                    collections: collections,
+                    isLoading: isLoading,
+                    itemsRequestSource: itemsRequestSource
+                });
             });
     }
 

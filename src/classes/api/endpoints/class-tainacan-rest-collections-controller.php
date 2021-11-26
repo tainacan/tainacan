@@ -31,6 +31,7 @@ class REST_Collections_Controller extends REST_Controller {
 	 */
 	public function init_objects() {
 		$this->collections_repository = Repositories\Collections::get_instance();
+		$this->items_repository = Repositories\Items::get_instance();
 		$this->collection = new Entities\Collection();
 	}
 
@@ -179,6 +180,38 @@ class REST_Collections_Controller extends REST_Controller {
 	}
 
 	/**
+	 * @param \Tainacan\Entities\Collection $collection
+	 *
+	 * @return array
+	 */
+	private function get_preview_image_items($collection, $amount) {
+		if($amount <= 0 )
+			return [];
+
+		$collection_id = $collection->get_id();
+
+		$args = [
+			'meta_query' => [
+				[
+					'key' => 'collection_id',
+					'value' => $collection_id
+				]
+			],
+			'posts_per_page' => $amount
+		];
+
+		$items = $this->items_repository->fetch($args, [], 'OBJECT');
+		$thumbnails = array_map( function($item) {
+			$images = array();
+			$images['thumbnail'] = $item->get_thumbnail();
+			$images['document_mimetype'] = $item->get_document_mimetype();
+			return $images;
+		 }, $items);
+
+		return $thumbnails;
+	}
+
+	/**
 	 *
 	 * Receive a \WP_Query or a Collection object and return both in JSON
 	 *
@@ -240,6 +273,10 @@ class REST_Collections_Controller extends REST_Controller {
 				}
 
 				$item_arr['url'] = get_permalink( $item_arr['id'] );
+			}
+
+			if(isset($request['fetch_preview_image_items']) && $request['fetch_preview_image_items'] != 0) {
+				$item_arr['preview_image_items'] = $this->get_preview_image_items($item, $request['fetch_preview_image_items']);
 			}
 
 			$total_items = wp_count_posts( $item->get_db_identifier(), 'readable' );

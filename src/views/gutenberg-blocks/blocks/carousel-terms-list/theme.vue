@@ -31,7 +31,7 @@
                                 :href="term.url">
                             <div class="term-items-grid">
                                 <blur-hash-image
-                                        :height="termItems[term.id][2] ? $thumbHelper.getHeight(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 275"
+                                        :height="termItems[term.id][0] ? $thumbHelper.getHeight(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 275"
                                         :width="termItems[term.id][0] ? $thumbHelper.getWidth(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 275"
                                         :src="termItems[term.id][0] ? $thumbHelper.getSrc(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
                                         :srcset="termItems[term.id][0] ? $thumbHelper.getSrcSet(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
@@ -274,43 +274,26 @@ export default {
 
             this.termsRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/taxonomy/' + this.taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: this.selectedTerms }) + '&order=asc&fetch_only=id,name,url,header_image';
+            let endpoint = '/taxonomy/' + this.taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: this.selectedTerms, fetch_preview_image_items: this.showTermThumbnail ? 0 : 3 }) + '&order=asc';
 
             this.tainacanAxios.get(endpoint, { cancelToken: this.termsRequestSource.token })
                 .then(response => {
 
-                    if (this.showTermThumbnail) {
-                        for (let term of response.data)
-                            this.terms.push(term);
-
-                        this.isLoading = false;
-                    } else {
-                        let promises = [];
-                        for (let term of response.data) {  
-                            promises.push(
-                                this.tainacanAxios.get('/items/?perpage=3&fetch_only=name,url,thumbnail&taxquery[0][taxonomy]=tnc_tax_' + this.taxonomyId + '&taxquery[0][terms][0]=' + term.id + '&taxquery[0][compare]=IN')
-                                    .then(response => { return({ termId: term.id, termItems: response.data.items }) })
-                            );    
-                            this.terms.push(term);
-                        }
-                        axios.all(promises).then((results) => {
-                            for (let result of results) {
-                                this.termItems[result.termId] = result.termItems;
-                            }
-                            
-                            this.isLoading = false;
-                        }) 
+                    for (let term of response.data) {
+                        this.terms.push(term);
+                        if (!this.showTermThumbnail)
+                            this.termItems[term.id] = term.preview_image_items ? term.preview_image_items : [];
                     }
                     
+                    this.isLoading = false;
                     this.totalTerms = response.headers['x-wp-total'];
 
                 }).catch((error) => { 
                     this.isLoading = false;
-                     if (error.response && error.response.status && error.response.status == 401)
-                            this.errorMessage = 'Not allowed to see these terms.'
+                    if (error.response && error.response.status && error.response.status == 401)
+                        this.errorMessage = 'Not allowed to see these terms.'
 
                 });
-            
         },
     }
 }
