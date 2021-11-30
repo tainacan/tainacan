@@ -2,13 +2,11 @@
     <transition name="filter-item">
         <div v-if="filterTags != undefined && filterTags.length > 0">
             <p class="filter-tags-info">
-                <span style="margin-right: 1em">
-                    <strong>{{ totalItems }}</strong>
-                    {{ ' ' + ( totalItems == 1 ? $i18n.get('info_item_found') : $i18n.get('info_items_found') ) }}
-                </span>
+                <span 
+                        style="margin-right: 1em"
+                        v-html="totalItems == 1 ? $i18n.getWithVariables('info_item_%s_found', [totalItems]) : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />
                 <span>
-                    <strong>{{ filterTags.length }}</strong>
-                    {{ ' ' + ( filterTags.length == 1 ? $i18n.get('info_applied_filter') : $i18n.get('info_applied_filters') ) }}
+                    <span v-html="filterTags.length == 1 ? $i18n.getWithVariables('info_%s_applied_filter', [filterTags.length]) : $i18n.getWithVariables('info_%s_applied_filters', [filterTags.length])" />
                     &nbsp;
                     <a 
                             @click="clearAllFilters()"
