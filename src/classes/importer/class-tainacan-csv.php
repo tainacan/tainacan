@@ -828,9 +828,10 @@ class CSV extends Importer {
 				if($itemMetadata instanceof Entities\Item_Metadata_Entity ) {
 					$itemMetadata->set_item( $insertedItem );  // *I told you
 					if( $itemMetadata->validate() ) {
-						$result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+						$Tainacan_Item_Metadata->insert( $itemMetadata );
 					} else {
-						$this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name() . " in item " . $insertedItem->get_title());
+						$insertedItemId = $updating_item == true ? ' (special_item_id: ' . $insertedItem->get_id() . ')' : '';
+						$this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name() . " in item " . $insertedItem->get_title() . $insertedItemId);
 						$this->add_error_log($itemMetadata->get_errors());
 						continue;
 					}
