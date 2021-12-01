@@ -292,6 +292,53 @@
                         </b-select>
                     </b-field>
 
+                    <!-- Change Default OrderBy Select and Order Button-->
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_default_orderby')"
+                            :type="editFormErrors['default_orderby'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['default_orderby'] != undefined ? editFormErrors['default_orderby'] : $i18n.get('info_default_orderby')">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'default_orderby')" 
+                                :message="$i18n.getHelperMessage('collections', 'default_orderby')"/>
+                        <div class="control sorting-options">
+                            <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
+                            <b-select
+                                    id="tainacan-select-default_order"
+                                    v-model="form.default_order">
+                                <option
+                                        role="button"
+                                        :class="{ 'is-active': form.default_order == 'DESC' }"
+                                        :value="'DESC'">
+                                    {{ $i18n.get('label_descending') }}
+                                </option>
+                                <option
+                                        role="button"
+                                        :class="{ 'is-active': form.default_order == 'ASC' }"
+                                        :value="'ASC'">
+                                    {{ $i18n.get('label_ascending') }}
+                                </option>
+                            </b-select>
+                            <span
+                                    class="label"
+                                    style="padding: 0 0.65em;">
+                                {{ $i18n.get('info_by_inner') }}
+                            </span>
+                            <b-select
+                                    expanded
+                                    v-model="form.default_orderby"
+                                    id="tainacan-select-default_orderby">
+                                <option
+                                        v-for="metadatum of sortingMetadata"
+                                        v-if="metadatum != undefined"
+                                        :value="metadatum.slug"
+                                        :key="metadatum.slug">
+                                    {{ metadatum.name }}
+                                </option>
+                            </b-select>
+                        </div>
+                    </b-field>
+
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
@@ -628,7 +675,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
 import { wpAjax, formHooks } from '../../js/mixins';
@@ -655,6 +702,8 @@ export default {
                 files:[],
                 enabled_view_modes: [],
                 default_view_mode: [],
+                default_order: 'ASC',
+                default_orderby: 'creation_date',
                 allow_comments: 'closed',
                 allows_submission: 'no',
                 submission_default_status: 'draft',
@@ -687,8 +736,16 @@ export default {
             reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + 'admin.php?page=tainacan_item_submission',
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
-            entityName: 'collection'
+            entityName: 'collection',
+            metadataSearchCancel: undefined,
+            isLoadingMetadata: true,
+            sortingMetadata: []
         }
+    },
+    computed: {
+        ...mapGetters('metadata', {
+            'metadata': 'getMetadata'
+        })
     },
     watch: {
         'form.hide_items_thumbnail_on_lists' (newValue) {
@@ -715,6 +772,7 @@ export default {
     },
     mounted(){
         this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('settings') }]);
+
 
         if (this.$route.query.fromImporter != undefined) 
             this.fromImporter = this.$route.query.fromImporter;
@@ -753,6 +811,8 @@ export default {
                 this.form.parent = this.collection.parent;
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.enabled_view_modes = JSON.parse(JSON.stringify(this.collection.enabled_view_modes.reduce((result, viewMode) => { typeof viewMode == 'string' ? result.push(viewMode) : null; return result }, [])));
+                this.form.default_order = this.collection.default_order;
+                this.form.default_orderby = this.collection.default_orderby;
                 this.form.allow_comments = this.collection.allow_comments;
                 this.form.allows_submission = this.collection.allows_submission;
                 this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
@@ -796,6 +856,9 @@ export default {
                 //         this.isFetchingCollections = false;
                 //     }); 
 
+                // Prepares list of metadata available for sorting
+                this.prepareMetadata();
+
                 this.isLoading = false; 
             });
         } else {
@@ -820,6 +883,9 @@ export default {
             'fetchPages',
             'fetchPage',
             'fetchAllCollectionNames'
+        ]),
+        ...mapActions('metadata', [
+            'fetchMetadata'
         ]),
         updateSlug: _.debounce(function() {
             if (!this.form.name || this.form.name.length <= 0)
@@ -856,6 +922,8 @@ export default {
                 parent: this.form.parent,
                 enabled_view_modes: this.form.enabled_view_modes,
                 default_view_mode: this.form.default_view_mode,
+                default_order: this.form.default_order,
+                default_orderby: this.form.default_orderby,
                 allows_submission: this.form.allows_submission,
                 submission_anonymous_user: this.form.submission_anonymous_user,
                 submission_default_status: this.form.submission_default_status,
@@ -882,6 +950,8 @@ export default {
                     this.form.enable_cover_page = this.collection.enable_cover_page;
                     this.form.enabled_view_modes = this.collection.enabled_view_modes.map((viewMode) => viewMode.viewMode);
                     this.form.default_view_mode = this.collection.default_view_mode;
+                    this.form.default_order = this.collection.default_order;
+                    this.form.default_orderby = this.collection.default_orderby;
                     this.form.allow_comments = this.collection.allow_comments;
                     this.form.allows_submission = this.collection.allows_submission;
                     this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
@@ -939,6 +1009,8 @@ export default {
                 this.form.slug = this.collection.slug;
                 this.form.parent = this.collection.parent;
                 this.form.default_view_mode = this.collection.default_view_mode;
+                this.form.default_order = this.collection.default_order;
+                this.form.default_orderby = this.collection.default_orderby;
                 this.form.enabled_view_modes = [];
                 this.form.allow_comments = this.collection.allow_comments;
                 this.form.allows_submission = this.collection.allows_submission;
@@ -968,6 +1040,9 @@ export default {
                 //         this.$console.error(error);
                 //         this.isFetchingCollections = false;
                 //     });
+
+                // Prepares list of metadata available for sorting
+                this.prepareMetadata();
 
                 this.isLoading = false;
                 
@@ -1117,6 +1192,91 @@ export default {
                     }
                 }
             );
+        },
+        prepareMetadata() {
+
+            // Cancels previous Request
+            if (this.metadataSearchCancel != undefined)
+                this.metadataSearchCancel.cancel('Metadata search Canceled.');
+
+            this.isLoadingMetadata = true;
+            
+            // Processing is done inside a local variable
+            this.fetchMetadata({
+                collectionId: this.collectionId,
+                isRepositoryLevel: this.isRepositoryLevel,
+                isContextEdit: false,
+                includeControlMetadataTypes: true
+            }).then((resp) => {
+                    resp.request
+                        .then(() => {
+                            this.sortingMetadata = [];
+
+                            // Decides if custom meta will be loaded with item.
+                            let shouldLoadMeta = this.registeredViewModes[this.form.default_view_mode].dynamic_metadata;
+
+                            if (shouldLoadMeta) {
+
+                                for (let metadatum of this.metadata) {
+
+                                    if (
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
+                                    ) {
+                                        this.sortingMetadata.push(metadatum);
+                                    }
+                                    
+                                }
+
+                                // Sorting metadata
+                                this.sortingMetadata.push({
+                                    name: this.$i18n.get('label_creation_date'),
+                                    metadatum: 'row_creation',
+                                    metadata_type: undefined,
+                                    slug: 'creation_date',
+                                    id: undefined
+                                });
+                                
+                            // Loads only basic attributes necessary to view modes that do not allow custom meta
+                            } else {
+                                
+                                for (let metadatum of this.metadata) {
+                                    if ((metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound' &&
+                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
+                                        ) {
+                                            this.sortingMetadata.push(metadatum);
+                                    }
+                                }
+                                
+                                this.sortingMetadata.push({
+                                    name: this.$i18n.get('label_creation_date'),
+                                    metadatum: 'row_creation',
+                                    metadata_type: undefined,
+                                    slug: 'creation_date',
+                                    id: undefined,
+                                    display: true
+                                })
+                            }
+
+                            this.isLoadingMetadata = false;
+                        })
+                        .catch(() => {
+                            this.isLoadingMetadata = false;
+                        })
+                    // Search Request Token for cancelling
+                    this.metadataSearchCancel = resp.source;
+                })
+                .catch(() => this.isLoadingMetadata = false);  
+        },
+        getOrderByMetadataName(default_orderby_slug) {
+            return default_orderby_slug;
         }
     }
 }
@@ -1242,6 +1402,10 @@ export default {
            
            .icon { color: var(--tainacan-gray2); }
         }
+    }
+    .sorting-options {
+        display: flex;
+        align-items: center;
     }
     .status-radios {
         display: flex;
