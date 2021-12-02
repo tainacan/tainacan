@@ -38,7 +38,7 @@
                     :collection-id="collectionId"
                     :advanced-search-results="advancedSearchResults"
                     :open-form-advanced-search="openFormAdvancedSearch"
-                    :is-do-search="isDoSearch"/>
+                    :is-doing-search="isDoingSearch"/>
 
             <div class="advanced-search-form-submit">
                 <p
@@ -54,7 +54,7 @@
                         class="control">
                     <button
                             aria-controls="items-list-results"
-                            @click="isDoSearch = !isDoSearch"
+                            @click="isDoingSearch = !isDoingSearch"
                             class="button is-success">{{ $i18n.get('search') }}</button>
                 </p>
             </div>
@@ -592,6 +592,8 @@
             hideGoToPageButton: false,
             hidePaginationArea: false,
             // Other Tweaks
+            defaultOrder: 'ASC',
+            defaultOrderBy: 'date',
             defaultItemsPerPage: Number,
             showFiltersButtonInsideSearchControl: false,
             startWithFiltersHidden: false,
@@ -613,7 +615,7 @@
                 openAdvancedSearch: false,
                 openFormAdvancedSearch: false,
                 advancedSearchResults: false,
-                isDoSearch: false,
+                isDoingSearch: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
@@ -714,12 +716,17 @@
         },
         created() {
             this.isRepositoryLevel = (this.collectionId == undefined || this.collectionId == '' || this.collectionId == null);
-
+console.log(this.metadata, this.defaultOrderBy);
+            // Sets initial variables important to searchbus
             if (this.collectionId != undefined)
                 this.$eventBusSearch.setCollectionId(this.collectionId);
-
             if (this.termId != undefined && this.termId != null)
                 this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
+            if (this.defaultOrder != undefined)
+                this.$eventBusSearch.setDefaultOrder(this.defaultOrder);
+            if (this.defaultOrderBy != undefined) {
+                this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
+            }
             
             this.$eventBusSearch.updateStoreFromURL();
 

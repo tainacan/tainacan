@@ -123,6 +123,8 @@ export default (element) => {
                     taxonomy: '',
                     collectionId: '',
                     defaultViewMode: '',
+                    defaultOrder: 'ASC',
+                    defaultOrderBy: 'date',
                     isForcedViewMode: false,
                     enabledViewModes: {},
                     defaultItemsPerPage: '',
@@ -173,6 +175,12 @@ export default (element) => {
                     if (this.$el.attributes['enabled-view-modes'] != undefined)
                         this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
                 
+                    // Sorting options
+                    if (this.$el.attributes['default-order'] != undefined)
+                        this.defaultOrder = this.$el.attributes['default-order'].value;
+                    if (this.$el.attributes['default-orderby'] != undefined)
+                        this.defaultOrderBy = this.$el.attributes['default-orderby'].value;
+                    
                     // Options related to hidding elements
                     if (this.$el.attributes['hide-filters'] != undefined)
                         this.hideFilters = this.isParameterTrue('hide-filters');

@@ -239,7 +239,7 @@
             isHeader: false,
             advancedSearchResults: false,
             openFormAdvancedSearch: false,
-            isDoSearch: false,
+            isDoingSearch: false,
             collectionId: ''
         },
         data() {
@@ -274,8 +274,8 @@
             }
         },
         watch: {
-            isDoSearch() {
-                if (this.isDoSearch)
+            isDoingSearch() {
+                if (this.isDoingSearch)
                     this.searchAdvanced();
             }
         },

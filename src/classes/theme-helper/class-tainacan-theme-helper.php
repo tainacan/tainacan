@@ -423,20 +423,33 @@ class Theme_Helper {
 
 		// Loads info related to view modes
 		$view_modes = tainacan_get_the_view_modes();
-		$default_view_mode = $view_modes['default_view_mode'];
-		$enabled_view_modes = $view_modes['enabled_view_modes'];
 
-		if( isset($args['default_view_mode']) ) {
+		$enabled_view_modes = $view_modes['enabled_view_modes'];
+		if ( isset($args['default_view_mode']) ) {
 			$default_view_mode = $args['default_view_mode'];
 			unset($args['default_view_mode']);
 		}
 
-		if( isset($args['enabled_view_modes']) ) {
+		$default_view_mode = $view_modes['default_view_mode'];
+		if ( isset($args['enabled_view_modes']) ) {
 			$enabled_view_modes = $args['enabled_view_modes'];
 			if ( !in_array($default_view_mode, $enabled_view_modes) ) {
 				$default_view_mode = $enabled_view_modes[0];
 			}
 			unset($args['enabled_view_modes']);
+		}
+
+		// Loads info related to sorting
+		$default_order = 'ASC';
+		if ( isset($args['default_order']) ) {
+			$default_order = $args['default_order'];
+			unset($args['default_order']);
+		}
+
+		$default_orderby = 'date';
+		if ( isset($args['default_orderby']) ) {
+			$default_orderby = $args['default_orderby'];
+			unset($args['default_orderby']);
 		}
 
 		// If in a collection page
@@ -445,7 +458,9 @@ class Theme_Helper {
 			$props .= 'collection-id="' . $collection->get_id() . '" ';
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
-					
+			$default_order = $collection->get_default_order();
+			$default_orderby = $collection->get_default_orderby();
+			
 			// Gets hideItemsThumbnail info from collection setting
 			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 		}
@@ -459,6 +474,8 @@ class Theme_Helper {
 
 		$props .= 'default-view-mode="' . $default_view_mode . '" ';
 		$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
+		$props .= 'default-order="' . $default_order . '" ';
+		$props .= 'default-orderby="' . $default_orderby . '" ';
 
 		// Passes arguments to custom props
 		foreach ($args as $key => $value) {

@@ -471,7 +471,7 @@
                         :is-repository-level="isRepositoryLevel"
                         :advanced-search-results="advancedSearchResults"
                         :open-form-advanced-search="openFormAdvancedSearch"
-                        :is-do-search="isDoSearch"/>
+                        :is-doing-search="isDoingSearch"/>
 
                 <div class="advanced-search-form-submit">
                     <p
@@ -487,7 +487,7 @@
                             class="control">
                         <button
                                 aria-controls="items-list-results"
-                                @click="isDoSearch = !isDoSearch"
+                                @click="isDoingSearch = !isDoingSearch"
                                 class="button is-success">{{ $i18n.get('search') }}</button>
                     </p>
                 </div>
@@ -664,7 +664,7 @@
                 openAdvancedSearch: false,
                 openFormAdvancedSearch: false,
                 advancedSearchResults: false,
-                isDoSearch: false,
+                isDoingSearch: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,

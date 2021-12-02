@@ -905,7 +905,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_item_found'							 	 => __( 'item found', 'tainacan'),
 	'info_iframe_dimensions'						 => __( 'The dimension values will be passed to the iframe, but it\'s rendering may change according to the theme display settings. It is still important to keep an approximate aspect ratio to the inner content.', 'tainacan'),
 	'info_metadata_mapper_helper'					 => __(	'Select the corresponding metadata so they can be exposed according to the mapper', 'tainacan'),
-	'info_default_orderby'							 => __( 'These settings only affect the initial state of the items sorting. After changed, the value will be stored for logged users.', 'tainacan' ),
+	'info_default_orderby'							 => __( 'These settings only affect the initial state of the items sorting. After changed, the value used will be the latest selected by the user.', 'tainacan' ),
 	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

@@ -9,6 +9,8 @@ export default {
                 errors : [],
                 query: {},
                 collectionId: undefined,
+                defaultOrder: 'ASC',
+                defaultOrderBy: 'date',
                 taxonomy: undefined,
                 termId: undefined,
                 searchCancel: undefined
@@ -64,7 +66,7 @@ export default {
                         // Order (ASC, DESC)
                         if (this.$route.query.order == undefined || to.params.collectionId != from.params.collectionId) {
                             let orderKey = (this.collectionId != undefined ? 'order_' + this.collectionId : 'order');
-                            let orderValue = this.$userPrefs.get(orderKey);
+                            let orderValue = this.$userPrefs.get(orderKey) ? this.$userPrefs.get(orderKey) : this.defaultOrder;
 
                             if (orderValue)
                                 this.$route.query.order = orderValue;
@@ -77,6 +79,7 @@ export default {
                         // Order By (required extra work to deal with custom metadata ordering)
                         if (this.$route.query.orderby == undefined || to.params.collectionId != from.params.collectionId) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
+//                            let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
                             let orderBy = this.$userPrefs.get(orderByKey);
 
                             if (orderBy) {
@@ -413,6 +416,12 @@ export default {
                 setCollectionId(collectionId) {
                     this.setTotalItems(null);
                     this.collectionId = collectionId;
+                },
+                setDefaultOrder(defaultOrder) {
+                    this.defaultOrder = defaultOrder;
+                },
+                setDefaultOrderBy(defaultOrderBy) {
+                    this.defaultOrderBy = defaultOrderBy;
                 },
                 setTerm(termId, taxonomy) {
                     this.termId = termId;

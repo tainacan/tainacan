@@ -1406,6 +1406,11 @@ export default {
     .sorting-options {
         display: flex;
         align-items: center;
+
+        .label {
+            font-weight: normal;
+            margin-bottom: 0;
+        }
     }
     .status-radios {
         display: flex;
