@@ -198,6 +198,53 @@
                             {{ $i18n.get('label_create_new_page') }}</a>                        
                     </b-field>
 
+                    <!-- Change Default OrderBy Select and Order Button-->
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_default_orderby')"
+                            :type="editFormErrors['default_orderby'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['default_orderby'] != undefined ? editFormErrors['default_orderby'] : $i18n.get('info_default_orderby')">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'default_orderby')" 
+                                :message="$i18n.getHelperMessage('collections', 'default_orderby')"/>
+                        <div class="control sorting-options">
+                            <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
+                            <b-select
+                                    id="tainacan-select-default_order"
+                                    v-model="form.default_order">
+                                <option
+                                        role="button"
+                                        :class="{ 'is-active': form.default_order == 'DESC' }"
+                                        :value="'DESC'">
+                                    {{ $i18n.get('label_descending') }}
+                                </option>
+                                <option
+                                        role="button"
+                                        :class="{ 'is-active': form.default_order == 'ASC' }"
+                                        :value="'ASC'">
+                                    {{ $i18n.get('label_ascending') }}
+                                </option>
+                            </b-select>
+                            <span
+                                    class="label"
+                                    style="padding: 0 0.65em;">
+                                {{ $i18n.get('info_by_inner') }}
+                            </span>
+                            <b-select
+                                    expanded
+                                    :loading="isLoadingMetadata"
+                                    v-model="localDefaultOrderBy"
+                                    id="tainacan-select-default_orderby">
+                                <option
+                                        v-for="metadatum of sortingMetadata"
+                                        :value="metadatum.id"
+                                        :key="metadatum.id">
+                                    {{ metadatum.name }}
+                                </option>
+                            </b-select>
+                        </div>
+                    </b-field>
+
                     <!-- Hide Items Thumbnail on Lists ------------------------ --> 
                     <b-field
                             :addons="false" 
@@ -292,53 +339,6 @@
                         </b-select>
                     </b-field>
 
-                    <!-- Change Default OrderBy Select and Order Button-->
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_default_orderby')"
-                            :type="editFormErrors['default_orderby'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['default_orderby'] != undefined ? editFormErrors['default_orderby'] : $i18n.get('info_default_orderby')">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'default_orderby')" 
-                                :message="$i18n.getHelperMessage('collections', 'default_orderby')"/>
-                        <div class="control sorting-options">
-                            <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
-                            <b-select
-                                    id="tainacan-select-default_order"
-                                    v-model="form.default_order">
-                                <option
-                                        role="button"
-                                        :class="{ 'is-active': form.default_order == 'DESC' }"
-                                        :value="'DESC'">
-                                    {{ $i18n.get('label_descending') }}
-                                </option>
-                                <option
-                                        role="button"
-                                        :class="{ 'is-active': form.default_order == 'ASC' }"
-                                        :value="'ASC'">
-                                    {{ $i18n.get('label_ascending') }}
-                                </option>
-                            </b-select>
-                            <span
-                                    class="label"
-                                    style="padding: 0 0.65em;">
-                                {{ $i18n.get('info_by_inner') }}
-                            </span>
-                            <b-select
-                                    expanded
-                                    v-model="form.default_orderby"
-                                    id="tainacan-select-default_orderby">
-                                <option
-                                        v-for="metadatum of sortingMetadata"
-                                        v-if="metadatum != undefined"
-                                        :value="metadatum.slug"
-                                        :key="metadatum.slug">
-                                    {{ metadatum.name }}
-                                </option>
-                            </b-select>
-                        </div>
-                    </b-field>
-
                     <!-- Hook for extra Form options -->
                     <template 
                             v-if="formHooks != undefined && 
@@ -379,7 +379,7 @@
                         </div>
                     </b-field>
 
-                    <!-- Header Page -------------------------------- --> 
+                    <!-- Header Image -------------------------------- --> 
                     <b-field :addons="false">
                         <label class="label">{{ $i18n.get('label_header_image') }}</label>
                         <div class="header-field">
@@ -739,7 +739,8 @@ export default {
             entityName: 'collection',
             metadataSearchCancel: undefined,
             isLoadingMetadata: true,
-            sortingMetadata: []
+            sortingMetadata: [],
+            localDefaultOrderBy: 'creation_date'
         }
     },
     computed: {
@@ -767,6 +768,13 @@ export default {
 
             } else {
                 this.registeredViewModes = tainacan_plugin.registered_view_modes;
+            }
+        },
+        localDefaultOrderBy(newValue) {
+            if (this.sortingMetadata && this.sortingMetadata.length && newValue) {
+                let sortingMetadatumIndex = this.sortingMetadata.findIndex(aMetadatum => aMetadatum.id == newValue);
+                if (sortingMetadatumIndex >= 0)
+                    this.form.default_orderby = this.$orderByHelper.getOrderByForMetadatum(this.sortingMetadata[sortingMetadatumIndex].metadata_type ? this.sortingMetadata[sortingMetadatumIndex] : this.sortingMetadata[sortingMetadatumIndex].id);
             }
         }
     },
@@ -857,7 +865,7 @@ export default {
                 //     }); 
 
                 // Prepares list of metadata available for sorting
-                this.prepareMetadata();
+                this.getMetadataForSorting();
 
                 this.isLoading = false; 
             });
@@ -1042,7 +1050,7 @@ export default {
                 //     });
 
                 // Prepares list of metadata available for sorting
-                this.prepareMetadata();
+                this.getMetadataForSorting();
 
                 this.isLoading = false;
                 
@@ -1138,12 +1146,12 @@ export default {
         deleteThumbnail() {
 
             this.updateThumbnail({collectionId: this.collectionId, thumbnailId: 0})
-            .then(() => {
-                this.collection.thumbnail = false;
-            })
-            .catch((error) => {
-                this.$console.error(error);
-            });    
+                .then(() => {
+                    this.collection.thumbnail = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                });    
         },
         deleteHeaderImage() {
 
@@ -1193,7 +1201,7 @@ export default {
                 }
             );
         },
-        prepareMetadata() {
+        getMetadataForSorting() {
 
             // Cancels previous Request
             if (this.metadataSearchCancel != undefined)
@@ -1204,65 +1212,44 @@ export default {
             // Processing is done inside a local variable
             this.fetchMetadata({
                 collectionId: this.collectionId,
-                isRepositoryLevel: this.isRepositoryLevel,
                 isContextEdit: false,
-                includeControlMetadataTypes: true
+                includeControlMetadataTypes: true,
+                metaquery: [{
+                    key: 'metadata_type',
+                    compare: 'NOT IN',
+                    value: [ // Not every metadata can be used for sorting
+                        'Tainacan\\Metadata_Types\\Core_Description',
+                        'Tainacan\\Metadata_Types\\Taxonomy',
+                        'Tainacan\\Metadata_Types\\Relationship',
+                        'Tainacan\\Metadata_Types\\Compound',
+                        'Tainacan\\Metadata_Types\\User'
+                    ]
+                }]
             }).then((resp) => {
                     resp.request
                         .then(() => {
-                            this.sortingMetadata = [];
+                            // Not every metadata can be used for sorting
+                            this.sortingMetadata = JSON.parse(JSON.stringify(this.metadata));
 
-                            // Decides if custom meta will be loaded with item.
-                            let shouldLoadMeta = this.registeredViewModes[this.form.default_view_mode].dynamic_metadata;
+                            // Adds creation date as it is the default
+                            this.sortingMetadata.push({
+                                name: this.$i18n.get('label_creation_date'),
+                                metadata_type: undefined,
+                                slug: 'creation_date',
+                                id: 'creation_date'
+                            });       
 
-                            if (shouldLoadMeta) {
-
-                                for (let metadatum of this.metadata) {
-
-                                    if (
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound' &&
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
-                                    ) {
-                                        this.sortingMetadata.push(metadatum);
-                                    }
-                                    
-                                }
-
-                                // Sorting metadata
-                                this.sortingMetadata.push({
-                                    name: this.$i18n.get('label_creation_date'),
-                                    metadatum: 'row_creation',
-                                    metadata_type: undefined,
-                                    slug: 'creation_date',
-                                    id: undefined
-                                });
-                                
-                            // Loads only basic attributes necessary to view modes that do not allow custom meta
-                            } else {
-                                
-                                for (let metadatum of this.metadata) {
-                                    if ((metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') &&
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound' &&
-                                        metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
-                                        ) {
-                                            this.sortingMetadata.push(metadatum);
-                                    }
-                                }
-                                
-                                this.sortingMetadata.push({
-                                    name: this.$i18n.get('label_creation_date'),
-                                    metadatum: 'row_creation',
-                                    metadata_type: undefined,
-                                    slug: 'creation_date',
-                                    id: undefined,
-                                    display: true
-                                })
+                            // Updates localDefaultOrder variable that needs only the ID of the metadata
+                            this.localDefaultOrderBy(this.form.default_orderby);
+                            if (this.form.default_orderby.metakey)
+                                this.localDefaultOrderBy =  this.form.default_orderby.metakey;
+                            else {
+                                if (this.form.default_orderby == 'title')
+                                    this.localDefaultOrderBy = this.sortingMetadata.find((aMetadatum) => aMetadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title').id;
+                                else if (this.form.default_orderby == 'description')   
+                                    this.localDefaultOrderBy = this.sortingMetadata.find((aMetadatum) => aMetadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Description').id;
+                                else
+                                    this.localDefaultOrderBy = this.form.default_orderby;
                             }
 
                             this.isLoadingMetadata = false;
@@ -1274,9 +1261,6 @@ export default {
                     this.metadataSearchCancel = resp.source;
                 })
                 .catch(() => this.isLoadingMetadata = false);  
-        },
-        getOrderByMetadataName(default_orderby_slug) {
-            return default_orderby_slug;
         }
     }
 }

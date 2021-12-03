@@ -133,10 +133,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'taxonomies_per_page': 12,
             'activities_per_page': 12,
             'order': 'DESC',
-            'order_by': { 
-                slug: 'creation_date',
-                name: 'Creation Date'
-            },
+            'order_by': 'date',
             'view_mode': undefined,
             'admin_view_mode': 'cards',
             'fetch_only': 'thumbnail,modification_date,creation_date,author_name',

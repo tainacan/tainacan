@@ -667,21 +667,11 @@
                 return this.getMetaKey();
             },
             orderByName() {
-
-                if (this.getOrderByName() != null && this.getOrderByName() != undefined && this.getOrderByName() != '') {
-                    return this.getOrderByName();
-                } else {
-                    for (let metadatum of this.sortingMetadata) {
-                        if (
-                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug == 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == 'date') ||
-                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (metadatum.metadata_type_object != undefined && metadatum.metadata_type_object.core)) && this.orderBy == metadatum.metadata_type_object.related_mapped_prop) ||
-                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == metadatum.slug) ||
-                            ((this.orderBy == 'meta_value' || this.orderBy == 'meta_value_num') && this.getMetaKey() == metadatum.id)
-                           )     
-                            return metadatum.name;
-                    }
-                }
-                return '';
+                const metadatumName =  this.$orderByHelper.getOrderByMetadatumName({
+                    orderby: this.$route.query.orderby,
+                    metakey: this.$route.query.metakey
+                }, this.sortingMetadata);
+                return this.$route.query.metakey ? metadatumName : (metadatumName ? this.$i18n.get(metadatumName) : '');
             }
         },
         watch: {
@@ -716,7 +706,7 @@
         },
         created() {
             this.isRepositoryLevel = (this.collectionId == undefined || this.collectionId == '' || this.collectionId == null);
-console.log(this.metadata, this.defaultOrderBy);
+           
             // Sets initial variables important to searchbus
             if (this.collectionId != undefined)
                 this.$eventBusSearch.setCollectionId(this.collectionId);
@@ -881,7 +871,6 @@ console.log(this.metadata, this.defaultOrderBy);
             ...mapGetters('search', [
                 'getSearchQuery',
                 'getOrderBy',
-                'getOrderByName',
                 'getOrder',
                 'getViewMode',
                 'getTotalItems',
@@ -907,7 +896,7 @@ console.log(this.metadata, this.defaultOrderBy);
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
             onChangeOrderBy(metadatum) {
-                this.$eventBusSearch.setOrderBy(metadatum);
+                this.$eventBusSearch.setOrderBy(this.$orderByHelper.getOrderByForMetadatum(metadatum));
                 this.showItemsHiddingDueSortingDialog();
             },
             onChangeOrder(newOrder) {

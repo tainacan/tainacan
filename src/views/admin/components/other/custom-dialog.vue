@@ -110,6 +110,7 @@
 
     .b-checkbox.checkbox {
         margin-top: 12px;
+        width: auto !important;
     }
 
 </style>

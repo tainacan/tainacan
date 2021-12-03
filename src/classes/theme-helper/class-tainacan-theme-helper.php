@@ -455,7 +455,7 @@ class Theme_Helper {
 		// If in a collection page
 		$collection = tainacan_get_collection($args);
 		if ($collection) {
-			$props .= 'collection-id="' . $collection->get_id() . '" ';
+			$props .= "collection-id='" . $collection->get_id() . "' ";
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
 			$default_order = $collection->get_default_order();
@@ -468,19 +468,19 @@ class Theme_Helper {
 		// If in a tainacan taxonomy
 		$term = tainacan_get_term($args);
 		if ($term) {
-			$props .= 'term-id="' . $term->term_id . '" ';
-			$props .= 'taxonomy="' . $term->taxonomy . '" ';
+			$props .= "term-id='" . $term->term_id . "' ";
+			$props .= "taxonomy='" . $term->taxonomy . "' ";
 		}
 
-		$props .= 'default-view-mode="' . $default_view_mode . '" ';
-		$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
-		$props .= 'default-order="' . $default_order . '" ';
-		$props .= 'default-orderby="' . $default_orderby . '" ';
+		$props .= "default-view-mode='" . $default_view_mode . "' ";
+		$props .= "enabled-view-modes='" . implode(',', $enabled_view_modes) . "' ";
+		$props .= "default-order='" . $default_order . "' ";
+		$props .= "default-orderby='" . (is_array($default_orderby) ? json_encode($default_orderby) : $default_orderby) . "' ";
 
 		// Passes arguments to custom props
 		foreach ($args as $key => $value) {
 			if ($value == true || $value == 'true') {
-				$props .= str_replace('_', '-', $key) . '="' . $value . '" ';
+				$props .= str_replace("_", "-", $key) . "='" . $value . "' ";
 			}
 		}
 

@@ -42,7 +42,8 @@ import {
     ConsolePlugin
 } from '../../../admin/js/admin-utilities';
 import { 
-    ThumbnailHelperPlugin
+    ThumbnailHelperPlugin,
+    OrderByHelperPlugin
 } from '../../../admin/js/utilities';
 
 export default (element) => {
@@ -77,6 +78,7 @@ export default (element) => {
             Vue.use(I18NPlugin);
             Vue.use(UserPrefsPlugin);
             Vue.use(ThumbnailHelperPlugin);
+            Vue.use(OrderByHelperPlugin);
             Vue.use(ConsolePlugin, {visual: false});
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
@@ -145,7 +147,7 @@ export default (element) => {
                     showInlineViewModeOptions: false,
                     showFullscreenWithViewModes: false
                 },
-                beforeMount () {
+                beforeMount() {
                     
                     // Loads params if passed previously 
                     if (this.$route.hash && this.$route.hash.split('#/?') && this.$route.hash.split('#/?')[1]) {
@@ -179,7 +181,7 @@ export default (element) => {
                     if (this.$el.attributes['default-order'] != undefined)
                         this.defaultOrder = this.$el.attributes['default-order'].value;
                     if (this.$el.attributes['default-orderby'] != undefined)
-                        this.defaultOrderBy = this.$el.attributes['default-orderby'].value;
+                        this.defaultOrderBy = this.maybeConvertFromJSON(this.$el.attributes['default-orderby'].value);
                     
                     // Options related to hidding elements
                     if (this.$el.attributes['hide-filters'] != undefined)
@@ -225,6 +227,13 @@ export default (element) => {
                     isParameterTrue(parameter) {
                         const value = this.$el.attributes[parameter].value;
                         return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
+                    },
+                    maybeConvertFromJSON(someString) {
+                        try {
+                            return JSON.parse(someString);
+                        } catch(error) {
+                            return someString;
+                        }
                     }
                 },
                 render: h => h(ThemeSearch)

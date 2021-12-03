@@ -79,32 +79,21 @@ export default {
                         // Order By (required extra work to deal with custom metadata ordering)
                         if (this.$route.query.orderby == undefined || to.params.collectionId != from.params.collectionId) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
-//                            let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
-                            let orderBy = this.$userPrefs.get(orderByKey);
+                            let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
 
                             if (orderBy) {
-                                if (orderBy.slug == 'modification_date') {
-                                    this.$route.query.orderby = 'modified';
-                                } else if (orderBy.slug == 'creation_date') {
-                                    this.$route.query.orderby = 'date';
-                                } else if (orderBy.slug == 'author_name') {
-                                    this.$route.query.orderby = 'author_name';
-                                } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
-                                    this.$route.query.orderby = 'meta_value_num';
-                                    this.$route.query.metakey = orderBy.id;
-                                } else if (orderBy.metadata_type_object.primitive_type == 'date') {
-                                    this.$route.query.orderby = 'meta_value';
-                                    this.$route.query.metakey = orderBy.id;
-                                    this.$route.query.metatype = 'DATETIME';
-                                } else if (orderBy.metadata_type_object.core) {
-                                    this.$route.query.orderby = orderBy.metadata_type_object.related_mapped_prop == 'author_id' ? 'author' : orderBy.metadata_type_object.related_mapped_prop;
+                                
+                                // Previously was stored as a metadata object, now it is a orderby object
+                                if (orderBy.slug)
+                                    orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
+
+                                if (orderBy.orderby) {
+                                    Object.keys(orderBy).forEach((paramKey) => {
+                                        this.$route.query[paramKey] = orderBy[paramKey];
+                                    });
                                 } else {
-                                    this.$route.query.orderby = 'meta_value';
-                                    this.$route.query.metakey = orderBy.id;
+                                    this.$route.query.orderby = orderBy;
                                 }
- 
-                                // Sets orderByName as null so ItemsPage can take care of creating it
-                                this.$store.dispatch('search/setOrderByName', null);
 
                             } else {
                                 this.$route.query.orderby = 'date';
@@ -112,9 +101,6 @@ export default {
                                     slug: 'creation_date',
                                     name: this.$i18n.get('label_creation_date')
                                 }).catch(() => { });
-
-                                // Sets orderByName as null so ItemsPage can take care of creating it
-                                this.$store.dispatch('search/setOrderByName', null);
                             }
                         }
 
@@ -282,10 +268,15 @@ export default {
                 },
                 setOrderBy(orderBy) { 
                     let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
-                    if (this.$userPrefs.get(prefsOrderBy) != orderBy) {
-                        this.$userPrefs.set(prefsOrderBy, orderBy)
-                            .catch(() => {});
+
+                    if (orderBy.metakey) {
+                        if (!this.$userPrefs.get(prefsOrderBy) || orderBy.metakey != this.$userPrefs.get(prefsOrderBy).metakey)
+                            this.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
+                    } else {
+                        if (orderBy != this.$userPrefs.get(prefsOrderBy))
+                            this.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
                     }
+                    
                     this.$store.dispatch('search/setOrderBy', orderBy);
                     this.updateURLQueries();
                 },
