@@ -753,9 +753,6 @@
             }
 
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
-                /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
-                 * at collection level to items page at repository level
-                 */
                 this.prepareMetadata();
             });
 
@@ -955,7 +952,7 @@
                 this.$refs.displayedMetadataDropdown.toggle();
             },
             prepareMetadata() {
-            
+                
                 // Cancels previous Request
                 if (this.metadataSearchCancel != undefined)
                     this.metadataSearchCancel.cancel('Metadata search Canceled.');

@@ -119,18 +119,18 @@ export const OrderByHelperFunctions = () => {
 
             // If we are receiving a metadatum object, we can handle different orderby properties
             if (metadatum.id !== undefined) {
-                if (metadatum.metadata_type_object.primitive_type == 'float' || metadatum.metadata_type_object.primitive_type == 'int') {
+                if (metadatum.metadata_type_object && (metadatum.metadata_type_object.primitive_type == 'float' || metadatum.metadata_type_object.primitive_type == 'int')) {
                     return {
                         metakey: metadatum.id,
                         orderby: 'meta_value_num'
                     }
-                } else if (metadatum.metadata_type_object.primitive_type == 'date') {
+                } else if (metadatum.metadata_type_object && metadatum.metadata_type_object.primitive_type == 'date') {
                     return {
                         orderby: 'meta_value',
                         metakey: metadatum.id,
                         metatype: 'DATETIME'
                     }
-                } else if (metadatum.metadata_type_object.core) {
+                } else if (metadatum.metadata_type_object && metadatum.metadata_type_object.core) {
                     return  metadatum.metadata_type_object.related_mapped_prop
                 } else {
                     return {
@@ -165,7 +165,7 @@ export const OrderByHelperFunctions = () => {
             }
         },
         getOrderByMetadatumName(orderBy, metadata) {
-            console.log(orderBy, metadata)
+
             if (orderBy.metakey) {
                 let existingMetadataIndex = metadata.findIndex((aMetadatum) => aMetadatum.id == orderBy.metakey);
                 return existingMetadataIndex >= 0 ? metadata[existingMetadataIndex].name : '';

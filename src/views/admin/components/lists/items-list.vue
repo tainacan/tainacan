@@ -433,8 +433,7 @@
                     </div>
                 </div>
             </masonry>
-            <pre>{{ isRepositoryLevel }}</pre>
-            <pre>{{ collection }}</pre>
+
             <!-- CARDS VIEW MODE -->
             <div
                     role="list"
@@ -560,7 +559,7 @@
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <div
-                                v-if="isRepositoryLevel || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
+                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
                                 class="card-thumbnail">
                             <blur-hash-image
                                     v-if="item.thumbnail != undefined"

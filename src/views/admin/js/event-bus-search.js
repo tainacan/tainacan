@@ -170,11 +170,10 @@ export default {
                         ) {
                             this.$emit('has-to-reload-facets', true);
                         }
-
+                        
                         // Finally, loads items
-                        if (to.fullPath != from.fullPath) {
-                            this.loadItems(to);
-                        }
+                        if (to.fullPath != from.fullPath)
+                            this.loadItems();
                     }
                 }
             },
@@ -224,7 +223,7 @@ export default {
                     }
                     this.updateURLQueries();
                 },
-                addFetchOnly( metadatum, ignorePrefs, metadatumIDs ){
+                addFetchOnly( metadatum, ignorePrefs, metadatumIDs ) {
                     this.$store.dispatch('search/add_fetch_only', metadatum );
                     this.$store.dispatch('search/add_fetch_only_meta', metadatumIDs);
                     this.updateURLQueries();  
@@ -366,17 +365,16 @@ export default {
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
-                loadItems(to) {
+                loadItems() {
 
                     // Forces fetch_only to be filled before any search happens
                     if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {  
-                        this.$emit( 'hasToPrepareMetadataAndFilters', to);
+                        this.$emit( 'hasToPrepareMetadataAndFilters');
                     } else {  
                         this.$emit( 'isLoadingItems', true);
                         // Cancels previous Request
                         if (this.searchCancel != undefined)
                             this.searchCancel.cancel('Item search Canceled.');
-
                         this.$store.dispatch('collection/fetchItems', {
                             'collectionId': this.collectionId,
                             'isOnTheme': (this.$route.name == null),

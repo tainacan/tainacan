@@ -362,7 +362,7 @@
                             <span>{{ $i18n.get('label_cards') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item
-                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'" 
+                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')" 
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'grid' }"
@@ -385,7 +385,7 @@
                             <span>{{ $i18n.get('label_records') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item 
-                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'"
+                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'masonry' }"
@@ -782,13 +782,8 @@
                 this.advancedSearchResults = advancedSearchResults;
             });
 
-            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
-                /* This condition is to prevent an incorrect fetch by filter or metadata when we coming from items
-                 * at collection level to items page at repository level
-                 */
-                if (this.collectionId == to.params.collectionId || to.query.fromBreadcrumb) {
-                    this.prepareMetadata();
-                }
+            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
+                this.prepareMetadata();
             });
             
             if (this.$route.query && this.$route.query.advancedSearch) {
@@ -965,7 +960,6 @@
                 this.$refs.displayedMetadataDropdown.toggle();
             },
             prepareMetadata() {
-
                 // Cancels previous Request
                 if (this.metadataSearchCancel != undefined)
                     this.metadataSearchCancel.cancel('Metadata search Canceled.');
@@ -1163,8 +1157,8 @@
 
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
-                                    
-                                    const basicAttributes = this.collection.hide_items_thumbnail_on_lists == 'yes' ? 'modification_date,creation_date,author_name,title,description' : 'thumbnail,modification_date,creation_date,author_name,title,description';
+
+                                    const basicAttributes = (!this.isRepositoryLevel && this.collection.hide_items_thumbnail_on_lists == 'yes') ? 'modification_date,creation_date,author_name,title,description' : 'thumbnail,modification_date,creation_date,author_name,title,description';
                                     this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
 
                                     if (this.isRepositoryLevel) {
@@ -1209,7 +1203,7 @@
                                     })
 
                                 }
-
+                                
                                 this.isLoadingMetadata = false;
                                 this.displayedMetadata = metadata;
                             })
