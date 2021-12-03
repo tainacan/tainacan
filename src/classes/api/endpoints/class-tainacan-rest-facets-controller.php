@@ -71,7 +71,10 @@ class REST_Facets_Controller extends REST_Controller {
 			$collection_id = ( isset($request['collection_id']) ) ? $request['collection_id'] : null;
 			$last_term = ( isset($request['last_term']) ) ? $request['last_term'] : '';
 
-			$query_args = defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS') && true === TAINACAN_FACETS_DISABLE_FILTER_ITEMS ? [] : $request['current_query'];
+			$query_args = $request['current_query'];
+			if(defined('TAINACAN_FACETS_DISABLE_FILTER_ITEMS') && true === TAINACAN_FACETS_DISABLE_FILTER_ITEMS) {
+				$query_args = is_user_logged_in() && is_admin() ? ["status" =>  ["publish", "private", "draft"]] : [];
+			}
 			$query_args = $this->prepare_filters($query_args);
 
 			if ( isset($request['hideempty']) && $request['hideempty'] == 0 ) {
