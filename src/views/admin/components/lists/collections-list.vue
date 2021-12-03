@@ -34,10 +34,10 @@
                             aria-role="listitem">
                         {{ $i18n.get('label_delete_selected_collections') }}
                     </b-dropdown-item>
-                    <b-dropdown-item 
+                    <!-- <b-dropdown-item 
                             disabled
                             aria-role="listitem">{{ $i18n.get('label_edit_selected_collections') + ' (Not ready)' }}
-                    </b-dropdown-item>
+                    </b-dropdown-item> -->
                 </b-dropdown>
             </div>
         </div>
@@ -292,7 +292,7 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: getTotalItems(collection.total_items),
+                                        content: getTotalItemsDetailed(collection.total_items),
                                         autoHide: false,
                                         classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
@@ -317,7 +317,8 @@
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
                                                 classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
-                                                placement: 'auto'
+                                                placement: 'auto',
+                                                html: true
                                             }"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
@@ -413,6 +414,9 @@ export default {
         },
         getTotalItems(total_items) {
             return Number(total_items['publish']) + Number(total_items['private']) + Number(total_items['draft']);
+        },
+        getTotalItemsDetailed(total_items) {
+            return this.$i18n.get('status_public') + ': ' + total_items['publish'] + '<br> ' + this.$i18n.get('status_private') + ': ' + total_items['private'] + '<br> ' + this.$i18n.get('status_draft') + ': ' + total_items['draft'];
         },
         deleteOneCollection(collectionId) {
             this.$buefy.modal.open({
