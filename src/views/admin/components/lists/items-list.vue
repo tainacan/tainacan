@@ -26,7 +26,7 @@
             <span
                     class="selected-items-info"
                     v-if="selectedItems.length && items.length > 1 && !isAllItemsSelected">
-                {{ selectedItems.length != 1 ? (selectedItems.length + ' ' + $i18n.get('label_selected_items')) : ('1 ' + $i18n.get('label_selected_item')) }}<span v-if="selectedItems.length != amountOfSelectedItemsOnThisPage && amountOfSelectedItemsOnThisPage > 0">,&nbsp;({{ $i18n.getWithVariables('label_%s_on_this_page', [ amountOfSelectedItemsOnThisPage ]) }})</span>
+                {{ selectedItems.length != 1 ? $i18n.getWithVariables('label_%s_selected_items', [selectedItems.length]) : $i18n.get('label_one_selected_item') }}<span v-if="selectedItems.length != amountOfSelectedItemsOnThisPage && amountOfSelectedItemsOnThisPage > 0">&nbsp;({{ $i18n.getWithVariables('label_%s_on_this_page', [ amountOfSelectedItemsOnThisPage ]) }})</span>
                 <button
                         class="link-style"
                         @click="cleanSelectedItems()">

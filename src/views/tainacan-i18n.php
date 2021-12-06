@@ -415,8 +415,10 @@ return apply_filters( 'tainacan-i18n', [
 	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan' ),
 	'label_selected_term'                            => __( 'Selected term', 'tainacan' ),
-	'label_selected_items'                           => __( 'Selected items', 'tainacan' ),
+	'label_%s_selected_items'                        => __( '%s selected items', 'tainacan' ),
 	'label_selected_item'                            => __( 'Selected item', 'tainacan' ),
+	'label_selected_items'                           => __( 'Selected items', 'tainacan' ),
+	'label_one_selected_item'                        => __( 'One selected item', 'tainacan' ),
 	'label_all_items_selected'                       => __( 'All items selected', 'tainacan' ),
 	/* translators: Here there is a number of items that are selected in this listing */
 	'label_%s_on_this_page'                          => __( '%s on this page', 'tainacan' ),
