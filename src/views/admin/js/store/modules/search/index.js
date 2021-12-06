@@ -4,8 +4,8 @@ import * as mutations from './mutations';
 
 const state = {
     postquery: {
-        orderby: 'date',
-        order: 'DESC',
+        orderby: '',
+        order: '',
         paged: 1,
         perpage: 12,
         status: '',
@@ -23,7 +23,6 @@ const state = {
     totalPages: 0,
     itemsPerPage: 12, // Not the same as postquery.perpage as API may have limited it's value
     facets: {},
-    orderByName: '',
     selecteditems: [],
     highlightedItem: null
 };

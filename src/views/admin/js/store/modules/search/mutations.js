@@ -159,10 +159,6 @@ export const setAdminViewMode = ( state, adminViewMode ) => {
     state.postquery.admin_view_mode = adminViewMode;
 };
 
-export const setOrderByName = ( state, orderByName ) => {
-    state.orderByName = orderByName;
-};
-
 export const addFilterTag = ( state, filterTag ) => {
     state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);

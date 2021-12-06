@@ -91,10 +91,10 @@ class Collections extends Repository {
 			],
 			'default_orderby'            => [
 				'map'         => 'meta',
-				'title'       => __( 'Default Order metadata', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'Default property items in this collections will be ordered by', 'tainacan' ),
-				'default'     => 'name',
+				'title'       => __( 'Default order metadata', 'tainacan' ),
+				'type'        => ['string', 'array', 'object'],
+				'description' => __( 'Default property that items in this collections will be ordered by', 'tainacan' ),
+				'default'     => 'creation_date',
 				//'validation' => v::stringType(),
 			],
 			'default_order'              => [

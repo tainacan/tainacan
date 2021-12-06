@@ -1,6 +1,17 @@
 import axios from '../../../axios';
+import qs from 'qs';
 
-export const fetchMetadata = ({commit}, { collectionId, isRepositoryLevel, isContextEdit, includeDisabled, isAdvancedSearch, parent, includeControlMetadataTypes, includeOptionsAsHtml }) => {
+export const fetchMetadata = ({commit}, {
+    collectionId,
+    isRepositoryLevel,
+    isContextEdit,
+    includeDisabled,
+    isAdvancedSearch,
+    parent,
+    includeControlMetadataTypes,
+    includeOptionsAsHtml,
+    metaquery
+}) => {
 
     const source = axios.CancelToken.source();
 
@@ -8,28 +19,33 @@ export const fetchMetadata = ({commit}, { collectionId, isRepositoryLevel, isCon
         request: new Promise((resolve, reject) => {
             let endpoint = '';
             if (!isRepositoryLevel)
-                endpoint = '/collection/' + collectionId + '/metadata/';
+                endpoint = '/collection/' + collectionId + '/metadata/?';
             else
-                endpoint = '/metadata/';
+                endpoint = '/metadata/?';
 
-            endpoint += '?nopaging=1';
+            let query = {
+                nopaging: 1
+            };
             
             if (isContextEdit)
-                endpoint += '&context=edit';
+                query['context'] = 'edit';
 
             if (includeDisabled)
-                endpoint += '&include_disabled=' + includeDisabled;
+                query['include_disabled'] = includeDisabled;
 
             if (parent)
-                endpoint += '&parent=' + parent;
+                query['parent'] = parent;
             
             if (includeControlMetadataTypes)
-                endpoint += '&include_control_metadata_types=true';
+                query['include_control_metadata_types'] = 'true';
 
             if (includeOptionsAsHtml)
-                endpoint += '&include_options_as_html=yes';
+                query['include_options_as_html'] = 'yes';
 
-            axios.tainacan.get(endpoint, { cancelToken: source.token })
+            if (metaquery)
+                query['metaquery'] = metaquery;
+
+            axios.tainacan.get(endpoint + qs.stringify(query), { cancelToken: source.token })
                 .then((res) => {
                     let metadata = res.data;
                     if (!isAdvancedSearch) {

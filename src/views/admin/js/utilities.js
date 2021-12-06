@@ -107,3 +107,100 @@ export const ThumbnailHelperFunctions = () => {
 ThumbnailHelperPlugin.install = function (Vue, options = {}) {
     Vue.prototype.$thumbHelper = ThumbnailHelperFunctions();
 };
+
+
+
+// ORDERBY PLUGIN - Converts a metadatum information into appropriate orderby query for WP Query
+export const OrderByHelperPlugin = {};
+
+export const OrderByHelperFunctions = () => {
+    return {
+        getOrderByForMetadatum(metadatum) {
+
+            // If we are receiving a metadatum object, we can handle different orderby properties
+            if (metadatum.id !== undefined) {
+                if (metadatum.metadata_type_object && (metadatum.metadata_type_object.primitive_type == 'float' || metadatum.metadata_type_object.primitive_type == 'int')) {
+                    return {
+                        metakey: metadatum.id,
+                        orderby: 'meta_value_num'
+                    }
+                } else if (metadatum.metadata_type_object && metadatum.metadata_type_object.primitive_type == 'date') {
+                    return {
+                        orderby: 'meta_value',
+                        metakey: metadatum.id,
+                        metatype: 'DATETIME'
+                    }
+                } else if (metadatum.metadata_type_object && metadatum.metadata_type_object.core) {
+                    return  metadatum.metadata_type_object.related_mapped_prop
+                } else {
+                    return {
+                        orderby: 'meta_value',
+                        metakey: metadatum.id
+                    }
+                }
+            // If it is just a string, we stick to the default
+            } else {
+                // We do this due to previous metadata that were saved as metadata object instead of orderby objects.
+                if (metadatum.slug) {
+                    switch(metadatum.slug) {
+                        case 'modification_date': return 'modified'
+                        case 'creation_date': return 'date'
+                        case 'author_name': return 'author_name'
+                        case 'created_by': return 'author_name'
+                        case 'title': return 'title'
+                        case 'description': return 'description'
+                        default: return metadatum;
+                    }
+                } else {
+                    switch(metadatum) {
+                        case 'modification_date': return { orderby: 'modified' }
+                        case 'creation_date': return { orderby: 'date' }
+                        case 'author_name': return { orderby: 'author_name' }
+                        case 'created_by': return { orderby: 'author_name' }
+                        case 'title': return { orderby: 'title' }
+                        case 'description': return { orderby: 'description' }
+                        default: return metadatum;
+                    }
+                }
+            }
+        },
+        getOrderByMetadatumName(orderBy, metadata) {
+
+            if (orderBy.metakey) {
+                let existingMetadataIndex = metadata.findIndex((aMetadatum) => aMetadatum.id == orderBy.metakey);
+                return existingMetadataIndex >= 0 ? metadata[existingMetadataIndex].name : '';
+            } else {
+                // We do this due to previous metadata that were saved as metadata object instead of orderby objects.
+                if (orderBy.slug) {
+                    switch(orderBy.slug) {
+                        case 'modification_date': return 'label_modification_date'
+                        case 'modified': return 'label_modification_date'
+                        case 'creation_date': return  'label_creation_date'
+                        case 'date': return  'label_creation_date'
+                        case 'author_name': return 'label_created_by'
+                        case 'created_by': return 'label_created_by'
+                        case 'title': return 'label_title'
+                        case 'description': return 'label_description'
+                        default: return orderBy.slug;
+                    }
+                } else {
+                    switch(orderBy.orderby) {
+                        case 'modification_date': return 'label_modification_date'
+                        case 'modified': return 'label_modification_date'
+                        case 'creation_date': return  'label_creation_date'
+                        case 'date': return  'label_creation_date'
+                        case 'author_name': return 'label_created_by'
+                        case 'created_by': return 'label_created_by'
+                        case 'title': return 'label_title'
+                        case 'description': return 'label_description'
+                        default: return orderBy.orderby;
+                    }
+                }
+            }
+        }
+    }
+}
+
+OrderByHelperPlugin.install = function (Vue, options = {}) {
+    Vue.prototype.$orderByHelper = OrderByHelperFunctions();
+};

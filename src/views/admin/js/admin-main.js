@@ -71,7 +71,8 @@ import {
     CommentsStatusHelperPlugin 
 } from './admin-utilities';
 import { 
-    ThumbnailHelperPlugin
+    ThumbnailHelperPlugin,
+    OrderByHelperPlugin
 } from './utilities';
 
 export default (element) => {
@@ -107,6 +108,7 @@ export default (element) => {
             Vue.use(RouterHelperPlugin);
             Vue.use(UserCapabilitiesPlugin);
             Vue.use(ThumbnailHelperPlugin);
+            Vue.use(OrderByHelperPlugin);
             Vue.use(StatusHelperPlugin);
             Vue.use(ConsolePlugin, {visual: false});
             Vue.use(VueTheMask);
