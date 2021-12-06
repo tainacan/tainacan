@@ -1238,18 +1238,20 @@ export default {
                                 slug: 'creation_date',
                                 id: 'creation_date'
                             });       
-
+                            
                             // Updates localDefaultOrder variable that needs only the ID of the metadata
-                            this.localDefaultOrderBy(this.form.default_orderby);
                             if (this.form.default_orderby.metakey)
                                 this.localDefaultOrderBy =  this.form.default_orderby.metakey;
                             else {
-                                if (this.form.default_orderby == 'title')
-                                    this.localDefaultOrderBy = this.sortingMetadata.find((aMetadatum) => aMetadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title').id;
-                                else if (this.form.default_orderby == 'description')   
-                                    this.localDefaultOrderBy = this.sortingMetadata.find((aMetadatum) => aMetadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Description').id;
-                                else
+                                if (this.form.default_orderby == 'title') {
+                                    const localDefaultOrderByIndex = this.sortingMetadata.findIndex((aMetadatum) => aMetadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title');
+                                    this.localDefaultOrderBy = localDefaultOrderByIndex >= 0 ? this.sortingMetadata[localDefaultOrderByIndex].id : 'title';
+                                } else if (this.form.default_orderby == 'description') {
+                                    const localDefaultOrderByIndex = this.sortingMetadata.findIndex((aMetadatum) => aMetadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Description');
+                                    this.localDefaultOrderBy = localDefaultOrderByIndex >= 0 ? this.sortingMetadata[localDefaultOrderByIndex].id : 'description';
+                                } else {
                                     this.localDefaultOrderBy = this.form.default_orderby;
+                                }
                             }
 
                             this.isLoadingMetadata = false;
