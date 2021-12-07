@@ -514,7 +514,8 @@
           margin-right: 20px;
           display: block;
           height: 54px;
-          width: 54px; }
+          width: 54px;
+          min-width: 54px; }
       .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-list li.item-list-item img,
       .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-list li.item-list-item img {
         height: auto;

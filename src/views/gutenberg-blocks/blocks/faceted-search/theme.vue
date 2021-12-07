@@ -7,6 +7,8 @@
             :enabled-view-modes="$root.enabledViewModes" 
             :default-view-mode="$root.defaultViewMode"
             :is-forced-view-mode="$root.isForcedViewMode"
+            :default-order="$root.defaultOrder"
+            :default-order-by="$root.defaultOrderBy"
             :default-items-per-page="$root.defaultItemsPerPage"
             :hide-filters="$root.hideFilters ? $root.hideFilters : false"
             :hide-hide-filters-button="$root.hideHideFiltersButton ? $root.hideHideFiltersButton : false"

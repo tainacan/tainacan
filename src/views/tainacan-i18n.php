@@ -415,8 +415,10 @@ return apply_filters( 'tainacan-i18n', [
 	'label_all_terms'                                => __( 'All terms', 'tainacan' ),
 	'label_selected_terms'                           => __( 'Selected terms', 'tainacan' ),
 	'label_selected_term'                            => __( 'Selected term', 'tainacan' ),
-	'label_selected_items'                           => __( 'Selected items', 'tainacan' ),
+	'label_%s_selected_items'                        => __( '%s selected items', 'tainacan' ),
 	'label_selected_item'                            => __( 'Selected item', 'tainacan' ),
+	'label_selected_items'                           => __( 'Selected items', 'tainacan' ),
+	'label_one_selected_item'                        => __( 'One selected item', 'tainacan' ),
 	'label_all_items_selected'                       => __( 'All items selected', 'tainacan' ),
 	/* translators: Here there is a number of items that are selected in this listing */
 	'label_%s_on_this_page'                          => __( '%s on this page', 'tainacan' ),
@@ -608,6 +610,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_document_option_is_image'				 => __( 'Is link to external image', 'tainacan' ),
 	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 	'label_items_selection'							 => __( 'Items selection', 'tainacan'),
+	'label_default_orderby' 						 => __(	'Initial default sorting', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -898,13 +901,14 @@ return apply_filters( 'tainacan-i18n', [
 	'info_related_items'							 => __( 'These are items that are related to this item via their own relationship type metadata. You can edit such relation on their pages.', 'tainacan'),
 	'info_document_option_forced_iframe'			 => __( 'Attempt to use an iframe to embed url content on the item page. You may use this option if the autoembed does not work.', 'tainacan'),
 	'info_document_option_is_image'					 => __( 'If you are linking directly to an external image, use this option so it can be properly embedded.', 'tainacan' ),
-	'info_applied_filters'							 => __( 'filters applied', 'tainacan'),
-	'info_items_found'							 	 => __( 'items found', 'tainacan'),
-	'info_applied_filter'							 => __( 'filter applied', 'tainacan'),
-	'info_item_found'							 	 => __( 'item found', 'tainacan'),
+	'info_%s_applied_filters'						 => __( '<strong>%s</strong> filters applied', 'tainacan'),
+	'info_items_%s_found'							 => __( '<strong>%s</strong> items found', 'tainacan'),
+	'info_%s_applied_filter'						 => __( '<strong>%s</strong> filter applied', 'tainacan'),
+	'info_item_%s_found'							 => __( '<strong>%s</strong> item found', 'tainacan'),
 	'info_iframe_dimensions'						 => __( 'The dimension values will be passed to the iframe, but it\'s rendering may change according to the theme display settings. It is still important to keep an approximate aspect ratio to the inner content.', 'tainacan'),
 	'info_metadata_mapper_helper'					 => __(	'Select the corresponding metadata so they can be exposed according to the mapper', 'tainacan'),
-
+	'info_default_orderby'							 => __( 'These settings only affect the initial state of the items sorting. After changed, the value used will be the latest selected by the user.', 'tainacan' ),
+	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),
