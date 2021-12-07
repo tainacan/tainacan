@@ -31,11 +31,26 @@ then
     npm ci
 fi
 
+is_prod_build=false
+for i in "$@"
+do
+    case $i in
+        --prod)
+            is_prod_build=true
+        ;;
+    esac
+done
+
 new_md5_composer=$(<last-composer-build.md5)
 if [ "$current_md5_composer" != "$new_md5_composer" ]
 then
     ## Install composer dependencies
-    composer install
+    if [ "$is_prod_build" == false ]
+    then
+        composer install
+    else
+        composer install --no-dev
+    fi
 fi
 
 new_md5_sass=$(<last-sass-build.md5)
@@ -47,24 +62,15 @@ fi
 
 new_md5_js=$(<last-js-build.md5)
 
-is_prod_build=false
 if [ "$current_md5_js" != "$new_md5_js" ]
 then
-    for i in "$@"
-    do
-        case $i in
-            --prod)
-                is_prod_build=true
-                echo "$(tput setab 4)  $(tput sgr 0) $(tput setab 4) $(tput sgr 0) Building in production mode $(tput setab 4) $(tput sgr 0) $(tput setab 4)  $(tput sgr 0)"
-                npm run build-prod
-            ;;
-        esac
-    done
-
     if [ "$is_prod_build" == false ]
     then
         echo "$(tput setab 2)  $(tput sgr 0) $(tput setab 2) $(tput sgr 0) Building in development mode $(tput setab 2) $(tput sgr 0) $(tput setab 2)  $(tput sgr 0)"
         npm run build
+    else
+        echo "$(tput setab 4)  $(tput sgr 0) $(tput setab 4) $(tput sgr 0) Building in production mode $(tput setab 4) $(tput sgr 0) $(tput setab 4)  $(tput sgr 0)"
+        npm run build-prod
     fi
 fi
 
