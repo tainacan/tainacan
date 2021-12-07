@@ -78,7 +78,7 @@
                                         v-tooltip="{
                                             content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
                                             autoHide: true,
-                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
                                         class="icon grip-icon">
@@ -105,7 +105,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('status_private'),
                                                 autoHide: true,
-                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }">
                                         <i class="tainacan-icon tainacan-icon-private"/>
@@ -114,7 +114,7 @@
                                             v-tooltip="{
                                                 content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
                                                 autoHide: true,
-                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="icon icon-level-identifier">
@@ -149,7 +149,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
                                                     autoHide: true,
-                                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                     placement: 'bottom'
                                                 }"
                                                 class="icon">
@@ -164,7 +164,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('delete'),
                                                     autoHide: true,
-                                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                     placement: 'bottom'
                                                 }"
                                                 class="icon">
@@ -233,7 +233,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('instruction_click_or_drag_filter_create'),
                                                 autoHide: true,
-                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }" 
                                             class="icon grip-icon">
@@ -243,7 +243,7 @@
                                             v-tooltip="{
                                                 content: metadatum.name + (metadatum.parent_name ? (' (' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')') : ''),
                                                 autoHide: true,
-                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="metadatum-name">
@@ -259,7 +259,7 @@
                                             v-tooltip="{
                                                 content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
                                                 autoHide: true,
-                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="icon icon-level-identifier">
@@ -317,7 +317,8 @@
                     trap-focus
                     aria-modal
                     aria-role="dialog"
-                    custom-class="tainacan-modal">
+                    custom-class="tainacan-modal"
+                    :close-button-aria-label="$i18n.get('close')">
                 <div 
                         autofocus
                         role="dialog"
@@ -476,7 +477,8 @@ export default {
                     },
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });  
         } else {
             next()

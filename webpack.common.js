@@ -4,25 +4,22 @@ const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
     entry: {
-        admin: './src/views/admin/js/main.js',
-        roles: './src/views/roles/js/roles-main.js',
-        reports: './src/views/reports/js/reports-main.js',
-        media_component: './src/views/media-component/media-component.js',
+        tainacan_pages_common_scripts: './src/views/tainacan-pages-common-scripts.js',
+        tainacan_blocks_common_scripts: './src/views/gutenberg-blocks/tainacan-blocks-common-scripts.js',
         tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
-        tainacan_blocks_common_theme_scripts: './src/views/gutenberg-blocks/tainacan-blocks/tainacan-blocks-common-theme-scripts.js',
 
-        block_terms_list: './src/views/gutenberg-blocks/tainacan-blocks/terms-list/index.js',
-        block_items_list: './src/views/gutenberg-blocks/tainacan-blocks/items-list/index.js',
-        block_dynamic_items_list: './src/views/gutenberg-blocks/tainacan-blocks/dynamic-items-list/index.js',
-        block_carousel_items_list: './src/views/gutenberg-blocks/tainacan-blocks/carousel-items-list/index.js',
-        block_search_bar: './src/views/gutenberg-blocks/tainacan-blocks/search-bar/index.js',
-        block_collections_list: './src/views/gutenberg-blocks/tainacan-blocks/collections-list/index.js',
-        block_carousel_collections_list: './src/views/gutenberg-blocks/tainacan-blocks/carousel-collections-list/index.js',
-        block_carousel_related_items: './src/views/gutenberg-blocks/tainacan-blocks/carousel-related-items/index.js',
-        block_facets_list: './src/views/gutenberg-blocks/tainacan-blocks/facets-list/index.js',
-        block_item_submission_form: './src/views/gutenberg-blocks/tainacan-blocks/item-submission-form/index.js',
-        block_faceted_search: './src/views/gutenberg-blocks/tainacan-blocks/faceted-search/index.js',
-        block_carousel_terms_list: './src/views/gutenberg-blocks/tainacan-blocks/carousel-terms-list/index.js'
+        block_terms_list: './src/views/gutenberg-blocks/blocks/terms-list/index.js',
+        block_items_list: './src/views/gutenberg-blocks/blocks/items-list/index.js',
+        block_dynamic_items_list: './src/views/gutenberg-blocks/blocks/dynamic-items-list/index.js',
+        block_carousel_items_list: './src/views/gutenberg-blocks/blocks/carousel-items-list/index.js',
+        block_search_bar: './src/views/gutenberg-blocks/blocks/search-bar/index.js',
+        block_collections_list: './src/views/gutenberg-blocks/blocks/collections-list/index.js',
+        block_carousel_collections_list: './src/views/gutenberg-blocks/blocks/carousel-collections-list/index.js',
+        block_related_items_list: './src/views/gutenberg-blocks/blocks/related-items-list/index.js',
+        block_facets_list: './src/views/gutenberg-blocks/blocks/facets-list/index.js',
+        block_item_submission_form: './src/views/gutenberg-blocks/blocks/item-submission-form/index.js',
+        block_faceted_search: './src/views/gutenberg-blocks/blocks/faceted-search/index.js',
+        block_carousel_terms_list: './src/views/gutenberg-blocks/blocks/carousel-terms-list/index.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/js/'),
@@ -43,7 +40,10 @@ module.exports = {
             {
                 test: /\.vue$/,
                 exclude: /node_modules/,
-                loader: 'vue-loader'
+                loader: 'vue-loader',
+                options: {
+                    prettify: false
+                }
             },
             {
                 test: /\.js$/,
@@ -95,7 +95,7 @@ module.exports = {
             'PhotoSwipe': 'PhotoSwipe'
         }),
         new MomentLocalesPlugin({
-            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
+            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
         })
     ]
 };

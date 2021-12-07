@@ -167,7 +167,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	        }
 	    }
 	    return new \WP_REST_Response([
-	        'error_message' => __('Body can not be empty.', 'tainacan'),
+	        'error_message' => __('Body cannot be empty.', 'tainacan'),
 	        'item'          => $request->get_body()
 	    ], 400);
 	}

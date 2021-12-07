@@ -79,7 +79,7 @@ class Term_Importer extends Importer {
 									<h5><?php _e('Existing Taxonomy', 'tainacan'); ?></h5>
 								</div>
 								<div class="help-tooltip-body">
-									<p><?php _e('Inform the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
+									<p><?php _e('Specify the taxonomy you want to import the terms to.', 'tainacan'); ?></p>
 									<p><?php _e('Select an existing taxonomy or create a new one on the fly.', 'tainacan'); ?></p>
 								</div>
 							</div>
@@ -106,7 +106,7 @@ class Term_Importer extends Importer {
 						</div>
 					</div>
 				</div>
-			
+
 			</div>
 		<?php
 		return ob_get_clean();

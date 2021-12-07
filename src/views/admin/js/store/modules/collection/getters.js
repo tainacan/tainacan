@@ -10,6 +10,10 @@ export const getCollections = state => {
     return state.collections;
 }
 
+export const getCollectionTaxonomies = state => {
+    return state.collectionTaxonomies;
+}
+
 export const getCollection = state => {
     return state.collection;
 }

@@ -2,13 +2,11 @@
     <transition name="filter-item">
         <div v-if="filterTags != undefined && filterTags.length > 0">
             <p class="filter-tags-info">
-                <span style="margin-right: 1em">
-                    <strong>{{ totalItems }}</strong>
-                    {{ ' ' + ( totalItems == 1 ? $i18n.get('info_item_found') : $i18n.get('info_items_found') ) }}
-                </span>
+                <span 
+                        style="margin-right: 1em"
+                        v-html="totalItems == 1 ? $i18n.getWithVariables('info_item_%s_found', [totalItems]) : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />
                 <span>
-                    <strong>{{ filterTags.length }}</strong>
-                    {{ ' ' + ( filterTags.length == 1 ? $i18n.get('info_applied_filter') : $i18n.get('info_applied_filters') ) }}
+                    <span v-html="filterTags.length == 1 ? $i18n.getWithVariables('info_%s_applied_filter', [filterTags.length]) : $i18n.getWithVariables('info_%s_applied_filters', [filterTags.length])" />
                     &nbsp;
                     <a 
                             @click="clearAllFilters()"
@@ -24,16 +22,18 @@
                 <swiper-slide 
                         v-for="(filterTag, index) of filterTags"
                         :key="index"
-                        class="filter-tag">
+                        class="filter-tag"
+                        :class="{ 'is-readonly': !filterTag.filterId && filterTag.argType != 'postin' }">
                     <span class="">
                         <div class="filter-tag-metadatum-name">
                             {{ filterTag.metadatumName }}
                         </div>
-                        <div class="filter-tag-metadatum-value">
-                            {{ filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label }}
-                        </div>
+                        <div
+                                class="filter-tag-metadatum-value"
+                                v-html="filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label"/>
                     </span>
                     <a
+                            v-if="filterTag.filterId || filterTag.argType == 'postin'"
                             role="button"
                             tabindex="0"
                             class="tag is-delete"
@@ -103,24 +103,35 @@
         computed: {
             filterTags() {
                 let tags = this.getFilterTags();
-                
                 let flattenTags = [];
-                for (let tag of tags) {
+
+                tags.forEach( tag => {
                     if (Array.isArray(tag.label)) {
-                        for (let i = 0; i < tag.label.length; i++) 
+                        for (let i = 0; i < tag.label.length; i++) {
                             flattenTags.push({
-                                filterId: tag.filterId,
-                                label: tag.label,
                                 singleLabel: tag.label[i],
                                 value: tag.value[i],
+                                filterId: tag.filterId,
+                                label: tag.argType != 'postin' ? tag.label : ( tag.label + ' ' + (tag.label == 1 ? this.$i18n.get('item') : this.$i18n.get('items') )),
                                 taxonomy: tag.taxonomy,
-                                metadatumName: tag.metadatumName,
-                                metadatumId: tag.metadatumId
-                            }); 
+                                metadatumName: this.getMetadatumName(tag),
+                                metadatumId: tag.metadatumId,
+                                argType: tag.argType
+                            });
+                        }
                     } else {
-                        flattenTags.push(tag);
+                        flattenTags.push({
+                            value: tag.value,
+                            filterId: tag.filterId,
+                            label: tag.argType != 'postin' ? tag.label : ( tag.label + ' ' + (tag.label == 1 ? this.$i18n.get('item') : this.$i18n.get('items') )),
+                            taxonomy: tag.taxonomy,
+                            metadatumName: this.getMetadatumName(tag),
+                            metadatumId: tag.metadatumId,
+                            argType: tag.argType
+                        });
                     }
-                }
+                });
+                
                 return flattenTags;
             },
             totalItems() {
@@ -132,7 +143,7 @@
                 'getFilterTags',
                 'getTotalItems'
             ]),
-            removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId, metadatumName }) {
+            removeMetaQuery({ filterId, value, singleLabel, label, taxonomy, metadatumId, metadatumName, argType }) {
                 this.$eventBusSearch.resetPageOnStore();
                 this.$eventBusSearch.removeMetaFromFilterTag({ 
                     filterId: filterId,
@@ -141,14 +152,21 @@
                     value: value, 
                     taxonomy: taxonomy,
                     metadatumId: metadatumId,
-                    metadatumName
+                    metadatumName:metadatumName,
+                    argType: argType
                 });
             },
             clearAllFilters() {
                 this.$eventBusSearch.resetPageOnStore();
-                for (let tag of this.filterTags) {
-                    this.removeMetaQuery(tag);
-                }
+                this.$eventBusSearch.clearAllFilters();
+            },
+            getMetadatumName(tag) {
+                if (tag.argType == 'postin')
+                    return this.$i18n.get('label_items_selection');
+                else if (tag.argType == 'collection')
+                    return this.$i18n.get('collection');
+                else
+                 return tag.metadatumName;
             }
         }
     }
@@ -203,6 +221,9 @@
                 &:not(:hover) {
                     background-color: transparent;
                 }
+            }
+            &.is-readonly {
+                border-style: dashed;
             }
         }
 

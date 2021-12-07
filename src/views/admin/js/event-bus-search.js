@@ -9,6 +9,8 @@ export default {
                 errors : [],
                 query: {},
                 collectionId: undefined,
+                defaultOrder: 'ASC',
+                defaultOrderBy: 'date',
                 taxonomy: undefined,
                 termId: undefined,
                 searchCancel: undefined
@@ -19,10 +21,6 @@ export default {
                         this.addTaxquery(data);
                     else
                         this.addMetaquery(data);
-                });
-
-                this.$on('sendValuesToTags', data => {
-                   this.$store.dispatch('search/addFilterTag', data);
                 });
 
                 this.$root.$on('closeAdvancedSearch', () => {
@@ -68,7 +66,7 @@ export default {
                         // Order (ASC, DESC)
                         if (this.$route.query.order == undefined || to.params.collectionId != from.params.collectionId) {
                             let orderKey = (this.collectionId != undefined ? 'order_' + this.collectionId : 'order');
-                            let orderValue = this.$userPrefs.get(orderKey);
+                            let orderValue = this.$userPrefs.get(orderKey) ? this.$userPrefs.get(orderKey) : this.defaultOrder;
 
                             if (orderValue)
                                 this.$route.query.order = orderValue;
@@ -81,29 +79,21 @@ export default {
                         // Order By (required extra work to deal with custom metadata ordering)
                         if (this.$route.query.orderby == undefined || to.params.collectionId != from.params.collectionId) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
-                            let orderBy = this.$userPrefs.get(orderByKey);
+                            let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
 
                             if (orderBy) {
-                                if (orderBy.slug == 'creation_date') {
-                                    this.$route.query.orderby = 'date';
-                                } else if (orderBy.slug == 'author_name') {
-                                    this.$route.query.orderby = 'author_name';
-                                } else if (orderBy.metadata_type_object.primitive_type == 'float' || orderBy.metadata_type_object.primitive_type == 'int') {
-                                    this.$route.query.orderby = 'meta_value_num';
-                                    this.$route.query.metakey = orderBy.id;
-                                } else if (orderBy.metadata_type_object.primitive_type == 'date') {
-                                    this.$route.query.orderby = 'meta_value';
-                                    this.$route.query.metakey = orderBy.id;
-                                    this.$route.query.metatype = 'DATETIME';
-                                } else if (orderBy.metadata_type_object.core) {
-                                    this.$route.query.orderby = orderBy.metadata_type_object.related_mapped_prop == 'author_id' ? 'author' : orderBy.metadata_type_object.related_mapped_prop;
+                                
+                                // Previously was stored as a metadata object, now it is a orderby object
+                                if (orderBy.slug)
+                                    orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
+
+                                if (orderBy.orderby) {
+                                    Object.keys(orderBy).forEach((paramKey) => {
+                                        this.$route.query[paramKey] = orderBy[paramKey];
+                                    });
                                 } else {
-                                    this.$route.query.orderby = 'meta_value';
-                                    this.$route.query.metakey = orderBy.id;
+                                    this.$route.query.orderby = orderBy;
                                 }
- 
-                                // Sets orderByName as null so ItemsPage can take care of creating it
-                                this.$store.dispatch('search/setOrderByName', null);
 
                             } else {
                                 this.$route.query.orderby = 'date';
@@ -111,9 +101,6 @@ export default {
                                     slug: 'creation_date',
                                     name: this.$i18n.get('label_creation_date')
                                 }).catch(() => { });
-
-                                // Sets orderByName as null so ItemsPage can take care of creating it
-                                this.$store.dispatch('search/setOrderByName', null);
                             }
                         }
 
@@ -183,12 +170,11 @@ export default {
                         ) {
                             this.$emit('has-to-reload-facets', true);
                         }
-
+                        
                         // Finally, loads items
-                        if (to.fullPath != from.fullPath) {
-                            this.loadItems(to);
-                        }
-                    }                      
+                        if (to.fullPath != from.fullPath)
+                            this.loadItems();
+                    }
                 }
             },
             methods: {
@@ -212,28 +198,32 @@ export default {
 
                     if (filterTag.singleLabel != undefined || filterTag.label != undefined) {
                         
-                        if (filterTag.taxonomy) {
-                            this.$store.dispatch('search/remove_taxquery', {
-                                filterId: filterTag.filterId,
-                                label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
-                                isMultiValue: filterTag.singleLabel ? false : true,
-                                taxonomy: filterTag.taxonomy,
-                                value: filterTag.value
-                            });
+                        if (filterTag.argType !== 'postin') {
+                            if (filterTag.taxonomy) {
+                                this.$store.dispatch('search/remove_taxquery', {
+                                    filterId: filterTag.filterId,
+                                    label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
+                                    isMultiValue: filterTag.singleLabel ? false : true,
+                                    taxonomy: filterTag.taxonomy,
+                                    value: filterTag.value
+                                });
+                            } else {
+                                this.$store.dispatch('search/remove_metaquery', {
+                                    filterId: filterTag.filterId,
+                                    label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
+                                    isMultiValue: filterTag.singleLabel ? false : true,
+                                    metadatum_id: filterTag.metadatumId,
+                                    value: filterTag.value
+                                });
+                            }
                         } else {
-                            this.$store.dispatch('search/remove_metaquery', {
-                                filterId: filterTag.filterId,
-                                label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
-                                isMultiValue: filterTag.singleLabel ? false : true,
-                                metadatum_id: filterTag.metadatumId,
-                                value: filterTag.value
-                            });
+                            this.$store.dispatch('search/remove_postin');
                         }
                         this.$store.dispatch('search/removeFilterTag', filterTag);
                     }
                     this.updateURLQueries();
                 },
-                addFetchOnly( metadatum, ignorePrefs, metadatumIDs ){
+                addFetchOnly( metadatum, ignorePrefs, metadatumIDs ) {
                     this.$store.dispatch('search/add_fetch_only', metadatum );
                     this.$store.dispatch('search/add_fetch_only_meta', metadatumIDs);
                     this.updateURLQueries();  
@@ -277,10 +267,15 @@ export default {
                 },
                 setOrderBy(orderBy) { 
                     let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
-                    if (this.$userPrefs.get(prefsOrderBy) != orderBy) {
-                        this.$userPrefs.set(prefsOrderBy, orderBy)
-                            .catch(() => {});
+
+                    if (orderBy.metakey) {
+                        if (!this.$userPrefs.get(prefsOrderBy) || orderBy.metakey != this.$userPrefs.get(prefsOrderBy).metakey)
+                            this.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
+                    } else {
+                        if (orderBy != this.$userPrefs.get(prefsOrderBy))
+                            this.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
                     }
+                    
                     this.$store.dispatch('search/setOrderBy', orderBy);
                     this.updateURLQueries();
                 },
@@ -338,7 +333,7 @@ export default {
                     if (singleSelection)
                         this.$store.dispatch('search/cleanSelectedItems');
 
-                    this.$store.dispatch('search/setSelectedItems', selectedItems);    
+                    this.$store.dispatch('search/setSelectedItems', selectedItems);
  
                     let currentSelectedItems = this.$store.getters['search/getSelectedItems'];
 
@@ -352,6 +347,13 @@ export default {
                         window.history.pushState({path: newurl}, '', newurl);
                     }      
                 },
+                cleanSelectedItems() {
+                    this.$store.dispatch('search/cleanSelectedItems');
+                },
+                filterBySelectedItems(selectedItems) {
+                    this.$router.replace({ query: {} });
+                    this.$router.replace({ query: { postin: selectedItems } });
+                },
                 highlightsItem(itemId) {
                     this.$store.dispatch('search/highlightsItem', itemId);
                     this.updateURLQueries();
@@ -363,17 +365,16 @@ export default {
                 updateStoreFromURL() {
                     this.$store.dispatch('search/set_postquery', this.$route.query);
                 },
-                loadItems(to) {
+                loadItems() {
 
                     // Forces fetch_only to be filled before any search happens
                     if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {  
-                        this.$emit( 'hasToPrepareMetadataAndFilters', to);
+                        this.$emit( 'hasToPrepareMetadataAndFilters');
                     } else {  
                         this.$emit( 'isLoadingItems', true);
                         // Cancels previous Request
                         if (this.searchCancel != undefined)
                             this.searchCancel.cancel('Item search Canceled.');
-
                         this.$store.dispatch('collection/fetchItems', {
                             'collectionId': this.collectionId,
                             'isOnTheme': (this.$route.name == null),
@@ -405,13 +406,19 @@ export default {
                     this.setTotalItems(null);
                     this.collectionId = collectionId;
                 },
+                setDefaultOrder(defaultOrder) {
+                    this.defaultOrder = defaultOrder;
+                },
+                setDefaultOrderBy(defaultOrderBy) {
+                    this.defaultOrderBy = defaultOrderBy;
+                },
                 setTerm(termId, taxonomy) {
                     this.termId = termId;
                     this.taxonomy = taxonomy;
                 },
                 clearAllFilters() {
                     this.$store.dispatch('search/cleanFilterTags');
-                    this.$store.dispatch('search/cleanMetaQueries');
+                    this.$store.dispatch('search/cleanMetaQueries', { keepCollections: true });
                     this.$store.dispatch('search/cleanTaxQueries');
                     this.updateURLQueries();
                 }

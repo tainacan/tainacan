@@ -165,7 +165,7 @@ class Item_Metadata extends Repository {
 
 			if ( $taxonomy ) {
 
-				// We can not simply use wp_set_object_terms() because it uses term_exists() which is not reliable 
+				// We cannot simply use wp_set_object_terms() because it uses term_exists() which is not reliable 
 				// see https://core.trac.wordpress.org/ticket/45333 and https://core.trac.wordpress.org/ticket/47099
 				// $success = wp_set_object_terms( $item_metadata->get_item()->get_id(), $new_terms, $taxonomy->get_db_identifier() );
 				
@@ -438,7 +438,7 @@ class Item_Metadata extends Repository {
 		if ( is_array( $ids ) ) {
 			foreach ( $ids as $id ) {
 				$post_meta_object = get_metadata_by_mid( 'post', $id );
-				if ( is_object( $post_meta_object ) ) {
+				if ( is_object( $post_meta_object ) && get_post($post_meta_object->meta_key) !== null ) {
 					$metadatum                            = new Entities\Metadatum( $post_meta_object->meta_key );
 					$return_value[ $metadatum->get_id() ] = new Entities\Item_Metadata_Entity( $item, $metadatum, $id, (int)$compound_meta_id );
 				}

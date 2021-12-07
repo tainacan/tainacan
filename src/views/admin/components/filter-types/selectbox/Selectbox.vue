@@ -103,8 +103,6 @@
                 } else {
                     this.selected = '';
                 }
-
-                this.$emit('sendValuesToTags', { label: this.selected, value: this.selected, metadatumName: this.metadatumName })
             },
             onSelect(value) {
                 this.$emit('input', {

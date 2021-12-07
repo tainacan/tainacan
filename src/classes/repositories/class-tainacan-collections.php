@@ -91,10 +91,10 @@ class Collections extends Repository {
 			],
 			'default_orderby'            => [
 				'map'         => 'meta',
-				'title'       => __( 'Default Order metadata', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'Default property items in this collections will be ordered by', 'tainacan' ),
-				'default'     => 'name',
+				'title'       => __( 'Default order metadata', 'tainacan' ),
+				'type'        => ['string', 'array', 'object'],
+				'description' => __( 'Default property that items in this collections will be ordered by', 'tainacan' ),
+				'default'     => 'creation_date',
 				//'validation' => v::stringType(),
 			],
 			'default_order'              => [
@@ -284,6 +284,7 @@ class Collections extends Repository {
 			'rewrite'             => ['slug' => sanitize_title(_x('collections', 'Slug: the string that will be used to build the URL', 'tainacan'))],
 			'capabilities'        => (array) $this->get_capabilities(),
 			'map_meta_cap'        => true,
+			'show_in_rest'        => true,
 			'supports'            => [
 				'title',
 				'editor',

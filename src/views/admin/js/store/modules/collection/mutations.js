@@ -33,6 +33,14 @@ export const setCollections = (state, collections) => {
     state.collections = collections;
 }
 
+export const setCollectionTaxonomies = (state, collectionTaxonomies) => {
+    state.collectionTaxonomies = collectionTaxonomies;
+}
+
+export const setCollectionTaxonomiesTerms = (state, { taxonomy, terms }) => {
+    Vue.set(state.collectionTaxonomies[taxonomy], 'terms', terms);
+}
+
 export const cleanCollections = (state) => {
     state.collections = [];
 }
@@ -75,4 +83,8 @@ export const setAttachments = ( state, attachments ) => {
 
 export const cleanAttachments = (state) => {
     state.attachments = [];
+}
+
+export const setFilterTags = ( state, filterTags ) => {
+    state.filter_tags = filterTags;
 }

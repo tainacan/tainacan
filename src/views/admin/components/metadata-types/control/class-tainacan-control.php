@@ -87,7 +87,7 @@ class Control extends Metadata_Type {
 		$this->set_primitive_type('control');
 		$this->set_component('tainacan-text');
 		$this->set_name( __('Control Type', 'tainacan') );
-		$this->set_description( __('A special metadata type, used to map certain item properties such as collection id and document type to metadata in order to easily create filters.', 'tainacan') );
+		$this->set_description( __('A special metadata type, used to map certain item properties such as collection ID and document type to metadata in order to easily create filters.', 'tainacan') );
 		$this->set_default_options([
 			'control_metadatum_options' => ['document_type', 'collection_id', 'has_thumbnail'],
 			'control_metadatum' => 'document_type',

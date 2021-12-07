@@ -18,7 +18,9 @@
             </a> -->
             <hr>
         </div>
-        <div class="tainacan-form">
+        <div 
+                class="tainacan-form" 
+                :class="'tainacan-metadatum-edition-form--type-' + editForm.metadata_type_object.component">
             <div class="options-columns">
                 <b-field
                         :addons="false"
@@ -66,6 +68,23 @@
                             rows="3"
                             v-model="editForm.description"
                             @focus="clearErrors('description')"/>
+                </b-field>
+
+                <b-field
+                        v-if="editForm.metadata_type_object.component != 'tainacan-compound'"
+                        :addons="false"
+                        :type="formErrors['placeholder'] != undefined ? 'is-danger' : ''"
+                        :message="formErrors['placeholder'] != undefined ? formErrors['placeholder'] : ''">
+                    <label class="label is-inline">
+                        {{ $i18n.getHelperTitle('metadata', 'placeholder') }}
+                        <help-button
+                                :title="$i18n.getHelperTitle('metadata', 'placeholder')"
+                                :message="$i18n.getHelperMessage('metadata', 'placeholder')"/>
+                    </label>
+                    <b-input
+                            v-model="editForm.placeholder"
+                            name="placeholder"
+                            @focus="clearErrors('placeholder')"/>
                 </b-field>
 
                 <b-field
@@ -532,7 +551,7 @@
             white-space: normal;
         }
         .metadata-form-section {
-            margin: 0.75em 0 0.5em 0;
+            margin: 1.5em 0 0.5em -1.5em;
             position: relative;
             cursor: pointer;
 
@@ -557,9 +576,6 @@
                 background-color: var(--tainacan-gray2);
                 margin-left: 42px;
             }
-        }
-        .metadata-form-section+.options-columns {
-            padding-left: 1.75em;
         }
 
         @media screen and (max-width: 768px) {

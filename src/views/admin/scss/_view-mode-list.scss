@@ -191,7 +191,8 @@
                     -webkit-column-break-inside: avoid;
                     page-break-inside: avoid;
                     break-inside: avoid;
-                    display: block;
+                    display: inline-block;
+                    width: 100%;
                 }
             
                 .metadata-label {
@@ -213,9 +214,9 @@
                     font-size: 0.75em;
                     margin-bottom: 1em;
                     color: var(--tainacan-info-color);
-                    -webkit-column-break-inside: auto;
-                    page-break-inside: auto;
-                    break-inside: auto;
+                    -webkit-column-break-inside: avoid;
+                    page-break-inside: avoid;
+                    break-inside: avoid;
                 }
 
                 & span:last-of-type>.metadata-value {

@@ -34,10 +34,10 @@
                             aria-role="listitem">
                         {{ $i18n.get('label_delete_selected_collections') }}
                     </b-dropdown-item>
-                    <b-dropdown-item 
+                    <!-- <b-dropdown-item 
                             disabled
                             aria-role="listitem">{{ $i18n.get('label_edit_selected_collections') + ' (Not ready)' }}
-                    </b-dropdown-item>
+                    </b-dropdown-item> -->
                 </b-dropdown>
             </div>
         </div>
@@ -109,6 +109,10 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
                         </th>
+                        <!-- Modification Date -->
+                        <th>
+                            <div class="th-wrap">{{ $i18n.get('label_modification_date') }}</div>
+                        </th>
                         <!-- Creation Date -->
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_creation_date') }}</div>
@@ -151,7 +155,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + collection.status),
                                         autoHide: true,
-                                        classes: ['tooltip', 'repository-tooltip'],
+                                        classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -189,7 +193,7 @@
                                         },
                                         content: collection.name,
                                         autoHide: false,
-                                        classes: ['tooltip', 'repository-tooltip'],
+                                        classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 {{ collection.name }}</p>
@@ -209,10 +213,30 @@
                                         },
                                         content: (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         autoHide: false,
-                                        classes: ['tooltip', 'repository-tooltip'],
+                                        classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"/>
+                        </td>
+                        <!-- Modification Date -->
+                        <td
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)"
+                                class="table-modification column-default-width" 
+                                :label="$i18n.get('label_modification_date')" 
+                                :aria-label="$i18n.get('label_modification_date') + ': ' + collection.modification_date">
+                            <p
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: collection.modification_date,
+                                        autoHide: false,
+                                        classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="collection.modification_date" />
                         </td>
                         <!-- Creation Date -->
                         <td
@@ -229,7 +253,7 @@
                                         },
                                         content: collection.creation_date,
                                         autoHide: false,
-                                        classes: ['tooltip', 'repository-tooltip'],
+                                        classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.creation_date" />
@@ -249,7 +273,7 @@
                                         },
                                         content: collection.author_name,
                                         autoHide: false,
-                                        classes: ['tooltip', 'repository-tooltip'],
+                                        classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.author_name" />
@@ -268,9 +292,9 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        content: getTotalItems(collection.total_items),
+                                        content: getTotalItemsDetailed(collection.total_items),
                                         autoHide: false,
-                                        classes: ['tooltip', 'repository-tooltip'],
+                                        classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="getTotalItems(collection.total_items)" />
@@ -292,8 +316,9 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                classes: ['tooltip', 'repository-tooltip'],
-                                                placement: 'auto'
+                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                placement: 'auto',
+                                                html: true
                                             }"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
@@ -308,7 +333,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                classes: ['tooltip', 'repository-tooltip'],
+                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                                 placement: 'auto'
                                             }"
                                             class="icon">
@@ -390,6 +415,9 @@ export default {
         getTotalItems(total_items) {
             return Number(total_items['publish']) + Number(total_items['private']) + Number(total_items['draft']);
         },
+        getTotalItemsDetailed(total_items) {
+            return this.$i18n.get('status_public') + ': ' + total_items['publish'] + '<br> ' + this.$i18n.get('status_private') + ': ' + total_items['private'] + '<br> ' + this.$i18n.get('status_draft') + ': ' + total_items['draft'];
+        },
         deleteOneCollection(collectionId) {
             this.$buefy.modal.open({
                 parent: this,
@@ -424,7 +452,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
             this.clearContextMenu();
         },
@@ -465,7 +494,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         },
         openCollection() {

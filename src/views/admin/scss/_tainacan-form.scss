@@ -68,22 +68,35 @@
             order: -1;
         }
         p.control:first-child .button {
-            border-right: none;
+            border-right-width: 0px;
         }
         p.control:last-child .button {
-            border-left: none;
+            border-left-width: 0px;
         }
         button, 
         input {
             height: auto !important;
             text-align: start;
         }
+        button.is-primary:disabled,
+        button.is-primary:disabled:hover,
+        button.is-primary:disabled:focus,
+        button.is-primary:disabled:active {
+            background-color: var(--tainacan-input-border-color) !important;
+        }
+        button.is-primary:not(:disabled),
+        button.is-primary:not(:disabled):hover,
+        button.is-primary:not(:disabled):focus,
+        button.is-primary:not(:disabled):active {
+            background-color: var(--tainacan-input-background-color) !important;
+        }
         button.is-primary,
         button.is-primary:hover,
         button.is-primary:focus,
         button.is-primary:active {
-            border: 1px solid var(--tainacan-input-border-color);
-            background-color: var(--tainacan-input-background-color) !important;
+            border-width: 1px;
+            border-style: solid;
+            border-color: var(--tainacan-input-border-color) !important;
             color: var(--tainacan-secondary) !important;
             padding: 0.25em 0.6em !important;
             border-radius: 0 !important;
@@ -140,7 +153,7 @@
             background-color: var(--tainacan-input-background-color) !important;
             border: 1px solid var(--tainacan-input-border-color) !important;
             &:focus>option:checked, &:focus>option:hover {
-                background-color: var(--tainacan-turquoise1) !important;
+                background-color: var(--tainacan-primary) !important;
             }
             &[disabled=disabled] {
                 border: 1px solid var(--tainacan-gray1) !important;
@@ -193,18 +206,21 @@
     }
 
     .form-hook-region {
+        margin-top: 0.75em;
         background-color: var(--tainacan-gray1);
-        padding: 1em 1.875em 2em 1.875em;
+        padding: 1em 1.5em 2em 1.5em;
+        margin-bottom: 0.75em;
+        break-inside: avoid;
 
-        h4 {
+        h3, h4, h5 {
             font-weight: 600;
-            color: var(--tainacan-turquoise5);
-            margin-bottom: 6px;
+            color: var(--tainacan-secondary);
+            margin-bottom: 4px;
         }
         hr {
-            margin-top: 8px;
+            margin-top: 4px;
             height: 1px;
-            background-color: var(--tainacan-turquoise5);
+            background-color: var(--tainacan-secondary);
         }
     }
 }

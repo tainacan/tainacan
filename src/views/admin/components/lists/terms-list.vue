@@ -1,14 +1,14 @@
 <template>
 <div>
     <div 
-            v-if="(termsList.length > 0 || searchQuery != '') && !isLoadingTerms"
+            v-if="(termsList.length > 0 || searchQuery != '')"
             class="terms-list-header">
         <button
                 v-if="currentUserCanEditTaxonomy"
                 class="button is-secondary"
                 type="button"
                 @click="addNewTerm(0)"
-                :disabled="isEditingTerm">
+                :disabled="isEditingTerm && isLoadingTerms">
             {{ $i18n.get('label_new_term') }}
         </button>
         <b-field class="order-area">
@@ -70,6 +70,7 @@
                     v-model="searchQuery"
                     icon-right="magnify"
                     icon-right-clickable
+                    @input="performTermSearch"
                     @icon-right-click="searchTerms(0)"
                     @keyup.enter.native="searchTerms(0)"
                     :disabled="isEditingTerm"/>
@@ -87,44 +88,45 @@
             <br>
 
             <!-- Basic list, without hierarchy, used during search -->
-            <div 
-                    v-if="searchQuery != undefined && searchQuery != ''"
-                    v-for="(term, index) in localTerms"
-                    :key="term.id">
-                <basic-term-item 
-                        :term="term"
-                        :index="index"
-                        :taxonomy-id="taxonomyId"
-                        :order="order"
-                        :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
-            </div>
+            <template v-if="isSearching">
+                <div 
+                        v-for="(term, index) in localTerms"
+                        :key="term.id">
+                    <basic-term-item
+                            :term="term"
+                            :index="index"
+                            :taxonomy-id="taxonomyId"
+                            :order="order"
+                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
+                </div>
+            </template>
             <a 
                     class="view-more-terms-level-0"
                     :class="{'is-disabled': isEditingTerm}"
                     @click="offset = offset + maxTerms; searchTerms(offset)"
-                    v-if="(searchQuery != undefined && searchQuery != '') && totalTerms > localTerms.length">
+                    v-if="(isSearching) && totalTerms > localTerms.length">
                 {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
             </a>
 
             <!-- Recursive list for hierarchy -->
-            <div    
-                    v-if="searchQuery == undefined || searchQuery == ''"
-                    v-for="(term, index) in localTerms"
-                    :key="term.id"
-                    class="parent-term">
-                
-                <recursive-term-item 
-                        :term="term"
-                        :index="index"
-                        :taxonomy-id="taxonomyId"
-                        :order="order" 
-                        :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
-            </div>
+            <template v-if="!isSearching">
+                <div    
+                        v-for="(term, index) in localTerms"
+                        :key="term.id"
+                        class="parent-term">
+                    <recursive-term-item 
+                            :term="term"
+                            :index="index"
+                            :taxonomy-id="taxonomyId"
+                            :order="order" 
+                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
+                </div>
+            </template>
             <a 
                     class="view-more-terms-level-0"
                     :class="{'is-disabled': isEditingTerm}"
                     @click="offset = offset + maxTerms; loadTerms(0)"
-                    v-if="(searchQuery == undefined || searchQuery == '') && totalTerms > localTerms.length">
+                    v-if="(!isSearching) && totalTerms > localTerms.length">
                 {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
             </a>
         </div>
@@ -206,6 +208,9 @@ export default {
     computed: {
         termsList() {
             return this.getTerms();
+        },
+        isSearching() {
+            return this.searchQuery != undefined && this.searchQuery != '';
         }
     },
     watch: {
@@ -430,6 +435,9 @@ export default {
                     });
             }
         },
+        performTermSearch: _.debounce(function() {
+            this.searchTerms(0);
+        }, 600),
         // When searching, term deletion is perfomed by list as it has control of it's children
         deleteBasicTerm(term) {
             this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id })

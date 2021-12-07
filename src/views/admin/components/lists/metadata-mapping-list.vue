@@ -1,6 +1,26 @@
 <template>
     <div>
-        <b-loading :active.sync="isLoadingMetadatumMappers"/>
+        <b-loading
+                :can-cancel="false"
+                :active.sync="isLoadingMetadatumMappers"/>
+        <b-field>
+            <p style="line-height: 2em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
+            <b-select
+                    id="mappers-options-dropdown"
+                    size="is-small"
+                    :placeholder="$i18n.get('instruction_select_a_mapper')"
+                    :value="mapper"
+                    @input="onSelectMetadataMapper($event)">
+                <option
+                        v-for="metadatumMapper in metadatumMappers"
+                        :key="metadatumMapper.slug"
+                        :value="metadatumMapper">
+                    {{ $i18n.get(metadatumMapper.name) }}
+                </option>
+            </b-select>
+        </b-field>
+
+        <!-- No metadata found warning -->
         <section 
                 v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"
                 class="field is-grouped-centered section">
@@ -13,88 +33,74 @@
                 <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>
             </div>
         </section>
-        <section v-else>
-            <div class="field is-grouped form-submit">
-                <b-select
-                        id="mappers-options-dropdown"
-                        :placeholder="$i18n.get('instruction_select_a_mapper')"
-                        @input="onSelectMetadataMapper($event)">
-                    <option
-                            v-for="metadatum_mapper in metadatum_mappers"
-                            :key="metadatum_mapper.slug"
-                            :value="metadatum_mapper">
-                        {{ $i18n.get(metadatum_mapper.name) }}
-                    </option>
-                </b-select>
+
+        <!-- Mapping list -->
+        <form 
+                class="tainacan-form"
+                v-else>
+
+            <div class="mapping-control">
                 <div
-                        class="control"
-                        v-if="mapper != '' && !isLoadingMetadatumMappers">
-                    <button
-                            class="button is-outlined"
-                            type="button"
-                            @click="onCancelUpdateMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
-                </div>
-                <div
-                        class="control"
-                        v-if="mapper != '' && !isLoadingMetadatumMappers">
-                    <button
-                            @click.prevent="onUpdateMetadataMapperMetadataClick"
-                            class="button is-success">{{ $i18n.get('save') }}</button>
+                        v-if="mapper != '' && mapper.allow_extra_metadata"
+                        class="modal-new-link">
+                    <a
+                            v-if="collectionId != null && collectionId != undefined"
+                            class="is-inline is-pulled-right add-link"
+                            @click="onNewMetadataMapperMetadata()">
+                        <span class="icon is-small">
+                            <i class="tainacan-icon tainacan-icon-add"/>
+                        </span>
+                        {{ $i18n.get('label_add_more_mapper_metadata') }}
+                    </a>
                 </div>
             </div>
-        </section>
+            <div 
+                    class="mapping-header"
+                    v-if="mapperMetadata.length > 0">
+                <p>{{ $i18n.get('label_from_source_mapper') }}</p>
+                <hr>
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-pointer tainacan-icon-1-25em" />
+                </span>
+                <hr>
+                <p>{{ $i18n.get('label_to_target_mapper') }}</p>
+            </div>
 
-        <br>
+            <div 
+                    v-for="(mapperMetadatum, index) of mapperMetadata"
+                    :key="index"
+                    class="source-metadatum">
+                
+                <b-select
+                        :name="'mappers-metadatum-select-' + mapperMetadatum.slug"
+                        v-model="mapperMetadatum.selected"
+                        @input="onSelectMetadatumForMapperMetadata">
+                    <option
+                            value="">
+                        {{ $i18n.get('instruction_select_a_metadatum') }}
+                    </option>
+                    <option
+                        v-for="(metadatum, metadatumIndex) in activeMetadatumList"
+                        :key="metadatumIndex"
+                        :value="metadatum.id"
+                        :disabled="isMetadatumSelected(metadatum.id)">
+                        {{ metadatum.name }}
+                    </option>
+                </b-select>
 
-        <section>
-            <b-table
-                    size="is-small"
-                    :data="mapperMetadata"
-                    :loading="isMapperMetadataLoading">
-
-                <b-table-column
-                        v-slot="props"
-                        field="label"
-                        :label="$i18n.get('label_mapper_metadata')">
-                    {{ props.row.label }}
-                </b-table-column>
-
-                <b-table-column
-                        v-slot="props"
-                        field="slug"
-                        :label="$i18n.get('metadatum')">
-                    <b-select
-                            :name="'mappers-metadatum-select-' + props.row.slug"
-                            v-model="props.row.selected"
-                            @input="onSelectMetadatumForMapperMetadata">
-                        <option
-                                value="">
-                            {{ $i18n.get('instruction_select_a_metadatum') }}
-                        </option>
-                        <option
-                            v-for="(metadatum, index) in activeMetadatumList"
-                            :key="index"
-                            :value="metadatum.id"
-                            :disabled="isMetadatumSelected(metadatum.id)">
-                            {{ metadatum.name }}
-                        </option>
-                    </b-select>
-                </b-table-column>
-                <b-table-column
-                        v-slot="props"
-                        field="isCustom"
-                        label="">
+                <p>
+                    {{ mapperMetadatum.label }}
                     <a 
                             :style="{ visibility: 
-                                    props.row.isCustom
+                                    mapperMetadatum.isCustom
                                     ? 'visible' : 'hidden'
                                 }" 
-                            @click.prevent="editMetadatumCustomMapper(props.row)">
+                            @click.prevent="editMetadatumCustomMapper(mapperMetadatum)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
                                     autoHide: true,
-                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"
                                 class="icon">
@@ -103,47 +109,50 @@
                     </a>
                     <a 
                             :style="{ visibility: 
-                                    props.row.isCustom
+                                    mapperMetadatum.isCustom
                                     ? 'visible' : 'hidden'
                                 }" 
-                            @click.prevent="removeMetadatumCustomMapper(props.row)">
+                            @click.prevent="removeMetadatumCustomMapper(mapperMetadatum)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('delete'),
                                     autoHide: true,
-                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"
                                 class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                         </span>
                     </a>
-                </b-table-column>
-
-            </b-table>
-        </section>
-        <section
-                v-if="mapper != '' && mapper.allow_extra_metadata">
-            <div
-                    class="modal-new-link">
-                <a
-                        v-if="collectionId != null && collectionId != undefined"
-                        class="is-inline is-pulled-left add-link"
-                        @click="onNewMetadataMapperMetadata()">
-                    <span class="icon is-small">
-                        <i class="tainacan-icon tainacan-icon-add"/>
-                    </span>
-                    {{ $i18n.get('label_add_more_mapper_metadata') }}
-                </a>
+                </p>
             </div>
-        </section>
+
+             <div 
+                    v-if="mapper != '' && !isLoadingMetadatumMappers"
+                    class="field is-grouped form-submit">
+                <div class="control">
+                    <button
+                            class="button is-outlined"
+                            type="button"
+                            @click="onCancelUpdateMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                </div>
+                <div class="control">
+                    <button
+                            @click.prevent="onUpdateMetadataMapperMetadataClick"
+                            class="button is-success">{{ $i18n.get('save') }}</button>
+                </div>
+            </div>
+            
+        </form>
+
         <b-modal
                 @close="onCancelNewMetadataMapperMetadata"
                 :active.sync="isMapperMetadataCreating"
                 trap-focus
                 aria-modal
                 aria-role="dialog"
-                custom-class="tainacan-modal">
+                custom-class="tainacan-modal"
+                :close-button-aria-label="$i18n.get('close')">
             <div 
                     autofocus
                     role="dialog"
@@ -156,7 +165,7 @@
                 </div>
                 <b-field>
                     <b-input
-                            v-model="new_metadata_label"
+                            v-model="newMetadataLabel"
                             required
                             :placeholder="$i18n.get('label_name')"/>
                 </b-field>
@@ -165,7 +174,7 @@
                             placeholder="URI"
                             type="url"
                             required
-                            v-model="new_metadata_uri"/>
+                            v-model="newMetadataUri"/>
                 </b-field>
                 <div class="field is-grouped form-submit">
                     <div class="control">
@@ -176,30 +185,15 @@
                     </div>
                     <div class="control">
                         <button
+                                :class="{ 'is-loading': isMapperMetadataLoading, 'is-success': !isMapperMetadataLoading }"
                                 @click.prevent="onSaveNewMetadataMapperMetadata"
-                                :disabled="isNewMetadataMapperMetadataDisabled"
-                                class="button is-success">{{ $i18n.get('save') }}</button>
+                                :disabled="isNewMetadataMapperMetadataDisabled || isMapperMetadataLoading"
+                                class="button">{{ $i18n.get('save') }}
+                        </button>
                     </div>
                 </div>
             </div>
         </b-modal>
-
-        <section
-                v-if="mapper != '' && !isLoadingMetadatumMappers">
-            <div class="field is-grouped form-submit w-100">
-                <div class="control">
-                    <button
-                            class="button is-outlined"
-                            type="button"
-                            @click="onCancelUpdateMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
-                </div>
-                <div class="control">
-                    <button
-                            @click.prevent="onUpdateMetadataMapperMetadataClick"
-                            class="button is-success">{{ $i18n.get('save') }}</button>
-                </div>
-            </div>
-        </section>
     </div>
 </template>
 
@@ -211,7 +205,7 @@ export default {
     props: {
         isRepositoryLevel: Boolean
     },
-    data(){           
+    data() {
         return {
             collectionId: '',
             isLoadingMetadatumMappers: true,
@@ -221,23 +215,29 @@ export default {
             isMapperMetadataCreating: false,
             mappedMetadata: [],
             newMapperMetadataList: [],
+            newMetadataLabel: '',
+            newMetadataUri: ''
         }
     },
     computed: {
-        metadatum_mappers() {
+        metadatumMappers() {
             return this.getMetadatumMappers();
         },
         isNewMetadataMapperMetadataDisabled() {
-            return !this.new_metadata_label || !this.new_metadata_uri;
+            return !this.newMetadataLabel || !this.newMetadataUri;
         },
         activeMetadatumList() { 
             return this.getMetadata();
         }
     },
     mounted() {
+        this.isLoadingMetadatumMappers = true;
         this.fetchMetadatumMappers()
             .then(() => {
                 this.isLoadingMetadatumMappers = false;
+
+                if (this.metadatumMappers.length == 1)
+                    this.onSelectMetadataMapper(this.metadatumMappers[0])
             })
             .catch(() => {
                 this.isLoadingMetadatumMappers = false;
@@ -252,23 +252,22 @@ export default {
             'getMetadatumMappers',
             'getMetadata'
         ]),
-        onSelectMetadataMapper(metadatum_mapper) {
+        onSelectMetadataMapper(metadatumMapper) {
 
             this.isMapperMetadataLoading = true;
-            this.mapper = metadatum_mapper; //TODO try to use v-model again
+            this.mapper = metadatumMapper; //TODO try to use v-model again
             this.mapperMetadata = [];
-            this.mappedMetadata = [];
             
-            if(metadatum_mapper != '') {
-                for (var k in metadatum_mapper.metadata) {
-                    var item = metadatum_mapper.metadata[k];
+            if (metadatumMapper != '') {
+                for (var k in metadatumMapper.metadata) {
+                    var item = metadatumMapper.metadata[k];
                     item.slug = k;
                     item.selected = '';
                     item.isCustom = false;
                     this.activeMetadatumList.forEach((metadatum) => {
                         if(
-                                metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
-                                metadatum.exposer_mapping[metadatum_mapper.slug] == item.slug
+                                metadatum.exposer_mapping.hasOwnProperty(metadatumMapper.slug) &&
+                                metadatum.exposer_mapping[metadatumMapper.slug] == item.slug
                         ) {
                             item.selected = metadatum.id;
                             this.mappedMetadata.push(metadatum.id);
@@ -278,12 +277,12 @@ export default {
                 }
                 this.activeMetadatumList.forEach((metadatum) => {
                     if(
-                            metadatum.exposer_mapping.hasOwnProperty(metadatum_mapper.slug) &&
-                            typeof metadatum.exposer_mapping[metadatum_mapper.slug] == 'object'
+                            metadatum.exposer_mapping.hasOwnProperty(metadatumMapper.slug) &&
+                            typeof metadatum.exposer_mapping[metadatumMapper.slug] == 'object'
                     ) {
-                        this.newMapperMetadataList.push(Object.assign({},metadatum.exposer_mapping[metadatum_mapper.slug]));
+                        this.newMapperMetadataList.push(Object.assign({},metadatum.exposer_mapping[metadatumMapper.slug]));
                         this.mappedMetadata.push(metadatum.id);
-                        var item = Object.assign({},metadatum.exposer_mapping[metadatum_mapper.slug]);
+                        var item = Object.assign({},metadatum.exposer_mapping[metadatumMapper.slug]);
                         item.selected = metadatum.id;
                         item.isCustom = true;
                         this.mapperMetadata.push(item);
@@ -336,7 +335,10 @@ export default {
                     }
                 });
             });
-            this.updateMetadataMapperMetadata({metadataMapperMetadata: metadataMapperMetadata, mapper: this.mapper.slug}).then(() => {
+            this.updateMetadataMapperMetadata({
+                    metadataMapperMetadata: metadataMapperMetadata,
+                    mapper: this.mapper.slug
+            }).then(() => {
                 this.isLoadingMetadata = true;
                 this.refreshMetadata();
                 this.isMapperMetadataLoading = false;
@@ -355,16 +357,16 @@ export default {
         },
         onCancelNewMetadataMapperMetadata() {
             this.isMapperMetadataCreating = false;
-            this.new_metadata_label = '';
-            this.new_metadata_uri = '';
+            this.newMetadataLabel = '';
+            this.newMetadataUri = '';
             this.new_metadata_slug = '';
         },
         onSaveNewMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
             var newMapperMetadata = {
-                    label: this.new_metadata_label,
-                    uri: this.new_metadata_uri,
-                    slug: this.stringToSlug(this.new_metadata_label),
+                    label: this.newMetadataLabel,
+                    uri: this.newMetadataUri,
+                    slug: this.stringToSlug(this.newMetadataLabel),
                     isCustom: true
             };
             var selected = '';
@@ -384,8 +386,8 @@ export default {
             this.newMapperMetadataList.push(newMapperMetadata);
             newMapperMetadata.selected = selected;
             this.mapperMetadata.push(newMapperMetadata);
-            this.new_metadata_label = '';
-            this.new_metadata_uri = '';
+            this.newMetadataLabel = '';
+            this.newMetadataUri = '';
             this.new_metadata_slug = '';
             this.isMapperMetadataCreating = false;
             this.isMapperMetadataLoading = false;
@@ -410,8 +412,8 @@ export default {
             return str;
         },
         editMetadatumCustomMapper(customMapperMeta) {
-            this.new_metadata_label = customMapperMeta.label;
-            this.new_metadata_uri = customMapperMeta.uri;
+            this.newMetadataLabel = customMapperMeta.label;
+            this.newMetadataUri = customMapperMeta.uri;
             this.new_metadata_slug = customMapperMeta.slug;
             this.isMapperMetadataCreating = true;
         },
@@ -438,14 +440,120 @@ export default {
 }
 </script>
 
-<style scoped>
-    .b-table {
+<style lang="scss" scoped>
+
+    .tainacan-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 247px;
+    }
+    .form-submit {
+        margin-top: 24px;
+    }
+
+    .add-link {
         font-size: 0.875em;
     }
-    .b-table td {
-        padding: 0.5em 0.75em 0.4em 0.75em;
+
+    .field {
+        position: relative;
     }
-    .add-link {
-        font-size: 0.75em;
+
+    .mapping-control {
+        background-color: var(--tainacan-background-color, white);
+        position: sticky;
+        top: -34px;
+        z-index: 9;
+        height: 2.5rem;
+        padding-top: 12px;
+    }
+    .mapping-header {
+        background-color: var(--tainacan-background-color, white);
+        position: sticky;
+        top: 0;
+        z-index: 9;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--tainacan-info-color);
+        font-size: 0.875em;
+        font-weight: bold;
+        margin: 0 0 12px 0;
+        border-bottom: 1px solid var(--tainacan-gray3);
+        box-shadow: 0 5px 12px -14px var(--tainacan-gray5);
+
+        p {
+            white-space: nowrap;
+        }
+        hr {
+            width: 100%;
+            margin-left: 12px;
+            margin-right: 12px;
+            height: 1px;
+            background: var(--tainacan-gray3);
+        }
+
+        @media screen and (max-width: 768px) {
+            p {
+                white-space: normal;
+            }
+            hr {
+                display: none;
+            }
+        }
+    }
+
+    .source-metadatum {
+        padding: 2px 0;
+        min-height: 35px;
+        width: 100%;
+        margin: 3px 16px 6px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        
+        &::before {
+            display: block;
+            content: '';
+            position: absolute;
+            height: 1px;
+            width: 100%;
+            background-color: var(--tainacan-gray2);
+            z-index: -1;
+        }
+        &>p {
+            font-weight: normal;
+            transition: font-weight 0.1s ease;
+            padding-left: 6px;
+            overflow: hidden;
+            word-wrap: break-word;
+            background-color: var(--tainacan-background-color, white);
+        }
+        .control {
+            max-width: 60%;
+        }
+        &:hover {
+            --tainacan-input-border-color: var(--tainacan-gray4);
+            &::before {
+                background-color: var(--tainacan-gray4);
+            }
+            &>p {
+                font-weight: bold;
+            }
+        }
+    }
+
+    .form-submit {
+        margin-top: 24px;
+        position: sticky !important;
+        bottom: 0;
+        background: var(--tainacan-background-color, white);
+        z-index: 9;
+        padding: 12px;
+        border-top: 1px solid  var(--tainacan-gray3);
+        box-shadow: 0 -5px 12px -14px var(--tainacan-gray5);
     }
 </style>

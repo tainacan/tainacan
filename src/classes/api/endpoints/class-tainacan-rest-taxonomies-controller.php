@@ -390,7 +390,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 			}
 		} else {
 			return new \WP_REST_Response([
-				'error_message' => __('Body can not be empty.', 'tainacan'),
+				'error_message' => __('Body cannot be empty.', 'tainacan'),
 				'body'          => $body
 			], 400);
 		}

@@ -39,7 +39,7 @@
                                             },
                                             content: capability.display_name,
                                             autoHide: false,
-                                            classes: ['tooltip', 'repository-tooltip'],
+                                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }">
                                     {{ capability.display_name }}
@@ -58,7 +58,7 @@
                                             },
                                             content: capability.description,
                                             autoHide: false,
-                                            classes: ['tooltip', 'repository-tooltip'],
+                                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                         v-html="capability.description"/>
@@ -80,7 +80,7 @@
                                                 },
                                                 content: props['complete-roles-list'],
                                                 autoHide: false,
-                                                classes: ['tooltip', 'repository-tooltip'],
+                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                                 placement: 'auto-start'
                                             }"
                                             v-html="props['complete-roles-list']"/>
@@ -99,7 +99,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
                                                     autoHide: true,
-                                                    classes: ['tooltip', 'repository-tooltip'],
+                                                    classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                                     placement: 'auto'
                                                 }"
                                                 class="icon">
@@ -144,7 +144,8 @@
                         capabilityKey: capabilityKey
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             getCompleteRolesList(roles, rolesInherited) {

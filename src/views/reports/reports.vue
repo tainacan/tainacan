@@ -1,7 +1,7 @@
 <template>
     <div
             id="tainacan-reports-app"
-            class="wrap">
+            class="has-mounted wrap">
         <router-view /> 
     </div> 
 </template>

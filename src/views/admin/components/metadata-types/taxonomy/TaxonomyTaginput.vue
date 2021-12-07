@@ -17,7 +17,7 @@
             attached
             ellipsis
             :aria-close-label="$i18n.get('remove_value')"
-            :placeholder="$i18n.get('instruction_type_existing_term')"
+            :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_term')"
             :loading="isFetching"
             :class="{ 'has-selected': selected != undefined && selected != [] }"
             autocomplete

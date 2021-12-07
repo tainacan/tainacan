@@ -75,7 +75,7 @@ class Core_Title extends Metadata_Type {
             return true;
 		
         if ( $metadatum->get_multiple() != 'no') {
-            return ['multiple' => __('Core Metadata can not accept multiple values', 'tainacan')];
+            return ['multiple' => __('Core Metadata cannot accept multiple values', 'tainacan')];
         }
 		
 		return true;

@@ -1,0 +1,158 @@
+{
+    "name": "tainacan/item-submission-form",
+    "title": "Tainacan Item Submission Form",
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "submission", "form" ],
+    "description": "A public item submission form, to allow visitors to create items drafts.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "collectionId": "preview"
+        }
+    },
+    "attributes": {
+        "collectionId": {
+            "type": "String",
+            "default": ""
+        },
+        "isCollectionModalOpen": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideFileModalButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideTextModalButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideLinkModalButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideThumbnailSection": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideAttachmentsSection": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideHelpButtons": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideMetadataTypes": {
+            "type": "Boolean",
+            "default": false
+        },
+        "showAllowCommentsSection": {
+            "type": "Boolean",
+            "default": false
+        },
+        "hideCollapses": {
+            "type": "Boolean",
+            "default": false
+        },
+        "backgroundColor": {
+            "type": "Object",
+            "default": { "r": 255, "g": 255, "b": 255, "a": 0 }
+        },
+        "baseFontSize": {
+            "type": "Number",
+            "default": 16
+        },
+        "inputColor": {
+            "type": "String",
+            "default": "#1d1d1d"
+        },
+        "inputBackgroundColor": {
+            "type": "String",
+            "default": "#ffffff"
+        },
+        "inputBorderColor": {
+            "type": "String",
+            "default": "#dbdbdb"
+        },
+        "labelColor": {
+            "type": "String",
+            "default": "#454647"
+        },
+        "infoColor": {
+            "type": "String",
+            "default": "#555758"
+        },
+        "primaryColor": {
+            "type": "String",
+            "default": "#d9eced"
+        },
+        "secondaryColor": {
+            "type": "String",
+            "default": "#298596"
+        },
+        "enabledMetadata": {
+            "type": "Array",
+            "default": []
+        },
+        "collectionMetadata": {
+            "type": "Array",
+            "default": []
+        },
+        "isLoadingCollectionMetadata": {
+            "type": "Boolean",
+            "default": false
+        },
+        "sentFormHeading": {
+            "type": "String",
+            "default": "Form submitted!"
+        },
+        "sentFormMessage": {
+            "type": "String",
+            "default": "Thank you. Your item was submitted to the collection."
+        },
+        "documentSectionLabel": {
+            "type": "String",
+            "default": "Document"
+        },
+        "attachmentsSectionLabel": {
+            "type": "String",
+            "default": "Attachments"
+        },
+        "thumbnailSectionLabel": {
+            "type": "String",
+            "default": "Thumbnail"
+        },
+        "metadataSectionLabel": {
+            "type": "String",
+            "default": "Metadata"
+        },
+        "showItemLinkButton": {
+            "type": "Boolean",
+            "default": false
+        },
+        "itemLinkButtonLabel": {
+            "type": "String",
+            "default": "Go to the item page"
+        },
+        "helpInfoBellowLabel": {
+            "type": "Boolean",
+            "default": false
+        },
+        "showTermsAgreementCheckbox": {
+            "type": "Boolean",
+            "default": false
+        },
+        "termsAgreementMessage": {
+            "type": "String",
+            "default": "I agree to submit this item information."
+        }
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "html": true,
+        "multiple": false
+    },
+    "editorScript": "item-submission-form",
+	"editorStyle": "item-submission-form"
+}

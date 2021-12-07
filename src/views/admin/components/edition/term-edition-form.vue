@@ -12,7 +12,7 @@
                 :is="isModal ? 'header' : 'div'"
                 class="tainacan-page-title"
                 :class="{ 'tainacan-modal-title': isModal }">
-            <h2>{{ editForm & editForm.id && editForm.id != 'new' ? $i18n.get("title_term_edition") : $i18n.get("title_term_creation") }}</h2>
+            <h2>{{ editForm & editForm.id && editForm.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h2>
             <a
                     v-if="editForm && editForm.url != undefined && editForm.url!= ''"
                     target="_blank"
@@ -86,7 +86,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                classes: ['tooltip', 'repository-tooltip'],
+                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">
@@ -102,7 +102,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                classes: ['tooltip', 'repository-tooltip'],
+                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">

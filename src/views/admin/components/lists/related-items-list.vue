@@ -132,7 +132,8 @@
                         :width="1200"
                         :active.sync="editItemModal"
                         @close="reloadRelatedItems"
-                        custom-class="tainacan-modal">
+                        custom-class="tainacan-modal"
+                        :close-button-aria-label="$i18n.get('close')">
                     <iframe 
                             width="100%"
                             style="height: 85vh"

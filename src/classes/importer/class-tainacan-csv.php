@@ -45,7 +45,7 @@ class CSV extends Importer {
 							$this->set_option('document_import_mode', 'replace');
 							$this->set_option('document_index', $index);
 						} else if( $rawColumn === 'special_attachments' ||
-											 $rawColumn === 'special_attachments|APPEND' || 
+											 $rawColumn === 'special_attachments|APPEND' ||
 											 $rawColumn === 'special_attachments|REPLACE' ) {
 							$this->set_option('attachment_index', $index);
 							$attachment_type = explode('|', $rawColumn);
@@ -127,7 +127,7 @@ class CSV extends Importer {
 				return $header;
 			}
 			return $header;
-		}, $this->raw_source_metadata()); 
+		}, $this->raw_source_metadata());
 
 		$item_line = (int) $index + 2;
 
@@ -199,7 +199,7 @@ class CSV extends Importer {
 				$returnValue = [];
 				foreach($valueToInsert as $index => $metadatumValue) {
 					$childrenHeaders = str_getcsv($compoundHeaders[$key], $this->get_option('delimiter'), $this->get_option('enclosure'));
-					$childrenValue = $this->is_clear_value($metadatumValue) ? 
+					$childrenValue = $this->is_clear_value($metadatumValue) ?
 						array_fill(0, sizeof($childrenHeaders), $this->get_option('escape_empty_value') ) :
 						str_getcsv($metadatumValue, $this->get_option('delimiter'), $this->get_option('enclosure'));
 
@@ -405,7 +405,7 @@ class CSV extends Importer {
 								<h5><?php _e('Empty value', 'tainacan'); ?></h5>
 							</div>
 							<div class="help-tooltip-body">
-								<p><?php _e('The string representing a value not informed for the metadata. (e.g. \EMPTY)', 'tainacan'); ?></p>
+								<p><?php _e('The string representing a value not specified for the metadata. (e.g. \EMPTY)', 'tainacan'); ?></p>
 							</div>
 						</div>
 					</span>
@@ -414,7 +414,7 @@ class CSV extends Importer {
 					</div>
 				</div>
 			</div>
-			
+
 		</div>
 
 		<div class="columns">
@@ -462,7 +462,7 @@ class CSV extends Importer {
 								<h5><?php _e('Server path', 'tainacan'); ?></h5>
 							</div>
 							<div class="help-tooltip-body">
-								<p><?php _e("When using CSV special field to add documents or attachments that you've uploaded to the server, inform the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
+								<p><?php _e("When using CSV special field to add documents or attachments that you've uploaded to the server, specify the full path to the folder here (e.g. /home/user/files/)", 'tainacan'); ?></p>
 							</div>
 						</div>
 					</span>
@@ -828,9 +828,10 @@ class CSV extends Importer {
 				if($itemMetadata instanceof Entities\Item_Metadata_Entity ) {
 					$itemMetadata->set_item( $insertedItem );  // *I told you
 					if( $itemMetadata->validate() ) {
-						$result = $Tainacan_Item_Metadata->insert( $itemMetadata );
+						$Tainacan_Item_Metadata->insert( $itemMetadata );
 					} else {
-						$this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name() . " in item " . $insertedItem->get_title());
+						$insertedItemId = $updating_item == true ? ' (special_item_id: ' . $insertedItem->get_id() . ')' : '';
+						$this->add_error_log('Error saving value for ' . $itemMetadata->get_metadatum()->get_name() . " in item " . $insertedItem->get_title() . $insertedItemId);
 						$this->add_error_log($itemMetadata->get_errors());
 						continue;
 					}

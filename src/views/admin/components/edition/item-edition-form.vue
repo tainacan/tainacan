@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="isCreatingNewItem ? 'item-creation-container' : 'item-edition-container'"><!-- Do NOT remove this classes, they may be used by third party plugins -->
         <b-loading
                 :is-full-page="false"
                 :active.sync="isLoading"
@@ -555,7 +555,8 @@
                                 trap-focus
                                 aria-modal
                                 aria-role="dialog"
-                                custom-class="tainacan-modal">
+                                custom-class="tainacan-modal"
+                                :close-button-aria-label="$i18n.get('close')">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('label_thumbnail_alt') }}</h2>
@@ -593,7 +594,8 @@
                                 trap-focus
                                 aria-modal
                                 aria-role="dialog"
-                                custom-class="tainacan-modal">
+                                custom-class="tainacan-modal"
+                                :close-button-aria-label="$i18n.get('close')">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_write_text') }}</h2>
@@ -635,7 +637,8 @@
                                 tabindex="-1"
                                 aria-modal
                                 aria-role="dialog"
-                                custom-class="tainacan-modal">
+                                custom-class="tainacan-modal"
+                                :close-button-aria-label="$i18n.get('close')">
                             <div class="tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
@@ -681,6 +684,19 @@
                                         class="help">
                                     {{ $i18n.get('info_iframe_dimensions') }}
                                 </p>
+                                <br>
+                                <b-field
+                                        v-if="urlForcedIframe"
+                                        :addons="false"
+                                        :label="$i18n.get('label_document_option_is_image')">
+                                        &nbsp;
+                                    <b-switch
+                                            size="is-small" 
+                                            v-model="urlIsImage" />
+                                    <help-button
+                                            :title="$i18n.get('label_document_option_is_image')"
+                                            :message="$i18n.get('info_document_option_is_image')" />
+                                </b-field>
 
                                 <div class="field is-grouped form-submit">
                                     <div class="control">
@@ -1008,7 +1024,8 @@ export default {
             isThumbnailAltTextModalActive: false,
             urlForcedIframe: false,
             urlIframeWidth: 600,
-            urlIframeHeight: 450
+            urlIframeHeight: 450,
+            urlIsImage: false
         }
     },
     computed: {
@@ -1160,7 +1177,8 @@ export default {
                     },
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         } else {
             next()
@@ -1430,7 +1448,8 @@ export default {
             this.form.document_options = {
                 forced_iframe: this.urlForcedIframe,
                 forced_iframe_width: this.urlIframeWidth,
-                forced_iframe_height: this.urlIframeHeight
+                forced_iframe_height: this.urlIframeHeight,
+                is_image: this.urlIsImage
             }
             this.updateItemDocument({
                     item_id: this.itemId,
@@ -1465,6 +1484,7 @@ export default {
             this.isURLModalActive = false;
             this.urlLink = '';
             this.urlForcedIframe = this.form.document_options && this.form.document_options['forced_iframe'] !== undefined ? this.form.document_options['forced_iframe'] : false;
+            this.urlIsImage = this.form.document_options && this.form.document_options['is_image'] !== undefined ? this.form.document_options['is_image'] : false;
             this.urlIframeWidth = this.form.document_options && this.form.document_options['forced_iframe_width'] !== undefined ? this.form.document_options['forced_iframe_width'] : 600;
             this.urlIframeHeight = this.form.document_options && this.form.document_options['forced_iframe_height'] !== undefined ? this.form.document_options['forced_iframe_height'] : 450;
         },
@@ -1542,7 +1562,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
 
         },
@@ -1665,7 +1686,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         },
         loadExistingItem() {
@@ -1725,6 +1747,8 @@ export default {
 
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe'] !== undefined)
                         this.urlForcedIframe = this.form.document_options['forced_iframe'];
+                    if (this.form.document_options !== undefined && this.form.document_options['is_image'] !== undefined)
+                        this.urlIsImage = this.form.document_options['is_image'];
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_width'] !== undefined)
                         this.urlIframeWidth = this.form.document_options['forced_iframe_width'];
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
@@ -1929,9 +1953,9 @@ export default {
             }
         }
 
-        .b-tabs {
-            overflow: hidden !important;
-        }
+        // .b-tabs {
+        //     overflow: hidden !important;
+        // }
     }
 
     .section-label {
@@ -1956,6 +1980,7 @@ export default {
 
     .collapse-all {
         font-size: 0.75em;
+        white-space: nowrap;
         .icon {
             vertical-align: bottom;
         }

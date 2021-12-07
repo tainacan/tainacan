@@ -22,7 +22,7 @@
                         :remove-on-keys="[]"
                         :dropdown-position="isLastMetadatum ? 'top' :'auto'"
                         attached
-                        :placeholder="$i18n.get('instruction_type_existing_item')"
+                        :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_item')"
                         :loading="isLoading"
                         :aria-close-label="$i18n.get('remove_value')"
                         :class="{'has-selected': selected != undefined && selected != []}"
@@ -122,7 +122,8 @@
         <b-modal 
                 :width="1200"
                 :active.sync="editItemModalOpen"
-                :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')">
+                :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
+                :close-button-aria-label="$i18n.get('close')">
             <iframe 
                     :id="relationshipInputId + '_item-edition-modal'"
                     width="100%"
@@ -552,7 +553,7 @@
                 font-weight: normal;
             }
             img {
-                max-width: 28px;
+                max-width: 28px !important;
                 max-height: 28px;
                 margin-right: 10px;
             }

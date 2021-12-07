@@ -4,28 +4,47 @@ import router from './roles-router';
 import VTooltip from 'v-tooltip';
 import { Snackbar, Modal } from 'buefy';
 
-// Vue Dev Tools!
-Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
-
 import { I18NPlugin } from './wp-i18n-plugin';
 
 import RolesPage from '../roles.vue';
 
-Vue.use(I18NPlugin);
-Vue.use(VTooltip);
-Vue.use(Snackbar);
-Vue.use(Modal);
+export default (element) => {
 
-// Changing title of pages
-router.beforeEach((to, from, next) => {
-    document.title = to.meta.title;
-    if (next() != undefined)
-        next();
-});
+    // Vue Dev Tools!
+    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
 
-new Vue({
-    el: '#tainacan-roles-app',
-    store,
-    router,
-    render: h => h(RolesPage)
-});
+    function renderTainacanRolePage() {
+
+        // Gets the div with the content of the page
+        let pageElement = element ? element : document.getElementById('tainacan-roles-app');
+
+        // Mount only if the div exists and it is not already mounted
+        if ( pageElement && pageElement.classList && !pageElement.classList.contains('has-mounted') ) {
+
+            Vue.use(I18NPlugin);
+            Vue.use(VTooltip, {
+                defaultClass: 'tainacan-tooltip tooltip'
+            });
+            Vue.use(Snackbar);
+            Vue.use(Modal);
+            
+            // Changing title of pages
+            router.beforeEach((to, from, next) => {
+                document.title = to.meta.title;
+                if (next() != undefined)
+                    next();
+            });
+            
+            new Vue({
+                el: '#tainacan-roles-app',
+                store,
+                router,
+                render: h => h(RolesPage)
+            });
+        };
+    };
+
+    // This is rendered on the admin page.
+    renderTainacanRolePage();
+};
+

@@ -49,6 +49,7 @@ class Theme_Helper {
 		add_shortcode( 'tainacan-search', array($this, 'search_shortcode'));
 		add_shortcode( 'tainacan-item-submission', array($this, 'item_submission_shortcode'));
 		add_shortcode( 'tainacan-items-carousel', array($this, 'get_tainacan_items_carousel'));
+		add_shortcode( 'tainacan-dynamic-items-list', array($this, 'get_tainacan_dynamic_items_list'));
 		add_shortcode( 'tainacan-related-items-carousel', array($this, 'get_tainacan_related_items_carousel'));
 
 		add_action( 'generate_rewrite_rules', array( &$this, 'rewrite_rules' ), 10, 1 );
@@ -406,7 +407,7 @@ class Theme_Helper {
 		 *     @type int	$default_items_per_page						Default number of items per page loaded
 		 *     @type bool 	$show_filters_button_inside_search_control	Display the "hide filters" button inside of the search control instead of floating
 		 *     @type bool 	$start_with_filters_hidden					Loads the filters list hidden from start
-		 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsable region on desktop
+		 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsible region on desktop
 		 *     @type bool 	$show_inline_view_mode_options				Display view modes as inline icon buttons instead of the dropdown
 		 *     @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
 		 *     @type string $default_view_mode							The default view mode
@@ -422,15 +423,15 @@ class Theme_Helper {
 
 		// Loads info related to view modes
 		$view_modes = tainacan_get_the_view_modes();
-		$default_view_mode = $view_modes['default_view_mode'];
-		$enabled_view_modes = $view_modes['enabled_view_modes'];
 
-		if( isset($args['default_view_mode']) ) {
+		$enabled_view_modes = $view_modes['enabled_view_modes'];
+		if ( isset($args['default_view_mode']) ) {
 			$default_view_mode = $args['default_view_mode'];
 			unset($args['default_view_mode']);
 		}
 
-		if( isset($args['enabled_view_modes']) ) {
+		$default_view_mode = $view_modes['default_view_mode'];
+		if ( isset($args['enabled_view_modes']) ) {
 			$enabled_view_modes = $args['enabled_view_modes'];
 			if ( !in_array($default_view_mode, $enabled_view_modes) ) {
 				$default_view_mode = $enabled_view_modes[0];
@@ -438,13 +439,28 @@ class Theme_Helper {
 			unset($args['enabled_view_modes']);
 		}
 
+		// Loads info related to sorting
+		$default_order = 'ASC';
+		if ( isset($args['default_order']) ) {
+			$default_order = $args['default_order'];
+			unset($args['default_order']);
+		}
+
+		$default_orderby = 'date';
+		if ( isset($args['default_orderby']) ) {
+			$default_orderby = $args['default_orderby'];
+			unset($args['default_orderby']);
+		}
+
 		// If in a collection page
 		$collection = tainacan_get_collection($args);
 		if ($collection) {
-			$props .= 'collection-id="' . $collection->get_id() . '" ';
+			$props .= "collection-id='" . $collection->get_id() . "' ";
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
-					
+			$default_order = $collection->get_default_order();
+			$default_orderby = $collection->get_default_orderby();
+			
 			// Gets hideItemsThumbnail info from collection setting
 			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 		}
@@ -452,17 +468,19 @@ class Theme_Helper {
 		// If in a tainacan taxonomy
 		$term = tainacan_get_term($args);
 		if ($term) {
-			$props .= 'term-id="' . $term->term_id . '" ';
-			$props .= 'taxonomy="' . $term->taxonomy . '" ';
+			$props .= "term-id='" . $term->term_id . "' ";
+			$props .= "taxonomy='" . $term->taxonomy . "' ";
 		}
 
-		$props .= 'default-view-mode="' . $default_view_mode . '" ';
-		$props .= 'enabled-view-modes="' . implode(',', $enabled_view_modes) . '" ';
+		$props .= "default-view-mode='" . $default_view_mode . "' ";
+		$props .= "enabled-view-modes='" . implode(',', $enabled_view_modes) . "' ";
+		$props .= "default-order='" . $default_order . "' ";
+		$props .= "default-orderby='" . (is_array($default_orderby) ? json_encode($default_orderby) : $default_orderby) . "' ";
 
 		// Passes arguments to custom props
 		foreach ($args as $key => $value) {
 			if ($value == true || $value == 'true') {
-				$props .= str_replace('_', '-', $key) . '="' . $value . '" ';
+				$props .= str_replace("_", "-", $key) . "='" . $value . "' ";
 			}
 		}
 
@@ -861,7 +879,7 @@ class Theme_Helper {
 			'collection_text_color' => '#ffffff',
 			'tainacan_api_root' => '',
 			'tainacan_base_url' => '',
-			'class_name' => '',
+			'class_name' => ''
 		);
 		$args = wp_parse_args($args, $defaults);
 
@@ -879,26 +897,104 @@ class Theme_Helper {
 			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
 		}
 		
-		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode' $props ></div>";
+		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>";
 	} 
 
 	/**
-	 * Returns a group of related items carousels
+	 * Returns the div used by Vue to render the Dynamic List of Related Items
+	 *
+	 * @param array $args {
+		 *     Optional. Array of arguments.
+		 *     @type string  $collection_id					The Collection ID
+		 *     @type string  $search_URL					A query string to fetch items from, if load strategy is 'search'
+         *     @type array   $selected_items				An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'
+         *     @type string  $load_strategy					Either 'search' or 'selection', to determine how items will be fetch
+         *     @type integer $max_items_number				Maximum number of items to be fetch
+         *     @type integer $max_columns_count				Maximum columns cound (used by grid and list layouts)
+         *     @type integer $grid_margin					Margin around items in every layout
+         *     @type string  $show_name						Show the item title
+         *     @type string  $show_image					Show the item thumbnail
+         *     @type string  $layout						Either 'grid', 'list' or 'mosaic'
+         *     @type string  $crop_images_to_square			Force images shape to be squared
+         *     @type bool    $show_collection_header		Should it display a small version of the collection header?
+         *     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
+         *     @type string  $collection_background_color	Color of the collection header background
+         *     @type string  $collection_text_color			Color of the collection header text
+         *     @type string  $tainacan_api_root				Path of the Tainacan api root (to make the items request)
+         *     @type string  $tainacan_base_url				Path of the Tainacan base URL (to make the links to the items)
+         *     @type string  $class_name					Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-items-list
+         *     @type string  $mosaic_height					Height of the panel in the 'mosaic' layout
+         *     @type string  $mosaic_density				
+         *     @type string  $mosaic_grid_rows				
+         *     @type string  $mosaic_grid_columns			
+         *     @type string  $mosaic_item_focal_point_x		
+         *     @type string  $mosaic_item_focal_point_y		
+	 * @return string  The HTML div to be used for rendering the items carousel vue component
+	 */
+	public function get_tainacan_dynamic_items_list($args = []) {
+		if (!is_array($args))
+			return __('There are missing parameters for Tainacan Items Block/shortcode', 'tainacan');
+
+		$defaults = array(
+			'max_items_number' => 12,
+			'max_columns_count' => 6,
+			'grid_margin' => 12,
+			'show_name' => true,
+			'show_image' => true,
+			'layout' => 'grid',
+			'crop_images_to_square' => true,
+			'show_collection_header' => false,
+			'show_collection_label' => false,
+			'collection_background_color' => '#454647',
+			'collection_text_color' => '#ffffff',
+			'tainacan_api_root' => '',
+			'tainacan_base_url' => '',
+			'class_name' => '',
+			'mosaic_height' => 280,
+			'mosaic_density' => 5,
+			'mosaic_grid_rows' => 3,
+			'mosaic_grid_columns' => 4,
+			'mosaic_item_focal_point_x' => 0.5,
+			'mosaic_item_focal_point_y' => 0.5
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		$props = ' ';
+
+		// Always pass the class needed by Vue to mount the component;
+		$args['class'] = $args['class_name'] . ' wp-block-tainacan-dynamic-items-list';
+		unset($args['class_name']);
+		
+		// Builds parameters to the html div rendered by Vue
+		foreach ($args as $key => $value) {
+			if (is_bool($value))
+				$value = $value ? 'true' : 'false';
+			// Changes from PHP '_' notation to HTML '-' notation
+			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
+		}
+		
+		return "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>";
+	} 
+
+	/**
+	 * Returns a group of related items list
 	 * For each metatada, the collection name, the metadata name and a button linking
 	 * the items list filtered is presented
 	 *
 	 * @param array $args {
 		 *     Optional. Array of arguments.
 		 *     @type string  $item_id							The Item ID
+		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic' and 'carousel'. 
 		 *     @type string  $class_name						Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-related-items
 		 *     @type string  $collection_heading_class_name		Extra class to add to the collection name wrapper. Defaults to ''
 		 * 	   @type string  $collection_heading_tag			Tag to be used as wrapper of the collection name. Defaults to h2
 		 *     @type string  $metadata_label_class_name			Extra class to add to the metadata label wrapper. Defaults to ''
 		 * 	   @type string  $metadata_label_tag				Tag to be used as wrapper of the metadata label. Defaults to p
-		 *     @type array   $carousel_args					Array of arguments to be passed to the get_tainacan_items_carousel function
+		 *     @type array   $carousel_args						Array of arguments to be passed to the get_tainacan_items_carousel function if $items_list_layout == carousel
+		 *     @type array   $dynamic_items_args				Array of arguments to be passed to the get_tainacan_dynamic_items function if $items_list_layout != carousel
 		 * @return string  The HTML div to be used for rendering the related items vue component
 	 */
-	public function get_tainacan_related_items_carousel($args = []) {
+	public function get_tainacan_related_items_list($args = []) {
 		global $TAINACAN_BASE_URL;
 		global $TAINACAN_VERSION;
 		
@@ -908,7 +1004,8 @@ class Theme_Helper {
 			'collection_heading_tag' => 'h2', 
 			'metadata_label_class_name' => '',
 			'metadata_label_tag' => 'p',
-			'carousel_args' => []
+			'carousel_args' => [],
+			'dynamic_items_args' => []
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -922,8 +1019,8 @@ class Theme_Helper {
 		if (!count($related_items))
 			return;
 
-		// Always pass the default class;
-		$output = '<div data-module="carousel-related-items" class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items' . '">';
+		// Always pass the default class. We force passing the wp-block-tainacan-carousel-related-items because themes might have used it to style before the other layouts exist;
+		$output = '<div data-module="related-items-list" class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items wp-block-tainacan-related-items' . '">';
 		
 		foreach($related_items as $collection_id => $related_group) {
 			
@@ -942,23 +1039,34 @@ class Theme_Helper {
 				}
 				
 				// Sets the carousel, from the items carousel template tag.
-				$carousel_div = '';
+				$items_list_div = '';
 				if ( isset($related_group['collection_id']) ) {
 					
-					$carousel_args = wp_parse_args([
-						'collection_id' => $related_group['collection_id'],
-						'load_strategy' => 'parent',
-						'selected_items' => json_encode($related_group['items'])
-					], $args['carousel_args']);
+					if ( isset($args['items_list_layout']) && $args['items_list_layout'] !== 'carousel' ) {
+						$items_list_args = wp_parse_args([
+							'collection_id' => $related_group['collection_id'],
+							'load_strategy' => 'parent',
+							'selected_items' => json_encode($related_group['items']),
+							'layout' => $args['items_list_layout']
+						], $args['dynamic_items_args']);
 
-					$carousel_div = $this->get_tainacan_items_carousel($carousel_args);
+						$items_list_div = $this->get_tainacan_dynamic_items_list($items_list_args);
+					} else {
+						$items_list_args = wp_parse_args([
+							'collection_id' => $related_group['collection_id'],
+							'load_strategy' => 'parent',
+							'selected_items' => json_encode($related_group['items'])
+						], $args['carousel_args']);
+
+						$items_list_div = $this->get_tainacan_items_carousel($items_list_args);
+					}	
 				}
 				
 				$output .= '<div class="wp-block-group">
 					<div class="wp-block-group__inner-container">' .
 						$collection_heading .
 						$metadata_label .
-						$carousel_div .
+						$items_list_div .
 							( 
 							$related_group['total_items'] > 1 ?
 								'<div class="wp-block-buttons">
@@ -980,6 +1088,16 @@ class Theme_Helper {
 		$output .= '</div>';
 		
 		return $output;
+	}
+
+	/**
+	 * Returns a group of related items list carousel
+	 * This is just a pre-set version of the get_tainacan_related_items function kept for
+	 * compatibility with previous versions.
+	 */	
+	public function get_tainacan_related_items_carousel($args = []) {
+		$args = wp_parse_args($args, [ 'items_list_layout' => 'carousel' ]);
+		return $this->get_tainacan_related_items_list($args);
 	}
 }
 

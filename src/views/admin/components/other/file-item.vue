@@ -36,7 +36,8 @@
                     trap-focus
                     aria-modal
                     aria-role="dialog"
-                    custom-class="tainacan-modal">
+                    custom-class="tainacan-modal"
+                    :close-button-aria-label="$i18n.get('close')">
                 <div 
                         autofocus
                         role="dialog"

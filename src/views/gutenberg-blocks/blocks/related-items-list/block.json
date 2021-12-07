@@ -1,0 +1,56 @@
+{
+    "name": "tainacan/related-items-list",
+    "title": "Tainacan Related Items List",
+    "category": "tainacan-blocks",
+    "keywords": [ "items", "carousel", "slider", "relationship" ],
+    "description": "A set of lists to display items related to a certain item via relationship metadata.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "parent": [],
+    "attributes": {
+        "content": {
+            "type": "Array",
+            "source": "children",
+            "selector": "div"
+        },
+        "collectionId": {
+            "type": "String",
+            "default": ""
+        },
+        "itemId": {
+            "type": "String",
+            "default": ""
+        },
+        "isModalOpen": {
+            "type": "Boolean",
+            "default": false
+        },
+        "relatedItems": {
+            "type": "Array",
+            "default": []
+        },
+        "relatedItemsTemplate": {
+            "type": "Array",
+            "default": []
+        },
+        "itemRequestSource": {
+            "type": "String",
+            "default": ""
+        },
+        "itemsListlayout": {
+            "type": "String",
+            "default": "carousel"
+        }
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "html": false,
+        "multiple": true
+    },
+    "editorScript": "related-items-list",
+	"editorStyle": "related-items-list"
+}

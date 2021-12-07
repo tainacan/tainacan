@@ -14,7 +14,7 @@
                         v-tooltip="{
                             content: $i18n.get('status_' + collection.status),
                             autoHide: true,
-                            classes: ['tooltip'],
+                            classes: ['tainacan-tooltip', 'tooltip'],
                             placement: 'auto-start'
                         }">
                     <i 
@@ -35,7 +35,7 @@
                             content: $i18n.get('exporters'),
                             autoHide: false,
                             placement: 'bottom-start',
-                            classes: ['header-tooltips']
+                            classes: ['tainacan-tooltip', 'header-tooltips', 'tooltip']
                         }">
                 <a
                         @click="openAvailableExportersModal"
@@ -56,7 +56,7 @@
                             content: $i18n.get('label_view_collection_on_website'),
                             autoHide: false,
                             placement: 'bottom-end',
-                            classes: ['header-tooltips']
+                            classes: ['tainacan-tooltip', 'header-tooltips', 'tooltip']
                         }">
                 <a
                         :href="collection && collection.url ? collection.url : ''"
@@ -79,7 +79,7 @@
                             content: $i18n.get('label_view_repository'),
                             autoHide: false,
                             placement: 'bottom-end',
-                            classes: [ isRepositoryLevel ? 'repository-header-tooltips' : 'header-tooltips']
+                            classes: [ 'tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-header-tooltips' : 'header-tooltips']
                         }">
                 <a
                         :href="repositoryURL"
@@ -136,7 +136,8 @@ export default {
                     hideWhenManualCollection: true
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         }
     }

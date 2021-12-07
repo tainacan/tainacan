@@ -63,7 +63,7 @@
                         content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                         autoHide: false,
                         placement: 'auto-start',
-                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                     }">
                 <span class="icon">
                     <i 
@@ -176,7 +176,7 @@
                             content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
                             autoHide: false,
                             placement: 'auto-start',
-                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                         }" 
                         ref="displayedMetadataDropdown"
                         :mobile-modal="true"
@@ -362,7 +362,7 @@
                             <span>{{ $i18n.get('label_cards') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item
-                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'" 
+                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')" 
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'grid' }"
@@ -385,7 +385,7 @@
                             <span>{{ $i18n.get('label_records') }}</span>
                         </b-dropdown-item>
                         <b-dropdown-item 
-                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'"
+                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': adminViewMode == 'masonry' }"
@@ -441,7 +441,8 @@
                 trap-focus
                 aria-modal
                 aria-role="dialog"
-                custom-class="tainacan-modal tainacan-form filters-menu">
+                custom-class="tainacan-modal tainacan-form filters-menu"
+                :close-button-aria-label="$i18n.get('close')">
             <filters-items-list
                     :is-loading-items="isLoadingItems"
                     autofocus="true"
@@ -470,7 +471,7 @@
                         :is-repository-level="isRepositoryLevel"
                         :advanced-search-results="advancedSearchResults"
                         :open-form-advanced-search="openFormAdvancedSearch"
-                        :is-do-search="isDoSearch"/>
+                        :is-doing-search="isDoingSearch"/>
 
                 <div class="advanced-search-form-submit">
                     <p
@@ -486,7 +487,7 @@
                             class="control">
                         <button
                                 aria-controls="items-list-results"
-                                @click="isDoSearch = !isDoSearch"
+                                @click="isDoingSearch = !isDoingSearch"
                                 class="button is-success">{{ $i18n.get('search') }}</button>
                     </p>
                 </div>
@@ -663,7 +664,7 @@
                 openAdvancedSearch: false,
                 openFormAdvancedSearch: false,
                 advancedSearchResults: false,
-                isDoSearch: false,
+                isDoingSearch: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
@@ -673,7 +674,7 @@
         },
         computed: {
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date');
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date' && this.orderBy != 'modified');
             },
             items() {
                 return this.getItems();
@@ -714,23 +715,11 @@
                 return this.getMetaKey();
             },
             orderByName() {
-
-                if (this.getOrderByName() != null && this.getOrderByName() != undefined && this.getOrderByName() != '') {
-                    return this.getOrderByName();
-                } else {
-
-                    for (let metadatum of this.sortingMetadata) {
-
-                        if (
-                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug == 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == 'date') ||
-                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (metadatum.metadata_type_object != undefined && metadatum.metadata_type_object.core)) && this.orderBy == metadatum.metadata_type_object.related_mapped_prop) ||
-                            ((this.orderBy != 'meta_value' && this.orderBy != 'meta_value_num' && metadatum.slug != 'creation_date' && (!metadatum.metadata_type_object || !metadatum.metadata_type_object.core)) && this.orderBy == metadatum.slug) ||
-                            ((this.orderBy == 'meta_value' || this.orderBy == 'meta_value_num') && this.getMetaKey() == metadatum.id)
-                           )     
-                            return metadatum.name;
-                    }
-                }
-                return '';
+                const metadatumName =  this.$orderByHelper.getOrderByMetadatumName({
+                    orderby: this.$route.query.orderby,
+                    metakey: this.$route.query.metakey
+                }, this.sortingMetadata);
+                return this.$route.query.metakey ? metadatumName : this.$i18n.get(metadatumName);
             },
             isReadMode () {
                 return this.$route && this.$route.query && this.$route.query.readmode;
@@ -793,13 +782,8 @@
                 this.advancedSearchResults = advancedSearchResults;
             });
 
-            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', (to) => {
-                /* This condition is to prevent an incorrect fetch by filter or metadata when we coming from items
-                 * at collection level to items page at repository level
-                 */
-                if (this.collectionId == to.params.collectionId || to.query.fromBreadcrumb) {
-                    this.prepareMetadata();
-                }
+            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
+                this.prepareMetadata();
             });
             
             if (this.$route.query && this.$route.query.advancedSearch) {
@@ -837,6 +821,8 @@
             }
             
             this.showItemsHiddingDueSortingDialog();
+
+            this.$eventBusSearch.cleanSelectedItems();
 
             // Watches window resize to adjust filter's top position and compression on mobile 
             this.hideFiltersOnMobile();
@@ -880,7 +866,6 @@
                 'getSearchQuery',
                 'getStatus',
                 'getOrderBy',
-                'getOrderByName',
                 'getOrder',
                 'getTotalItems',
                 'getAdminViewMode',
@@ -896,7 +881,8 @@
                         hideWhenManualCollection: true
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             openExposersModal(selectedItems) {
@@ -910,7 +896,8 @@
                         selectedItems: selectedItems
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 })
             },
             onOpenCollectionsModal() {
@@ -919,14 +906,15 @@
                     component: CollectionsModal,
                     hasModalCard: true,
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             updateSearch() {
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             },  
             onChangeOrderBy(metadatum) {
-                this.$eventBusSearch.setOrderBy(metadatum);
+                this.$eventBusSearch.setOrderBy(this.$orderByHelper.getOrderByForMetadatum(metadatum));
                 this.showItemsHiddingDueSortingDialog();
             },
             onChangeOrder(newOrder) {
@@ -951,6 +939,7 @@
                     }
                 }
                 let thumbnailMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'thumbnail');
+                let modificationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'modification_date');
                 let creationDateMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'creation_date');
                 let authorNameMetadatum = this.localDisplayedMetadata.find(metadatum => metadatum.slug == 'author_name');
                 
@@ -959,6 +948,7 @@
                 // Updates Search
                 let fetchOnlyArray = [
                     ((thumbnailMetadatum != undefined && thumbnailMetadatum.display) ? 'thumbnail' : null),
+                    ((modificationDateMetadatum != undefined && modificationDateMetadatum.display) ? 'modification_date' : null),
                     ((creationDateMetadatum != undefined && creationDateMetadatum.display) ? 'creation_date' : null),
                     ((authorNameMetadatum != undefined && authorNameMetadatum.display) ? 'author_name': null),
                     (this.isRepositoryLevel ? 'title' : null),
@@ -970,7 +960,6 @@
                 this.$refs.displayedMetadataDropdown.toggle();
             },
             prepareMetadata() {
-
                 // Cancels previous Request
                 if (this.metadataSearchCancel != undefined)
                     this.metadataSearchCancel.cancel('Metadata search Canceled.');
@@ -999,11 +988,10 @@
                                     // Loads user prefs object as we'll need to check if there's something configured by user 
                                     let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
                                     let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
-
                                     let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).split(',') : [];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
-                                    let thumbnailMetadatumDisplay = (!this.isRepositoryLevel && this.collection.hide_items_thumbnail_on_lists == 'yes') ? null : (prefsFetchOnlyObject ? (prefsFetchOnlyObject[0] != 'null') : true);
+                                    let thumbnailMetadatumDisplay = (!this.isRepositoryLevel && this.collection.hide_items_thumbnail_on_lists == 'yes') ? null : (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ? ((prefsFetchOnlyObject.indexOf('thumbnail') >= 0)) : true);
 
                                     if (this.isRepositoryLevel || this.collection.hide_items_thumbnail_on_lists != 'yes') {
                                         metadata.push({
@@ -1088,10 +1076,19 @@
                                         }
                                     }
                                     
-                                    let creationDateMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[1] != 'null') : true;
-                                    let authorNameMetadatumDisplay = prefsFetchOnlyObject ? (prefsFetchOnlyObject[2] != 'null') : true;
-                                    
+                                    let modificationDateMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ) ? (prefsFetchOnlyObject.indexOf('modification_date') >= 0) : true;
+                                    let creationDateMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ) ? (prefsFetchOnlyObject.indexOf('creation_date') >= 0) : true;
+                                    let authorNameMetadatumDisplay = (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ) ? (prefsFetchOnlyObject.indexOf('author_name') >= 0) : true;
+           
                                     // Creation date and author name should appear only on admin.
+                                    metadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: modificationDateMetadatumDisplay
+                                    });
                                     metadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',
@@ -1111,6 +1108,7 @@
                                     
                                     let fetchOnlyArray = [
                                         (thumbnailMetadatumDisplay ? 'thumbnail' : null),
+                                        (modificationDateMetadatumDisplay ? 'modification_date' : null),
                                         (creationDateMetadatumDisplay ? 'creation_date' : null),
                                         (authorNameMetadatumDisplay ? 'author_name' : null),
                                         (this.isRepositoryLevel ? 'title' : null),
@@ -1130,6 +1128,14 @@
                                             display: true
                                         });
                                     }
+                                    this.sortingMetadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: modificationDateMetadatumDisplay
+                                    });
                                     this.sortingMetadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',
@@ -1151,8 +1157,8 @@
 
                                 // Loads only basic attributes necessary to view modes that do not allow custom meta
                                 } else {
-                                    
-                                    const basicAttributes = this.collection.hide_items_thumbnail_on_lists == 'yes' ? 'creation_date,author_name,title,description' : 'thumbnail,creation_date,author_name,title,description';
+
+                                    const basicAttributes = (!this.isRepositoryLevel && this.collection.hide_items_thumbnail_on_lists == 'yes') ? 'modification_date,creation_date,author_name,title,description' : 'thumbnail,modification_date,creation_date,author_name,title,description';
                                     this.$eventBusSearch.addFetchOnly(basicAttributes, true, '');
 
                                     if (this.isRepositoryLevel) {
@@ -1179,6 +1185,15 @@
                                     }
 
                                     this.sortingMetadata.push({
+                                        name: this.$i18n.get('label_modification_date'),
+                                        metadatum: 'row_modification',
+                                        metadata_type: undefined,
+                                        slug: 'modification_date',
+                                        id: undefined,
+                                        display: true
+                                    })
+
+                                    this.sortingMetadata.push({
                                         name: this.$i18n.get('label_creation_date'),
                                         metadatum: 'row_creation',
                                         metadata_type: undefined,
@@ -1188,7 +1203,7 @@
                                     })
 
                                 }
-
+                                
                                 this.isLoadingMetadata = false;
                                 this.displayedMetadata = metadata;
                             })
@@ -1232,7 +1247,8 @@
                             messageKeyForUserPrefs: 'ItemsHiddenDueSorting'
                         },
                         trapFocus: true,
-                        customClass: 'tainacan-modal'
+                        customClass: 'tainacan-modal',
+                        closeButtonAriaLabel: this.$i18n.get('close')
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {

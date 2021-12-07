@@ -1,0 +1,56 @@
+@import '../../scss/gutenberg-blocks-variables.scss';
+
+.wp-block-tainacan-related-items {
+    margin: 0.5em auto;
+    width: 100%;
+
+    // Spinner
+    .spinner-container {
+        min-height: 56px;
+        padding: 1em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--tainacan-block-gray4, $gray4);
+    }
+
+    // Skeleton loading
+    @-webkit-keyframes skeleton-animation {
+        0%{opacity: 1.0}
+        50%{opacity: 0.2}
+        100%{opacity: 1.0}
+    }
+    @-moz-keyframes skeleton-animation {
+        0%{opacity: 1.0}
+        50%{opacity: 0.2}
+        100%{opacity: 1.0}
+    }
+    @-o-keyframes skeleton-animation {
+        0%{opacity: 1.0}
+        50%{opacity: 0.2}
+        100%{opacity: 1.0}
+    }
+    @keyframes skeleton-animation {
+        0%{opacity: 1.0}
+        50%{opacity: 0.2}
+        100%{opacity: 1.0}
+    }
+    .skeleton {
+        border-radius: 2px;
+        background: var(--tainacan-block-gray1, $gray1);
+
+        -webkit-animation: skeleton-animation 1.8s ease infinite;
+        -moz-animation: skeleton-animation 1.8s ease infinite;
+        -o-animation: skeleton-animation 1.8s ease infinite;
+        animation: skeleton-animation 1.8s ease infinite;
+    }
+
+    // Placeholder on editor side  ----------------------------------------------------
+    .related-items-edit-container {
+        position: relative;
+        
+        & .skeleton {
+            min-height: 150px;
+        }
+    }
+}

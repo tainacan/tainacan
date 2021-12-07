@@ -24,6 +24,7 @@ use \Tainacan\Repositories;
 	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
 	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
 	 *                                                  Default: true
+	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value. Default ''
 	 *     @type string      $before                    String to be added before each metadata block
 	 *                                                  Default '<div class="metadata-type-$type">' where $type is the metadata type slug
 	 *     @type string      $after		                String to be added after each metadata block
@@ -335,13 +336,21 @@ function tainacan_get_the_media_component(
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
 		// Modal lightbox layer for rendering photoswipe
 		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
-
-		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/media-component.css', array(), TAINACAN_VERSION);
-		wp_enqueue_script( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/js/media_component.js', ['wp-i18n'], TAINACAN_VERSION, true );
-		wp_localize_script('tainacan-media-component', 'tainacan_plugin', \Tainacan\Admin::get_instance()->get_admin_js_localization_params());
+	
+		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
 		?>
 
-		<div class="tainacan-media-component">
+		<script>
+			try {
+				tainacan_plugin = (typeof tainacan_plugin != undefined) ? tainacan_plugin : {};
+			} catch(err) {
+				tainacan_plugin = {};
+			}
+			tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
+			tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
+		</script>	
+
+		<div id="<?php echo $media_id ?>" class="tainacan-media-component" data-module='item-gallery'>
 
 			<?php if ( $args['has_media_main'] ) : ?>
 				
@@ -410,23 +419,7 @@ function tainacan_get_the_media_component(
 			<?php endif; ?>
 
 		</div>
-			
-		<?php if ( isset( $_REQUEST['wp_customize'] ) ) : ?>
-			<script>
-				try {
-					tainacan_plugin = (typeof tainacan_plugin != undefined) ? tainacan_plugin : {};
-				} catch(err) {
-					tainacan_plugin = {};
-				}
-				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
-				tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
-			</script>	
-		<?php else :
-			wp_add_inline_script( 'tainacan-media-component', '
-				tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin != undefined && typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
-				tainacan_plugin.tainacan_media_components["' . $args['media_id'] . '"] = '. json_encode($args) . ';
-			', 'before' );
-		endif; ?>
+
 	<?php endif; ?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
 	
 <?php
@@ -693,7 +686,7 @@ function tainacan_is_view_mode_enabled($view_mode_slug) {
 	 *     @type int	$default_items_per_page						Default number of items per page loaded
 	 *     @type bool 	$show_filters_button_inside_search_control	Display the "hide filters" button inside of the search control instead of floating
 	 *     @type bool 	$start_with_filters_hidden					Loads the filters list hidden from start
-	 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsable region on desktop
+	 *     @type bool 	$filters_as_modal							Display the filters as a modal instead of a collapsible region on desktop
 	 *     @type bool 	$show_inline_view_mode_options				Display view modes as inline icon buttons instead of the dropdown
 	 *     @type bool 	$show_fullscreen_with_view_modes			Lists fullscreen viewmodes alongside with other view modes istead of separatelly
 	 *     @type string $default_view_mode							The default view mode
@@ -1038,9 +1031,22 @@ function tainacan_the_items_carousel($args = []) {
 }
 
 /**
- * Displays a group of related items carousels
+ * Displays a group of related items lists
  * For each metatada, the collection name, the metadata name and a button linking
  * the items list filtered is presented
+ *
+ * @param array $args {
+	 *     Optional. Array of arguments.
+	 *     @type string  $item_id					The Item ID
+ * @return void
+ */
+function tainacan_the_related_items($args = []) {
+	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_related_items_list($args);
+}
+
+/**
+ * Displays a group of related items carousels
+ * This is a preset version of tainacan_the_related_items, to keep compatibility with previous versions
  *
  * @param array $args {
 	 *     Optional. Array of arguments.
@@ -1050,6 +1056,7 @@ function tainacan_the_items_carousel($args = []) {
 function tainacan_the_related_items_carousel($args = []) {
 	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_related_items_carousel($args);
 }
+
 
 /**
  * Checks if the current item has or not related items

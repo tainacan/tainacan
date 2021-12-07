@@ -27,11 +27,18 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             let hasFiltered = false;
             let advancedSearchResults = false;
             
-            if ( (postQueries.metaquery != undefined &&
-                (Object.keys(postQueries.metaquery).length > 0 ||
-                postQueries.metaquery.length > 0)) || (postQueries.taxquery != undefined &&
-                    (Object.keys(postQueries.taxquery).length > 0 ||
-                    postQueries.taxquery.length > 0)) ) {
+            // We mark as filtered if there is a metaquery, taxquery or a postin
+            if ( 
+                (postQueries.metaquery != undefined &&
+                    (Object.keys(postQueries.metaquery).length > 0 || postQueries.metaquery.length > 0)
+                ) ||
+                (postQueries.taxquery != undefined &&
+                    (Object.keys(postQueries.taxquery).length > 0 ||postQueries.taxquery.length > 0)
+                ) ||
+                (postQueries.postin != undefined &&
+                    postQueries.postin.length
+                )
+            ) {
                 
                 hasFiltered = true;
                         
@@ -71,7 +78,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 if (postQueries.admin_view_mode != undefined)
                     postQueries.admin_view_mode = null;
             } 
-            axios.tainacan.get(endpoint+query, {
+
+            axios.tainacan.get(endpoint + query, {
                 cancelToken: source.token
             })
                 .then(res => {
@@ -105,6 +113,12 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                         dispatch('search/setFacets', res.data.filters, { root: true } );
                     else
                         dispatch('search/setFacets', {}, { root: true } );
+
+                    
+                    if (res.data.filters_arguments && res.data.filters_arguments.length > 0)
+                        dispatch('search/setFilterTags', res.data.filters_arguments, { root: true } );
+                    else
+                        dispatch('search/cleanFilterTags', [], { root: true } );
 
                 })
                 .catch((thrown) => {
@@ -140,7 +154,7 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     });
 };
  
-export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby, search }) => {
+export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby, search, collectionTaxonomies }) => {
     
     return new Promise((resolve, reject) => {
         let endpoint = '/collections?paged='+page+'&perpage='+collectionsPerPage;
@@ -156,6 +170,30 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
         
         if (search != undefined && search != '')
             endpoint = endpoint + '&search=' + search;
+            
+        if (collectionTaxonomies != undefined && collectionTaxonomies != '' && Object.keys(collectionTaxonomies).length) {
+            let taxQuery = { 'taxquery': [] };
+            
+            Object.keys(collectionTaxonomies).forEach((taxonomyValue) => {
+                
+                const enabledTerms = (
+                        collectionTaxonomies[taxonomyValue] &&
+                        collectionTaxonomies[taxonomyValue]['terms'] &&
+                        collectionTaxonomies[taxonomyValue]['terms'].length
+                    ) ? collectionTaxonomies[taxonomyValue]['terms'].filter(term => term.enabled == true) : [];
+                
+                if (enabledTerms.length ) {
+                    taxQuery['taxquery'].push({
+                        taxonomy: taxonomyValue,
+                        operator: 'IN',
+                        terms: enabledTerms.map(term => term.id)
+                    });
+                }
+            });
+
+            if (taxQuery['taxquery'].length)
+                endpoint = endpoint + '&' + qs.stringify(taxQuery);
+        }
 
         axios.tainacan.get(endpoint)
             .then(res => {
@@ -219,6 +257,45 @@ export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }
         .catch(error => {
             reject(error);
         })
+    });
+};
+
+export const fetchCollectionTaxonomies = ({ commit }) => {
+    return new Promise((resolve, reject) => { 
+        axios.wp.get('/taxonomies/?type=tainacan-collection')
+            .then(res => {
+                let taxonomies = res.data;
+                commit('setCollectionTaxonomies', taxonomies);
+
+                if (Object.keys(taxonomies).length) {
+
+                    let termsRequests = [];
+                    Object.keys(taxonomies).forEach(taxonomySlug => {
+                        if ( taxonomies[taxonomySlug]['rest_base'] ) {
+                            termsRequests.push(
+                                axios.wp.get(taxonomies[taxonomySlug]['rest_base'])
+                                    .then(resp => {
+                                       return { taxonomy: taxonomySlug, terms: resp.data };
+                                    })
+                                    .catch(error => {
+                                        reject(error);
+                                    })
+                            );
+                        }
+                    });
+                    axios.all(termsRequests)
+                        .then(result => {
+                            result.forEach(taxonomyTerms => commit('setCollectionTaxonomiesTerms', taxonomyTerms) );
+                            resolve(result.data);
+                        })
+                        .catch(error => {
+                            reject(error);
+                        })
+                }
+            })
+            .catch(error => {
+                reject(error);
+            });
     });
 };
 

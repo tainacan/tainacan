@@ -54,7 +54,7 @@
                                             content: $i18n.get('remove_value'),
                                             autoHide: true,
                                             placement: 'bottom',
-                                            classes: ['tooltip', 'repository-tooltip'],
+                                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         }"
                                         class="icon">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close"/>

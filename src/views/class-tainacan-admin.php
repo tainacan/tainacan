@@ -127,11 +127,16 @@ class Admin {
 
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_script( 'tainacan-roles', $TAINACAN_BASE_URL . '/assets/js/roles.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
-		wp_set_script_translations('tainacan-roles', 'tainacan');
+		wp_enqueue_script(
+			'tainacan-pages-common-scripts',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_pages_common_scripts.js',
+			['underscore', 'wp-i18n'],
+			TAINACAN_VERSION
+		);
+		wp_set_script_translations('tainacan-pages-common-scripts', 'tainacan');
 
 		$settings = $this->get_admin_js_localization_params();
-		wp_localize_script( 'tainacan-roles', 'tainacan_plugin', $settings );
+		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $settings );
 		wp_enqueue_script('underscore');
 		wp_enqueue_script('wp-i18n');
 
@@ -140,13 +145,11 @@ class Admin {
 
 	function roles_page() {
 		global $TAINACAN_BASE_URL;
-		// TODO move it to a separate file and start the Vue project
-		echo "<div id='tainacan-roles-app'></div>";
+		echo "<div id='tainacan-roles-app' data-module='roles'></div>";
 	}
 
 	function add_reports_css() {
 		global $TAINACAN_BASE_URL;
-
 		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
 		wp_enqueue_style( 'tainacan-reports-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-reports.css', [], TAINACAN_VERSION );
 	}
@@ -155,11 +158,16 @@ class Admin {
 
 		global $TAINACAN_BASE_URL;
 
-		wp_enqueue_script( 'tainacan-reports', $TAINACAN_BASE_URL . '/assets/js/reports.js', ['underscore', 'wp-i18n'], TAINACAN_VERSION, true );
-		wp_set_script_translations('tainacan-reports', 'tainacan');
+		wp_enqueue_script(
+			'tainacan-pages-common-scripts',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_pages_common_scripts.js',
+			['underscore', 'wp-i18n'],
+			TAINACAN_VERSION
+		);
+		wp_set_script_translations('tainacan-pages-common-scripts', 'tainacan');
 
 		$settings = $this->get_admin_js_localization_params();
-		wp_localize_script( 'tainacan-reports', 'tainacan_plugin', $settings );
+		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $settings );
 		wp_enqueue_script('underscore');
 		wp_enqueue_script('wp-i18n');
 
@@ -168,8 +176,7 @@ class Admin {
 
 	function reports_page() {
 		global $TAINACAN_BASE_URL;
-		// TODO move it to a separate file and start the Vue project
-		echo "<div id='tainacan-reports-app'></div>";
+		echo "<div id='tainacan-reports-app'  data-module='reports'></div>";
 	}
 
 	function add_admin_css() {
@@ -217,18 +224,22 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 		global $TAINACAN_EXTRA_SCRIPTS;
 
-		$deps = ['underscore', 'media-editor', 'media-views', 'customize-controls'];
+		$deps = ['underscore', 'media-editor', 'media-views', 'customize-controls', 'wp-i18n'];
 		if ( !empty($TAINACAN_EXTRA_SCRIPTS) ) {
 			foreach($TAINACAN_EXTRA_SCRIPTS as $dep) {
 				$deps[] = $dep;
 			}
 		}
 
-		wp_enqueue_script( 'tainacan-admin', $TAINACAN_BASE_URL . '/assets/js/admin.js', $deps, TAINACAN_VERSION, true );
-
+		wp_enqueue_script(
+			'tainacan-pages-common-scripts',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_pages_common_scripts.js',
+			$deps,
+			TAINACAN_VERSION
+		);
 		$settings = $this->get_admin_js_localization_params();
 
-		wp_localize_script( 'tainacan-admin', 'tainacan_plugin', $settings );
+		wp_localize_script( 'tainacan-pages-common-scripts', 'tainacan_plugin', $settings );
 		wp_enqueue_media(
 			 //[ 'post' => 131528 ]
 		);
@@ -244,12 +255,12 @@ class Admin {
 		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-		$Tainacan_Metadata      = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Metadata    = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Filters     = \Tainacan\Repositories\Filters::get_instance();
 		$Tainacan_Items       = \Tainacan\Repositories\Items::get_instance();
 		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
 
-		$tainacan_admin_i18n = require( 'tainacan-admin-i18n.php' );
+		$tainacan_admin_i18n = require( 'tainacan-i18n.php' );
 
 		$entities_labels = [
 			'collections' => $Tainacan_Collections->get_cpt_labels(),
@@ -296,7 +307,8 @@ class Admin {
 			'repository_name'	 		=> get_bloginfo('name'),
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
 			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
-			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key")
+			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
+			'tainacan_enable_relationship_metaquery' => ( defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') && true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY )
 		];
 		
 		$maps = [
@@ -359,7 +371,7 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 
 		// TODO move it to a separate file and start the Vue project
-		echo "<div id='tainacan-admin-app'></div>";
+		echo "<div id='tainacan-admin-app' data-module='admin'></div>";
 	}
 
 	function register_user_meta() {
@@ -412,6 +424,17 @@ class Admin {
 			$post->post_name = sanitize_title($name ? $name : $title, $post->ID);
 
 		$post->post_name = wp_unique_post_slug($post->post_name, $post->ID, $post->post_status, $post->post_type, $post->post_parent);
+		if ( $post->post_type === \Tainacan\Entities\Taxonomy::$post_type ) {
+			$post_name = $post->post_name;
+			$tax = \get_taxonomies(array('name' => $post_name));
+			$suffix = 2;
+			while ( !empty($tax) ) {
+				$post_name = _truncate_post_slug( $post_name, 200 - ( strlen( $suffix ) + 1 ) ) . "-$suffix";
+				$tax = \get_taxonomies(array('name' => $post_name));
+				$suffix++;
+			};
+			$post->post_name = $post_name;
+		}
 
 		$post->filter = 'sample';
 

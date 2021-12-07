@@ -117,6 +117,13 @@ class Items extends Repository {
 						'context'     => array( 'view', 'edit', 'embed' ),
 						'default'     => false
 					),
+					'is_image' => array(
+						'title' => __( 'Is link to external image', 'tainacan' ),
+						'description' => __( 'Is link to external image', 'tainacan' ),
+						'type'        => 'boolean',
+						'context'     => array( 'view', 'edit', 'embed' ),
+						'default'     => false
+					),
 					'forced_iframe_height'      => array(
 						'description' => __( 'Iframe height (px)', 'tainacan' ),
 						'type'        => 'number',
@@ -258,7 +265,7 @@ class Items extends Repository {
 		$no_collection_set = false;
 
 		/**
-		 * We can not use $collections->fetch() here because facets
+		 * We cannot use $collections->fetch() here because facets
 		 * filter wp_query to just return the query and not the results
 		 * See Repositories\Metadata::fetch_all_metadatum_values()
 		 *
@@ -338,6 +345,10 @@ class Items extends Repository {
 				'ID' => 'DESC'
 			];
 			$args['orderby'] = $new_order;
+		}
+
+		if ( defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') && true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY ) {
+			$args = $this->parse_relationship_metaquery($args);
 		}
 
 		$args = apply_filters( 'tainacan_fetch_args', $args, 'items' );
@@ -689,6 +700,46 @@ class Items extends Repository {
 		}
 
 		return $response;
+	}
+
+	private function parse_relationship_metaquery ($args) {
+		if( isset($args['meta_query']) ) {
+			$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+			foreach($args['meta_query'] as $idx => $meta) {
+				$meta_id = $meta['key'];
+				$metadata = $Tainacan_Metadata->fetch($meta_id);
+				if(
+					isset($metadata) &&
+					$metadata instanceof \Tainacan\Entities\Metadatum &&
+					$metadata->get_metadata_type() === 'Tainacan\\Metadata_Types\\Relationship' &&
+					(isset($meta['compare']) && !in_array($meta['compare'], ['IN', 'NOT IN', '=']))
+				) {
+					$options  = $metadata->get_metadata_type_options();
+					if( isset($options) && isset($options['search']) ) {
+						$this->relationsip_metaquery = array(
+							'meta_id' => $meta_id,
+							'search_meta_id' => $options['search'],
+							'search_meta_value' => $args['meta_query'][$idx]['value']
+						);
+						$args['meta_query'][$idx]['compare'] = '!=';
+						$args['meta_query'][$idx]['value'] = '';
+						add_filter( 'posts_where' , array($this, 'posts_where_relationship_metaquery'), 10, 1 );
+						return $args;
+					}
+				}
+			}
+		}
+		return $args;
+	}
+
+	function posts_where_relationship_metaquery( $where ) {
+		$meta_id = $this->relationsip_metaquery['meta_id'];
+		$search_meta_id = $this->relationsip_metaquery['search_meta_id'];
+		$search_meta_value = $this->relationsip_metaquery['search_meta_value'];
+		$SQL_related_item = " SELECT DISTINCT post_id FROM wp_postmeta WHERE meta_key=$search_meta_id AND meta_value LIKE '%$search_meta_value%'";
+		$where .= " AND (wp_postmeta.meta_key = '$meta_id' AND wp_postmeta.meta_value IN ( $SQL_related_item ) ) ";
+		remove_filter( 'posts_where', array($this, 'posts_where_relationship_metaquery') );
+		return $where;
 	}
 
 }

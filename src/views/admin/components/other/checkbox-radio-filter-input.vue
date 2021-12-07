@@ -889,8 +889,11 @@
         justify-content: space-between;
         align-items: center;
         padding: 0;
+        -webkit-break-inside: avoid;
+        break-inside: avoid;
 
         .b-checkbox {
+            break-inside: avoid;
             max-width: 100%;
             min-height: 1.5em;
             margin-left: 0.7em;
@@ -910,8 +913,12 @@
         max-width: calc(100% - 0.5em);
         padding-left: 0.5em;
         margin: 0;
+        -webkit-break-inside: avoid;
+        break-inside: avoid;
 
         .b-checkbox {
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
             margin-right: 0px;
             margin-bottom: 0;
         }
@@ -961,15 +968,24 @@
             max-width: 100%;
 
             ul {
-                -moz-column-count: 2;
+                -moz-column-count: 3;
                 -moz-column-gap: 0;
                 -moz-column-rule: none;
-                -webkit-column-count: 2;
+                -webkit-column-count: 3;
                 -webkit-column-gap: 0;
                 -webkit-column-rule: none;
-                column-count: 2;
+                column-count: 3;
                 column-gap: 2em;
                 column-rule: none;
+                overflow-y: hidden;
+                overflow-x: auto;
+            }
+            @media screen and (max-width: 1366px) {
+                ul {
+                    -moz-column-count: 2;
+                    -webkit-column-count: 2;
+                    column-count: 2;
+                }
             }
         }
 
@@ -1161,11 +1177,11 @@
     }
 
     .tainacan-li-checkbox-last-active {
-        background-color: var(--tainacan-turquoise1);
+        background-color: var(--tainacan-primary);
     }
 
     .tainacan-li-checkbox-parent-active {
-        background-color: var(--tainacan-turquoise1);
+        background-color: var(--tainacan-primary);
     }
 
     .b-checkbox .control-label {
@@ -1179,6 +1195,7 @@
         .checkbox-label-text {
             line-height: 1.25em;
             padding-right: 3px;
+            break-inside: avoid;
         }
     }
 
@@ -1200,9 +1217,9 @@
         .tainacan-modal-checkbox-list-body,
         .tainacan-finder-column.has-only-one-column,
         .tainacan-modal-checkbox-search-results-body {
-            -moz-column-count: auto;
-            -webkit-column-count: auto;
-            column-count: auto;
+            -moz-column-count: auto !important;
+            -webkit-column-count: auto !important;
+            column-count: auto !important;
         }
 
         .tainacan-li-checkbox-list {

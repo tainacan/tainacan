@@ -31,6 +31,7 @@
                     :on-paste-separators="optionsSeparator"
                     :remove-on-keys="[]"
                     :aria-close-label="$i18n.get('remove_value')"
+                    class="tainacan-selectbox-metadata-type--taginput"
                     :class="{'has-selected': options != undefined && options != []}"
                     :placeholder="$i18n.get('new') + ', ...'" />
             <div class="separator-options">
@@ -100,8 +101,9 @@
     }
 </script>
 
-<style scoped>
-    section{
+<style lang="scss" scoped>
+
+    section {
         margin-bottom: 10px;
     }
     .help-wrapper {
@@ -115,16 +117,27 @@
         border: 1px solid var(--tainacan-gray1, #f2f2f2);
         border-bottom-right-radius: 2px;
         border-bottom-left-radius: 2px;
+        .b-checkbox {
+            width: auto;
+            margin-right: 0.75em;
+        }
+        &>label {
+            opacity: 0.875;
+            font-size: 0.75em;
+            margin-right: 1em;
+            display: block;
+            width: 100%;
+        }
     }
-    .separator-options .b-checkbox {
-        width: auto;
-        margin-right: 0.75em;
-    }
-    .separator-options>label {
-        opacity: 0.875;
-        font-size: 0.75em;
-        margin-right: 1em;
-        display: block;
-        width: 100%;
+    .tainacan-selectbox-metadata-type--taginput /deep/ {
+        .tag,
+        .tags {
+            white-space: normal !important;
+            min-height: calc(2em - 1px) !important;
+            height: auto !important;
+        }
+        .tag.is-delete {
+            min-width: calc(2em - 1px) !important;
+        }
     }
 </style>

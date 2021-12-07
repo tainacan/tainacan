@@ -117,6 +117,7 @@ class Collection extends Entity {
 			'show_in_menu'        => tnc_enable_dev_wp_interface(),
 			//'menu_position'     => 5,
 			//'show_in_nav_menus' => false,
+			'show_in_rest'        => true,
 			'publicly_queryable'  => true,
 			'exclude_from_search' => true,
 			'has_archive'         => true,
@@ -783,7 +784,7 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Set enable submission with anonymous user 
+	 * Set enable submission with anonymous user
 	 *
 	 * @param [string] $value
 	 *
@@ -805,7 +806,7 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Set if submission items are allowes for the current collection. 
+	 * Set if submission items are allowes for the current collection.
 	 *
 	 * @param [string] $value
 	 *
@@ -852,7 +853,7 @@ class Collection extends Entity {
 		}
 
 		if( $this->is_cover_page_enabled() && !is_numeric( $this->get_cover_page_id() ) ) {
-			$this->add_error('cover_page_id', __('cover page is enabled, please inform the page', 'tainacan'));
+			$this->add_error('cover_page_id', __('cover page is enabled, please specify the page', 'tainacan'));
 			return false;
 		}
 

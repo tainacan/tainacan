@@ -552,7 +552,7 @@ class Roles {
 
 			if( in_array($requested_cap, [
 					$this->meta_caps->read_private_posts,
-					$this->filters_caps->read_private_posts] 
+					$this->filters_caps->read_private_posts]
 				) && (
 					$user->has_cap('manage_tainacan') ||
 					$user->has_cap('manage_tainacan_collection_all')
@@ -575,8 +575,8 @@ class Roles {
 
 					$check_all_collections_cap = false;
 					$has_all_collections_cap   = false;
-					
-					
+
+
 					/**
 					 * We are only interested in checks for a specific collection.
 					 * $args[2] will be set if this came from a meta cap of a specific collection ( e.g. current_user_can('tnc_rep_edit_collection', 3) ).
@@ -584,7 +584,7 @@ class Roles {
 					if ( isset( $args[2] ) && is_numeric( $args[2] ) ) {
 						$col_id = $args[2];
 					/**
-					 * Or we extract the collectino id from the capability itself. Example: tnc_col_3_delete_items
+					 * Or we extract the collection id from the capability itself. Example: tnc_col_3_delete_items
 					 */
 					} else {
 						$col_id = preg_replace('/[a-z_]+(\d+)[a-z_]+?$/', '$1', $cap );
@@ -598,7 +598,7 @@ class Roles {
 						continue;
 					}
 
-					// In case of a tnc_col_* capability check, 
+					// In case of a tnc_col_* capability check,
 					// Let's see if the user has the respective tnc_col_all_* capability
 					if ( $check_all_collections_cap ) {
 						$all_collections_cap     = preg_replace('/([a-z_]+)(\d+)([a-z_]+?)$/', '${1}all${3}', $cap );

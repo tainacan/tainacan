@@ -64,10 +64,6 @@ export const getFetchOnly = state => {
     return state.postquery.fetch_only;
 };
 
-export const getOrderByName = state => {
-    return state.orderByName;
-};
-
 export const getMetaKey = state => {
     return state.postquery.metakey;
 };

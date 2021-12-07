@@ -1,0 +1,35 @@
+// Empty loading state for Tainacan blocks that are not mounted yet
+[data-module="faceted-search"]:not(.has-mounted),
+[data-module="facets-list"]:not(.has-mounted),
+[data-module="dynamic-items-list"]:not(.has-mounted),
+[data-module="carousel-items-list"]:not(.has-mounted),
+[data-module="carousel-terms-list"]:not(.has-mounted),
+[data-module="carousel-collections-list"]:not(.has-mounted),
+[data-module="item-submission-form"]:not(.has-mounted) {
+    background-color: inherit;
+    opacity: 0.75;
+    border-radius: 2px;
+}
+[data-module="item-submission-form"]:not(.has-mounted),
+[data-module="faceted-search"]:not(.has-mounted) {
+    min-height: 75vh;
+}
+[data-module="facets-list"]:not(.has-mounted),
+[data-module="dynamic-items-list"]:not(.has-mounted),
+[data-module="carousel-items-list"]:not(.has-mounted),
+[data-module="carousel-terms-list"]:not(.has-mounted),
+[data-module="carousel-collections-list"]:not(.has-mounted) {
+    min-height: 160px;
+}
+[data-module="facets-list"]:not(.has-mounted),
+[data-module="dynamic-items-list"]:not(.has-mounted) {
+    min-height: 360px;
+}
+
+/* Admin menu links */
+#wpadminbar #wp-admin-bar-tainacan-item-edition-link > .ab-item::before,
+#wpadminbar #wp-admin-bar-tainacan-collection-edition-link > .ab-item::before,
+#wpadminbar #wp-admin-bar-tainacan-collections-edition-link > .ab-item::before {
+    content: '\f464';
+    top: 2px;
+}

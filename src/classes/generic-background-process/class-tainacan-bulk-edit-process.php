@@ -23,8 +23,8 @@ class Bulk_Edit_Process extends Generic_Process {
 		$this->item_metadata_repository = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$this->steps = [
 			[
-				'name' => __('Bulk edit control metadada', 'tainacan'),
-				'progress_label' => __('Creating bulk edit control metadada', 'tainacan'),
+				'name' => __('Bulk edit control metadata', 'tainacan'),
+				'progress_label' => __('Creating bulk edit control metadata', 'tainacan'),
 				'callback' => 'add_control_metadata'
 			],[
 				'name' => __('Bulk edit', 'tainacan'),
@@ -42,7 +42,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		if (!isset($params['collection_id']) || !is_numeric($params['collection_id'])) {
-			throw new \Exception('Collection ID must be informed when creating a group.');
+			throw new \Exception('Collection ID must be specified when creating a group.');
 		}
 
 		$this->set_group_id(uniqid());
@@ -141,10 +141,10 @@ class Bulk_Edit_Process extends Generic_Process {
 			$params['control_metadata'] = $this->get_id();
 			$this->save_options($params);
 		} elseif ($params['control_metadata'] === true) {
-			$this->add_log( __('bulk edit control metadata has already been created', 'tainacan') );
+			$this->add_log( __('Bulk edit control metadata has already been created', 'tainacan') );
 			return false;
 		} elseif( is_numeric($params['control_metadata']) && $params['control_metadata'] != $this->get_id() ) {
-			$this->add_log( sprintf( __( 'waiting creating bulk edit control metadata by process ID: "%d"', 'tainacan' ), $params['control_metadata'] ) );
+			$this->add_log( sprintf( __( 'Waiting creating bulk edit control metadata by process ID: "%d"', 'tainacan' ), $params['control_metadata'] ) );
 			return true;
 		}
 
@@ -171,11 +171,11 @@ class Bulk_Edit_Process extends Generic_Process {
 			if(!$item_query->have_posts() ) {
 				$params['control_metadata'] = true;
 				$this->save_options($params);
-				$this->add_log( __('bulk edit control metadata created', 'tainacan') );
+				$this->add_log( __('Bulk edit control metadata created', 'tainacan') );
 				return false;
 			}
 			$item_id = $item_query->get_posts()[0];
-			$this->add_log( sprintf( __( 'creating bulk edit control metadata for item: "%d"', 'tainacan' ), $item_id ) );
+			$this->add_log( sprintf( __( 'Creating bulk edit control metadata for item: "%d"', 'tainacan' ), $item_id ) );
 			add_post_meta($item_id, $this->meta_key, $this->get_group_id());
 			return $count;
 		} elseif (isset($params['items_ids']) && is_array($params['items_ids'])) {
@@ -183,18 +183,18 @@ class Bulk_Edit_Process extends Generic_Process {
 
 			$count = $this->get_in_step_count();
 			if( isset($items_ids[$count]) ) {
-				$this->add_log( sprintf( __( 'creating bulk edit control metadata for item: "%d"', 'tainacan' ), $items_ids[$count] ) );
+				$this->add_log( sprintf( __( 'Creating bulk edit control metadata for item: "%d"', 'tainacan' ), $items_ids[$count] ) );
 				add_post_meta($items_ids[$count++], $this->meta_key, $this->get_group_id());
 				return $count;
 			} else {
 				$params['control_metadata'] = true;
 				$this->save_options($params);
-				$this->add_log( __('bulk edit control metadata created', 'tainacan') );
+				$this->add_log( __('Bulk edit control metadata created', 'tainacan') );
 				return false;
 			}
 		}
 
-		$this->add_error_log(__('wrong parameter on add bulk edit control metadata', 'tainacan'));
+		$this->add_error_log(__('Wrong parameter on add bulk edit control metadata', 'tainacan'));
 		$this->abort();
 		return false;
 	}
@@ -241,7 +241,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			return false;
 		}
 
-		$this->add_log( sprintf( __('bulk edit has process the item ID: "%d"', 'tainacan'), $item->get_id() ) );
+		$this->add_log( sprintf( __('Bulk edit has processed the item ID: "%d"', 'tainacan'), $item->get_id() ) );
 		$add_steps = $this->$method($item);
 		if ( is_int($add_steps) ) {
 			$count = $count + $add_steps;
@@ -252,7 +252,7 @@ class Bulk_Edit_Process extends Generic_Process {
 	public function finished() {
 		$total = $this->get_transient('total_process') == null ? 0 : $this->get_transient('total_process');
 		$this->add_log('finished');
-		$this->add_log( sprintf( __('total items processed: %d', 'tainacan'), $total ) );
+		$this->add_log( sprintf( __('Total items processed: %d', 'tainacan'), $total ) );
 	}
 
 	private function save_item_metadata(\Tainacan\Entities\Item_Metadata_Entity $item_metadata, \Tainacan\Entities\Item $item) {
@@ -310,7 +310,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			$unique = !$compoundItem->is_multiple();
 			$compoundValue = $compoundItem->get_value();
 			if ( $unique && !empty($compoundValue) ) {
-				$key = array_keys($compoundValue)[0]; // get the first metadata ID, if the argument metadata does not exist  
+				$key = array_keys($compoundValue)[0]; // get the first metadata ID, if the argument metadata does not exist
 				$parent_meta_id = $compoundValue[$key]->get_parent_meta_id();
 				return $parent_meta_id;
 			} // elseif ((is_array($compoundValue) && sizeof($compoundValue) > 0))
@@ -359,10 +359,10 @@ class Bulk_Edit_Process extends Generic_Process {
 			return $this->save_item_metadata($item_metadata, $item);
 		} else {
 			$metadatum_from = $this->metadatum_repository->fetch($metadatum_id_from);
-			if ( $metadatum_from->get_metadata_type() == $metadatum->get_metadata_type() && 
+			if ( $metadatum_from->get_metadata_type() == $metadatum->get_metadata_type() &&
 						( $metadatum_from->is_multiple() == false || $metadatum_from->is_multiple() == $metadatum->is_multiple() ) ) {
 				$item_metadata_from = new Entities\Item_Metadata_Entity( $item, $metadatum_from );
-				
+
 				$value = $item_metadata_from->get_value();
 				if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
 					if ( $metadatum_from->is_multiple() ) {
@@ -379,7 +379,7 @@ class Bulk_Edit_Process extends Generic_Process {
 				return $this->save_item_metadata($item_metadata, $item);
 			}
 		}
-		
+
 		$this->add_error_log( __('Not possible to copy metadata values of different types', 'tainacan') );
 		return false;
 	}
@@ -435,7 +435,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		}
 
 		if ($new_value == $old_value) {
-			$this->add_error_log( __( 'Old value and new value can not be the same', 'tainacan' ) );
+			$this->add_error_log( __( 'Old value and new value cannot be the same', 'tainacan' ) );
 			return false;
 		}
 
@@ -445,7 +445,7 @@ class Bulk_Edit_Process extends Generic_Process {
 			$metadatum = $item_metadata->get_metadatum();
 			if($metadatum->get_id() == $metadatum_id) {
 				$values = is_array($item_metadata->get_value()) ? $item_metadata->get_value() : [$item_metadata->get_value()];
-				
+
 				if ( $metadatum->get_metadata_type_object()->get_primitive_type() == 'term' ) {
 					$new_term = is_string($new_value) ? $new_value : \Tainacan\Repositories\Terms::get_instance()->fetch($new_value, $metadatum->get_metadata_type_object()->get_taxonomy());
 					$values = array_map( function ($term) use ($old_value, $new_term) {
@@ -453,7 +453,7 @@ class Bulk_Edit_Process extends Generic_Process {
 							($term == $old_value ? $new_term : $term) :
 							($term->get_id() == $old_value ? $new_term : $term);
 					}, $values );
-					
+
 					$item_metadata->set_value( $metadatum->is_multiple() ? $values : $new_term );
 					return $this->save_item_metadata($item_metadata, $item);
 				} else {
@@ -472,7 +472,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function trash_items(\Tainacan\Entities\Item $item) {
 		if ( !$this->items_repository->trash($item) ) {
-			$this->add_error_log( sprintf( __('error on send to trash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
+			$this->add_error_log( sprintf( __('Error on send to trash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
 			return false;
 		}
 		return true;
@@ -480,7 +480,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 	private function untrash_items(\Tainacan\Entities\Item $item) {
 		if ( !wp_untrash_post( $item->get_id() ) ) {
-			$this->add_error_log( sprintf( __('error on untrash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
+			$this->add_error_log( sprintf( __('Error on untrash, item ID: "%d"', 'tainacan'), $item->get_id() ) );
 			return false;
 		}
 		return true;
@@ -526,7 +526,7 @@ class Bulk_Edit_Process extends Generic_Process {
 		$value = $this->bulk_edit_data['value'];
 
 		if ( ! in_array( $value, array( 'open', 'closed' ) ) ) {
-			$this->add_error_log( __( "the status of comments must be 'open' or 'closed'", 'tainacan' ) );
+			$this->add_error_log( __( "The status of comments must be 'open' or 'closed'", 'tainacan' ) );
 			return false;
 		}
 

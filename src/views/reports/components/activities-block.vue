@@ -242,7 +242,7 @@ export default {
                 this.chartOptionsByUser.push({
                     ...this.areaChartOptions,
                     title: {
-                        text: ''
+                        text: daysWithActivityByUser.user.name + ' (' + daysWithActivityByUser.total + ')'
                     },
                     chart: {
                         id: 'userschart-' + daysWithActivityByUser.user_id,
@@ -297,6 +297,13 @@ export default {
     order: 3;
     padding: 12px;
 
+    @media only screen {
+        /deep/ .apexcharts-title-text {
+            display: none;
+            visibility: hidden;
+        }   
+    }
+
     .users-charts__card {
         padding: 20px !important;
 
@@ -305,7 +312,7 @@ export default {
             align-items: center;
             padding: 6px 12px 2px 12px;
             position: absolute;
-            top: 4px;
+            top: 2px;
             left: 26px;
 
             img,

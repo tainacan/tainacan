@@ -100,7 +100,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + taxonomy.status),
                                         autoHide: true,
-                                        classes: ['tooltip', 'repository-tooltip'],
+                                        classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -181,7 +181,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                classes: ['tooltip', 'repository-tooltip'], 
+                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'], 
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
@@ -197,7 +197,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                classes: ['tooltip', 'repository-tooltip'],
+                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
@@ -308,7 +308,8 @@
                         }
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             deleteSelected() {
@@ -348,7 +349,8 @@
                         }
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             onClickTaxonomy($event, taxonomyId, index) {

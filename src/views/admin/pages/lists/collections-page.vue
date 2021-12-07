@@ -9,7 +9,7 @@
             <div 
                     v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="header-item">
-                <b-dropdown 
+                <b-dropdown
                         aria-role="list"
                         id="collection-creation-options-dropdown"
                         trap-focus>
@@ -56,9 +56,57 @@
                 </b-dropdown>
             </div>
 
+            <!-- Collection Taxonomies, if available -->
+            <template v-if="!isLoadingCollectionTaxonomies && Object.values(collectionTaxonomies) && Object.values(collectionTaxonomies).length >= 0">
+                <b-field 
+                        v-for="(collectionTaxonomy, taxonomyValue) in collectionTaxonomies"
+                        :key="taxonomyValue"
+                        class="header-item">
+                    <b-dropdown
+                            :ref="'collectionTaxonomyFilterDropdown-' + taxonomyValue"
+                            :mobile-modal="true"
+                            :disabled="(totalCollections && totalCollections.length && totalCollections.length <= 0) || isLoading"
+                            class="show metadata-options-dropdown"
+                            aria-role="list"
+                            trap-focus>
+                        <button
+                                :aria-label="collectionTaxonomy['name']"
+                                class="button is-white"
+                                slot="trigger">
+                            <span>{{ collectionTaxonomy['name'] }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                        <div class="metadata-options-container">
+                            <b-dropdown-item
+                                    v-for="(collectionTaxonomyTerm, index) in collectionTaxonomy['terms']"
+                                    :key="index"
+                                    class="control"
+                                    custom
+                                    aria-role="listitem">
+                                <b-checkbox
+                                        v-model="collectionTaxonomyTerm.enabled"
+                                        :native-value="collectionTaxonomyTerm.enabled">
+                                    {{ collectionTaxonomyTerm.name }}
+                                </b-checkbox>
+                            </b-dropdown-item>   
+                        </div>
+                        <div class="dropdown-item-apply">
+                            <button 
+                                    aria-controls="items-list-results"
+                                    @click="onChangeCollectionTaxonomyTerms(taxonomyValue)"
+                                    class="button is-success">
+                                {{ $i18n.get('label_apply_changes') }}
+                            </button>
+                        </div>  
+                    </b-dropdown>
+                </b-field>
+            </template>
+
             <!-- Sorting options ----  -->
             <b-field class="header-item">
-                <label class="label">{{ $i18n.get('label_sort') }}</label>
+                <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                 <b-dropdown
                         :mobile-modal="true"
                         :disabled="collections.length <= 0 || isLoading"
@@ -328,6 +376,7 @@ export default {
             page: 1,
             collectionsPerPage: 12,
             isLoadingMetadatumMappers: true,
+            isLoadingCollectionTaxonomies: false,
             status: '',
             order: 'desc',
             ordeBy: 'date',
@@ -335,6 +384,7 @@ export default {
             sortingOptions: [
                 { label: this.$i18n.get('label_title'), value: 'title' },
                 { label: this.$i18n.get('label_creation_date'), value: 'date' },
+                { label: this.$i18n.get('label_modification_date'), value: 'modified' }
             ]
         }
     },
@@ -349,10 +399,24 @@ export default {
         },
         repositoryTotalCollections(){
             return this.getRepositoryTotalCollections();
+        },
+        collectionTaxonomies() {
+            let collectionTaxonomies = this.getCollectionTaxonomies();
+
+            // Adds the 'enable' property to our local version of terms
+            if ( Object.values(collectionTaxonomies).length ) {
+                Object.values(collectionTaxonomies).forEach(collectionTaxonomy => {
+                    collectionTaxonomy.terms.forEach(aTerm => aTerm.enabled = false);
+                });
+                return collectionTaxonomies;
+            }
+
+            return {};
         }
     },
     created() {
         this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
+
         this.isLoadingMetadatumTypes = true;
         this.fetchMetadatumMappers()
             .then(() => {
@@ -360,6 +424,15 @@ export default {
             })
             .catch(() => {
                 this.isLoadingMetadatumMappers = false;
+            });
+        
+        this.isLoadingCollectionTaxonomies = true;
+        this.fetchCollectionTaxonomies()
+            .then(() => {
+                this.isLoadingCollectionTaxonomies = false;
+            })
+            .catch(() => {
+                this.isLoadingCollectionTaxonomies= false;
             });
     }, 
     mounted(){
@@ -390,14 +463,16 @@ export default {
     methods: {
          ...mapActions('collection', [
             'fetchCollections',
-            'cleanCollections'
+            'cleanCollections',
+            'fetchCollectionTaxonomies'
         ]),
         ...mapActions('metadata', [
             'fetchMetadatumMappers'
         ]),
         ...mapGetters('collection', [
             'getCollections',
-            'getRepositoryTotalCollections'
+            'getRepositoryTotalCollections',
+            'getCollectionTaxonomies'
         ]),
         ...mapGetters('metadata', [
             'getMetadatumMappers'
@@ -448,6 +523,14 @@ export default {
             this.page = page;
             this.loadCollections();
         },
+        onChangeCollectionTaxonomyTerms(taxonomyValue) {
+
+            this.loadCollections();
+
+            // Closes dropdown
+            if (this.$refs['collectionTaxonomyFilterDropdown-' + taxonomyValue] && this.$refs['collectionTaxonomyFilterDropdown-' + taxonomyValue][0])
+                this.$refs['collectionTaxonomyFilterDropdown-' + taxonomyValue][0].toggle();
+        },
         loadCollections() {
             this.cleanCollections();
             this.isLoading = true;
@@ -458,7 +541,8 @@ export default {
                 contextEdit: true, 
                 order: this.order,
                 orderby: this.orderBy,
-                search: this.searchQuery
+                search: this.searchQuery,
+                collectionTaxonomies: this.collectionTaxonomies,
             })
             .then((res) => {
                 this.isLoading = false;
@@ -479,7 +563,8 @@ export default {
                 component: AvailableImportersModal,
                 hasModalCard: true,
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         },
         searchCollections() {
@@ -514,13 +599,13 @@ export default {
                 margin-right: auto;
             }
             &:not(:last-child) {
-                padding-right: 0.5em;
+                padding-right: 0.875em;
             }
 
             .label {
                 font-size: 0.875em;
                 font-weight: normal;
-                margin-top: 3px;
+                margin-top: 5px;
                 margin-bottom: 2px;
                 cursor: default;
             }
@@ -529,7 +614,6 @@ export default {
                 .button {
                     display: flex;
                     align-items: center;
-                    border-radius: 0 !important;
                     height: 1.95em !important;
                 }
             }
@@ -556,6 +640,34 @@ export default {
                 height: 27px;
                 font-size: 1.125em !important;
                 height: 1.75em
+            }
+
+            .dropdown-menu {
+                display: block;
+
+                div.dropdown-content {
+                    padding: 0;
+
+                    .metadata-options-container {
+                        max-height: 288px;
+                        overflow: auto;
+                    }
+                    .dropdown-item {
+                        padding: 0.25em 1.0em 0.25em 0.75em; 
+                    }
+                    .dropdown-item span{
+                        vertical-align: middle;
+                    }      
+                    .dropdown-item-apply {
+                        width: 100%;
+                        border-top: 1px solid var(--tainacan-skeleton-color);
+                        padding: 8px 12px;
+                        text-align: right;
+                    }
+                    .dropdown-item-apply .button {
+                        width: 100%;
+                    }
+                }
             }
         }
 

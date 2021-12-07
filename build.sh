@@ -14,12 +14,12 @@ current_OS=`uname`
 # For macOS (Darwin)
 if [ $current_OS == "Darwin" ]; then
     find src *.js -type f \( -name "*.js" -or -name "*.vue" -or -name "webpack.common.js" -or -name "webpack.dev.js" -or -name "webpack.prod.js" \) -exec md5 {} \; | sort -k 2 | md5 > last-js-build.md5
-    find ./src/views/admin/scss/ ./src/views/gutenberg-blocks/ ./src/views/gutenberg-blocks/tainacan-blocks/collections-list ./src/views/gutenberg-blocks/tainacan-blocks/facets-list ./src/views/gutenberg-blocks/tainacan-blocks/dynamic-items-list ./src/views/gutenberg-blocks/tainacan-blocks/items-list ./src/views/gutenberg-blocks/tainacan-blocks/terms-list -type f \( -name "*.scss" \) -exec md5 {} \; | sort -k 2 | md5 > last-sass-build.md5
+    find ./src/views/admin/scss/ ./src/views/gutenberg-blocks/ ./src/views/gutenberg-blocks/blocks/collections-list ./src/views/gutenberg-blocks/blocks/facets-list ./src/views/gutenberg-blocks/blocks/dynamic-items-list ./src/views/gutenberg-blocks/blocks/items-list ./src/views/gutenberg-blocks/blocks/terms-list -type f \( -name "*.scss" \) -exec md5 {} \; | sort -k 2 | md5 > last-sass-build.md5
     find ./composer.json -type f \( -name "composer.json" \) -exec md5 {} \; | sort -k 2 | md5 > last-composer-build.md5
     find ./package.json -type f \( -name "package.json" -or -name "package-lock.json" \) -exec md5 {} \; | sort -k 2 | md5 > last-package-build.md5
 else
     find src *.js -type f \( -name "*.js" -or -name "*.vue" -or -name "webpack.common.js" -or -name "webpack.dev.js" -or -name "webpack.prod.js" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-js-build.md5
-    find ./src/views/admin/scss/ ./src/views/roles/ ./src/views/media-component/ ./src/views/reports/ ./src/views/gutenberg-blocks ./src/views/gutenberg-blocks/tainacan-blocks/collections-list ./src/views/gutenberg-blocks/tainacan-blocks/facets-list ./src/views/gutenberg-blocks/tainacan-blocks/dynamic-items-list ./src/views/gutenberg-blocks/tainacan-blocks/items-list ./src/views/gutenberg-blocks/tainacan-blocks/terms-list -type f \( -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-sass-build.md5
+    find ./src/views/admin/scss/ ./src/views/gutenberg-blocks ./src/views/gutenberg-blocks/blocks/collections-list ./src/views/gutenberg-blocks/blocks/facets-list ./src/views/gutenberg-blocks/blocks/dynamic-items-list ./src/views/gutenberg-blocks/blocks/items-list ./src/views/gutenberg-blocks/blocks/terms-list -type f \( -name "*.scss" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-sass-build.md5
     find ./composer.json -type f \( -name "composer.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-composer-build.md5
     find ./package.json -type f \( -name "package.json" -or -name "package-lock.json" \) -exec md5sum {} \; | sort -k 2 | md5sum > last-package-build.md5
 fi
@@ -31,11 +31,26 @@ then
     npm ci
 fi
 
+is_prod_build=false
+for i in "$@"
+do
+    case $i in
+        --prod)
+            is_prod_build=true
+        ;;
+    esac
+done
+
 new_md5_composer=$(<last-composer-build.md5)
 if [ "$current_md5_composer" != "$new_md5_composer" ]
 then
     ## Install composer dependencies
-    composer install
+    if [ "$is_prod_build" == false ]
+    then
+        composer install
+    else
+        composer install --no-dev
+    fi
 fi
 
 new_md5_sass=$(<last-sass-build.md5)
@@ -47,24 +62,15 @@ fi
 
 new_md5_js=$(<last-js-build.md5)
 
-is_prod_build=false
 if [ "$current_md5_js" != "$new_md5_js" ]
 then
-    for i in "$@"
-    do
-        case $i in
-            --prod)
-                is_prod_build=true
-                echo "$(tput setab 4)  $(tput sgr 0) $(tput setab 4) $(tput sgr 0) Building in production mode $(tput setab 4) $(tput sgr 0) $(tput setab 4)  $(tput sgr 0)"
-                npm run build-prod
-            ;;
-        esac
-    done
-
     if [ "$is_prod_build" == false ]
     then
         echo "$(tput setab 2)  $(tput sgr 0) $(tput setab 2) $(tput sgr 0) Building in development mode $(tput setab 2) $(tput sgr 0) $(tput setab 2)  $(tput sgr 0)"
         npm run build
+    else
+        echo "$(tput setab 4)  $(tput sgr 0) $(tput setab 4) $(tput sgr 0) Building in production mode $(tput setab 4) $(tput sgr 0) $(tput setab 4)  $(tput sgr 0)"
+        npm run build-prod
     fi
 fi
 

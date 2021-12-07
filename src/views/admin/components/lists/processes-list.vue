@@ -77,11 +77,11 @@
                                         show: 500,
                                         hide: 300,
                                     },
-                                    content: bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process'),
-                                    autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                    content: bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process'),
+                                    autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
-                            {{ bgProcess.name ? bgProcess.name : $i18n.get('label_unamed_process') }}</p>
+                            {{ bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process') }}</p>
                     </span>
             <!-- Progress -->
             <span
@@ -95,7 +95,7 @@
                                         hide: 300,
                                     },
                                     content: bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process'),
-                                    autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                    autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             <span :class="{'occluding-content': bgProcess.progress_value }"><span class="has-text-weight-bold">{{ $i18n.get('label_progress') + " " }}</span>{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
@@ -114,7 +114,7 @@
                                         hide: 300,
                                     },
                                     content: getDate(bgProcess.queued_on),
-                                    autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                    autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             <span class="has-text-weight-bold">{{ $i18n.get('label_queued_on') + " " }}</span>{{ getDate(bgProcess.queued_on) }}</p>
@@ -137,7 +137,7 @@
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_stop_process'),
-                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                        autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                 v-if=" bgProcess.status === 'running' "
@@ -152,7 +152,7 @@
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_process_completed'),
-                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                        autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                 v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
@@ -166,7 +166,7 @@
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_completed_with_errors'),
-                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
@@ -180,7 +180,7 @@
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_cancelled'),
-                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if=" bgProcess.status === 'cancelled' "
@@ -194,7 +194,7 @@
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_paused'),
-                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if=" bgProcess.status === 'paused' "
@@ -208,7 +208,7 @@
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_waiting'),
-                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if=" bgProcess.status === 'waiting' "
@@ -221,8 +221,23 @@
                                                 show: 500,
                                                 hide: 300,
                                             },
+                                            content: $i18n.get('label_delete_process'),
+                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            placement: 'auto-start'
+                                        }"
+                                    v-if=" bgProcess.status === 'waiting' "
+                                    class="icon has-text-gray"
+                                    @click.prevent.stop="deleteOneProcess(index)">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                            </span>
+                            <span
+                                    v-tooltip="{
+                                            delay: {
+                                                show: 500,
+                                                hide: 300,
+                                            },
                                             content: $i18n.get('label_process_failed'),
-                                            autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if="bgProcess.status === 'errored'"
@@ -285,7 +300,7 @@
                                             hide: 300,
                                         },
                                         content: getDate(bgProcess.processed_last),
-                                        autoHide: false, classes: ['tooltip', 'repository-tooltip'],
+                                        autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 <span class="has-text-weight-bold">{{ $i18n.get('label_last_processed_on') + " " }}</span>{{ getDate(bgProcess.processed_last) }}</p>
@@ -386,42 +401,22 @@
                 for (let i = 0; i < this.selected.length; i++) 
                     this.selected.splice(i, 1, !this.allOnPageSelected);
             },
-            deleteOneProcess(processId) {
+            deleteOneProcess(index) {
                 this.$buefy.modal.open({
                     parent: this,
                     component: CustomDialog,
                     props: {
                         icon: 'alert',
                         title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_Process_delete'),
+                        message: this.$i18n.get('info_warning_process_delete'),
                         onConfirm: () => {
-                            this.deleteProcess({ processId: processId })
-                                .then(() => {
-                                    // this.$buefy.toast.open({
-                                    //     duration: 3000,
-                                    //     message: this.$i18n.get('info_taxonomy_deleted'),
-                                    //     position: 'is-bottom',
-                                    //     type: 'is-secondary',
-                                    //     queue: true
-                                    // });
-                                    for (let i = 0; i < this.selected.length; i++) {
-                                        if (this.selected[i].id === this.taxonomyId)
-                                            this.selected.splice(i, 1);
-                                    }
-                                })
-                                .catch(() => {
-                                    // this.$buefy.toast.open({
-                                    //     duration: 3000,
-                                    //     message: this.$i18n.get('info_error_deleting_taxonomy'),
-                                    //     position: 'is-bottom',
-                                    //     type: 'is-danger',
-                                    //     queue: true
-                                    // });
-                                });
+                            const processId = this.processes[index].ID;
+                            this.deleteProcess(processId);
                         }
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             deleteSelected() {
@@ -461,7 +456,8 @@
                         }
                     },
                     trapFocus: true,
-                    customClass: 'tainacan-modal'
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
                 });
             },
             getDate(rawDate) {

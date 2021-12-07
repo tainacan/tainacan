@@ -179,7 +179,7 @@ class Oaipmh_Importer extends Importer {
 					$metadata_map = $this->create_collection_metadata($collection);
 					$total = intval($this->get_total_items_from_source($setSpec));
 					$this->add_log('total in collection: ' . $total);
-					$this->add_log('collection id ' . (string) $collection->get_id());
+					$this->add_log('collection ID ' . (string) $collection->get_id());
 
 					$this->add_collection([
 						'id' => $collection->get_id(),
@@ -194,7 +194,7 @@ class Oaipmh_Importer extends Importer {
 				$metadata_map = $this->create_collection_metadata($collection);
 				$total = intval( $this->get_total_items_from_source(false) );
 				$this->add_log('total in collection: ' . $total);
-				$this->add_log('collection id ' . (string) $collection->get_id());
+				$this->add_log('collection ID ' . (string) $collection->get_id());
 
 				$tax = new Entities\Taxonomy();
 				$tax->set_name( $this->NAME_FOR_SETS );

@@ -27,16 +27,16 @@ jobs:
         wp: ['latest', '5.4']
         experimental: [false]
 
-        include:
+        # include:
           # Complement the builds run via the matrix with high/low WP builds for PHP 7.4 and 8.0.
           # PHP 8.0 is sort of supported since WP 5.6.
           # PHP 7.4 is supported since WP 5.3.
-          - php: '8.0'
-            wp: 'latest'
-            experimental: true
-          - php: '8.0'
-            wp: '5.6'
-            experimental: true
+          # - php: '8.0'
+          #   wp: 'latest'
+          #   experimental: true
+          # - php: '8.0'
+          #   wp: '5.6'
+          #   experimental: true
 
     name: "PHP ${{ matrix.php }} - WP ${{ matrix.wp }}"
 
@@ -91,9 +91,9 @@ jobs:
         id: set_phpunit
         run: |
           if [[ "${{ matrix.php }}" = "8.0" ]]; then
-            wget https://phar.phpunit.de/phpunit-8.3.1.phar -P /tmp
-            chmod +x /tmp/phpunit-8.3.1.phar
-            mv /tmp/phpunit-8.3.1.phar /usr/local/bin/phpunit
+            wget https://phar.phpunit.de/phpunit-9.3.0.phar -P /tmp
+            chmod +x /tmp/phpunit-9.3.0.phar
+            mv /tmp/phpunit-9.3.0.phar /usr/local/bin/phpunit
           elif [[ "${{ matrix.php }}" > "6.0" ]]; then
             wget https://phar.phpunit.de/phpunit-6.5.7.phar -P /tmp
             chmod +x /tmp/phpunit-6.5.7.phar

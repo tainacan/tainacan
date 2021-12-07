@@ -13,7 +13,7 @@
                         {{ $i18n.get('label_select_all_items_page') }}
                     </b-checkbox>
                 </span>
-
+                
                 <span
                         style="margin-left: 10px"
                         v-if="totalPages > 1 && allItemsOnPageSelected && items.length > 1">
@@ -23,7 +23,33 @@
                     </b-checkbox>
                 </span>
             </div>
-            <div class="field">
+            <span
+                    class="selected-items-info"
+                    v-if="selectedItems.length && items.length > 1 && !isAllItemsSelected">
+                {{ selectedItems.length != 1 ? $i18n.getWithVariables('label_%s_selected_items', [selectedItems.length]) : $i18n.get('label_one_selected_item') }}<span v-if="selectedItems.length != amountOfSelectedItemsOnThisPage && amountOfSelectedItemsOnThisPage > 0">&nbsp;({{ $i18n.getWithVariables('label_%s_on_this_page', [ amountOfSelectedItemsOnThisPage ]) }})</span>
+                <button
+                        class="link-style"
+                        @click="cleanSelectedItems()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-close" />
+                    </span>
+                </button>
+            </span>
+            <span
+                    class="selected-items-info"
+                    v-if="isAllItemsSelected">
+                {{ $i18n.get('label_all_items_selected') }}
+                <button
+                        class="link-style"
+                        @click="cleanSelectedItems()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-close" />
+                    </span>
+                </button>
+            </span>
+            <div 
+                    style="margin-left: auto;"
+                    class="field">
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
@@ -41,6 +67,12 @@
                         </span>
                     </button>
 
+                    <b-dropdown-item
+                            v-if="!isAllItemsSelected && selectedItems.length"
+                            @click="filterBySelectedItems()"
+                            aria-role="listitem">
+                        {{ $i18n.get('label_view_only_selected_items') }}
+                    </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && !isOnTrash"
                             @click="openBulkEditionModal()"
@@ -179,7 +211,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -320,7 +352,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -457,7 +489,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -527,7 +559,7 @@
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <div
-                                v-if="collection && collection.hide_items_thumbnail_on_lists != 'yes'"
+                                v-if="!collection || (collection && collection.hide_items_thumbnail_on_lists != 'yes')"
                                 class="card-thumbnail">
                             <blur-hash-image
                                     v-if="item.thumbnail != undefined"
@@ -645,7 +677,7 @@
                                 v-tooltip="{
                                     content: $i18n.get('status_' + item.status),
                                     autoHide: true,
-                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }">
                             <i 
@@ -785,10 +817,10 @@
                             <span
                                     v-for="(column, metadatumIndex) in displayedMetadata"
                                     :key="metadatumIndex"
-                                    v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
+                                    v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p
-                                        v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
+                                        v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
                                         class="metadata-value"/>
                             </span>
                         </div>
@@ -876,7 +908,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -944,7 +976,7 @@
                                             show: 500,
                                             hide: 300,
                                         },
-                                        classes: [ column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
+                                        classes: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
                                         content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -954,6 +986,7 @@
                                           column.metadatum !== 'row_thumbnail' &&
                                           column.metadatum !== 'row_actions' &&
                                           column.metadatum !== 'row_creation' &&
+                                          column.metadatum !== 'row_modification' &&
                                           column.metadatum !== 'row_author' &&
                                           column.metadatum !== 'row_title' &&
                                           column.metadatum !== 'row_description'"
@@ -984,6 +1017,20 @@
                                     }"
                                     v-if="column.metadatum == 'row_author'">
                                     {{ item[column.slug] }}
+                            </p>
+                            <p
+                                    v-tooltip="{
+                                        delay: {
+                                            show: 500,
+                                            hide: 300,
+                                        },
+                                        content: parseDateToNavigatorLanguage(item[column.slug]),
+                                        html: true,
+                                        autoHide: false,
+                                        placement: 'auto-start'
+                                    }"
+                                    v-if="column.metadatum == 'row_modification'">
+                                    {{ parseDateToNavigatorLanguage(item[column.slug]) }}
                             </p>
                             <p
                                     v-tooltip="{
@@ -1109,7 +1156,7 @@
                                 v-tooltip="{
                                     content: $i18n.get('status_' + item.status),
                                     autoHide: true,
-                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }">
                             <i 
@@ -1225,10 +1272,10 @@
                             <span
                                     v-for="(column, metadatumIndex) in displayedMetadata"
                                     :key="metadatumIndex"
-                                    v-if="(column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
+                                    v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                 <p
-                                        v-html="column.metadatum == 'row_creation' ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
+                                        v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
                                         class="metadata-value"/>
                             </span>
                         </div>
@@ -1281,6 +1328,12 @@ export default {
                 this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
 
             return this.getSelectedItems();
+        },
+        amountOfSelectedItemsOnThisPage() {
+            if (this.selectedItems.length) 
+                return this.items.filter( anItem => this.selectedItems.includes(anItem.id) ).length;
+
+            return 0;
         },
         firstSelectedIndex() {
             return (this.selectedItems && this.selectedItems.length) ? this.items.findIndex((anItem) => this.selectedItems[0] == anItem.id) : null;
@@ -1338,8 +1391,6 @@ export default {
         }
     },
     mounted() {
-        this.cleanSelectedItems();
-
         if (this.highlightsItem)
             setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
     },
@@ -1401,7 +1452,8 @@ export default {
                 },
                 width: 'calc(100% - (2 * var(--tainacan-one-column)))',
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         },
         sequenceEditSelectedItems() {
@@ -1440,7 +1492,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
 
             this.clearContextMenu();
@@ -1473,7 +1526,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         },
         deleteOneItem(itemId) {
@@ -1497,7 +1551,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
             this.clearContextMenu();
         },
@@ -1530,7 +1585,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
         },
         deleteSelectedItems() {
@@ -1572,8 +1628,12 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             });
+        },
+        filterBySelectedItems() {
+            this.$eventBusSearch.filterBySelectedItems(this.selectedItems);
         },
         openItem() {
             if (this.contextMenuItem != null) {
@@ -1685,14 +1745,30 @@ export default {
         background: var(--tainacan-white);
         height: 40px;
         display: flex;
+        align-items: center;
+        justify-content: space-between;
 
         .select-all {
             color: var(--tainacan-info-color);
             font-size: 0.875em;
             margin-right: auto;
+            margin-bottom: 0;
 
             &:hover {
                 color: var(--tainacan-info-color);
+            }
+        }
+    }
+
+    .selected-items-info {
+        margin: 0 auto 0 auto;
+        font-size: 00.875em;
+        color: var(--tainacan-info-color);
+
+        .link-style {
+            border-radius: 36px;
+            &:hover {
+                background-color: var(--tainacan-gray1) !important;
             }
         }
     }

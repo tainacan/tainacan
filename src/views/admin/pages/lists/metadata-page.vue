@@ -135,7 +135,7 @@
                                                     v-tooltip="{
                                                         content: $i18n.get('label_view_metadata_details'),
                                                         autoHide: true,
-                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                         placement: 'auto-start'
                                                     }"
                                                     @click="$set(collapses, metadatum.id, !isCollapseOpen(metadatum.id))"
@@ -148,7 +148,7 @@
                                                     v-tooltip="{
                                                         content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                                         autoHide: true,
-                                                        classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon grip-icon">
@@ -169,7 +169,7 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('status_private'),
                                                             autoHide: true,
-                                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                             placement: 'auto-start'
                                                         }">
                                                     <i class="tainacan-icon tainacan-icon-private"/>
@@ -179,7 +179,7 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('label_required'),
                                                             autoHide: true,
-                                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                             placement: 'auto-start'
                                                         }">
                                                     *&nbsp;
@@ -188,7 +188,7 @@
                                                         v-tooltip="{
                                                             content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
                                                             autoHide: true,
-                                                            classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                             placement: 'auto-start'
                                                         }"
                                                         class="icon icon-level-identifier">
@@ -226,7 +226,7 @@
                                                             v-tooltip="{
                                                                 content: $i18n.get('edit'),
                                                                 autoHide: true,
-                                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                                 placement: 'auto-start'
                                                             }"
                                                             class="icon">
@@ -241,7 +241,7 @@
                                                             v-tooltip="{
                                                                 content: $i18n.get('delete'),
                                                                 autoHide: true,
-                                                                classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                                 placement: 'auto-start'
                                                             }"
                                                             class="icon">
@@ -273,7 +273,8 @@
                                             trap-focus
                                             aria-modal
                                             aria-role="dialog"
-                                            custom-class="tainacan-modal">
+                                            custom-class="tainacan-modal"
+                                            :close-button-aria-label="$i18n.get('close')">
                                         <metadatum-edition-form
                                                 :collection-id="collectionId"
                                                 :original-metadatum="metadatum"
@@ -306,7 +307,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),
                                                     autoHide: true,
-                                                    classes: ['tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
                                                     placement: 'auto-start'
                                                 }"   
                                                 class="icon grip-icon">
@@ -568,7 +569,8 @@ export default {
                     }
                 },
                 trapFocus: true,
-                customClass: 'tainacan-modal'
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
             }); 
         },
         toggleMetadatumEdition(metadatum) {
@@ -725,6 +727,7 @@ export default {
         .b-tabs .tab-content {
             overflow: visible;
             min-height: 300px;
+            padding-bottom: 0;
         }
 
         .column {
@@ -861,9 +864,7 @@ export default {
                     position: relative;
                 }
                 .metadatum-name {
-                    text-overflow: ellipsis;
-                    overflow-x: hidden;
-                    white-space: nowrap;
+                    white-space: normal;
                     font-weight: bold;
                     margin-left: 0.4em;
                     margin-right: 0.4em;
@@ -896,6 +897,12 @@ export default {
                         position: relative;
                         i, i:before { font-size: 1.25em; }
                     }
+                }
+
+                &.is-compact-item .metadatum-name {
+                    text-overflow: ellipsis;
+                    overflow-x: hidden;
+                    white-space: nowrap;
                 }
         
                 &.not-sortable-item,

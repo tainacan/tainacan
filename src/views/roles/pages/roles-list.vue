@@ -12,7 +12,7 @@
                         content: $i18n.get('Create a role based on: '),
                         autoHide: true,
                         placement: 'top',
-                        classes: ['tainacan-roles-tooltip']     
+                        classes: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
                     }"
                     @click="showDropdownMenu = !showDropdownMenu"
                     class="button button-secondary"

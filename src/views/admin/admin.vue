@@ -1,7 +1,7 @@
 <template>
     <div 
             id="tainacan-admin-app" 
-            class="columns is-fullheight"
+            class="has-mounted columns is-fullheight"
             :class="{ 
                 'tainacan-admin-iframe-mode': isIframeMode, 
                 'tainacan-admin-read-mode': isReadMode
@@ -24,7 +24,7 @@
                                 content: $i18n.get('label_shrink_menu'),
                                 autoHide: true,
                                 placement: 'auto-end',
-                                classes: ['tooltip', 'repository-tooltip']     
+                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip']     
                             }"
                             class="icon">
                         <i 
@@ -111,7 +111,8 @@
                                 },
                                 ariaRole: 'alertdialog',
                                 ariaModal: true,
-                                customClass: 'tainacan-modal'
+                                customClass: 'tainacan-modal',
+                                closeButtonAriaLabel: this.$i18n.get('close')
                             });
                         }
                     });

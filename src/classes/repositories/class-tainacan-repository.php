@@ -57,7 +57,7 @@ abstract class Repository {
 	 */
 	protected function __construct() {
 		add_action( 'init', array( &$this, 'register_post_type' ) );
-    add_action( 'init', array( &$this, 'init_objects' ) );
+		add_action( 'init', array( &$this, 'init_objects' ) );
 
 		add_filter( 'tainacan-get-map-' . $this->get_name(), array( $this, 'get_default_properties' ) );
 	}

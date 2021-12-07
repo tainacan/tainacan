@@ -53,10 +53,10 @@ export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orde
             endpoint = endpoint + '&status=' + status;
         else
             endpoint += '&status=publish,private,draft';
-        
+
         if (order != undefined && order != '' && orderby != undefined && orderby != '')
             endpoint = endpoint + '&order=' + order + '&orderby=' + orderby;
-        
+
         if (search != undefined && search != '')
             endpoint = endpoint + '&search=' + search;
 
@@ -179,17 +179,17 @@ export const updateTerm = ({ commit }, { taxonomyId, id, name, description, pare
 };
 
 export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, order, offset, number, exclude }) => {
-    
+
     let query = '';
-    
+
     if (order == undefined)
         order = 'asc';
 
     if(fetchOnly && search && !all ){
         query = `?order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
-    } else if(fetchOnly && search && all ){ 
+    } else if(fetchOnly && search && all ){
         query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
-    } else if(search && !all && !fetchOnly){ 
+    } else if(search && !all && !fetchOnly){
         query = `?hideempty=0&order=${order}&${qs.stringify(search)}`;
     } else {
         query =`?hideempty=0&order=${order}`;
@@ -197,7 +197,7 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
 
     if (number != undefined)
         query += '&number=' + number;
-    
+
     if (offset != undefined)
         query += '&offset=' + offset;
 
@@ -227,9 +227,9 @@ export const fetchChildTerms = ({ commit }, { parentId, taxonomyId, fetchOnly, s
 
     if(fetchOnly && search && !all ){
         query = `?order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
-    } else if(fetchOnly && search && all ){ 
+    } else if(fetchOnly && search && all ){
         query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
-    } else if(search && !all && !fetchOnly){ 
+    } else if(search && !all && !fetchOnly){
         query = `?hideempty=0&order=${order}&${qs.stringify(search)}`;
     } else {
         query =`?hideempty=0&order=${order}`;
@@ -282,7 +282,7 @@ export const updateChildTerm = ({ commit }, { taxonomyId, term }) => {
 };
 
 // Used to update parent changes after deletion only locally
-export const updateChildTermLocal = ({ commit }, { term, parent, oldParent }) => {  
+export const updateChildTermLocal = ({ commit }, { term, parent, oldParent }) => {
     commit('updateChildTerm', { term: term, parent: parent, oldParent: oldParent });
 };
 
@@ -305,11 +305,11 @@ export const clearTerms = ({ commit }) => {
     commit('clearTerms');
 };
 
-// Used only on Term Edition form, for autocomplete search for parents
+// Used only on Term Edit form, for autocomplete search for parents
 export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search, offset } ) => {
-    
+
     let endpoint = '/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&exclude_tree=' + termId + "&hideempty=0&offset=0&number=20&order=asc";
-    
+
     if (offset)
         endpoint += '&offset=' + offset;
 
@@ -317,13 +317,13 @@ export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, searc
         axios.tainacan.get(endpoint)
         .then(res => {
             let parentTerms = res.data;
-            
+
             const theParentIndex = parentTerms.findIndex((term) => term.id == termId);
             if (theParentIndex >= 0)
                 parentTerms.splice(theParentIndex, 1);
-            
+
             const totalTerms = res.headers['x-wp-total'];
-                
+
             resolve( { parentTerms, totalTerms } );
         })
         .catch(error => {

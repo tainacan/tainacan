@@ -29,6 +29,7 @@ class REST_Terms_Controller extends REST_Controller {
 		$this->terms_repository = Repositories\Terms::get_instance();
 		$this->taxonomy = new Entities\Taxonomy();
 		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
+		$this->items_repository = Repositories\Items::get_instance();
 	}
 
 	public function register_routes() {
@@ -135,10 +136,10 @@ class REST_Terms_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function create_item_permissions_check( $request ) {
-        $taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
-        if ($taxonomy instanceof Entities\Taxonomy) {
-            if ( $taxonomy->can_edit() ) {
+		if ($taxonomy instanceof Entities\Taxonomy) {
+			if ( $taxonomy->can_edit() ) {
 				return true;
 			}
 
@@ -154,9 +155,9 @@ class REST_Terms_Controller extends REST_Controller {
 					}
 				}
 			}
-        }
+		}
 
-        return false;
+		return false;
 	}
 
 	/**
@@ -195,11 +196,11 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 		$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-        if ($term instanceof Entities\Term) {
-            return $term->can_delete();
-        }
+		if ($term instanceof Entities\Term) {
+			return $term->can_delete();
+		}
 
-        return false;
+		return false;
 	}
 
 	/**
@@ -264,11 +265,45 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 		$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-        if ($term instanceof Entities\Term) {
-            return $term->can_edit();
-        }
+		if ($term instanceof Entities\Term) {
+			return $term->can_edit();
+		}
 
-        return false;
+		return false;
+	}
+
+	/**
+	 * @param \Tainacan\Entities\Term $term
+	 *
+	 * @return array
+	 */
+	private function get_preview_image_items($term, $amount) {
+		if($amount <= 0 )
+			return [];
+
+		$term_id = $term->get_id();
+		$taxonomy = $term->get_taxonomy();
+
+		$args = [
+			'tax_query' => [
+				[
+					'taxonomy' => $taxonomy,
+					'field' => 'term_id',
+					'terms' => $term_id
+				]
+			],
+			'posts_per_page' => $amount
+		];
+
+		$items = $this->items_repository->fetch($args, [], 'OBJECT');
+		$thumbnails = array_map( function($item) {
+			$images = array();
+			$images['thumbnail'] = $item->get_thumbnail();
+			$images['document_mimetype'] = $item->get_document_mimetype();
+			return $images;
+		 }, $items);
+
+		return $thumbnails;
 	}
 
 	/**
@@ -295,10 +330,15 @@ class REST_Terms_Controller extends REST_Controller {
 				]);
 
 				$item_arr['total_children'] = count($children);
+				
 			} else {
 				$attributes_to_filter = $request['fetch_only'];
 
 				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
+			}
+
+			if(isset($request['fetch_preview_image_items']) && $request['fetch_preview_image_items'] != 0) {
+				$item_arr['preview_image_items'] = $this->get_preview_image_items($item, $request['fetch_preview_image_items']);
 			}
 
 			/**
@@ -413,11 +453,11 @@ class REST_Terms_Controller extends REST_Controller {
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 		$term = $this->terms_repository->fetch($term_id, $taxonomy);
 
-        if ($term instanceof Entities\Term) {
-            return $term->can_read();
-        }
+		if ($term instanceof Entities\Term) {
+			return $term->can_read();
+		}
 
-        return false;
+		return false;
 	}
 
 	/**
@@ -429,9 +469,9 @@ class REST_Terms_Controller extends REST_Controller {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args = array_merge(
-                $endpoint_args,
-                parent::get_wp_query_params()
-            );
+				$endpoint_args,
+				parent::get_wp_query_params()
+			);
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->terms_repository->get_map();
 
@@ -450,12 +490,12 @@ class REST_Terms_Controller extends REST_Controller {
 				$endpoint_args['metadatum_id'] = [
 					'required' => false,
 					'type' => 'integer',
-					'description' => __('If term is being created in the context of a Taxonomy metadatum, inform its ID')
+					'description' => __('If term is being created in the context of a Taxonomy metadatum, specify its ID')
 				];
 				$endpoint_args['item_id'] = [
 					'required' => false,
 					'type' => 'integer',
-					'description' => __('If term is being created in the context of a Taxonomy metadatum, inform the ID of the item being edited')
+					'description' => __('If term is being created in the context of a Taxonomy metadatum, specify the ID of the item being edited')
 				];
 			}
 

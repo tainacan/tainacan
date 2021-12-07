@@ -37,7 +37,7 @@ class Selectbox extends Metadata_Type {
         return [
             'options_separator' => [
                 'title' => __( 'Options separator', 'tainacan' ),
-                'description' => __( 'Character to separate options in the text input bellow.', 'tainacan' ),
+                'description' => __( 'Character to separate options in the text input below.', 'tainacan' ),
             ],
             'options' => [
                 'title' => __( 'Options', 'tainacan' ),

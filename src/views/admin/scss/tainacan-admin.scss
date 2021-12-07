@@ -73,9 +73,6 @@ body.tainacan-admin-page #wp-auth-check-wrap {
 }
 
 // Tainacan Loading
-.tainacan-icon {
-    opacity: 0; // Will make it 1 once window.load is done; 
-}
 .loading-overlay {
     z-index: 9999999999;
     min-height: auto !important;
@@ -229,7 +226,7 @@ a:hover {
                     font-size: 1em;
                 }
                 img {
-                    max-width: 22px;
+                    max-width: 22px !important;
                     max-height: 22px;
                 }
             }
@@ -279,7 +276,7 @@ a:hover {
             align-items: center;
             img {
                 margin-right: 12px;
-                max-width: 28px;
+                max-width: 28px !important;
                 max-height: 28px;
             }
             .label {

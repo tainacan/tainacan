@@ -120,6 +120,10 @@ export const removeTaxQuery = ( state, filter ) => {
     }
 };
 
+export const removePostIn = ( state ) => {
+    delete state.postquery.postin;
+};
+
 export const setTotalItems = ( state, total ) => {
     state.totalItems = total;
 };
@@ -155,12 +159,8 @@ export const setAdminViewMode = ( state, adminViewMode ) => {
     state.postquery.admin_view_mode = adminViewMode;
 };
 
-export const setOrderByName = ( state, orderByName ) => {
-    state.orderByName = orderByName;
-};
-
 export const addFilterTag = ( state, filterTag ) => {
-    state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;    
+    state.filter_tags = ( ! state.filter_tags) ? [] : state.filter_tags;
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
 
     if (index >= 0)
@@ -169,21 +169,43 @@ export const addFilterTag = ( state, filterTag ) => {
         state.filter_tags.push(filterTag);
 };
 
+export const setFilterTags = ( state, filterArguments ) => {
+    let filterTags = filterArguments.map((aFilterArgument) => {
+        
+        return {
+            filterId: aFilterArgument.filter ? aFilterArgument.filter.id : null,
+            label: aFilterArgument.label,
+            value:  aFilterArgument.value,
+            taxonomy: (aFilterArgument.metadatum &&
+                        aFilterArgument.metadatum.metadata_type_object &&
+                        aFilterArgument.metadatum.metadata_type_object.options &&
+                        aFilterArgument.metadatum.metadata_type_object.options.taxonomy
+                    ) ? aFilterArgument.metadatum.metadata_type_object.options.taxonomy : '',
+            argType: aFilterArgument.arg_type ? aFilterArgument.arg_type : '',
+            metadatumId: aFilterArgument.metadatum && aFilterArgument.metadatum.metadatum_id ? aFilterArgument.metadatum.metadatum_id : '',
+            metadatumName: aFilterArgument.metadatum && aFilterArgument.metadatum.metadatum_name ? aFilterArgument.metadatum.metadatum_name : ''
+        }
+    });
+    state.filter_tags = filterTags;
+};
+
 export const removeFilterTag = ( state, filterTag ) => {
     state.filter_tags = ( ! state.filter_tags ) ? [] : state.filter_tags;
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
 
     if (index >= 0)
         state.filter_tags.splice(index, 1);
-
 };
 
 export const cleanFilterTags = ( state ) => {
     state.filter_tags = [];
 };
 
-export const cleanMetaQueries = (state) => {
-    state.postquery.metaquery = [];
+export const cleanMetaQueries = (state, { keepCollections }) => {
+    if (keepCollections === true)
+        state.postquery.metaquery = state.postquery.metaquery.filter(aMetaQuery => aMetaQuery.key === 'collection_id');
+    else
+        state.postquery.metaquery = [];
 };
 
 export const cleanTaxQueries = (state) => {

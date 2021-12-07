@@ -21,7 +21,7 @@ function tainacanBlocksLocalizeMetadata(metadata) {
 }
 
 // Register the block type according to WP version
-export default function({ metadata, icon, edit, save, deprecated }) {
+export default function({ metadata, icon, edit, save, deprecated, transforms }) {
     
     const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
     if (currentWPVersion >= '5.8-RC') {
@@ -34,7 +34,8 @@ export default function({ metadata, icon, edit, save, deprecated }) {
             },
             edit,
             save,
-            deprecated
+            deprecated,
+            transforms
         });
     
     } else {
@@ -48,7 +49,8 @@ export default function({ metadata, icon, edit, save, deprecated }) {
             },
             edit,
             save,
-            deprecated
+            deprecated,
+            transforms
         });
     }
 };

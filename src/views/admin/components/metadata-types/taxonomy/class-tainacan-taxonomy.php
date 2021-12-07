@@ -221,7 +221,7 @@ class Taxonomy extends Metadata_Type {
 		if ( ! $post_status_obj->public ) {
 			$meta_status_obj = get_post_status_object($metadatum->get_status());
 			if ( $meta_status_obj->public ) {
-				return ['taxonomy_id' => __('This metadatum can not be public because chosen taxonomy is not.', 'tainacan')];
+				return ['taxonomy_id' => __('This metadatum cannot be public because chosen taxonomy is not.', 'tainacan')];
 			}
 		}
 
@@ -229,7 +229,7 @@ class Taxonomy extends Metadata_Type {
 			$taxonomy = \tainacan_taxonomies()->fetch( (int) $this->get_option('taxonomy_id') );
 			if ( $taxonomy instanceof \Tainacan\Entities\Taxonomy ) {
 				if ( $taxonomy->get_allow_insert() != 'yes' ) {
-					return ['allow_new_terms' => __('This metadatum can not allow new terms to be created because the chosen taxonomy does not allow it.', 'tainacan')];
+					return ['allow_new_terms' => __('This metadatum cannot allow new terms to be created because the chosen taxonomy does not allow it.', 'tainacan')];
 				}
 			}
 		}
@@ -249,7 +249,7 @@ class Taxonomy extends Metadata_Type {
 			foreach ($taxonomy_metadata as $metadatum_id => $taxonomy_metadatum) {
 				if ( is_array( $taxonomy_metadatum ) && key($taxonomy_metadatum) != $metadatum->get_id()
 					&& in_array($this->get_option('taxonomy_id'), $taxonomy_metadatum)) {
-					return ['taxonomy_id' => __('You can not have 2 taxonomy metadata using the same taxonomy in a collection or repository level.', 'tainacan')];
+					return ['taxonomy_id' => __('You cannot have 2 taxonomy metadata using the same taxonomy in a collection or repository level.', 'tainacan')];
 				}
 			}
 		}
@@ -272,7 +272,7 @@ class Taxonomy extends Metadata_Type {
 				foreach ($taxonomy_metadata as $metadatum_id => $taxonomy_metadatum) {
 					if ( is_array( $taxonomy_metadatum ) && key($taxonomy_metadatum) != $metadatum->get_id()
 						&& in_array($this->get_option('taxonomy_id'), $taxonomy_metadatum)) {
-						return ['taxonomy_id' => __('You can not have 2 taxonomy metadata using the same taxonomy in a ancestors or descendants collection.', 'tainacan')];
+						return ['taxonomy_id' => __('You cannot have 2 taxonomy metadata using the same taxonomy in a ancestors or descendants collection.', 'tainacan')];
 					}
 				}
 			}

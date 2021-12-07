@@ -32,7 +32,8 @@
         &[disabled=disabled] {
             background: var(--tainacan-gray1) !important;
         }
-        &:hover {
+        &:hover,
+        &:focus {
             color: var(--tainacan-input-color) !important;
         }
         
@@ -63,4 +64,9 @@
         font-weight: normal;
         font-style: italic;
     }     
+}
+@media screen and (max-width: 782px) {
+    .select select {
+        line-height: 2em !important;
+    }
 }
