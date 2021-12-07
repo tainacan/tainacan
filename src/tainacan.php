@@ -8,7 +8,7 @@ Version: 0.18.7
 Requires at least: 5.0
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 0.18.6
+Stable tag: 0.18.7
 Text Domain: tainacan
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
