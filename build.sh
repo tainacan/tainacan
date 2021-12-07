@@ -49,7 +49,7 @@ then
     then
         composer install
     else
-        composer install --no-dev
+        composer install # --no-dev
     fi
 fi
 
