@@ -5,11 +5,12 @@
     "require": {
         "respect/validation": "^1.1",
         "smalot/pdfparser": "*",
-        "kornrunner/blurhash": "^1.1"
+        "kornrunner/blurhash": "^1.1",
+        "phpcompatibility/php-compatibility": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^2.2 || ^3.0.2",
-        "phpcompatibility/php-compatibility": "*"
+        "yoast/phpunit-polyfills": "^1.0.1"
     },
     "prefer-stable" : true,
     "minimum-stability": "dev",
