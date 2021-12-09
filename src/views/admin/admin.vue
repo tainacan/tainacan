@@ -4,6 +4,7 @@
             class="has-mounted columns is-fullheight"
             :class="{ 
                 'tainacan-admin-iframe-mode': isIframeMode, 
+                'tainacan-admin-mobile-mode': isMobileMode, 
                 'tainacan-admin-read-mode': isReadMode
             }">
         <template v-if="activeRoute == 'HomePage'">
@@ -68,11 +69,14 @@
             }
         },
         computed: {
-            isReadMode () {
+            isReadMode() {
                 return this.$route && this.$route.query && this.$route.query.readmode;
             },
-            isIframeMode () {
+            isIframeMode() {
                 return this.$route && this.$route.query && this.$route.query.iframemode;
+            },
+            isMobileMode() {
+                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {
