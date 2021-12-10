@@ -5,7 +5,9 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
 
-        <div class="tainacan-page-title">
+        <div 
+                v-if="!isMobileMode || (isMobileMode && isEditingMetadataIframeMode)"
+                class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
@@ -54,7 +56,9 @@
                         <div class="columns">
 
                             <!-- Collection -------------------------------- -->
-                            <div class="column is-narrow">
+                            <div 
+                                    v-if="!isMobileMode"
+                                    class="column is-narrow">
                                 <div class="section-label">
                                     <label>{{ $i18n.get('collection') }}</label>
                                 </div>
@@ -1058,6 +1062,9 @@ export default {
         },
         isEditingMetadataIframeMode() {
             return this.$route.query && this.$route.query.editingmetadata;
+        },
+        isMobileMode() {
+            return this.$route.query && this.$route.query.mobilemode;
         }
     },
     watch: {
@@ -1928,7 +1935,7 @@ export default {
                     widows: 100%;
 
                     .field {
-                        padding-left: 16px;
+                        padding-left: 18px;
                         
                         /deep/ .label {
                             margin-left: 0;

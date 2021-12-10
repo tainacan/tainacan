@@ -12,7 +12,7 @@
             <router-view /> 
         </template>
         <template v-else>
-            <template v-if="!isIframeMode">
+            <template v-if="!isIframeMode && !isMobileMode">
                 <primary-menu 
                         :active-route="activeRoute"
                         :is-menu-compressed="isMenuCompressed"/>
@@ -132,11 +132,13 @@
         height: 100%;
         margin-bottom: 0px;
         margin-top: 0px;
+    }  
 
-        @media screen and (max-width: 769px) {
+    @media screen and (max-width: 769px) {
+        .is-fullheight:not(.tainacan-admin-mobile-mode):not(.tainacan-admin-collection-mobile-mode) {
             height: auto;
         }
-    }  
+    }
 
     .is-main-content {
         padding: 0px !important;
