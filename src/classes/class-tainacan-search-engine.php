@@ -74,7 +74,7 @@ class Search_Engine {
 				// The method create_function is deprecated in PHP 7.2, then it was changed to anonymous functions
 				$search_terms = array_filter(array_map(
 					function($a) {
-						return trim($a, " \n\r\t\v\0");
+						return trim($a, " '\"\n\r\t\v\0");
 					},
 					$matches[0]
 				));
