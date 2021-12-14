@@ -98,7 +98,7 @@ export const setOrderBy = ({ state, commit }, orderBy ) => {
     
     // This first if is to handle situations where a collection was created
     // with the invalid default of 'name'
-    if (orderBy == 'name' || (order.metakey && order.metakey == 'name') ) {
+    if (orderBy == 'name' || (orderBy.metakey && orderBy.metakey == 'name') ) {
         commit('setPostQueryAttribute', {  attr: 'orderby', value: 'date' } );
     } else if (orderBy.metakey) {
         Object.keys(orderBy).forEach((paramKey) => {
