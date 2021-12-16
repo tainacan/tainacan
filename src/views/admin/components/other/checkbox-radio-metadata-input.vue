@@ -856,6 +856,13 @@
                 overflow: visible;
             }
 
+            @media screen and (max-width: 768px) {
+                .control-label {
+                    padding-top: 0.55em;
+                    padding-bottom: 0.55em;
+                }
+            }
+
             &.is-disabled {
                 cursor: not-allowed;
                 opacity: 0.5;

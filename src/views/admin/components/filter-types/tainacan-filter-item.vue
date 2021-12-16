@@ -197,6 +197,15 @@
             font-weight: normal;
             font-size: 1em !important;
             margin-right: 2px;
+
+            @media screen and (max-width: 768px) {
+                font-size: 1.125em !important;
+
+                .control-label {
+                    padding-top: 0.55em;
+                    padding-bottom: 0.55em;
+                }
+            }
         }
 
         .datepicker {

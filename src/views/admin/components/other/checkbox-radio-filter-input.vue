@@ -901,6 +901,13 @@
             margin-bottom: 0px !important;
         }
 
+        @media screen and (max-width: 768px) {
+            .control-label {
+                padding-top: 0.45em;
+                padding-bottom: 0.45em;
+            }
+        }
+
         &:hover {
             background-color: var(--tainacan-gray1);
         }
@@ -1223,6 +1230,7 @@
         }
 
         .tainacan-modal-checkbox-search-results-body,
+        .tainacan-checkbox-list-container,
         .tainacan-finder-columns-container {
             font-size: 1.125em;
         }
