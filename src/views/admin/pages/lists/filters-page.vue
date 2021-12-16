@@ -989,6 +989,9 @@ export default {
                 .label-details {
                     font-weight: normal;
                     color: var(--tainacan-gray3);
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
                 .not-saved {
                     font-style: italic;
@@ -1153,6 +1156,9 @@ export default {
                 .label-details {
                     font-weight: normal;
                     color: var(--tainacan-gray3);
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
             }
             .sortable-drag {

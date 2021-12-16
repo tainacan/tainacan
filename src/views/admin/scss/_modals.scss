@@ -1,4 +1,11 @@
 // Tainacan modals
+.tainacan-modal.is-active {
+    justify-content: center;
+
+    @media screen and (max-width: 769px) {
+        justify-content: flex-end;
+    }
+}
 .tainacan-modal .animation-content {
     background: none;
     width: calc(100% - (2 * var(--tainacan-one-column)));
