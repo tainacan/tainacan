@@ -53,7 +53,8 @@
                         @input="changeValue"
                         @blur="performValueChange"
                         :metadata-name-filter-string="metadataNameFilterString"
-                        :hide-collapses="hideCollapses" />
+                        :hide-collapses="hideCollapses"
+                        :is-mobile-screen="isMobileScreen" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
                             name="filter-item"
@@ -68,7 +69,8 @@
                                     @input="changeValue"
                                     @blur="performValueChange"
                                     :metadata-name-filter-string="metadataNameFilterString"
-                                    :hide-collapses="hideCollapses" />
+                                    :hide-collapses="hideCollapses"
+                                    :is-mobile-screen="isMobileScreen" />
                             <a 
                                     v-if="index > 0" 
                                     @click="removeValue(index)"
@@ -112,6 +114,7 @@
                         @blur="performValueChange"
                         :is-last-metadatum="isLastMetadatum"
                         :hide-collapses="hideCollapses"
+                        :is-mobile-screen="isMobileScreen"
                         :metadata-name-filter-string="metadataNameFilterString" />
             </div>
         </transition>
@@ -128,7 +131,8 @@
             isCollapsed: true,
             hideCollapses: false,
             isLastMetadatum: false,
-            metadataNameFilterString: ''
+            metadataNameFilterString: '',
+            isMobileScreen: false
         },
         data(){
             return {

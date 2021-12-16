@@ -90,6 +90,7 @@
     &.is-mobile-modal {
         @media screen and (max-width: 768px) {
             .dropdown-content {
+                font-size: 1.125em;
                 max-height: 100vh;
             }
             .dropdown-menu {

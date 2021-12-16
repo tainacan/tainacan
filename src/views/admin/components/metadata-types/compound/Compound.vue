@@ -57,6 +57,7 @@
                         :item-metadatum="childItemMetadatum"
                         :hide-collapses="hideCollapses"
                         :is-collapsed="childItemMetadatum.collapse"
+                        :is-mobile-screen="isMobileScreen"
                         @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
                         :class="{ 'is-last-input': childIndex == childItemMetadata.length - 1}"
                     />
@@ -109,7 +110,8 @@
             value: [String, Number, Array],
             disabled: false,
             hideCollapses: false,
-            metadataNameFilterString: ''
+            metadataNameFilterString: '',
+            isMobileScreen: false
         },
         data() {
             return {

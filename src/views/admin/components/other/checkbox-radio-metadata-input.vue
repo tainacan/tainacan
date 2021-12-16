@@ -1175,7 +1175,20 @@
             -webkit-column-count: auto;
             column-count: auto;
         }
-
+        .tainacan-modal-checkbox-search-results-body,
+        .tainacan-finder-columns-container {
+            font-size: 1.125em;
+        }
+        .tainacan-finder-columns-container {
+            max-height: calc(100vh - 140px - 56px);
+            .tainacan-finder-column,
+            .tainacan-finder-column ul {
+                max-height: 100%;
+            }
+            .tainacan-finder-column .column-label+ul {
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em);
+            }
+        }
         .tainacan-li-checkbox-list {
             max-width: calc(100% - 20px) !important;
         }

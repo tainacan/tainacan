@@ -522,6 +522,11 @@ export default {
                 font-size: 1em;
                 transition: border 0.3s ease;
 
+                @media screen and (max-width: 768px) {
+                    max-width: 100%;
+                    margin: 12px;
+                }
+
                 h4 {
                     color: var(--tainacan-heading-color);
                     font-size: 1em !important;

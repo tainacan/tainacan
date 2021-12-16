@@ -193,6 +193,7 @@
                                         :item-metadatum="itemMetadatum"
                                         :metadata-name-filter-string="metadataNameFilterString"
                                         :is-collapsed="metadataCollapses[index]"
+                                        :is-mobile-screen="isMobileScreen"
                                         :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
                                         @changeCollapse="onChangeCollapse($event, index)"/>
 
@@ -230,6 +231,7 @@
                                 </div>
 
                                 <related-items-list
+                                        :is-mobile-screen="isMobileScreen"
                                         :item-id="itemId"
                                         :collection-id="collectionId"
                                         :related-items="item.related_items"

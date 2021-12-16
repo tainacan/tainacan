@@ -136,7 +136,7 @@
                         :close-button-aria-label="$i18n.get('close')">
                     <iframe 
                             width="100%"
-                            style="height: 85vh"
+                            :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
                             :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, editItemId) + '?iframemode=true&editingmetadata=' + editMetadataId + (isMobileMode ? '&mobilemode=true' : '')" />
                 </b-modal>
             </div>
@@ -153,7 +153,8 @@
             isLoading: Boolean,
             isEditable: Boolean,
             itemId: String,
-            collectionId: String
+            collectionId: String,
+            isMobileScreen: Boolean
         },
         data() {
             return {
