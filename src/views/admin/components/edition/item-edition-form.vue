@@ -168,14 +168,21 @@
                                     <b-field 
                                             v-if="metadatumList && metadatumList.length > 5"
                                             class="header-item">
-                                        <b-input 
+                                        <b-input
+                                                v-if="!isMobileScreen || openMetadataNameFilter"
                                                 :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                                 v-model="metadataNameFilterString"
                                                 icon="magnify"
                                                 size="is-small"
                                                 icon-right="close-circle"
                                                 icon-right-clickable
-                                                @icon-right-click="metadataNameFilterString = ''" />
+                                                @icon-right-click="openMetadataNameFilterClose" />
+                                        <span
+                                                @click="openMetadataNameFilter = true"
+                                                v-else 
+                                                class="icon is-small metadata-name-search-icon">
+                                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-search" />
+                                        </span>
                                     </b-field>
                                 </div>
 
@@ -800,8 +807,8 @@
                         @click="onSubmit('draft')"
                         type="button"
                         class="button is-secondary">
-                    <span class="is-hidden-touch">{{ $i18n.get('label_save_as_draft') }}</span>
-                    <span class="is-hidden-desktop">{{ $i18n.get('status_draft') }}</span>
+                    <span v-if="!isMobileScreen">{{ $i18n.get('label_save_as_draft') }}</span>
+                    <span v-else>{{ $i18n.get('status_draft') }}</span>
                 </button>
                 <button 
                         v-if="collection && collection.current_user_can_publish_items"
@@ -827,8 +834,8 @@
                         @click="onSubmit('trash')"
                         type="button"
                         class="button is-outlined">
-                    <span class="is-hidden-touch">{{ $i18n.get('label_send_to_trash') }}</span>
-                    <span class="is-hidden-desktop">{{ $i18n.get('status_trash') }}</span>
+                    <span v-if="!isMobileScreen">{{ $i18n.get('label_send_to_trash') }}</span>
+                    <span v-else>{{ $i18n.get('status_trash') }}</span>
                 </button>
                 <button
                         v-if="form.status == 'auto-draft'"
@@ -845,8 +852,8 @@
                         @click="onSubmit('draft'); onNextInSequence();"
                         type="button"
                         class="button is-secondary">
-                    <span class="is-hidden-touch">{{ $i18n.get('label_update_draft') }}</span>
-                    <span class="is-hidden-desktop">{{ $i18n.get('status_draft') }}</span>
+                    <span v-if="!isMobileScreen">{{ $i18n.get('label_update_draft') }}</span>
+                    <span v-else>{{ $i18n.get('status_draft') }}</span>
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                     </span>
@@ -909,16 +916,16 @@
                         @click="onSubmit('trash')"
                         type="button"
                         class="button is-outlined">
-                    <span class="is-hidden-touch">{{ $i18n.get('label_send_to_trash') }}</span>
-                    <span class="is-hidden-desktop">{{ $i18n.get('status_trash') }}</span>
+                    <span v-if="!isMobileScreen">{{ $i18n.get('label_send_to_trash') }}</span>
+                    <span v-else>{{ $i18n.get('status_trash') }}</span>
                 </button>
                 <button
                         v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                         @click="onSubmit('draft')"
                         type="button"
                         class="button is-secondary">
-                    <span class="is-hidden-touch">{{ isOnSequenceEdit ? $i18n.get('label_save_as_draft') : $i18n.get('label_return_to_draft') }}</span>
-                    <span class="is-hidden-desktop">{{ $i18n.get('status_draft') }}</span>
+                    <span v-if="!isMobileScreen">{{ isOnSequenceEdit ? $i18n.get('label_save_as_draft') : $i18n.get('label_return_to_draft') }}</span>
+                    <span v-else>{{ $i18n.get('status_draft') }}</span>
                 </button>
                 <button
                         v-else
@@ -1042,7 +1049,9 @@ export default {
             urlForcedIframe: false,
             urlIframeWidth: 600,
             urlIframeHeight: 450,
-            urlIsImage: false
+            urlIsImage: false,
+            isMobileScreen: false,
+            openMetadataNameFilter: false
         }
     },
     computed: {
@@ -1178,10 +1187,15 @@ export default {
                 this.formErrorMessage = '';
         });
         this.cleanLastUpdated();
+
+        // Listens to window resize event to update responsiveness variable
+        this.handleWindowResize();
+        window.addEventListener('resize', this.handleWindowResize);
     },
     beforeDestroy () {
         eventBusItemMetadata.$off('isUpdatingValue');
         eventBusItemMetadata.$off('hasErrorsOnForm');
+        window.removeEventListener('resize', this.handleWindowResize);
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
@@ -1825,7 +1839,18 @@ export default {
             }
             else 
                 return itemMetadatum.metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0;
-        }
+        },
+        openMetadataNameFilterClose() {
+            this.metadataNameFilterString = '';
+            if (this.isMobileScreen)
+                this.openMetadataNameFilter = false;
+        },
+        handleWindowResize: _.debounce( function() {
+            this.$nextTick(() => {
+                if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
+                    this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
+            });
+        }, 500),
     }
 }
 </script>
@@ -2006,6 +2031,11 @@ export default {
         .icon {
             vertical-align: bottom;
         }
+    }
+
+    .metadata-name-search-icon {
+        padding: 1.25em 0.75em;
+        color: var(--tainacan-blue5);
     }
 
     .section-box {
@@ -2227,6 +2257,7 @@ export default {
             padding: 16px 0.5em;
             flex-wrap: wrap;
             height: auto;
+            position: fixed;
 
             .update-info-section {
                 margin-left: auto;
