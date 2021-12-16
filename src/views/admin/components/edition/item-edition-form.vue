@@ -799,7 +799,10 @@
                 <button
                         @click="onSubmit('draft')"
                         type="button"
-                        class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
+                        class="button is-secondary">
+                    <span class="is-hidden-touch">{{ $i18n.get('label_save_as_draft') }}</span>
+                    <span class="is-hidden-desktop">{{ $i18n.get('status_draft') }}</span>
+                </button>
                 <button 
                         v-if="collection && collection.current_user_can_publish_items"
                         @click="onSubmit(visibility)"
@@ -823,7 +826,10 @@
                         v-if="form.status == 'draft' && !isOnSequenceEdit && item && item.current_user_can_delete"
                         @click="onSubmit('trash')"
                         type="button"
-                        class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                        class="button is-outlined">
+                    <span class="is-hidden-touch">{{ $i18n.get('label_send_to_trash') }}</span>
+                    <span class="is-hidden-desktop">{{ $i18n.get('status_trash') }}</span>
+                </button>
                 <button
                         v-if="form.status == 'auto-draft'"
                         @click="onDiscard()"
@@ -839,7 +845,8 @@
                         @click="onSubmit('draft'); onNextInSequence();"
                         type="button"
                         class="button is-secondary">
-                    <span>{{ $i18n.get('label_update_draft') }}</span>
+                    <span class="is-hidden-touch">{{ $i18n.get('label_update_draft') }}</span>
+                    <span class="is-hidden-desktop">{{ $i18n.get('status_draft') }}</span>
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                     </span>
@@ -901,12 +908,18 @@
                         v-if="!isOnSequenceEdit && item && item.current_user_can_delete"
                         @click="onSubmit('trash')"
                         type="button"
-                        class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
+                        class="button is-outlined">
+                    <span class="is-hidden-touch">{{ $i18n.get('label_send_to_trash') }}</span>
+                    <span class="is-hidden-desktop">{{ $i18n.get('status_trash') }}</span>
+                </button>
                 <button
                         v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                         @click="onSubmit('draft')"
                         type="button"
-                        class="button is-secondary">{{ isOnSequenceEdit ? $i18n.get('label_save_as_draft') : $i18n.get('label_return_to_draft') }}</button>
+                        class="button is-secondary">
+                    <span class="is-hidden-touch">{{ isOnSequenceEdit ? $i18n.get('label_save_as_draft') : $i18n.get('label_return_to_draft') }}</span>
+                    <span class="is-hidden-desktop">{{ $i18n.get('status_draft') }}</span>
+                </button>
                 <button
                         v-else
                         @click="onSubmit('draft', 'next')"
@@ -2225,8 +2238,17 @@ export default {
                 width: 100%;
 
                 .button {
-                    margin-left: 2px;
-                    margin-right: 2px;
+                    margin-left: 6px;
+                    margin-right: 6px;
+                }
+                .button:first-of-type {
+                    margin-left: 0px;
+                }
+                .button:last-of-type {
+                    margin-right: 0px;
+                }
+                .button.is-success {
+                    margin-left: auto;
                 }
             }
         }
