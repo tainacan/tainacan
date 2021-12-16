@@ -83,6 +83,7 @@
 
                 <div
                         class="source-metadatum"
+                        :class="{ 'has-children': typeof sourceMetadatum == 'object' && Object.entries(sourceMetadatum)[0] }"
                         v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
                         :key="index">
                     <template v-if="typeof sourceMetadatum == 'string'">
@@ -909,12 +910,22 @@ export default {
             max-width: 60%;
         }
         &:hover {
-            --tainacan-input-border-color: var(--tainacan-gray4);
+            &>.control {
+                --tainacan-input-border-color: var(--tainacan-gray4);
+            }
             &::before {
                 background-color: var(--tainacan-gray4);
             }
             &>p {
                 font-weight: bold;
+            }
+        }
+
+        &.has-children {
+            flex-wrap: wrap;
+
+            &::before {
+                top: 1rem;
             }
         }
     }
@@ -932,7 +943,6 @@ export default {
             margin-top: 2px;
             padding-top: 8px;
             padding-bottom: 0px;
-            border-top: 1px solid var(--tainacan-gray2);
         }
 
         &.disabled-child-source-metadatum {

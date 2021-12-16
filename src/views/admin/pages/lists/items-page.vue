@@ -988,7 +988,7 @@
                                     // Loads user prefs object as we'll need to check if there's something configured by user 
                                     let prefsFetchOnly = !this.isRepositoryLevel ? `fetch_only_${this.collectionId}` : 'fetch_only';
                                     let prefsFetchOnlyMeta = !this.isRepositoryLevel ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
-                                    let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).split(',') : [];
+                                    let prefsFetchOnlyObject = this.$userPrefs.get(prefsFetchOnly) ? (typeof this.$userPrefs.get(prefsFetchOnly) != 'string' ? this.$userPrefs.get(prefsFetchOnly) : this.$userPrefs.get(prefsFetchOnly).split(',')) : ['thumbnail'];
                                     let prefsFetchOnlyMetaObject = this.$userPrefs.get(prefsFetchOnlyMeta) ? this.$userPrefs.get(prefsFetchOnlyMeta).split(',') : [];
 
                                     let thumbnailMetadatumDisplay = (!this.isRepositoryLevel && this.collection.hide_items_thumbnail_on_lists == 'yes') ? null : (prefsFetchOnlyObject && Array.isArray(prefsFetchOnlyObject) ? ((prefsFetchOnlyObject.indexOf('thumbnail') >= 0)) : true);
