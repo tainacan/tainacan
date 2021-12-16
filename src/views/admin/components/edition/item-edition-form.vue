@@ -1886,14 +1886,16 @@ export default {
                 padding-left: var(--tainacan-one-column);
                 padding-right: var(--tainacan-one-column);
 
-                .sticky-container {
-                    position: relative;
-                    position: sticky;
-                    top: -25px;
-                    margin: 3px 0;
-                    max-height: calc(100vh - 202px);
-                    overflow-y: auto;
-                    overflow-x: hidden;
+                @media screen and (min-width: 770px) {
+                    .sticky-container {
+                        position: relative;
+                        position: sticky;
+                        top: -25px;
+                        margin: 3px 0;
+                        max-height: calc(100vh - 202px);
+                        overflow-y: auto;
+                        overflow-x: hidden;
+                    }
                 }
             }
             .column.is-7 {
