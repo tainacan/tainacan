@@ -137,152 +137,189 @@
 
                         </div>
 
-                        <b-tabs v-model="activeTab">
-
-                            <!-- Metadata from Collection-------------------------------- -->
-                            <b-tab-item>
-                                <template slot="header">
-                                    <span class="icon has-text-gray4">
-                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
-                                    </span>
-                                    <span>{{ $i18n.get('metadata') }}</span>
-                                    <span 
-                                            v-if="metadatumList && metadatumList.length"
-                                            class="has-text-gray">
-                                        &nbsp;({{ metadatumList.length }})
-                                    </span>
-                                </template>
-
-                                <div class="sub-header">
-                                    <a
-                                            class="collapse-all"
-                                            @click="toggleCollapseAll()">
-                                        {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                                        <span class="icon">
-                                            <i
-                                                    :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                                    class="tainacan-icon tainacan-icon-1-25em"/>
-                                        </span>
-                                    </a>
-
-                                    <b-field 
-                                            v-if="metadatumList && metadatumList.length > 5"
-                                            class="header-item">
-                                        <b-input
-                                                v-if="!isMobileScreen || openMetadataNameFilter"
-                                                :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
-                                                v-model="metadataNameFilterString"
-                                                icon="magnify"
-                                                size="is-small"
-                                                icon-right="close-circle"
-                                                icon-right-clickable
-                                                @icon-right-click="openMetadataNameFilterClose" />
-                                        <span
-                                                @click="openMetadataNameFilter = true"
-                                                v-else 
-                                                class="icon is-small metadata-name-search-icon">
-                                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-search" />
-                                        </span>
-                                    </b-field>
-                                </div>
-
-                                <tainacan-form-item
-                                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
-                                        v-for="(itemMetadatum, index) of metadatumList"
-                                        :key="index"
-                                        :item-metadatum="itemMetadatum"
-                                        :metadata-name-filter-string="metadataNameFilterString"
-                                        :is-collapsed="metadataCollapses[index]"
-                                        :is-mobile-screen="isMobileScreen"
-                                        :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
-                                        @changeCollapse="onChangeCollapse($event, index)"/>
-
-                                <!-- Hook for extra Form options -->
-                                <template
-                                        v-if="formHooks != undefined &&
-                                            formHooks['item'] != undefined &&
-                                            formHooks['item']['end-right'] != undefined">
-                                    <form
-                                        id="form-item-end-right"
-                                        class="form-hook-region"
-                                        v-html="formHooks['item']['end-right'].join('')"/>
-                                </template>
-                            </b-tab-item>
-
-
-                            <!-- Related items -->
-                            <b-tab-item v-if="totalRelatedItems">
-                                <template slot="header">
-                                    <span class="icon has-text-gray4">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes tainacan-icon-rotate-270"/>
-                                    </span>
-                                    <span>
-                                        {{ $i18n.get('label_related_items') }}
-                                        <span class="has-text-gray">
-                                            ({{ totalRelatedItems }})
-                                        </span>
-                                    </span>
-                                </template>
-
-                                <div class="attachments-list-heading">
-                                    <p>
-                                        {{ $i18n.get("info_related_items") }}
-                                    </p>
-                                </div>
-
-                                <related-items-list
-                                        :is-mobile-screen="isMobileScreen"
-                                        :item-id="itemId"
-                                        :collection-id="collectionId"
-                                        :related-items="item.related_items"
-                                        :is-editable="!isIframeMode"
-                                        :is-loading.sync="isLoading" />
+                        <div class="b-tabs">
+                            <nav 
+                                    role="list"
+                                    ref="tainacanTabsSwiper"
+                                    v-swiper:mySwiper="swiperOptions"
+                                    class="tabs">
+                                <ul class="swiper-wrapper">
+                                    <li 
+                                            v-for="(tab, tabIndex) of tabs"
+                                            :key="tabIndex"
+                                            :class="{ 'is-active': activeTab === tab.slug }"
+                                            @click="activeTab = tab.slug"
+                                            class="swiper-slide">
+                                        <a>
+                                            <span class="icon has-text-gray4">
+                                                <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
+                                            </span>
+                                            <span>{{ tab.name }}</span>
+                                            <span 
+                                                    v-if="tab.total"
+                                                    class="has-text-gray">
+                                                &nbsp;({{ tab.total }})
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <button 
+                                            class="swiper-button-prev" 
+                                            id="tainacan-tabs-prev" 
+                                            slot="button-prev">
+                                        <svg
+                                                width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24">
+                                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                            <path
+                                                    d="M0 0h24v24H0z"
+                                                    fill="none"/>
+                                        </svg>
+                                    </button>
+                                    <button 
+                                            class="swiper-button-next" 
+                                            id="tainacan-tabs-next" 
+                                            slot="button-next">
+                                        <svg
+                                                width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24">
+                                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                            <path
+                                                    d="M0 0h24v24H0z"
+                                                    fill="none"/>
+                                        </svg>
+                                    </button>
+                            </nav>
+                        
+                            <section class="tab-content">
                                 
-                            </b-tab-item>
+                                <!-- Metadata from Collection-------------------------------- -->
+                                <div    
+                                        v-if="activeTab === 'metadata'"
+                                        class="tab-item"
+                                        role="tabpanel"
+                                        aria-labelledby="679-label"
+                                        tabindex="0"> 
+
+                                    <div class="sub-header">
+                                        <a
+                                                class="collapse-all"
+                                                @click="toggleCollapseAll()">
+                                            {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                                            <span class="icon">
+                                                <i
+                                                        :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                                        class="tainacan-icon tainacan-icon-1-25em"/>
+                                            </span>
+                                        </a>
+
+                                        <b-field 
+                                                v-if="metadatumList && metadatumList.length > 5"
+                                                class="header-item">
+                                            <b-input
+                                                    v-if="!isMobileScreen || openMetadataNameFilter"
+                                                    :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
+                                                    v-model="metadataNameFilterString"
+                                                    icon="magnify"
+                                                    size="is-small"
+                                                    icon-right="close-circle"
+                                                    icon-right-clickable
+                                                    @icon-right-click="openMetadataNameFilterClose" />
+                                            <span
+                                                    @click="openMetadataNameFilter = true"
+                                                    v-else 
+                                                    class="icon is-small metadata-name-search-icon">
+                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-search" />
+                                            </span>
+                                        </b-field>
+                                    </div>
+
+                                    <tainacan-form-item
+                                            v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
+                                            v-for="(itemMetadatum, index) of metadatumList"
+                                            :key="index"
+                                            :item-metadatum="itemMetadatum"
+                                            :metadata-name-filter-string="metadataNameFilterString"
+                                            :is-collapsed="metadataCollapses[index]"
+                                            :is-mobile-screen="isMobileScreen"
+                                            :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
+                                            @changeCollapse="onChangeCollapse($event, index)"/>
+
+                                    <!-- Hook for extra Form options -->
+                                    <template
+                                            v-if="formHooks != undefined &&
+                                                formHooks['item'] != undefined &&
+                                                formHooks['item']['end-right'] != undefined">
+                                        <form
+                                            id="form-item-end-right"
+                                            class="form-hook-region"
+                                            v-html="formHooks['item']['end-right'].join('')"/>
+                                    </template>
+                                </div>
 
 
-                            <!-- Attachments ------------------------------------------ -->
-                            <b-tab-item>
-                                <template slot="header">
-                                    <span class="icon has-text-gray4">
-                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
-                                    </span>
-                                    <span>
-                                        {{ $i18n.get('label_attachments') }}
-                                        <span
-                                                v-if="totalAttachments != null && totalAttachments != undefined"
-                                                class="has-text-gray">
-                                            ({{ totalAttachments }})
-                                        </span>
-                                    </span>
-                                </template>
+                                <!-- Related items -->
+                                <div    
+                                        v-if="totalRelatedItems && activeTab === 'related'"
+                                        class="tab-item"
+                                        role="tabpanel"
+                                        aria-labelledby="679-label"
+                                        tabindex="0"> 
 
-                                <div v-if="item != undefined && item.id != undefined">
                                     <div class="attachments-list-heading">
-                                        <button
-                                                style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                                type="button"
-                                                class="button is-secondary"
-                                                @click.prevent="attachmentMediaFrame.openFrame($event)"
-                                                :disabled="isLoadingAttachments">
-                                            {{ $i18n.get("label_edit_attachments") }}
-                                        </button>
                                         <p>
-                                            {{ $i18n.get("info_edit_attachments") }}
+                                            {{ $i18n.get("info_related_items") }}
                                         </p>
                                     </div>
 
-                                    <attachments-list
-                                            v-if="item != undefined && item.id != undefined"
-                                            :item="item"
-                                            :is-editable="true"
-                                            :is-loading.sync="isLoadingAttachments"
-                                            @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
-                                            @onDeleteAttachment="deleteAttachment($event)"/>
+                                    <related-items-list
+                                            :is-mobile-screen="isMobileScreen"
+                                            :item-id="itemId"
+                                            :collection-id="collectionId"
+                                            :related-items="item.related_items"
+                                            :is-editable="!isIframeMode"
+                                            :is-loading.sync="isLoading" />
+                                    
                                 </div>
-                            </b-tab-item>
 
-                        </b-tabs>
+
+                                <!-- Attachments ------------------------------------------ -->
+                                <div    
+                                        v-if="activeTab === 'attachments'"
+                                        class="tab-item"
+                                        role="tabpanel"
+                                        aria-labelledby="679-label"
+                                        tabindex="0">
+
+                                    <div v-if="item != undefined && item.id != undefined">
+                                        <div class="attachments-list-heading">
+                                            <button
+                                                    style="margin-left: calc(var(--tainacan-one-column) + 12px)"
+                                                    type="button"
+                                                    class="button is-secondary"
+                                                    @click.prevent="attachmentMediaFrame.openFrame($event)"
+                                                    :disabled="isLoadingAttachments">
+                                                {{ $i18n.get("label_edit_attachments") }}
+                                            </button>
+                                            <p>
+                                                {{ $i18n.get("info_edit_attachments") }}
+                                            </p>
+                                        </div>
+
+                                        <attachments-list
+                                                v-if="item != undefined && item.id != undefined"
+                                                :item="item"
+                                                :is-editable="true"
+                                                :is-loading.sync="isLoadingAttachments"
+                                                @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
+                                                @onDeleteAttachment="deleteAttachment($event)"/>
+                                    </div>
+                                </div>
+
+                            </section>
+                        </div>
                     </div>
 
                     <div class="column is-5">
@@ -997,6 +1034,7 @@ import CustomDialog from '../other/custom-dialog.vue';
 import AttachmentsList from '../lists/attachments-list.vue';
 import { formHooks } from '../../js/mixins';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
+import { directive } from 'vue-awesome-swiper';
 
 export default {
     name: 'ItemEditionForm',
@@ -1007,9 +1045,27 @@ export default {
         RelatedItemsList,
         ItemMetadatumErrorsTooltip
     },
+    directives: {
+        swiper: directive
+    },
     mixins: [ formHooks ],
     data(){
         return {
+            swiperOptions: {
+                watchOverflow: true,
+                mousewheel: true,
+                observer: true,
+                preventInteractionOnTransition: true,
+                allowClick: true,
+                allowTouchMove: true,
+                slideToClickedSlide: true,
+                slidesPerView: 'auto',
+                navigation: {
+                    nextEl: '#tainacan-tabs-next',
+                    prevEl: '#tainacan-tabs-prev',
+                }
+            },
+            selected: 'Home',
             pageTitle: '',
             itemId: Number,
             item: {},
@@ -1044,7 +1100,7 @@ export default {
             textLink: '',
             isUpdatingValues: false,
             entityName: 'item',
-            activeTab: 0,
+            activeTab: 'metadata',
             isLoadingAttachments: false,
             metadataNameFilterString: '',
             isThumbnailAltTextModalActive: false,
@@ -1089,6 +1145,29 @@ export default {
         },
         isMobileMode() {
             return this.$route.query && this.$route.query.mobilemode;
+        },
+        tabs() {
+            let pageTabs = [{
+                slug: 'metadata',
+                icon: 'metadata',
+                name: this.$i18n.get('metadata'),
+                total: this.metadatumList.length
+            }];
+            if (this.totalRelatedItems) {
+                pageTabs.push({
+                    slug: 'related',
+                    icon: 'processes tainacan-icon-rotate-270',
+                    name: this.$i18n.get('label_related_items'),
+                    total: this.totalRelatedItems
+                });
+            }
+            pageTabs.push({
+                slug: 'attachments',
+                icon: 'attachments',
+                name: this.$i18n.get('label_attachments'),
+                total: this.totalAttachments
+            });
+            return pageTabs;
         }
     },
     watch: {
@@ -2087,6 +2166,58 @@ export default {
             }
         }
     }
+
+    .tab-content {
+        border-top: 1px solid var(--tainacan-input-border-color);
+    }
+    .swiper-container {
+        width: 100%;
+        position: relative;
+        margin: 0;
+        --swiper-navigation-size: 2em;
+        --swiper-navigation-color: var(--tainacan-secondary);
+        
+        .swiper-wrapper {
+            border: none !important;
+        }
+        .swiper-slide {
+            width: auto;
+        }
+        .swiper-button-next,
+        .swiper-button-prev {
+            padding: 34px 26px;
+            border: none;
+            background-color: transparent;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+        }
+        .swiper-button-prev::after,
+        .swiper-container-rtl .swiper-button-next::after {
+            content: 'previous';
+        }
+        .swiper-button-next,
+        .swiper-container-rtl .swiper-button-prev {
+            right: 0;
+            background-image: linear-gradient(90deg, rgba(255,255,255,0) 0%, var(--tainacan-background-color) 40%);
+        }
+        .swiper-button-prev,
+        .swiper-container-rtl .swiper-button-next {
+            left: 0;
+            background-image: linear-gradient(90deg, var(--tainacan-background-color) 0%, rgba(255,255,255,0) 60%);
+        }
+        .swiper-button-next.swiper-button-disabled,
+        .swiper-button-prev.swiper-button-disabled {
+            display: none;
+            visibility: hidden;
+        }
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-family: "TainacanIcons";
+            opacity: 0.7;
+            transition: opacity ease 0.2s;
+        }
+    }   
 
     .document-field {
         /deep/ iframe {

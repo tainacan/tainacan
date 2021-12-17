@@ -40,7 +40,7 @@
                                     style="margin-left: auto;"
                                     class="column is-narrow">
                                 <div class="section-status">
-                                    <div class="field has-addons">
+                                    <div class="field">
                                         <b-button
                                                 class="button is-secondary"
                                                 tag="router-link"
