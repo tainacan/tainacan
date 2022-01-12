@@ -294,6 +294,18 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             if (swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled && swiperInstance.autoplay.running)
                 swiperInstance.autoplay.stop();
         });
+
+        // On destroy we make a copy of the inner content to clear it
+        // and set again. This stops YouTube player, for example. 
+        gallery.listen('destroy', () => { 
+            let actualGalleryContainer = document.getElementsByClassName("pswp__container")[0];
+            if (actualGalleryContainer) {
+                let currentData = actualGalleryContainer.innerHTML;
+                actualGalleryContainer.innerHTML = '';
+                actualGalleryContainer.innerHTML = currentData;           
+            } 
+        });
+
     };
   
     // triggers when user clicks on thumbnail
