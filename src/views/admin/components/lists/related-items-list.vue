@@ -137,7 +137,7 @@
                     <iframe 
                             width="100%"
                             style="height: 85vh"
-                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, editItemId) + '?iframemode=true&editingmetadata=' + editMetadataId" />
+                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, editItemId) + '?iframemode=true&editingmetadata=' + editMetadataId + (isMobileMode ? '&mobilemode=true' : '')" />
                 </b-modal>
             </div>
         </div>
@@ -170,6 +170,9 @@
             },
             displayLoading() {
                 return this.isLoading || this.isUpdatingRelatedItems;
+            },
+            isMobileMode() {
+                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {

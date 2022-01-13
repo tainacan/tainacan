@@ -4,6 +4,7 @@
             class="has-mounted columns is-fullheight"
             :class="{ 
                 'tainacan-admin-iframe-mode': isIframeMode, 
+                'tainacan-admin-mobile-mode': isMobileMode, 
                 'tainacan-admin-read-mode': isReadMode
             }">
         <template v-if="activeRoute == 'HomePage'">
@@ -11,7 +12,7 @@
             <router-view /> 
         </template>
         <template v-else>
-            <template v-if="!isIframeMode">
+            <template v-if="!isIframeMode && !isMobileMode">
                 <primary-menu 
                         :active-route="activeRoute"
                         :is-menu-compressed="isMenuCompressed"/>
@@ -68,11 +69,14 @@
             }
         },
         computed: {
-            isReadMode () {
+            isReadMode() {
                 return this.$route && this.$route.query && this.$route.query.readmode;
             },
-            isIframeMode () {
+            isIframeMode() {
                 return this.$route && this.$route.query && this.$route.query.iframemode;
+            },
+            isMobileMode() {
+                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {
@@ -128,11 +132,13 @@
         height: 100%;
         margin-bottom: 0px;
         margin-top: 0px;
+    }  
 
-        @media screen and (max-width: 769px) {
+    @media screen and (max-width: 769px) {
+        .is-fullheight:not(.tainacan-admin-mobile-mode):not(.tainacan-admin-collection-mobile-mode) {
             height: auto;
         }
-    }  
+    }
 
     .is-main-content {
         padding: 0px !important;
