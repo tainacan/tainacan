@@ -5,6 +5,7 @@ const { RangeControl, TextControl, SelectControl, Button, ToggleControl, Placeho
 const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import TainacanBlocksCompatColorPicker from '../../js/tainacan-blocks-compat-colorpicker.js';
 import SearchBarModal from './search-bar-modal.js';
 
 export default function({ attributes, setAttributes, className, isSelected }) {
@@ -310,7 +311,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                                     <BaseControl
                                         id="backgroundcolorpicker"
                                         label={ __('Background color', 'tainacan') }>
-                                        <ColorPalette 
+                                        <TainacanBlocksCompatColorPicker
                                             value={ collectionBackgroundColor }
                                             onChange={ ( color ) => {
                                                 collectionBackgroundColor = color;

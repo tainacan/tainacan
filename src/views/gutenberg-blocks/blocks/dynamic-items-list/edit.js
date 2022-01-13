@@ -10,6 +10,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import TainacanBlocksCompatColorPicker from '../../js/tainacan-blocks-compat-colorpicker.js';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }){
     let {
@@ -571,7 +572,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     <BaseControl
                                         id="backgroundcolorpicker"
                                         label={ __('Background color', 'tainacan') }>
-                                        <ColorPalette 
+                                        <TainacanBlocksCompatColorPicker
                                             value={ collectionBackgroundColor }
                                             onChange={ ( color ) => {
                                                 collectionBackgroundColor = color;
