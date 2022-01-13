@@ -4,7 +4,6 @@ const {
     Button,
     TextControl,
     TextareaControl,
-    ColorPicker,
     BaseControl,
     CheckboxControl,
     FontSizePicker,
@@ -20,8 +19,9 @@ const { InspectorControls, BlockControls, RichText, useBlockProps } = (tainacan_
 import tainacan from '../../js/axios.js';
 import CollectionModal from '../faceted-search/collection-modal.js';
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import TainacanBlocksCompatColorPicker from '../../js/tainacan-blocks-compat-colorpicker.js';
 
-export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
+export default function ({ attributes, setAttributes, className }) {
     let {
         collectionId,
         isCollectionModalOpen,
@@ -88,6 +88,13 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
             size: 20,
         },
     ];
+    
+    if (backgroundColor.rgb != undefined) {
+        if (backgroundColor.rgb.a)
+            backgroundColor = 'rgba(' + backgroundColor.rgb.r + ',' + backgroundColor.rgb.g + ',' + backgroundColor.rgb.b + ',' + backgroundColor.rgb.a + ')';
+        else
+            backgroundColor = 'rgb(' + backgroundColor.rgb.r + ',' + backgroundColor.rgb.g + ',' + backgroundColor.rgb.b + ')';
+    }
 
     function openCollectionModal() {
         isCollectionModalOpen = true;
@@ -406,12 +413,13 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     id="backgroundColorPicker"
                                     label={ __('Background color', 'tainacan')}
                                     help={ __('The background color of the entire items list', 'tainacan') }>
-                                <ColorPicker
-                                    color={ backgroundColor }
-                                    onChangeComplete={ (colorValue ) => {
-                                        backgroundColor = colorValue.rgb;
+                                <TainacanBlocksCompatColorPicker
+                                    value={ backgroundColor }
+                                    onChange={ (colorValue ) => {
+                                        backgroundColor = colorValue;
                                         setAttributes({ backgroundColor: backgroundColor });
                                     }}
+                                    enableAlpha
                                 />
                             </BaseControl>
                             <HorizontalRule />
@@ -419,10 +427,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     id="secondaryColorPicker"
                                     label={ __('Link and Active Main color', 'tainacan')}
                                     help={ __('The text color links and other action or active state elements, such as select arrows, tooltip contents, etc', 'tainacan') }>
-                                <ColorPicker
-                                    color={ secondaryColor }
-                                    onChangeComplete={ (colorValue ) => {
-                                        secondaryColor = colorValue.hex;
+                                <TainacanBlocksCompatColorPicker
+                                    value={ secondaryColor }
+                                    onChange={ (colorValue ) => {
+                                        secondaryColor = colorValue;
                                         setAttributes({ secondaryColor: secondaryColor });
                                     }}
                                     disableAlpha
@@ -433,10 +441,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     id="primaryColorPicker"
                                     label={ __('Tooltips background color', 'tainacan')}
                                     help={ __('The tooltips background color and other elements, such as the hide filters button', 'tainacan') }>
-                                <ColorPicker
-                                    color={ primaryColor }
-                                    onChangeComplete={ (colorValue ) => {
-                                        primaryColor = colorValue.hex;
+                                <TainacanBlocksCompatColorPicker
+                                    value={ primaryColor }
+                                    onChange={ (colorValue ) => {
+                                        primaryColor = colorValue;
                                         setAttributes({ primaryColor: primaryColor });
                                     }}
                                     disableAlpha
@@ -447,10 +455,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     id="inputBackgroundColorPicker"
                                     label={ __('Input Background color', 'tainacan')}
                                     help={ __('The background color for input fields', 'tainacan') }>
-                                <ColorPicker
-                                    color={ inputBackgroundColor }
-                                    onChangeComplete={ (colorValue ) => {
-                                        inputBackgroundColor = colorValue.hex;
+                                <TainacanBlocksCompatColorPicker
+                                    value={ inputBackgroundColor }
+                                    onChange={ (colorValue ) => {
+                                        inputBackgroundColor = colorValue;
                                         setAttributes({ inputBackgroundColor: inputBackgroundColor });
                                     }}
                                     disableAlpha
@@ -461,10 +469,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     id="inputColorPicker"
                                     label={ __('Input Text color', 'tainacan')}
                                     help={ __('The text color for input fields, including dropdowns and buttons', 'tainacan') }>
-                                <ColorPicker
-                                    color={ inputColor }
-                                    onChangeComplete={ (colorValue ) => {
-                                        inputColor = colorValue.hex;
+                                <TainacanBlocksCompatColorPicker
+                                    value={ inputColor }
+                                    onChange={ (colorValue ) => {
+                                        inputColor = colorValue;
                                         setAttributes({ inputColor: inputColor });
                                     }}
                                     disableAlpha
@@ -475,10 +483,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     id="inputBorderColorPicker"
                                     label={ __('Input Border color', 'tainacan')}
                                     help={ __('The border color for input fields', 'tainacan') }>
-                                <ColorPicker
-                                    color={ inputBorderColor }
-                                    onChangeComplete={ (colorValue ) => {
-                                        inputBorderColor = colorValue.hex;
+                                <TainacanBlocksCompatColorPicker
+                                    value={ inputBorderColor }
+                                    onChange={ (colorValue ) => {
+                                        inputBorderColor = colorValue;
                                         setAttributes({ inputBorderColor: inputBorderColor });
                                     }}
                                     disableAlpha
@@ -489,10 +497,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     id="labelColorPicker"
                                     label={ __('Label Text color', 'tainacan')}
                                     help={ __('The text color for field labels', 'tainacan') }>
-                                <ColorPicker
-                                    color={ labelColor }
-                                    onChangeComplete={ (colorValue ) => {
-                                        labelColor = colorValue.hex;
+                                <TainacanBlocksCompatColorPicker
+                                    value={ labelColor }
+                                    onChange={ (colorValue ) => {
+                                        labelColor = colorValue;
                                         setAttributes({ labelColor: labelColor });
                                     }}
                                     disableAlpha
@@ -502,10 +510,10 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     id="infoColorPicker"
                                     label={ __('General Info Text color', 'tainacan')}
                                     help={ __('The text color for other information such as item metadata, icons, number of pages, etc', 'tainacan') }>
-                                <ColorPicker
-                                    color={ infoColor }
-                                    onChangeComplete={ (colorValue ) => {
-                                        infoColor = colorValue.hex;
+                                <TainacanBlocksCompatColorPicker
+                                    value={ infoColor }
+                                    onChange={ (colorValue ) => {
+                                        infoColor = colorValue;
                                         setAttributes({ infoColor: infoColor });
                                     }}
                                     disableAlpha
@@ -552,7 +560,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             </div>
                             <div
                                     style={{
-                                        '--tainacan-background-color': 'rgba(' + backgroundColor.r + ',' + backgroundColor.g + ',' + backgroundColor.b + ',' + backgroundColor.a + ')',
+                                        '--tainacan-background-color': backgroundColor,
                                         '--tainacan-input-color': inputColor,
                                         '--tainacan-input-background-color': inputBackgroundColor,
                                         '--tainacan-input-border-color': inputBorderColor,

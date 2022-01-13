@@ -2,7 +2,7 @@ const { Button, Toolbar, ToolbarGroup, ToolbarButton } = wp.components;
 
 export default function TainacanBlocksCompatToolbar({ label, icon, onClick, onClickParams, controls }) {
     
-    const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? currentWPVersion : tainacan_plugin.wp_version;
+    const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
     if (controls !== undefined)
         return currentWPVersion < '5.4' ? <Toolbar controls={ controls } /> : <ToolbarGroup controls={ controls } /> 

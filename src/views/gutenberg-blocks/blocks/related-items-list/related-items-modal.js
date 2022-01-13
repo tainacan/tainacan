@@ -4,6 +4,7 @@ import axios from 'axios';
 const { __ } = wp.i18n;
 
 const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
+const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
 export default class RelatedItemsModal extends React.Component {
     constructor(props) {
@@ -199,7 +200,7 @@ export default class RelatedItemsModal extends React.Component {
         return this.state.collectionId ? (
             // Items modal
         <Modal
-                className="wp-block-tainacan-modal dynamic-modal"
+                className={ 'wp-block-tainacan-modal dynamic-modal ' + (currentWPVersion < 5.9 ? 'wp-version-smaller-than-5-9' : '') }
                 title={ __('Select one item that has relations', 'tainacan') }
                 onRequestClose={ () => this.cancelSelection() }
                 shouldCloseOnClickOutside={ false }

@@ -65,17 +65,27 @@
         height: 80vh;
 
         iframe {
-            width: calc(100% + 32px);
-            height: calc(100% - 132px);
-            margin-left: -16px;
+            width: 100%;
+            height: calc(100% - 96px);
+        }
+        &.wp-version-smaller-than-5-9 iframe {
+            height: calc(100% - 156px);
         }
 
         .modal-footer-area {
             height: 68px;
-            width: calc(100% + 32px);
-            margin-left: -16px !important;
-            padding: 1.2em 1.2em !important;
+            width: 100%;
             border-top: 1px solid var(--tainacan-block-gray3, $gray3);
+            padding: 15px 32px;
+        }
+
+        .components-modal__content {
+            padding: 0;
+            
+            .components-modal__header {
+                margin-left: 0;
+                margin-right: 0;
+            }
         }
     }
 
@@ -209,8 +219,7 @@
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        padding: 15px 16px 0 16px;
-        margin: 0 -16px;
+        padding: 15px 0 0 0;
 
         p {
             padding: 0 12px;
