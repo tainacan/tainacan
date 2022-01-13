@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 
-const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
@@ -569,20 +569,20 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     />
 
                                     <BaseControl
-                                        id="colorpicker"
-                                        label={ __('Background color', 'tainacan')}>
-                                        <ColorPicker
-                                            color={ collectionBackgroundColor }
-                                            onChangeComplete={ ( value ) => {
-                                                collectionBackgroundColor = value.hex;
+                                        id="backgroundcolorpicker"
+                                        label={ __('Background color', 'tainacan') }>
+                                        <ColorPalette 
+                                            value={ collectionBackgroundColor }
+                                            onChange={ ( color ) => {
+                                                collectionBackgroundColor = color;
                                                 setAttributes({ collectionBackgroundColor: collectionBackgroundColor }) 
                                             }}
                                             disableAlpha
-                                            />
+                                        />
                                     </BaseControl>
 
                                     <BaseControl
-                                        id="colorpallete"
+                                        id="colorpicker"
                                         label={ __('Collection name color', 'tainacan')}>
                                         <ColorPalette 
                                             colors={ [{ name: __('Black', 'tainacan'), color: '#000000'}, { name: __('White', 'tainacan'), color: '#ffffff'} ] } 

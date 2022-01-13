@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { 
     Button,
-    ColorPicker,
+    ColorPalette,
     BaseControl,
     CheckboxControl,
     RangeControl,
@@ -586,10 +586,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="backgroundColorPicker"
                                 label={ __('Background color', 'tainacan')}
                                 help={ __('The background color of the entire items list', 'tainacan') }>
-                            <ColorPicker
-                                color={ backgroundColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    backgroundColor = colorValue.hex;
+                            <ColorPalette
+                                value={ backgroundColor }
+                                onChange={ ( colorValue ) => {
+                                    backgroundColor = colorValue;
                                     setAttributes({ backgroundColor: backgroundColor });
                                 }}
                                 disableAlpha
@@ -600,10 +600,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="secondaryColorPicker"
                                 label={ __('Link and Active Main color', 'tainacan')}
                                 help={ __('The text color links and other action or active state elements, such as select arrows, tooltip contents, etc', 'tainacan') }>
-                            <ColorPicker
-                                color={ secondaryColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    secondaryColor = colorValue.hex;
+                            <ColorPalette
+                                value={ secondaryColor }
+                                onChange={ (colorValue ) => {
+                                    secondaryColor = colorValue;
                                     setAttributes({ secondaryColor: secondaryColor });
                                 }}
                                 disableAlpha
@@ -614,10 +614,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="primaryColorPicker"
                                 label={ __('Tooltips background color', 'tainacan')}
                                 help={ __('The tooltips background color and other elements, such as the hide filters button', 'tainacan') }>
-                            <ColorPicker
-                                color={ primaryColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    primaryColor = colorValue.hex;
+                            <ColorPalette
+                                value={ primaryColor }
+                                onChange={ (colorValue ) => {
+                                    primaryColor = colorValue;
                                     setAttributes({ primaryColor: primaryColor });
                                 }}
                                 disableAlpha
@@ -628,10 +628,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="inputBackgroundColorPicker"
                                 label={ __('Input Background color', 'tainacan')}
                                 help={ __('The background color for input fields', 'tainacan') }>
-                            <ColorPicker
-                                color={ inputBackgroundColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    inputBackgroundColor = colorValue.hex;
+                            <ColorPalette
+                                value={ inputBackgroundColor }
+                                onChange={ (colorValue ) => {
+                                    inputBackgroundColor = colorValue;
                                     setAttributes({ inputBackgroundColor: inputBackgroundColor });
                                 }}
                                 disableAlpha
@@ -642,10 +642,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="inputColorPicker"
                                 label={ __('Input Text color', 'tainacan')}
                                 help={ __('The text color for input fields, including dropdowns and buttons', 'tainacan') }>
-                            <ColorPicker
-                                color={ inputColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    inputColor = colorValue.hex;
+                            <ColorPalette
+                                value={ inputColor }
+                                onChange={ (colorValue ) => {
+                                    inputColor = colorValue;
                                     setAttributes({ inputColor: inputColor });
                                 }}
                                 disableAlpha
@@ -656,10 +656,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="inputBorderColorPicker"
                                 label={ __('Input Border color', 'tainacan')}
                                 help={ __('The border color for input fields', 'tainacan') }>
-                            <ColorPicker
-                                color={ inputBorderColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    inputBorderColor = colorValue.hex;
+                            <ColorPalette
+                                value={ inputBorderColor }
+                                onChange={ (colorValue ) => {
+                                    inputBorderColor = colorValue;
                                     setAttributes({ inputBorderColor: inputBorderColor });
                                 }}
                                 disableAlpha
@@ -670,10 +670,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="labelColorPicker"
                                 label={ __('Label Text color', 'tainacan')}
                                 help={ __('The text color for field labels', 'tainacan') }>
-                            <ColorPicker
-                                color={ labelColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    labelColor = colorValue.hex;
+                            <ColorPalette
+                                value={ labelColor }
+                                onChange={ (colorValue ) => {
+                                    labelColor = colorValue;
                                     setAttributes({ labelColor: labelColor });
                                 }}
                                 disableAlpha
@@ -684,10 +684,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="headingColorPicker"
                                 label={ __('Headings Text color', 'tainacan')}
                                 help={ __('The text color for headings such as items title and filters menu header', 'tainacan') }>
-                            <ColorPicker
-                                color={ headingColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    headingColor = colorValue.hex;
+                            <ColorPalette
+                                value={ headingColor }
+                                onChange={ (colorValue ) => {
+                                    headingColor = colorValue;
                                     setAttributes({ headingColor: headingColor });
                                 }}
                                 disableAlpha
@@ -698,10 +698,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="infoColorPicker"
                                 label={ __('General Info Text color', 'tainacan')}
                                 help={ __('The text color for other information such as item metadata, icons, number of pages, etc', 'tainacan') }>
-                            <ColorPicker
-                                color={ infoColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    infoColor = colorValue.hex;
+                            <ColorPalette
+                                value={ infoColor }
+                                onChange={ (colorValue ) => {
+                                    infoColor = colorValue;
                                     setAttributes({ infoColor: infoColor });
                                 }}
                                 disableAlpha
@@ -711,10 +711,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="itemBackgroundColorPicker"
                                 label={ __('Item Background color', 'tainacan')}
                                 help={ __('The background color for an item on the list', 'tainacan') }>
-                            <ColorPicker
-                                color={ itemBackgroundColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    itemBackgroundColor = colorValue.hex;
+                            <ColorPalette
+                                value={ itemBackgroundColor }
+                                onChange={ (colorValue ) => {
+                                    itemBackgroundColor = colorValue;
                                     setAttributes({ itemBackgroundColor: itemBackgroundColor });
                                 }}
                                 disableAlpha
@@ -725,11 +725,11 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="itemHoverBackgroundColorPicker"
                                 label={ __('Item Hover Background color', 'tainacan')}
                                 help={ __('The background color for an item on the list, when hovered', 'tainacan') }>
-                            <ColorPicker
-                                color={ itemHoverBackgroundColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    itemHoverBackgroundColor = colorValue.hex;
-                                    skeletonColor = colorValue.hex;
+                            <ColorPalette
+                                value={ itemHoverBackgroundColor }
+                                onChange={ (colorValue ) => {
+                                    itemHoverBackgroundColor = colorValue;
+                                    skeletonColor = colorValue;
                                     setAttributes({ 
                                         itemHoverBackgroundColor: itemHoverBackgroundColor,
                                         skeletonColor: skeletonColor
@@ -743,10 +743,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="itemHeadingHoverBackgroundColorPicker"
                                 label={ __('Item Heading Hover Background color', 'tainacan')}
                                 help={ __('The background color for the item heading (where the title is), when hovered', 'tainacan') }>
-                            <ColorPicker
-                                color={ itemHeadingHoverBackgroundColor }
-                                onChangeComplete={ (colorValue ) => {
-                                    itemHeadingHoverBackgroundColor = colorValue.hex;
+                            <ColorPalette
+                                value={ itemHeadingHoverBackgroundColor }
+                                onChange={ (colorValue ) => {
+                                    itemHeadingHoverBackgroundColor = colorValue;
                                     setAttributes({ itemHeadingHoverBackgroundColor: itemHeadingHoverBackgroundColor });
                                 }}
                                 disableAlpha

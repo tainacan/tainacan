@@ -56,8 +56,8 @@
             "default": false
         },
         "backgroundColor": {
-            "type": "Object",
-            "default": { "r": 255, "g": 255, "b": 255, "a": 0 }
+            "type": "String",
+            "default": "rgba(255,255,255,0)"
         },
         "baseFontSize": {
             "type": "Number",
