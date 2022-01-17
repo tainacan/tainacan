@@ -132,7 +132,8 @@
             hideCollapses: false,
             isLastMetadatum: false,
             metadataNameFilterString: '',
-            isMobileScreen: false
+            isMobileScreen: false,
+            isFocused: false
         },
         data(){
             return {
@@ -168,7 +169,8 @@
                     (this.metadatumComponent ? ' tainacan-metadatum-component--' + this.metadatumComponent : '') +
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.placeholder ? ' has-placeholder' : '') +  
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.description ? ' has-description' : '') +  
-                    (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '');  
+                    (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '') +
+                    (this.isFocused ? ' is-focused' : '');  
             }
         },
         created() {
@@ -300,6 +302,8 @@
     .field {
         border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
+        transform: scale(1.0);
+        transition: transform 0.2s ease;
 
         &.hightlighted-metadatum {
             background-color: var(--tainacan-white);
@@ -307,6 +311,10 @@
             animation-name: metadatum-highlight;
             animation-duration: 3s;
             animation-iteration-count: 2; 
+        }
+
+        &.is-focused {
+            transform: scale(1.005);
         }
 
         &.has-collapses-hidden {

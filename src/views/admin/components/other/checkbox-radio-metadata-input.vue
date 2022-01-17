@@ -1,5 +1,7 @@
 <template>
-    <div class="tainacan-form">
+    <div 
+            class="tainacan-form">
+
         <b-tabs
                 size="is-small"
                 animated
@@ -335,7 +337,8 @@
                 default: true,
             },
             amountSelected: 0,
-            maxMultipleValues: undefined
+            maxMultipleValues: undefined,
+            isMobileScreen: false
         },
         data() {
             return {
@@ -813,8 +816,20 @@
     .tainacan-form {
         margin-top: 12px;
         max-width: 100%;
+
         .form-submit {
             padding-top: 16px !important;
+        }
+        &.is-expanded-on-mobile:focus,
+        &.is-expanded-on-mobile:focus-within,
+        &.is-expanded-on-mobile:focus-visible {
+            background-color: var(--tainacan-background-color);
+            z-index: 9999999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
     }
 
@@ -846,8 +861,8 @@
             margin-left: 0.7em;
             margin-bottom: 0px !important;
             height: auto;
-            padding-top: 2px;
-            padding-bottom: 2px;
+            padding-top: 0px;
+            padding-bottom: 0px;
             -webkit-break-inside: avoid;
             break-inside: avoid;
 
@@ -858,8 +873,11 @@
 
             @media screen and (max-width: 768px) {
                 .control-label {
-                    padding-top: 0.55em;
-                    padding-bottom: 0.55em;
+                    padding-top: 0.8125em;
+                    padding-bottom: 0.8125em;
+                    padding-left: calc(0.875em - 1px);
+                    width: 100%;
+                    border-bottom: 1px solid var(--tainacan-gray1);
                 }
             }
 
@@ -942,6 +960,7 @@
 
         &.has-only-one-column {
             max-width: 100%;
+            border-right: none;
 
             ul {
                 -moz-column-count: 2;
@@ -1036,6 +1055,7 @@
 
     .tainacan-checkbox-search-section {
         margin-bottom: 0;
+
         .control {
             margin: 0;
         }
@@ -1176,7 +1196,7 @@
     @media screen and (max-width: 768px) {
 
         .tainacan-modal-checkbox-list-body,
-        .tainacan-finder-column.has-only-one-column,
+        .tainacan-finder-column.has-only-one-column ul,
         .tainacan-modal-checkbox-search-results-body {
             -moz-column-count: auto;
             -webkit-column-count: auto;
@@ -1188,6 +1208,7 @@
         }
         .tainacan-finder-columns-container {
             max-height: calc(100vh - 140px - 56px);
+
             .tainacan-finder-column,
             .tainacan-finder-column ul {
                 max-height: 100%;

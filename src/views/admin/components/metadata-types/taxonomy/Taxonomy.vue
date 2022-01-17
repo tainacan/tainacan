@@ -31,6 +31,7 @@
                 :amount-selected="Array.isArray(valueComponent) ? valueComponent.length : (valueComponent ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
+                :is-mobile-screen="isMobileScreen"
             />
         <div
                 v-if="displayCreateNewTerm && !isTermCreationPanelOpen && (maxMultipleValues !== undefined ? (maxMultipleValues > valueComponent.length) : true)"
@@ -96,6 +97,7 @@
             maxtags: '',
             allowNew: false,
             allowSelectToCreate: false,
+            isMobileScreen: false,
         },
         data(){
             return {

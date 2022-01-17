@@ -216,6 +216,53 @@
                                         </a>
 
                                         <b-field 
+                                                v-if="metadatumList && metadatumList.length > 3"
+                                                class="header-item metadata-navigation"
+                                                :class="{ 'is-active': isMetadataNavigation }">
+                                            <b-button
+                                                    v-if="!isMetadataNavigation" 
+                                                    @click="isMetadataNavigation = true; setMetadatumFocus(0);"
+                                                    size="is-ghost" 
+                                                    outlined>
+                                                <span>{{ 'Navigate' }}</span>
+                                                <span
+                                                        class="icon is-small">
+                                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-play" />
+                                                </span>
+                                            </b-button>
+                                            <b-button 
+                                                    v-if="isMetadataNavigation"
+                                                    @click="setMetadatumFocus(focusedMetadatum - 1)"
+                                                    size="is-small" 
+                                                    outlined>
+                                                <span
+                                                        class="icon is-small">
+                                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-showmore tainacan-icon-rotate-180" />
+                                                </span>
+                                            </b-button>
+                                            <b-button 
+                                                    v-if="isMetadataNavigation"
+                                                    @click="setMetadatumFocus(focusedMetadatum + 1)"
+                                                    size="is-small"
+                                                    outlined>
+                                                <span
+                                                        class="icon is-small">
+                                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-showmore" />
+                                                </span>
+                                            </b-button>
+                                            <b-button
+                                                    v-if="isMetadataNavigation" 
+                                                    @click="isMetadataNavigation = false"
+                                                    size="is-small"
+                                                    outlined>
+                                                <span
+                                                        class="icon is-small has-success-color">
+                                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-finish" />
+                                                </span>
+                                            </b-button>
+                                        </b-field>
+
+                                        <b-field 
                                                 v-if="metadatumList && metadatumList.length > 5"
                                                 class="header-item">
                                             <b-input
@@ -240,12 +287,16 @@
                                             v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
                                             v-for="(itemMetadatum, index) of metadatumList"
                                             :key="index"
+                                            :ref="'tainacan-form-item--' + index"
                                             :item-metadatum="itemMetadatum"
                                             :metadata-name-filter-string="metadataNameFilterString"
                                             :is-collapsed="metadataCollapses[index]"
                                             :is-mobile-screen="isMobileScreen"
                                             :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
-                                            @changeCollapse="onChangeCollapse($event, index)"/>
+                                            :is-focused="focusedMetadatum === index"
+                                            @changeCollapse="onChangeCollapse($event, index)"
+                                            @touchstart.native="setMetadatumFocus(index)"
+                                            @mouseenter.native="setMetadatumFocus(index)" />
 
                                     <!-- Hook for extra Form options -->
                                     <template
@@ -788,7 +839,9 @@
             </template>
 
         </transition>
-        <footer class="footer">
+        <footer 
+                class="footer"
+                :class="{ 'has-some-metadatum-focused': isMetadataNavigation && activeTab === 'metadata' && focusedMetadatum !== false }">
             <!-- Sequence Progress -->
             <div
                     v-if="isOnSequenceEdit"
@@ -825,7 +878,7 @@
                 </p>
             </div>
             <div
-                    class="form-submission-footer"
+                    class="form-submission-footer" 
                     v-if="isEditingMetadataIframeMode">
                 <button
                         @click="onSubmit()"
@@ -1109,7 +1162,9 @@ export default {
             urlIframeHeight: 450,
             urlIsImage: false,
             isMobileScreen: false,
-            openMetadataNameFilter: false
+            openMetadataNameFilter: false,
+            focusedMetadatum: false,
+            isMetadataNavigation: false
         }
     },
     computed: {
@@ -1932,6 +1987,28 @@ export default {
                     this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
             });
         }, 500),
+        setMetadatumFocus(index) {
+            this.focusedMetadatum = index;
+            
+            let fieldElement = this.$refs['tainacan-form-item--' + index] && this.$refs['tainacan-form-item--' + index][0] && this.$refs['tainacan-form-item--' + index][0]['$el'];
+            if (fieldElement) {
+                let inputElement = fieldElement.getElementsByTagName('input')[0] || fieldElement.getElementsByTagName('select')[0] || fieldElement.getElementsByTagName('textarea')[0];
+
+                if (inputElement) {
+                    setTimeout(() => {
+                        if (inputElement.type === 'checkbox' || inputElement.type === 'radio')
+                            inputElement.focus();
+                        else
+                            inputElement.click();
+
+                        setTimeout(() => {
+                            fieldElement.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+
+                    }, 200);
+                }
+            }
+        }
     }
 }
 </script>
@@ -2104,6 +2181,27 @@ export default {
         .field {
             padding: 2px 0px 2px 24px !important;
         }
+    }
+
+    .metadata-navigation {
+        position: initial;
+        bottom: 0px;
+        right: 0px;
+        margin-left: auto;
+        z-index: 9999;
+        transition: right 0.3s ease, top 0.3s ease, position 0.3s ease;
+
+        &.is-active {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+        }
+    }
+    .metadata-navigation /deep/ .button {
+        border-radius: 0 !important;
+        margin-left: 0.25em;
+        min-height: 2.25em;
+        background-color: rgba(255,255,255,0.5) !important;
     }
 
     .collapse-all {
@@ -2315,6 +2413,7 @@ export default {
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        transition: bottom 0.5s ease;
 
         .form-submission-footer {
             .button {
@@ -2391,6 +2490,10 @@ export default {
             flex-wrap: wrap;
             height: auto;
             position: fixed;
+
+            &.has-some-metadatum-focused {
+                bottom: -400px;
+            }
 
             .update-info-section {
                 margin-left: auto;
