@@ -611,6 +611,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 	'label_items_selection'							 => __( 'Items selection', 'tainacan'),
 	'label_default_orderby' 						 => __(	'Initial default sorting', 'tainacan' ),
+	'label_navigate'		 						 => __(	'Navigate', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

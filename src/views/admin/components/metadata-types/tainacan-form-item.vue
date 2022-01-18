@@ -303,7 +303,8 @@
         border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
         transform: scale(1.0);
-        transition: transform 0.2s ease;
+        opacity: 1.0;
+        transition: transform 0.2s ease, opacity 0.2s ease;
 
         &.hightlighted-metadatum {
             background-color: var(--tainacan-white);
@@ -313,8 +314,12 @@
             animation-iteration-count: 2; 
         }
 
-        &.is-focused {
+        &.is-metadata-navigation-active {
+            opacity: 0.5;
+        }
+        &.is-focused.is-metadata-navigation-active {
             transform: scale(1.005);
+            opacity: 1;
         }
 
         &.has-collapses-hidden {

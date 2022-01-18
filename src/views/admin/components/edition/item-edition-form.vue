@@ -203,7 +203,19 @@
                                         aria-labelledby="679-label"
                                         tabindex="0"> 
 
-                                    <div class="sub-header">
+                                    <div 
+                                            class="sub-header"
+                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }">
+
+                                        <!-- Metadata navigation Progress -->
+                                        <div
+                                                v-if="isMetadataNavigation && metadatumList && metadatumList.length > 3"
+                                                class="sequence-progress-background" />
+                                        <div
+                                                v-if="isMetadataNavigation && focusedMetadatum !== false && metadatumList && metadatumList.length > 3"
+                                                :style="{ width: ((focusedMetadatum + 1)/metadatumList.length)*100 + '%' }"
+                                                class="sequence-progress" />
+
                                         <a
                                                 class="collapse-all"
                                                 @click="toggleCollapseAll()">
@@ -215,56 +227,62 @@
                                             </span>
                                         </a>
 
+                                        <span 
+                                                v-if="isUpdatingValues && isMetadataNavigation"
+                                                class="update-warning">
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating"/>
+                                            </span>
+                                        </span>
+
                                         <b-field 
                                                 v-if="metadatumList && metadatumList.length > 3"
-                                                class="header-item metadata-navigation"
-                                                :class="{ 'is-active': isMetadataNavigation }">
+                                                class="header-item metadata-navigation">
                                             <b-button
                                                     v-if="!isMetadataNavigation" 
                                                     @click="isMetadataNavigation = true; setMetadatumFocus(0);"
-                                                    size="is-ghost" 
-                                                    outlined>
-                                                <span>{{ 'Navigate' }}</span>
+                                                    class="collapse-all has-text-secondary"
+                                                    size="is-small">
+                                                <span>{{ $i18n.get('label_navigate') }}</span>
                                                 <span
-                                                        class="icon is-small">
+                                                        class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-play" />
                                                 </span>
                                             </b-button>
                                             <b-button 
                                                     v-if="isMetadataNavigation"
-                                                    @click="setMetadatumFocus(focusedMetadatum - 1)"
-                                                    size="is-small" 
+                                                    :disabled="focusedMetadatum === 0"
+                                                    @click="setMetadatumFocus(focusedMetadatum - 1)" 
                                                     outlined>
                                                 <span
-                                                        class="icon is-small">
-                                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-showmore tainacan-icon-rotate-180" />
+                                                        class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore tainacan-icon-rotate-180" />
                                                 </span>
                                             </b-button>
                                             <b-button 
                                                     v-if="isMetadataNavigation"
+                                                    :disabled="focusedMetadatum === metadatumList.length - 1"
                                                     @click="setMetadatumFocus(focusedMetadatum + 1)"
-                                                    size="is-small"
                                                     outlined>
                                                 <span
-                                                        class="icon is-small">
-                                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-showmore" />
+                                                        class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                                                 </span>
                                             </b-button>
                                             <b-button
                                                     v-if="isMetadataNavigation" 
                                                     @click="isMetadataNavigation = false"
-                                                    size="is-small"
                                                     outlined>
                                                 <span
-                                                        class="icon is-small has-success-color">
-                                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-finish" />
+                                                        class="icon has-success-color">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-finish" />
                                                 </span>
                                             </b-button>
                                         </b-field>
 
                                         <b-field 
                                                 v-if="metadatumList && metadatumList.length > 5"
-                                                class="header-item">
+                                                class="header-item metadata-name-search">
                                             <b-input
                                                     v-if="!isMobileScreen || openMetadataNameFilter"
                                                     :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
@@ -278,7 +296,7 @@
                                                     @click="openMetadataNameFilter = true"
                                                     v-else 
                                                     class="icon is-small metadata-name-search-icon">
-                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-search" />
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
                                             </span>
                                         </b-field>
                                     </div>
@@ -287,16 +305,16 @@
                                             v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
                                             v-for="(itemMetadatum, index) of metadatumList"
                                             :key="index"
+                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
                                             :ref="'tainacan-form-item--' + index"
                                             :item-metadatum="itemMetadatum"
                                             :metadata-name-filter-string="metadataNameFilterString"
-                                            :is-collapsed="metadataCollapses[index]"
+                                            :is-collapsed="metadataCollapses[index] || focusedMetadatum === index"
                                             :is-mobile-screen="isMobileScreen"
                                             :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
                                             :is-focused="focusedMetadatum === index"
                                             @changeCollapse="onChangeCollapse($event, index)"
-                                            @touchstart.native="setMetadatumFocus(index)"
-                                            @mouseenter.native="setMetadatumFocus(index)" />
+                                            @touchstart.native="setMetadatumFocus(index)" />
 
                                     <!-- Hook for extra Form options -->
                                     <template
@@ -839,9 +857,11 @@
             </template>
 
         </transition>
+
         <footer 
                 class="footer"
                 :class="{ 'has-some-metadatum-focused': isMetadataNavigation && activeTab === 'metadata' && focusedMetadatum !== false }">
+                
             <!-- Sequence Progress -->
             <div
                     v-if="isOnSequenceEdit"
@@ -1996,16 +2016,19 @@ export default {
 
                 if (inputElement) {
                     setTimeout(() => {
-                        if (inputElement.type === 'checkbox' || inputElement.type === 'radio')
-                            inputElement.focus();
-                        else
+                        inputElement.focus();
+
+                        if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio')
                             inputElement.click();
 
                         setTimeout(() => {
-                            fieldElement.scrollIntoView({ behavior: 'smooth' });
-                        }, 100);
+                            fieldElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: this.isMobileScreen ? 'start' : 'center'
+                            });
+                        }, 300);
 
-                    }, 200);
+                    }, 100);
                 }
             }
         }
@@ -2132,15 +2155,34 @@ export default {
                     max-width: 100%;
                     widows: 100%;
 
+                    .collapse-all {
+                        font-size: 0.875em;
+                    }
+                    .sub-header {
+                        padding-right: 0.75em;
+                        padding-left: 0.75em;
+                    }
+
                     .field {
-                        padding-left: 18px;
+                        padding: 1em 0.75em;
                         
-                        /deep/ .label {
-                            margin-left: 0;
-                        }
                         /deep/ .collapse-handle {
-                            margin-left: -24px;
+                            font-size: 1em;
+                            margin-left: 0;
+                            margin-right: 22px;
+
+                            .label {
+                                margin-left: 2px;
+                            }
+                            .icon {
+                                float: right;
+                            }
                         }
+                    }
+                    .tab-content {
+                        padding-left: 0;
+                        padding-right: 0;
+
                     }
                     .tab-item>.field:last-child {
                         margin-bottom: 24px;
@@ -2177,44 +2219,85 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        z-index: 99999;
+        background-color: var(--tainacan-background-color);
         
         .field {
             padding: 2px 0px 2px 24px !important;
         }
-    }
 
-    .metadata-navigation {
-        position: initial;
-        bottom: 0px;
-        right: 0px;
-        margin-left: auto;
-        z-index: 9999;
-        transition: right 0.3s ease, top 0.3s ease, position 0.3s ease;
-
-        &.is-active {
+        &.is-metadata-navigation-active {
+            width: calc(58.33333337% - (2 * var(--tainacan-one-column)) - 3.25em);
             position: fixed;
-            bottom: 10px;
-            right: 10px;
+            bottom: 0;
+            padding: 0.5em 0.5em 0.25em 0.5em;
+            border-top-right-radius: 3px;
+            border-top-left-radius: 3px;
+            overflow: hidden;
+            transition: top 0.3s ease, bottom 0.3s ease, background-color 0.3s ease;
+            background-color: var(--tainacan-gray1);
+
+            .metadata-name-search {
+                top: 0.25em;
+                max-width: 220px;
+            }
         }
-    }
-    .metadata-navigation /deep/ .button {
-        border-radius: 0 !important;
-        margin-left: 0.25em;
-        min-height: 2.25em;
-        background-color: rgba(255,255,255,0.5) !important;
+
+        .metadata-navigation {
+            position: initial;
+            bottom: 0px;
+            right: 0px;
+            margin-left: auto;
+            margin-right: 1.5em;
+            z-index: 99999999;
+        }
+        .metadata-navigation /deep/ .button {
+            border-radius: 0 !important;
+            margin-left: 0;
+            min-height: 2.25em;
+            background-color: var(--tainacan-background-color) !important;
+
+            &>span {
+                display: flex;
+                align-items: center;
+            }
+
+            &:last-of-type {
+                margin-left: 0;
+            }
+        }
+        .metadata-name-search-icon {
+            padding: 1.25em 0.75em;
+            color: var(--tainacan-blue5);
+        }
+
+        @media screen and (max-width: 769px) {
+            .metadata-name-search {
+                position: absolute;
+                right: 0.5em;
+                top: 0.5em;
+                z-index: 9999;
+            }
+            &.is-metadata-navigation-active {
+                width: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--tainacan-gray1);
+                border-top-right-radius: 0px;
+                border-top-left-radius: 0px;
+                overflow: visible;
+            }
+        }
     }
 
     .collapse-all {
         font-size: 0.75em;
         white-space: nowrap;
+        border-color: transparent !important;
+
         .icon {
             vertical-align: bottom;
         }
-    }
-
-    .metadata-name-search-icon {
-        padding: 1.25em 0.75em;
-        color: var(--tainacan-blue5);
     }
 
     .section-box {
@@ -2402,6 +2485,31 @@ export default {
         }
     }
 
+    .sequence-progress {
+        height: 5px;
+        background: var(--tainacan-secondary);
+        width: 0%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: width 0.2s;
+    }
+    .sequence-progress-background {
+        height: 5px;
+        background: var(--tainacan-gray3);
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .update-warning {
+        color: var(--tainacan-blue5);
+        animation-name: blink;
+        animation-duration: 0.5s;
+        animation-delay: 0.5s;
+    }
+
     .footer {
         padding: 18px var(--tainacan-one-column);
         position: absolute;
@@ -2431,12 +2539,6 @@ export default {
             display: flex;
             align-items: center;
         }
-        .update-warning {
-            color: var(--tainacan-blue5);
-            animation-name: blink;
-            animation-duration: 0.5s;
-            animation-delay: 0.5s;
-        }
 
         .update-info-section {
             color: var(--tainacan-info-color);
@@ -2448,24 +2550,6 @@ export default {
             font-size: 1.0em;
             margin-top: 0;
             margin-left: 24px;
-        }
-
-        .sequence-progress {
-            height: 5px;
-            background: var(--tainacan-secondary);
-            width: 0%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: width 0.2s;
-        }
-        .sequence-progress-background {
-            height: 5px;
-            background: var(--tainacan-gray3);
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
         }
 
         .sequence-button {
@@ -2485,15 +2569,15 @@ export default {
             }
         }
 
+        &.has-some-metadatum-focused {
+            bottom: -400px;
+        }
+
         @media screen and (max-width: 769px) {
             padding: 16px 0.5em;
             flex-wrap: wrap;
             height: auto;
             position: fixed;
-
-            &.has-some-metadatum-focused {
-                bottom: -400px;
-            }
 
             .update-info-section {
                 margin-left: auto;
