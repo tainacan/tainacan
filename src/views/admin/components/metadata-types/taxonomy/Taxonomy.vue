@@ -32,6 +32,7 @@
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
                 :is-mobile-screen="isMobileScreen"
+                @mobileSpecialFocus="onMobileSpecialFocus"
             />
         <div
                 v-if="displayCreateNewTerm && !isTermCreationPanelOpen && (maxMultipleValues !== undefined ? (maxMultipleValues > valueComponent.length) : true)"
@@ -210,6 +211,9 @@
                     this.isTermCreationPanelOpen = true;
                 else
                     this.isTermCreationModalOpen = true;
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }

@@ -30,7 +30,8 @@
                         @typing="search"
                         check-infinite-scroll
                         @infinite-scroll="searchMore"
-                        :has-counter="false">
+                        :has-counter="false"
+                        @focus="onMobileSpecialFocus">
                     <template slot-scope="props">
                         <div 
                                 v-if="!isDisplayingRelatedItemMetadata"
@@ -472,6 +473,9 @@
                     this.selected.splice(indexOfRemovedItem, 1);
                     this.onInput(this.selected);
                 }
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }

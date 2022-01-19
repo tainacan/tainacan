@@ -1,7 +1,12 @@
 <template>
     <div 
             class="tainacan-form">
-
+        <input 
+                type="text"
+                aria-hidden="true"
+                class="input is-special-hidden-for-mobile"
+                autocomplete="on"
+                @focus="onMobileSpecialFocus">
         <b-tabs
                 size="is-small"
                 animated
@@ -777,6 +782,9 @@
             },
             renderHierarchicalPath(hierachyPath, label) {
                 return '<span style="color: var(--tainacan-info-color);">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }
@@ -1201,6 +1209,7 @@
             -moz-column-count: auto;
             -webkit-column-count: auto;
             column-count: auto;
+            overflow-y: hidden;
         }
         .tainacan-modal-checkbox-search-results-body,
         .tainacan-finder-columns-container {

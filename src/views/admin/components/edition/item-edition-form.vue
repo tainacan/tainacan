@@ -240,7 +240,7 @@
                                                 class="header-item metadata-navigation">
                                             <b-button
                                                     v-if="!isMetadataNavigation" 
-                                                    @click="isMetadataNavigation = true; setMetadatumFocus(0);"
+                                                    @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
                                                     class="collapse-all has-text-secondary"
                                                     size="is-small">
                                                 <span>{{ $i18n.get('label_navigate') }}</span>
@@ -252,7 +252,7 @@
                                             <b-button 
                                                     v-if="isMetadataNavigation"
                                                     :disabled="focusedMetadatum === 0"
-                                                    @click="setMetadatumFocus(focusedMetadatum - 1)" 
+                                                    @click="setMetadatumFocus({ index: focusedMetadatum - 1, scrollIntoView: true })" 
                                                     outlined>
                                                 <span
                                                         class="icon">
@@ -262,7 +262,7 @@
                                             <b-button 
                                                     v-if="isMetadataNavigation"
                                                     :disabled="focusedMetadatum === metadatumList.length - 1"
-                                                    @click="setMetadatumFocus(focusedMetadatum + 1)"
+                                                    @click="setMetadatumFocus({ index: focusedMetadatum + 1, scrollIntoView: true })"
                                                     outlined>
                                                 <span
                                                         class="icon">
@@ -271,7 +271,7 @@
                                             </b-button>
                                             <b-button
                                                     v-if="isMetadataNavigation" 
-                                                    @click="isMetadataNavigation = false"
+                                                    @click="setMetadatumFocus({ index: 0, scrollIntoView: true }); isMetadataNavigation = false;"
                                                     outlined>
                                                 <span
                                                         class="icon has-success-color">
@@ -314,7 +314,9 @@
                                             :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
                                             :is-focused="focusedMetadatum === index"
                                             @changeCollapse="onChangeCollapse($event, index)"
-                                            @touchstart.native="setMetadatumFocus(index)" />
+                                            @touchstart.native="setMetadatumFocus({ index: index, scrollIntoView: false })"
+                                            @mousedown.native="setMetadatumFocus({ index: index, scrollIntoView: false })"
+                                            @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
 
                                     <!-- Hook for extra Form options -->
                                     <template
@@ -2007,26 +2009,36 @@ export default {
                     this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
             });
         }, 500),
-        setMetadatumFocus(index) {
+        setMetadatumFocus({ index = 0, scrollIntoView = false }) {
+            
+            const previousIndex = this.focusedMetadatum;
             this.focusedMetadatum = index;
             
+            if (previousIndex === index && !scrollIntoView)
+                return;
+
             let fieldElement = this.$refs['tainacan-form-item--' + index] && this.$refs['tainacan-form-item--' + index][0] && this.$refs['tainacan-form-item--' + index][0]['$el'];
             if (fieldElement) {
                 let inputElement = fieldElement.getElementsByTagName('input')[0] || fieldElement.getElementsByTagName('select')[0] || fieldElement.getElementsByTagName('textarea')[0];
 
                 if (inputElement) {
                     setTimeout(() => {
-                        inputElement.focus();
+                        
+                        if (previousIndex !== index) {
+                            inputElement.focus();
 
-                        if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio')
-                            inputElement.click();
-
-                        setTimeout(() => {
-                            fieldElement.scrollIntoView({
-                                behavior: 'smooth',
-                                block: this.isMobileScreen ? 'start' : 'center'
-                            });
-                        }, 300);
+                            if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio')
+                                inputElement.click();
+                        }
+                        
+                        if (scrollIntoView) {
+                            setTimeout(() => {
+                                fieldElement.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: this.isMobileScreen ? 'start' : 'center'
+                                });
+                            }, 300);
+                        }
 
                     }, 100);
                 }
@@ -2248,7 +2260,7 @@ export default {
             bottom: 0px;
             right: 0px;
             margin-left: auto;
-            margin-right: 1.5em;
+            margin-right: 0.25em;
             z-index: 99999999;
         }
         .metadata-navigation /deep/ .button {
@@ -2272,11 +2284,15 @@ export default {
         }
 
         @media screen and (max-width: 769px) {
+            .metadata-navigation {
+                margin-right: 1.75em !important;
+            }
             .metadata-name-search {
                 position: absolute;
                 right: 0.5em;
                 top: 0.5em;
-                z-index: 9999;
+                z-index: 99999999;
+                padding-left: 0 !important;
             }
             &.is-metadata-navigation-active {
                 width: 100%;
@@ -2514,7 +2530,7 @@ export default {
         padding: 18px var(--tainacan-one-column);
         position: absolute;
         bottom: 0;
-        z-index: 999999;
+        z-index: 999999999;
         background-color: var(--tainacan-gray1);
         width: 100%;
         height: 65px;

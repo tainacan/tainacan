@@ -54,7 +54,8 @@
                         @blur="performValueChange"
                         :metadata-name-filter-string="metadataNameFilterString"
                         :hide-collapses="hideCollapses"
-                        :is-mobile-screen="isMobileScreen" />
+                        :is-mobile-screen="isMobileScreen"
+                        @mobileSpecialFocus="onMobileSpecialFocus" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
                             name="filter-item"
@@ -70,7 +71,8 @@
                                     @blur="performValueChange"
                                     :metadata-name-filter-string="metadataNameFilterString"
                                     :hide-collapses="hideCollapses"
-                                    :is-mobile-screen="isMobileScreen" />
+                                    :is-mobile-screen="isMobileScreen"
+                                    @mobileSpecialFocus="onMobileSpecialFocus" />
                             <a 
                                     v-if="index > 0" 
                                     @click="removeValue(index)"
@@ -96,6 +98,7 @@
                 </template>
             </div>
         </transition>
+
         <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
         <transition name="filter-item">
             <div 
@@ -115,7 +118,8 @@
                         :is-last-metadatum="isLastMetadatum"
                         :hide-collapses="hideCollapses"
                         :is-mobile-screen="isMobileScreen"
-                        :metadata-name-filter-string="metadataNameFilterString" />
+                        :metadata-name-filter-string="metadataNameFilterString"
+                        @mobileSpecialFocus="onMobileSpecialFocus" />
             </div>
         </transition>
     </b-field>
@@ -184,11 +188,12 @@
                     }
                 }
                 this.errorMessage = updatedErrorMessage;
-            });
+            }); 
         },
         beforeDestroy() {
-            if (this.itemMetadatum && this.itemMetadatum.metadatum)
+            if (this.itemMetadatum && this.itemMetadatum.metadatum) {
                 eventBusItemMetadata.$off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
+            }
         },
         mounted () {
             if (this.$route && this.$route.query && this.$route.query.editingmetadata) {
@@ -285,6 +290,9 @@
             removeValue(index) {
                 this.values.splice(index, 1);
                 this.changeValue();
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }
@@ -297,6 +305,16 @@
         margin: 0.75em 0;
         flex-direction: column;
         justify-content: space-between;
+    }
+
+    /deep/ .is-special-hidden-for-mobile {
+        opacity: 0;
+        position: absolute;
+        width: 0;
+        height: 0;
+        min-height: 0;
+        min-width: 0;
+        padding: 0;
     }
 
     .field {
@@ -315,7 +333,7 @@
         }
 
         &.is-metadata-navigation-active {
-            opacity: 0.5;
+            opacity: 0.35;
         }
         &.is-focused.is-metadata-navigation-active {
             transform: scale(1.005);
