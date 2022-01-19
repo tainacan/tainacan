@@ -1209,9 +1209,10 @@
             -moz-column-count: auto;
             -webkit-column-count: auto;
             column-count: auto;
-            overflow-y: hidden;
+            overflow-y: auto;
         }
         .tainacan-modal-checkbox-search-results-body,
+        .tainacan-modal-checkbox-list-body,
         .tainacan-finder-columns-container {
             font-size: 1.125em;
         }

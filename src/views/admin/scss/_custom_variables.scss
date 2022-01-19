@@ -74,6 +74,9 @@
     // One column is 1/24% and it is used a lot in the horizontal space distribution
     --tainacan-one-column: #{$one-column};
 
+    // Sidebar width (collapsed state)
+    --tainacan-sidebar-width: #{$sidebar-width};
+
     // Not really used in EVERY container, but a rather frequent value
     --tainacan-container-padding: #{$container-padding};
 }

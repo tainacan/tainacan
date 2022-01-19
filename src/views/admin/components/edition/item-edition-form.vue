@@ -2528,16 +2528,17 @@ export default {
 
     .footer {
         padding: 18px var(--tainacan-one-column);
-        position: absolute;
+        position: fixed;
         bottom: 0;
+        right: 0;
         z-index: 999999999;
         background-color: var(--tainacan-gray1);
-        width: 100%;
+        width: calc(100% - var(--tainacan-sidebar-width, 3.25em));
         height: 65px;
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        transition: bottom 0.5s ease;
+        transition: bottom 0.5s ease, width 0.2s linear;
 
         .form-submission-footer {
             .button {
@@ -2586,11 +2587,12 @@ export default {
         }
 
         &.has-some-metadatum-focused {
-            bottom: -400px;
+            bottom: -300px;
         }
 
         @media screen and (max-width: 769px) {
             padding: 16px 0.5em;
+            width: 100%;
             flex-wrap: wrap;
             height: auto;
             position: fixed;

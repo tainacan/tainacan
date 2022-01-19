@@ -248,7 +248,8 @@ export default {
         }
 
         &.is-compressed {
-            max-width: $header-height;
+            max-width: var(--tainacan-sidebar-width, $sidebar-width);
+
             .menu-text {
                 visibility: hidden;
                 opacity: 0;

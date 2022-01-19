@@ -155,6 +155,12 @@
             margin-right: 0px;
         }
     }
+    #primary-menu.is-compressed~.is-main-content {
+        --tainacan-sidebar-width: 3.25em;
+    }
+    #primary-menu:not(.is-compressed)~.is-main-content {
+        --tainacan-sidebar-width: 10em;
+    }
 
     .is-secondary-content {
         padding: 0px !important;
