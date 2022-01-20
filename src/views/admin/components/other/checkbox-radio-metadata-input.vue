@@ -1225,7 +1225,6 @@
         .tainacan-modal-checkbox-list-body,
         .tainacan-finder-columns-container {
             font-size: 1.125em;
-            min-height: 42px;
         }
         .tainacan-finder-columns-container {
             max-height: calc(100vh - 140px - 56px);

@@ -153,7 +153,7 @@ export default {
         max-height: 100%;
         max-height: 100vh;
         overflow: auto;
-        z-index: 101;
+        z-index: 9;
         max-width: 10em;
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;

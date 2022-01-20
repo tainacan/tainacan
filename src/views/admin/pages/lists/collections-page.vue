@@ -692,6 +692,12 @@ export default {
         margin-top: 0;
         height: auto;
     }
+    @media screen and (max-width: 769px) {
+        .table-container {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
 
 </style>
 

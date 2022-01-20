@@ -679,13 +679,14 @@
                                 aria-role="dialog"
                                 custom-class="tainacan-modal"
                                 :close-button-aria-label="$i18n.get('close')">
-                            <div class="tainacan-modal-content">
+                            <form class="tainacan-form tainacan-modal-content">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('label_thumbnail_alt') }}</h2>
                                     <hr>
                                 </div>
                                 <b-input
                                         type="textarea"
+                                        :autofocus="true"
                                         lazy
                                         :placeholder="$i18n.get('instruction_thumbnail_alt')"
                                         :value="form.thumbnail_alt ? form.thumbnail_alt : ''"
@@ -704,7 +705,7 @@
                                             {{ $i18n.get('finish') }}</button>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </b-modal>
 
                         <!-- Text Insert Modal ----------------- -->
@@ -718,13 +719,14 @@
                                 aria-role="dialog"
                                 custom-class="tainacan-modal"
                                 :close-button-aria-label="$i18n.get('close')">
-                            <div class="tainacan-modal-content">
+                            <form class="tainacan-modal-content tainacan-form">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_write_text') }}</h2>
                                     <hr>
                                 </div>
                                 <b-input
                                         type="textarea"
+                                        :autofocus="true"
                                         v-model="textContent"/>
 
                                 <div class="field is-grouped form-submit">
@@ -745,7 +747,7 @@
                                             {{ $i18n.get('save') }}</button>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </b-modal>
 
                         <!-- URL Insert Modal ----------------- -->
@@ -761,7 +763,7 @@
                                 aria-role="dialog"
                                 custom-class="tainacan-modal"
                                 :close-button-aria-label="$i18n.get('close')">
-                            <div class="tainacan-modal-content">
+                            <form class="tainacan-modal-content tainacan-form">
                                 <div class="tainacan-modal-title">
                                     <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
                                     <hr>
@@ -783,7 +785,8 @@
                                 </b-field>
                                 <b-field 
                                         v-if="urlForcedIframe"
-                                        grouped>
+                                        grouped
+                                        group-multiline>
                                     <b-field :label="$i18n.get('label_document_option_iframe_width')">
                                         <b-numberinput
                                                 :aria-minus-label="$i18n.get('label_decrease')"
@@ -801,6 +804,7 @@
                                                 step="1" />
                                     </b-field>
                                 </b-field>
+                                <br>
                                 <p 
                                         v-if="urlForcedIframe"
                                         class="help">
@@ -837,7 +841,7 @@
                                             {{ $i18n.get('save') }}</button>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </b-modal>
                     </div>
                     
@@ -2026,7 +2030,7 @@ export default {
 
                     setTimeout(() => {
                         
-                        if (previousIndex !== index) {
+                        if (previousIndex !== index && inputElement !== document.activeElement) {
                             inputElement.focus();
                             
                             if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio' && !inputElement.classList.contains('is-special-hidden-for-mobile'))
@@ -2290,7 +2294,7 @@ export default {
                 position: absolute;
                 right: 0.5em;
                 top: 0.35em;
-                z-index: 99999999;
+                z-index: 9999;
                 padding-left: 0 !important;
             }
             &.is-metadata-navigation-active {
@@ -2530,7 +2534,7 @@ export default {
         position: fixed;
         bottom: 0;
         right: 0;
-        z-index: 999999999;
+        z-index: 9999;
         background-color: var(--tainacan-gray1);
         width: calc(100% - var(--tainacan-sidebar-width, 3.25em));
         height: 65px;
