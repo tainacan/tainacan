@@ -4,7 +4,7 @@
         <input 
                 type="text"
                 aria-hidden="true"
-                class="input is-special-hidden-for-mobile"
+                class="is-special-hidden-for-mobile"
                 autocomplete="on"
                 @focus="onMobileSpecialFocus">
         <b-tabs
@@ -783,7 +783,8 @@
             renderHierarchicalPath(hierachyPath, label) {
                 return '<span style="color: var(--tainacan-info-color);">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
             },
-            onMobileSpecialFocus() {
+            onMobileSpecialFocus($event) {
+                $event.target.blur();
                 this.$emit('mobileSpecialFocus');
             }
         }
@@ -910,7 +911,7 @@
         -webkit-break-inside: avoid;
         break-inside: avoid;
 
-        .b-checkbox, .b-radio {
+        /deep/ .b-checkbox, /deep/ .b-radio {
             margin-right: 0px;
             margin-bottom: 0;
             -webkit-break-inside: avoid;
@@ -923,6 +924,15 @@
             &.is-disabled {
                 cursor: not-allowed;
                 opacity: 0.5;
+            }
+            @media screen and (max-width: 768px) {
+                .control-label {
+                    padding-top: 0.8125em;
+                    padding-bottom: 0.8125em;
+                    padding-left: calc(0.875em - 1px);
+                    width: 100%;
+                    border-bottom: 1px solid var(--tainacan-gray1);
+                }
             }
         }
 
@@ -1215,6 +1225,7 @@
         .tainacan-modal-checkbox-list-body,
         .tainacan-finder-columns-container {
             font-size: 1.125em;
+            min-height: 42px;
         }
         .tainacan-finder-columns-container {
             max-height: calc(100vh - 140px - 56px);

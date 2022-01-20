@@ -87,7 +87,9 @@
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
                 </li>
-                <li v-if="$userCaps.hasCapability('tnc_rep_edit_users')">
+                <li 
+                        class="is-hidden-mobile"
+                        v-if="$userCaps.hasCapability('tnc_rep_edit_users')">
                     <router-link
                             tag="a"
                             :to="this.$routerHelper.getCapabilitiesPath()"

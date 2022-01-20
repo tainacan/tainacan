@@ -208,7 +208,7 @@
         left: 0;
         right: 0;
         position: absolute;
-        z-index: 999;
+        z-index: 9;
         color: var(--tainacan-blue5);
 
         .level-left {

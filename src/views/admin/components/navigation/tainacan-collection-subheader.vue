@@ -99,7 +99,7 @@
                 <li 
                         v-if="collection && collection.current_user_can_edit_users"
                         :class="activeRoute == 'CollectionCapabilitiesPage' ? 'is-active':''"
-                        class="level-item">
+                        class="level-item is-hidden-mobile">
                     <router-link 
                             tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionCapabilitiesPath(collection.id) : '' }"

@@ -4,12 +4,12 @@
             v-if="!hideCollapses && childItemMetadataGroups.length > 0"
             class="collapse-all"
             @click="toggleCollapseAllChildren()">
-        {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
         <span class="icon">
             <i
                     :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright' : !collapseAllChildren }"
                     class="tainacan-icon tainacan-icon-1-25em"/>
         </span>
+        {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
     </a>
     
     <div
@@ -330,6 +330,7 @@
 </script>
 
 <style lang="scss" scoped>
+
     @import '../../../admin/scss/_variables.scss';
 
     .child-metadata-inputs {
@@ -343,8 +344,12 @@
             min-height: 30px;
         }
         .collapse-all {
-            margin-left: -8px;
+            margin-left: -13px;
             font-size: 0.75em;
+
+            .icon {
+                font-size: 1.25em;
+            }
         }
         .field {
             padding-right: 0;

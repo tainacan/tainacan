@@ -219,12 +219,12 @@
                                         <a
                                                 class="collapse-all"
                                                 @click="toggleCollapseAll()">
-                                            {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                                             <span class="icon">
                                                 <i
                                                         :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
                                                         class="tainacan-icon tainacan-icon-1-25em"/>
                                             </span>
+                                            {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                                         </a>
 
                                         <span 
@@ -243,7 +243,7 @@
                                                     @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
                                                     class="collapse-all has-text-secondary"
                                                     size="is-small">
-                                                <span>{{ $i18n.get('label_navigate') }}</span>
+                                                <span>{{ $i18n.get('label_focus_mode') }}</span>
                                                 <span
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-play" />
@@ -309,13 +309,14 @@
                                             :ref="'tainacan-form-item--' + index"
                                             :item-metadatum="itemMetadatum"
                                             :metadata-name-filter-string="metadataNameFilterString"
-                                            :is-collapsed="metadataCollapses[index] || focusedMetadatum === index"
+                                            :is-collapsed="metadataCollapses[index]"
                                             :is-mobile-screen="isMobileScreen"
                                             :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
                                             :is-focused="focusedMetadatum === index"
+                                            :is-metadata-navigation="isMetadataNavigation"
                                             @changeCollapse="onChangeCollapse($event, index)"
-                                            @touchstart.native="setMetadatumFocus({ index: index, scrollIntoView: false })"
-                                            @mousedown.native="setMetadatumFocus({ index: index, scrollIntoView: false })"
+                                            @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
+                                            @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
                                             @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
 
                                     <!-- Hook for extra Form options -->
@@ -2019,15 +2020,16 @@ export default {
 
             let fieldElement = this.$refs['tainacan-form-item--' + index] && this.$refs['tainacan-form-item--' + index][0] && this.$refs['tainacan-form-item--' + index][0]['$el'];
             if (fieldElement) {
+                
                 let inputElement = fieldElement.getElementsByTagName('input')[0] || fieldElement.getElementsByTagName('select')[0] || fieldElement.getElementsByTagName('textarea')[0];
-
                 if (inputElement) {
+
                     setTimeout(() => {
                         
                         if (previousIndex !== index) {
                             inputElement.focus();
-
-                            if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio')
+                            
+                            if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio' && !inputElement.classList.contains('is-special-hidden-for-mobile'))
                                 inputElement.click();
                         }
                         
@@ -2143,7 +2145,7 @@ export default {
                 }
 
                 .field {
-                    padding: 12px 0px 12px 60px;
+                    padding: 12px 0px 12px 42px;
                 }
                 .tab-item>.field:last-child {
                     margin-bottom: 187px;
@@ -2167,12 +2169,9 @@ export default {
                     max-width: 100%;
                     widows: 100%;
 
-                    .collapse-all {
-                        font-size: 0.875em;
-                    }
                     .sub-header {
-                        padding-right: 0.75em;
-                        padding-left: 0.75em;
+                        padding-right: 0.5em;
+                        padding-left: 0.5em;
                     }
 
                     .field {
@@ -2182,12 +2181,16 @@ export default {
                             font-size: 1em;
                             margin-left: 0;
                             margin-right: 22px;
+                            width: 100%;
+                            display: block;
 
                             .label {
                                 margin-left: 2px;
                             }
                             .icon {
                                 float: right;
+                                width: 3em;
+                                justify-content: flex-end;
                             }
                         }
                     }
@@ -2231,7 +2234,6 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        z-index: 99999;
         background-color: var(--tainacan-background-color);
         
         .field {
@@ -2241,6 +2243,7 @@ export default {
         &.is-metadata-navigation-active {
             width: calc(58.33333337% - (2 * var(--tainacan-one-column)) - 3.25em);
             position: fixed;
+            z-index: 99999;
             bottom: 0;
             padding: 0.5em 0.5em 0.25em 0.5em;
             border-top-right-radius: 3px;
@@ -2256,12 +2259,8 @@ export default {
         }
 
         .metadata-navigation {
-            position: initial;
-            bottom: 0px;
-            right: 0px;
             margin-left: auto;
             margin-right: 0.25em;
-            z-index: 99999999;
         }
         .metadata-navigation /deep/ .button {
             border-radius: 0 !important;
@@ -2290,7 +2289,7 @@ export default {
             .metadata-name-search {
                 position: absolute;
                 right: 0.5em;
-                top: 0.5em;
+                top: 0.35em;
                 z-index: 99999999;
                 padding-left: 0 !important;
             }
@@ -2312,7 +2311,7 @@ export default {
         border-color: transparent !important;
 
         .icon {
-            vertical-align: bottom;
+            font-size: 1.25em;
         }
     }
 
@@ -2598,8 +2597,8 @@ export default {
             position: fixed;
 
             .update-info-section {
-                margin-left: auto;
-                margin-bottom: 0.5em;
+                margin-left: auto;margin-bottom: 0.75em;
+                margin-top: -0.25em;
             }
             .form-submission-footer {
                 display: flex;

@@ -7,10 +7,11 @@
             :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                @click="!hideCollapses ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
+                @click="(!hideCollapses && !isMetadataNavigation) ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
             <span 
                     v-if="!hideCollapses"
-                    class="icon">
+                    class="icon"
+                    @click="(!hideCollapses && isMetadataNavigation) ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown' : isCollapsed || errorMessage,
@@ -137,7 +138,8 @@
             isLastMetadatum: false,
             metadataNameFilterString: '',
             isMobileScreen: false,
-            isFocused: false
+            isFocused: false,
+            isMetadataNavigation: false
         },
         data(){
             return {
@@ -307,22 +309,26 @@
         justify-content: space-between;
     }
 
-    /deep/ .is-special-hidden-for-mobile {
+    /deep/ .is-special-hidden-for-mobile,
+    /deep/ .is-special-hidden-for-mobile:focus,
+    /deep/ .is-special-hidden-for-mobile:focus-visible {
         opacity: 0;
-        position: absolute;
         width: 0;
-        height: 0;
+        height: 0 !important;
         min-height: 0;
         min-width: 0;
-        padding: 0;
+        padding: 0 !important;
+        line-height: 0px !important;
+        border: none !important;
+        border-color: transparent !important;
+        border-width: 0px !important;
+        font-size: 0px !important;
+        display: block !important;
     }
 
     .field {
         border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
-        transform: scale(1.0);
-        opacity: 1.0;
-        transition: transform 0.2s ease, opacity 0.2s ease;
 
         &.hightlighted-metadatum {
             background-color: var(--tainacan-white);
@@ -333,11 +339,15 @@
         }
 
         &.is-metadata-navigation-active {
-            opacity: 0.35;
+            transition: filter 0.2s ease, opacity 0.2s ease;
+        }
+        &:not(.is-focused).is-metadata-navigation-active {
+            opacity: 0.3;
+            filter: grayscale(1);
         }
         &.is-focused.is-metadata-navigation-active {
-            transform: scale(1.005);
-            opacity: 1;
+            opacity: 1.0;
+            filter: none;
         }
 
         &.has-collapses-hidden {

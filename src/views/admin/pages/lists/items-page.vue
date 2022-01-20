@@ -1527,9 +1527,13 @@
                         max-width: 100% !important;
                     }
                     .is-pulled-right {
-                        position: relative;
+                        position: relative !important;
                         right: 0px !important;
                     }
+                }
+                .label {
+                    display: flex;
+                    align-items: center;
                 }
             }
 

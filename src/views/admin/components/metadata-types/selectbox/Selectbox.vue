@@ -3,7 +3,7 @@
         <input 
                 type="text"
                 aria-hidden="true"
-                class="input is-special-hidden-for-mobile"
+                class="is-special-hidden-for-mobile"
                 autocomplete="on"
                 @focus="onMobileSpecialFocus">
         <b-select
@@ -45,7 +45,8 @@
             onSelected(value) {
                 this.$emit('input', value);
             },
-            onMobileSpecialFocus() {
+            onMobileSpecialFocus($event) {
+                $event.target.blur();
                 this.$emit('mobileSpecialFocus');
             }
         }
