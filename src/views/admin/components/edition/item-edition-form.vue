@@ -624,7 +624,7 @@
                                                 id="button-alt-text-thumbnail"
                                                 class="button is-rounded is-secondary"
                                                 :aria-label="$i18n.get('label_button_delete_thumb')"
-                                                @click="isThumbnailAltTextModalActive = true">
+                                                @click="openThumbnailModalAltText">
                                             <span
                                                     v-tooltip="{
                                                         content: $i18n.get('label_thumbnail_alt'),
@@ -667,46 +667,6 @@
                             </template>
 
                         </div>
-
-                        <!-- Thumbnail Alternative Text Modal ----------------- -->
-                        <b-modal
-                                :can-cancel="false"
-                                :active.sync="isThumbnailAltTextModalActive"
-                                :width="640"
-                                scroll="keep"
-                                trap-focus
-                                aria-modal
-                                aria-role="dialog"
-                                custom-class="tainacan-modal"
-                                :close-button-aria-label="$i18n.get('close')">
-                            <form class="tainacan-form tainacan-modal-content">
-                                <div class="tainacan-modal-title">
-                                    <h2>{{ $i18n.get('label_thumbnail_alt') }}</h2>
-                                    <hr>
-                                </div>
-                                <b-input
-                                        type="textarea"
-                                        :autofocus="true"
-                                        lazy
-                                        :placeholder="$i18n.get('instruction_thumbnail_alt')"
-                                        :value="form.thumbnail_alt ? form.thumbnail_alt : ''"
-                                        @input="onUpdateThumbnailAlt" />
-                                <p>{{ $i18n.get('info_thumbnail_alt') }}</p>
-
-                                <div class="field is-grouped form-submit">
-                                    <div 
-                                            style="margin-left: auto;"
-                                            class="control">
-                                        <button
-                                                id="button-submit-text-content-writing"
-                                                type="submit"
-                                                @click.prevent="isThumbnailAltTextModalActive = false"
-                                                class="button is-success">
-                                            {{ $i18n.get('finish') }}</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </b-modal>
                        
                     </div>
                     
@@ -980,8 +940,9 @@ import AttachmentsList from '../lists/attachments-list.vue';
 import { formHooks } from '../../js/mixins';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
 import { directive } from 'vue-awesome-swiper';
-import ItemDocumentTextModalVue from '../modals/item-document-text-modal.vue';
-import ItemDocumentURLModalVue from '../modals/item-document-url-modal.vue';
+import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
+import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
+import ItemThumbnailAltTextModal from '../modals/item-thumbnail-alt-text-modal.vue';
 
 export default {
     name: 'ItemEditionForm',
@@ -1041,7 +1002,6 @@ export default {
             thumbnailMediaFrame: undefined,
             attachmentMediaFrame: undefined,
             fileMediaFrame: undefined,
-            isURLModalActive: false,
             urlLink: '',
             textLink: '',
             isUpdatingValues: false,
@@ -1049,7 +1009,7 @@ export default {
             activeTab: 'metadata',
             isLoadingAttachments: false,
             metadataNameFilterString: '',
-            isThumbnailAltTextModalActive: false,
+            
             urlForcedIframe: false,
             urlIframeWidth: 600,
             urlIframeHeight: 450,
@@ -1471,7 +1431,7 @@ export default {
         setTextDocument() {
             this.$buefy.modal.open({
                 parent: this,
-                component: ItemDocumentTextModalVue,
+                component: ItemDocumentTextModal,
                 canCancel: false,
                 width: 640,
                 scroll: 'keep',
@@ -1518,7 +1478,7 @@ export default {
         setURLDocument() {
             this.$buefy.modal.open({
                 parent: this,
-                component: ItemDocumentURLModalVue,
+                component: ItemDocumentURLModal,
                 canCancel: false,
                 width: 860,
                 scroll: 'keep',
@@ -1626,6 +1586,27 @@ export default {
                     }
                 }
                 this.formErrorMessage = errors.error_message;
+            });
+        },
+        openThumbnailModalAltText() {
+            this.$buefy.modal.open({
+                parent: this,
+                component: ItemThumbnailAltTextModal,
+                canCancel: false,
+                width: 640,
+                scroll: 'keep',
+                trapFocus: true,
+                autoFocus: false,
+                ariaModal: true,
+                ariaRole: 'dialog',
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close'),
+                props: {
+                    altText: this.form.thumbnail_alt ? this.form.thumbnail_alt : ''
+                },
+                events: {
+                    onUpdateThumbnailAlt: (altText) => this.form.thumbnail_alt = altText
+                }
             });
         },
         deleteThumbnail() {
