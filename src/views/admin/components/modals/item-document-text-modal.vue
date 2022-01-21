@@ -24,7 +24,7 @@
                 <button
                         id="button-submit-text-content-writing"
                         type="submit"
-                        @click.prevent="$emit('confirmTextWriting', localTextContent);$parent.close();"
+                        @click.prevent="$parent.close();"
                         class="button is-success">
                     {{ $i18n.get('save') }}</button>
             </div>

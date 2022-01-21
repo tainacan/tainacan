@@ -707,103 +707,7 @@
                                 </div>
                             </form>
                         </b-modal>
-
-                        <!-- Text Insert Modal ----------------- -->
-                        
-
-                        <!-- URL Insert Modal ----------------- -->
-                        <b-modal
-                                :can-cancel="false"
-                                :active.sync="isURLModalActive"
-                                :width="860"
-                                scroll="keep"
-                                trap-focus
-                                role="dialog"
-                                tabindex="-1"
-                                aria-modal
-                                aria-role="dialog"
-                                custom-class="tainacan-modal"
-                                :close-button-aria-label="$i18n.get('close')">
-                            <form class="tainacan-modal-content tainacan-form">
-                                <div class="tainacan-modal-title">
-                                    <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
-                                    <hr>
-                                </div>
-                                <b-input 
-                                        type="url"
-                                        v-model="urlLink" />
-                                <br>
-                                <b-field
-                                        :addons="false"
-                                        :label="$i18n.get('label_document_option_forced_iframe')">
-                                        &nbsp;
-                                    <b-switch
-                                            size="is-small" 
-                                            v-model="urlForcedIframe" />
-                                    <help-button
-                                            :title="$i18n.get('label_document_option_forced_iframe')"
-                                            :message="$i18n.get('info_document_option_forced_iframe')" />
-                                </b-field>
-                                <b-field 
-                                        v-if="urlForcedIframe"
-                                        grouped
-                                        group-multiline>
-                                    <b-field :label="$i18n.get('label_document_option_iframe_width')">
-                                        <b-numberinput
-                                                :aria-minus-label="$i18n.get('label_decrease')"
-                                                :aria-plus-label="$i18n.get('label_increase')"
-                                                min="1" 
-                                                v-model="urlIframeWidth"
-                                                step="1" />
-                                    </b-field>
-                                    <b-field :label="$i18n.get('label_document_option_iframe_height')">
-                                        <b-numberinput
-                                                :aria-minus-label="$i18n.get('label_decrease')"
-                                                :aria-plus-label="$i18n.get('label_increase')"
-                                                min="1" 
-                                                v-model="urlIframeHeight"
-                                                step="1" />
-                                    </b-field>
-                                </b-field>
-                                <br>
-                                <p 
-                                        v-if="urlForcedIframe"
-                                        class="help">
-                                    {{ $i18n.get('info_iframe_dimensions') }}
-                                </p>
-                                <br>
-                                <b-field
-                                        v-if="urlForcedIframe"
-                                        :addons="false"
-                                        :label="$i18n.get('label_document_option_is_image')">
-                                        &nbsp;
-                                    <b-switch
-                                            size="is-small" 
-                                            v-model="urlIsImage" />
-                                    <help-button
-                                            :title="$i18n.get('label_document_option_is_image')"
-                                            :message="$i18n.get('info_document_option_is_image')" />
-                                </b-field>
-
-                                <div class="field is-grouped form-submit">
-                                    <div class="control">
-                                        <button
-                                                id="button-cancel-url-link-selection"
-                                                class="button is-outlined"
-                                                type="button"
-                                                @click="cancelURLSelection()">
-                                            {{ $i18n.get('cancel') }}</button>
-                                    </div>
-                                    <div class="control">
-                                        <button
-                                                id="button-submit-url-link-selection"
-                                                @click.prevent="confirmURLSelection()"
-                                                class="button is-success">
-                                            {{ $i18n.get('save') }}</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </b-modal>
+                       
                     </div>
                     
                 </div>
@@ -1077,6 +981,7 @@ import { formHooks } from '../../js/mixins';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
 import { directive } from 'vue-awesome-swiper';
 import ItemDocumentTextModalVue from '../modals/item-document-text-modal.vue';
+import ItemDocumentURLModalVue from '../modals/item-document-url-modal.vue';
 
 export default {
     name: 'ItemEditionForm',
@@ -1138,7 +1043,6 @@ export default {
             fileMediaFrame: undefined,
             isURLModalActive: false,
             urlLink: '',
-            isTextModalActive: false,
             textLink: '',
             isUpdatingValues: false,
             entityName: 'item',
@@ -1565,7 +1469,7 @@ export default {
             this.fileMediaFrame.openFrame(event);
         },
         setTextDocument() {
-             this.$buefy.modal.open({
+            this.$buefy.modal.open({
                 parent: this,
                 component: ItemDocumentTextModalVue,
                 canCancel: false,
@@ -1581,21 +1485,20 @@ export default {
                     textContent: this.textContent
                 },
                 events: {
-                    confirmTextWriting: this.confirmTextWriting,
-                    cancelTextWriting: this.cancelTextWriting
+                    confirmTextWriting: this.confirmTextWriting
                 }
             });
         },
         confirmTextWriting(newTextContent) {
             this.isLoading = true;
-            this.isTextModalActive = false;
             this.form.document_type = 'text';
-            this.textContent = newTextContent;
-            this.form.document = this.textContent;
+            this.form.document = newTextContent;
             this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
                     this.item.document_mimetype = item.document_mimetype;
+                    if (item.document_type != undefined && item.document_type == 'text')
+                        this.textContent = item.document;
                     this.isLoading = false;
                 })
                 .catch((errors) => {
@@ -1612,22 +1515,41 @@ export default {
                     this.isLoading = false;
                 });
         },
-        cancelTextWriting() {
-            this.isTextModalActive = false;
-        },
         setURLDocument() {
-            this.isURLModalActive = true;
+            this.$buefy.modal.open({
+                parent: this,
+                component: ItemDocumentURLModalVue,
+                canCancel: false,
+                width: 860,
+                scroll: 'keep',
+                trapFocus: true,
+                autoFocus: false,
+                ariaModal: true,
+                ariaRole: 'dialog',
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close'),
+                props: {
+                    urlLink: this.urlLink,
+                    urlForcedIframe: this.urlForcedIframe,
+                    urlIframeWidth: this.urlIframeWidth,
+                    urlIframeHeight: this.urlIframeHeight,
+                    urlIsImage: this.urlIsImage
+                },
+                events: {
+                    confirmURLSelection: this.confirmURLSelection
+                }
+            });
         },
-        confirmURLSelection() {
+        confirmURLSelection(updatedValues) {
             this.isLoading = true;
             this.isURLModalActive = false;
             this.form.document_type = 'url';
-            this.form.document = this.urlLink;
+            this.form.document = updatedValues.urlLink;
             this.form.document_options = {
-                forced_iframe: this.urlForcedIframe,
-                forced_iframe_width: this.urlIframeWidth,
-                forced_iframe_height: this.urlIframeHeight,
-                is_image: this.urlIsImage
+                forced_iframe: updatedValues.urlForcedIframe,
+                forced_iframe_width: updatedValues.urlIframeWidth,
+                forced_iframe_height: updatedValues.urlIframeHeight,
+                is_image: updatedValues.urlIsImage
             }
             this.updateItemDocument({
                     item_id: this.itemId,
@@ -1638,6 +1560,19 @@ export default {
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
                     this.item.document_mimetype = item.document_mimetype;
+
+                    if (item.document_type != undefined && item.document_type == 'url')
+                        this.urlLink = item.document;
+                        
+                    if (item.document_options !== undefined && item.document_options['forced_iframe'] !== undefined)
+                        this.urlForcedIframe = item.document_options['forced_iframe'];
+                    if (item.document_options !== undefined && item.document_options['is_image'] !== undefined)
+                        this.urlIsImage = item.document_options['is_image'];
+                    if (item.document_options !== undefined && item.document_options['forced_iframe_width'] !== undefined)
+                        this.urlIframeWidth = item.document_options['forced_iframe_width'];
+                    if (item.document_options !== undefined && item.document_options['forced_iframe_height'] !== undefined)
+                        this.urlIframeHeight = item.document_options['forced_iframe_height'];
+
                     this.isLoading = false;
 
                     let oldThumbnail = this.item.thumbnail;
@@ -1657,14 +1592,6 @@ export default {
 
                     this.isLoading = false;
                 });
-        },
-        cancelURLSelection() {
-            this.isURLModalActive = false;
-            this.urlLink = '';
-            this.urlForcedIframe = this.form.document_options && this.form.document_options['forced_iframe'] !== undefined ? this.form.document_options['forced_iframe'] : false;
-            this.urlIsImage = this.form.document_options && this.form.document_options['is_image'] !== undefined ? this.form.document_options['is_image'] : false;
-            this.urlIframeWidth = this.form.document_options && this.form.document_options['forced_iframe_width'] !== undefined ? this.form.document_options['forced_iframe_width'] : 600;
-            this.urlIframeHeight = this.form.document_options && this.form.document_options['forced_iframe_height'] !== undefined ? this.form.document_options['forced_iframe_height'] : 450;
         },
         removeDocument() {
             this.textContent = '';
