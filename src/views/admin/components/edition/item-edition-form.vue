@@ -709,46 +709,7 @@
                         </b-modal>
 
                         <!-- Text Insert Modal ----------------- -->
-                        <b-modal
-                                :can-cancel="false"
-                                :active.sync="isTextModalActive"
-                                :width="640"
-                                scroll="keep"
-                                trap-focus
-                                aria-modal
-                                aria-role="dialog"
-                                custom-class="tainacan-modal"
-                                :close-button-aria-label="$i18n.get('close')">
-                            <form class="tainacan-modal-content tainacan-form">
-                                <div class="tainacan-modal-title">
-                                    <h2>{{ $i18n.get('instruction_write_text') }}</h2>
-                                    <hr>
-                                </div>
-                                <b-input
-                                        type="textarea"
-                                        :autofocus="true"
-                                        v-model="textContent"/>
-
-                                <div class="field is-grouped form-submit">
-                                    <div class="control">
-                                        <button
-                                                id="button-cancel-text-content-writing"
-                                                class="button is-outlined"
-                                                type="button"
-                                                @click="cancelTextWriting()">
-                                            {{ $i18n.get('cancel') }}</button>
-                                    </div>
-                                    <div class="control">
-                                        <button
-                                                id="button-submit-text-content-writing"
-                                                type="submit"
-                                                @click.prevent="confirmTextWriting()"
-                                                class="button is-success">
-                                            {{ $i18n.get('save') }}</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </b-modal>
+                        
 
                         <!-- URL Insert Modal ----------------- -->
                         <b-modal
@@ -1115,6 +1076,7 @@ import AttachmentsList from '../lists/attachments-list.vue';
 import { formHooks } from '../../js/mixins';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
 import { directive } from 'vue-awesome-swiper';
+import ItemDocumentTextModalVue from '../modals/item-document-text-modal.vue';
 
 export default {
     name: 'ItemEditionForm',
@@ -1603,36 +1565,55 @@ export default {
             this.fileMediaFrame.openFrame(event);
         },
         setTextDocument() {
-            this.isTextModalActive = true;
+             this.$buefy.modal.open({
+                parent: this,
+                component: ItemDocumentTextModalVue,
+                canCancel: false,
+                width: 640,
+                scroll: 'keep',
+                trapFocus: true,
+                autoFocus: false,
+                ariaModal: true,
+                ariaRole: 'dialog',
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close'),
+                props: {
+                    textContent: this.textContent
+                },
+                events: {
+                    confirmTextWriting: this.confirmTextWriting,
+                    cancelTextWriting: this.cancelTextWriting
+                }
+            });
         },
-        confirmTextWriting() {
+        confirmTextWriting(newTextContent) {
             this.isLoading = true;
             this.isTextModalActive = false;
             this.form.document_type = 'text';
+            this.textContent = newTextContent;
             this.form.document = this.textContent;
             this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
-            .then(item => {
-                this.item.document_as_html = item.document_as_html;
-                this.item.document_mimetype = item.document_mimetype;
-                this.isLoading = false;
-            })
-            .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)){
-                        eventBusItemMetadata.errors.push({ 
-                            metadatum_id: metadatum, 
-                            errors: error[metadatum]
-                        });
+                .then(item => {
+                    this.item.document_as_html = item.document_as_html;
+                    this.item.document_mimetype = item.document_mimetype;
+                    this.isLoading = false;
+                })
+                .catch((errors) => {
+                    for (let error of errors.errors) {
+                        for (let metadatum of Object.keys(error)){
+                            eventBusItemMetadata.errors.push({ 
+                                metadatum_id: metadatum, 
+                                errors: error[metadatum]
+                            });
+                        }
                     }
-                }
-                this.formErrorMessage = errors.error_message;
+                    this.formErrorMessage = errors.error_message;
 
-                this.isLoading = false;
-            });
+                    this.isLoading = false;
+                });
         },
         cancelTextWriting() {
             this.isTextModalActive = false;
-            this.textContent = '';
         },
         setURLDocument() {
             this.isURLModalActive = true;
