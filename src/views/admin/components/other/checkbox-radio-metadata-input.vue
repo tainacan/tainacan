@@ -169,7 +169,8 @@
                         v-if="!isSearching && isTaxonomy"
                         class="modal-card-body tainacan-finder-columns-container"
                         :style="{ height: expandResultsSection ? 'auto' : '0px' }"
-                        name="page-left">
+                        name="page-left"
+                        ref="tainacan-finder-scrolling-container">
                     <div 
                             v-for="(finderColumn, key) in finderColumns"
                             class="tainacan-finder-column"
@@ -686,8 +687,31 @@
 
                 if (first != undefined)
                     this.finderColumns.splice(first, 1, { label: label, children: children, lastTerm: res.data.last_term.es_term });
-                else
+                else {
                     this.finderColumns.push({ label: label, children: children, lastTerm: res.data.last_term.es_term });
+
+                setTimeout(() => {
+                    if (
+                        this.$refs &&
+                        this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`] &&
+                        this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0] &&
+                        this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el &&
+                        this.$refs['tainacan-finder-scrolling-container'] &&
+                        this.$refs['tainacan-finder-scrolling-container'].$el) {
+
+                        // Scroll Into does not solve as it would scroll vertically as well...
+                        //this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
+
+                        this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
+                            top: 0,
+                            left: first != undefined ? 0 : this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.offsetLeft,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 500);
+             
+                    
+                }
             },
             appendMore(options, key, lastTerm) {
                 for (let option of options)
@@ -957,6 +981,8 @@
         margin-top: -1px;
         display: flex;
         overflow: auto;
+        scroll-snap-type: x mandatory;
+        scroll-snap-align: start;
         padding: 0 !important;
         max-height: 40vh;
         transition: heigth 0.5s ease, min-height 0.5s ease;
@@ -1009,6 +1035,7 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
+
             .tainacan-icon {
                 font-size: 1.5em;
             }
@@ -1227,14 +1254,27 @@
             font-size: 1.125em;
         }
         .tainacan-finder-columns-container {
-            max-height: calc(100vh - 140px - 56px);
+            max-height: calc(100vh - 184px - 56px);
 
             .tainacan-finder-column,
             .tainacan-finder-column ul {
                 max-height: 100%;
             }
+            .tainacan-finder-column {
+                max-width: calc(99vw - 0.75em - 0.75em - 2px);
+                min-width: calc(99vw - 0.75em - 0.75em - 2px);
+            }
             .tainacan-finder-column .column-label+ul {
-                max-height: calc(100% - 0.75em - 0.45em - 0.45em);
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 3px);
+            }
+            .tainacan-finder-column a {
+                width: 3.5em;
+                border-left: 1px solid var(--tainacan-gray1);
+                border-bottom: 1px solid var(--tainacan-gray1);
+                height: 3em;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
         }
         .tainacan-li-checkbox-list {
