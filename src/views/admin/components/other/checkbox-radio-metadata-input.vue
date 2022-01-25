@@ -461,6 +461,7 @@
                     }
                     
                 } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
+                    
                     this.isSelectedTermsLoading = true;
 
                     axios.get(`/items/?${qs.stringify({ fetch_only: 'title', postin: selected})}`)
@@ -687,31 +688,30 @@
 
                 if (first != undefined)
                     this.finderColumns.splice(first, 1, { label: label, children: children, lastTerm: res.data.last_term.es_term });
-                else {
+                else
                     this.finderColumns.push({ label: label, children: children, lastTerm: res.data.last_term.es_term });
 
-                setTimeout(() => {
-                    if (
-                        this.$refs &&
-                        this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`] &&
-                        this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0] &&
-                        this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el &&
-                        this.$refs['tainacan-finder-scrolling-container'] &&
-                        this.$refs['tainacan-finder-scrolling-container'].$el) {
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        if (
+                            this.$refs &&
+                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`] &&
+                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0] &&
+                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el &&
+                            this.$refs['tainacan-finder-scrolling-container'] &&
+                            this.$refs['tainacan-finder-scrolling-container'].$el) {
 
-                        // Scroll Into does not solve as it would scroll vertically as well...
-                        //this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
+                            // Scroll Into does not solve as it would scroll vertically as well...
+                            //this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
 
-                        this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
-                            top: 0,
-                            left: first != undefined ? 0 : this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.offsetLeft,
-                            behavior: 'smooth'
-                        });
-                    }
-                }, 500);
-             
-                    
-                }
+                            this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
+                                top: 0,
+                                left: first != undefined ? 0 : this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.offsetLeft,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 500);
+                }); 
             },
             appendMore(options, key, lastTerm) {
                 for (let option of options)
@@ -883,7 +883,7 @@
     .tainacan-li-checkbox-modal {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: stretch;
         padding: 0;
         -webkit-break-inside: avoid;
         break-inside: avoid;
@@ -1271,7 +1271,6 @@
                 width: 3.5em;
                 border-left: 1px solid var(--tainacan-gray1);
                 border-bottom: 1px solid var(--tainacan-gray1);
-                height: 3em;
                 display: flex;
                 justify-content: center;
                 align-items: center;
