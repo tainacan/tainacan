@@ -224,12 +224,12 @@ class REST_Controller extends \WP_REST_Controller {
 
 		// If is a multidimensional array (array of array)
 		if($this->contains_array($request_meta_query, $query)) {
-
+			
 			foreach ( $request_meta_query as $index1 => $a ) {
 
 				foreach ( $query as $mapped_meta => $meta_v ) {
-					if ( isset( $a[ $meta_v ] ) ) {
-						$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $meta_v ];
+					if ( isset( $a[ $mapped_meta ] ) ) {
+						$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $mapped_meta ];
 					}
 				}
 
