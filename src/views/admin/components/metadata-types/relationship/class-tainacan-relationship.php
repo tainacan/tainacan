@@ -66,6 +66,10 @@ class Relationship extends Metadata_Type {
 			'display_in_related_items' => [
 				'title' => __( 'Display in "Items related to this"', 'tainacan' ),
 				'description' => __( 'Include items linked by this metadata on a list of related items.', 'tainacan' ),
+			],
+			'accept_draft_items' => [
+				'title' => __( 'List and accept draft items on the relation', 'tainacan' ),
+				'description' => __( 'Include draft items as possible options to the relationship metadata.', 'tainacan' ),
 			]
 		];
 	}
@@ -115,6 +119,7 @@ class Relationship extends Metadata_Type {
 						break;
 
 						case 'display_in_related_items':
+						case 'accept_draft_items':
 							if ($option_value == 'yes')
 								$readable_option_value = __('Yes', 'tainacan');
 							else if ($option_value == 'no')
@@ -171,7 +176,13 @@ class Relationship extends Metadata_Type {
 		// empty is ok
 		if ( !empty($this->get_option('display_in_related_items')) && !in_array($this->get_option('display_in_related_items'), ['yes', 'no']) ) {
 			return [
-				'search' => __('Display in related items must be a option yes or no','tainacan')
+				'display_in_related_items' => __('Display in related items must be a option yes or no','tainacan')
+			];
+		}
+		// empty is ok
+		if ( !empty($this->get_option('accept_draft_items')) && !in_array($this->get_option('accept_draft_items'), ['yes', 'no']) ) {
+			return [
+				'accept_draft_items' => __('Accept draft items must be a option yes or no','tainacan')
 			];
 		}
 		
