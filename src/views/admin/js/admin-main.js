@@ -87,7 +87,7 @@ export default (element) => {
 
         // Mount only if the div exists and it is not already mounted
         if ( pageElement && pageElement.classList && !pageElement.classList.contains('has-mounted') ) {
-
+            console.log(pageElement.dataset);
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
                 for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins))
