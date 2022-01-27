@@ -44,7 +44,7 @@
                                         <b-button
                                                 class="button is-secondary"
                                                 tag="router-link"
-                                                :to="$routerHelper.getCollectionItemsPath(collectionId, { metaquery: [{ key: relatedItemGroup.metadata_id, value: itemId, compare: 'IN' }] })">
+                                                :to="$routerHelper.getCollectionItemsPath(relatedItemGroup.collection_id, { metaquery: [{ key: relatedItemGroup.metadata_id, value: [itemId], compare: 'IN' }] })">
                                             {{ $i18n.getWithVariables('label_view_all_%s_related_items', [relatedItemGroup.total_items]) }}
                                         </b-button>
                                     </div>
