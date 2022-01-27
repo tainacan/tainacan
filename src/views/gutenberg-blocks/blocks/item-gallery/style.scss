@@ -375,6 +375,7 @@ $pswp__include-minimal-style: true !default;
             text-align: center;
             padding: 44px;
             margin-top: 22px;
+            margin-bottom: 22px;
 
             &>iframe:not(.wp-embedded-content) {
                 width: 90vw;
@@ -397,6 +398,11 @@ $pswp__include-minimal-style: true !default;
             background-image: url('../images/preloader.gif');
             background-repeat: no-repeat;
             background-position: center;
+        }
+        .pswp__zoom-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .tainacan-content-embed {
@@ -443,9 +449,12 @@ $pswp__include-minimal-style: true !default;
             background: black;
             min-height: 38px;
             border-radius: 20px;
+            min-width: 80%;
+            max-width: 80%;
         }
         video {
             min-height: 56px;
+            max-width: 80%;
         }
     }
     .pswp__top-bar .pswp__name {
