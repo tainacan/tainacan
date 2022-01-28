@@ -244,7 +244,7 @@ class Items extends Repository {
 	 * @return \WP_Query|Array|Item an instance of wp query OR array of entities OR a Item;
 	 */
 	public function fetch( $args = [], $collections = [], $output = null ) {
-		
+
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		if ( is_numeric( $args ) ) {
@@ -435,8 +435,8 @@ class Items extends Repository {
 					//draft
 					// $draft_states = get_post_stati( array( 'draft' => true ) );
 					$draft_states = ['draft'];
-					foreach ( (array) $draft_states as $state ) {
-						if( in_array($state, $post_status) )
+					foreach ( $draft_states as $state ) {
+						if( !empty($post_status) && in_array($state, $post_status) )
 						$status_clause[] = current_user_can( $read_private_cap ) ? " {$wpdb->posts}.post_status = '$state'" : " {$wpdb->posts}.post_author = $user_id AND {$wpdb->posts}.post_status = '$state'";
 					}
 					$clause .= implode(' OR ', $status_clause);
