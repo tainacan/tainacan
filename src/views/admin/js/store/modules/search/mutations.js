@@ -171,7 +171,6 @@ export const addFilterTag = ( state, filterTag ) => {
 
 export const setFilterTags = ( state, filterArguments ) => {
     let filterTags = filterArguments.map((aFilterArgument) => {
-        
         return {
             filterId: aFilterArgument.filter ? aFilterArgument.filter.id : null,
             label: aFilterArgument.label,
@@ -182,8 +181,8 @@ export const setFilterTags = ( state, filterArguments ) => {
                         aFilterArgument.metadatum.metadata_type_object.options.taxonomy
                     ) ? aFilterArgument.metadatum.metadata_type_object.options.taxonomy : '',
             argType: aFilterArgument.arg_type ? aFilterArgument.arg_type : '',
-            metadatumId: aFilterArgument.metadatum && aFilterArgument.metadatum.metadatum_id ? aFilterArgument.metadatum.metadatum_id : '',
-            metadatumName: aFilterArgument.metadatum && aFilterArgument.metadatum.metadatum_name ? aFilterArgument.metadatum.metadatum_name : ''
+            metadatumId: (aFilterArgument.filter && aFilterArgument.metadatum.metadatum_id) ? aFilterArgument.metadatum.metadatum_id : (aFilterArgument.metadatum.id || ''),
+            metadatumName: (aFilterArgument.filter && aFilterArgument.filter.name) ? aFilterArgument.filter.name : (aFilterArgument.metadatum.name || '')
         }
     });
     state.filter_tags = filterTags;
@@ -202,7 +201,7 @@ export const cleanFilterTags = ( state ) => {
 };
 
 export const cleanMetaQueries = (state, { keepCollections }) => {
-    if (keepCollections === true)
+    if (keepCollections === true && Array.isArray(state.postquery.metaquery) )
         state.postquery.metaquery = state.postquery.metaquery.filter(aMetaQuery => aMetaQuery.key === 'collection_id');
     else
         state.postquery.metaquery = [];

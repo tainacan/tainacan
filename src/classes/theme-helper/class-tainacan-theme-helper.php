@@ -423,20 +423,25 @@ class Theme_Helper {
 
 		// Loads info related to view modes
 		$view_modes = tainacan_get_the_view_modes();
-
+		
 		$enabled_view_modes = $view_modes['enabled_view_modes'];
+		$default_view_mode = $view_modes['default_view_mode'];
+
+		// If we have a default view mode set, set it
 		if ( isset($args['default_view_mode']) ) {
 			$default_view_mode = $args['default_view_mode'];
 			unset($args['default_view_mode']);
 		}
 
-		$default_view_mode = $view_modes['default_view_mode'];
+		// If we have custom enabled view modes set, set it
 		if ( isset($args['enabled_view_modes']) ) {
 			$enabled_view_modes = $args['enabled_view_modes'];
-			if ( !in_array($default_view_mode, $enabled_view_modes) ) {
-				$default_view_mode = $enabled_view_modes[0];
-			}
 			unset($args['enabled_view_modes']);
+		}
+
+		// Checks if after updating the previous two, the default view mode is still valid
+		if ( !in_array($default_view_mode, $enabled_view_modes) ) {
+			$default_view_mode = $enabled_view_modes[0];
 		}
 
 		// Loads info related to sorting
@@ -471,7 +476,7 @@ class Theme_Helper {
 			$props .= "term-id='" . $term->term_id . "' ";
 			$props .= "taxonomy='" . $term->taxonomy . "' ";
 		}
-
+		
 		$props .= "default-view-mode='" . $default_view_mode . "' ";
 		$props .= "enabled-view-modes='" . implode(',', $enabled_view_modes) . "' ";
 		$props .= "default-order='" . $default_order . "' ";

@@ -737,6 +737,9 @@ class Item extends Entity {
 				} else {
 					$_embed = sprintf('<a href="%s" target="blank">%s</a>', $url, $url);
 				}
+			} else {
+				$tainacan_embed = \Tainacan\Embed::get_instance();
+				$_embed = $tainacan_embed->add_responsive_wrapper($_embed);
 			}
 			$output .= $_embed;
 		} elseif ( $type == 'text' ) {
@@ -761,6 +764,8 @@ class Item extends Entity {
 				if ( $embed == $url ) {
 					$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 				} else {
+					$tainacan_embed = \Tainacan\Embed::get_instance();
+					$embed = $tainacan_embed->add_responsive_wrapper($embed);
 					$output .= $embed;
 				}
 			}
@@ -796,6 +801,8 @@ class Item extends Entity {
 			if ( $embed == $url ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 			} else {
+				$tainacan_embed = \Tainacan\Embed::get_instance();
+				$embed = $tainacan_embed->add_responsive_wrapper($embed);
 				$output .= $embed;
 			}
 		}

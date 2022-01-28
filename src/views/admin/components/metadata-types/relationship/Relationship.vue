@@ -178,9 +178,9 @@
             },
             itemModalSrc() {
                 if (this.editingItemId)
-                    return this.adminFullURL + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId) + '?iframemode=true';
+                    return this.adminFullURL + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId) + '?iframemode=true' + (this.isMobileMode ? '&mobilemode=true' : '');
                 else
-                    return this.adminFullURL + this.$routerHelper.getNewItemPath(this.collectionId) + '?iframemode=true&newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery;
+                    return this.adminFullURL + this.$routerHelper.getNewItemPath(this.collectionId) + '?iframemode=true&newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery + (this.isMobileMode ? '&mobilemode=true' : '');
             },
             relationshipInputId() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum)
@@ -195,6 +195,9 @@
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length &&
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length > 1;
+            },
+            isMobileMode() {
+                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {

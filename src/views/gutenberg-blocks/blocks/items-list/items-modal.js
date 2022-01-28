@@ -5,6 +5,7 @@ import qs from 'qs';
 const { __ } = wp.i18n;
 
 const { TextControl, Button, Modal, SelectControl, RadioControl, Spinner } = wp.components;
+const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
 export default class ItemsModal extends React.Component {
     constructor(props) {
@@ -238,7 +239,7 @@ export default class ItemsModal extends React.Component {
         return this.state.collectionId ? (
         // Items modal
         <Modal
-            className="wp-block-tainacan-modal dynamic-modal"
+            className={ 'wp-block-tainacan-modal dynamic-modal ' + (currentWPVersion < 5.9 ? 'wp-version-smaller-than-5-9' : '') }
             title={ __('Select items to add on block', 'tainacan', 'tainacan')}
             onRequestClose={ () => this.cancelSelection() }
             shouldCloseOnClickOutside={ false }

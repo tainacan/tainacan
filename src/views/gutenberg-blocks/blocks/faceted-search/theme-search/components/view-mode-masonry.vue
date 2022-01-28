@@ -48,7 +48,7 @@
 
                     <!-- Title -->
                     <div class="metadata-title">
-                        <p>{{ item.title != undefined ? item.title : '' }}</p>
+                        <p v-html="item.title != undefined ? item.title : ''" />
                         <span 
                                 v-if="isSlideshowViewModeEnabled"
                                 v-tooltip="{

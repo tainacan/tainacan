@@ -4,7 +4,9 @@
                 :is-full-page="false"
                 :active.sync="isLoading"
                 :can-cancel="false"/>
-        <div class="tainacan-page-title">
+        <div 
+                v-if="!isMobileMode"
+                class="tainacan-page-title">
             <h1>{{ $i18n.get('add_items_bulk') }}</h1>
             <a 
                     @click="$router.go(-1)"
@@ -207,6 +209,9 @@ export default {
         },
         collection() {
             return this.getCollection()
+        },
+        isMobileMode() {
+            return this.$route && this.$route.query && this.$route.query.mobilemode;
         }
     },
     created() {

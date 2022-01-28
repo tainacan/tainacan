@@ -37,7 +37,6 @@ class Embed {
 		/**
 		 * Add responsiveness to embeds
 		 */
-		add_filter( 'embed_oembed_html', [$this, 'responsive_embed'], 10, 3);
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_css' ) );
 		add_action( 'wp_enqueue_scripts', array( &$this, 'add_css' ) );
 
@@ -46,7 +45,7 @@ class Embed {
 		 * @var [type]
 		 */
 		wp_embed_register_handler( 'pdf', '#^https?://.+?\.(pdf)$#i', [$this, 'pdf_embed_handler'] );
-		
+
 	}
 	
 	public function filter_video_embed($video, $attr, $url, $rawattr) {
@@ -136,16 +135,17 @@ class Embed {
 	 * Check their source code for more details: /packages/block-library/src/embed/util.js
 	 * 
 	 * @param {string}  html               The preview HTML that possibly contains an iframe with width and height set.
- 	 * @param {string}  existingClassNames Any existing class names.
  	 * @return {string} Deduped class names.
 	 */
-	public function add_responsive_wrapper( $html, $existingClassNames = '' ) {
+	public function add_responsive_wrapper( $html ) {
 	
 		$height = false;
 		$width = false;
-
+		
 		$dom = new \DOMDocument();
-		$dom->loadHTML(htmlentities($html));
+		libxml_use_internal_errors(true);
+		$dom->loadHTML($html);
+		libxml_clear_errors();
 
 		// If we have a fixed aspect iframe, and it's a responsive embed content.
 		if ($dom) {
@@ -173,7 +173,7 @@ class Embed {
 					}
 				}
 			}
-			
+
 			if ( $height && $width ) {
 
 				// Removes 'px' from the end if it was passed
@@ -199,20 +199,6 @@ class Embed {
 		}
 	
 		return $html;
-	}
-
-	/**
-	 * Adds a responsive embed wrapper around oEmbed content
-	 * @param  string $html The oEmbed markup
-	 * @param  string $url  The URL being embedded
-	 * @param  array  $attr An array of attributes
-	 * @return string       Updated embed markup
-	 */
-	function responsive_embed($html, $url, $attr) {
-
-		$element = $this->add_responsive_wrapper($html);
-
-		return $element;
 	}
 	 
 }

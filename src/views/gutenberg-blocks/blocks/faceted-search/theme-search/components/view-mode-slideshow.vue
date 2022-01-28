@@ -186,7 +186,7 @@
                             v-if="slideItems[swiper.activeIndex]"
                             @click.prevent="onHideControls()"
                             class="slide-title-area">
-                        <h1>{{ slideItems[swiper.activeIndex].title }}</h1>
+                        <h1 v-html="slideItems[swiper.activeIndex].title" />
                         <button 
                                 :disabled="(swiper.activeIndex == slideItems.length - 1 && page == totalPages)"
                                 class="play-button"

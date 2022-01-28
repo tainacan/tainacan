@@ -81,20 +81,19 @@ export default {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
                             let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
 
-                            if (orderBy) {
+                            if (orderBy && orderBy != 'name') {
                                 
                                 // Previously was stored as a metadata object, now it is a orderby object
                                 if (orderBy.slug)
                                     orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
 
-                                if (orderBy.orderby) {
+                                if (orderBy.orderby)
                                     Object.keys(orderBy).forEach((paramKey) => {
                                         this.$route.query[paramKey] = orderBy[paramKey];
                                     });
-                                } else {
-                                    this.$route.query.orderby = orderBy;
-                                }
-
+                                else
+                                    this.$route.query.orderby = 'date'
+                                
                             } else {
                                 this.$route.query.orderby = 'date';
                                 this.$userPrefs.set(orderByKey, { 

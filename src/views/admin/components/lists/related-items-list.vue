@@ -44,7 +44,7 @@
                                         <b-button
                                                 class="button is-secondary"
                                                 tag="router-link"
-                                                :to="$routerHelper.getCollectionItemsPath(collectionId, { metaquery: [{ key: relatedItemGroup.metadata_id, value: itemId, compare: 'IN' }] })">
+                                                :to="$routerHelper.getCollectionItemsPath(relatedItemGroup.collection_id, { metaquery: [{ key: relatedItemGroup.metadata_id, value: [itemId], compare: 'IN' }] })">
                                             {{ $i18n.getWithVariables('label_view_all_%s_related_items', [relatedItemGroup.total_items]) }}
                                         </b-button>
                                     </div>
@@ -137,7 +137,7 @@
                     <iframe 
                             width="100%"
                             style="height: 85vh"
-                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, editItemId) + '?iframemode=true&editingmetadata=' + editMetadataId" />
+                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, editItemId) + '?iframemode=true&editingmetadata=' + editMetadataId + (isMobileMode ? '&mobilemode=true' : '')" />
                 </b-modal>
             </div>
         </div>
@@ -170,6 +170,9 @@
             },
             displayLoading() {
                 return this.isLoading || this.isUpdatingRelatedItems;
+            },
+            isMobileMode() {
+                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {

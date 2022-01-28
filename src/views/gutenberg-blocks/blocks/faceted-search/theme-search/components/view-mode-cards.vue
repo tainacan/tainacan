@@ -51,9 +51,8 @@
                                     html: true,
                                     autoHide: false,
                                     placement: 'auto-start'
-                                }">
-                            {{ item.title != undefined ? item.title : '' }}
-                        </p>                 
+                                }"
+                                v-html="item.title != undefined ? item.title : ''" />                
                         <span 
                                 v-if="isSlideshowViewModeEnabled"
                                 v-tooltip="{

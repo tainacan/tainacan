@@ -1,10 +1,11 @@
 const { __ } = wp.i18n;
 
-const { RangeControl, TextControl, SelectControl, Button, ToggleControl, Placeholder, ColorPicker, ColorPalette, BaseControl, PanelBody } = wp.components;
+const { RangeControl, TextControl, SelectControl, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
 
 const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import TainacanBlocksCompatColorPicker from '../../js/tainacan-blocks-compat-colorpicker.js';
 import SearchBarModal from './search-bar-modal.js';
 
 export default function({ attributes, setAttributes, className, isSelected }) {
@@ -308,22 +309,22 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                                     />
 
                                     <BaseControl
-                                        id="colorpicker"
-                                        label={ __('Background color', 'tainacan')}>
-                                        <ColorPicker
-                                            color={ collectionBackgroundColor }
-                                            onChangeComplete={ ( value ) => {
-                                                collectionBackgroundColor = value.hex;
-                                                setAttributes({ collectionBackgroundColor: collectionBackgroundColor }) ;
-                                                setContent();
-                                            }}
+                                        id="backgroundcolorpicker"
+                                        label={ __('Background color', 'tainacan') }>
+                                        <TainacanBlocksCompatColorPicker
+                                            value={ collectionBackgroundColor }
+                                            onChange={ ( color ) => {
+                                                collectionBackgroundColor = color;
+                                                setAttributes({ collectionBackgroundColor: collectionBackgroundColor });
+                                                setContent(); 
+                                            }} 
                                             disableAlpha
-                                            />
+                                        />
                                     </BaseControl>
 
                                     <BaseControl
-                                        id="colorpallete"
-                                        label={ __('Collection name color', 'tainacan')}>
+                                        id="colorpicker"
+                                        label={ __('Collection name color', 'tainacan') }>
                                         <ColorPalette 
                                             colors={ [{ name: __('Black', 'tainacan'), color: '#000000'}, { name: __('White', 'tainacan'), color: '#ffffff'} ] } 
                                             value={ collectionTextColor }
