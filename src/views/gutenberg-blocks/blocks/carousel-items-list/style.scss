@@ -586,6 +586,9 @@
             }
         }
     }
+    .swiper-slide-duplicate img {
+        display: initial !important;
+    }
 }
 .block-editor-block-list__block>.wp-block-tainacan-carousel-items-list {
     max-width: calc(100% - 72px);

@@ -2046,6 +2046,7 @@ export default {
     .document-field {
         /deep/ iframe {
             max-width: 100%;
+            max-height: 100%;
         }
         .document-buttons-row {
             text-align: right;

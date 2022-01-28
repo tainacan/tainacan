@@ -237,8 +237,8 @@ class REST_Controller extends \WP_REST_Controller {
 
 		} else {
 			foreach ( $query as $mapped_meta => $meta_v ) {
-				if(isset($request[$mapped][$meta_v])) {
-					$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $meta_v ];
+				if(isset($request[$mapped][$mapped_meta])) {
+					$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $mapped_meta ];
 				}
 			}
 		}

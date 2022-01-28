@@ -884,7 +884,8 @@ a.pswp__share--download:hover {
     align-items: center;
     text-align: center;
     padding: 44px;
-    margin-top: 22px; }
+    margin-top: 22px;
+    margin-bottom: 22px; }
     .tainacan-photoswipe-layer .pswp__container .attachment-without-image > iframe:not(.wp-embedded-content) {
       width: 90vw;
       height: 90vh;
@@ -903,6 +904,10 @@ a.pswp__share--download:hover {
     background-image: url("../images/preloader.gif");
     background-repeat: no-repeat;
     background-position: center; }
+  .tainacan-photoswipe-layer .pswp__container .pswp__zoom-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center; }
   .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed {
     width: 100%;
     height: auto; }
@@ -936,9 +941,12 @@ a.pswp__share--download:hover {
   .tainacan-photoswipe-layer .pswp__container audio {
     background: black;
     min-height: 38px;
-    border-radius: 20px; }
+    border-radius: 20px;
+    min-width: 80%;
+    max-width: 80%; }
   .tainacan-photoswipe-layer .pswp__container video {
-    min-height: 56px; }
+    min-height: 56px;
+    max-width: 80%; }
 .tainacan-photoswipe-layer .pswp__top-bar .pswp__name {
   color: white;
   text-align: center;
