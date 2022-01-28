@@ -6,7 +6,7 @@ Description: Open source, powerful and flexible repository platform for WordPres
 Author: Tainacan.org
 Version: 0.18.8
 Requires at least: 5.0
-Tested up to: 5.8
+Tested up to: 5.9
 Requires PHP: 5.6
 Stable tag: 0.18.8
 Text Domain: tainacan
