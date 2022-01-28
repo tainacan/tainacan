@@ -244,7 +244,7 @@ class Items extends Repository {
 	 * @return \WP_Query|Array|Item an instance of wp query OR array of entities OR a Item;
 	 */
 	public function fetch( $args = [], $collections = [], $output = null ) {
-
+		
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		if ( is_numeric( $args ) ) {
@@ -353,7 +353,7 @@ class Items extends Repository {
 
 		$args = apply_filters( 'tainacan_fetch_args', $args, 'items' );
 
-		$should_filter = is_user_logged_in() && ! isset($args['post_status']) && sizeof($cpt) > 1;
+		$should_filter = is_user_logged_in() && sizeof($cpt) > 1;
 
 		if ( $should_filter ) {
 			add_filter('posts_where', [$this, '_filter_where'], 10, 2);
@@ -407,6 +407,7 @@ class Items extends Repository {
 		global $wpdb;
 		$clauses = [];
 		$user_id = get_current_user_id();
+		$post_status = $wp_query->get( 'post_status' );
 
 		foreach ($this->fetching_from_collections as $collection) {
 
@@ -415,23 +416,31 @@ class Items extends Repository {
 			$clause = '(';
 
 				$clause .= "{$wpdb->posts}.post_type = '{$collection->get_db_identifier()}' AND (";
+					$status_clause = [];
 
 					// public status
 					$public_states = get_post_stati( array( 'public' => true ) );
-					$status_clause = [];
 					foreach ( (array) $public_states as $state ) {
-						$status_clause[] = "{$wpdb->posts}.post_status = '$state'";
+						if( empty($post_status) || in_array($state, $post_status) )
+							$status_clause[] = "{$wpdb->posts}.post_status = '$state'";
 					}
-					$clause .= implode(' OR ', $status_clause);
 
 					// private statuses
 					$private_states = get_post_stati( array( 'private' => true ) );
 					foreach ( (array) $private_states as $state ) {
-						$clause .= current_user_can( $read_private_cap ) ? " OR {$wpdb->posts}.post_status = '$state'" : " OR {$wpdb->posts}.post_author = $user_id AND {$wpdb->posts}.post_status = '$state'";
+						if( empty($post_status) || in_array($state, $post_status) )
+						$status_clause[] = current_user_can( $read_private_cap ) ? " {$wpdb->posts}.post_status = '$state'" : " {$wpdb->posts}.post_author = $user_id AND {$wpdb->posts}.post_status = '$state'";
 					}
 
+					//draft
+					// $draft_states = get_post_stati( array( 'draft' => true ) );
+					$draft_states = ['draft'];
+					foreach ( (array) $draft_states as $state ) {
+						if( in_array($state, $post_status) )
+						$status_clause[] = current_user_can( $read_private_cap ) ? " {$wpdb->posts}.post_status = '$state'" : " {$wpdb->posts}.post_author = $user_id AND {$wpdb->posts}.post_status = '$state'";
+					}
+					$clause .= implode(' OR ', $status_clause);
 				$clause .= ')';
-
 
 			$clause .= ')';
 
