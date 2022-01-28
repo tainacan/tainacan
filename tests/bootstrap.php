@@ -29,8 +29,8 @@ function _manually_load_plugin() {
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 // Start up the WP testing environment.
+require_once dirname( dirname( __FILE__ ) ) . '/src/vendor/autoload.php';
 require $_tests_dir . '/includes/bootstrap.php';
-
 require_once(__DIR__ . '/factories/class-tainacan-entity-factory.php');
 require_once( __DIR__ . '/factories/class-tainacan-metadatum-factory.php' );
 require_once(__DIR__ . '/factories/class-tainacan-filter-factory.php');

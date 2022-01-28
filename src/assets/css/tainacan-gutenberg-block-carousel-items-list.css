@@ -440,6 +440,8 @@
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-itens-per-screen-6, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-itens-per-screen-5, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-itens-per-screen-4, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-itens-per-screen-3, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-itens-per-screen-2, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-itens-per-screen-1 {
         width: calc(100% - var(--spaceBetweenItems, 32px) );
         min-width: calc(100% - var(--spaceBetweenItems, 32px) ); } }
+  .wp-block-tainacan-carousel-items-list .swiper-slide-duplicate img {
+    display: initial !important; }
 
 .block-editor-block-list__block > .wp-block-tainacan-carousel-items-list {
   max-width: calc(100% - 72px); }

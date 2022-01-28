@@ -71,8 +71,8 @@ class Elastic_Press {
 						$array_must_nested = $el_must['bool']['must'];
 						for($j = 0; $j < count($array_must_nested); $j++ ) {
 							if ( isset ($array_must_nested[$j]['match_phrase'] ) ) {
-								$formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['wildcard'] = 
-								array_map( function($match) { return "*$match*"; } ,$array_must_nested[$j]['match_phrase']);
+								$formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['match_phrase_prefix'] = 
+ 								array_map( function($match) { return "$match"; } ,$array_must_nested[$j]['match_phrase']);
 								unset($formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['match_phrase']);
 							}
 						}

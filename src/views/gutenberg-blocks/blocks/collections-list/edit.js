@@ -35,11 +35,13 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                         icon="no-alt"
                         label={__('Remove', 'tainacan')}/>
                     :
-                    <Button
-                        onClick={ () => removeCollectionOfId(collection.id) }
-                        icon="no-alt"
-                        showTooltip={false}
-                        label={__('Remove', 'tainacan')} />
+                    <button
+                            onClick={ () => removeCollectionOfId(collection.id) }
+                            type="button"
+                            class="components-button has-icon"
+                            aria-label={__('Remove', 'tainacan')}>
+                        <span class="dashicon dashicons dashicons-no-alt" />
+                    </button>
                 }
                 <a 
                     id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }

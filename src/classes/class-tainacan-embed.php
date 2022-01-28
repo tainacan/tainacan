@@ -143,7 +143,9 @@ class Embed {
 		$width = false;
 		
 		$dom = new \DOMDocument();
+		libxml_use_internal_errors(true);
 		$dom->loadHTML($html);
+		libxml_clear_errors();
 
 		// If we have a fixed aspect iframe, and it's a responsive embed content.
 		if ($dom) {
