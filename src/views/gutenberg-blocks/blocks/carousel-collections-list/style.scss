@@ -157,6 +157,10 @@
                 text-decoration: none;
             }
 
+            .swiper-slide-duplicate img {
+                display: initial !important;
+            }
+
             .swiper-slide.collection-list-item-grid {
 
                 a { 
