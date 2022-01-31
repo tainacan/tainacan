@@ -6,7 +6,7 @@
                 :can-cancel="false"/>
 
         <div 
-                v-if="!isMobileMode || (isMobileMode && isEditingMetadataIframeMode)"
+                v-if="!$adminOptions.mobilemode || ($adminOptions.mobilemode && isEditingMetadataIframeMode)"
                 class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
                 <span
@@ -23,7 +23,7 @@
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
             <a
-                    v-if="!isIframeMode"
+                    v-if="!$adminOptions.iframemode"
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
                 {{ $i18n.get('back') }}
@@ -57,7 +57,7 @@
 
                             <!-- Collection -------------------------------- -->
                             <div 
-                                    v-if="!isMobileMode"
+                                    v-if="!$adminOptions.mobilemode"
                                     class="column is-narrow">
                                 <div class="section-label">
                                     <label>{{ $i18n.get('collection') }}</label>
@@ -226,7 +226,7 @@
                                         :item-id="itemId"
                                         :collection-id="collectionId"
                                         :related-items="item.related_items"
-                                        :is-editable="!isIframeMode"
+                                        :is-editable="!$adminOptions.iframemode"
                                         :is-loading.sync="isLoading" />
                                 
                             </b-tab-item>
@@ -1057,14 +1057,8 @@ export default {
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
         },
-        isIframeMode() {
-            return this.$route.query && this.$route.query.iframemode;
-        },
         isEditingMetadataIframeMode() {
             return this.$route.query && this.$route.query.editingmetadata;
-        },
-        isMobileMode() {
-            return this.$route.query && this.$route.query.mobilemode;
         }
     },
     watch: {
@@ -1268,7 +1262,7 @@ export default {
                 
                 this.isLoading = false;
 
-                if (!this.isIframeMode) {
+                if (!this.$adminOptions.iframemode) {
 
                     if (!this.isOnSequenceEdit) {
                         if (this.form.status != 'trash') {
@@ -1313,7 +1307,7 @@ export default {
             });
         },
         onDiscard() {
-            if (!this.isIframeMode)
+            if (!this.$adminOptions.iframemode)
                 this.$router.go(-1);
             else
                 parent.postMessage({ 

@@ -362,8 +362,6 @@ export default {
                     this.paged = 1;
 
                 // Remove unecessary queries
-                delete queryObject.readmode;
-                delete queryObject.iframemode;
                 delete queryObject.admin_view_mode;
                 delete queryObject.fetch_only_meta;
                 

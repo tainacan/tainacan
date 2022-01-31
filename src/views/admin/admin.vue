@@ -3,16 +3,16 @@
             id="tainacan-admin-app" 
             class="has-mounted columns is-fullheight"
             :class="{ 
-                'tainacan-admin-iframe-mode': isIframeMode, 
-                'tainacan-admin-mobile-mode': isMobileMode, 
-                'tainacan-admin-read-mode': isReadMode
+                'tainacan-admin-iframe-mode': $adminOptions.iframemode, 
+                'tainacan-admin-mobile-mode': $adminOptions.mobilemode, 
+                'tainacan-admin-read-mode': $adminOptions.readmode
             }">
         <template v-if="activeRoute == 'HomePage'">
             <tainacan-header />
             <router-view /> 
         </template>
         <template v-else>
-            <template v-if="!isIframeMode && !isMobileMode">
+            <template v-if="!$adminOptions.iframemode && !$adminOptions.mobilemode">
                 <primary-menu 
                         :active-route="activeRoute"
                         :is-menu-compressed="isMenuCompressed"/>
@@ -66,17 +66,6 @@
                 isMenuCompressed: false,
                 isRepositoryLevel : true,
                 activeRoute: '/collections'
-            }
-        },
-        computed: {
-            isReadMode() {
-                return this.$route && this.$route.query && this.$route.query.readmode;
-            },
-            isIframeMode() {
-                return this.$route && this.$route.query && this.$route.query.iframemode;
-            },
-            isMobileMode() {
-                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {

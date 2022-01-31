@@ -1,9 +1,9 @@
 <template>
     <div 
             class="columns is-fullheight"
-            :class="{ 'tainacan-admin-collection-mobile-mode': isMobileMode }">
+            :class="{ 'tainacan-admin-collection-mobile-mode': $adminOptions.mobilemode }">
         <section class="column is-secondary-content">
-            <tainacan-collection-subheader v-if="!isIframeMode && !isMobileMode" />
+            <tainacan-collection-subheader v-if="!$adminOptions.iframemode && !$adminOptions.mobilemode" />
 
             <router-view
                     id="collection-page-container"
@@ -25,14 +25,6 @@ export default {
     data(){
         return {
             collectionId: Number
-        }
-    },
-    computed: {
-        isIframeMode() {
-            return this.$route && this.$route.query && this.$route.query.iframemode;
-        },
-        isMobileMode() {
-            return this.$route && this.$route.query && this.$route.query.mobilemode;
         }
     },
     watch: {

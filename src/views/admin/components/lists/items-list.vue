@@ -112,7 +112,7 @@
 
             <!-- Context menu for right click selection -->
             <div
-                    v-if="cursorPosY > 0 && cursorPosX > 0 && !isReadMode"
+                    v-if="cursorPosY > 0 && cursorPosX > 0 && !$adminOptions.readmode"
                     class="context-menu">
 
                 <!-- Backdrop for escaping context menu -->
@@ -127,12 +127,12 @@
                         trap-focus>
                     <b-dropdown-item
                             @click="openItem()"
-                            v-if="!isOnTrash && !isIframeMode">
+                            v-if="!isOnTrash && !$adminOptions.iframemode">
                         {{ $i18n.getFrom('items','view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="openItemOnNewTab()"
-                            v-if="!isOnTrash && !isIframeMode">
+                            v-if="!isOnTrash && !$adminOptions.iframemode">
                         {{ $i18n.get('label_open_item_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item
@@ -142,17 +142,17 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="goToItemEditPage(contextMenuItem)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !isIframeMode">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.iframemode">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="makeCopiesOfOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !isIframeMode">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.iframemode">
                         {{ $i18n.get('label_make_copies_of_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !isIframeMode">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.iframemode">
                         {{ $i18n.get('label_delete_item') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -174,7 +174,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="grid-item-checkbox">
                         <b-checkbox
@@ -190,7 +190,7 @@
 
                     <!-- Title -->
                     <div
-                            :style="{ 'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
+                            :style="{ 'padding-left': !collectionId || !($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit) || $adminOptions.readmode? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -241,7 +241,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !isIframeMode"
+                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -315,7 +315,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="masonry-item-checkbox">
                         <label
@@ -340,7 +340,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
+                                'padding-left': !collectionId || !($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit) || $adminOptions.readmode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
                             }"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
@@ -381,7 +381,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !isIframeMode"
+                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -450,7 +450,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="card-checkbox">
                         <b-checkbox
@@ -467,7 +467,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
+                                'padding-left': !collectionId || !($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit) || $adminOptions.readmode ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
                             }"
                             class="metadata-title">
                         <p
@@ -502,7 +502,7 @@
                     </div>
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !isIframeMode"
+                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -643,7 +643,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
                         <label
@@ -669,7 +669,7 @@
                     <div
                             class="metadata-title"
                             :style="{
-                                'padding-left': !collectionId || !(isIframeMode || collection && collection.current_user_can_bulk_edit) || isReadMode ? '1.5em !important' : '2.75em'
+                                'padding-left': !collectionId || !($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit) || $adminOptions.readmode ? '1.5em !important' : '2.75em'
                             }">
                         <span 
                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
@@ -722,7 +722,7 @@
                     </div>
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !isIframeMode"
+                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -837,7 +837,7 @@
                     <tr>
                         <!-- Checking list -->
                         <th
-                                v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)">
+                                v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)">
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -886,7 +886,7 @@
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <td
-                                v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
+                                v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox
@@ -1051,7 +1051,7 @@
 
                         <!-- Actions -->
                         <td 
-                                v-if="(item.current_user_can_edit || item.current_user_can_delete) && !isIframeMode"
+                                v-if="(item.current_user_can_edit || item.current_user_can_delete) && !$adminOptions.iframemode"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -1122,7 +1122,7 @@
                         :class="{ 'selected-list-item': getSelectedItemChecked(item.id) == true }">
 
                     <div
-                            v-if="collectionId && !isReadMode && (isIframeMode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="list-checkbox">
                         <label
@@ -1185,7 +1185,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !isIframeMode"
+                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -1324,7 +1324,7 @@ export default {
             return this.getHighlightedItem();
         },
         selectedItems () {
-            if (this.isIframeMode)
+            if (this.$adminOptions.iframemode)
                 this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
 
             return this.getSelectedItems();
@@ -1354,12 +1354,6 @@ export default {
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));
         },
-        isIframeMode () {
-            return this.$route && this.$route.query && this.$route.query.iframemode;
-        },
-        isReadMode () {
-            return this.$route && this.$route.query && this.$route.query.readmode;
-        },
         isSingleSelectionMode () {
             return this.$route && this.$route.query && this.$route.query.singleselectionmode;
         },
@@ -1386,7 +1380,7 @@ export default {
         },
         singleItemSelection() {
 
-            if (this.isSingleSelectionMode && this.isIframeMode)
+            if (this.isSingleSelectionMode && this.$adminOptions.iframemode)
                 this.$eventBusSearch.setSelectedItemsForIframe([this.singleItemSelection], true);
         }
     },
@@ -1676,9 +1670,9 @@ export default {
                 }
 
             } else {
-                if (this.isIframeMode && !this.isReadMode) {
+                if (this.$adminOptions.iframemode && !this.$adminOptions.readmode) {
                     this.setSelectedItemChecked(item.id)
-                } else if (!this.isIframeMode && !this.isReadMode) {
+                } else if (!this.$adminOptions.iframemode && !this.$adminOptions.readmode) {
                     if(this.isOnTrash){
                         this.$buefy.toast.open({
                             duration: 3000,
@@ -1693,7 +1687,7 @@ export default {
             }
         },
         onRightClickItem($event, item) {
-            if (!this.isReadMode) {
+            if (!this.$adminOptions.readmode) {
                 $event.preventDefault();
 
                 this.cursorPosX = $event.clientX;

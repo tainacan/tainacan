@@ -48,7 +48,7 @@ export default class CarouselItemsModal extends React.Component {
         if (this.props.existingCollectionId) {
             this.fetchCollection(this.props.existingCollectionId);
             this.setState({ 
-                searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId +  (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true&status=publish' : '/items/?iframemode=true&status=publish')
+                searchURL: this.props.existingSearchURL ? this.props.existingSearchURL : tainacan_blocks.admin_url + 'admin.php?iframemode=true' + (this.props.loadStrategy == 'search' ? '&readmode=true' : '') + '&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish'
             });
         } else {
             this.setState({ collectionPage: 1 });
@@ -116,7 +116,7 @@ export default class CarouselItemsModal extends React.Component {
     selectCollection(selectedCollectionId) {
         this.setState({
             collectionId: selectedCollectionId,
-            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + (this.props.loadStrategy == 'search' ? '/items/?iframemode=true&readmode=true&status=publish' : '/items/?iframemode=true&status=publish')
+            searchURL: tainacan_blocks.admin_url + 'admin.php?iframemode=true' + (this.props.loadStrategy == 'search' ? '&readmode=true' : '') + '&page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?status=publish'
         });
         this.props.onSelectCollection(selectedCollectionId);
         this.fetchCollection(selectedCollectionId);

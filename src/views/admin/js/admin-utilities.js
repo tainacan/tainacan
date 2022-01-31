@@ -436,3 +436,23 @@ CommentsStatusHelperPlugin.install = function (Vue, options = {}) {
     }
 
 };
+
+// ADMIN OPTIONS HELPER PLUGIN - Stores options passed to the data-options in the admin div.
+export const AdminOptionsHelperPlugin = {};
+AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
+    try {
+        let objectOptions = JSON.parse(options);
+        for (let key in objectOptions) {
+            if (objectOptions.hasOwnProperty(key)) {
+                if (objectOptions[key] === 'true')
+                    objectOptions[key] = true;
+                if (objectOptions[key] === 'false' || objectOptions[key] == undefined || !objectOptions[key])
+                    objectOptions[key] = false;
+            }
+        }
+        Vue.prototype.$adminOptions = objectOptions;
+
+    } catch(e) {
+        Vue.prototype.$adminOptions = {};
+    }
+};

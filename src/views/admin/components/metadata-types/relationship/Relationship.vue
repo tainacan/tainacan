@@ -158,7 +158,7 @@
                 page: 1,
                 activeTab: 0,
                 editItemModalOpen: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
+                adminURL: tainacan_plugin.admin_url + 'admin.php?',
                 currentUserCanEditItems: false,
                 selectedValuesAsHtml: []
             }
@@ -178,9 +178,9 @@
             },
             itemModalSrc() {
                 if (this.editingItemId)
-                    return this.adminFullURL + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId) + '?iframemode=true' + (this.isMobileMode ? '&mobilemode=true' : '');
+                    return this.adminURL + 'iframemode=true' + (this.$adminOptions.mobilemode ? '&mobilemode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId);
                 else
-                    return this.adminFullURL + this.$routerHelper.getNewItemPath(this.collectionId) + '?iframemode=true&newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery + (this.isMobileMode ? '&mobilemode=true' : '');
+                    return this.adminURL + 'iframemode=true' + (this.$adminOptions.mobilemode ? '&mobilemode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getNewItemPath(this.collectionId) + '?newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery;
             },
             relationshipInputId() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum)
@@ -195,9 +195,6 @@
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length &&
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length > 1;
-            },
-            isMobileMode() {
-                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {

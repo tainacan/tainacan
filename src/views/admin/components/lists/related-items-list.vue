@@ -137,7 +137,7 @@
                     <iframe 
                             width="100%"
                             style="height: 85vh"
-                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, editItemId) + '?iframemode=true&editingmetadata=' + editMetadataId + (isMobileMode ? '&mobilemode=true' : '')" />
+                            :src="adminURL + 'iframemode=true' + ($adminOptions.mobilemode ? '&mobilemode=true' : '') + '&page=tainacan_admin#' + $routerHelper.getItemEditPath(collectionId, editItemId) + '?editingmetadata=' + editMetadataId" />
                 </b-modal>
             </div>
         </div>
@@ -160,7 +160,7 @@
                 editMetadataId: false,
                 editItemId: false,
                 editItemModal: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
+                adminURL: tainacan_plugin.admin_url + 'admin.php?',
                 isUpdatingRelatedItems: false
             }
         },
@@ -170,9 +170,6 @@
             },
             displayLoading() {
                 return this.isLoading || this.isUpdatingRelatedItems;
-            },
-            isMobileMode() {
-                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {
