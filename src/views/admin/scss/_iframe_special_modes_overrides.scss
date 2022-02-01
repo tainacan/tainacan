@@ -1,26 +1,12 @@
 // IFRAME MODE
 // Used on gutenberg block modals, hiding content not relevant to be rendered inside iframe
 #tainacan-admin-app.tainacan-admin-iframe-mode {
-    #primary-menu,
-    #menu-compress-button,
-    #tainacan-header,
-    #tainacan-repository-subheader,
-    #tainacan-subheader {
-        display: none;
-        visibility: hidden;
-    }
     #repository-container .is-secondary-content {
         margin-top: 0;
         height: 100%;
         
         .page-container-small {
             height: 100%;
-
-            #item-creation-options-dropdown,
-            #items-list-results .selection-control .field {
-                display: none;
-                visibility: hidden;
-            }
 
             @media screen and (min-width: 769px) {
                 #filters-modal {
@@ -65,26 +51,12 @@
 // MOBILE MODE
 // Used on the mobile app, to show only necessary elements inside the webview
 #tainacan-admin-app.tainacan-admin-mobile-mode {
-    #primary-menu,
-    #menu-compress-button,
-    #tainacan-header,
-    #tainacan-repository-subheader,
-    #tainacan-subheader {
-        display: none;
-        visibility: hidden;
-    }
     #repository-container .is-secondary-content {
         margin-top: 0;
         height: 100%;
         
         .page-container-small {
             height: 100%;
-
-            #item-creation-options-dropdown,
-            #items-list-results .selection-control .field {
-                display: none;
-                visibility: hidden;
-            }
 
             @media screen and (min-width: 769px) {
                 #filters-modal {

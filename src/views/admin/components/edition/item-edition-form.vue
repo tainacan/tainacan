@@ -6,7 +6,7 @@
                 :can-cancel="false"/>
 
         <div 
-                v-if="!$adminOptions.mobilemode || ($adminOptions.mobilemode && isEditingMetadataIframeMode)"
+                v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingMetadataIframeMode)"
                 class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
                 <span
@@ -23,7 +23,7 @@
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
             <a
-                    v-if="!$adminOptions.iframemode"
+                    v-if="!$adminOptions.hideItemEditionPageBackButton"
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
                 {{ $i18n.get('back') }}
@@ -57,7 +57,7 @@
 
                             <!-- Collection -------------------------------- -->
                             <div 
-                                    v-if="!$adminOptions.mobilemode"
+                                    v-if="!$adminOptions.hideCollectionNameInItemPage"
                                     class="column is-narrow">
                                 <div class="section-label">
                                     <label>{{ $i18n.get('collection') }}</label>

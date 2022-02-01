@@ -9,7 +9,7 @@
 
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
-                v-if="!$adminOptions.iframemode && !$adminOptions.readmode && !openAdvancedSearch" 
+                v-if="!$adminOptions.hideItemsListPageTitle && !openAdvancedSearch" 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
         <div 
                 v-else-if="openAdvancedSearch"
@@ -98,10 +98,10 @@
                 </div>
             </div>
 
-            <!-- Item Creation Dropdown, only on Admin -->
+            <!-- Item Creation Dropdown -->
             <div 
                     class="search-control-item"
-                    v-if="!$adminOptions.iframemode &&
+                    v-if="!$adminOptions.hideItemCreationDropdown &&
                             !openAdvancedSearch &&
                             collection && 
                             collection.current_user_can_edit_items">
@@ -413,7 +413,7 @@
 
             <!-- Exposers or alternative links modal button -->
             <div 
-                    v-if="!$adminOptions.iframemode"
+                    v-if="!$adminOptions.hideExposersButton"
                     class="search-control-item">
                 <button 
                         class="button is-white"
@@ -596,7 +596,7 @@
                         </p>
 
                         <router-link
-                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.iframemode"
+                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemCreationDropdown"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-secondary"
@@ -604,7 +604,7 @@
                             {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link> 
                         <button
-                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.iframemode"
+                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemCreationDropdown"
                                 id="button-create-item"
                                 class="button is-secondary"
                                 @click="onOpenCollectionsModal">

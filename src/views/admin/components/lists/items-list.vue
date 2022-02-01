@@ -5,7 +5,9 @@
         <div
                 v-if="collectionId && collection && collection.current_user_can_edit_items && collection.current_user_can_bulk_edit"
                 class="selection-control">
-            <div class="field select-all is-pulled-left">
+            <div 
+                    v-if="!$adminOptions.hideMultipleItemSelection"
+                    class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
                             @click.native.prevent="selectAllItemsOnPage()"
@@ -48,6 +50,7 @@
                 </button>
             </span>
             <div 
+                    v-if="!$adminOptions.hideBulkActionsDropdown"
                     style="margin-left: auto;"
                     class="field">
                 <b-dropdown
@@ -112,7 +115,7 @@
 
             <!-- Context menu for right click selection -->
             <div
-                    v-if="cursorPosY > 0 && cursorPosX > 0 && !$adminOptions.readmode"
+                    v-if="cursorPosY > 0 && cursorPosX > 0 && !$adminOptions.hideContextMenu"
                     class="context-menu">
 
                 <!-- Backdrop for escaping context menu -->
@@ -127,12 +130,12 @@
                         trap-focus>
                     <b-dropdown-item
                             @click="openItem()"
-                            v-if="!isOnTrash && !$adminOptions.iframemode">
+                            v-if="!isOnTrash && !$adminOptions.hideContextMenuOpenItemOption">
                         {{ $i18n.getFrom('items','view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="openItemOnNewTab()"
-                            v-if="!isOnTrash && !$adminOptions.iframemode">
+                            v-if="!isOnTrash && !$adminOptions.hideContextMenuOpenItemOnNewTabOption">
                         {{ $i18n.get('label_open_item_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item
@@ -142,17 +145,17 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="goToItemEditPage(contextMenuItem)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.iframemode">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideContextMenuEditItemOption">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="makeCopiesOfOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.iframemode">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideContextMenuCopyItemOption">
                         {{ $i18n.get('label_make_copies_of_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             @click="deleteOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.iframemode">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideContextMenuDeleteItemOption">
                         {{ $i18n.get('label_delete_item') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -172,9 +175,9 @@
                         class="tainacan-grid-item">
 
                     <!-- Checkbox -->
-                    <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
+                    <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit for repository level is implemented -->
                     <div
-                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="grid-item-checkbox">
                         <b-checkbox
@@ -241,7 +244,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
+                            v-if="item.current_user_can_edit && !$adminOptions.hideItemActionArea"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -315,7 +318,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="masonry-item-checkbox">
                         <label
@@ -381,7 +384,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
+                            v-if="item.current_user_can_edit && !$adminOptions.hideItemActionArea"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -450,7 +453,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="card-checkbox">
                         <b-checkbox
@@ -502,7 +505,7 @@
                     </div>
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
+                            v-if="item.current_user_can_edit && !$adminOptions.hideItemActionArea"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -643,7 +646,7 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
                         <label
@@ -722,7 +725,7 @@
                     </div>
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
+                            v-if="item.current_user_can_edit && !$adminOptions.hideItemActionArea"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a
@@ -837,7 +840,7 @@
                     <tr>
                         <!-- Checking list -->
                         <th
-                                v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)">
+                                v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)">
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -886,7 +889,7 @@
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <td
-                                v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                                v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox
@@ -1051,7 +1054,7 @@
 
                         <!-- Actions -->
                         <td 
-                                v-if="(item.current_user_can_edit || item.current_user_can_delete) && !$adminOptions.iframemode"
+                                v-if="(item.current_user_can_edit || item.current_user_can_delete) && !$adminOptions.hideItemActionArea"
                                 class="actions-cell"
                                 :label="$i18n.get('label_actions')">
                             <div class="actions-container">
@@ -1122,7 +1125,7 @@
                         :class="{ 'selected-list-item': getSelectedItemChecked(item.id) == true }">
 
                     <div
-                            v-if="collectionId && !$adminOptions.readmode && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="list-checkbox">
                         <label
@@ -1185,7 +1188,7 @@
 
                     <!-- Actions -->
                     <div
-                            v-if="item.current_user_can_edit && !$adminOptions.iframemode"
+                            v-if="item.current_user_can_edit && !$adminOptions.hideItemActionArea"
                             class="actions-area"
                             :label="$i18n.get('label_actions')">
                         <a

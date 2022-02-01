@@ -440,7 +440,10 @@ CommentsStatusHelperPlugin.install = function (Vue, options = {}) {
 // ADMIN OPTIONS HELPER PLUGIN - Stores options passed to the data-options in the admin div.
 export const AdminOptionsHelperPlugin = {};
 AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
+
+    // Passes options to global variable
     try {
+
         let objectOptions = JSON.parse(options);
         for (let key in objectOptions) {
             if (objectOptions.hasOwnProperty(key)) {
@@ -455,4 +458,55 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
     } catch(e) {
         Vue.prototype.$adminOptions = {};
     }
+
+    // Declares common 'modes', which group certain admin options
+    // Order matters here, as the latest overrides previous ones
+    const iframeMode = {
+        hideTainacanHeader: true,
+        hideMenuCompressButton: true,
+        hidePrimaryMenu: true,
+        hideTainacanRepositorySubheader: true,
+        hideTainacanCollectionSubheader: true,
+        hideItemEditionPageBackButton: true,
+        hideMultipleItemSelection: true,
+        hideBulkActionsDropdown: true,
+        hideContextMenuOpenItemOption: true,
+        hideContextMenuOpenItemOnNewTabOption: true,
+        hideContextMenuEditItemOption: true,
+        hideContextMenuCopyItemOption: true,
+        hideContextMenuDeleteItemOption: true,
+        hideItemActionArea: true,
+        hideItemsListPageTitle: true,
+        hideItemCreationDropdown: true,
+        hideExposersButton: true
+    };
+    if (Vue.prototype.$adminOptions.iframemode)
+        for (let option in iframeMode)
+            Vue.prototype.$adminOptions[option] = iframeMode[option];
+
+    const readMode = {
+        hideItemsListPageTitle: true,
+        hideContextMenu: true,
+        hideItemSelection: true
+    };
+    if (Vue.prototype.$adminOptions.readmode)
+        for (let option in readMode)
+            Vue.prototype.$adminOptions[option] = readMode[option];
+
+    const mobileMode = {
+        hideTainacanHeader: true,
+        hideMenuCompressButton: true,
+        hidePrimaryMenu: true,
+        hideTainacanRepositorySubheader: true,
+        hideTainacanCollectionSubheader: true,
+        hideItemEditionPageBackButton: true,
+        hideItemsListPageTitle: true,
+        hideItemEditionPageTitle: true,
+        hideBulkEditionPageTitle: true,
+        hideCollectionNameInItemPage: true
+    };
+    if (Vue.prototype.$adminOptions.mobilemode)
+        for (let option in mobileMode)
+            Vue.prototype.$adminOptions[option] = mobileMode[option];
+
 };

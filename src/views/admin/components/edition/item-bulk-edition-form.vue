@@ -5,7 +5,7 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
         <div 
-                v-if="!$adminOptions.mobilemode"
+                v-if="!$adminOptions.hideBulkEditionPageTitle"
                 class="tainacan-page-title">
             <h1>{{ $i18n.get('add_items_bulk') }}</h1>
             <a 
