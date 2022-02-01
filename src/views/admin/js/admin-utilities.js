@@ -464,7 +464,6 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
     const adminSpecialModes = {
         itemsSingleSelectionMode: {
             hideTainacanHeader: true,
-            hideMenuCompressButton: true,
             hidePrimaryMenu: true,
             hideTainacanRepositorySubheader: true,
             hideTainacanCollectionSubheader: true,
@@ -484,7 +483,6 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         },
         itemsMultipleSelectionMode: {
             hideTainacanHeader: true,
-            hideMenuCompressButton: true,
             hidePrimaryMenu: true,
             hideTainacanRepositorySubheader: true,
             hideTainacanCollectionSubheader: true,
@@ -504,7 +502,6 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         },
         itemsSearchSelectionMode: {
             hideTainacanHeader: true,
-            hideMenuCompressButton: true,
             hidePrimaryMenu: true,
             hideTainacanRepositorySubheader: true,
             hideTainacanCollectionSubheader: true,
@@ -521,7 +518,6 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         },
         itemEditionMode: {
             hideTainacanHeader: true,
-            hideMenuCompressButton: true,
             hidePrimaryMenu: true,
             hideTainacanRepositorySubheader: true,
             hideTainacanCollectionSubheader: true,
@@ -529,7 +525,6 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         },
         mobileAppMode: {
             hideTainacanHeader: true,
-            hideMenuCompressButton: true,
             hidePrimaryMenu: true,
             hideTainacanRepositorySubheader: true,
             hideTainacanCollectionSubheader: true,
@@ -551,4 +546,42 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         }
     }
 
+    /*
+        Possible Values:
+        * hideTainacanHeader
+        * hidePrimaryMenuCompressButton
+        * hidePrimaryMenu
+            * hidePrimaryMenuCompressButton
+            * hidePrimaryMenuRepositoryButton
+            * hidePrimaryMenuCollectionsButton
+            * hidePrimaryMenuItemsButton
+            * hidePrimaryMenuTaxonomiesButton
+            * hidePrimaryMenuMetadataButton
+            * hidePrimaryMenuFiltersButton
+            * hidePrimaryMenuImportersButton
+            * hidePrimaryMenuExportersButton
+            * hidePrimaryMenuActivitiesButton
+            * hidePrimaryMenuCapabilitiesButton
+        * hideTainacanRepositorySubheader
+        * hideTainacanCollectionSubheader
+        * hideMultipleItemSelection
+        * hideItemSelection
+        * hideBulkActionsDropdown
+        * hideContextMenu
+            * hideContextMenuOpenItemOption
+            * hideContextMenuOpenItemOnNewTabOption
+            * hideContextMenuEditItemOption
+            * hideContextMenuCopyItemOption
+            * hideContextMenuDeleteItemOption
+        * hideItemActionArea
+        * hideItemsListPageTitle
+        * hideItemCreationDropdown
+        * hideExposersButton
+        * hideItemsStatusStabs
+        * hideFilterCreationButton
+        * hideItemEditionPageBackButton
+        * hideItemEditionPageTitle
+        * hideBulkEditionPageTitle
+        * hideCollectionNameInItemPage
+    */
 };

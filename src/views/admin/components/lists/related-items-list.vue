@@ -114,6 +114,10 @@
                                                 :aria-label="$i18n.getFrom('items','edit_item')">
                                             <span
                                                     v-tooltip="{
+                                                         delay: {
+                                                            show: 500,
+                                                            hide: 100,
+                                                        },
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
                                                         placement: 'auto'

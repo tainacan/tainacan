@@ -15,7 +15,7 @@
                     :active-route="activeRoute"
                     :is-menu-compressed="isMenuCompressed"/>
             <button 
-                    v-if="!$adminOptions.hideMenuCompressButton" 
+                    v-if="!$adminOptions.hidePrimaryMenu && !$adminOptions.hidePrimaryMenuCompressButton" 
                     class="is-hidden-mobile"
                     id="menu-compress-button"
                     @click="isMenuCompressed = !isMenuCompressed">          
