@@ -58,10 +58,10 @@
                         {{ $i18n.get('info_no_item_found') }}
                     </template>
                     <template
-                            v-if="currentUserCanEditItems && !($route && $route.query.iframemode)" 
+                            v-if="currentUserCanEditItems && !$adminOptions.itemEditionMode" 
                             slot="footer">
                         <a @click="editItemModalOpen = true">
-                            {{ $i18n.get('label_crate_new_item') + ' "' + searchQuery + '"' }}
+                            {{ $i18n.get('label_create_new_item') + ' "' + searchQuery + '"' }}
                         </a>
                     </template>
                 </b-taginput>
@@ -80,7 +80,7 @@
                                 style="position: relative;">
                             <div v-html="itemValue.valuesAsHtml" />
                             <a 
-                                    v-if="currentUserCanEditItems && $route && !$route.query.iframemode"
+                                    v-if="currentUserCanEditItems && !$adminOptions.itemEditionMode"
                                     @click="editSelected(itemValue.value)"
                                     class="relationship-value-button--edit">
                                 <span class="icon">
@@ -111,13 +111,13 @@
         </b-tabs>
         <a
                 v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id && (maxMultipleValues === undefined || maxMultipleValues > selected.length)"
-                :disabled="!$route || $route.query.iframemode"
+                :disabled="!$adminOptions.itemEditionMode"
                 @click="editItemModalOpen = !editItemModalOpen"
                 class="add-link">
             <span class="icon is-small">
                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
             </span>
-            &nbsp;{{ $i18n.get('label_crate_new_item') }}
+            &nbsp;{{ $i18n.get('label_create_new_item') }}
         </a>
         <b-modal 
                 :width="1200"
@@ -178,9 +178,9 @@
             },
             itemModalSrc() {
                 if (this.editingItemId)
-                    return this.adminURL + 'iframemode=true' + (this.$adminOptions.mobilemode ? '&mobilemode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId);
+                    return this.adminURL + 'itemEditionMode=true' + (this.$adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId);
                 else
-                    return this.adminURL + 'iframemode=true' + (this.$adminOptions.mobilemode ? '&mobilemode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getNewItemPath(this.collectionId) + '?newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery;
+                    return this.adminURL + 'itemEditionMode=true' + (this.$adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getNewItemPath(this.collectionId) + '?newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery;
             },
             relationshipInputId() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum)

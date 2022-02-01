@@ -6,7 +6,7 @@
                 :can-cancel="false"/>
 
         <div 
-                v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingMetadataIframeMode)"
+                v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)"
                 class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
                 <span
@@ -226,7 +226,7 @@
                                         :item-id="itemId"
                                         :collection-id="collectionId"
                                         :related-items="item.related_items"
-                                        :is-editable="!$adminOptions.iframemode"
+                                        :is-editable="!$adminOptions.itemEditionMode"
                                         :is-loading.sync="isLoading" />
                                 
                             </b-tab-item>
@@ -780,7 +780,7 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="isEditingMetadataIframeMode">
+                    v-if="isEditingItemMetadataInsideIframe">
                 <button
                         @click="onSubmit()"
                         type="button"
@@ -790,7 +790,7 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="form.status == 'trash' && !isEditingMetadataIframeMode">
+                    v-if="form.status == 'trash' && !isEditingItemMetadataInsideIframe">
                 <button 
                         v-if="item && item.current_user_can_delete"
                         @click="onDeletePermanently()"
@@ -808,7 +808,7 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="(form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined) && !isEditingMetadataIframeMode">
+                    v-if="(form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined) && !isEditingItemMetadataInsideIframe">
                 <button
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
@@ -886,7 +886,7 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="(form.status == 'publish' || form.status == 'private') && !isEditingMetadataIframeMode">
+                    v-if="(form.status == 'publish' || form.status == 'private') && !isEditingItemMetadataInsideIframe">
                 <button
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
@@ -1057,7 +1057,7 @@ export default {
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
         },
-        isEditingMetadataIframeMode() {
+        isEditingItemMetadataInsideIframe() {
             return this.$route.query && this.$route.query.editingmetadata;
         }
     },
@@ -1262,7 +1262,7 @@ export default {
                 
                 this.isLoading = false;
 
-                if (!this.$adminOptions.iframemode) {
+                if (!this.$adminOptions.itemEditionMode) {
 
                     if (!this.isOnSequenceEdit) {
                         if (this.form.status != 'trash') {
@@ -1307,7 +1307,7 @@ export default {
             });
         },
         onDiscard() {
-            if (!this.$adminOptions.iframemode)
+            if (!this.$adminOptions.itemEditionMode)
                 this.$router.go(-1);
             else
                 parent.postMessage({ 

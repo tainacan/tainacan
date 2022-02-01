@@ -42,7 +42,8 @@
                 role="region"
                 ref="search-control"
                 v-if="((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
-                class="search-control">
+                class="search-control"  
+                :style="( $adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || $adminOptions.itemsSearchSelectionMode ) ? '--tainacan-container-padding: 6px;' : ''">
 
             <!-- <b-loading
                     :is-full-page="false"
@@ -495,7 +496,7 @@
 
             <!-- STATUS TABS, only on Admin -------- -->
             <items-status-tabs 
-                    v-if="!openAdvancedSearch && !$adminOptions.iframemode"
+                    v-if="!openAdvancedSearch && !$adminOptions.hideItemsStatusStabs"
                     :is-repository-level="isRepositoryLevel"/>
 
             <!-- FILTERS TAG LIST-->

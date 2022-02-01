@@ -461,52 +461,94 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
 
     // Declares common 'modes', which group certain admin options
     // Order matters here, as the latest overrides previous ones
-    const iframeMode = {
-        hideTainacanHeader: true,
-        hideMenuCompressButton: true,
-        hidePrimaryMenu: true,
-        hideTainacanRepositorySubheader: true,
-        hideTainacanCollectionSubheader: true,
-        hideItemEditionPageBackButton: true,
-        hideMultipleItemSelection: true,
-        hideBulkActionsDropdown: true,
-        hideContextMenuOpenItemOption: true,
-        hideContextMenuOpenItemOnNewTabOption: true,
-        hideContextMenuEditItemOption: true,
-        hideContextMenuCopyItemOption: true,
-        hideContextMenuDeleteItemOption: true,
-        hideItemActionArea: true,
-        hideItemsListPageTitle: true,
-        hideItemCreationDropdown: true,
-        hideExposersButton: true
-    };
-    if (Vue.prototype.$adminOptions.iframemode)
-        for (let option in iframeMode)
-            Vue.prototype.$adminOptions[option] = iframeMode[option];
+    const adminSpecialModes = {
+        itemsSingleSelectionMode: {
+            hideTainacanHeader: true,
+            hideMenuCompressButton: true,
+            hidePrimaryMenu: true,
+            hideTainacanRepositorySubheader: true,
+            hideTainacanCollectionSubheader: true,
+            hideMultipleItemSelection: true,
+            hideBulkActionsDropdown: true,
+            hideContextMenuOpenItemOption: true,
+            hideContextMenuOpenItemOnNewTabOption: true,
+            hideContextMenuEditItemOption: true,
+            hideContextMenuCopyItemOption: true,
+            hideContextMenuDeleteItemOption: true,
+            hideItemActionArea: true,
+            hideItemsListPageTitle: true,
+            hideItemCreationDropdown: true,
+            hideExposersButton: true,
+            hideItemsStatusStabs: true,
+            hideFilterCreationButton: true
+        },
+        itemsMultipleSelectionMode: {
+            hideTainacanHeader: true,
+            hideMenuCompressButton: true,
+            hidePrimaryMenu: true,
+            hideTainacanRepositorySubheader: true,
+            hideTainacanCollectionSubheader: true,
+            hideMultipleItemSelection: true,
+            hideBulkActionsDropdown: true,
+            hideContextMenuOpenItemOption: true,
+            hideContextMenuOpenItemOnNewTabOption: true,
+            hideContextMenuEditItemOption: true,
+            hideContextMenuCopyItemOption: true,
+            hideContextMenuDeleteItemOption: true,
+            hideItemActionArea: true,
+            hideItemsListPageTitle: true,
+            hideItemCreationDropdown: true,
+            hideExposersButton: true,
+            hideItemsStatusStabs: true,
+            hideFilterCreationButton: true
+        },
+        itemsSearchSelectionMode: {
+            hideTainacanHeader: true,
+            hideMenuCompressButton: true,
+            hidePrimaryMenu: true,
+            hideTainacanRepositorySubheader: true,
+            hideTainacanCollectionSubheader: true,
+            hideMultipleItemSelection: true,
+            hideBulkActionsDropdown: true,
+            hideItemActionArea: true,
+            hideItemsListPageTitle: true,
+            hideItemCreationDropdown: true,
+            hideExposersButton: true,
+            hideContextMenu: true,
+            hideItemSelection: true,
+            hideItemsStatusStabs: true,
+            hideFilterCreationButton: true
+        },
+        itemEditionMode: {
+            hideTainacanHeader: true,
+            hideMenuCompressButton: true,
+            hidePrimaryMenu: true,
+            hideTainacanRepositorySubheader: true,
+            hideTainacanCollectionSubheader: true,
+            hideItemEditionPageBackButton: true
+        },
+        mobileAppMode: {
+            hideTainacanHeader: true,
+            hideMenuCompressButton: true,
+            hidePrimaryMenu: true,
+            hideTainacanRepositorySubheader: true,
+            hideTainacanCollectionSubheader: true,
+            hideItemEditionPageBackButton: true,
+            hideItemsListPageTitle: true,
+            hideItemEditionPageTitle: true,
+            hideBulkEditionPageTitle: true,
+            hideCollectionNameInItemPage: true
+        }
+    }
+    for (let adminSpecialMode in adminSpecialModes) {
 
-    const readMode = {
-        hideItemsListPageTitle: true,
-        hideContextMenu: true,
-        hideItemSelection: true
-    };
-    if (Vue.prototype.$adminOptions.readmode)
-        for (let option in readMode)
-            Vue.prototype.$adminOptions[option] = readMode[option];
+        if (Vue.prototype.$adminOptions[adminSpecialMode]) {
 
-    const mobileMode = {
-        hideTainacanHeader: true,
-        hideMenuCompressButton: true,
-        hidePrimaryMenu: true,
-        hideTainacanRepositorySubheader: true,
-        hideTainacanCollectionSubheader: true,
-        hideItemEditionPageBackButton: true,
-        hideItemsListPageTitle: true,
-        hideItemEditionPageTitle: true,
-        hideBulkEditionPageTitle: true,
-        hideCollectionNameInItemPage: true
-    };
-    if (Vue.prototype.$adminOptions.mobilemode)
-        for (let option in mobileMode)
-            Vue.prototype.$adminOptions[option] = mobileMode[option];
+            console.log('Tainacan Admin loaded in ' + adminSpecialMode);
+
+            for (let option in adminSpecialModes[adminSpecialMode])
+                Vue.prototype.$adminOptions[option] = adminSpecialModes[adminSpecialMode][option];
+        }
+    }
 
 };

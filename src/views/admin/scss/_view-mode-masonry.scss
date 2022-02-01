@@ -131,6 +131,14 @@
             }
         }
     }
+
+    &.hide-items-selection {
+        .tainacan-masonry-item {
+            &:hover { background-color: transparent; cursor: default; }
+            &:hover .tainacan-masonry-item-thumbnail { cursor: default; }
+            .metadata-title { margin-left: 6px; }
+        }
+    }
 }
 
 

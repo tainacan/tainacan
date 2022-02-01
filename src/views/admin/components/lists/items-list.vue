@@ -165,6 +165,7 @@
             <div
                     role="list"
                     class="tainacan-grid-container"
+                    :class="{ 'hide-items-selection': $adminOptions.hideItemSelection }"
                     v-if="viewMode == 'grid'">
                 <div
                         role="listitem"
@@ -177,11 +178,11 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit for repository level is implemented -->
                     <div
-                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="grid-item-checkbox">
                         <b-checkbox
-                                v-if="!isSingleSelectionMode"
+                                v-if="!$adminOptions.itemsSingleSelectionMode"
                                 :value="getSelectedItemChecked(item.id)"
                                 @input="setSelectedItemChecked(item.id)"/>
                         <b-radio
@@ -193,7 +194,7 @@
 
                     <!-- Title -->
                     <div
-                            :style="{ 'padding-left': !collectionId || !($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit) || $adminOptions.readmode? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
+                            :style="{ 'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0.5em !important' : (isOnAllItemsTabs ? '1.875em' : '2.75em') }"
                             class="metadata-title">
                         <p
                                 v-tooltip="{
@@ -304,6 +305,7 @@
                     v-if="viewMode == 'masonry'"
                     :cols="{default: 7, 1919: 6, 1407: 5, 1215: 4, 1023: 3, 767: 2, 343: 1}"
                     :gutter="25"
+                    :class="{ 'hide-items-selection': $adminOptions.hideItemSelection }"
                     class="tainacan-masonry-container">
                 <div
                         role="listitem"
@@ -318,14 +320,14 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="masonry-item-checkbox">
                         <label
                                 tabindex="0"
-                                :class="(!isSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
+                                :class="(!$adminOptions.itemsSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
                             <input
-                                    v-if="!isSingleSelectionMode"
+                                    v-if="!$adminOptions.itemsSingleSelectionMode"
                                     type="checkbox"
                                     :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)">
@@ -343,7 +345,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                                'padding-left': !collectionId || !($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit) || $adminOptions.readmode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
+                                'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
                             }"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)"
@@ -440,6 +442,7 @@
             <!-- CARDS VIEW MODE -->
             <div
                     role="list"
+                    :class="{ 'hide-items-selection': $adminOptions.hideItemSelection }"
                     class="tainacan-cards-container"
                     v-if="viewMode == 'cards'">
                 <div
@@ -453,11 +456,11 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="card-checkbox">
                         <b-checkbox
-                                v-if="!isSingleSelectionMode"
+                                v-if="!$adminOptions.itemsSingleSelectionMode"
                                 :value="getSelectedItemChecked(item.id)"
                                 @input="setSelectedItemChecked(item.id)"/>
                         <b-radio
@@ -470,7 +473,7 @@
                     <!-- Title -->
                     <div
                             :style="{
-                                'padding-left': !collectionId || !($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit) || $adminOptions.readmode ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
+                                'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0.5em !important' : (isOnAllItemsTabs ? '2.125em' : '2.75em'),
                             }"
                             class="metadata-title">
                         <p
@@ -633,6 +636,7 @@
                     role="list"
                     :cols="{default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}"
                     :gutter="30"
+                    :class="{ 'hide-items-selection': $adminOptions.hideItemSelection }"
                     class="tainacan-records-container"
                     v-if="viewMode == 'records'">
                 <div
@@ -646,14 +650,14 @@
                     <!-- Checkbox -->
                     <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                     <div
-                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="record-checkbox">
                         <label
                                 tabindex="0"
-                                :class="(!isSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
+                                :class="(!$adminOptions.itemsSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
                             <input
-                                    v-if="!isSingleSelectionMode"
+                                    v-if="!$adminOptions.itemsSingleSelectionMode"
                                     type="checkbox"
                                     :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)">
@@ -672,7 +676,7 @@
                     <div
                             class="metadata-title"
                             :style="{
-                                'padding-left': !collectionId || !($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit) || $adminOptions.readmode ? '1.5em !important' : '2.75em'
+                                'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '1.5em !important' : '2.75em'
                             }">
                         <span 
                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
@@ -835,12 +839,13 @@
             <!-- TABLE VIEW MODE -->
             <table
                     v-if="viewMode == 'table'"
+                    :class="{ 'hide-items-selection': $adminOptions.hideItemSelection }"
                     class="tainacan-table">
                 <thead>
                     <tr>
                         <!-- Checking list -->
                         <th
-                                v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)">
+                                v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))">
                             &nbsp;
                             <!-- nothing to show on header for checkboxes -->
                         </th>
@@ -889,11 +894,11 @@
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <td
-                                v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                                v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
                                 :class="{ 'is-selecting': isSelectingItems }"
                                 class="checkbox-cell">
                             <b-checkbox
-                                    v-if="!isSingleSelectionMode"
+                                    v-if="!$adminOptions.itemsSingleSelectionMode"
                                     :value="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)"/>
                             <b-radio
@@ -1114,6 +1119,7 @@
             <div
                     role="list"
                     v-if="viewMode == 'list'"
+                    :class="{ 'hide-items-selection': $adminOptions.hideItemSelection }"
                     class="tainacan-list-container">
                 <div 
                         role="listitem"
@@ -1125,14 +1131,14 @@
                         :class="{ 'selected-list-item': getSelectedItemChecked(item.id) == true }">
 
                     <div
-                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.iframemode || collection && collection.current_user_can_bulk_edit)"
+                            v-if="collectionId && !$adminOptions.hideItemSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
                             :class="{ 'is-selecting': isSelectingItems }"
                             class="list-checkbox">
                         <label
                                 tabindex="0"
-                                :class="(!isSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
+                                :class="(!$adminOptions.itemsSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
                             <input
-                                    v-if="!isSingleSelectionMode"
+                                    v-if="!$adminOptions.itemsSingleSelectionMode"
                                     type="checkbox"
                                     :checked="getSelectedItemChecked(item.id)"
                                     @input="setSelectedItemChecked(item.id)">
@@ -1150,7 +1156,7 @@
                     <!-- Title -->
                     <div 
                             :style="{
-                                'padding-left': !collectionId || !($route.query.iframemode || collection && collection.current_user_can_bulk_edit) || $route.query.readmode ? '1.5em !important' : (isOnAllItemsTabs ? '2.0em' : '2.75em'),    
+                                'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $route.query.itemsSearchSelectionMode ? '1.5em !important' : (isOnAllItemsTabs ? '2.0em' : '2.75em'),    
                             }"
                             class="metadata-title">
                         <span 
@@ -1327,7 +1333,7 @@ export default {
             return this.getHighlightedItem();
         },
         selectedItems () {
-            if (this.$adminOptions.iframemode)
+            if (this.$adminOptions.itemsSingleSelectionMode || this.$adminOptions.itemsMultipleSelectionMode)
                 this.$eventBusSearch.setSelectedItemsForIframe(this.getSelectedItems());
 
             return this.getSelectedItems();
@@ -1357,9 +1363,6 @@ export default {
         totalPages(){
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));
         },
-        isSingleSelectionMode () {
-            return this.$route && this.$route.query && this.$route.query.singleselectionmode;
-        },
         isOnAllItemsTabs() {
             const currentStatus = this.getStatus();
             return !currentStatus || (currentStatus.indexOf(',') > 0);
@@ -1382,8 +1385,7 @@ export default {
                 this.queryAllItemsSelected = {};
         },
         singleItemSelection() {
-
-            if (this.isSingleSelectionMode && this.$adminOptions.iframemode)
+            if (this.$adminOptions.itemsSingleSelectionMode)
                 this.$eventBusSearch.setSelectedItemsForIframe([this.singleItemSelection], true);
         }
     },
@@ -1423,7 +1425,7 @@ export default {
             'getItemsPerPage'
         ]),
         setSelectedItemChecked(itemId) {
-            if (this.isSingleSelectionMode) {
+            if (this.$adminOptions.itemsSingleSelectionMode) {
                 this.singleItemSelection = itemId;
             } else {
                 if (this.selectedItems.find((item) => item == itemId) != undefined)
@@ -1434,7 +1436,7 @@ export default {
             }
         },
         getSelectedItemChecked(itemId) {
-            return this.isSingleSelectionMode ? this.singleItemSelection == itemId : this.selectedItems.find(item => item == itemId) != undefined;
+            return this.$adminOptions.itemsSingleSelectionMode ? this.singleItemSelection == itemId : this.selectedItems.find(item => item == itemId) != undefined;
         },
         openBulkEditionModal(){
             this.$buefy.modal.open({
@@ -1673,10 +1675,10 @@ export default {
                 }
 
             } else {
-                if (this.$adminOptions.iframemode && !this.$adminOptions.readmode) {
+                if ((this.$adminOptions.itemsSingleSelectionMode || this.$adminOptions.itemsMultipleSelectionMode) && !this.$adminOptions.itemsSearchSelectionMode) {
                     this.setSelectedItemChecked(item.id)
-                } else if (!this.$adminOptions.iframemode && !this.$adminOptions.readmode) {
-                    if(this.isOnTrash){
+                } else if (!this.$adminOptions.itemsSingleSelectionMode && !this.$adminOptions.itemsMultipleSelectionMode && !this.$adminOptions.itemsSearchSelectionMode) {
+                    if (this.isOnTrash) {
                         this.$buefy.toast.open({
                             duration: 3000,
                             message: this.$i18n.get('info_warning_remove_from_trash_first'),
@@ -1690,7 +1692,7 @@ export default {
             }
         },
         onRightClickItem($event, item) {
-            if (!this.$adminOptions.readmode) {
+            if (!this.$adminOptions.itemsSearchSelectionMode) {
                 $event.preventDefault();
 
                 this.cursorPosX = $event.clientX;

@@ -137,7 +137,7 @@
                     <iframe 
                             width="100%"
                             style="height: 85vh"
-                            :src="adminURL + 'iframemode=true' + ($adminOptions.mobilemode ? '&mobilemode=true' : '') + '&page=tainacan_admin#' + $routerHelper.getItemEditPath(collectionId, editItemId) + '?editingmetadata=' + editMetadataId" />
+                            :src="adminURL + 'itemEditionMode=true' + ($adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + $routerHelper.getItemEditPath(collectionId, editItemId) + '?editingmetadata=' + editMetadataId" />
                 </b-modal>
             </div>
         </div>

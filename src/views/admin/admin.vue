@@ -3,9 +3,7 @@
             id="tainacan-admin-app" 
             class="has-mounted columns is-fullheight"
             :class="{ 
-                'tainacan-admin-iframe-mode': $adminOptions.iframemode, 
-                'tainacan-admin-mobile-mode': $adminOptions.mobilemode, 
-                'tainacan-admin-read-mode': $adminOptions.readmode
+                'tainacan-admin-mobile-app-mode': $adminOptions.mobileAppMode
             }">
         <template v-if="activeRoute == 'HomePage'">
             <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
@@ -125,7 +123,7 @@
     }  
 
     @media screen and (max-width: 769px) {
-        .is-fullheight:not(.tainacan-admin-mobile-mode):not(.tainacan-admin-collection-mobile-mode) {
+        .is-fullheight:not(.tainacan-admin-mobile-app-mode):not(.tainacan-admin-collection-mobile-app-mode) {
             height: auto;
         }
     }

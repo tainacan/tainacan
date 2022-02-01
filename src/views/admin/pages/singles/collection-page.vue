@@ -1,14 +1,16 @@
 <template>
     <div 
             class="columns is-fullheight"
-            :class="{ 'tainacan-admin-collection-mobile-mode': $adminOptions.mobilemode }">
-        <section class="column is-secondary-content">
+            :class="{ 'tainacan-admin-collection-mobile-app-mode': $adminOptions.mobileAppMode }">
+        <section 
+                class="column is-secondary-content"
+                :style="$adminOptions.hideTainacanRepositorySubheader ? 'margin-top: 0; height: 100%;' : ''">
             <tainacan-collection-subheader v-if="!$adminOptions.hideTainacanCollectionSubheader" />
-
             <router-view
                     id="collection-page-container"
                     :collection-id="collectionId" 
-                    class="page-container page-container-small"/>
+                    class="page-container"
+                    :class="{ 'page-container-small': !$adminOptions.hideTainacanRepositorySubheader }"/>
         </section>
     </div>
 </template>
@@ -22,7 +24,7 @@ export default {
     components: {
         TainacanCollectionSubheader
     },
-    data(){
+    data() {
         return {
             collectionId: Number
         }
@@ -36,7 +38,7 @@ export default {
             }
         }
     },
-    created(){
+    created() {
         this.collectionId = this.$route.params.collectionId;
         
         this.$eventBusSearch.setCollectionId(this.collectionId);
