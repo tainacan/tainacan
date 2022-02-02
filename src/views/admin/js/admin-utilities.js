@@ -467,54 +467,54 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             hidePrimaryMenu: true,
             hideRepositorySubheader: true,
             hideCollectionSubheader: true,
-            hideMultipleItemSelection: true,
-            hideBulkActionsDropdown: true,
-            hideContextMenuOpenItemOption: true,
-            hideContextMenuOpenItemOnNewTabOption: true,
-            hideContextMenuEditItemOption: true,
-            hideContextMenuCopyItemOption: true,
-            hideContextMenuDeleteItemOption: true,
-            hideItemActionArea: true,
+            hideItemsListMultipleSelection: true,
+            hideItemsListBulkActionsButton: true,
+            hideItemsListContextMenuOpenItemOption: true,
+            hideItemsListContextMenuOpenItemOnNewTabOption: true,
+            hideItemsListContextMenuEditItemOption: true,
+            hideItemsListContextMenuCopyItemOption: true,
+            hideItemsListContextMenuDeleteItemOption: true,
+            hideItemsListActionAreas: true,
             hideItemsListPageTitle: true,
-            hideItemCreationDropdown: true,
-            hideExposersButton: true,
-            hideItemsStatusTabs: true,
-            hideFilterCreationButton: true
+            hideItemsListCreationDropdown: true,
+            hideItemsListExposersButton: true,
+            hideItemsListStatusTabs: true,
+            hideItemsListFilterCreationButton: true
         },
         itemsMultipleSelectionMode: {
             hideTainacanHeader: true,
             hidePrimaryMenu: true,
             hideRepositorySubheader: true,
             hideCollectionSubheader: true,
-            hideMultipleItemSelection: true,
-            hideBulkActionsDropdown: true,
-            hideContextMenuOpenItemOption: true,
-            hideContextMenuOpenItemOnNewTabOption: true,
-            hideContextMenuEditItemOption: true,
-            hideContextMenuCopyItemOption: true,
-            hideContextMenuDeleteItemOption: true,
-            hideItemActionArea: true,
+            hideItemsListMultipleSelection: true,
+            hideItemsListBulkActionsButton: true,
+            hideItemsListContextMenuOpenItemOption: true,
+            hideItemsListContextMenuOpenItemOnNewTabOption: true,
+            hideItemsListContextMenuEditItemOption: true,
+            hideItemsListContextMenuCopyItemOption: true,
+            hideItemsListContextMenuDeleteItemOption: true,
+            hideItemsListActionAreas: true,
             hideItemsListPageTitle: true,
-            hideItemCreationDropdown: true,
-            hideExposersButton: true,
-            hideItemsStatusTabs: true,
-            hideFilterCreationButton: true
+            hideItemsListCreationDropdown: true,
+            hideItemsListExposersButton: true,
+            hideItemsListStatusTabs: true,
+            hideItemsListFilterCreationButton: true
         },
         itemsSearchSelectionMode: {
             hideTainacanHeader: true,
             hidePrimaryMenu: true,
             hideRepositorySubheader: true,
             hideCollectionSubheader: true,
-            hideMultipleItemSelection: true,
-            hideBulkActionsDropdown: true,
-            hideItemActionArea: true,
+            hideItemsListMultipleSelection: true,
+            hideItemsListBulkActionsButton: true,
+            hideItemsListActionAreas: true,
             hideItemsListPageTitle: true,
-            hideItemCreationDropdown: true,
-            hideExposersButton: true,
-            hideContextMenu: true,
-            hideItemSelection: true,
-            hideItemsStatusTabs: true,
-            hideFilterCreationButton: true
+            hideItemsListCreationDropdown: true,
+            hideItemsListExposersButton: true,
+            hideItemsListContextMenu: true,
+            hideItemsListSelection: true,
+            hideItemsListStatusTabs: true,
+            hideItemsListFilterCreationButton: true
         },
         itemEditionMode: {
             hideTainacanHeader: true,
@@ -547,7 +547,7 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
     }
     
     /*
-        Possible Values:
+        Possible Values for Admin Options. Identation marks options that affects others:
         * hideHomeRepositorySection
             * hideHomeThemeCollectionsButton
             * hideHomeThemeItemsButton
@@ -565,6 +565,7 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideHomeCollectionFiltersButton
             * hideHomeCollectionActivitiesButton
             * hideHomeCollectionThemeCollectionButton
+            * showHomeCollectionCreateItemButton
         * hideTainacanHeader
             * hideTainacanHeaderHomeButton
             * hideTainacanHeaderSearchInput
@@ -588,23 +589,29 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideRepositorySubheaderViewCollectionsButton
             * hideRepositorySubheaderExportButton
         * hideCollectionSubheader
-        * hideMultipleItemSelection
-        * hideItemSelection
-        * hideBulkActionsDropdown
-        * hideContextMenu
-            * hideContextMenuOpenItemOption
-            * hideContextMenuOpenItemOnNewTabOption
-            * hideContextMenuEditItemOption
-            * hideContextMenuCopyItemOption
-            * hideContextMenuDeleteItemOption
-        * hideItemActionArea
+
         * hideItemsListPageTitle
+        * hideItemsListMultipleSelection
+        * hideItemsListSelection
+        * hideItemsListBulkActionsButton
+        * hideItemsListCreationDropdown
+            * hideItemsListCreationDropdownBulkAdd
+            * hideItemsListCreationDropdownImport
+        * hideItemsListAdvancedSearch
+        * hideItemsListExposersButton
+        * hideItemsListStatusTabs
+            * hideItemsListStatusTabsTotalItems
+        * hideItemsListContextMenu
+            * hideItemsListContextMenuOpenItemOption
+            * hideItemsListContextMenuOpenItemOnNewTabOption
+            * hideItemsListContextMenuEditItemOption
+            * hideItemsListContextMenuCopyItemOption
+            * hideItemsListContextMenuDeleteItemOption
+        * hideItemsListActionAreas
+        * hideItemsListFilterCreationButton
+
         * hideItemEditionPageTitle
         * hideBulkEditionPageTitle
-        * hideItemCreationDropdown
-        * hideExposersButton
-        * hideItemsStatusTabs
-        * hideFilterCreationButton
         * hideItemEditionPageBackButton
         * hideCollectionNameInItemPage
     */

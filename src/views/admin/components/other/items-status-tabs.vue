@@ -12,7 +12,7 @@
                 <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                     {{ $i18n.get('label_all_items') }}
                     <span 
-                            v-if="!$adminOptions.hideItemsStatusTabsTotalItems"
+                            v-if="!$adminOptions.hideItemsListStatusTabsTotalItems"
                             class="has-text-gray">
                         &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}
                     </span>
@@ -41,7 +41,7 @@
                     </span>
                     {{ statusOption.name }}
                     <span 
-                            v-if="!$adminOptions.hideItemsStatusTabsTotalItems"
+                            v-if="!$adminOptions.hideItemsListStatusTabsTotalItems"
                             class="has-text-gray">
                         &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}
                     </span>
@@ -67,7 +67,7 @@ export default {
         },
         repositoryTotalItems() {
 
-            if (!this.$adminOptions.hideItemsStatusTabsTotalItems) {
+            if (!this.$adminOptions.hideItemsListStatusTabsTotalItems) {
                 let collections = this.getCollections();
 
                 let total_items = {

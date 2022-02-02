@@ -156,6 +156,21 @@
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
                             </router-link>
                         </li>
+                        <li v-if="collection.current_user_can_edit_items && $adminOptions.showHomeCollectionCreateItemButton">
+                            <router-link
+                                    tag="a" 
+                                    :to="{ path: $routerHelper.getNewItemPath(collection.id) }" 
+                                    :aria-label="$i18n.get('add_one_item')">
+                                <b-tooltip 
+                                        :label="$i18n.get('add_one_item')"
+                                        position="is-bottom">
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-add"/>
+                                    </span>
+                                </b-tooltip>
+                                <!-- <span class="menu-text">{{ $i18n.get('add_one_item') }}</span> -->
+                            </router-link>
+                        </li>
                         <li v-if="collection.current_user_can_edit && !$adminOptions.hideHomeCollectionSettingsButton">
                             <router-link
                                     tag="a" 

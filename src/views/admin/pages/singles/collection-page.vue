@@ -10,7 +10,7 @@
                     id="collection-page-container"
                     :collection-id="collectionId" 
                     class="page-container"
-                    :class="{ 'page-container-small': !$adminOptions.hideRepositorySubheader }"/>
+                    :class="{ 'page-container-small': !$adminOptions.hideRepositorySubheader && !$adminOptions.hideCollectionSubheader }"/>
         </section>
     </div>
 </template>
