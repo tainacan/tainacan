@@ -4,13 +4,13 @@
             :class="{ 'tainacan-admin-collection-mobile-app-mode': $adminOptions.mobileAppMode }">
         <section 
                 class="column is-secondary-content"
-                :style="$adminOptions.hideTainacanRepositorySubheader ? 'margin-top: 0; height: 100%;' : ''">
-            <tainacan-collection-subheader v-if="!$adminOptions.hideTainacanCollectionSubheader" />
+                :style="$adminOptions.hideRepositorySubheader ? 'margin-top: 0; height: 100%;' : ''">
+            <tainacan-collection-subheader v-if="!$adminOptions.hideCollectionSubheader" />
             <router-view
                     id="collection-page-container"
                     :collection-id="collectionId" 
                     class="page-container"
-                    :class="{ 'page-container-small': !$adminOptions.hideTainacanRepositorySubheader }"/>
+                    :class="{ 'page-container-small': !$adminOptions.hideRepositorySubheader }"/>
         </section>
     </div>
 </template>

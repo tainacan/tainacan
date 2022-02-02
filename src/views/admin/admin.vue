@@ -35,7 +35,7 @@
             </button>
             <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
             <tainacan-repository-subheader
-                    v-if="!$adminOptions.hideTainacanRepositorySubheader" 
+                    v-if="!$adminOptions.hideRepositorySubheader" 
                     :is-repository-level="isRepositoryLevel"
                     :is-menu-compressed="isMenuCompressed"/>
             <div 

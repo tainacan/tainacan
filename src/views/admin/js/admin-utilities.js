@@ -465,8 +465,8 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         itemsSingleSelectionMode: {
             hideTainacanHeader: true,
             hidePrimaryMenu: true,
-            hideTainacanRepositorySubheader: true,
-            hideTainacanCollectionSubheader: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true,
             hideMultipleItemSelection: true,
             hideBulkActionsDropdown: true,
             hideContextMenuOpenItemOption: true,
@@ -478,14 +478,14 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             hideItemsListPageTitle: true,
             hideItemCreationDropdown: true,
             hideExposersButton: true,
-            hideItemsStatusStabs: true,
+            hideItemsStatusTabs: true,
             hideFilterCreationButton: true
         },
         itemsMultipleSelectionMode: {
             hideTainacanHeader: true,
             hidePrimaryMenu: true,
-            hideTainacanRepositorySubheader: true,
-            hideTainacanCollectionSubheader: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true,
             hideMultipleItemSelection: true,
             hideBulkActionsDropdown: true,
             hideContextMenuOpenItemOption: true,
@@ -497,14 +497,14 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             hideItemsListPageTitle: true,
             hideItemCreationDropdown: true,
             hideExposersButton: true,
-            hideItemsStatusStabs: true,
+            hideItemsStatusTabs: true,
             hideFilterCreationButton: true
         },
         itemsSearchSelectionMode: {
             hideTainacanHeader: true,
             hidePrimaryMenu: true,
-            hideTainacanRepositorySubheader: true,
-            hideTainacanCollectionSubheader: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true,
             hideMultipleItemSelection: true,
             hideBulkActionsDropdown: true,
             hideItemActionArea: true,
@@ -513,21 +513,21 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             hideExposersButton: true,
             hideContextMenu: true,
             hideItemSelection: true,
-            hideItemsStatusStabs: true,
+            hideItemsStatusTabs: true,
             hideFilterCreationButton: true
         },
         itemEditionMode: {
             hideTainacanHeader: true,
             hidePrimaryMenu: true,
-            hideTainacanRepositorySubheader: true,
-            hideTainacanCollectionSubheader: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true,
             hideItemEditionPageBackButton: true
         },
         mobileAppMode: {
             hideTainacanHeader: true,
             hidePrimaryMenu: true,
-            hideTainacanRepositorySubheader: true,
-            hideTainacanCollectionSubheader: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true,
             hideItemEditionPageBackButton: true,
             hideItemsListPageTitle: true,
             hideItemEditionPageTitle: true,
@@ -566,11 +566,11 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hidePrimaryMenuExportersButton
             * hidePrimaryMenuActivitiesButton
             * hidePrimaryMenuCapabilitiesButton
-        * hideTainacanRepositorySubheader
-            * hideTainacanRepositorySubheaderViewCollectionButton
-            * hideTainacanRepositorySubheaderViewCollectionsButton
-            * hideTainacanRepositorySubheaderExportButton
-        * hideTainacanCollectionSubheader
+        * hideRepositorySubheader
+            * hideRepositorySubheaderViewCollectionButton
+            * hideRepositorySubheaderViewCollectionsButton
+            * hideRepositorySubheaderExportButton
+        * hideCollectionSubheader
         * hideMultipleItemSelection
         * hideItemSelection
         * hideBulkActionsDropdown
@@ -582,13 +582,13 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideContextMenuDeleteItemOption
         * hideItemActionArea
         * hideItemsListPageTitle
-        * hideItemCreationDropdown
-        * hideExposersButton
-        * hideItemsStatusStabs
-        * hideFilterCreationButton
-        * hideItemEditionPageBackButton
         * hideItemEditionPageTitle
         * hideBulkEditionPageTitle
+        * hideItemCreationDropdown
+        * hideExposersButton
+        * hideItemsStatusTabs
+        * hideFilterCreationButton
+        * hideItemEditionPageBackButton
         * hideCollectionNameInItemPage
     */
 };

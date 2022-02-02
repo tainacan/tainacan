@@ -11,7 +11,11 @@
                     }">
                 <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                     {{ $i18n.get('label_all_items') }}
-                    <span class="has-text-gray">&nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}</span>
+                    <span 
+                            v-if="!$adminOptions.hideItemsStatusTabsTotalItems"
+                            class="has-text-gray">
+                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems.private + repositoryTotalItems.publish + repositoryTotalItems.draft })` : (collection && collection.total_items ? ` (${Number(collection.total_items.private) + Number(collection.total_items.publish) + Number(collection.total_items.draft)})` : '') }}
+                    </span>
                 </a>
             </li>
             <li 
@@ -36,7 +40,11 @@
                                 />
                     </span>
                     {{ statusOption.name }}
-                    <span class="has-text-gray">&nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}</span>
+                    <span 
+                            v-if="!$adminOptions.hideItemsStatusTabsTotalItems"
+                            class="has-text-gray">
+                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}
+                    </span>
                 </a>
             </li>
         </ul>
@@ -58,23 +66,28 @@ export default {
             return this.getCollection();
         },
         repositoryTotalItems() {
-            let collections = this.getCollections();
 
-            let total_items = {
-                trash: 0,
-                publish: 0,
-                draft: 0,
-                private: 0
-            };
+            if (!this.$adminOptions.hideItemsStatusTabsTotalItems) {
+                let collections = this.getCollections();
 
-            for(let collection of collections){
-                total_items.trash += Number(collection.total_items.trash);
-                total_items.draft += Number(collection.total_items.draft);
-                total_items.publish += Number(collection.total_items.publish);
-                total_items.private += Number(collection.total_items.private);
+                let total_items = {
+                    trash: 0,
+                    publish: 0,
+                    draft: 0,
+                    private: 0
+                };
+
+                for(let collection of collections){
+                    total_items.trash += Number(collection.total_items.trash);
+                    total_items.draft += Number(collection.total_items.draft);
+                    total_items.publish += Number(collection.total_items.publish);
+                    total_items.private += Number(collection.total_items.private);
+                }
+
+                return total_items;
+            } else {
+                return '';
             }
-
-            return total_items;
         }
     },
     methods: {

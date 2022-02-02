@@ -496,7 +496,7 @@
 
             <!-- STATUS TABS, only on Admin -------- -->
             <items-status-tabs 
-                    v-if="!openAdvancedSearch && !$adminOptions.hideItemsStatusStabs"
+                    v-if="!openAdvancedSearch && !$adminOptions.hideItemsStatusTabs"
                     :is-repository-level="isRepositoryLevel"/>
 
             <!-- FILTERS TAG LIST-->
