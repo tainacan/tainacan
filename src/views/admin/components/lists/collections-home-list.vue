@@ -141,7 +141,7 @@
                         v-for="(collection, index) of collections"
                         class="tainacan-card">       
                     <ul class="menu-list">
-                        <li>
+                        <li v-if="!$adminOptions.hideHomeCollectionItemsButton">
                             <router-link 
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionItemsPath(collection.id, '') }" 
@@ -156,7 +156,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
                             </router-link>
                         </li>
-                        <li v-if="collection.current_user_can_edit">
+                        <li v-if="collection.current_user_can_edit && !$adminOptions.hideHomeCollectionSettingsButton">
                             <router-link
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionEditPath(collection.id) }" 
@@ -171,7 +171,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
                             </router-link>
                         </li>
-                        <li v-if="collection.current_user_can_edit_metadata">
+                        <li v-if="collection.current_user_can_edit_metadata && !$adminOptions.hideHomeCollectionMetadataButton">
                             <router-link  
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionMetadataPath(collection.id) }"
@@ -186,7 +186,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
                             </router-link>
                         </li>
-                        <li v-if="collection.current_user_can_edit_filters">
+                        <li v-if="collection.current_user_can_edit_filters && !$adminOptions.hideHomeCollectionFiltersButton">
                             <router-link 
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionFiltersPath(collection.id) }" 
@@ -202,7 +202,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
                             </router-link>
                         </li>
-                        <li v-if="$userCaps.hasCapability('tnc_rep_read_logs')">
+                        <li v-if="$userCaps.hasCapability('tnc_rep_read_logs') && !$adminOptions.hideHomeCollectionActivitiesButton">
                             <router-link 
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionActivitiesPath(collection.id) }"
@@ -217,7 +217,7 @@
                                 <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                             </router-link> 
                         </li>
-                        <li>
+                        <li v-if="!$adminOptions.hideHomeCollectionThemeCollectionButton">
                             <a 
                                     :href="collection.url"
                                     target="_blank" 

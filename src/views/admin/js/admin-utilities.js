@@ -548,6 +548,23 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
     
     /*
         Possible Values:
+        * hideHomeRepositorySection
+            * hideHomeThemeCollectionsButton
+            * hideHomeThemeItemsButton
+            * hideHomeTaxonomiesButton
+            * hideHomeMetadataButton
+            * hideHomeFiltersButton
+            * hideHomeImportersButton
+            * hideHomeExportersButton
+            * hideHomeActivitiesButton
+        * hideHomeCollectionsSection
+            * hideHomeCollectionsButton
+            * hideHomeCollectionItemsButton
+            * hideHomeCollectionSettingsButton
+            * hideHomeCollectionMetadataButton
+            * hideHomeCollectionFiltersButton
+            * hideHomeCollectionActivitiesButton
+            * hideHomeCollectionThemeCollectionButton
         * hideTainacanHeader
             * hideTainacanHeaderHomeButton
             * hideTainacanHeaderSearchInput
