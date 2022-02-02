@@ -18,6 +18,7 @@
                     v-if="!$adminOptions.hidePrimaryMenu && !$adminOptions.hidePrimaryMenuCompressButton" 
                     class="is-hidden-mobile"
                     id="menu-compress-button"
+                    :style="{ top: menuCompressButtonTop }"
                     @click="isMenuCompressed = !isMenuCompressed">          
                 <span
                         v-tooltip="{
@@ -65,6 +66,27 @@
                 isMenuCompressed: false,
                 isRepositoryLevel : true,
                 activeRoute: '/collections'
+            }
+        },
+        computed: {
+            menuCompressButtonTop() {
+                let amountOfElementsAbove = [
+                    this.$adminOptions.hidePrimaryMenuRepositoryButton,
+                    this.$adminOptions.hidePrimaryMenuCollectionsButton,
+                    this.$adminOptions.hidePrimaryMenuItemsButton
+                ].filter(Boolean).length;
+
+                switch (amountOfElementsAbove) {
+                    case 3:
+                        return 'calc(3.05em + 12px)';
+                    case 2:
+                        return 'calc(5.65em + 12px)';
+                    case 1:
+                        return 'calc(8.5em + 12px)';
+                    case 0:
+                    default:
+                        return 'calc(11.125em + 12px)';
+                }
             }
         },
         watch: {

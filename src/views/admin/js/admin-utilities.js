@@ -545,10 +545,14 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
                 Vue.prototype.$adminOptions[option] = adminSpecialModes[adminSpecialMode][option];
         }
     }
-
+    
     /*
         Possible Values:
         * hideTainacanHeader
+            * hideTainacanHeaderHomeButton
+            * hideTainacanHeaderSearchInput
+            * hideTainacanHeaderAdvancedSearch
+            * hideTainacanHeaderProcessesPopup
         * hidePrimaryMenuCompressButton
         * hidePrimaryMenu
             * hidePrimaryMenuCompressButton
@@ -563,6 +567,9 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hidePrimaryMenuActivitiesButton
             * hidePrimaryMenuCapabilitiesButton
         * hideTainacanRepositorySubheader
+            * hideTainacanRepositorySubheaderViewCollectionButton
+            * hideTainacanRepositorySubheaderViewCollectionsButton
+            * hideTainacanRepositorySubheaderExportButton
         * hideTainacanCollectionSubheader
         * hideMultipleItemSelection
         * hideItemSelection

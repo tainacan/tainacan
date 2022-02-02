@@ -60,7 +60,7 @@
                         @click="openAvailableExportersModal"
                         class="button"
                         id="exporter-collection-button"
-                        v-if="!isRepositoryLevel">
+                        v-if="!isRepositoryLevel && !$adminOptions.hideTainacanRepositorySubheaderExportButton">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                     </span>
@@ -80,7 +80,7 @@
                 <a
                         :href="collection && collection.url ? collection.url : ''"
                         target="_blank"
-                        v-if="!isRepositoryLevel && collection && collection.url"
+                        v-if="!isRepositoryLevel && collection && collection.url && !$adminOptions.hideTainacanRepositorySubheaderViewCollectionButton"
                         class="button"
                         id="view-collection-button">
                 <span class="icon">
@@ -103,7 +103,7 @@
                 <a
                         :href="repositoryURL"
                         target="_blank"
-                        v-if="isRepositoryLevel"
+                        v-if="isRepositoryLevel && !$adminOptions.hideTainacanRepositorySubheaderViewCollectionsButton"
                         class="button"
                         id="view-repository-button">
                 <span class="icon">
