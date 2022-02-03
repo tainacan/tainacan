@@ -3,7 +3,7 @@
         <h1 
                 v-if="roleSlug !== 'new'"
                 class="wp-heading-inline">
-            {{ $route.meta.title }}&nbsp;<strong>{{ role.name ? role.name : '' }}</strong>
+            {{ $route.meta.title }}&nbsp;<strong>{{ form.name ? form.name : '' }}</strong>
         </h1>
         <h1 
                 v-else
@@ -32,7 +32,7 @@
                     id="role-name-input" 
                     name="name"
                     @input="showNotice = false" 
-                    v-model="role.name" 
+                    v-model="form.name" 
                     :placeholder="$i18n.get('Insert the role name...')">
             </div>
         </template>
@@ -44,6 +44,16 @@
 
         <template v-if="!isLoadingRole && !isLoadingCapabilities">
             <br>
+
+            <!-- Hook for extra Form options -->
+            <template v-if="hasBeginLeftForm">  
+                <form 
+                    id="form-role-begin-left"
+                    class="form-hook-region"
+                    v-html="getBeginLeftForm"/>
+                <br>
+            </template>
+            
             <div id="capabilities-tabs">
                 <h2 class="nav-tab-wrapper">
                     <a 
@@ -92,8 +102,8 @@
                                                 type="checkbox"
                                                 name="capabilities[]"
                                                 :id="'capability_'+ capability"
-                                                :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
-                                                :checked="role.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
+                                                :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0"
+                                                :checked="form.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0)"
                                                 @input="onUpdateCapability($event.target.checked, capability)">
                                         </span>
                                         <span 
@@ -172,8 +182,8 @@
                                                     type="checkbox"
                                                     name="roles[]"
                                                     :id="'capability_'+ capability.replace('%d', selectedCollection)"
-                                                    :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
-                                                    :checked="role.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
+                                                    :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
+                                                    :checked="form.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
                                                     @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
                                             </span>
                                             <span 
@@ -193,6 +203,14 @@
                 </div> <!-- End of Collections Tab -->
             
             </div> <!-- End of Tabs-->
+
+            <!-- Hook for extra Form options -->
+            <template v-if="hasEndLeftForm">  
+                <form 
+                    id="form-role-end-left"
+                    class="form-hook-region"
+                    v-html="getEndLeftForm"/>
+            </template>
 
         </template>
         <div class="form-submit">
@@ -214,7 +232,7 @@
                         type="submit"
                         name="submit"
                         id="submit"
-                        :disabled="!role.name || showNotice" 
+                        :disabled="!form.name || showNotice" 
                         class="button button-primary"
                         :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
             </p>
@@ -224,17 +242,20 @@
 
 <script>
     import { mapActions, mapGetters } from 'vuex';
+    import { formHooks } from '../../admin/js/mixins';
 
     export default {
+        mixins: [ formHooks ],
         data() {
             return {
+                entityName: 'role',
                 isUpdatingRole: false,
                 isLoadingRole: false,
                 isLoadingCapabilities: false,
                 selectedCollection: 'all',
                 collections: [],
                 isLoadingCollections: false,
-                role: {
+                form: {
                     name: '',
                     capabilities: {}
                 },
@@ -282,7 +303,7 @@
                 this.isLoadingRole = true;
                 this.fetchRole(this.roleSlug)
                     .then((originalRole) => {
-                        this.role = JSON.parse(JSON.stringify(originalRole));
+                        this.form = JSON.parse(JSON.stringify(originalRole));
                         this.isLoadingRole = false;
                     }).catch(() => {
                         this.isLoadingRole = false;
@@ -291,15 +312,15 @@
                 this.isLoadingRole = true;
                 this.fetchRole(this.$route.query.template)
                     .then((originalRole) => {
-                        this.role = JSON.parse(JSON.stringify(originalRole));
-                        this.role.name = this.role.name + ' ' + this.$i18n.get('(Copy)');
-                        this.role.slug = undefined;
+                        this.form = JSON.parse(JSON.stringify(originalRole));
+                        this.form.name = this.form.name + ' ' + this.$i18n.get('(Copy)');
+                        this.form.slug = undefined;
                         this.isLoadingRole = false;
                     }).catch(() => {
                         this.isLoadingRole = false;
                     });
             }   else {
-                this.role = {
+                this.form = {
                     name: '',
                     capabilities: {}
                 }
@@ -328,6 +349,13 @@
                     this.isLoadingCollections = false;
                 }); 
         },
+        mounted() {
+            // Fills hook forms with it's real values 
+            this.$nextTick()
+                .then(() => {
+                    this.updateExtraFormData(this.form);
+                });
+        },
         methods: {
             ...mapActions('collection', [
                 'fetchAllCollectionNames'
@@ -347,18 +375,26 @@
             ]),
             onUpdateCapability(value, capabilityKey) {
                 this.showNotice = false;
-                const capabilities = this.role.capabilities && Object.keys(this.role.capabilities).length ? this.role.capabilities : {};
+                const capabilities = this.form.capabilities && Object.keys(this.form.capabilities).length ? this.form.capabilities : {};
                 this.$set(capabilities, capabilityKey, value);
-                this.$set(this.role, 'capabilities', capabilities);
+                this.$set(this.form, 'capabilities', capabilities);
             },
             onSubmit(event) {
                 event.preventDefault();
                 this.isUpdatingRole = true;
+                
+                let data = {
+                    name: this.form.name,
+                    capabilities: this.form.capabilities,
+                    slug: this.form.slug
+                }
+                this.fillExtraFormData(data);
+
                 if (this.roleSlug === 'new') {
-                    this.createRole(this.role)
+                    this.createRole(data)
                         .then((createdRole) => {
                             this.roleSlug = createdRole.slug;
-                            this.role = createdRole;
+                            this.form = createdRole;
                             this.$router.push('/roles/' + this.roleSlug);
                             this.isUpdatingRole = false;
                             this.showNotice = true;
@@ -371,7 +407,7 @@
                             this.showErrorNotice = true;
                         });
                 } else {
-                    this.updateRole(this.role)
+                    this.updateRole(data)
                         .then(() => {
                             this.isUpdatingRole = false;
                             this.showNotice = true;
