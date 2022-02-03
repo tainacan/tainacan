@@ -23,7 +23,6 @@
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
             <a
-                    v-if="!$adminOptions.hideItemEditionPageBackButton"
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
                 {{ $i18n.get('back') }}
@@ -54,10 +53,10 @@
                         </template>
 
                         <div class="columns">
-
+ 
                             <!-- Collection -------------------------------- -->
                             <div 
-                                    v-if="!$adminOptions.hideCollectionNameInItemPage"
+                                    v-if="!$adminOptions.hideItemEditionCollectionName"
                                     class="column is-narrow">
                                 <div class="section-label">
                                     <label>{{ $i18n.get('collection') }}</label>
@@ -76,6 +75,7 @@
 
                             <!-- Visibility (status public or private) -------------------------------- -->
                             <div
+                                    v-if="!$adminOptions.hideItemEditionStatusOptions"
                                     style="flex-wrap: wrap"
                                     class="column is-narrow">
                                 <div class="section-label">
@@ -114,7 +114,7 @@
                             <!-- Comment Status ------------------------ -->
                             <div
                                     class="column is-narrow"
-                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open'">
+                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
                                 <div class="section-label">
                                     <label>{{ $i18n.get('label_comments') }}</label>
                                     <help-button
@@ -451,7 +451,9 @@
                             </div>
 
                             <!-- Thumbnail -------------------------------- -->
-                            <div class="section-label">
+                            <div 
+                                    v-if="!$adminOptions.hideItemEditionThumbnail"
+                                    class="section-label">
                                 <label>{{ $i18n.get('label_thumbnail') }}</label>
                                 <help-button
                                         :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
@@ -459,7 +461,7 @@
 
                             </div>
                             <div 
-                                    v-if="!isLoading"
+                                    v-if="!isLoading && !$adminOptions.hideItemEditionThumbnail"
                                     class="section-box section-thumbnail">
                                 <div class="thumbnail-field">
                                     <file-item

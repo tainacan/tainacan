@@ -520,19 +520,17 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             hideTainacanHeader: true,
             hidePrimaryMenu: true,
             hideRepositorySubheader: true,
-            hideCollectionSubheader: true,
-            hideItemEditionPageBackButton: true
+            hideCollectionSubheader: true
         },
         mobileAppMode: {
             hideTainacanHeader: true,
             hidePrimaryMenu: true,
             hideRepositorySubheader: true,
             hideCollectionSubheader: true,
-            hideItemEditionPageBackButton: true,
             hideItemsListPageTitle: true,
             hideItemEditionPageTitle: true,
             hideBulkEditionPageTitle: true,
-            hideCollectionNameInItemPage: true
+            hideItemSingleCollectionName: true
         }
     }
     for (let adminSpecialMode in adminSpecialModes) {
@@ -611,8 +609,20 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         * hideItemsListFilterCreationButton
 
         * hideItemEditionPageTitle
+        * hideItemEditionCollectionName
+        * hideItemEditionStatusOptions
+        * hideItemEditionCommentsToggle
+        * hideItemEditionThumbnail
+        
         * hideBulkEditionPageTitle
-        * hideItemEditionPageBackButton
-        * hideCollectionNameInItemPage
+        
+        * hideItemSinglePageTitle
+        * hideItemSingleCollectionName
+        * hideItemSingleCurrentStatus
+        * hideItemSingleCurrentVisibility
+        * hideItemSingleCommentsOpen
+        * hideItemSingleThumbnail
+        * hideItemSingleActivities
+        * hideItemSingleExposers
     */
 };

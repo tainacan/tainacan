@@ -4,7 +4,9 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
 
-        <div class="tainacan-page-title">
+        <div 
+                v-if="!$adminOptions.hideItemSinglePageTitle"
+                class="tainacan-page-title">
             <h1>
             <span
                     v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
@@ -42,7 +44,9 @@
                             class="columns">
 
                         <!-- Collection -------------------------------- -->
-                        <div class="column is-narrow">
+                        <div 
+                                v-if="!$adminOptions.hideItemSingleCollectionName"
+                                class="column is-narrow">
                             <div class="section-label">
                                 <label>{{ $i18n.get('collection') }}</label>
                             </div>
@@ -59,7 +63,9 @@
                         </div>
 
                         <!-- Status (status public or private) -------------------------------- -->
-                        <div class="column is-narrow">
+                        <div 
+                                v-if="!$adminOptions.hideItemSingleCurrentStatus"
+                                class="column is-narrow">
                             
                             <div class="section-label">
                                 <label>{{ $i18n.getHelperTitle('items', 'status') }}</label>
@@ -81,7 +87,9 @@
                         </div>
 
                         <!-- Visibility -->
-                        <div class="column is-narrow">
+                        <div 
+                                v-if="!$adminOptions.hideItemSingleCurrentVisibility"
+                                class="column is-narrow">
                             <div class="section-label">
                                 <label>{{ $i18n.get('label_visibility') }}</label>
                             </div>
@@ -129,7 +137,7 @@
 
                         <!-- Comment Status ------------------------ -->
                         <div
-                                v-if="collection && collection.allow_comments && collection.allow_comments == 'open'"
+                                v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemSingleCommentsOpen"
                                 class="column is-narrow">
                             <div class="section-label">
                                 <label>{{ $i18n.get('label_comments') }}</label>
@@ -253,7 +261,7 @@
                                     @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading" />    
                         </b-tab-item>
 
-                        <b-tab-item>
+                        <b-tab-item :visible="!$adminOptions.hideItemSingleActivities">
                             <template slot="header">
                                 <span class="icon has-text-gray5">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-activities"/>
@@ -311,10 +319,14 @@
                         </div>
 
                         <!-- Thumbnail -------------------------------- -->
-                        <div class="section-label">
+                        <div 
+                                v-if="!$adminOptions.hideItemSingleThumbnail"
+                                class="section-label">
                             <label>{{ $i18n.get('label_thumbnail') }}</label>
                         </div>
-                        <div class="section-box section-thumbnail">
+                        <div 
+                                v-if="!$adminOptions.hideItemSingleThumbnail"
+                                class="section-box section-thumbnail">
                             <div class="thumbnail-field">
                                 <file-item
                                         v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
@@ -390,6 +402,7 @@
                         <span>{{ $i18n.getFrom('items','edit_item') }}</span>
                     </router-link>
                     <button 
+                            v-if="!$adminOptions.hideItemSingleExposers"
                             class="button sequence-button"
                             :aria-label="$i18n.get('label_view_as')"
                             :disabled="isLoading"
