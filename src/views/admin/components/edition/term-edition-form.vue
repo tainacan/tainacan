@@ -7,16 +7,16 @@
             id="termEditForm"
             class="tainacan-form"
             :class="{ 'tainacan-modal-content': isModal }"
-            @submit.prevent="saveEdition(editForm)">
+            @submit.prevent="saveEdition(form)">
         <component 
                 :is="isModal ? 'header' : 'div'"
                 class="tainacan-page-title"
                 :class="{ 'tainacan-modal-title': isModal }">
-            <h2>{{ editForm & editForm.id && editForm.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h2>
+            <h2>{{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h2>
             <a
-                    v-if="editForm && editForm.url != undefined && editForm.url!= ''"
+                    v-if="form && form.url != undefined && form.url!= ''"
                     target="_blank"
-                    :href="editForm.url">
+                    :href="form.url">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
@@ -44,20 +44,18 @@
                 </label>
                 <b-input
                         :placeholder="$i18n.get('label_term_without_name')"
-                        v-model="editForm.name"
+                        v-model="form.name"
                         name="name"
                         @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
             </b-field>
 
             <!-- Hook for extra Form options -->
             <template 
-                    v-if="formHooks != undefined && 
-                        formHooks['term'] != undefined &&
-                        formHooks['term']['begin-left'] != undefined">  
+                    v-if="hasBeginLeftForm">  
                 <form 
                     id="form-term-begin-left"
                     class="form-hook-region"
-                    v-html="formHooks['term']['begin-left'].join('')"/>
+                    v-html="getBeginLeftForm"/>
             </template>
 
             <div class="columns is-gapless image-and-description-area">
@@ -70,11 +68,11 @@
                         <div class="thumbnail-field">
                             <figure class="image">
                                 <span
-                                        v-if="editForm.header_image === undefined || editForm.header_image === false"
+                                        v-if="form.header_image === undefined || form.header_image === false"
                                         class="image-placeholder">{{ $i18n.get('label_empty_term_image') }}</span>
                                 <img
                                         :alt="$i18n.get('label_image')"
-                                        :src="(editForm.header_image === undefined || editForm.header_image === false) ? $thumbHelper.getEmptyThumbnailPlaceholder() : editForm.header_image">
+                                        :src="(form.header_image === undefined || form.header_image === false) ? $thumbHelper.getEmptyThumbnailPlaceholder() : form.header_image">
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a
@@ -130,7 +128,7 @@
                         <b-input
                                 type="textarea"
                                 name="description"
-                                v-model="editForm.description"
+                                v-model="form.description"
                                 @focus="clearErrors('description')"/>
                     </b-field>
                 </div>
@@ -192,14 +190,11 @@
             </b-field>
 
             <!-- Hook for extra Form options -->
-            <template 
-                    v-if="formHooks != undefined && 
-                        formHooks['term'] != undefined &&
-                        formHooks['term']['end-left'] != undefined">  
+            <template v-if="hasEndLeftForm">  
                 <form 
                     id="form-term-end-left"
                     class="form-hook-region"
-                    v-html="formHooks['term']['end-left'].join('')"/>
+                    v-html="getEndLeftForm"/>
             </template>
 
             <!-- Submit buttons -------------- -->
@@ -234,7 +229,7 @@
         name: 'TermEditionForm',
         mixins: [ formHooks ],
         props: {
-            editForm: Object,
+            form: Object,
             taxonomyId: '',
             isModal: false
         },
@@ -260,19 +255,19 @@
             // Fills hook forms with it's real values 
             this.$nextTick()
                 .then(() => {
-                    this.updateExtraFormData(this.editForm);
+                    this.updateExtraFormData(this.form);
                     document.getElementById('termEditForm').scrollIntoView({ behavior: 'smooth' });
                 });
 
             this.showCheckboxesWarning = false;
-            this.hasParent = this.editForm.parent != undefined && this.editForm.parent > 0;
-            this.initialParentId = this.editForm.parent;
+            this.hasParent = this.form.parent != undefined && this.form.parent > 0;
+            this.initialParentId = this.form.parent;
             this.initializeMediaFrames();
 
             if (this.hasParent) {
                 this.isFetchingParentTerms = true;
                 this.showCheckboxesWarning = false;
-                this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.editForm.parent })
+                this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.form.parent })
                     .then((parentName) => {
                         this.parentTermName = parentName;
                         this.isFetchingParentTerms = false;
@@ -299,11 +294,11 @@
 
                 if (term.id === 'new') {
                     let data = {
-                        name: this.editForm.name,
-                        description: this.editForm.description,
-                        parent: this.hasParent ? this.editForm.parent : 0,
-                        header_image_id: this.editForm.header_image_id,
-                        header_image: this.editForm.header_image,
+                        name: this.form.name,
+                        description: this.form.description,
+                        parent: this.hasParent ? this.form.parent : 0,
+                        header_image_id: this.form.header_image_id,
+                        header_image: this.form.header_image,
                     };
                     this.fillExtraFormData(data);
                     this.isLoading = true;
@@ -313,7 +308,7 @@
                     })
                         .then((term) => {
                             this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent });
-                            this.editForm = {};
+                            this.form = {};
                             this.formErrors = {};
                             this.isLoading = false;
                             if (this.isModal)
@@ -333,12 +328,12 @@
                 } else {
 
                     let data = {
-                        id: this.editForm.id,
-                        name: this.editForm.name,
-                        description: this.editForm.description,
-                        parent: this.hasParent ? this.editForm.parent : 0,
-                        header_image_id: this.editForm.header_image_id,
-                        header_image: this.editForm.header_image,
+                        id: this.form.id,
+                        name: this.form.name,
+                        description: this.form.description,
+                        parent: this.hasParent ? this.form.parent : 0,
+                        header_image_id: this.form.header_image_id,
+                        header_image: this.form.header_image,
                     }
                     this.fillExtraFormData(data);
                     this.isLoading = true;
@@ -364,13 +359,13 @@
                 }
             },
             cancelEdition() {
-                this.$emit('onEditionCanceled', this.editForm);
+                this.$emit('onEditionCanceled', this.form);
                 if (this.isModal)
                     this.$parent.close();
             },
             deleteHeaderImage() {
-                this.editForm = Object.assign({},
-                    this.editForm,
+                this.form = Object.assign({},
+                    this.form,
                     {
                         header_image_id: "0",
                         header_image: false
@@ -384,11 +379,11 @@
                             frame_title: this.$i18n.get('instruction_select_term_header_image'),
                             frame_button: this.$i18n.get('label_select_file')
                         },
-                        relatedPostId: this.editForm.id,
+                        relatedPostId: this.form.id,
                         onSave: (croppedImage) => {
 
-                           this.editForm = Object.assign({},
-                                this.editForm,
+                           this.form = Object.assign({},
+                                this.form,
                                 {
                                     header_image_id: croppedImage.id.toString(),
                                     header_image: croppedImage.url
@@ -432,7 +427,7 @@
                 
                 this.fetchPossibleParentTerms({
                         taxonomyId: this.taxonomyId, 
-                        termId: this.editForm.id, 
+                        termId: this.form.id, 
                         search: this.parentTermSearchQuery,
                         offset: this.parentTermSearchOffset })
                     .then((res) => {
@@ -453,7 +448,7 @@
             }, 250),
             onToggleSwitch() {
 
-                if (this.editForm.parent == 0) {
+                if (this.form.parent == 0) {
                     this.hasChangedParent = this.hasParent;
                 } else {
                     this.hasChangedParent = !this.hasParent;
@@ -464,7 +459,7 @@
             },
             onSelectParentTerm(selectedParentTerm) {
                 this.hasChangedParent = this.initialParentId != selectedParentTerm.id;
-                this.editForm.parent = selectedParentTerm.id;
+                this.form.parent = selectedParentTerm.id;
                 this.selectedParentTerm = selectedParentTerm;
                 this.parentTermName = selectedParentTerm.name;
                 this.showCheckboxesWarning = true;

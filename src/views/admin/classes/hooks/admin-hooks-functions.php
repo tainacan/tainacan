@@ -3,7 +3,7 @@
 /**
  * @see \Tainacan\Admin_Hooks->register()
  */
-function tainacan_register_admin_hook( $context, $callback, $position = 'end-left' ) {
+function tainacan_register_admin_hook( $context, $callback, $position = 'end-left', $conditional = null ) {
 	$admin_hooks = \Tainacan\Admin_Hooks::get_instance();
-	return $admin_hooks->register( $context, $callback, $position );
+	return $admin_hooks->register( $context, $callback, $position, $conditional );
 }

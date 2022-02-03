@@ -51,11 +51,38 @@ export const dateInter = {
 };
 
 // Used for filling extra form data on hooks
+// Any form component that uses this should have a 'entityName' and a 'form' in their data atts
 export const formHooks = {
     data() {
         return { 
             formHooks: JSON.parse(JSON.stringify(tainacan_plugin['form_hooks'])), 
             formHookEventName: ''
+        }
+    },
+    computed: {
+        hasBeginLeftForm() {
+            return this.formHooks && this.formHooks[this.entityName] && this.formHooks[this.entityName]['begin-left'] && this.formHooks[this.entityName]['begin-left'].length > 0;
+        },
+        hasBeginRightForm() {
+            return this.formHooks && this.formHooks[this.entityName] && this.formHooks[this.entityName]['begin-right'] && this.formHooks[this.entityName]['begin-right'].length > 0;
+        },
+        hasEndLeftForm() {
+            return this.formHooks && this.formHooks[this.entityName] && this.formHooks[this.entityName]['end-left'] && this.formHooks[this.entityName]['end-left'].length > 0;
+        },
+        hasEndRightForm() {
+            return this.formHooks && this.formHooks[this.entityName] && this.formHooks[this.entityName]['end-right'] && this.formHooks[this.entityName]['end-right'].length > 0;
+        },
+        getBeginLeftForm() {
+            return this.formHooks[this.entityName]['begin-left'].map(aForm => this.checkFormConditionals(aForm)).join('');
+        },
+        getBeginRightForm() {
+            return this.formHooks[this.entityName]['begin-right'].map(aForm => this.checkFormConditionals(aForm)).join('');
+        },
+        getEndLeftForm() {
+            return this.formHooks[this.entityName]['end-left'].map(aForm => this.checkFormConditionals(aForm)).join('');
+        },
+        getEndRightForm() {
+            return this.formHooks[this.entityName]['end-right'].map(aForm => this.checkFormConditionals(aForm)).join('');
         }
     },
     created() {
@@ -77,7 +104,12 @@ export const formHooks = {
             ];
             // Gets data from existing extra form hooks
             for (let position of positions) {
-                if (this.formHooks[this.entityName] && this.formHooks[this.entityName][position] && this.formHooks[this.entityName][position] != undefined) {
+                if (
+                    this.formHooks[this.entityName] && 
+                    this.formHooks[this.entityName][position] &&
+                    this.formHooks[this.entityName][position]['form'] &&
+                    this.formHooks[this.entityName][position]['form'] != undefined 
+                ) {
                     let formElement = document.getElementById('form-' + this.entityName + '-' + position);
                     if (formElement) {  
                         for (let element of formElement.elements) {
@@ -107,7 +139,12 @@ export const formHooks = {
             ];
             // Gets data from existing extra form hooks
             for (let position of positions) {
-                if (this.formHooks[this.entityName] && this.formHooks[this.entityName][position] && this.formHooks[this.entityName][position] != undefined) {
+                if (
+                    this.formHooks[this.entityName] &&
+                    this.formHooks[this.entityName][position] &&
+                    this.formHooks[this.entityName][position]['form'] &&
+                    this.formHooks[this.entityName][position]['form'] != undefined
+                ) {
                     let formElement = document.getElementById('form-' + this.entityName + '-' + position);
                     
                     if (formElement) {   
@@ -132,6 +169,16 @@ export const formHooks = {
                     }
                 }
             }
+        },
+        checkFormConditionals(aForm) {
+            console.log(this.form, aForm)
+            if (aForm['form']) {
+                if (aForm['conditional'] && aForm['conditional']['attribute'] && aForm['conditional']['value'])
+                    return (this.form && this.form[aForm['conditional']['attribute']] === aForm['conditional']['value'] ) ? aForm['form'] : '';
+                else
+                    return aForm['form'];
+            }
+            return '';
         }
     }
 };

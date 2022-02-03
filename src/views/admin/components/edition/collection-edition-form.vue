@@ -31,14 +31,11 @@
                     </b-field>
 
                     <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['collection'] != undefined &&
-                                formHooks['collection']['begin-left'] != undefined">  
+                    <template v-if="hasBeginLeftForm">  
                         <form
                             class="form-hook-region" 
                             id="form-collection-begin-left"
-                            v-html="formHooks['collection']['begin-left'].join('')"/>
+                            v-html="getBeginLeftForm"/>
                     </template>
 
                     <!-- Thumbnail -------------------------------- --> 
@@ -340,15 +337,12 @@
                     </b-field>
 
                     <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['collection'] != undefined &&
-                                formHooks['collection']['end-left'] != undefined">  
+                    <template v-if="hasEndLeftForm">  
                         <form
                             ref="form-collection-end-left" 
                             id="form-collection-end-left"
                             class="form-hook-region"
-                            v-html="formHooks['collection']['end-left'].join('')"/>
+                            v-html="getEndLeftForm"/>
                     </template>
 
                 </div>
@@ -427,14 +421,11 @@
                     </b-field>
                     
                     <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['collection'] != undefined &&
-                                formHooks['collection']['begin-right'] != undefined">  
+                    <template v-if="hasBeginRightForm">  
                         <form 
                             id="form-collection-begin-right"
                             class="form-hook-region"
-                            v-html="formHooks['collection']['begin-right'].join('')"/>
+                            v-html="getBeginRightForm"/>
                     </template>
 
                     <!-- Description -------------------------------- --> 
@@ -606,14 +597,11 @@
                     </transition>
 
                     <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['collection'] != undefined &&
-                                formHooks['collection']['end-right'] != undefined">  
+                    <template v-if="hasEndRightForm">  
                         <form 
                             id="form-collection-end-right"
                             class="form-hook-region"
-                            v-html="formHooks['collection']['end-right'].join('')"/>
+                            v-html="getEndRightForm"/>
                     </template>
                 </div>
 
