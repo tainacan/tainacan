@@ -304,7 +304,16 @@
                 this.fetchRole(this.roleSlug)
                     .then((originalRole) => {
                         this.form = JSON.parse(JSON.stringify(originalRole));
+
+                        // Fills hook forms with it's real values 
+                        this.$nextTick()
+                            .then(() => {
+                                this.updateExtraFormData(this.form);
+                                console.log(this.form)
+                            });
+
                         this.isLoadingRole = false;
+                        
                     }).catch(() => {
                         this.isLoadingRole = false;
                     });
@@ -315,6 +324,14 @@
                         this.form = JSON.parse(JSON.stringify(originalRole));
                         this.form.name = this.form.name + ' ' + this.$i18n.get('(Copy)');
                         this.form.slug = undefined;
+
+                        // Fills hook forms with it's real values 
+                        this.$nextTick()
+                            .then(() => {
+                                this.updateExtraFormData(this.form);
+                                console.log(this.form)
+                            });
+
                         this.isLoadingRole = false;
                     }).catch(() => {
                         this.isLoadingRole = false;
@@ -348,13 +365,6 @@
                 .catch(() => {
                     this.isLoadingCollections = false;
                 }); 
-        },
-        mounted() {
-            // Fills hook forms with it's real values 
-            this.$nextTick()
-                .then(() => {
-                    this.updateExtraFormData(this.form);
-                });
         },
         methods: {
             ...mapActions('collection', [

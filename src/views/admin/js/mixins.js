@@ -107,8 +107,7 @@ export const formHooks = {
                 if (
                     this.formHooks[this.entityName] && 
                     this.formHooks[this.entityName][position] &&
-                    this.formHooks[this.entityName][position]['form'] &&
-                    this.formHooks[this.entityName][position]['form'] != undefined 
+                    this.formHooks[this.entityName][position] != undefined 
                 ) {
                     let formElement = document.getElementById('form-' + this.entityName + '-' + position);
                     if (formElement) {  
@@ -142,15 +141,17 @@ export const formHooks = {
                 if (
                     this.formHooks[this.entityName] &&
                     this.formHooks[this.entityName][position] &&
-                    this.formHooks[this.entityName][position]['form'] &&
-                    this.formHooks[this.entityName][position]['form'] != undefined
+                    this.formHooks[this.entityName][position] != undefined
                 ) {
                     let formElement = document.getElementById('form-' + this.entityName + '-' + position);
-                    
-                    if (formElement) {   
+                    console.log(formElement)
+                    if (formElement) { 
+                        console.log(formElement)  
                         for (let element of formElement.elements) {
+                            console.log(element)
                             for (let key of Object.keys(entityObject)) {
                                 if (element['name'] == key)  {
+                                    console.log(entityObject[key])
                                     if (Array.isArray(entityObject[key])) {
                                         let obj = entityObject[key].find((value) => { return value == element['value'] });
                                         element['checked'] = obj != undefined ? true : false;
@@ -171,7 +172,6 @@ export const formHooks = {
             }
         },
         checkFormConditionals(aForm) {
-            console.log(this.form, aForm)
             if (aForm['form']) {
                 if (aForm['conditional'] && aForm['conditional']['attribute'] && aForm['conditional']['value'])
                     return (this.form && this.form[aForm['conditional']['attribute']] === aForm['conditional']['value'] ) ? aForm['form'] : '';
