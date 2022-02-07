@@ -309,7 +309,6 @@
                         this.$nextTick()
                             .then(() => {
                                 this.updateExtraFormData(this.form);
-                                console.log(this.form)
                             });
 
                         this.isLoadingRole = false;
@@ -329,7 +328,6 @@
                         this.$nextTick()
                             .then(() => {
                                 this.updateExtraFormData(this.form);
-                                console.log(this.form)
                             });
 
                         this.isLoadingRole = false;
