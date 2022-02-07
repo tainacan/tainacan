@@ -144,14 +144,10 @@ export const formHooks = {
                     this.formHooks[this.entityName][position] != undefined
                 ) {
                     let formElement = document.getElementById('form-' + this.entityName + '-' + position);
-                    console.log(formElement)
                     if (formElement) { 
-                        console.log(formElement)  
                         for (let element of formElement.elements) {
-                            console.log(element)
                             for (let key of Object.keys(entityObject)) {
                                 if (element['name'] == key)  {
-                                    console.log(entityObject[key])
                                     if (Array.isArray(entityObject[key])) {
                                         let obj = entityObject[key].find((value) => { return value == element['value'] });
                                         element['checked'] = obj != undefined ? true : false;
