@@ -12,7 +12,7 @@
                     :aria-expanded="open"
                     v-tooltip="{
                         delay: {
-                            show: 500,
+                            shown: 500,
                             hide: 300,
                         },
                         content: filter.name,

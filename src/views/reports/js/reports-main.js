@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '../../admin/js/store/store';
 import router from './reports-router';
-import VTooltip from 'v-tooltip';
+import VTooltip from 'floating-vue';
 import { Snackbar, Modal } from 'buefy';
 import VueApexCharts from 'vue-apexcharts';
 import cssVars from 'css-vars-ponyfill';

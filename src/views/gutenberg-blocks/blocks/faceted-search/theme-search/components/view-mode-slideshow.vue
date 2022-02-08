@@ -8,7 +8,7 @@
         <button
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: $i18n.get('label_slides_help'),
@@ -27,7 +27,7 @@
         <button
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
@@ -46,7 +46,7 @@
         <a
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: $i18n.get('label_item_page'),
@@ -66,7 +66,7 @@
         <button
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: $i18n.get('close'),
@@ -85,7 +85,7 @@
         <button
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
@@ -286,7 +286,7 @@
                         <span 
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: metadatum.name,

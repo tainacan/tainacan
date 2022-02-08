@@ -34,12 +34,12 @@
                                 <p
                                         v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 120,
                                             },
                                             content: capability.display_name,
                                             autoHide: false,
-                                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }">
                                     {{ capability.display_name }}
@@ -53,12 +53,12 @@
                                 <p
                                         v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 120,
                                             },
                                             content: capability.description,
                                             autoHide: false,
-                                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                         v-html="capability.description"/>
@@ -75,12 +75,12 @@
                                     <p
                                             v-tooltip="{
                                                 delay: {
-                                                    show: 500,
+                                                    shown: 500,
                                                     hide: 120,
                                                 },
                                                 content: props['complete-roles-list'],
                                                 autoHide: false,
-                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                                 placement: 'auto-start'
                                             }"
                                             v-html="props['complete-roles-list']"/>
@@ -99,7 +99,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
                                                     autoHide: true,
-                                                    classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                                     placement: 'auto'
                                                 }"
                                                 class="icon">

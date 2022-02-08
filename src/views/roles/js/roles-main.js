@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '../../admin/js/store/store';
 import router from './roles-router';
-import VTooltip from 'v-tooltip';
+import VTooltip from 'floating-vue';
 import { Snackbar, Modal } from 'buefy';
 
 import { I18NPlugin } from './wp-i18n-plugin';

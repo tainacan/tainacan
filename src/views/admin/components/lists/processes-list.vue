@@ -74,11 +74,11 @@
                         <p
                             v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process'),
-                                    autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                    autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             {{ bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process') }}</p>
@@ -91,11 +91,11 @@
                         <p
                             v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process'),
-                                    autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                    autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             <span :class="{'occluding-content': bgProcess.progress_value }"><span class="has-text-weight-bold">{{ $i18n.get('label_progress') + " " }}</span>{{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}</span>
@@ -110,11 +110,11 @@
                         <p
                             v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: getDate(bgProcess.queued_on),
-                                    autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                    autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             <span class="has-text-weight-bold">{{ $i18n.get('label_queued_on') + " " }}</span>{{ getDate(bgProcess.queued_on) }}</p>
@@ -133,11 +133,11 @@
                             <span
                                 v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_stop_process'),
-                                        autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                 v-if=" bgProcess.status === 'running' "
@@ -148,11 +148,11 @@
                             <span
                                 v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_process_completed'),
-                                        autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                 v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
@@ -162,11 +162,11 @@
                             <span
                                     v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_completed_with_errors'),
-                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
@@ -176,11 +176,11 @@
                             <span
                                     v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_cancelled'),
-                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if=" bgProcess.status === 'cancelled' "
@@ -190,11 +190,11 @@
                             <span
                                     v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_paused'),
-                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if=" bgProcess.status === 'paused' "
@@ -204,11 +204,11 @@
                             <span
                                     v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_waiting'),
-                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if=" bgProcess.status === 'waiting' "
@@ -218,11 +218,11 @@
                             <span
                                     v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_delete_process'),
-                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if=" bgProcess.status === 'waiting' "
@@ -233,11 +233,11 @@
                             <span
                                     v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
                                             content: $i18n.get('label_process_failed'),
-                                            autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                     v-if="bgProcess.status === 'errored'"
@@ -296,11 +296,11 @@
                             <p
                                 v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: getDate(bgProcess.processed_last),
-                                        autoHide: false, classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        autoHide: false, popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 <span class="has-text-weight-bold">{{ $i18n.get('label_last_processed_on') + " " }}</span>{{ getDate(bgProcess.processed_last) }}</p>

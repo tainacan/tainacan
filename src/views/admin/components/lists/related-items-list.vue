@@ -92,7 +92,7 @@
                                     <p
                                             v-tooltip="{
                                                 delay: {
-                                                    show: 500,
+                                                    shown: 500,
                                                     hide: 300,
                                                 },
                                                 content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
@@ -115,7 +115,7 @@
                                             <span
                                                     v-tooltip="{
                                                          delay: {
-                                                            show: 500,
+                                                            shown: 500,
                                                             hide: 100,
                                                         },
                                                         content: $i18n.get('edit'),

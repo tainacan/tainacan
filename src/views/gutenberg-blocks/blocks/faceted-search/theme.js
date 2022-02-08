@@ -1,7 +1,7 @@
 // Main imports
 import Vue from 'vue';
 import Buefy from 'buefy';
-import VTooltip from 'v-tooltip';
+import VTooltip from 'floating-vue';
 import VueMasonry from 'vue-masonry-css';
 import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';

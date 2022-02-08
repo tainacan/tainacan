@@ -101,16 +101,6 @@
             margin-right: 0;
         }
     }
-    &[aria-hidden='true'] {
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity .15s, visibility .15s;
-    }
-    &[aria-hidden='false'] {
-        visibility: visible;
-        opacity: 1;
-        transition: opacity .15s;
-    }
 
     // Metadata type Preview tooltips
     &.metadata-type-preview-tooltip[x-placement^="bottom"] {

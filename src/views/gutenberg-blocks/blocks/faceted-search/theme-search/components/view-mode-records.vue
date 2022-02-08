@@ -51,7 +51,7 @@
                         <p 
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: item.metadata != undefined ? renderMetadata(item, column) : '',
@@ -67,7 +67,7 @@
                                 v-if="isSlideshowViewModeEnabled"
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 100,
                                     },
                                     content: $i18n.get('label_see_on_fullscreen'),

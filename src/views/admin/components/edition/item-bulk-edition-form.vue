@@ -111,7 +111,7 @@
                                     class="icon has-text-success"
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_document_uploaded'),
@@ -127,7 +127,7 @@
                             <span 
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_button_delete_document'),

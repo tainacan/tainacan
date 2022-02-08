@@ -88,13 +88,13 @@
                     @click="isFiltersModalActive = !isFiltersModalActive"
                     v-tooltip="{
                         delay: {
-                            show: 500,
+                            shown: 500,
                             hide: 300,
                         },
                         content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                         autoHide: false,
                         placement: 'auto-start',
-                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                     }">
                 <span class="icon">
                     <i 
@@ -157,13 +157,13 @@
                 <b-dropdown
                         v-tooltip="{
                             delay: {
-                                show: 500,
+                                shown: 500,
                                 hide: 300,
                             },
                             content: totalItems <= 0 ? $i18n.get('info_cant_select_metadata_without_items') : '',
                             autoHide: false,
                             placement: 'auto-start',
-                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                         }" 
                         ref="displayedMetadataDropdown"
                         :mobile-modal="true"
@@ -344,13 +344,13 @@
                                     v-else 
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: registeredViewModes[viewModeOption].label,
                                         autoHide: false,
                                         placement: 'auto-start',
-                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
                                     }"
                                     class="gray-icon"
                                     v-html="registeredViewModes[viewModeOption].icon"/>
