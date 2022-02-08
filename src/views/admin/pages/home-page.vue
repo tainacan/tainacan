@@ -1,8 +1,11 @@
 <template>
     <div class="home-page page-container">
         <b-loading :active.sync="isLoadingCollections"/>
-        <section class="home-section home-section-repository">
+        <section 
+                v-if="!$adminOptions.hideHomeRepositorySection"
+                class="home-section home-section-repository">
             <div 
+                    v-if="!$adminOptions.hideHomeCollectionsSection"
                     class="section-connector" 
                     aria-hidden/>
             <div class="home-section-header repository-section-header">
@@ -14,6 +17,7 @@
                 
                 <h1>{{ $i18n.get('repository') + ' ' }}<span class="has-text-weight-semibold">{{ repositoryName }}</span></h1>
                 <a
+                        v-if="!$adminOptions.hideHomeThemeItemsButton"
                         target="_blank"
                         :href="themeItemsListURL">
                     <span class="icon">
@@ -44,7 +48,7 @@
                             <span class="menu-text">{{ $i18n.get('label_all_items') }}</span>
                         </router-link>
                     </li> -->
-                    <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata')">
+                    <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata') && !$adminOptions.hideHomeMetadataButton">
                         <router-link
                                 tag="a"
                                 to="/metadata">
@@ -54,7 +58,7 @@
                             <span class="menu-text">{{ $i18n.get('title_repository_metadata_page' ) }}</span>
                         </router-link>
                     </li>
-                    <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters')">
+                    <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters') && !$adminOptions.hideHomeFiltersButton">
                         <router-link
                                 tag="a"
                                 to="/filters">
@@ -64,7 +68,7 @@
                             <span class="menu-text">{{ $i18n.get('title_repository_filters_page') }}</span>
                         </router-link>
                     </li>
-                    <li>
+                    <li v-if="!$adminOptions.hideHomeTaxonomiesButton">
                         <router-link
                                 tag="a"
                                 to="/taxonomies">
@@ -74,7 +78,7 @@
                             <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                         </router-link>
                     </li>
-                    <li>
+                    <li v-if="!$adminOptions.hideHomeActivitiesButton">
                         <router-link
                                 tag="a"
                                 to="/activities">
@@ -84,7 +88,7 @@
                             <span class="menu-text">{{ $i18n.get('title_repository_activities_page') }}</span>
                         </router-link>
                     </li>
-                    <li>
+                    <li v-if="!$adminOptions.hideHomeImportersButton">
                         <router-link
                                 tag="a"
                                 to="/importers">
@@ -94,7 +98,7 @@
                             <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                         </router-link>
                     </li>
-                    <li>
+                    <li v-if="!$adminOptions.hideHomeExportersButton">
                         <router-link
                                 tag="a"
                                 to="/exporters">
@@ -108,8 +112,11 @@
             </nav>
         </section>
 
-        <section class="home-section home-section-collection">
+        <section 
+                v-if="!$adminOptions.hideHomeCollectionsSection"
+                class="home-section home-section-collection">
             <div 
+                    v-if="!$adminOptions.hideHomeRepositorySection"
                     class="collection-section-connector" 
                     aria-hidden/>
             <div class="home-section-header collections-section-header">
@@ -123,6 +130,7 @@
                 </div>
                 <h1>{{ $i18n.get('label_recent_collections') }}</h1>
                 <a
+                        v-if="!$adminOptions.hideHomeThemeCollectionsButton"
                         target="_blank"
                         :href="themeCollectionListURL"
                         style="position: relative">
@@ -137,6 +145,7 @@
                     :collections="collections"
                     :collections-total="collectionsTotal"/> 
             <router-link
+                    v-if="!$adminOptions.hideHomeCollectionsButton"
                     class="collections-see-more"
                     tag="a"
                     to="/collections">

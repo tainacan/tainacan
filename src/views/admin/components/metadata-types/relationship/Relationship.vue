@@ -59,10 +59,10 @@
                         {{ $i18n.get('info_no_item_found') }}
                     </template>
                     <template
-                            v-if="currentUserCanEditItems && !($route && $route.query.iframemode)" 
+                            v-if="currentUserCanEditItems && !$adminOptions.itemEditionMode" 
                             slot="footer">
                         <a @click="editItemModalOpen = true">
-                            {{ $i18n.get('label_crate_new_item') + ' "' + searchQuery + '"' }}
+                            {{ $i18n.get('label_create_new_item') + ' "' + searchQuery + '"' }}
                         </a>
                     </template>
                 </b-taginput>
@@ -81,7 +81,7 @@
                                 style="position: relative;">
                             <div v-html="itemValue.valuesAsHtml" />
                             <a 
-                                    v-if="currentUserCanEditItems && $route && !$route.query.iframemode"
+                                    v-if="currentUserCanEditItems && !$adminOptions.itemEditionMode"
                                     @click="editSelected(itemValue.value)"
                                     class="relationship-value-button--edit">
                                 <span class="icon">
@@ -112,13 +112,13 @@
         </b-tabs>
         <a
                 v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id && (maxMultipleValues === undefined || maxMultipleValues > selected.length)"
-                :disabled="!$route || $route.query.iframemode"
+                :disabled="!$adminOptions.itemEditionMode"
                 @click="editItemModalOpen = !editItemModalOpen"
                 class="add-link">
             <span class="icon is-small">
                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
             </span>
-            &nbsp;{{ $i18n.get('label_crate_new_item') }}
+            &nbsp;{{ $i18n.get('label_create_new_item') }}
         </a>
         <b-modal 
                 :width="1200"
@@ -160,7 +160,7 @@
                 page: 1,
                 activeTab: 0,
                 editItemModalOpen: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
+                adminURL: tainacan_plugin.admin_url + 'admin.php?',
                 currentUserCanEditItems: false,
                 selectedValuesAsHtml: []
             }
@@ -180,9 +180,9 @@
             },
             itemModalSrc() {
                 if (this.editingItemId)
-                    return this.adminFullURL + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId) + '?iframemode=true' + (this.isMobileMode ? '&mobilemode=true' : '');
+                    return this.adminURL + 'itemEditionMode=true' + (this.$adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId);
                 else
-                    return this.adminFullURL + this.$routerHelper.getNewItemPath(this.collectionId) + '?iframemode=true&newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery + (this.isMobileMode ? '&mobilemode=true' : '');
+                    return this.adminURL + 'itemEditionMode=true' + (this.$adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getNewItemPath(this.collectionId) + '?newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery;
             },
             relationshipInputId() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum)
@@ -197,9 +197,6 @@
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length &&
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length > 1;
-            },
-            isMobileMode() {
-                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {

@@ -68,7 +68,8 @@ import {
     ConsolePlugin,
     UserCapabilitiesPlugin,
     StatusHelperPlugin,
-    CommentsStatusHelperPlugin 
+    CommentsStatusHelperPlugin,
+    AdminOptionsHelperPlugin 
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -113,6 +114,7 @@ export default (element) => {
             Vue.use(ConsolePlugin, {visual: false});
             Vue.use(VueTheMask);
             Vue.use(CommentsStatusHelperPlugin);
+            Vue.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
 
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */

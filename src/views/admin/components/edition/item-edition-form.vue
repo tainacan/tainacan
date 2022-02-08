@@ -6,7 +6,7 @@
                 :can-cancel="false"/>
 
         <div 
-                v-if="!isMobileMode || (isMobileMode && isEditingMetadataIframeMode)"
+                v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)"
                 class="tainacan-page-title">
             <h1 v-if="isCreatingNewItem">
                 <span
@@ -23,7 +23,6 @@
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
             <a
-                    v-if="!isIframeMode"
                     @click="$router.go(-1)"
                     class="back-link has-text-secondary">
                 {{ $i18n.get('back') }}
@@ -54,10 +53,10 @@
                         </template>
 
                         <div class="columns">
-
+ 
                             <!-- Collection -------------------------------- -->
                             <div 
-                                    v-if="!isMobileMode"
+                                    v-if="!$adminOptions.hideItemEditionCollectionName"
                                     class="column is-narrow">
                                 <div class="section-label">
                                     <label>{{ $i18n.get('collection') }}</label>
@@ -76,6 +75,7 @@
 
                             <!-- Visibility (status public or private) -------------------------------- -->
                             <div
+                                    v-if="!$adminOptions.hideItemEditionStatusOptions"
                                     style="flex-wrap: wrap"
                                     class="column is-narrow">
                                 <div class="section-label">
@@ -114,7 +114,7 @@
                             <!-- Comment Status ------------------------ -->
                             <div
                                     class="column is-narrow"
-                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open'">
+                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
                                 <div class="section-label">
                                     <label>{{ $i18n.get('label_comments') }}</label>
                                     <help-button
@@ -331,7 +331,6 @@
                                     </template>
                                 </div>
 
-
                                 <!-- Related items -->
                                 <div    
                                         v-if="totalRelatedItems && activeTab === 'related'"
@@ -347,15 +346,13 @@
                                     </div>
 
                                     <related-items-list
-                                            :is-mobile-screen="isMobileScreen"
                                             :item-id="itemId"
                                             :collection-id="collectionId"
-                                            :related-items="item.related_items"
+                                            :related-items="$adminOptions.itemEditionMode"
                                             :is-editable="!isIframeMode"
                                             :is-loading.sync="isLoading" />
                                     
                                 </div>
-
 
                                 <!-- Attachments ------------------------------------------ -->
                                 <div    
@@ -569,7 +566,9 @@
                             </div>
 
                             <!-- Thumbnail -------------------------------- -->
-                            <div class="section-label">
+                            <div 
+                                    v-if="!$adminOptions.hideItemEditionThumbnail"
+                                    class="section-label">
                                 <label>{{ $i18n.get('label_thumbnail') }}</label>
                                 <help-button
                                         :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
@@ -577,7 +576,7 @@
 
                             </div>
                             <div 
-                                    v-if="!isLoading"
+                                    v-if="!isLoading && !$adminOptions.hideItemEditionThumbnail"
                                     class="section-box section-thumbnail">
                                 <div class="thumbnail-field">
                                     <file-item
@@ -730,8 +729,8 @@
                 </p>
             </div>
             <div
-                    class="form-submission-footer" 
-                    v-if="isEditingMetadataIframeMode">
+                    class="form-submission-footer"
+                    v-if="isEditingItemMetadataInsideIframe">
                 <button
                         @click="onSubmit()"
                         type="button"
@@ -741,7 +740,7 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="form.status == 'trash' && !isEditingMetadataIframeMode">
+                    v-if="form.status == 'trash' && !isEditingItemMetadataInsideIframe">
                 <button 
                         v-if="item && item.current_user_can_delete"
                         @click="onDeletePermanently()"
@@ -762,7 +761,7 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="(form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined) && !isEditingMetadataIframeMode">
+                    v-if="(form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined) && !isEditingItemMetadataInsideIframe">
                 <button
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
@@ -844,7 +843,7 @@
             </div>
             <div
                     class="form-submission-footer"
-                    v-if="(form.status == 'publish' || form.status == 'private') && !isEditingMetadataIframeMode">
+                    v-if="(form.status == 'publish' || form.status == 'private') && !isEditingItemMetadataInsideIframe">
                 <button
                         v-if="isOnSequenceEdit && itemPosition > 1"
                         @click="onPrevInSequence()"
@@ -1045,14 +1044,8 @@ export default {
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
         },
-        isIframeMode() {
-            return this.$route.query && this.$route.query.iframemode;
-        },
-        isEditingMetadataIframeMode() {
+        isEditingItemMetadataInsideIframe() {
             return this.$route.query && this.$route.query.editingmetadata;
-        },
-        isMobileMode() {
-            return this.$route.query && this.$route.query.mobilemode;
         },
         tabs() {
             let pageTabs = [{
@@ -1284,7 +1277,7 @@ export default {
                 
                 this.isLoading = false;
 
-                if (!this.isIframeMode) {
+                if (!this.$adminOptions.itemEditionMode) {
 
                     if (!this.isOnSequenceEdit) {
                         if (this.form.status != 'trash') {
@@ -1329,7 +1322,7 @@ export default {
             });
         },
         onDiscard() {
-            if (!this.isIframeMode)
+            if (!this.$adminOptions.itemEditionMode)
                 this.$router.go(-1);
             else
                 parent.postMessage({ 

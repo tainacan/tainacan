@@ -39,7 +39,8 @@ import eventBusSearch from '../../../admin/js/event-bus-search';
 import { 
     I18NPlugin,
     UserPrefsPlugin,
-    ConsolePlugin
+    ConsolePlugin,
+    AdminOptionsHelperPlugin
 } from '../../../admin/js/admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -80,6 +81,7 @@ export default (element) => {
             Vue.use(ThumbnailHelperPlugin);
             Vue.use(OrderByHelperPlugin);
             Vue.use(ConsolePlugin, {visual: false});
+            Vue.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {

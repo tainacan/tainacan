@@ -1,14 +1,16 @@
 <template>
     <div 
             class="columns is-fullheight"
-            :class="{ 'tainacan-admin-collection-mobile-mode': isMobileMode }">
-        <section class="column is-secondary-content">
-            <tainacan-collection-subheader v-if="!isIframeMode && !isMobileMode" />
-
+            :class="{ 'tainacan-admin-collection-mobile-app-mode': $adminOptions.mobileAppMode }">
+        <section 
+                class="column is-secondary-content"
+                :style="$adminOptions.hideRepositorySubheader ? 'margin-top: 0; height: 100%;' : ''">
+            <tainacan-collection-subheader v-if="!$adminOptions.hideCollectionSubheader" />
             <router-view
                     id="collection-page-container"
                     :collection-id="collectionId" 
-                    class="page-container page-container-small"/>
+                    class="page-container"
+                    :class="{ 'page-container-small': !$adminOptions.hideRepositorySubheader && !$adminOptions.hideCollectionSubheader }"/>
         </section>
     </div>
 </template>
@@ -22,17 +24,9 @@ export default {
     components: {
         TainacanCollectionSubheader
     },
-    data(){
+    data() {
         return {
             collectionId: Number
-        }
-    },
-    computed: {
-        isIframeMode() {
-            return this.$route && this.$route.query && this.$route.query.iframemode;
-        },
-        isMobileMode() {
-            return this.$route && this.$route.query && this.$route.query.mobilemode;
         }
     },
     watch: {
@@ -44,7 +38,7 @@ export default {
             }
         }
     },
-    created(){
+    created() {
         this.collectionId = this.$route.params.collectionId;
         
         this.$eventBusSearch.setCollectionId(this.collectionId);

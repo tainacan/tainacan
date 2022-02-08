@@ -8,7 +8,9 @@
         <aside class="menu">
 
             <ul class="menu-list">
-                <li class="repository-label">
+                <li 
+                        v-if="!$adminOptions.hidePrimaryMenuRepositoryButton"
+                        class="repository-label">
                     <router-link
                             tag="a"
                             :to="$routerHelper.getCollectionsPath()">
@@ -20,7 +22,7 @@
                         </span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuCollectionsButton">
                     <router-link
                             tag="a"
                             :to="$routerHelper.getCollectionsPath()"
@@ -31,7 +33,7 @@
                         <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuItemsButton">
                     <router-link
                             tag="a"
                             :to="$routerHelper.getItemsPath()"
@@ -43,7 +45,7 @@
                     </router-link>
                 </li>
                 <li class="separator"/>
-                <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata')">
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata') && !$adminOptions.hidePrimaryMenuMetadataButton">
                     <router-link
                             tag="a"
                             to="/metadata"
@@ -54,7 +56,7 @@
                         <span class="menu-text">{{ $i18n.get('metadata') }}</span>
                     </router-link>
                 </li>
-                <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters')">
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters') && !$adminOptions.hidePrimaryMenuFiltersButton">
                     <router-link
                             tag="a"
                             to="/filters"
@@ -65,7 +67,7 @@
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuTaxonomiesButton">
                     <router-link
                             tag="a"
                             to="/taxonomies"
@@ -76,7 +78,7 @@
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuActivitiesButton">
                     <router-link
                             tag="a"
                             to="/activities"
@@ -89,7 +91,7 @@
                 </li>
                 <li 
                         class="is-hidden-mobile"
-                        v-if="$userCaps.hasCapability('tnc_rep_edit_users')">
+                        v-if="$userCaps.hasCapability('tnc_rep_edit_users') && !$adminOptions.hidePrimaryMenuCapabilitiesButton">
                     <router-link
                             tag="a"
                             :to="this.$routerHelper.getCapabilitiesPath()"
@@ -100,7 +102,7 @@
                         <span class="menu-text">{{ $i18n.get('capabilities') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuImportersButton">
                     <router-link
                             tag="a"
                             to="/importers"
@@ -115,7 +117,7 @@
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuExportersButton">
                     <router-link
                             tag="a"
                             to="/exporters"
