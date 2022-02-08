@@ -35,6 +35,16 @@
                     v-model="form.name" 
                     :placeholder="$i18n.get('Insert the role name...')">
             </div>
+            <br>
+            <!-- Hook for extra Form options -->
+            <template v-if="hasBeginLeftForm">  
+                <form
+                    @click="showNotice = false" 
+                    id="form-role-begin-left"
+                    class="form-hook-region"
+                    v-html="getBeginLeftForm"/>
+                <br>
+            </template>
         </template>
 
         <span 
@@ -43,17 +53,7 @@
                 style="float: none; margin: 0 auto; width: 100%; display: block;" />
 
         <template v-if="!isLoadingRole && !isLoadingCapabilities">
-            <br>
 
-            <!-- Hook for extra Form options -->
-            <template v-if="hasBeginLeftForm">  
-                <form 
-                    id="form-role-begin-left"
-                    class="form-hook-region"
-                    v-html="getBeginLeftForm"/>
-                <br>
-            </template>
-            
             <div id="capabilities-tabs">
                 <h2 class="nav-tab-wrapper">
                     <a 
@@ -204,15 +204,18 @@
             
             </div> <!-- End of Tabs-->
 
-            <!-- Hook for extra Form options -->
-            <template v-if="hasEndLeftForm">  
-                <form 
-                    id="form-role-end-left"
-                    class="form-hook-region"
-                    v-html="getEndLeftForm"/>
-            </template>
-
         </template>
+
+        <!-- Hook for extra Form options -->
+        <template v-if="hasEndLeftForm && !isLoadingRole">  
+            <br>
+            <form 
+                @click="showNotice = false"
+                id="form-role-end-left"
+                class="form-hook-region"
+                v-html="getEndLeftForm"/>
+        </template>
+
         <div class="form-submit">
             <p class="cancel">
                 <input 
@@ -298,20 +301,18 @@
         },
         created() {
             this.roleSlug = this.$route.params.roleSlug;
-
+        },
+        mounted() {
             if (this.roleSlug !== 'new') {
                 this.isLoadingRole = true;
                 this.fetchRole(this.roleSlug)
                     .then((originalRole) => {
                         this.form = JSON.parse(JSON.stringify(originalRole));
 
-                        // Fills hook forms with it's real values 
-                        this.$nextTick()
-                            .then(() => {
-                                this.updateExtraFormData(this.form);
-                            });
-
                         this.isLoadingRole = false;
+
+                        // Fills hook forms with it's real values 
+                        this.$nextTick(() => this.updateExtraFormData(this.form) );
                         
                     }).catch(() => {
                         this.isLoadingRole = false;
@@ -324,17 +325,15 @@
                         this.form.name = this.form.name + ' ' + this.$i18n.get('(Copy)');
                         this.form.slug = undefined;
 
-                        // Fills hook forms with it's real values 
-                        this.$nextTick()
-                            .then(() => {
-                                this.updateExtraFormData(this.form);
-                            });
-
                         this.isLoadingRole = false;
+
+                        // Fills hook forms with it's real values 
+                        this.$nextTick(() => this.updateExtraFormData(this.form) );
+
                     }).catch(() => {
                         this.isLoadingRole = false;
                     });
-            }   else {
+            } else {
                 this.form = {
                     name: '',
                     capabilities: {}
@@ -493,6 +492,7 @@
         margin-right: 2em;
         padding-bottom: 3px;
         font-size: 1em;
+        font-weight: bold;
     }
     .nav-tab {
         background-color: #faf9f9;
