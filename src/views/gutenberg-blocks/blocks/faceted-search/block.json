@@ -1,4 +1,5 @@
 {
+    "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/faceted-search",
     "title": "Tainacan Faceted Search",
     "category": "tainacan-blocks",

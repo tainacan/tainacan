@@ -532,7 +532,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_inherited_roles'						 	 => __( 'Inherited roles', 'tainacan' ),
 	'label_editing_capability'					 	 => __( 'Editing capability', 'tainacan' ),
 	'label_default_author_user'						 => __( 'Set the item author as default value', 'tainacan' ),
-	'label_crate_new_item'							 => __( 'Create new item', 'tainacan' ),
+	'label_create_new_item'							 => __( 'Create new item', 'tainacan' ),
 	'label_submit'									 => __( 'Submit', 'tainacan' ),
 	'label_know_more'								 => __( 'Know more', 'tainacan' ),
 	'label_request_details'							 => __( 'Request details', 'tainacan' ),

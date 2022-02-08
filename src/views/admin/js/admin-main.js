@@ -68,7 +68,8 @@ import {
     ConsolePlugin,
     UserCapabilitiesPlugin,
     StatusHelperPlugin,
-    CommentsStatusHelperPlugin 
+    CommentsStatusHelperPlugin,
+    AdminOptionsHelperPlugin 
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -87,7 +88,7 @@ export default (element) => {
 
         // Mount only if the div exists and it is not already mounted
         if ( pageElement && pageElement.classList && !pageElement.classList.contains('has-mounted') ) {
-            console.log(pageElement.dataset);
+
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
                 for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins))
@@ -113,6 +114,7 @@ export default (element) => {
             Vue.use(ConsolePlugin, {visual: false});
             Vue.use(VueTheMask);
             Vue.use(CommentsStatusHelperPlugin);
+            Vue.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
 
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */

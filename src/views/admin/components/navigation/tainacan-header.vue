@@ -3,7 +3,9 @@
             id="tainacan-header"
             class="level is-mobile">
         <div class="level-left">
-            <div class="level-item home-area">
+            <div 
+                    v-if="!$adminOptions.hideTainacanHeaderHomeButton"
+                    class="level-item home-area">
                 <router-link
                         tag="a"
                         to="/">
@@ -31,7 +33,9 @@
             </div>
         </div>
         <div class="level-right">
-            <div class="is-hidden-tablet">
+            <div 
+                    v-if="!$adminOptions.hideTainacanHeaderSearchInput"
+                    class="is-hidden-tablet">
                 <button
                         @click="$router.push($routerHelper.getItemsPath())"
                         class="button is-small is-white level-item">
@@ -41,20 +45,22 @@
                 </button>
             </div>
             <div class="search-area is-hidden-mobile">
-                <b-input 
-                    type="search"
-                    autocomplete="on"
-                    :aria-label="$i18n.get('instruction_search_in_repository')"
-                    :placeholder="$i18n.get('instruction_search_in_repository')"
-                    class="search-header"
-                    size="is-small"
-                    :value="searchQuery"
-                    @input.native="futureSearchQuery = $event.target.value"
-                    @keyup.enter.native="updateSearch()"
-                    icon-right="magnify"
-                    icon-right-clickable
-                    @icon-right-click="updateSearch()" />
+                <b-input
+                        v-if="!$adminOptions.hideTainacanHeaderSearchInput"
+                        type="search"
+                        autocomplete="on"
+                        :aria-label="$i18n.get('instruction_search_in_repository')"
+                        :placeholder="$i18n.get('instruction_search_in_repository')"
+                        class="search-header"
+                        size="is-small"
+                        :value="searchQuery"
+                        @input.native="futureSearchQuery = $event.target.value"
+                        @keyup.enter.native="updateSearch()"
+                        icon-right="magnify"
+                        icon-right-clickable
+                        @icon-right-click="updateSearch()" />
                 <b-dropdown
+                        v-if="!$adminOptions.hideTainacanHeaderAdvancedSearch"
                         ref="advancedSearchShortcut"
                         class="advanced-search-header-dropdown"
                         position="is-bottom-left"
@@ -88,6 +94,7 @@
 
             </div>
             <button
+                    v-if="!$adminOptions.hideTainacanHeaderProcessesPopup"
                     @click="showProcesses = !showProcesses"
                     class="button is-small is-white level-item">
                 <span
