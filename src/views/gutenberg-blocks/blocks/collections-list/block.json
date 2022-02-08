@@ -1,4 +1,5 @@
 {
+    "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/collections-list",
     "title": "Tainacan Collections List",
     "apiVersion": 2,
