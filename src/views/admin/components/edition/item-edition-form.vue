@@ -149,7 +149,8 @@
                                             :key="tabIndex"
                                             :class="{ 'is-active': activeTab === tab.slug }"
                                             @click="activeTab = tab.slug"
-                                            class="swiper-slide">
+                                            class="swiper-slide"
+                                            :id="tab.slug + '-tab-label'">
                                         <a>
                                             <span class="icon has-text-gray4">
                                                 <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
@@ -164,33 +165,33 @@
                                     </li>
                                 </ul>
                                 <button 
-                                            class="swiper-button-prev" 
-                                            id="tainacan-tabs-prev" 
-                                            slot="button-prev">
-                                        <svg
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24">
-                                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                                            <path
-                                                    d="M0 0h24v24H0z"
-                                                    fill="none"/>
-                                        </svg>
-                                    </button>
-                                    <button 
-                                            class="swiper-button-next" 
-                                            id="tainacan-tabs-next" 
-                                            slot="button-next">
-                                        <svg
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24">
-                                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                                            <path
-                                                    d="M0 0h24v24H0z"
-                                                    fill="none"/>
-                                        </svg>
-                                    </button>
+                                        class="swiper-button-prev" 
+                                        id="tainacan-tabs-prev" 
+                                        slot="button-prev">
+                                    <svg
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24">
+                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                        <path
+                                                d="M0 0h24v24H0z"
+                                                fill="none"/>
+                                    </svg>
+                                </button>
+                                <button 
+                                        class="swiper-button-next" 
+                                        id="tainacan-tabs-next" 
+                                        slot="button-next">
+                                    <svg
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24">
+                                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                        <path
+                                                d="M0 0h24v24H0z"
+                                                fill="none"/>
+                                    </svg>
+                                </button>
                             </nav>
                         
                             <section class="tab-content">
@@ -200,7 +201,7 @@
                                         v-if="activeTab === 'metadata'"
                                         class="tab-item"
                                         role="tabpanel"
-                                        aria-labelledby="679-label"
+                                        aria-labelledby="metadata-tab-label"
                                         tabindex="0"> 
 
                                     <div 
@@ -336,7 +337,7 @@
                                         v-if="totalRelatedItems && activeTab === 'related'"
                                         class="tab-item"
                                         role="tabpanel"
-                                        aria-labelledby="679-label"
+                                        aria-labelledby="related-tab-label"
                                         tabindex="0"> 
 
                                     <div class="attachments-list-heading">
@@ -348,8 +349,8 @@
                                     <related-items-list
                                             :item-id="itemId"
                                             :collection-id="collectionId"
-                                            :related-items="$adminOptions.itemEditionMode"
-                                            :is-editable="!isIframeMode"
+                                            :related-items="item.related_items"
+                                            :is-editable="!$adminOptions.itemEditionMode"
                                             :is-loading.sync="isLoading" />
                                     
                                 </div>
@@ -359,7 +360,7 @@
                                         v-if="activeTab === 'attachments'"
                                         class="tab-item"
                                         role="tabpanel"
-                                        aria-labelledby="679-label"
+                                        aria-labelledby="attachments-tab-label"
                                         tabindex="0">
 
                                     <div v-if="item != undefined && item.id != undefined">
