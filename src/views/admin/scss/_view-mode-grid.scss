@@ -114,7 +114,14 @@
                 margin-top: -1px;
             }
         } 
-    
+    }
+
+    &.hide-items-selection {
+        .tainacan-grid-item {
+            &:hover, &:hover .metadata-title { background-color: transparent; cursor: default; }
+            a { cursor: default; }
+            .metadata-title { margin-left: 6px !important; padding-left: 6px !important; }
+        }
     }
 }
 

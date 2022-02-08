@@ -49,7 +49,7 @@ export default class RelatedItemsModal extends React.Component {
         if (this.props.existingCollectionId) {
             this.fetchCollection(this.props.existingCollectionId);
             this.setState({ 
-                searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?singleselectionmode=true&iframemode=true&status=publish'
+                searchURL: tainacan_blocks.admin_url + 'admin.php?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish'
             });
         } else {
             this.setState({ collectionPage: 1 });
@@ -117,7 +117,7 @@ export default class RelatedItemsModal extends React.Component {
     selectCollection(selectedCollectionId) {
         this.setState({
             collectionId: selectedCollectionId,
-            searchURL: tainacan_blocks.admin_url + 'admin.php?page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?singleselectionmode=true&iframemode=true&status=publish'
+            searchURL: tainacan_blocks.admin_url + 'admin.php?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?status=publish'
         });
 
         this.props.onSelectCollection(selectedCollectionId);

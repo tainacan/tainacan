@@ -5,7 +5,7 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
         <div 
-                v-if="!isMobileMode"
+                v-if="!$adminOptions.hideBulkEditionPageTitle"
                 class="tainacan-page-title">
             <h1>{{ $i18n.get('add_items_bulk') }}</h1>
             <a 
@@ -209,9 +209,6 @@ export default {
         },
         collection() {
             return this.getCollection()
-        },
-        isMobileMode() {
-            return this.$route && this.$route.query && this.$route.query.mobilemode;
         }
     },
     created() {

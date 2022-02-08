@@ -1,4 +1,5 @@
 {
+    "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/carousel-terms-list",
     "title": "Tainacan Terms Carousel",
     "apiVersion": 2,

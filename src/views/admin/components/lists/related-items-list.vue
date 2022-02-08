@@ -114,6 +114,10 @@
                                                 :aria-label="$i18n.getFrom('items','edit_item')">
                                             <span
                                                     v-tooltip="{
+                                                         delay: {
+                                                            show: 500,
+                                                            hide: 100,
+                                                        },
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
                                                         placement: 'auto'
@@ -137,7 +141,7 @@
                     <iframe 
                             width="100%"
                             style="height: 85vh"
-                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, editItemId) + '?iframemode=true&editingmetadata=' + editMetadataId + (isMobileMode ? '&mobilemode=true' : '')" />
+                            :src="adminURL + 'itemEditionMode=true' + ($adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + $routerHelper.getItemEditPath(collectionId, editItemId) + '?editingmetadata=' + editMetadataId" />
                 </b-modal>
             </div>
         </div>
@@ -160,7 +164,7 @@
                 editMetadataId: false,
                 editItemId: false,
                 editItemModal: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
+                adminURL: tainacan_plugin.admin_url + 'admin.php?',
                 isUpdatingRelatedItems: false
             }
         },
@@ -170,9 +174,6 @@
             },
             displayLoading() {
                 return this.isLoading || this.isUpdatingRelatedItems;
-            },
-            isMobileMode() {
-                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {

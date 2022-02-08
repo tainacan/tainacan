@@ -159,8 +159,6 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             }
 
             // Remove unecessary queries
-            delete queryObject.readmode;
-            delete queryObject.iframemode;
             delete queryObject.admin_view_mode;
             delete queryObject.fetch_only_meta;
             

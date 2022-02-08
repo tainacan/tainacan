@@ -203,8 +203,14 @@
    
             }
         }
-    
-    
+    }
+
+    &.hide-items-selection {
+        .tainacan-card {
+            &:hover { background-color: transparent !important; cursor: default; }
+            .metadata-title { padding-left: 1.5em !important; margin-bottom: 0; }
+            &:hover .metadata-title { background-color: transparent !important }
+        }
     }
 }
 
