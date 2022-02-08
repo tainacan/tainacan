@@ -42,14 +42,11 @@
                     <div class="column is-7">
 
                         <!-- Hook for extra Form options -->
-                        <template
-                                v-if="formHooks != undefined &&
-                                    formHooks['item'] != undefined &&
-                                    formHooks['item']['begin-right'] != undefined">
+                        <template v-if="hasBeginRightForm">
                             <form
                                 id="form-item-begin-right"
                                 class="form-hook-region"
-                                v-html="formHooks['item']['begin-right'].join('')"/>
+                                v-html="getBeginRightForm"/>
                         </template>
 
                         <div class="columns">
@@ -179,6 +176,7 @@
                                     </b-field>
                                 </div>
 
+                                <!-- The item metadata inputs -->
                                 <tainacan-form-item
                                         v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
                                         v-for="(itemMetadatum, index) of metadatumList"
@@ -190,15 +188,13 @@
                                         @changeCollapse="onChangeCollapse($event, index)"/>
 
                                 <!-- Hook for extra Form options -->
-                                <template
-                                        v-if="formHooks != undefined &&
-                                            formHooks['item'] != undefined &&
-                                            formHooks['item']['end-right'] != undefined">
+                                <template v-if="hasEndRightForm">
                                     <form
                                         id="form-item-end-right"
                                         class="form-hook-region"
-                                        v-html="formHooks['item']['end-right'].join('')"/>
+                                        v-html="getEndRightForm"/>
                                 </template>
+
                             </b-tab-item>
 
 
@@ -281,14 +277,11 @@
                         <div class="sticky-container">
 
                             <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                        formHooks['item'] != undefined &&
-                                        formHooks['item']['begin-left'] != undefined">
+                            <template v-if="hasBeginLeftForm">
                                 <form
-                                    id="form-item-begin-left"
-                                    class="form-hook-region"
-                                    v-html="formHooks['item']['begin-left'].join('')"/>
+                                        id="form-item-begin-left"
+                                        class="form-hook-region"
+                                        v-html="getBeginLeftForm"/>
                             </template>
 
                             <!-- Document -------------------------------- -->
@@ -540,14 +533,11 @@
                             </div>
 
                             <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                        formHooks['item'] != undefined &&
-                                        formHooks['item']['end-left'] != undefined">
+                            <template v-if="hasEndLeftForm">
                                 <form
                                     id="form-item-end-left"
                                     class="form-hook-region"
-                                    v-html="formHooks['item']['end-left'].join('')"/>
+                                    v-html="getEndLeftForm"/>
                             </template>
 
                         </div>
