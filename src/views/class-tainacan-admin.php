@@ -369,9 +369,10 @@ class Admin {
 
 	function admin_page() {
 		global $TAINACAN_BASE_URL;
-
+		$admin_options = apply_filters('set_tainacan_admin_options', $_GET);
+		$admin_options = json_encode($admin_options);
 		// TODO move it to a separate file and start the Vue project
-		echo "<div id='tainacan-admin-app' data-module='admin'></div>";
+		echo "<div id='tainacan-admin-app' data-module='admin' data-options='$admin_options'></div>";
 	}
 
 	function register_user_meta() {

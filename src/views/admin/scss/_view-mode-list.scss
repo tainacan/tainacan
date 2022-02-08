@@ -224,8 +224,13 @@
                 }
             }
         }
-    
-    
+    }
+    &.hide-items-selection {
+        .tainacan-list {
+            &:hover { background-color: rgba(126, 126, 126, 0.05) !important; cursor: default; }
+            .metadata-title { padding-left: 1.5em !important; }
+            &:hover .metadata-title { background-color: var(--tainacan-gray0) !important; cursor: default; }
+        }
     }
 }
 

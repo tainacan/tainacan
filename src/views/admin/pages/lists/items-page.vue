@@ -9,7 +9,7 @@
 
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
-                v-if="!isIframeMode && !isReadMode && !openAdvancedSearch" 
+                v-if="!$adminOptions.hideItemsListPageTitle && !openAdvancedSearch" 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
         <div 
                 v-else-if="openAdvancedSearch"
@@ -42,7 +42,8 @@
                 role="region"
                 ref="search-control"
                 v-if="((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
-                class="search-control">
+                class="search-control"  
+                :style="( $adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || $adminOptions.itemsSearchSelectionMode ) ? '--tainacan-container-padding: 6px;' : ''">
 
             <!-- <b-loading
                     :is-full-page="false"
@@ -92,20 +93,34 @@
                             icon-right-clickable
                             @icon-right-click="updateSearch()" />
                     <a
+                            v-if="!$adminOptions.hideItemsListAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
                             style="font-size: 0.75em;"
                             class="has-text-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
                 </div>
             </div>
 
-            <!-- Item Creation Dropdown, only on Admin -->
+            <!-- Item Creation Dropdown (or button, if few options are available) -->
             <div 
-                    class="search-control-item"
-                    v-if="!isIframeMode &&
+                    v-if="!$adminOptions.hideItemsListCreationDropdown &&
                             !openAdvancedSearch &&
                             collection && 
-                            collection.current_user_can_edit_items">
+                            collection.current_user_can_edit_items"
+                    class="search-control-item">
+                <router-link
+                        id="item-creation-options-dropdown"
+                        v-if="$adminOptions.hideItemsListCreationDropdownBulkAdd && $adminOptions.hideItemsListCreationDropdownImport"
+                        class="button is-secondary"
+                        tag="button"
+                        :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
+                    <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
+                    <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-add" />
+                    </span>
+                </router-link>
                 <b-dropdown
+                        v-else
                         :mobile-modal="true"
                         id="item-creation-options-dropdown"
                         aria-role="list"
@@ -141,7 +156,7 @@
                         </div>
                     </b-dropdown-item>
                     <b-dropdown-item 
-                            v-if="!isRepositoryLevel"
+                            v-if="!isRepositoryLevel && !$adminOptions.hideItemsListCreationDropdownBulkAdd"
                             aria-role="listitem">
                         <router-link
                                 id="a-item-add-bulk"
@@ -152,7 +167,9 @@
                             <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item aria-role="listitem">
+                    <b-dropdown-item 
+                            v-if="!$adminOptions.hideItemsListCreationDropdownImport"
+                            aria-role="listitem">
                         <div
                                 id="a-import-items"
                                 tag="div"
@@ -413,7 +430,7 @@
 
             <!-- Exposers or alternative links modal button -->
             <div 
-                    v-if="!isIframeMode"
+                    v-if="!$adminOptions.hideItemsListExposersButton"
                     class="search-control-item">
                 <button 
                         class="button is-white"
@@ -495,7 +512,7 @@
 
             <!-- STATUS TABS, only on Admin -------- -->
             <items-status-tabs 
-                    v-if="!openAdvancedSearch && !isIframeMode"
+                    v-if="!openAdvancedSearch && !$adminOptions.hideItemsListStatusTabs"
                     :is-repository-level="isRepositoryLevel"/>
 
             <!-- FILTERS TAG LIST-->
@@ -596,7 +613,7 @@
                         </p>
 
                         <router-link
-                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !isIframeMode"
+                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-secondary"
@@ -604,7 +621,7 @@
                             {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link> 
                         <button
-                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !isIframeMode"
+                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
                                 id="button-create-item"
                                 class="button is-secondary"
                                 @click="onOpenCollectionsModal">
@@ -720,13 +737,7 @@
                     metakey: this.$route.query.metakey
                 }, this.sortingMetadata);
                 return this.$route.query.metakey ? metadatumName : this.$i18n.get(metadatumName);
-            },
-            isReadMode () {
-                return this.$route && this.$route.query && this.$route.query.readmode;
-            },
-            isIframeMode () {
-                return this.$route && this.$route.query && this.$route.query.iframemode;
-            },
+            }
         },
         watch: {
             displayedMetadata() {
@@ -767,8 +778,9 @@
 
                     if ((this.$refs['search-control'].classList.contains('floating-search-control')))
                         this.$refs['search-control'].classList.remove('floating-search-control');
-                        
-                    this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - (this.isRepositoryLevel ? 94 : 42), behavior: 'smooth'});
+                    
+                    if (!this.$adminOptions.hideCollectionSubheader)
+                        this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - (this.isRepositoryLevel ? 94 : 42), behavior: 'smooth'});
                 }
 
                 this.isLoadingItems = isLoadingItems;

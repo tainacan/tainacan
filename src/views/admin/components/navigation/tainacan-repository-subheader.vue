@@ -3,8 +3,27 @@
             id="tainacan-repository-subheader" 
             class="level secondary-page"
             :class="{'is-menu-compressed': isMenuCompressed, 'is-repository-level' : isRepositoryLevel}">
-        <h1 v-if="isRepositoryLevel">{{ repositoryName }}</h1>
-        <h1 v-else>
+
+        <div 
+                v-if="$adminOptions.hideCollectionSubheader"
+                class="back-button is-hidden-mobile">
+            <button     
+                    @click="$router.go(-1)"
+                    class="button is-turquoise4">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-previous"/>
+                </span>
+            </button>
+        </div>
+
+        <h1 
+                v-if="isRepositoryLevel"
+                :style="$adminOptions.hideCollectionSubheader ? 'margin-right: auto;' : ''">
+            {{ repositoryName }}
+        </h1>
+        <h1 
+                v-else
+                :style="$adminOptions.hideCollectionSubheader ? 'margin-right: auto;' : ''">
             {{ $i18n.get('collection') + '' }} 
             <span class="has-text-weight-bold">
                 {{ collection && collection.name ? collection.name : '' }}
@@ -41,7 +60,7 @@
                         @click="openAvailableExportersModal"
                         class="button"
                         id="exporter-collection-button"
-                        v-if="!isRepositoryLevel">
+                        v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                     </span>
@@ -61,7 +80,7 @@
                 <a
                         :href="collection && collection.url ? collection.url : ''"
                         target="_blank"
-                        v-if="!isRepositoryLevel && collection && collection.url"
+                        v-if="!isRepositoryLevel && collection && collection.url && !$adminOptions.hideRepositorySubheaderViewCollectionButton"
                         class="button"
                         id="view-collection-button">
                 <span class="icon">
@@ -84,7 +103,7 @@
                 <a
                         :href="repositoryURL"
                         target="_blank"
-                        v-if="isRepositoryLevel"
+                        v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewCollectionsButton"
                         class="button"
                         id="view-repository-button">
                 <span class="icon">
@@ -212,6 +231,31 @@ export default {
             white-space: nowrap;
             overflow: hidden;  
             transition: all 0.2s linear;
+        }
+
+        .back-button {
+            padding: 0;
+            margin: 0;
+            width: var(--tainacan-one-column);
+            min-width: var(--tainacan-one-column);
+            color: var(--tainacan-white);
+            display: flex;
+            margin-left: calc(-1 * var(--tainacan-one-column));
+
+            button, 
+            button:hover, 
+            button:focus, 
+            button:active {
+                width: 100%;
+                color: var(--tainacan-white);
+                background-color: transparent !important;
+                border: none;
+                height: $subheader-height !important;
+                .icon {
+                    margin-top: -2px;
+                    font-size: 1.5em;
+                }
+            }
         }
 
         .repository-subheader-icons {

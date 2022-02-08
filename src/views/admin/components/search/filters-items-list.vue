@@ -271,7 +271,7 @@
                 </p>
                 <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                 <router-link
-                        v-if="!$route.query.iframemode && this.$route.name != null"
+                        v-if="!$adminOptions.hideItemsListFilterCreationButton && $route.name != null"
                         id="button-create-filter"
                         :to="isRepositoryLevel && $routerHelper ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                         tag="button"

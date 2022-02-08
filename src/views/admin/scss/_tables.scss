@@ -313,6 +313,9 @@
                     }
                 }
             }
+            &.hide-items-selection {
+                tr:hover { background-color: transparent !important; cursor: default; }
+            }
         }
     }
 }
