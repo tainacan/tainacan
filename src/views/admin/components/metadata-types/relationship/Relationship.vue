@@ -195,6 +195,12 @@
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length &&
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length > 1;
+            },
+            isAcceptingDraftItems() {
+                return this.itemMetadatum &&
+                       this.itemMetadatum.metadatum &&
+                       this.itemMetadatum.metadatum.metadata_type_options &&
+                       this.itemMetadatum.metadatum.metadata_type_options.accept_draft_items === 'yes';
             }
         },
         watch: {
@@ -216,6 +222,9 @@
                 query['order'] = 'asc';
                 query['fetch_only'] = 'title,document_mimetype,thumbnail';
                 query['fetch_only_meta'] = this.isDisplayingRelatedItemMetadata ? (this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.filter(metadatumId => metadatumId !== 'thumbnail') + '') : (this.itemMetadatum.metadatum.metadata_type_options.search ? this.itemMetadatum.metadatum.metadata_type_options.search : '');
+                if (this.isAcceptingDraftItems)
+                    query['status'] = ['publish','private','draft'];
+
                 axios.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
                     .then( res => {
                         if (res.data.items) {
@@ -376,6 +385,9 @@
                 query['perpage'] = 12;
                 query['paged'] = this.page;
                 query['order'] = 'asc';
+
+                if (this.isAcceptingDraftItems)
+                    query['status'] = ['publish','private','draft'];
 
                 if (this.selected.length > 0)
                     query['exclude'] = this.selected.map((item) => item.value);
