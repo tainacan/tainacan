@@ -1,4 +1,5 @@
 {
+    "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/carousel-collections-list",
     "title": "Tainacan Collections Carousel",
     "apiVersion": 2,

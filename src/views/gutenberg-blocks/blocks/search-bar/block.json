@@ -1,4 +1,5 @@
 {
+    "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/search-bar",
     "title": "Tainacan Search Bar",
     "apiVersion": 2,
