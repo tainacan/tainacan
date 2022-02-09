@@ -52,7 +52,7 @@
                 class="spinner is-active"
                 style="float: none; margin: 0 auto; width: 100%; display: block;" />
 
-        <template v-if="!isLoadingRole && !isLoadingCapabilities">
+        <template v-if="!isLoadingRole">
 
             <div id="capabilities-tabs">
                 <h2 class="nav-tab-wrapper">
@@ -82,7 +82,9 @@
                         v-if="capabilitiesTab === 'repository'"
                         id="tab-repository">
                     <!-- <h3>{{ $i18n.get('Role\'s Repository Related Capabilities List') }}</h3> -->
-                    <div class="capabilities-list">
+                    <div 
+                            v-if="!isLoadingCapabilities"
+                            class="capabilities-list">
                         <div
                                 class="capability-group"
                                 v-for="(group, groupIndex) of groupedRepositoryCapabilities"
@@ -162,7 +164,9 @@
                             <br class="clear">
                         </div>
 
-                        <div class="capabilities-list">
+                        <div 
+                                v-if="!isLoadingCapabilities"
+                                class="capabilities-list">
                             <div
                                     class="capability-group"
                                     v-for="(group, groupIndex) of groupedCollectionCapabilities"
@@ -212,7 +216,7 @@
 
                 <div
                         class="tabs-content"
-                        v-else-if="(hasBeginRightForm || hasEndRightForm) && capabilitiesTab === 'extra'"
+                        v-show="capabilitiesTab === 'extra'"
                         id="tab-extra">
                     <br>
                     
