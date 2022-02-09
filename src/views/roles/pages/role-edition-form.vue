@@ -1,5 +1,7 @@
 <template>
-    <form @submit="onSubmit">
+    <form 
+            class="tainacan-role-edition-form"
+            @submit="onSubmit">
         <h1 
                 v-if="roleSlug !== 'new'"
                 class="wp-heading-inline">
@@ -492,7 +494,10 @@
     }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+
+.tainacan-role-edition-form {
+
     @keyframes appear-from-right {
         from {
             right: -100%;
@@ -588,4 +593,5 @@
             border-bottom: 1px solid #ccc;
         }
     }
+}
 </style>
