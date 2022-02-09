@@ -183,7 +183,7 @@ export default {
             repositoryName: tainacan_plugin.repository_name,
             themeCollectionListURL: tainacan_plugin.theme_collection_list_url,
             themeItemsListURL: tainacan_plugin.theme_items_list_url,
-            collectionsToLoad: this.$adminOptions.homeCollectionsPerPage ? this.$adminOptions.homeCollectionsPerPage :9,
+            collectionsToLoad: (this.$adminOptions.homeCollectionsPerPage && !isNaN(this.$adminOptions.homeCollectionsPerPage)) ? this.$adminOptions.homeCollectionsPerPage : 9,
             collectionsOrderBy: this.$adminOptions.homeCollectionsOrderBy ? this.$adminOptions.homeCollectionsOrderBy : 'modified',
             collectionsOrder: this.$adminOptions.homeCollectionsOrder ? this.$adminOptions.homeCollectionsOrder : 'desc'
         }
