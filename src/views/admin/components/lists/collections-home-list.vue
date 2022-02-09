@@ -139,7 +139,8 @@
                         v-if="collections.length > 0 && !isLoading" 
                         :key="index"
                         v-for="(collection, index) of collections"
-                        class="tainacan-card">       
+                        class="tainacan-card"
+                        :class="{ 'always-visible-collections': $adminOptions.homeCollectionsPerPage }">       
                     <ul class="menu-list">
                         <li v-if="!$adminOptions.hideHomeCollectionItemsButton">
                             <router-link 

@@ -13,14 +13,14 @@
     &>div {
         width: calc(100% + var(--tainacan-container-padding)) !important;
 
-        &>div>.tainacan-card:nth-child(3),
-        &>div>.tainacan-card:nth-child(4),
-        &>div>.tainacan-card:nth-child(5),
-        &>div>.tainacan-card:nth-child(6),
-        &>div>.tainacan-card:nth-child(7),
-        &>div>.tainacan-card:nth-child(8),
-        &>div>.tainacan-card:nth-child(9),
-        &>div>.tainacan-card:nth-child(10) {
+        &>div>.tainacan-card:not(.always-visible-collections):nth-child(3),
+        &>div>.tainacan-card:not(.always-visible-collections):nth-child(4),
+        &>div>.tainacan-card:not(.always-visible-collections):nth-child(5),
+        &>div>.tainacan-card:not(.always-visible-collections):nth-child(6),
+        &>div>.tainacan-card:not(.always-visible-collections):nth-child(7),
+        &>div>.tainacan-card:not(.always-visible-collections):nth-child(8),
+        &>div>.tainacan-card:not(.always-visible-collections):nth-child(9),
+        &>div>.tainacan-card:not(.always-visible-collections):nth-child(10) {
             display: none;
         }
 
