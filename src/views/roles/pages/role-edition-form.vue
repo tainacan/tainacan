@@ -68,6 +68,14 @@
                             @click="capabilitiesTab = 'collections'">
                         {{ $i18n.get('Collections') }}
                     </a>
+
+                    <a        
+                            v-if="hasBeginRightForm || hasEndRightForm"
+                            class="nav-tab"
+                            :class="{ 'nav-tab-active': capabilitiesTab == 'extra'}"
+                            @click="capabilitiesTab = 'extra'">
+                        {{ $i18n.get('Others') }}
+                    </a>
                 </h2>
                 <div 
                         class="tabs-content"
@@ -201,7 +209,37 @@
                     <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('The capability "Manage Tainacan" may affect other capabilities related to repository and collections.') }}</p>
                     <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('Capabilities related to All Collections shall affect other Collections capabilities.') }}</p>
                 </div> <!-- End of Collections Tab -->
-            
+
+                <div
+                        class="tabs-content"
+                        v-else-if="(hasBeginRightForm || hasEndRightForm) && capabilitiesTab === 'extra'"
+                        id="tab-extra">
+                    <br>
+                    
+                    <!-- Hook for extra Form options -->
+                    <template v-if="hasBeginRightForm">  
+                        
+                        <form 
+                            @click="showNotice = false"
+                            id="form-role-begin-right"
+                            class="form-hook-region"
+                            v-html="getBeginRightForm"/>
+                    </template>
+                    
+                    <hr v-if="hasBeginRightForm && hasEndRightForm">
+                    
+                    <!-- Hook for extra Form options -->
+                    <template v-if="hasEndRightForm"> 
+                        <form 
+                            @click="showNotice = false"
+                            id="form-role-end-right"
+                            class="form-hook-region"
+                            v-html="getEndRightForm"/>
+                    </template>
+                    
+                    <br>
+                </div><!-- End of the Extra Tab -->
+
             </div> <!-- End of Tabs-->
 
         </template>
