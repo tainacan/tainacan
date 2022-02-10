@@ -50,7 +50,8 @@
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 v-html="item.title != undefined ? item.title : ''" />                
                         <span 
@@ -61,7 +62,8 @@
                                         hide: 100,
                                     },
                                     content: $i18n.get('label_see_on_fullscreen'),
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"          
                                 @click.prevent="starSlideshowFromHere(index)"
                                 class="icon slideshow-icon">
@@ -96,7 +98,8 @@
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"   
                                     class="metadata-description"
                                     v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />                                                        
@@ -111,7 +114,8 @@
                                         content: column.metadatum == 'row_author' || column.metadatum == 'row_creation',
                                         html: false,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"   
                                     v-for="(column, index) in displayedMetadata"
                                     :key="index"

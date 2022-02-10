@@ -142,3 +142,10 @@
         }
     }
 }
+.v-popper--theme-tooltip.tainacan-repository-tooltip {
+     --tainacan-primary: var(--tainacan-blue1);
+}
+.v-popper--theme-tooltip.tainacan-repository-header-tooltip {
+    --tainacan-primary: var(--tainacan-blue4);
+    --tainacan-info-color: var(--tainacan-white);
+}

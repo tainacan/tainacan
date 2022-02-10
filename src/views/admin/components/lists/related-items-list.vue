@@ -66,7 +66,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('status_' + relatedItem.status),
                                                 autoHide: true,
-                                                placement: 'auto-start'
+                                                placement: 'auto-start',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-1em"
@@ -98,7 +99,8 @@
                                                 content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                                 html: true,
                                                 autoHide: false,
-                                                placement: 'auto-start'
+                                                placement: 'auto-start',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
                                 </div>
@@ -120,7 +122,8 @@
                                                         },
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
-                                                        placement: 'auto'
+                                                        placement: 'auto',
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }"
                                                     class="icon">
                                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />

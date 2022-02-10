@@ -18,7 +18,8 @@
                         content: filter.name,
                         html: false,
                         autoHide: false,
-                        placement: 'top-start'
+                        placement: 'top-start',
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }"
                     :id="'filter-label-id-' + filter.id"
                     :aria-label="filter.name"

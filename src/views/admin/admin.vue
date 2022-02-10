@@ -53,6 +53,7 @@
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
     import 'swiper/css/swiper.min.css';
+    import "floating-vue/dist/style.css";
 
     export default { 
         name: "AdminPage",

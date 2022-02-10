@@ -434,7 +434,8 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('edit'),
                                                             autoHide: true,
-                                                            placement: 'bottom'
+                                                            placement: 'bottom',
+                                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                                         }"
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-edit"/>
@@ -450,7 +451,8 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('delete'),
                                                             autoHide: true,
-                                                            placement: 'bottom'
+                                                            placement: 'bottom',
+                                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                                         }"
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-delete"/>
@@ -470,7 +472,8 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('edit'),
                                                             autoHide: true,
-                                                            placement: 'bottom'
+                                                            placement: 'bottom',
+                                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                                         }"
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-edit"/>
@@ -486,7 +489,8 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('delete'),
                                                             autoHide: true,
-                                                            placement: 'bottom'
+                                                            placement: 'bottom',
+                                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                                         }"
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-delete"/>
@@ -507,7 +511,8 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('edit'),
                                                             autoHide: true,
-                                                            placement: 'bottom'
+                                                            placement: 'bottom',
+                                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                                         }"
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-edit"/>
@@ -523,7 +528,8 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('delete'),
                                                             autoHide: true,
-                                                            placement: 'bottom'
+                                                            placement: 'bottom',
+                                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                                         }"
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-delete"/>
@@ -613,7 +619,8 @@
                                                     v-tooltip="{
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
-                                                        placement: 'bottom'
+                                                        placement: 'bottom',
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }"
                                                     class="icon">
                                                 <i class="tainacan-icon tainacan-icon-edit"/>
@@ -629,7 +636,8 @@
                                                     v-tooltip="{
                                                         content: $i18n.get('label_thumbnail_alt'),
                                                         autoHide: true,
-                                                        placement: 'bottom'
+                                                        placement: 'bottom',
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }"
                                                     class="icon">
                                                 <i class="tainacan-icon tainacan-icon-text"/>
@@ -645,7 +653,8 @@
                                                     v-tooltip="{
                                                         content: $i18n.get('delete'),
                                                         autoHide: true,
-                                                        placement: 'bottom'
+                                                        placement: 'bottom',
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }"
                                                     class="icon">
                                                 <i class="tainacan-icon tainacan-icon-delete"/>

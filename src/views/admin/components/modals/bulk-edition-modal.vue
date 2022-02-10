@@ -221,7 +221,8 @@
                                         v-tooltip="{
                                             content: $i18n.get('remove_bulk_edit'),
                                             autoHide: true,
-                                            placement: 'auto-end'
+                                            placement: 'auto-end',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon">
                                     <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel"/>
@@ -259,7 +260,8 @@
                                         v-tooltip="{
                                             content: $i18n.get('label_apply_changes'),
                                             autoHide: true,
-                                            placement: 'auto-end'
+                                            placement: 'auto-end',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon">
                                     <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-play"/>

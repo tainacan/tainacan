@@ -51,7 +51,8 @@
                                     content: item.metadata != undefined ? renderMetadata(item, column) : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 v-for="(column, metadatumIndex) in displayedMetadata"
                                 :key="metadatumIndex"
@@ -65,7 +66,8 @@
                                         hide: 100,
                                     },
                                     content: $i18n.get('label_see_on_fullscreen'),
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"          
                                 @click.prevent="starSlideshowFromHere(index)"
                                 class="icon slideshow-icon">

@@ -31,31 +31,21 @@
     .v-popper__arrow-outer {
         border-color: var(--tainacan-primary);
     }
-    &.tainacan-repository-tooltip {
+
+    &.tainacan-header-tooltip {
         .v-popper__inner {
-            background: var(--tainacan-blue1);
-            border: 1px solid var(--tainacan-blue2);
+            background: var(--tainacan-turquoise4);
+            color: var(--tainacan-white);
         }
         .v-popper__arrow-outer {
-            border-color: var(--tainacan-blue1);
+            border-color: var(--tainacan-turquoise4);
         }
     }
 
     // Metadata type Preview tooltips
-    &.metadata-type-preview-tooltip[x-placement^="bottom"] {
-        top: -19px !important;
-    }
-    &.metadata-type-preview-tooltip[x-placement^="bottom"] .tooltip-inner {
-        max-height: initial !important;
-    }
-    &.metadata-type-preview-tooltip[x-placement^="bottom"] .tooltip-arrow {
-            border-width: 8px 10px 0px 10px !important;
-            border-left-color: transparent !important;
-            border-right-color: transparent !important;
-            border-bottom-color: transparent !important;
-            border-top-color: var(--tainacan-primary) !important;
-            top: initial !important;
-            bottom: -5px !important;
+    &.metadata-type-preview-tooltip {
+        overflow-x: hidden;
+        overflow-y: hidden;
     }
     .metadata-type-preview {
         background: var(--tainacan-primary);

@@ -75,7 +75,6 @@ import {
     ThumbnailHelperPlugin,
     OrderByHelperPlugin
 } from './utilities';
-import 'floating-vue/dist/style.css'
 
 export default (element) => {
 
@@ -101,6 +100,7 @@ export default (element) => {
                 defaultTooltipAnimated: true
             });
             Vue.use(VTooltip, {
+                popperTriggers: ['hover'],
                 themes: {
                     'taianacan-tooltip': {
                         '$extend': 'tooltip',
@@ -114,8 +114,19 @@ export default (element) => {
                         autoHide: true,
                         html: true,
                     },
-                },
-                popperTriggers: ['hover']
+                    'tainacan-repository-tooltip': {
+                        '$extend': 'tainacan-header-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-repository-tooltip': {
+                        '$extend': 'tainacan-repository-header-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                }
             });
             Vue.use(VueMasonry);
             Vue.use(VueBlurHash);

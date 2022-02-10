@@ -316,10 +316,15 @@
                                         <span class="metadatum-name">
                                             {{ metadatum.name }}
                                             <span 
-                                                    v-tooltip.top="{
-                                                        popperClass: ['metadata-type-preview-tooltip'],
+                                                    v-tooltip="{
+                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '', 'metadata-type-preview-tooltip'],
                                                         content: getPreviewTemplateContent(metadatum),
-                                                        html: true
+                                                        html: true,
+                                                        delay: {
+                                                            shown: 0,
+                                                            hide: 100,
+                                                        },
+                                                        placement: 'top',
                                                     }"
                                                     class="icon preview-help-icon has-text-secondary">
                                                 <i class="tainacan-icon tainacan-icon-help"/>

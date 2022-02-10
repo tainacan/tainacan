@@ -205,7 +205,8 @@
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)">
@@ -257,7 +258,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -271,7 +273,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -286,7 +289,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i
@@ -398,7 +402,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -412,7 +417,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -427,7 +433,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i
@@ -485,7 +492,8 @@
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)">
@@ -520,7 +528,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -534,7 +543,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -549,7 +559,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i
@@ -591,7 +602,8 @@
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="metadata-description"
                                     v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
@@ -605,7 +617,8 @@
                                         content: item.author_name != undefined ? item.author_name : '',
                                         html: false,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="metadata-author-creation">
                                 {{ $i18n.get('info_created_by') + ' ' + (item.author_name != undefined ? item.author_name : '') }}
@@ -620,7 +633,8 @@
                                         content: item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '',
                                         html: false,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="metadata-author-creation">
                                 {{ $i18n.get('info_date') + ' ' + (item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '') }}
@@ -701,7 +715,8 @@
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 v-for="(column, columnIndex) in displayedMetadata"
                                 :key="columnIndex"
@@ -718,7 +733,8 @@
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 v-for="(column, columnIndex) in displayedMetadata"
                                 :key="columnIndex"
@@ -741,7 +757,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -755,7 +772,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -770,7 +788,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i
@@ -986,7 +1005,7 @@
                                             shown: 500,
                                             hide: 300,
                                         },
-                                        popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
+                                        popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -1077,7 +1096,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                placement: 'auto'
+                                                placement: 'auto',
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -1091,7 +1111,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('label_recover_from_trash'),
                                                 autoHide: true,
-                                                placement: 'auto'
+                                                placement: 'auto',
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -1106,7 +1127,8 @@
                                             v-tooltip="{
                                                 content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                                 autoHide: true,
-                                                placement: 'auto'
+                                                placement: 'auto',
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
                                     <i
@@ -1187,7 +1209,8 @@
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)"
@@ -1211,7 +1234,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -1225,7 +1249,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -1240,7 +1265,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i

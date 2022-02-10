@@ -49,12 +49,12 @@
                     v-tooltip="{
                             delay: {
                                 shown: 500,
-                                hide: 30000,
+                                hide: 300,
                             },
                             content: $i18n.get('exporters'),
                             autoHide: false,
                             placement: 'bottom-start',
-                            popperClass: ['tainacan-tooltip', 'header-tooltips', 'tooltip']
+                            popperClass: ['tainacan-tooltip', 'tainacan-header-tooltip', 'tooltip']
                         }">
                 <a
                         @click="openAvailableExportersModal"
@@ -75,7 +75,7 @@
                             content: $i18n.get('label_view_collection_on_website'),
                             autoHide: false,
                             placement: 'bottom-end',
-                            popperClass: ['tainacan-tooltip', 'header-tooltips', 'tooltip']
+                            popperClass: ['tainacan-tooltip', 'tainacan-header-tooltip', 'tooltip']
                         }">
                 <a
                         :href="collection && collection.url ? collection.url : ''"
@@ -98,7 +98,7 @@
                             content: $i18n.get('label_view_repository'),
                             autoHide: false,
                             placement: 'bottom-end',
-                            popperClass: [ 'tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-header-tooltips' : 'header-tooltips']
+                            popperClass: [ 'tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-header-tooltip' : 'tainacan-header-tooltip']
                         }">
                 <a
                         :href="repositoryURL"

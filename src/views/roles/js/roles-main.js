@@ -23,7 +23,15 @@ export default (element) => {
 
             Vue.use(I18NPlugin);
             Vue.use(VTooltip, {
-                defaultClass: 'tainacan-tooltip tooltip'
+                popperTriggers: ['hover'],
+                themes: {
+                    'taianacan-tooltip': {
+                        '$extend': 'tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
+                }
             });
             Vue.use(Snackbar);
             Vue.use(Modal);

@@ -199,6 +199,7 @@
                                 content: $i18n.get('info_collections_tab_all'),
                                 autoHide: true,
                                 placement: 'auto',
+                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                             }">
                         <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                             {{ `${$i18n.get('label_all_collections')}` }}
@@ -216,6 +217,7 @@
                                 content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('collections')]),
                                 autoHide: true,
                                 placement: 'auto',
+                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                             }">
                         <a>
                             <span 

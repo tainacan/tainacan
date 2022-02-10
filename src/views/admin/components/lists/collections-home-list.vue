@@ -26,7 +26,8 @@
                                 v-tooltip="{
                                     content: $i18n.get('label_collection_items'),
                                     autoHide: true,
-                                    placement: 'auto'
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-medium">
                             <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items"/>
@@ -43,7 +44,8 @@
                                 v-tooltip="{
                                     content: $i18n.get('label_collection_metadata'),
                                     autoHide: true,
-                                    placement: 'auto'
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-medium">
                             <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
@@ -60,7 +62,8 @@
                                 v-tooltip="{
                                     content: $i18n.get('label_collection_filters'),
                                     autoHide: true,
-                                    placement: 'auto'
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-medium">
                             <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>

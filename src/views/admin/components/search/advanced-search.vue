@@ -140,7 +140,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('remove_search_criterion'),
                                         autoHide: true,
-                                        placement: 'auto-end'
+                                        placement: 'auto-end',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>

@@ -125,7 +125,8 @@
                                             content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
-                                            placement: 'auto-start'
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         :aria-label="column.name + ': ' + (item.title != undefined && item.title != '' ? item.title : $i18n.get('label_value_not_provided'))"
                                         v-if="!collectionId &&
@@ -141,7 +142,8 @@
                                             content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
-                                            placement: 'auto-start'
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         v-if="!collectionId &&
                                             column.metadata_type_object != undefined && 
@@ -191,7 +193,8 @@
                                                 hide: 100,
                                             },
                                             content: $i18n.get('label_see_on_fullscreen'),
-                                            placement: 'auto-start'
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"          
                                         @click.prevent="starSlideshowFromHere(index)"
                                         class="icon slideshow-icon">

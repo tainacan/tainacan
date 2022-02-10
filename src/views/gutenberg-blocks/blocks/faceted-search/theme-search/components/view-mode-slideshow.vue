@@ -13,7 +13,8 @@
                     },
                     content: $i18n.get('label_slides_help'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="slides-help-button"
                 class="is-hidden-mobile"
@@ -32,7 +33,8 @@
                     },
                     content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="metedata-panel-button"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
@@ -51,7 +53,8 @@
                     },
                     content: $i18n.get('label_item_page'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="item-page-button"
                 v-if="slideItems && swiper && swiper.activeIndex != undefined && slideItems[swiper.activeIndex]"
@@ -71,7 +74,8 @@
                     },
                     content: $i18n.get('close'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="close-fullscren-button"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
@@ -90,7 +94,8 @@
                     },
                     content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="metadata-compress-button"
                 @click="isMetadataCompressed = !isMetadataCompressed">
@@ -120,7 +125,8 @@
                                 v-tooltip="{
                                     content: $i18n.get('previous'),
                                     autoHide: true,
-                                    placement: 'auto'
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
@@ -172,7 +178,8 @@
                                 v-tooltip="{
                                     content: $i18n.get('next'),
                                     autoHide: true,
-                                    placement: 'auto'
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-large has-text-turoquoise5">
                             <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
@@ -195,7 +202,8 @@
                                     v-tooltip="{
                                         content: isPlaying ? $i18n.get('label_pause_slide_transition') : $i18n.get('label_begin_slide_transition'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
                                     class="icon">
                                 <i 
@@ -291,7 +299,8 @@
                                     },
                                     content: metadatum.name,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"  
                                 class="ellipsed-text">
                             {{ metadatum.name }}

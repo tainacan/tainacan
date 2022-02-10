@@ -51,7 +51,15 @@ export default (element) => {
                 defaultTooltipAnimated: true
             });
             Vue.use(VTooltip, {
-                defaultClass: 'tainacan-tooltip tooltip'
+                popperTriggers: ['hover'],
+                themes: {
+                    'taianacan-tooltip': {
+                        '$extend': 'tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
+                }
             });
             Vue.use(I18NPlugin);
             Vue.use(UserPrefsPlugin);
