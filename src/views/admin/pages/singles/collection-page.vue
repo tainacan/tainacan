@@ -1,7 +1,10 @@
 <template>
     <div 
             class="columns is-fullheight"
-            :class="{ 'tainacan-admin-collection-mobile-app-mode': $adminOptions.mobileAppMode }">
+            :class="{
+                'tainacan-admin-collection-item-edition-mode': $adminOptions.itemEditionMode,
+                'tainacan-admin-collection-mobile-app-mode': $adminOptions.mobileAppMode
+            }">
         <section 
                 class="column is-secondary-content"
                 :style="$adminOptions.hideRepositorySubheader ? 'margin-top: 0; height: 100%;' : ''">
