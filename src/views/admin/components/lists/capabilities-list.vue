@@ -39,7 +39,7 @@
                                             },
                                             content: capability.display_name,
                                             autoHide: false,
-                                            popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }">
                                     {{ capability.display_name }}
@@ -58,7 +58,7 @@
                                             },
                                             content: capability.description,
                                             autoHide: false,
-                                            popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
                                         v-html="capability.description"/>
@@ -80,7 +80,7 @@
                                                 },
                                                 content: props['complete-roles-list'],
                                                 autoHide: false,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'auto-start'
                                             }"
                                             v-html="props['complete-roles-list']"/>
@@ -99,7 +99,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
                                                     autoHide: true,
-                                                    popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                     placement: 'auto'
                                                 }"
                                                 class="icon">

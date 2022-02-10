@@ -215,7 +215,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -357,7 +357,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -495,7 +495,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -684,7 +684,7 @@
                                 v-tooltip="{
                                     content: $i18n.get('status_' + item.status),
                                     autoHide: true,
-                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }">
                             <i 
@@ -916,7 +916,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -957,6 +957,7 @@
                                         content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
                                     v-if="collectionId == undefined &&
@@ -971,6 +972,7 @@
                                         },
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
@@ -1021,7 +1023,8 @@
                                         content: item[column.slug],
                                         html: true,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     v-if="column.metadatum == 'row_author'">
                                     {{ item[column.slug] }}
@@ -1035,6 +1038,7 @@
                                         content: parseDateToNavigatorLanguage(item[column.slug]),
                                         html: true,
                                         autoHide: false,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
                                     v-if="column.metadatum == 'row_modification'">
@@ -1049,6 +1053,7 @@
                                         content: parseDateToNavigatorLanguage(item[column.slug]),
                                         html: true,
                                         autoHide: false,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
                                     v-if="column.metadatum == 'row_creation'">
@@ -1165,7 +1170,7 @@
                                 v-tooltip="{
                                     content: $i18n.get('status_' + item.status),
                                     autoHide: true,
-                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }">
                             <i 
@@ -1313,7 +1318,8 @@ export default {
         isLoading: false,
         isOnTrash: false,
         totalItems: Number,
-        viewMode: 'card'
+        viewMode: 'card',
+        isRepositoryLevel: false
     },
     data(){
         return {

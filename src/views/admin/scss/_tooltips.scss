@@ -12,28 +12,33 @@
         background: var(--tainacan-primary);
     }
 }
-.repository-tooltip {
-    .tooltip-inner {
-        background: var(--tainacan-blue2) !important;
-    }
-    .tooltip-arrow {
-        border-color: var(--tainacan-blue2) !important;
-    }
-}
 .v-popper--theme-tooltip.tainacan-tooltip {
     font-size: 0.6875em;
     font-family: var(--tainacan-font-family, inherit);
-    top: 0;
     z-index: 999999999;
+    max-width: 340px;
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 
     .v-popper__inner {
         background: var(--tainacan-primary);
-        color: var(--tainacan-primary);
-        padding: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
+        color: var(--tainacan-info-color);
+        padding: 8px 12px;
+        border-radius: 2px;
+        box-shadow: 0 0 8px -6px rgba(0, 0, 0, 0.25);
     }
     .v-popper__arrow-outer {
         border-color: var(--tainacan-primary);
+    }
+    &.tainacan-repository-tooltip {
+        .v-popper__inner {
+            background: var(--tainacan-blue1);
+            border: 1px solid var(--tainacan-blue2);
+        }
+        .v-popper__arrow-outer {
+            border-color: var(--tainacan-blue1);
+        }
     }
 
     // Metadata type Preview tooltips

@@ -104,11 +104,18 @@ export default (element) => {
                 themes: {
                     'taianacan-tooltip': {
                         '$extend': 'tooltip',
-                        triggers: ['hover', 'focus'],
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-repository-tooltip': {
+                        '$extend': 'tainacan-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,
                         html: true,
                     },
                 },
+                popperTriggers: ['hover']
             });
             Vue.use(VueMasonry);
             Vue.use(VueBlurHash);

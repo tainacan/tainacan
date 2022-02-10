@@ -25,7 +25,7 @@
                             content: $i18n.get('label_shrink_menu'),
                             autoHide: true,
                             placement: 'auto-end',
-                            popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip']     
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']     
                         }"
                         class="icon">
                     <i 

@@ -40,7 +40,7 @@
                                     },
                                     content: activity.title,
                                     autoHide: false,
-                                    popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             {{ activity.title }}
@@ -60,7 +60,7 @@
                                     },
                                     content: activity.user_name,
                                     autoHide: false,
-                                    popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                     placement: 'auto-start'
                                 }"
                                 v-html="activity.user_name"/>
@@ -79,7 +79,7 @@
                                     },
                                     content: activity.date,
                                     autoHide: false,
-                                    popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                     placement: 'auto-start'
                                 }"
                                 v-html="activity.date"/>

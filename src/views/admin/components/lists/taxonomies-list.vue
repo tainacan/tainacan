@@ -100,7 +100,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + taxonomy.status),
                                         autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -181,7 +181,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'], 
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'], 
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
@@ -197,7 +197,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
                                             class="icon">

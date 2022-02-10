@@ -86,7 +86,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">
@@ -102,7 +102,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">

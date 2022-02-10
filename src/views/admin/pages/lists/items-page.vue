@@ -64,7 +64,7 @@
                         content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                         autoHide: false,
                         placement: 'auto-start',
-                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }">
                 <span class="icon">
                     <i 
@@ -193,7 +193,7 @@
                             content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
                             autoHide: false,
                             placement: 'auto-start',
-                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }" 
                         ref="displayedMetadataDropdown"
                         :mobile-modal="true"
@@ -592,6 +592,7 @@
                         :is-loading="showLoading"
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"
+                        :is-repository-level="isRepositoryLevel"
                         @updateIsLoading="newIsLoading => isLoadingItems = newIsLoading"/>
 
                 <!-- Empty Placeholder (only used in Admin) -->

@@ -155,7 +155,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + collection.status),
                                         autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -193,7 +193,7 @@
                                         },
                                         content: collection.name,
                                         autoHide: false,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 {{ collection.name }}</p>
@@ -213,7 +213,7 @@
                                         },
                                         content: (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         autoHide: false,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"/>
@@ -233,7 +233,7 @@
                                         },
                                         content: collection.modification_date,
                                         autoHide: false,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.modification_date" />
@@ -253,7 +253,7 @@
                                         },
                                         content: collection.creation_date,
                                         autoHide: false,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.creation_date" />
@@ -273,7 +273,7 @@
                                         },
                                         content: collection.author_name,
                                         autoHide: false,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="collection.author_name" />
@@ -294,7 +294,7 @@
                                         },
                                         content: getTotalItemsDetailed(collection.total_items),
                                         autoHide: false,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
                                     v-html="getTotalItems(collection.total_items)" />
@@ -316,7 +316,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'auto',
                                                 html: true
                                             }"
@@ -333,7 +333,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'auto'
                                             }"
                                             class="icon">
