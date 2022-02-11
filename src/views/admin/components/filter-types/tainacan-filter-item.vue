@@ -12,13 +12,14 @@
                     :aria-expanded="open"
                     v-tooltip="{
                         delay: {
-                            show: 500,
+                            shown: 500,
                             hide: 300,
                         },
                         content: filter.name,
                         html: false,
                         autoHide: false,
-                        placement: 'top-start'
+                        placement: 'top-start',
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }"
                     :id="'filter-label-id-' + filter.id"
                     :aria-label="filter.name"

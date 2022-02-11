@@ -131,6 +131,7 @@
                                                     v-tooltip="{
                                                         content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                         autoHide: false,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }" 
                                                     class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
                                             <span 
@@ -194,6 +195,7 @@
                                                     v-tooltip="{
                                                         content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                         autoHide: false,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }" 
                                                     class="checkbox-label-text">{{ `${option.label}` }}</span> 
                                             <span 
@@ -215,6 +217,7 @@
                                                 v-tooltip="{
                                                     content: option.total_children + ' ' + $i18n.get('label_children_terms'),
                                                     autoHide: false,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }" 
                                                 v-else>{{ option.total_children }}</span>
                                         <span class="icon is-pulled-right">

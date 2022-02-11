@@ -292,10 +292,11 @@ export default {
         position: absolute;
         top: 48px;
         right: 40px;
-        border-radius: 5px;
+        border-radius: 4px;
         animation-name: appear-from-top-tooltip;
         animation-duration: 0.3s;
         font-size: 0.75em;
+        box-shadow: 0 0 8px -6px rgba(0, 0, 0, 0.25);
 
         .popup-header, .popup-footer {
             display: flex;

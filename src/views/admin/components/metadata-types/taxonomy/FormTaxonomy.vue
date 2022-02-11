@@ -316,7 +316,7 @@
 </script>
 
 <style scoped>
-    .help-wrapper {
+    .tainacan-help-tooltip-trigger {
         font-size: 1em;
     }
     .switch.is-small {

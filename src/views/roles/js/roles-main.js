@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '../../admin/js/store/store';
 import router from './roles-router';
-import VTooltip from 'v-tooltip';
+import VTooltip from 'floating-vue';
 import { Snackbar, Modal } from 'buefy';
 
 import { I18NPlugin } from './wp-i18n-plugin';
@@ -23,7 +23,15 @@ export default (element) => {
 
             Vue.use(I18NPlugin);
             Vue.use(VTooltip, {
-                defaultClass: 'tainacan-tooltip tooltip'
+                popperTriggers: ['hover'],
+                themes: {
+                    'taianacan-tooltip': {
+                        '$extend': 'tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
+                }
             });
             Vue.use(Snackbar);
             Vue.use(Modal);

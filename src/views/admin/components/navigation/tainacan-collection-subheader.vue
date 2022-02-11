@@ -324,18 +324,6 @@ export default {
                 }
             }
         }
-
-        .tainacan-tooltip.is-primary {
-            z-index: 99;
-        }
-        .tainacan-tooltip.is-primary::after {
-            background-color: var(--tainacan-turquoise1);
-            color: var(--tainacan-turquoise5);
-        }
-        .tainacan-tooltip.is-primary::before {
-            border-bottom-color: var(--tainacan-turquoise1);
-        }
-
     }
 </style>
 

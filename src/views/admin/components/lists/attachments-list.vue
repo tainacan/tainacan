@@ -26,7 +26,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'bottom'
+                                        placement: 'bottom',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
                                     class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>

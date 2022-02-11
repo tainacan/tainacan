@@ -221,6 +221,7 @@
                                             v-tooltip="{
                                                 content: option.total_children + ' ' + $i18n.get('label_children_terms'),
                                                 autoHide: false,
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }" 
                                             v-else>{{ option.total_children }}</span>
                                     <span class="icon is-pulled-right">

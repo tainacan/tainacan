@@ -33,7 +33,7 @@
                         v-tooltip="{
                             content: $i18n.get('status_' + collection.status),
                             autoHide: true,
-                            classes: ['tainacan-tooltip', 'tooltip'],
+                            popperClass: ['tainacan-tooltip', 'tooltip'],
                             placement: 'auto-start'
                         }">
                     <i 
@@ -48,13 +48,13 @@
             <li
                     v-tooltip="{
                             delay: {
-                                show: 500,
+                                shown: 500,
                                 hide: 300,
                             },
                             content: $i18n.get('exporters'),
                             autoHide: false,
                             placement: 'bottom-start',
-                            classes: ['tainacan-tooltip', 'header-tooltips', 'tooltip']
+                            popperClass: ['tainacan-tooltip', 'tainacan-header-tooltip', 'tooltip']
                         }">
                 <a
                         @click="openAvailableExportersModal"
@@ -69,13 +69,13 @@
             <li     
                     v-tooltip="{
                             delay: {
-                                show: 500,
+                                shown: 500,
                                 hide: 300,
                             },
                             content: $i18n.get('label_view_collection_on_website'),
                             autoHide: false,
                             placement: 'bottom-end',
-                            classes: ['tainacan-tooltip', 'header-tooltips', 'tooltip']
+                            popperClass: ['tainacan-tooltip', 'tainacan-header-tooltip', 'tooltip']
                         }">
                 <a
                         :href="collection && collection.url ? collection.url : ''"
@@ -92,13 +92,13 @@
             <li     
                     v-tooltip="{
                             delay: {
-                                show: 500,
+                                shown: 500,
                                 hide: 300,
                             },
                             content: $i18n.get('label_view_repository'),
                             autoHide: false,
                             placement: 'bottom-end',
-                            classes: [ 'tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-header-tooltips' : 'header-tooltips']
+                            popperClass: [ 'tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-header-tooltip' : 'tainacan-header-tooltip']
                         }">
                 <a
                         :href="repositoryURL"

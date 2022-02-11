@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import "floating-vue/dist/style.css";
 export default {
     name: "ThemeSearch",
     created() {

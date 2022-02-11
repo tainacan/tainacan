@@ -41,12 +41,13 @@
                         <a 
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_copy_link_url'),
                                     autoHide: false,
-                                    placement: 'bottom'
+                                    placement: 'bottom',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }" 
                                 target="_blank"
                                 @click="siteLinkCopied = true; copyTextToClipboard(itemURL ? itemURL : collectionURL)">
@@ -74,12 +75,13 @@
                         <a 
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: $i18n.get('label_open_externally'),
                                     autoHide: false,
-                                    placement: 'bottom'
+                                    placement: 'bottom',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }" 
                                 target="_blank"
                                 :href="itemURL ? itemURL : collectionURL">
@@ -116,7 +118,8 @@
                             v-tooltip="{
                                 content: $i18n.get('info_expose_only_displayed_metadata'),
                                 autoHide: true,
-                                placement: 'bottom'
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
                             }" 
                             v-model="shouldRespectFetchOnly">{{ $i18n.get('label_expose_only_displayed_metadata') }}</b-checkbox>
                 </div>
@@ -137,12 +140,13 @@
                         <label 
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: selectedExposer.name + (exposerMapper.name != undefined ? ': ' + exposerMapper.name + ' ' + $i18n.get('label_mapper') : ''),
                                     autoHide: false,
-                                    placement: 'auto-end'
+                                    placement: 'auto-end',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }" 
                                 class="label">
                             {{ selectedExposer.name + (exposerMapper.name != undefined ? ": " + exposerMapper.name + " " + $i18n.get('label_mapper') : '') }}
@@ -167,12 +171,13 @@
                                     <a 
                                             v-tooltip="{
                                                 delay: {
-                                                    show: 500,
+                                                    shown: 500,
                                                     hide: 300,
                                                 },
                                                 content: $i18n.get('label_copy_link_url'),
                                                 autoHide: false,
-                                                placement: 'bottom'
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(getExposerFullURL(pagedLink, exposerMapper))">
                                         <span class="icon">
@@ -200,12 +205,13 @@
                                     <a 
                                             v-tooltip="{
                                                 delay: {
-                                                    show: 500,
+                                                    shown: 500,
                                                     hide: 300,
                                                 },
                                                 content: $i18n.get('label_open_externally'),
                                                 autoHide: false,
-                                                placement: 'bottom'
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             target="_blank" 
                                             :href="getExposerFullURL(pagedLink, exposerMapper)">

@@ -54,12 +54,12 @@
                     <div 
                             v-tooltip="{
                                 delay: {
-                                    show: 500,
+                                    shown: 500,
                                     hide: 300,
                                 },
                                 content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
                                 autoHide: false,
-                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                 placement: 'auto-start'
                             }" 
                             v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
@@ -102,12 +102,12 @@
                     <div 
                             v-tooltip="{
                                 delay: {
-                                    show: 500,
+                                    shown: 500,
                                     hide: 300,
                                 },
                                 content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
                                 autoHide: false,
-                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                 placement: 'auto-start'
                             }" 
                             v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
@@ -154,12 +154,12 @@
                     <div 
                             v-tooltip="{
                                 delay: {
-                                    show: 500,
+                                    shown: 500,
                                     hide: 300,
                                 },
                                 content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
                                 autoHide: false,
-                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                 placement: 'auto-start'
                             }" 
                             v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"
@@ -202,12 +202,12 @@
                     <div 
                             v-tooltip="{
                                 delay: {
-                                    show: 500,
+                                    shown: 500,
                                     hide: 300,
                                 },
                                 content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
                                 autoHide: false,
-                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                 placement: 'auto-start'
                             }" 
                             v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"

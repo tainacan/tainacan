@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import store from '../../admin/js/store/store';
 import router from './reports-router';
-import VTooltip from 'v-tooltip';
 import { Snackbar, Modal } from 'buefy';
 import VueApexCharts from 'vue-apexcharts';
 import cssVars from 'css-vars-ponyfill';
@@ -78,9 +77,6 @@ export default (element) => {
             Vue.use(I18NPlugin);
             Vue.use(UserCapabilitiesPlugin);
             Vue.use(StatusHelperPlugin);
-            Vue.use(VTooltip, {
-                defaultClass: 'tainacan-tooltip tooltip'
-            });
             Vue.use(Snackbar);
             Vue.use(Modal);
 

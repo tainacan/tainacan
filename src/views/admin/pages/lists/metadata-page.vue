@@ -135,7 +135,7 @@
                                                     v-tooltip="{
                                                         content: $i18n.get('label_view_metadata_details'),
                                                         autoHide: true,
-                                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                         placement: 'auto-start'
                                                     }"
                                                     @click="$set(collapses, metadatum.id, !isCollapseOpen(metadatum.id))"
@@ -148,7 +148,7 @@
                                                     v-tooltip="{
                                                         content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                                         autoHide: true,
-                                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon grip-icon">
@@ -169,7 +169,7 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('status_private'),
                                                             autoHide: true,
-                                                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                             placement: 'auto-start'
                                                         }">
                                                     <i class="tainacan-icon tainacan-icon-private"/>
@@ -179,7 +179,7 @@
                                                         v-tooltip="{
                                                             content: $i18n.get('label_required'),
                                                             autoHide: true,
-                                                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                             placement: 'auto-start'
                                                         }">
                                                     *&nbsp;
@@ -188,7 +188,7 @@
                                                         v-tooltip="{
                                                             content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
                                                             autoHide: true,
-                                                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                             placement: 'auto-start'
                                                         }"
                                                         class="icon icon-level-identifier">
@@ -226,7 +226,7 @@
                                                             v-tooltip="{
                                                                 content: $i18n.get('edit'),
                                                                 autoHide: true,
-                                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                                 placement: 'auto-start'
                                                             }"
                                                             class="icon">
@@ -241,7 +241,7 @@
                                                             v-tooltip="{
                                                                 content: $i18n.get('delete'),
                                                                 autoHide: true,
-                                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                                 placement: 'auto-start'
                                                             }"
                                                             class="icon">
@@ -307,7 +307,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),
                                                     autoHide: true,
-                                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'auto-start'
                                                 }"   
                                                 class="icon grip-icon">
@@ -316,10 +316,15 @@
                                         <span class="metadatum-name">
                                             {{ metadatum.name }}
                                             <span 
-                                                    v-tooltip.top="{
-                                                        classes: ['metadata-type-preview-tooltip'],
+                                                    v-tooltip="{
+                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '', 'metadata-type-preview-tooltip'],
                                                         content: getPreviewTemplateContent(metadatum),
-                                                        html: true
+                                                        html: true,
+                                                        delay: {
+                                                            shown: 0,
+                                                            hide: 100,
+                                                        },
+                                                        placement: 'top',
                                                     }"
                                                     class="icon preview-help-icon has-text-secondary">
                                                 <i class="tainacan-icon tainacan-icon-help"/>

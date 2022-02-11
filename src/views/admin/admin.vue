@@ -25,7 +25,7 @@
                             content: $i18n.get('label_shrink_menu'),
                             autoHide: true,
                             placement: 'auto-end',
-                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip']     
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']     
                         }"
                         class="icon">
                     <i 
@@ -53,6 +53,7 @@
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
     import 'swiper/css/swiper.min.css';
+    import "floating-vue/dist/style.css";
 
     export default { 
         name: "AdminPage",

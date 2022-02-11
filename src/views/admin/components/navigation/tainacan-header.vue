@@ -14,7 +14,7 @@
                                 content: $i18n.get('label_plugin_home_page'),
                                 autoHide: true,
                                 placement: 'auto',
-                               classes: ['tainacan-tooltip', 'repository-header-tooltips', 'tooltip']
+                                popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
                             }"
                             class="icon">
                         <i class="tainacan-icon tainacan-icon-home has-text-blue5"/>
@@ -102,7 +102,7 @@
                             content: $i18n.get('processes'),
                             autoHide: true,
                             placement: 'auto',
-                           classes: ['tainacan-tooltip', 'repository-header-tooltips', 'tooltip']
+                            popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
                         }"
                         class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes"/>
@@ -119,7 +119,7 @@
                             content: $i18n.get('label_wordpress_admin_page'),
                             autoHide: true,
                             placement: 'auto',
-                           classes: ['tainacan-tooltip', 'repository-header-tooltips', 'tooltip']
+                            popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
                         }"
                         class="icon">
                     <i class="tainacan-icon tainacan-icon-wordpress"/>
