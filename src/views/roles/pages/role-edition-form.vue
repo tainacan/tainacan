@@ -1,9 +1,11 @@
 <template>
-    <form @submit="onSubmit">
+    <form 
+            class="tainacan-role-edition-form"
+            @submit="onSubmit">
         <h1 
                 v-if="roleSlug !== 'new'"
                 class="wp-heading-inline">
-            {{ $route.meta.title }}&nbsp;<strong>{{ role.name ? role.name : '' }}</strong>
+            {{ $route.meta.title }}&nbsp;<strong>{{ form.name ? form.name : '' }}</strong>
         </h1>
         <h1 
                 v-else
@@ -32,9 +34,19 @@
                     id="role-name-input" 
                     name="name"
                     @input="showNotice = false" 
-                    v-model="role.name" 
+                    v-model="form.name" 
                     :placeholder="$i18n.get('Insert the role name...')">
             </div>
+            <br>
+            <!-- Hook for extra Form options -->
+            <template v-if="hasBeginLeftForm">  
+                <form
+                    @click="showNotice = false" 
+                    id="form-role-begin-left"
+                    class="form-hook-region"
+                    v-html="getBeginLeftForm"/>
+                <br>
+            </template>
         </template>
 
         <span 
@@ -42,8 +54,8 @@
                 class="spinner is-active"
                 style="float: none; margin: 0 auto; width: 100%; display: block;" />
 
-        <template v-if="!isLoadingRole && !isLoadingCapabilities">
-            <br>
+        <template v-if="!isLoadingRole">
+
             <div id="capabilities-tabs">
                 <h2 class="nav-tab-wrapper">
                     <a 
@@ -58,13 +70,23 @@
                             @click="capabilitiesTab = 'collections'">
                         {{ $i18n.get('Collections') }}
                     </a>
+
+                    <a        
+                            v-if="hasBeginRightForm || hasEndRightForm"
+                            class="nav-tab"
+                            :class="{ 'nav-tab-active': capabilitiesTab == 'extra'}"
+                            @click="capabilitiesTab = 'extra'">
+                        {{ $i18n.get('Others') }}
+                    </a>
                 </h2>
                 <div 
                         class="tabs-content"
                         v-if="capabilitiesTab === 'repository'"
                         id="tab-repository">
                     <!-- <h3>{{ $i18n.get('Role\'s Repository Related Capabilities List') }}</h3> -->
-                    <div class="capabilities-list">
+                    <div 
+                            v-if="!isLoadingCapabilities"
+                            class="capabilities-list">
                         <div
                                 class="capability-group"
                                 v-for="(group, groupIndex) of groupedRepositoryCapabilities"
@@ -92,8 +114,8 @@
                                                 type="checkbox"
                                                 name="capabilities[]"
                                                 :id="'capability_'+ capability"
-                                                :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0"
-                                                :checked="role.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap] == true) >= 0)"
+                                                :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0"
+                                                :checked="form.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0)"
                                                 @input="onUpdateCapability($event.target.checked, capability)">
                                         </span>
                                         <span 
@@ -144,7 +166,9 @@
                             <br class="clear">
                         </div>
 
-                        <div class="capabilities-list">
+                        <div 
+                                v-if="!isLoadingCapabilities"
+                                class="capabilities-list">
                             <div
                                     class="capability-group"
                                     v-for="(group, groupIndex) of groupedCollectionCapabilities"
@@ -172,8 +196,8 @@
                                                     type="checkbox"
                                                     name="roles[]"
                                                     :id="'capability_'+ capability.replace('%d', selectedCollection)"
-                                                    :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
-                                                    :checked="role.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => role.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
+                                                    :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
+                                                    :checked="form.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
                                                     @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
                                             </span>
                                             <span 
@@ -191,10 +215,51 @@
                     <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('The capability "Manage Tainacan" may affect other capabilities related to repository and collections.') }}</p>
                     <p><span class="dashicons dashicons-info" />&nbsp; {{ $i18n.get('Capabilities related to All Collections shall affect other Collections capabilities.') }}</p>
                 </div> <!-- End of Collections Tab -->
-            
+
+                <div
+                        class="tabs-content"
+                        v-show="capabilitiesTab === 'extra'"
+                        id="tab-extra">
+                    <br>
+                    
+                    <!-- Hook for extra Form options -->
+                    <template v-if="hasBeginRightForm">  
+                        
+                        <form 
+                            @click="showNotice = false"
+                            id="form-role-begin-right"
+                            class="form-hook-region"
+                            v-html="getBeginRightForm"/>
+                    </template>
+                    
+                    <hr v-if="hasBeginRightForm && hasEndRightForm">
+                    
+                    <!-- Hook for extra Form options -->
+                    <template v-if="hasEndRightForm"> 
+                        <form 
+                            @click="showNotice = false"
+                            id="form-role-end-right"
+                            class="form-hook-region"
+                            v-html="getEndRightForm"/>
+                    </template>
+                    
+                    <br>
+                </div><!-- End of the Extra Tab -->
+
             </div> <!-- End of Tabs-->
 
         </template>
+
+        <!-- Hook for extra Form options -->
+        <template v-if="hasEndLeftForm && !isLoadingRole">  
+            <br>
+            <form 
+                @click="showNotice = false"
+                id="form-role-end-left"
+                class="form-hook-region"
+                v-html="getEndLeftForm"/>
+        </template>
+
         <div class="form-submit">
             <p class="cancel">
                 <input 
@@ -214,7 +279,7 @@
                         type="submit"
                         name="submit"
                         id="submit"
-                        :disabled="!role.name || showNotice" 
+                        :disabled="!form.name || showNotice" 
                         class="button button-primary"
                         :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">
             </p>
@@ -224,17 +289,20 @@
 
 <script>
     import { mapActions, mapGetters } from 'vuex';
+    import { formHooks } from '../../admin/js/mixins';
 
     export default {
+        mixins: [ formHooks ],
         data() {
             return {
+                entityName: 'role',
                 isUpdatingRole: false,
                 isLoadingRole: false,
                 isLoadingCapabilities: false,
                 selectedCollection: 'all',
                 collections: [],
                 isLoadingCollections: false,
-                role: {
+                form: {
                     name: '',
                     capabilities: {}
                 },
@@ -277,13 +345,19 @@
         },
         created() {
             this.roleSlug = this.$route.params.roleSlug;
-
+        },
+        mounted() {
             if (this.roleSlug !== 'new') {
                 this.isLoadingRole = true;
                 this.fetchRole(this.roleSlug)
                     .then((originalRole) => {
-                        this.role = JSON.parse(JSON.stringify(originalRole));
+                        this.form = JSON.parse(JSON.stringify(originalRole));
+
                         this.isLoadingRole = false;
+
+                        // Fills hook forms with it's real values 
+                        this.$nextTick(() => this.updateExtraFormData(this.form) );
+                        
                     }).catch(() => {
                         this.isLoadingRole = false;
                     });
@@ -291,15 +365,20 @@
                 this.isLoadingRole = true;
                 this.fetchRole(this.$route.query.template)
                     .then((originalRole) => {
-                        this.role = JSON.parse(JSON.stringify(originalRole));
-                        this.role.name = this.role.name + ' ' + this.$i18n.get('(Copy)');
-                        this.role.slug = undefined;
+                        this.form = JSON.parse(JSON.stringify(originalRole));
+                        this.form.name = this.form.name + ' ' + this.$i18n.get('(Copy)');
+                        this.form.slug = undefined;
+
                         this.isLoadingRole = false;
+
+                        // Fills hook forms with it's real values 
+                        this.$nextTick(() => this.updateExtraFormData(this.form) );
+
                     }).catch(() => {
                         this.isLoadingRole = false;
                     });
-            }   else {
-                this.role = {
+            } else {
+                this.form = {
                     name: '',
                     capabilities: {}
                 }
@@ -347,18 +426,26 @@
             ]),
             onUpdateCapability(value, capabilityKey) {
                 this.showNotice = false;
-                const capabilities = this.role.capabilities && Object.keys(this.role.capabilities).length ? this.role.capabilities : {};
+                const capabilities = this.form.capabilities && Object.keys(this.form.capabilities).length ? this.form.capabilities : {};
                 this.$set(capabilities, capabilityKey, value);
-                this.$set(this.role, 'capabilities', capabilities);
+                this.$set(this.form, 'capabilities', capabilities);
             },
             onSubmit(event) {
                 event.preventDefault();
                 this.isUpdatingRole = true;
+                
+                let data = {
+                    name: this.form.name,
+                    capabilities: this.form.capabilities,
+                    slug: this.form.slug
+                }
+                this.fillExtraFormData(data);
+
                 if (this.roleSlug === 'new') {
-                    this.createRole(this.role)
+                    this.createRole(data)
                         .then((createdRole) => {
                             this.roleSlug = createdRole.slug;
-                            this.role = createdRole;
+                            this.form = createdRole;
                             this.$router.push('/roles/' + this.roleSlug);
                             this.isUpdatingRole = false;
                             this.showNotice = true;
@@ -371,7 +458,7 @@
                             this.showErrorNotice = true;
                         });
                 } else {
-                    this.updateRole(this.role)
+                    this.updateRole(data)
                         .then(() => {
                             this.isUpdatingRole = false;
                             this.showNotice = true;
@@ -407,7 +494,10 @@
     }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+
+.tainacan-role-edition-form {
+
     @keyframes appear-from-right {
         from {
             right: -100%;
@@ -449,6 +539,7 @@
         margin-right: 2em;
         padding-bottom: 3px;
         font-size: 1em;
+        font-weight: bold;
     }
     .nav-tab {
         background-color: #faf9f9;
@@ -502,4 +593,5 @@
             border-bottom: 1px solid #ccc;
         }
     }
+}
 </style>

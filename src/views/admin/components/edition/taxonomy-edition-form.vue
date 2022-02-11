@@ -36,14 +36,11 @@
                                 </b-field>
 
                                 <!-- Hook for extra Form options -->
-                                <template 
-                                        v-if="formHooks != undefined && 
-                                            formHooks['taxonomy'] != undefined &&
-                                            formHooks['taxonomy']['begin-left'] != undefined">  
+                                <template v-if="hasBeginLeftForm">  
                                     <form 
                                         id="form-taxonomy-begin-left"
                                         class="form-hook-region"
-                                        v-html="formHooks['taxonomy']['begin-left'].join('')"/>
+                                        v-html="getBeginLeftForm"/>
                                 </template>
 
                                 <!-- Description -------------------------------- -->
@@ -149,14 +146,11 @@
                                 </b-field>
 
                                 <!-- Hook for extra Form options -->
-                                <template 
-                                        v-if="formHooks != undefined && 
-                                            formHooks['taxonomy'] != undefined &&
-                                            formHooks['taxonomy']['end-left'] != undefined">  
+                                <template v-if="hasEndLeftForm">  
                                     <form 
                                         id="form-taxonomy-end-left"
                                         class="form-hook-region"
-                                        v-html="formHooks['taxonomy']['end-left'].join('')"/>
+                                        v-html="getEndLeftForm"/>
                                 </template>
                             </div>
                         </div>

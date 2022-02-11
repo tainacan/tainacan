@@ -388,6 +388,7 @@ class REST_Roles_Controller extends REST_Controller {
 			'name' => translate_user_role($name),
 			'capabilities' => $caps
 		];
+		$return = apply_filters('tainacan-api-role-prepare-for-response', $return, $request);
 		return $return;
 	}
 

@@ -183,6 +183,9 @@ export default {
             repositoryName: tainacan_plugin.repository_name,
             themeCollectionListURL: tainacan_plugin.theme_collection_list_url,
             themeItemsListURL: tainacan_plugin.theme_items_list_url,
+            collectionsToLoad: (this.$adminOptions.homeCollectionsPerPage && !isNaN(this.$adminOptions.homeCollectionsPerPage)) ? this.$adminOptions.homeCollectionsPerPage : 9,
+            collectionsOrderBy: this.$adminOptions.homeCollectionsOrderBy ? this.$adminOptions.homeCollectionsOrderBy : 'modified',
+            collectionsOrder: this.$adminOptions.homeCollectionsOrder ? this.$adminOptions.homeCollectionsOrder : 'desc'
         }
     },
     computed: {
@@ -204,7 +207,14 @@ export default {
         loadCollections() {
             this.cleanCollections();    
             this.isLoadingCollections = true;
-            this.fetchCollections({ page: 1, collectionsPerPage: 9, order: 'desc', orderby: 'modified', status: undefined, contextEdit: true })
+            this.fetchCollections({
+                    page: 1,
+                    collectionsPerPage: this.collectionsToLoad,
+                    order: this.collectionsOrder,
+                    orderby: this.collectionsOrderBy,
+                    status: undefined,
+                    contextEdit: true
+                })
                 .then((res) => {
                     this.collectionsTotal = res.total;
                     this.isLoadingCollections = false;

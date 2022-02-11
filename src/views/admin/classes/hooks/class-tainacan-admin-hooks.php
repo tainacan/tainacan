@@ -31,7 +31,7 @@ class Admin_Hooks {
 	}
 
 	public function get_available_contexts() {
-		return apply_filters('tainacan-admin-hooks-contexts', ['collection', 'metadatum', 'item', 'taxonomy', 'term', 'filter']);
+		return apply_filters('tainacan-admin-hooks-contexts', ['collection', 'metadatum', 'item', 'taxonomy', 'term', 'filter', 'role']);
 	}
 	
 	public function get_registered_hooks() {
@@ -41,10 +41,11 @@ class Admin_Hooks {
 	/**
 	 * 
 	 * @param string $context The context to add the hook to (collection, metadatum, item, taxonomy, term or filter)
-	 * @param string $position The position inside the page to hook. (begin, end, begin-left, begin-right, end-left, end-right)
 	 * @param callable $callback The callback that will output the form HTML
+	 * @param string $position The position inside the page to hook. (begin, end, begin-left, begin-right, end-left, end-right)
+	 * @param array $conditional Key-named array containing an 'attribute' and a 'value' that will be checked in the context form object before rendering the hook.
 	 */
-	public function register( $context, $callback, $position = 'end-left' ) {
+	public function register( $context, $callback, $position = 'end-left', $conditional = null ) {
 		
 		$contexts = $this->get_available_contexts();
 		$positions = $this->get_available_positions();
@@ -54,8 +55,14 @@ class Admin_Hooks {
 		}
 				
 		$result = call_user_func($callback);
-		if (is_string($result)){
-			$this->registered_hooks[$context][$position][] = $result;
+
+		if ( is_string($result) ) {
+
+			$this->registered_hooks[$context][$position][] = [
+				'form' => $result,
+				'conditional' => !empty($conditional) ? $conditional : false
+			];
+
 			return true;
 		}
 		return false;

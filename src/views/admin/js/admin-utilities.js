@@ -563,7 +563,10 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideHomeCollectionFiltersButton
             * hideHomeCollectionActivitiesButton
             * hideHomeCollectionThemeCollectionButton
-            * showHomeCollectionCreateItemButton
+            * showHomeCollectionCreateItemButton // Default is false
+            * homeCollectionsPerPage // Default is 9
+            * homeCollectionsOrderBy // Default is 'modified'
+            * homeCollectionsOrder // Default is 'desc'
         * hideTainacanHeader
             * hideTainacanHeaderHomeButton
             * hideTainacanHeaderSearchInput

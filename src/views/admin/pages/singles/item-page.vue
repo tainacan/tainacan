@@ -29,14 +29,11 @@
                 <div class="column is-7">
 
                     <!-- Hook for extra Form options -->
-                    <template
-                            v-if="formHooks != undefined &&
-                        formHooks['view-item'] != undefined &&
-                        formHooks['view-item']['begin-right'] != undefined">
+                    <template v-if="hasBeginRightForm">
                         <div
                                 id="view-item-begin-right"
                                 class="form-hook-region"
-                                v-html="formHooks['view-item']['begin-right'].join('')"/>
+                                v-html="getBeginRightForm"/>
                     </template>
 
                     <div
@@ -199,14 +196,11 @@
                             </div>
 
                             <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                formHooks['view-item'] != undefined &&
-                                formHooks['view-item']['end-right'] != undefined">
+                            <template v-if="hasEndRightForm">
                                 <div
                                         id="view-item-end-right"
                                         class="form-hook-region"
-                                        v-html="formHooks['view-item']['end-right'].join('')"/>
+                                        v-html="getEndRightForm"/>
                             </template>
                         </b-tab-item>
 
@@ -278,14 +272,11 @@
                     <div class="sticky-container">
 
                         <!-- Hook for extra Form options -->
-                        <template
-                                v-if="formHooks != undefined &&
-                            formHooks['view-item'] != undefined &&
-                            formHooks['view-item']['begin-left'] != undefined">
+                        <template v-if="hasBeginLeftForm">
                             <div
                                     id="view-item-begin-left"
                                     class="form-hook-region"
-                                    v-html="formHooks['view-item']['begin-left'].join('')"/>
+                                    v-html="getBeginLeftForm"/>
                         </template>
 
                         <!-- Document -------------------------------- -->
@@ -365,14 +356,11 @@
                         </div>        
 
                         <!-- Hook for extra Form options -->
-                        <template
-                                v-if="formHooks != undefined &&
-                                    formHooks['view-item'] != undefined &&
-                                    formHooks['view-item']['end-left'] != undefined">
+                        <template v-if="hasEndLeftForm">
                             <div
                                     id="view-item-end-left"
                                     class="form-hook-region"
-                                    v-html="formHooks['view-item']['end-left'].join('')"/>
+                                    v-html="getEndLeftForm"/>
                         </template>
 
                     </div>
