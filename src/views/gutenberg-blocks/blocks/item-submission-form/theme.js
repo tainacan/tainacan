@@ -58,6 +58,12 @@ export default (element) => {
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,
                         html: true,
+                    },
+                    'tainacan-helper-tooltip': {
+                        '$extend': 'tainacan-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
                     }
                 }
             });

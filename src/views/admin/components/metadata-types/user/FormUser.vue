@@ -40,7 +40,7 @@
 </script>
 
 <style scoped>
-    .help-wrapper {
+    .tainacan-help-tooltip-trigger {
         font-size: 1.25em;
     }
 </style>

@@ -106,7 +106,7 @@ export default (element) => {
                         '$extend': 'tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,
-                        html: true,
+                        html: true
                     },
                     'tainacan-repository-tooltip': {
                         '$extend': 'tainacan-tooltip',
@@ -126,6 +126,12 @@ export default (element) => {
                         autoHide: true,
                         html: true,
                     },
+                    'tainacan-helper-tooltip': {
+                        '$extend': 'tainacan-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
                 }
             });
             Vue.use(VueMasonry);

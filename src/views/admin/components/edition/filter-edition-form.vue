@@ -354,7 +354,7 @@ export default {
             .field > .field:not(:last-child) {
                 margin-bottom: 0em;
             }
-            .help-wrapper {
+            .tainacan-help-tooltip-trigger {
                 font-size: 1.25em;
             }
         }

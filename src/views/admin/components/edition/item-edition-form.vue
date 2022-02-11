@@ -2459,10 +2459,14 @@ export default {
         }
 
         .help {
-            display: inline-block;
+            display: inline-flex;
             font-size: 1.0em;
             margin-top: 0;
             margin-left: 24px;
+
+            .tainacan-help-tooltip-trigger {
+                margin-left: 0.25em;
+            }
         }
 
         .sequence-button {

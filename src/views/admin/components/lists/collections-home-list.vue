@@ -95,13 +95,15 @@
                                     tag="a" 
                                     :to="{ path: $routerHelper.getNewCollectionPath() }" 
                                     :aria-label="$i18n.get('label_collection_items')">
-                                <b-tooltip 
-                                        :label="$i18n.get('items')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip.bottom="{
+                                            content: $i18n.get('items'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
+                                </span>
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
                             </router-link>
                         </li>
@@ -110,13 +112,15 @@
                                     tag="a" 
                                     :to="{ path: $routerHelper.getNewCollectionPath() }"
                                     :aria-label="$i18n.get('label_collection_metadata')">
-                                <b-tooltip 
-                                        :label="$i18n.getFrom('metadata', 'name')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip.bottom="{
+                                            content: $i18n.getFrom('metadata', 'name'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
+                                </span>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
                             </router-link>
                         </li>
@@ -125,14 +129,15 @@
                                     tag="a" 
                                     :to="{ path: $routerHelper.getNewCollectionPath() }" 
                                     :aria-label="$i18n.get('label_collection_filters')">
-                                <b-tooltip 
-                                        animated
-                                        :label="$i18n.getFrom('filters', 'name')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip.bottom="{
+                                            content: $i18n.getFrom('filters', 'name'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                                </span>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
                             </router-link>
                         </li>
@@ -149,13 +154,15 @@
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionItemsPath(collection.id, '') }" 
                                     :aria-label="$i18n.get('label_collection_items')">
-                                <b-tooltip 
-                                        :label="$i18n.get('items')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip.bottom="{
+                                            content: $i18n.get('items'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
+                                </span>
                                 <!-- <span class="menu-text">{{ $i18n.get('items') }}</span> -->
                             </router-link>
                         </li>
@@ -164,13 +171,15 @@
                                     tag="a" 
                                     :to="{ path: $routerHelper.getNewItemPath(collection.id) }" 
                                     :aria-label="$i18n.get('add_one_item')">
-                                <b-tooltip 
-                                        :label="$i18n.get('add_one_item')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-add"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip.bottom="{
+                                            content: $i18n.get('add_one_item'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-add"/>
+                                </span>
                                 <!-- <span class="menu-text">{{ $i18n.get('add_one_item') }}</span> -->
                             </router-link>
                         </li>
@@ -179,13 +188,15 @@
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionEditPath(collection.id) }" 
                                     :aria-label="$i18n.get('label_settings')">
-                                <b-tooltip 
-                                        :label="$i18n.get('label_settings')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip.bottom="{
+                                            content: $i18n.get('label_settings'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
+                                </span>
                                 <!-- <span class="menu-text">{{ $i18n.get('label_settings') }}</span> -->
                             </router-link>
                         </li>
@@ -194,13 +205,15 @@
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionMetadataPath(collection.id) }"
                                     :aria-label="$i18n.get('label_collection_metadata')">
-                                <b-tooltip 
-                                        :label="$i18n.getFrom('metadata', 'name')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
-                                    </span>
-                                </b-tooltip>
+                                <span
+                                        v-tooltip.bottom="{
+                                            content: $i18n.getFrom('metadata', 'name'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
+                                </span>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span> -->
                             </router-link>
                         </li>
@@ -209,14 +222,15 @@
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionFiltersPath(collection.id) }" 
                                     :aria-label="$i18n.get('label_collection_filters')">
-                                <b-tooltip 
-                                        animated
-                                        :label="$i18n.getFrom('filters', 'name')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip.bottom="{
+                                            content: $i18n.getFrom('filters', 'name'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                                </span>
                                 <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
                             </router-link>
                         </li>
@@ -225,13 +239,15 @@
                                     tag="a" 
                                     :to="{ path: $routerHelper.getCollectionActivitiesPath(collection.id) }"
                                     :aria-label="$i18n.get('label_collection_activities')">
-                                <b-tooltip 
-                                        :label="$i18n.get('activities')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip.bottom="{
+                                            content: $i18n.get('activities'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
+                                </span>
                                 <!-- <span class="menu-text">{{ $i18n.get('activities') }}</span> -->
                             </router-link> 
                         </li>
@@ -240,13 +256,15 @@
                                     :href="collection.url"
                                     target="_blank" 
                                     :aria-label="$i18n.get('label_view_collection_on_website')">
-                                <b-tooltip 
-                                        :label="$i18n.get('label_view_collection_on_website')"
-                                        position="is-bottom">
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip.bottom="{
+                                            content: $i18n.get('label_view_collection_on_website'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']     
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                                </span>
                             </a>
                         </li>
                     </ul>

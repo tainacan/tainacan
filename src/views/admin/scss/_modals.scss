@@ -29,8 +29,8 @@
 
 .tainacan-modal .modal-close {
     z-index: 99999;
-    background-color: var(--tainacan-background-color, #ffffff);
     @media only screen and (max-width: 768px) {
+        background-color: var(--tainacan-background-color, #ffffff);
         &:before, &:after { background-color: var(--tainacan-secondary, #298596); }
     }
 }

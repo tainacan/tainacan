@@ -233,18 +233,18 @@
                                     v-if="bulkEditionProcedures[criterion].isDone"
                                     @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
                                     class="is-pulled-right">
-                                <b-tooltip
-                                        :active="bulkEditionProcedures[criterion].tooltipShow"
-                                        always
-                                        class="is-success"
-                                        size="is-small"
-                                        position="is-left"
-                                        animated
-                                        :label="$i18n.get('info_bulk_edit_process_added')">
-                                    <span class="icon">
-                                        <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
-                                    </span>
-                                </b-tooltip>
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('info_bulk_edit_process_added'),
+                                            autoHide: true,
+                                            placement: 'auto',
+                                            popperClass: ['tainacan-tooltip', 'tooltip'],
+                                            triggers: [],
+                                            shown: bulkEditionProcedures[criterion].tooltipShow
+                                        }"
+                                        class="icon">
+                                    <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
+                                </span>
                             </div>
 
                             <button

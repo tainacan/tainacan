@@ -1,20 +1,21 @@
 <template>
-    <span class="help-wrapper">
+    <span class="tainacan-help-tooltip-trigger">
         <a 
-                :class="forcedColor ? 'has-text-' + forcedColor : 'has-text-secondary'"
-                class="help-button">
+                v-tooltip="{
+                    content: getHelperTooltipContent,
+                    autoHide: true,
+                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-helper-tooltip', extraClasses],
+                    html: true,
+                    delay: {
+                        shown: 0,
+                        hide: 100,
+                    }
+                }"
+                :class="forcedIconColor ? 'has-text-' + forcedIconColor : ''">
             <span class="icon is-small">
                 <i class="tainacan-icon tainacan-icon-help" />
             </span>
         </a>
-        <div class="help-tooltip">
-            <div class="help-tooltip-header">
-                <h5 class="has-text-color">{{ title }}</h5>
-            </div>
-            <div class="help-tooltip-body">
-                <p v-html="(message != '' && message != undefined) ? message : $i18n.get('info_no_description_provided')"/>
-            </div>
-        </div> 
     </span>
 </template>
 
@@ -24,90 +25,23 @@ export default {
     props: {
         title: '',
         message: '',
-        forcedColor: ''
+        extraClasses: '',
+        forcedIconColor: ''
+    },
+    computed: {
+        getHelperTooltipContent() {
+            return `<h5>` + this.title + `</h5>
+                    <p>` + ((this.message != '' && this.message != undefined) ? this.message : this.$i18n.get('info_no_description_provided')) + `</p>`;
+        }
     }
 }
 </script>
 
 <style lang="scss">
 
-    .help-wrapper {
-        position: absolute;
-        margin-top: -4px;
-        margin-left: 4px;
-    }
-
-    a.help-button .icon {
+    .tainacan-help-tooltip-trigger>a .icon {
         i, i::before { font-size: 0.875em !important }
     }
 
-    .help-wrapper:hover .help-tooltip {
-        margin-bottom: 12px;
-        margin-left: -37px;
-        visibility: visible;
-        opacity: 1; 
-    }
-    .help-tooltip {
-        z-index: 99999999999999999999;
-        background-color: var(--tainacan-primary);
-        border: none;
-        display: block;
-        border-radius: 5px;
-        min-width: 280px;
-        max-width: 100%;
-        transition: margin-bottom 0.2s ease, opacity 0.3s ease;
-        position: absolute;
-        bottom: calc(100% - 6px);
-        left: 0%;            
-        margin-bottom: -27px;
-        visibility: hidden;
-        opacity: 0;
-
-        .help-tooltip-header {
-            padding: 0.8em 0.8em 0em 0.8em;
-
-            h5 {
-                font-size: 0.875em !important;
-                font-weight: bold;
-                color: var(--tainacan-secondary);
-                margin-bottom: 0;
-                margin-top: 0;
-                white-space: normal;
-            }
-        }
-
-        .help-tooltip-body {
-            padding: 0.5em 1.0em 1.0em 1.0em;
-
-            p {
-                margin: 0 0 0.125em 0;
-                font-size: 0.875em !important;
-                font-weight: normal !important;
-                white-space: normal !important;
-                overflow: visible !important;
-                max-height: 100% !important;
-                line-height: normal;
-                color: var(--tainacan-secondary);
-            }
-        }
-
-        &:before {
-            content: "";
-            display: block;
-            position: absolute;
-            left: 30px;
-            width: 0;
-            height: 0;
-            border-style: solid;
-        }
-        &:before {
-            border-color: var(--tainacan-primary) transparent transparent transparent;
-            border-right-width: 15px;
-            border-top-width: 12px;
-            border-left-width: 15px;
-            bottom: -15px;
-        }
-    }
-    
 </style>
 
