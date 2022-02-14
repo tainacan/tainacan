@@ -56,7 +56,9 @@
                         :metadata-name-filter-string="metadataNameFilterString"
                         :hide-collapses="hideCollapses"
                         :is-mobile-screen="isMobileScreen"
-                        @mobileSpecialFocus="onMobileSpecialFocus" />
+                        @mobileSpecialFocus="onMobileSpecialFocus"
+                        :is-focused="isFocused"
+                        :is-metadata-navigation="isMetadataNavigation" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
                             name="filter-item"
@@ -73,7 +75,9 @@
                                     :metadata-name-filter-string="metadataNameFilterString"
                                     :hide-collapses="hideCollapses"
                                     :is-mobile-screen="isMobileScreen"
-                                    @mobileSpecialFocus="onMobileSpecialFocus" />
+                                    @mobileSpecialFocus="onMobileSpecialFocus"
+                                    :is-focused="isFocused"
+                                    :is-metadata-navigation="isMetadataNavigation" />
                             <a 
                                     v-if="index > 0" 
                                     @click="removeValue(index)"
@@ -120,7 +124,9 @@
                         :hide-collapses="hideCollapses"
                         :is-mobile-screen="isMobileScreen"
                         :metadata-name-filter-string="metadataNameFilterString"
-                        @mobileSpecialFocus="onMobileSpecialFocus" />
+                        @mobileSpecialFocus="onMobileSpecialFocus"
+                        :is-focused="isFocused"
+                        :is-metadata-navigation="isMetadataNavigation" />
             </div>
         </transition>
     </b-field>

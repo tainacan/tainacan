@@ -250,7 +250,7 @@
                                             <b-button 
                                                     v-if="isMetadataNavigation"
                                                     :disabled="focusedMetadatum === 0"
-                                                    @click="setMetadatumFocus({ index: focusedMetadatum - 1, scrollIntoView: true })" 
+                                                    @click="focusPreviousMetadatum" 
                                                     outlined>
                                                 <span
                                                         class="icon">
@@ -259,8 +259,8 @@
                                             </b-button>
                                             <b-button 
                                                     v-if="isMetadataNavigation"
-                                                    :disabled="focusedMetadatum === metadatumList.length - 1"
-                                                    @click="setMetadatumFocus({ index: focusedMetadatum + 1, scrollIntoView: true })"
+                                                    :disabled="(focusedMetadatum === metadatumList.length - 1) && (!isCurrentlyFocusedOnCompoundMetadatum || isOnLastMetadatumOfCompoundNavigation)"
+                                                    @click="focusNextMetadatum"
                                                     outlined>
                                                 <span
                                                         class="icon">
@@ -1017,7 +1017,9 @@ export default {
             isMobileScreen: false,
             openMetadataNameFilter: false,
             focusedMetadatum: false,
-            isMetadataNavigation: false
+            isMetadataNavigation: false,
+            isOnFirstMetadatumOfCompoundNavigation: false,
+            isOnLastMetadatumOfCompoundNavigation: false
         }
     },
     computed: {
@@ -1070,6 +1072,11 @@ export default {
                 total: this.totalAttachments
             });
             return pageTabs;
+        },
+        isCurrentlyFocusedOnCompoundMetadatum() {
+            if (!this.isMetadataNavigation || !this.metadatumList[this.focusedMetadatum])
+                return false;
+            return this.metadatumList[this.focusedMetadatum].metadatum && this.metadatumList[this.focusedMetadatum].metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
         }
     },
     watch: {
@@ -1171,6 +1178,14 @@ export default {
         });
         this.cleanLastUpdated();
 
+        // Updates variables for metadata navigation from compound childs
+        eventBusItemMetadata.$on('isOnFirstMetadatumOfCompoundNavigation', (isOnFirstMetadatumOfCompoundNavigation) => {
+            this.isOnFirstMetadatumOfCompoundNavigation = isOnFirstMetadatumOfCompoundNavigation
+        });
+        eventBusItemMetadata.$on('isOnLastMetadatumOfCompoundNavigation', (isOnLastMetadatumOfCompoundNavigation) => {
+            this.isOnLastMetadatumOfCompoundNavigation = isOnLastMetadatumOfCompoundNavigation
+        });
+
         // Listens to window resize event to update responsiveness variable
         this.handleWindowResize();
         window.addEventListener('resize', this.handleWindowResize);
@@ -1178,6 +1193,8 @@ export default {
     beforeDestroy () {
         eventBusItemMetadata.$off('isUpdatingValue');
         eventBusItemMetadata.$off('hasErrorsOnForm');
+        eventBusItemMetadata.$off('isOnFirstMetadatumOfCompoundNavigation');
+        eventBusItemMetadata.$off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
     },
     beforeRouteLeave ( to, from, next ) {
@@ -1897,39 +1914,60 @@ export default {
                     this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
             });
         }, 500),
-        setMetadatumFocus({ index = 0, scrollIntoView = false }) {
+        focusPreviousMetadatum() {
+            const previouslyFocusedMetadatum = this.metadatumList[this.focusedMetadatum - 1];
+            const isPreviouslyFocusedOnCompoundMetadatum = previouslyFocusedMetadatum.metadatum && previouslyFocusedMetadatum.metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
             
+            if (isPreviouslyFocusedOnCompoundMetadatum || this.isCurrentlyFocusedOnCompoundMetadatum)
+                eventBusItemMetadata.$emit('focusPreviousChildMetadatum');
+
+            if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnFirstMetadatumOfCompoundNavigation) )
+                this.setMetadatumFocus({ index: this.focusedMetadatum - 1, scrollIntoView: true });
+        },
+        focusNextMetadatum() {
+            if (this.isCurrentlyFocusedOnCompoundMetadatum && !this.isOnLastMetadatumOfCompoundNavigation)
+                eventBusItemMetadata.$emit('focusNextChildMetadatum');
+
+            if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnLastMetadatumOfCompoundNavigation) )
+                this.setMetadatumFocus({ index: this.focusedMetadatum + 1, scrollIntoView: true });  
+        },
+        setMetadatumFocus({ index = 0, scrollIntoView = false }) {
+
             const previousIndex = this.focusedMetadatum;
             this.focusedMetadatum = index;
-            
+
             if (previousIndex === index && !scrollIntoView)
                 return;
 
             let fieldElement = this.$refs['tainacan-form-item--' + index] && this.$refs['tainacan-form-item--' + index][0] && this.$refs['tainacan-form-item--' + index][0]['$el'];
             if (fieldElement) {
                 
-                let inputElement = fieldElement.getElementsByTagName('input')[0] || fieldElement.getElementsByTagName('select')[0] || fieldElement.getElementsByTagName('textarea')[0];
-                if (inputElement) {
+                const isInsideCompound = fieldElement.classList.contains('tainacan-metadatum-component--tainacan-compound');
+                if (!isInsideCompound) {
 
-                    setTimeout(() => {
-                        
-                        if (previousIndex !== index && inputElement !== document.activeElement) {
-                            inputElement.focus();
+                    const inputElement = (fieldElement.getElementsByTagName('input')[0] || fieldElement.getElementsByTagName('select')[0] || fieldElement.getElementsByTagName('textarea')[0]);
+                    if (inputElement) {
+
+                        setTimeout(() => {
                             
-                            if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio' && !inputElement.classList.contains('is-special-hidden-for-mobile'))
-                                inputElement.click();
-                        }
-                        
-                        if (scrollIntoView) {
-                            setTimeout(() => {
-                                fieldElement.scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: this.isMobileScreen ? 'start' : 'center'
-                                });
-                            }, 300);
-                        }
+                            if (previousIndex !== index && inputElement !== document.activeElement) {
+                                inputElement.focus();
+                                
+                                if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio' && !inputElement.classList.contains('is-special-hidden-for-mobile'))
+                                    inputElement.click();
+                            }
+                            
+                            if (scrollIntoView) {
+                                setTimeout(() => {
+                                    fieldElement.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: this.isMobileScreen ? 'start' : 'center'
+                                    });
+                                }, 300);
+                            }
 
-                    }, 100);
+                        }, 100);
+                    }
                 }
             }
         }
