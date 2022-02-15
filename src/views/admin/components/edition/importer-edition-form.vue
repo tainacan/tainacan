@@ -524,7 +524,7 @@ export default {
         align-items: center;
     }
     hr {
-        margin: 0.5rem 0 1.5rem 0;
+        margin: 0.5em 0 1.5em 0;
     }
 
 </style>

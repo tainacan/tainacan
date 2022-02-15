@@ -1437,6 +1437,9 @@
         visibility: visible;
         display: block;
 
+        /deep/ .filters-components-list {
+            margin-left: 3px;
+        }
         @media screen and (max-width: 768px) {
             width: 100%;
             padding: 0;

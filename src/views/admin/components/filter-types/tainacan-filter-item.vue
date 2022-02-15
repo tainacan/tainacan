@@ -90,7 +90,7 @@
         }
 
         .collapse-trigger {
-            margin-left: -7px;
+            margin-left: -8px;
             button {
                 background-color: inherit !important;
                 color: inherit !important;
