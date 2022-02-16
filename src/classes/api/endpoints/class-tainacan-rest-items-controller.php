@@ -750,13 +750,12 @@ class REST_Items_Controller extends REST_Controller {
 	private function get_items_permissions_check_for_taxonomy($taxonomies) {
 
 		foreach ($taxonomies as $tax) {
-			if( !isset($tax['taxonomy']) )
-				return false;
-			$taxonomy = \tainacan_taxonomies()->fetch_by_db_identifier( $tax['taxonomy'] );
+			if ( isset($tax['taxonomy']) ) {
+				$taxonomy = \tainacan_taxonomies()->fetch_by_db_identifier( $tax['taxonomy'] );
 
-			if( $taxonomy instanceof Entities\Taxonomy ) {
-				if(!$taxonomy->can_read()) {
-					return false;
+				if ( $taxonomy instanceof Entities\Taxonomy ) {
+					if (!$taxonomy->can_read())
+						return false;
 				}
 			}
 		}

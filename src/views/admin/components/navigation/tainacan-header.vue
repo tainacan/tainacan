@@ -59,38 +59,12 @@
                         icon-right="magnify"
                         icon-right-clickable
                         @icon-right-click="updateSearch()" />
-                <b-dropdown
+                <router-link
                         v-if="!$adminOptions.hideTainacanHeaderAdvancedSearch"
-                        ref="advancedSearchShortcut"
-                        class="advanced-search-header-dropdown"
-                        position="is-bottom-left"
-                        aria-role="list"
-                        trap-focus>
-                    <a
-                            class="advanced-search-text"
-                            slot="trigger">
-                        {{ $i18n.get('advanced_search') }}
-                    </a>
-                    <b-dropdown-item aria-role="listitem">
-                        <div :style="{'height': '25px'}">
-                            <p class="is-pulled-left advanced-search-text-di">{{ $i18n.get('advanced_search') }}</p>
-                            <span 
-                                    style="margin-top: 5px; margin-right: -2px;"
-                                    class="icon is-pulled-right">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowup has-text-secondary"/>
-                            </span>
-                        </div>
-                        <hr class="advanced-search-hr">
-                    </b-dropdown-item>
-                    <b-dropdown-item
-                            style="padding-left: 0 !important; padding-right: 0 !important;"
-                            :custom="true"
-                            aria-role="listitem">
-                        <advanced-search
-                                :is-repository-level="true"
-                                :is-header="true"/>
-                    </b-dropdown-item>
-                </b-dropdown>
+                        class="advanced-search-text"
+                        :to="$routerHelper.getItemsPath({ advancedSearch: true })">
+                    {{ $i18n.get('advanced_search') }}
+                </router-link>
 
             </div>
             <button
@@ -130,13 +104,11 @@
 </template>
 
 <script>
-    import AdvancedSearch from '../search/advanced-search.vue';
     import ProcessesPopup from '../other/processes-popup.vue';
 
     export default {
         name: 'TainacanHeader',
         components: {
-            AdvancedSearch,
             ProcessesPopup
         },
         data() {
@@ -150,41 +122,22 @@
             }
         },
         created(){
-            this.$root.$on('closeAdvancedSearchShortcut', () => {
-                if (this.$refs.advancedSearchShortcut)
-                    this.$refs.advancedSearchShortcut.toggle();
-            });
             this.$root.$on('openProcessesPopup', () => {
                 this.showProcesses = true;
             });
         },
         beforeDestroy() {
-            this.$root.$off('closeAdvancedSearchShortcut');
+            this.$root.$off('openProcessesPopup');
         },
         methods: {
-            // toItemsPage() {
-            //     if(this.$route.path == '/items') {
-            //         this.$root.$emit('openAdvancedSearch', true);
-            //     }
-            //
-            //     if(this.$route.path != '/items') {
-            //         this.$router.push({
-            //             path: '/items',
-            //             query: {
-            //                 advancedSearch: true
-            //             }
-            //         });
-            //     }
-            // },
             updateSearch() {
-                if (this.$route.path != '/items') {
+                if (this.$route.path !== '/items') {
                     this.$router.push({
                         path: '/items',
                     });
                 }
-
                 this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
-            },
+            }
         }
     }
 </script>
@@ -273,6 +226,10 @@
                 display: flex;
                 align-items: center;
                 margin-right: 28px;
+                .advanced-search-text {
+                    font-size: 0.75em;
+                    margin-left: 12px;
+                }
                 .control {
                     .search-header {
                         border: 1px solid var(--tainacan-gray2);

@@ -560,8 +560,6 @@ export default {
                             .then(() => {
                                 if (!this.isRepositoryLevel)
                                     this.updateMetadataOrder();
-                                else 
-                                    this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
                             })
                             .catch(() => {
                                 this.$console.log("Error deleting metadatum.")

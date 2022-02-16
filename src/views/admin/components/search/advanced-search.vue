@@ -1,232 +1,179 @@
 <template>
-    <div>
+    <div class="tnc-advanced-search-container">
+        <transition-group name="filter-item">
+            <b-field
+                    v-for="searchCriterion in searchCriteria"
+                    :key="searchCriterion"
+                    grouped
+                    class="tainacan-form">
+
+                <!-- Metadata (Search criteria) -->
+                <b-field class="column">
+                    <b-select
+                            :loading="isLoadingMetadata"
+                            :placeholder="$i18n.get('instruction_select_a_metadatum')"
+                            :disabled="(advancedSearchQuery.taxquery[searchCriterion] || advancedSearchQuery.metaquery[searchCriterion]) ? true : false"
+                            :value="(
+                                    advancedSearchQuery.metaquery[searchCriterion] ? advancedSearchQuery.metaquery[searchCriterion].key : null
+                                ) || (
+                                    advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].key : null
+                                )"
+                            @input="addMetadatumToAdvancedSearchQuery(
+                                { 
+                                    metadatumId: $event,
+                                    type: (metadataAsObject[$event] && metadataAsObject[$event].metadata_type_object) ? metadataAsObject[$event].metadata_type_object.primitive_type : '',
+                                    taxonomy: (metadataAsObject[$event] && metadataAsObject[$event].metadata_type_options) ? metadataAsObject[$event].metadata_type_options.taxonomy : ''
+                                }, 
+                                searchCriterion
+                            )">
+                        <template v-for="(metadatum, metadatumIndex) in metadataAsArray">
+                            <option
+                                    v-if="metadatum.metadata_type_object.component !== 'tainacan-user' &&
+                                        metadatum.metadata_type_object.component !== 'tainacan-relationship' &&
+                                        metadatum.metadata_type_object.component !== 'tainacan-compound' &&
+                                        metadatum.parent <= 0"
+                                    :value="metadatum.id"
+                                    :key="metadatumIndex">
+                                {{ metadatum.name }}
+                            </option>
+                            <optgroup
+                                    v-if="metadatum.metadata_type_object.component === 'tainacan-compound'"
+                                    :key="metadatumIndex"
+                                    :label="metadatum.name">
+                                <option
+                                        v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
+                                        :key="childIndex"
+                                        :value="childMetadatum.id">
+                                    {{ childMetadatum.name }}
+                                </option>
+                            </optgroup>
+                        </template>
+                        <option value="document_content_index-undefined-string">
+                            {{ $i18n.get('label_document') }}
+                        </option>
+                    </b-select>
+                </b-field>
+
+                <!-- Comparators -->
+                <b-field class="column">
+                    <b-select
+                            :loading="isLoadingMetadata"
+                            v-if="advancedSearchQuery.taxquery[searchCriterion] ||
+                                advancedSearchQuery.metaquery[searchCriterion] ? true : false"
+                            @input="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
+                            :value="advancedSearchQuery.taxquery[searchCriterion] ?
+                                advancedSearchQuery.taxquery[searchCriterion].operator :
+                                (advancedSearchQuery.metaquery[searchCriterion] ? advancedSearchQuery.metaquery[searchCriterion].compare : '')">
+
+                        <option 
+                                v-for="(comparator, key) in getComparators(searchCriterion)"
+                                :key="key"
+                                :value="key"
+                        >{{ comparator }}</option>
+                    </b-select>
+                    <b-input
+                            v-else
+                            type="text"
+                            disabled />
+                </b-field>
+
+                <!-- Inputs -->
+                <b-field class="column is-half">
+                    <b-input
+                            v-if="advancedSearchQuery.metaquery[searchCriterion] && getAdvancedSearchQueryCriterionMetadataType(searchCriterion) != 'date'"
+                            :type="(getAdvancedSearchQueryCriterionMetadataType(searchCriterion) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion) == 'float') ? 'number' : 'text'"
+                            step="any"
+                            @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                            :value="advancedSearchQuery.metaquery[searchCriterion].value"
+                    />
+                    <input
+                            v-else-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion) == 'date'"
+                            class="input"
+                            :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion].value)"
+                            v-mask="dateMask"
+                            @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
+                            :placeholder="dateFormat" 
+                            type="text" >
+                    <b-input
+                            v-else-if="advancedSearchQuery.taxquery[searchCriterion]"
+                            :value="advancedSearchQuery.taxquery[searchCriterion].terms"
+                            @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                            type="text" />
+                    <b-input
+                            v-else
+                            type="text"
+                            disabled />
+                </b-field>
+
+                <div class="field">
+                    <button
+                            @click="removeCriterion(searchCriterion)"
+                            class="button is-white is-pulled-right has-text-secondary">
+                        <span 
+                                v-tooltip="{
+                                    content: $i18n.get('remove_search_criterion'),
+                                    autoHide: true,
+                                    placement: 'auto-end'
+                                }"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel"/>
+                        </span>
+                    </button>
+                </div>
+
+            </b-field>
+        </transition-group>
+
+        <!-- Add button -->
+        <div class="add-link-advanced-search">
+            <a
+                    @click="addSearchCriteria"
+                    style="font-size: 0.75em;">
+                <span class="icon is-small">
+                    <i class="has-text-secondary tainacan-icon tainacan-icon-add"/>
+                </span>
+                {{ searchCriteria.length &lt;= 0 ?
+                    $i18n.get('add_one_search_criterion') :
+                        $i18n.get('add_another_search_criterion')
+                }}
+            </a>
+        </div>
+
+        <!-- Clear and search button -->
+        <div class="field is-grouped is-justify-content-flex-end">
+            <p
+                    v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 || Object.keys(advancedSearchQuery.metaquery).length > 0"
+                    class="control">
+                <button
+                        @click="clearSearch(); performAdvancedSearch();"
+                        class="button is-outlined">{{ $i18n.get('clear_search') }}</button>
+            </p>
+            <p class="control">
+                <button
+                        @click="performAdvancedSearch()"
+                        class="button is-success">{{ $i18n.get('apply') }}</button>
+            </p>
+        </div>
+
         <section
-                :style="{ position: relative }"
-                v-if="!metadata || metadata.length <= 0"
+                v-if="!isLoadingMetadata && metadataAsArray && metadataAsArray.length <= 0"
                 class="field is-grouped-centered section">
-            <b-loading
-                    :is-full-page="false"
-                    :active.sync="metadataIsLoading"/>
-            <div
-                    v-if="!metadataIsLoading"
-                    class="content has-text-gray has-text-centered">
+            <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon is-large">
                         <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
                     </span>
                 </p>
-                <p>{{ isRepositoryLevel ?
-                    $i18n.get('info_there_are_no_metadata_in_repository_level' ) :
-                     $i18n.get('info_there_are_no_metadata_to_search' ) }}</p>
+                <p>
+                    {{ isRepositoryLevel ? $i18n.get('info_there_are_no_metadata_in_repository_level' ) : $i18n.get('info_there_are_no_metadata_to_search' ) }}
+                </p>
             </div>
         </section>
-        <div
-                v-else
-                :style="advancedSearchResults ? { 'padding-top': '0' } : { 'padding-top': '1.25em' }"
-                :class="{ 'padding-in-header': isHeader, 'padding-regular': !isHeader }"
-                class="tnc-advanced-search-container">
 
-            <div
-                    v-show="!advancedSearchResults"
-                    v-for="searchCriterion in searchCriteria"
-                    :key="searchCriterion"
-                    class="field is-12 tainacan-form">
-
-                <b-field
-                        class="columns"
-                        grouped>
-
-                    <!-- Metadata (Search criteria) -->
-                    <b-field
-                            :class="{'is-3': isHeader}"
-                            class="column">
-                        <b-select
-                                :placeholder="$i18n.get('instruction_select_a_metadatum')"
-                                :disabled="advancedSearchQuery.taxquery[searchCriterion] ||
-                                    advancedSearchQuery.metaquery[searchCriterion] ? true : false"
-                                :value="advancedSearchQuery.metaquery[searchCriterion] ?
-                                    advancedSearchQuery.metaquery[searchCriterion].originalMeta :
-                                    (advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].originalMeta : undefined)"
-                                @input="addToAdvancedSearchQuery($event, 'metadatum', searchCriterion)">
-                            <template v-for="(metadatum, metadatumIndex) in metadata">
-                                <option
-                                        v-if="metadatum.metadata_type_object.component !== 'tainacan-user' && metadatum.metadata_type_object.component !== 'tainacan-relationship' && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
-                                        :value="`${metadatum.id}-${metadatum.metadata_type_options.taxonomy}-${metadatum.metadata_type_object.primitive_type}`"
-                                        :key="metadatumIndex">
-                                    {{ metadatum.name }}
-                                </option>
-                                <optgroup
-                                        v-if="metadatum.metadata_type_object.component === 'tainacan-compound'"
-                                        :key="metadatumIndex"
-                                        :label="metadatum.name">
-                                    <option
-                                            v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
-                                            :key="childIndex"
-                                            :value="`${childMetadatum.id}-${childMetadatum.metadata_type_options.taxonomy}-${childMetadatum.metadata_type_object.primitive_type}`">
-                                        {{ childMetadatum.name }}
-                                    </option>
-                                </optgroup>
-                            </template>
-                            <option value="document_content_index-undefined-string">
-                                {{ $i18n.get('label_document') }}
-                            </option>
-                        </b-select>
-                    </b-field>
-
-                    <!-- Inputs -->
-                    <b-field
-                            :class="{'is-half': !isHeader}"
-                            class="column">
-                        <b-input
-                                v-if="advancedSearchQuery.metaquery[searchCriterion] &&
-                                    advancedSearchQuery.metaquery[searchCriterion].ptype != 'date'"
-                                :type="advancedSearchQuery.metaquery[searchCriterion].ptype == 'int' ||
-                                    advancedSearchQuery.metaquery[searchCriterion].ptype == 'float' ? 'number' : 'text'"
-                                step="any"
-                                @input="addValueToAdvancedSearchQuery($event, 'value', searchCriterion)"
-                                :value="advancedSearchQuery.metaquery[searchCriterion].value"
-                        />
-                        <input
-                                v-else-if="advancedSearchQuery.metaquery[searchCriterion] &&
-                                    advancedSearchQuery.metaquery[searchCriterion].ptype == 'date'"
-                                class="input"
-                                :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion].value)"
-                                v-mask="dateMask"
-                                @focus="addValueToAdvancedSearchQueryWithoutDelay($event, '', searchCriterion)"
-                                @input="addValueToAdvancedSearchQueryWithoutDelay($event, 'value', searchCriterion)"
-                                :placeholder="dateFormat" 
-                                type="text" >
-                        <b-input
-                                v-else-if="advancedSearchQuery.taxquery[searchCriterion]"
-                                :value="advancedSearchQuery.taxquery[searchCriterion].terms"
-                                @input="addValueToAdvancedSearchQuery($event, 'term_value', searchCriterion)"
-                                type="text" />
-                        <b-input
-                                v-else
-                                type="text"
-                                disabled />
-                    </b-field>
-
-                    <!-- Comparators -->
-                    <b-field
-                            :class="{'is-3': isHeader}"
-                            class="column">
-                        <b-select
-                                v-if="advancedSearchQuery.taxquery[searchCriterion] ||
-                                    advancedSearchQuery.metaquery[searchCriterion] ? true : false"
-                                @input="addToAdvancedSearchQuery($event, 'comparator', searchCriterion)"
-                                :value="advancedSearchQuery.taxquery[searchCriterion] ?
-                                    advancedSearchQuery.taxquery[searchCriterion].operator :
-                                    (advancedSearchQuery.metaquery[searchCriterion] ? advancedSearchQuery.metaquery[searchCriterion].compare : '')">
-
-                            <option 
-                                    v-for="(comparator, key) in getComparators(searchCriterion)"
-                                    :key="key"
-                                    :value="key"
-                            >{{ comparator }}</option>
-                        </b-select>
-                        <b-input
-                                v-else
-                                type="text"
-                                disabled />
-                    </b-field>
-
-                    <div class="field">
-                        <button
-                                @click="removeThis(searchCriterion)"
-                                :class="{'has-text-blue4': isHeader, 'has-text-secondary': !isHeader,}"
-                                class="button is-white is-pulled-right">
-                            <span 
-                                    v-tooltip="{
-                                        content: $i18n.get('remove_search_criterion'),
-                                        autoHide: true,
-                                        placement: 'auto-end'
-                                    }"
-                                    class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
-                            </span>
-                        </button>
-                    </div>
-                </b-field>
-
-            </div>
-
-            <!-- Add button -->
-            <div
-                    v-show="!advancedSearchResults"
-                    :class="{'add-link-advanced-search-header': isHeader, 'add-link-advanced-search': !isHeader }"
-                    class="field column is-12">
-                <a
-                        @click="addSearchCriteria"
-                        style="font-size: 0.75em;">
-                    <span class="icon is-small">
-                        <i class="has-text-secondary tainacan-icon tainacan-icon-add"/>
-                    </span>
-                    {{ searchCriteria.length &lt;= 0 ?
-                        $i18n.get('add_one_search_criterion') :
-                         $i18n.get('add_another_search_criterion')
-                    }}
-                </a>
-            </div>
-
-            <!-- Tags -->
-            <div
-                    v-show="advancedSearchResults"
-                    class="column is-12">
-                <b-field 
-                        grouped
-                        group-multiline>
-                    <div 
-                            v-for="searchCriterion in searchCriteria"
-                            :key="searchCriterion"
-                            class="control taginput-container">
-                        <b-tag
-                                v-if="advancedSearchQuery.taxquery[searchCriterion] && advancedSearchQuery.taxquery[searchCriterion].terms"
-                                type="is-white"
-                                class="is-rounded"
-                                @close="removeThis(searchCriterion); searchAdvanced();"
-                                attached 
-                                closable>
-                                {{ advancedSearchQuery.taxquery[searchCriterion].terms }}
-                        </b-tag>
-                        <b-tag 
-                                v-else-if="advancedSearchQuery.metaquery[searchCriterion] && advancedSearchQuery.metaquery[searchCriterion].value"
-                                type="is-white"
-                                class="is-rounded"
-                                @close="removeThis(searchCriterion); searchAdvanced();"
-                                attached
-                                :loading="isFetching" 
-                                closable>
-                                {{ advancedSearchQuery.metaquery[searchCriterion].value }}
-                        </b-tag>
-                    </div>
-                </b-field>
-            </div>
-
-            <!-- Clear and search button -->
-            <div v-show="!advancedSearchResults">
-                <div class="field is-grouped is-pulled-right">
-                    <p
-                            v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 ||
-                             Object.keys(advancedSearchQuery.metaquery).length > 0"
-                            class="control">
-                        <button
-                                @click="clearSearch"
-                                class="button is-outlined">{{ $i18n.get('clear_search') }}</button>
-                    </p>
-                    <p class="control">
-                        <button
-                                @click="searchAdvanced"
-                                class="button is-success">{{ $i18n.get('search') }}</button>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 </template>
 
 <script>
-
     import { mapActions } from 'vuex';
     import { dateInter } from '../../js/mixins.js';
     import moment from 'moment';
@@ -236,10 +183,7 @@
         mixins: [ dateInter ],
         props: {
             isRepositoryLevel: false,
-            isHeader: false,
-            advancedSearchResults: false,
-            openFormAdvancedSearch: false,
-            isDoingSearch: false,
+            hasAdvancedSearchResults: false,
             collectionId: ''
         },
         data() {
@@ -268,54 +212,14 @@
                     metaquery: {},
                     taxquery: {}
                 },
-                metadataIsLoading: false,
-                metadata: [],
+                isLoadingMetadata: false,
+                metadataAsObject: {},
+                metadataAsArray: [],
                 metadataSearchCancel: undefined
             }
         },
-        watch: {
-            isDoingSearch() {
-                if (this.isDoingSearch)
-                    this.searchAdvanced();
-            }
-        },
-        mounted() {
-            
-            this.$root.$on('metadatumUpdated', (isRepositoryLevel) => {
-
-                if (isRepositoryLevel) {
-                    this.metadataIsLoading = true;
-
-                    // Cancels previous Request
-                    if (this.metadataSearchCancel != undefined)
-                        this.metadataSearchCancel.cancel('Metadata search Canceled.');
-
-                    this.fetchMetadata({
-                        collectionId: this.isRepositoryLevel ? false : this.collectionId,
-                        isRepositoryLevel: this.isRepositoryLevel,
-                        isContextEdit: false,
-                        includeDisabled: false,
-                        isAdvancedSearch: true,
-                        parent: 'any'
-                    }).then((resp) => {
-                            resp.request
-                                .then((metadata) => {
-                                    this.metadata = metadata;
-                                    this.metadataIsLoading = false;
-                                }).catch(() => {
-                                    this.metadataIsLoading = false;
-                                });
-
-                                // Search Request Token for cancelling
-                                this.metadataSearchCancel = resp.source;
-                        })
-                        .catch(() => this.metadataIsLoading = false);  
-                }
-            });
-        },
         created() {
-
-            this.metadataIsLoading = true;
+            this.isLoadingMetadata = true;
 
             this.fetchMetadata({
                 collectionId: this.isRepositoryLevel ? false : this.collectionId,
@@ -327,67 +231,26 @@
             }).then((resp) => {
                     resp.request
                         .then((metadata) => {
-                            this.metadata = metadata;
-                            this.metadataIsLoading = false;
+                            // We create and object keyed by IDs to easily match the query params,
+                            // but keep an array version to use the order in the select
+                            this.metadataAsArray = metadata;
+                            metadata.forEach(metadatum => {
+                                this.metadataAsObject[metadatum.id] = metadatum;
+                            });
+
+                            // Search Request Token for cancelling
+                            this.metadataSearchCancel = resp.source;
+
+                            this.buildAdvancedSearchQueryFromRoute();
+
+                            this.isLoadingMetadata = false;
                         }).catch(() => {
-                            this.metadataIsLoading = false;
+                            this.isLoadingMetadata = false;
                         });
-
-                        // Search Request Token for cancelling
-                        this.metadataSearchCancel = resp.source;
                 })
-                .catch(() => this.metadataIsLoading = false);  
-
-            if ((this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) ||
-                (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) ) {
-                this.searchCriteria = [];
-            }
-
-            if (this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) {
-
-                let metaquery = this.$route.query.metaquery;
-
-                for(let meta in metaquery)
-                    this.$set(this.advancedSearchQuery.metaquery, `${meta}`, metaquery[meta]);
-
-                let keys = Object.keys(this.advancedSearchQuery.metaquery);
-
-                let relationIndex = keys.findIndex((element) => element == 'relation');
-
-                if (relationIndex != -1)
-                    keys.splice(relationIndex, 1);
-
-                for(let k of keys)
-                    this.searchCriteria.push(k);
-
-            }
-
-            if (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) {
-                let taxquery = this.$route.query.taxquery;
-
-                for(let tax in taxquery)
-                    this.$set(this.advancedSearchQuery.taxquery, `${tax}`, taxquery[tax]);
-
-                let keys = Object.keys(this.advancedSearchQuery.taxquery);
-
-                let relationIndex = keys.findIndex((element) => element == 'relation');
-
-                if (relationIndex != -1) 
-                    keys.splice(relationIndex, 1);
-
-                for (let k of keys)
-                    this.searchCriteria.push(k);
-            }
-
-            // If we're coming from a preset advanced search, execute it!
-            if (this.searchCriteria.length && !this.isHeader) {
-                this.$eventBusSearch.updateStoreFromURL();
-                this.searchAdvanced();
-            }
+                .catch(() => this.isLoadingMetadata = false);  
         },
         beforeDestroy() {
-            this.$root.$off('metadatumUpdated');
-
             // Cancels previous Request
             if (this.metadataSearchCancel != undefined)
                 this.metadataSearchCancel.cancel('Metadata search Canceled.');
@@ -401,25 +264,77 @@
                 if (this.advancedSearchQuery.taxquery[searchCriterion]) {
                     return this.taxqueryOperators;
                 } else if (this.advancedSearchQuery.metaquery[searchCriterion]) {
-                    if (this.advancedSearchQuery.metaquery[searchCriterion].ptype == 'int' ||
-                    this.advancedSearchQuery.metaquery[searchCriterion].ptype == 'float' ||
-                    this.advancedSearchQuery.metaquery[searchCriterion].ptype == 'date') {
+                    const metadataType = this.getAdvancedSearchQueryCriterionMetadataType(searchCriterion);
+                    if (metadataType == 'date' || metadataType == 'int' || metadataType == 'float')
                         return this.metaqueryOperatorsForInterval;
-                    } else{
+                    else
                         return this.metaqueryOperatorsRegular;
-                    }
                 }
             },
-            removeThis(searchCriterion) {
-                let criteriaIndex = this.searchCriteria.findIndex((element) => element == searchCriterion);
+            buildAdvancedSearchQueryFromRoute() {
+                if (
+                    (this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) ||
+                    (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0)
+                ) {
+                    this.searchCriteria = [];
+                }
 
-                this.searchCriteria.splice(criteriaIndex, 1);
+                if (this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) {
+
+                    let metaquery = this.$route.query.metaquery;
+
+                    for (let meta in metaquery) {
+                        if ( this.metaqueryOperatorsRegular.hasOwnProperty(metaquery[meta]['operator']) || this.metaqueryOperatorsForInterval.hasOwnProperty(metaquery[meta]['operator']) )
+                            this.$set(this.advancedSearchQuery.metaquery, `${meta}`, metaquery[meta]);
+                    }
+
+                    let metakeys = Object.keys(this.advancedSearchQuery.metaquery);
+
+                    let relationIndex = metakeys.findIndex((element) => element == 'relation');
+
+                    if (relationIndex != -1)
+                        metakeys.splice(relationIndex, 1);
+
+                    for (let metakey of metakeys)
+                        this.searchCriteria.push(metakey);
+
+                }
+
+                if (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) {
+                    let taxquery = this.$route.query.taxquery;
+
+                    for (let tax in taxquery) {
+                        if ( this.taxqueryOperators.hasOwnProperty(taxquery[tax]['operator']) )
+                            this.$set(this.advancedSearchQuery.taxquery, `${tax}`, taxquery[tax]);
+                    }
+
+                    let taxkeys = Object.keys(this.advancedSearchQuery.taxquery);
+
+                    let relationIndex = taxkeys.findIndex((element) => element == 'relation');
+
+                    if (relationIndex != -1) 
+                        taxkeys.splice(relationIndex, 1);
+
+                    for (let taxkey of taxkeys)
+                        this.searchCriteria.push(taxkey);
+                }
+
+                // If we're coming from a preset advanced search, execute it!
+                if (this.searchCriteria.length) {
+                    this.$eventBusSearch.updateStoreFromURL();
+                    this.performAdvancedSearch();
+                }
+            },
+            removeCriterion(searchCriterion) {
+                let criteriaIndex = this.searchCriteria.findIndex((element) => element == searchCriterion);
+                
+                if (criteriaIndex >= 0)
+                    this.searchCriteria.splice(criteriaIndex, 1);
 
                 if (this.advancedSearchQuery.taxquery[searchCriterion])
                     delete this.advancedSearchQuery.taxquery[searchCriterion];
                 else if (this.advancedSearchQuery.metaquery[searchCriterion])
                     delete this.advancedSearchQuery.metaquery[searchCriterion];
-
             },
             addSearchCriteria() {
                 let aleatoryKey = Math.floor(Math.random() * (1000 - 2 + 1)) + 2;
@@ -442,34 +357,72 @@
             convertDateToMatchInDB(dateValue) {
                 return moment(dateValue,  this.dateFormat).toISOString().split('T')[0];
             },
-            addValueToAdvancedSearchQueryWithoutDelay($event, type, searchCriterion) {
-                if (type == '') {
-                    this.$set($event.target, 'value', '');
-                    this.addToAdvancedSearchQuery('', 'value', searchCriterion);
-                } else {               
-                    this.addToAdvancedSearchQuery($event.target.value, type, searchCriterion);
-                }
+            parseValidDateToNavigatorLanguage(date) {
+                if (date && date.length === this.dateMask.length)
+                    return (
+                        moment(date, this.dateFormat).toISOString(true) &&
+                        moment(date, this.dateFormat).toISOString(true).split('T') &&
+                        moment(date, this.dateFormat).toISOString(true).split('T')[0]
+                    ) ? this.parseDateToNavigatorLanguage(moment(date, this.dateFormat).toISOString(true).split('T')[0]) : this.parseDateToNavigatorLanguage(date);
+                else
+                    return date;
             },
-            addValueToAdvancedSearchQuery: _.debounce(function(value, type, searchCriterion) {
-                this.addToAdvancedSearchQuery(value, type, searchCriterion);
-            }, 900),
-            searchAdvanced() {
-
-                if (this.isHeader) {
-                    this.$root.$emit('closeAdvancedSearchShortcut', true);
-
-                    if (this.$route.path == '/items')
-                        this.$root.$emit('openAdvancedSearch', true);
-
-                    if (this.$route.path != '/items') {
-                        this.$router.push({
-                            path: '/items',
+            addMetadatumToAdvancedSearchQuery({ metadatumId, type, taxonomy }, index) {
+                if (!metadatumId)
+                    return;
+                    
+                if (type === 'term') {
+                    // Was selected a taxonomy criteria      
+                    this.advancedSearchQuery.taxquery = Object.assign({}, this.advancedSearchQuery.taxquery, {
+                        [`${index}`]: {
+                            key: metadatumId,
+                            taxonomy: taxonomy,
+                            operator: 'LIKE'
+                        }
+                    });
+                } else {
+                    // Was selected a metadatum criteria
+                    if (type != 'date' && type != 'int' && type != 'float') {
+                        this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
+                            [`${index}`]: {
+                                key: metadatumId,
+                                compare: 'LIKE'
+                            }
+                        });
+                    } else {
+                        this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
+                            [`${index}`]: {
+                                key: metadatumId,
+                                compare: '='
+                            }
                         });
                     }
                 }
+            },
+            addValueToAdvancedSearchQuery(value, index) {
+                if (!value)
+                    return;
 
-                if (Object.keys(this.advancedSearchQuery.taxquery).length > 0 &&
-                    Object.keys(this.advancedSearchQuery.metaquery).length > 0) {
+                if (this.advancedSearchQuery.metaquery[index])
+                    this.$set(this.advancedSearchQuery.metaquery[index], 'value', value);
+                else if (this.advancedSearchQuery.taxquery[index])
+                    this.$set(this.advancedSearchQuery.taxquery[index], 'terms', value);
+            },
+            addComparatorToAdvancedSearchQuery(comparator, index) {
+                if (!comparator)
+                    return;
+
+                if (this.advancedSearchQuery.metaquery[index])
+                    this.$set(this.advancedSearchQuery.metaquery[index], 'compare', comparator);
+                else if (this.advancedSearchQuery.taxquery[index])
+                    this.$set(this.advancedSearchQuery.taxquery[index], 'operator', comparator);
+            },
+            performAdvancedSearch() {
+                
+                if (
+                    Object.keys(this.advancedSearchQuery.taxquery).length > 0 &&
+                    Object.keys(this.advancedSearchQuery.metaquery).length > 0
+                ) {
                     this.advancedSearchQuery.relation = 'AND';
                 } 
 
@@ -482,7 +435,7 @@
                 if (Object.keys(this.advancedSearchQuery.metaquery).length > 0) {
 
                     for (let metaquery in this.advancedSearchQuery.metaquery) {
-                        if (this.advancedSearchQuery.metaquery[metaquery].ptype == 'date') {
+                        if (this.getAdvancedSearchQueryCriterionMetadataType(metaquery) == 'date') {
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
                             if (value.includes('/'))
@@ -498,82 +451,32 @@
                 
                 if (this.advancedSearchQuery.hasOwnProperty('relation') && Object.keys(this.advancedSearchQuery).length <= 3)
                     delete this.advancedSearchQuery.relation;
-
                 
                 if (Object.keys(this.advancedSearchQuery.metaquery).length > 0) {
 
                     for (let metaquery in this.advancedSearchQuery.metaquery) {
-                        if (this.advancedSearchQuery.metaquery[metaquery].ptype == 'date') {
+                        if (this.getAdvancedSearchQueryCriterionMetadataType(metaquery) == 'date') {
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
-                            setTimeout(() => {
-                                if (value.includes('-'))
-                                    this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.parseValidDateToNavigatorLanguage(value));
-                            }, 200);
+                            if (value.includes('-'))
+                                this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.parseValidDateToNavigatorLanguage(value));
                         }
                     }
                 }
 
-                this.$eventBusSearch.$emit('searchAdvanced', this.advancedSearchQuery);
-                
+                this.$eventBusSearch.$emit('performAdvancedSearch', this.advancedSearchQuery);
             },
-            parseValidDateToNavigatorLanguage(date) {
-                if (date && date.length === this.dateMask.length) {
-                    return (moment(date, this.dateFormat).toISOString() && moment(date, this.dateFormat).toISOString().split('T') && moment(date, this.dateFormat).toISOString().split('T')[0]) ? this.parseDateToNavigatorLanguage(moment(date, this.dateFormat).toISOString().split('T')[0]) : this.parseDateToNavigatorLanguage(date);
-                } else
-                    return date;
-            },
-            addToAdvancedSearchQuery(value, type, searchCriterion) {
-                if (!value)
-                    return;
-
-                if (type == 'metadatum') {
-                    const criteriaKey = value.split('-');
-                    
-                    if (criteriaKey[1] != 'undefined') {
-                        // Was selected a taxonomy criteria      
-                        this.advancedSearchQuery.taxquery = Object.assign({}, this.advancedSearchQuery.taxquery, {
-                            [`${searchCriterion}`]: {
-                                taxonomy: criteriaKey[1],
-                                operator: 'LIKE',
-                                originalMeta: value,
-                                taxonomy_id: Number(criteriaKey[1].match(/[\d]+/)),
-                                isFetching: 0,
-                            }
-                        });
-                    } else {
-                        // Was selected a metadatum criteria
-                        if (criteriaKey[2] != 'date' && criteriaKey[2] != 'int' && criteriaKey[2] != 'float') {
-                            this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
-                                [`${searchCriterion}`]: {
-                                    key: criteriaKey[0],
-                                    compare: 'LIKE',
-                                    originalMeta: value,
-                                }
-                            });
-                        } else {
-                            this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
-                                [`${searchCriterion}`]: {
-                                    key: Number(criteriaKey[0]),
-                                    compare: '=',
-                                    originalMeta: value,
-                                }
-                            });
-                        }
-
-                        this.$set(this.advancedSearchQuery.metaquery[searchCriterion], 'ptype', criteriaKey[2]);
-                    }
-                } else if (type == "term_value") {
-                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'terms', value);
-                } else if (type == 'value') {
-                    this.$set(this.advancedSearchQuery.metaquery[searchCriterion], 'value', value);
-                } else if (type == 'comparator') {
-                    if (this.advancedSearchQuery.taxquery[searchCriterion])
-                        this.$set(this.advancedSearchQuery.taxquery[searchCriterion], 'operator', value);
-                    else if (this.advancedSearchQuery.metaquery[searchCriterion])
-                        this.$set(this.advancedSearchQuery.metaquery[searchCriterion], 'compare', value);
+            getAdvancedSearchQueryCriterionMetadataType(searchCriterion) {
+                if (this.advancedSearchQuery.metaquery[searchCriterion] &&
+                    this.advancedSearchQuery.metaquery[searchCriterion].key &&
+                    this.metadataAsObject[this.advancedSearchQuery.metaquery[searchCriterion].key] &&
+                    this.metadataAsObject[this.advancedSearchQuery.metaquery[searchCriterion].key].metadata_type_object
+                ) {
+                    return this.metadataAsObject[this.advancedSearchQuery.metaquery[searchCriterion].key].metadata_type_object.primitive_type
                 }
-            },
+
+                return '';
+            }
         }
     }
 </script>
@@ -581,23 +484,16 @@
 <style lang="scss">
 
     #advanced-search-container {
-        width: 100%;
-    }
-
-    .loading-overlay {
-        min-height: 200px;
-    }
-
-    .padding-in-header {
-        padding: 1.5em;
-    }
-
-    .padding-regular {
-        padding-right: var(--tainacan-one-column);
-        padding-left: var(--tainacan-one-column);
+        width: calc(100% - (2 * var(--tainacan-one-column)));
+        margin: 0.5em var(--tainacan-one-column) 0.875em;
+        background: var(--tainacan-input-background-color);
+        border: 1px solid var(--tainacan-input-border-color);
+        border-radius: 1px;
     }
 
     .tnc-advanced-search-container {
+        padding: 1em;
+        padding-top: 3.5em;
 
         .column {
             padding: 0 0.5em 0.75em !important;
@@ -613,30 +509,8 @@
             }
         }
 
-        .taginput-container {
-            min-height: 32px !important;
-
-            .tags {
-                margin-bottom: calc(0.275em - 1px) !important;
-
-                .tag {
-                    height: 2em !important;
-                    padding-left: 0.75em !important;
-                    padding-right: 0.75em !important;
-                    margin-right: 0 !important;
-                }
-            }
-        }
-
         .add-link-advanced-search {
-            margin-top: -15px !important;
             padding-left: 8px !important;
-        }
-
-        .add-link-advanced-search-header {
-            margin-top: -20px !important;
-            padding: 0 !important;
-            margin-left: -5px !important;
         }
 
         @media screen and (max-width: 768px) {
@@ -649,84 +523,6 @@
             }
         }
 
-    }
-
-    .advanced-search-header-dropdown {
-        height: 27px !important;
-
-        a, .has-text-secondary {
-            color: var(--tainacan-blue4) !important;
-        }
-
-        .select:not(.is-multiple)::after {
-            color: var(--tainacan-blue3) !important;
-
-            option:checked, option:hover {
-                background-color: var(--tainacan-gray2) !important;
-            }
-        }
-
-        .dropdown-content {
-            font-size: 1.15em;
-            width: 800px !important;
-            padding-bottom: 1.25em !important;
-        }
-
-        .field.is-grouped .field.column {
-            margin-bottom: 0;
-        }
-        .field.is-grouped .field + .field {
-            margin-left: 0.25em;
-        }
-
-        .autocomplete {
-            .dropdown-menu {
-                top: auto !important;
-                min-width: 100% !important;
-
-                .dropdown-content {
-                    width: auto !important;
-                }
-            }
-        }
-        .dropdown-item {
-            padding: 0.375em 1.5em !important;
-        }
-        .dropdown-item:hover {
-            background-color: unset !important;
-        }
-
-        @media screen and (min-width: 1087px) {
-            .dropdown-menu {
-                top: -2px !important;
-            }
-        }
-
-        .dropdown-item {
-            span.icon:not(.is-right) {
-                position: relative !important;
-            }
-        }
-
-        .advanced-search-text {
-            margin: 0 12px;
-            font-size: 0.75em;
-            color: var(--tainacan-gray5);
-        }
-
-        .advanced-search-text-di {
-            font-size: 1em;
-            font-weight: 500;
-            color: var(--tainacan-gray5);
-            margin-top: 5px;
-        }
-
-        .advanced-search-hr {
-            height: 1px;
-            margin: 4px 0;
-            background-color: var(--tainacan-blue3);
-            width: 100%;
-        }
     }
 
 </style>

@@ -8,57 +8,6 @@
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }"
             aria-live="polite">
-        
-        <!-- ADVANCED SEARCH -->
-        <div 
-                id="advanced-search-container"
-                role="search"
-                v-if="openAdvancedSearch && !hideAdvancedSearch">
-
-            <div class="tnc-advanced-search-close"> 
-                <div class="advanced-search-criteria-title">
-                    <div class="is-flex">
-                        <h1>{{ $i18n.get('info_search_criteria') }}</h1>
-                        <div
-                                :style="{'margin-bottom': 'auto'}"
-                                class="field is-grouped">
-                            <a
-                                    class="back-link"
-                                    @click="openAdvancedSearch = false">
-                                {{ $i18n.get('back') }}
-                            </a>
-                        </div>
-                    </div>
-                    <hr>
-                </div>
-            </div>
-
-            <advanced-search
-                    :is-repository-level="isRepositoryLevel"
-                    :collection-id="collectionId"
-                    :advanced-search-results="advancedSearchResults"
-                    :open-form-advanced-search="openFormAdvancedSearch"
-                    :is-doing-search="isDoingSearch"/>
-
-            <div class="advanced-search-form-submit">
-                <p
-                        v-if="advancedSearchResults"
-                        class="control">
-                    <button
-                            aria-controls="items-list-results"
-                            @click="advancedSearchResults = !advancedSearchResults"
-                            class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
-                </p>
-                <p
-                        v-if="advancedSearchResults"
-                        class="control">
-                    <button
-                            aria-controls="items-list-results"
-                            @click="isDoingSearch = !isDoingSearch"
-                            class="button is-success">{{ $i18n.get('search') }}</button>
-                </p>
-            </div>
-        </div>
 
         <!-- SEARCH CONTROL ------------------------- -->
         <h3 
@@ -70,7 +19,7 @@
                 :aria-label="$i18n.get('label_sort_visualization')"
                 role="region"
                 ref="search-control"
-                v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen) && ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="search-control">
 
             <!-- <b-loading
@@ -433,6 +382,18 @@
                 ref="items-list-area"
                 class="items-list-area">
 
+            <!-- ADVANCED SEARCH -->
+            <div 
+                    id="advanced-search-container"
+                    role="search"
+                    v-if="openAdvancedSearch && !hideAdvancedSearch">
+
+                <advanced-search
+                        :is-repository-level="isRepositoryLevel"
+                        :collection-id="collectionId"
+                        :has-advanced-search-results="hasAdvancedSearchResults" />
+            </div>
+
             <!-- FILTERS TAG LIST-->
             <filters-tags-list
                     class="filter-tags-list"
@@ -484,7 +445,7 @@
                         v-if="hasAnOpenAlert &&
                             isSortingByCustomMetadata &&
                             !showLoading &&
-                            ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                            ((openAdvancedSearch && hasAdvancedSearchResults) || !openAdvancedSearch)"
                         class="metadata-alert">
                     <p class="text">
                         {{ 
@@ -509,7 +470,7 @@
                        
                 <!-- Theme View Modes -->
                 <div 
-                        v-if="((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch) &&
+                        v-if="((openAdvancedSearch && hasAdvancedSearchResults) || !openAdvancedSearch) &&
                               !showLoading &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
@@ -518,7 +479,7 @@
                 <component
                         v-if="registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'component' &&
-                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                              ((openAdvancedSearch && hasAdvancedSearchResults) || !openAdvancedSearch)"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata" 
                         :items="items"
@@ -535,7 +496,7 @@
                         :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
                         v-if="totalItems > 0 &&
                             ((registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                            (advancedSearchResults || !openAdvancedSearch)"
+                            (hasAdvancedSearchResults || !openAdvancedSearch)"
                         :hide-items-per-page-button="hideItemsPerPageButton"
                         :hide-go-to-page-button="hideGoToPageButton"/>
 
@@ -613,9 +574,7 @@
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
-                openFormAdvancedSearch: false,
-                advancedSearchResults: false,
-                isDoingSearch: false,
+                hasAdvancedSearchResults: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
@@ -681,7 +640,7 @@
             openAdvancedSearch(newValue){
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
-                    this.advancedSearchResults = false;
+                    this.hasAdvancedSearchResults = false;
                     this.isFiltersModalActive = !this.startWithFiltersHidden;
                 } else {
                     this.isFiltersModalActive = false;
@@ -739,8 +698,8 @@
             });
             
             if (!this.hideAdvancedSearch) {
-                this.$eventBusSearch.$on('advancedSearchResults', advancedSearchResults => {
-                    this.advancedSearchResults = advancedSearchResults;
+                this.$eventBusSearch.$on('hasAdvancedSearchResults', hasAdvancedSearchResults => {
+                    this.hasAdvancedSearchResults = hasAdvancedSearchResults;
                 });
 
                 if (this.$route.query && this.$route.query.advancedSearch) {
@@ -1209,7 +1168,7 @@
                 this.$eventBusSearch.$off('isLoadingItems');
                 this.$eventBusSearch.$off('hasFiltered');
                 if (!this.hideAdvancedSearch)
-                    this.$eventBusSearch.$off('advancedSearchResults');
+                    this.$eventBusSearch.$off('hasAdvancedSearchResults');
                 this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
 
             },
@@ -1279,7 +1238,7 @@
         }
     }
 
-    .advanced-search-results-title {
+    .has-advanced-search-results-title {
         margin-bottom: 40px;
         margin: 0 var(--tainacan-one-column) 42px var(--tainacan-one-column);
 
