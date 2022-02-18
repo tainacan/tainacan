@@ -1,6 +1,6 @@
 <template>
     <div class="tnc-advanced-search-container">
-        <!-- <transition-group name="filter-item"> -->
+        <transition-group name="filter-item">
             <b-field
                     v-for="(searchCriterion, index) in searchCriteria"
                     :key="index + '-' + searchCriterion.index + '-' + searchCriterion.type"
@@ -126,7 +126,7 @@
                 </div>
 
             </b-field>
-        <!-- </transition-group> -->
+        </transition-group>
 
         <!-- Add button -->
         <div class="add-link-advanced-search">
@@ -333,41 +333,34 @@
                 let searchCriterionIndex = this.searchCriteria.findIndex((element) => element.index == searchCriterion.index && element.type == searchCriterion.type);
                 
                 if (searchCriterionIndex >= 0) {
-                    console.log('----------------')
-                    console.log(JSON.parse(JSON.stringify(this.searchCriteria)), JSON.parse(JSON.stringify(this.advancedSearchQuery)), searchCriterionIndex, searchCriterion.index);
                     
                     this.advancedSearchQuery[searchCriterion.type].splice(searchCriterion.index, 1);
                     this.searchCriteria.splice(searchCriterionIndex, 1);
 
-                    console.log(JSON.parse(JSON.stringify(this.searchCriteria)), JSON.parse(JSON.stringify(this.advancedSearchQuery)))
-                    for (let queryIndex = 0; queryIndex <= this.advancedSearchQuery.metaquery.length; queryIndex++) {
-                        
-                        let isCriterionIntexUpdated = false;
+                    for (let queryIndex = 0; queryIndex < this.advancedSearchQuery.metaquery.length; queryIndex++) { 
+                        let isCriterionIndexUpdated = false;
                         let expectedIndex = queryIndex;
-                        while(!isCriterionIntexUpdated) {
-                            if (this.searchCriteria[expectedIndex].type == 'metaquery') {
-                                this.searchCriteria[expectedIndex].index = queryIndex;
-                                isCriterionIntexUpdated = true;
+                        while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
+                            if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'metaquery') {
+                                this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
+                                isCriterionIndexUpdated = true;
                             } else {
                                 expectedIndex++;
                             }
                         }
                     }
-                    for (let queryIndex = 0; queryIndex <= this.advancedSearchQuery.taxquery.length; queryIndex++) {
-                        
-                        let isCriterionIntexUpdated = false;
+                    for (let queryIndex = 0; queryIndex < this.advancedSearchQuery.taxquery.length; queryIndex++) {
+                        let isCriterionIndexUpdated = false;
                         let expectedIndex = queryIndex;
-                        while(!isCriterionIntexUpdated) {
-                            if (this.searchCriteria[expectedIndex].type == 'taxquery') {
-                                this.searchCriteria[expectedIndex].index = queryIndex;
-                                isCriterionIntexUpdated = true;
+                        while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
+                            if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'taxquery') {
+                                this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
+                                isCriterionIndexUpdated = true;
                             } else {
                                 expectedIndex++;
                             }
                         }
-                }
-                    console.log(JSON.parse(JSON.stringify(this.searchCriteria)))
-                    console.log('------------------------')
+                    }
                 }
             },
             addSearchCriteria() {
@@ -438,7 +431,6 @@
                         });
                     }
                 }
-                console.log(this.searchCriteria, this.advancedSearchQuery)
             },
             addValueToAdvancedSearchQuery(value, searchCriterion) {
                 if (!value)
