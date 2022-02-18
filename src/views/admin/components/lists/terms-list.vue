@@ -139,7 +139,7 @@
                     @onEditionFinished="onTermEditionFinished($event)"
                     @onEditionCanceled="onTermEditionCanceled($event)"
                     @onErrorFound="formWithErrors = editTerm.id"
-                    :edit-form="editTerm"/>
+                    :form="editTerm"/>
         </div>
     </div>
     <!-- Empty state image -->
