@@ -45,7 +45,7 @@
                                 </option>
                             </optgroup>
                         </template>
-                        <option value="document_content_index-undefined-string">
+                        <option value="document_content_index">
                             {{ $i18n.get('label_document') }}
                         </option>
                     </b-select>
@@ -245,6 +245,7 @@
                             // Search Request Token for cancelling
                             this.metadataSearchCancel = resp.source;
 
+                            // Loads existing search query
                             this.buildAdvancedSearchQueryFromRoute();
 
                             this.isLoadingMetadata = false;
@@ -323,10 +324,13 @@
                         this.searchCriteria.push({ index: taxkey, type: 'taxquery' });
                 }
 
-                // If we're coming from a preset advanced search, execute it!
+                // If we're coming from a preset advanced search, execute it,
+                // otherwise, create an empty row.
                 if (this.searchCriteria.length) {
                     this.$eventBusSearch.updateStoreFromURL();
                     this.performAdvancedSearch();
+                } else {
+                    this.addSearchCriteria();
                 }
             },
             removeCriterion(searchCriterion) {
