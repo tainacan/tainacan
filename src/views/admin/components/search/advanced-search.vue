@@ -1,9 +1,9 @@
 <template>
     <div class="tnc-advanced-search-container">
-        <transition-group name="filter-item">
+        <!-- <transition-group name="filter-item"> -->
             <b-field
-                    v-for="searchCriterion in searchCriteria"
-                    :key="searchCriterion"
+                    v-for="(searchCriterion, index) in searchCriteria"
+                    :key="index + '-' + searchCriterion.index + '-' + searchCriterion.type"
                     grouped
                     class="tainacan-form">
 
@@ -12,19 +12,16 @@
                     <b-select
                             :loading="isLoadingMetadata"
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
-                            :disabled="(advancedSearchQuery.taxquery[searchCriterion] || advancedSearchQuery.metaquery[searchCriterion]) ? true : false"
-                            :value="(
-                                    advancedSearchQuery.metaquery[searchCriterion] ? advancedSearchQuery.metaquery[searchCriterion].key : null
-                                ) || (
-                                    advancedSearchQuery.taxquery[searchCriterion] ? advancedSearchQuery.taxquery[searchCriterion].key : null
-                                )"
+                            :disabled="advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index]"
+                            :value="(advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index] ) ? advancedSearchQuery[searchCriterion.type][searchCriterion.index].key : null"
                             @input="addMetadatumToAdvancedSearchQuery(
                                 { 
                                     metadatumId: $event,
                                     type: (metadataAsObject[$event] && metadataAsObject[$event].metadata_type_object) ? metadataAsObject[$event].metadata_type_object.primitive_type : '',
                                     taxonomy: (metadataAsObject[$event] && metadataAsObject[$event].metadata_type_options) ? metadataAsObject[$event].metadata_type_options.taxonomy : ''
                                 }, 
-                                searchCriterion
+                                searchCriterion,
+                                index
                             )">
                         <template v-for="(metadatum, metadatumIndex) in metadataAsArray">
                             <option
@@ -58,13 +55,20 @@
                 <b-field class="column">
                     <b-select
                             :loading="isLoadingMetadata"
-                            v-if="advancedSearchQuery.taxquery[searchCriterion] ||
-                                advancedSearchQuery.metaquery[searchCriterion] ? true : false"
+                            v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index]"
                             @input="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.taxquery[searchCriterion] ?
-                                advancedSearchQuery.taxquery[searchCriterion].operator :
-                                (advancedSearchQuery.metaquery[searchCriterion] ? advancedSearchQuery.metaquery[searchCriterion].compare : '')">
-
+                            :value="advancedSearchQuery.metaquery[searchCriterion.index].compare">
+                        <option 
+                                v-for="(comparator, key) in getComparators(searchCriterion)"
+                                :key="key"
+                                :value="key"
+                        >{{ comparator }}</option>
+                    </b-select>
+                    <b-select
+                            :loading="isLoadingMetadata"
+                            v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
+                            @input="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
+                            :value="advancedSearchQuery.taxquery[searchCriterion.index].operator">
                         <option 
                                 v-for="(comparator, key) in getComparators(searchCriterion)"
                                 :key="key"
@@ -80,23 +84,23 @@
                 <!-- Inputs -->
                 <b-field class="column is-half">
                     <b-input
-                            v-if="advancedSearchQuery.metaquery[searchCriterion] && getAdvancedSearchQueryCriterionMetadataType(searchCriterion) != 'date'"
-                            :type="(getAdvancedSearchQueryCriterionMetadataType(searchCriterion) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion) == 'float') ? 'number' : 'text'"
+                            v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index] && getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) != 'date'"
+                            :type="(getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float') ? 'number' : 'text'"
                             step="any"
                             @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.metaquery[searchCriterion].value"
+                            :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
                     />
                     <input
-                            v-else-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion) == 'date'"
+                            v-else-if="searchCriterion.type == 'metaquery' && getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
                             class="input"
-                            :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion].value)"
+                            :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion.index].value)"
                             v-mask="dateMask"
                             @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
                             :placeholder="dateFormat" 
                             type="text" >
                     <b-input
-                            v-else-if="advancedSearchQuery.taxquery[searchCriterion]"
-                            :value="advancedSearchQuery.taxquery[searchCriterion].terms"
+                            v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
+                            :value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
                             @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
                             type="text" />
                     <b-input
@@ -122,7 +126,7 @@
                 </div>
 
             </b-field>
-        </transition-group>
+        <!-- </transition-group> -->
 
         <!-- Add button -->
         <div class="add-link-advanced-search">
@@ -206,11 +210,11 @@
                     'LIKE': this.$i18n.get('contains'),
                     'NOT LIKE': this.$i18n.get('not_contains')
                 },
-                searchCriteria: [1],
+                searchCriteria: [],
                 advancedSearchQuery: {
                     advancedSearch: true,
-                    metaquery: {},
-                    taxquery: {}
+                    metaquery: [],
+                    taxquery: []
                 },
                 isLoadingMetadata: false,
                 metadataAsObject: {},
@@ -261,10 +265,10 @@
                 'fetchMetadata'
             ]),
             getComparators(searchCriterion) {
-                if (this.advancedSearchQuery.taxquery[searchCriterion]) {
+                if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index]) {
                     return this.taxqueryOperators;
-                } else if (this.advancedSearchQuery.metaquery[searchCriterion]) {
-                    const metadataType = this.getAdvancedSearchQueryCriterionMetadataType(searchCriterion);
+                } else if (searchCriterion.type == 'metaquery' && this.advancedSearchQuery.metaquery[searchCriterion.index]) {
+                    const metadataType = this.getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index);
                     if (metadataType == 'date' || metadataType == 'int' || metadataType == 'float')
                         return this.metaqueryOperatorsForInterval;
                     else
@@ -296,7 +300,7 @@
                         metakeys.splice(relationIndex, 1);
 
                     for (let metakey of metakeys)
-                        this.searchCriteria.push(metakey);
+                        this.searchCriteria.push({ index: metakey, type: 'metaquery' });
 
                 }
 
@@ -316,7 +320,7 @@
                         taxkeys.splice(relationIndex, 1);
 
                     for (let taxkey of taxkeys)
-                        this.searchCriteria.push(taxkey);
+                        this.searchCriteria.push({ index: taxkey, type: 'taxquery' });
                 }
 
                 // If we're coming from a preset advanced search, execute it!
@@ -326,32 +330,62 @@
                 }
             },
             removeCriterion(searchCriterion) {
-                let criteriaIndex = this.searchCriteria.findIndex((element) => element == searchCriterion);
+                let searchCriterionIndex = this.searchCriteria.findIndex((element) => element.index == searchCriterion.index && element.type == searchCriterion.type);
                 
-                if (criteriaIndex >= 0)
-                    this.searchCriteria.splice(criteriaIndex, 1);
+                if (searchCriterionIndex >= 0) {
+                    console.log('----------------')
+                    console.log(JSON.parse(JSON.stringify(this.searchCriteria)), JSON.parse(JSON.stringify(this.advancedSearchQuery)), searchCriterionIndex, searchCriterion.index);
+                    
+                    this.advancedSearchQuery[searchCriterion.type].splice(searchCriterion.index, 1);
+                    this.searchCriteria.splice(searchCriterionIndex, 1);
 
-                if (this.advancedSearchQuery.taxquery[searchCriterion])
-                    delete this.advancedSearchQuery.taxquery[searchCriterion];
-                else if (this.advancedSearchQuery.metaquery[searchCriterion])
-                    delete this.advancedSearchQuery.metaquery[searchCriterion];
+                    console.log(JSON.parse(JSON.stringify(this.searchCriteria)), JSON.parse(JSON.stringify(this.advancedSearchQuery)))
+                    for (let queryIndex = 0; queryIndex <= this.advancedSearchQuery.metaquery.length; queryIndex++) {
+                        
+                        let isCriterionIntexUpdated = false;
+                        let expectedIndex = queryIndex;
+                        while(!isCriterionIntexUpdated) {
+                            if (this.searchCriteria[expectedIndex].type == 'metaquery') {
+                                this.searchCriteria[expectedIndex].index = queryIndex;
+                                isCriterionIntexUpdated = true;
+                            } else {
+                                expectedIndex++;
+                            }
+                        }
+                    }
+                    for (let queryIndex = 0; queryIndex <= this.advancedSearchQuery.taxquery.length; queryIndex++) {
+                        
+                        let isCriterionIntexUpdated = false;
+                        let expectedIndex = queryIndex;
+                        while(!isCriterionIntexUpdated) {
+                            if (this.searchCriteria[expectedIndex].type == 'taxquery') {
+                                this.searchCriteria[expectedIndex].index = queryIndex;
+                                isCriterionIntexUpdated = true;
+                            } else {
+                                expectedIndex++;
+                            }
+                        }
+                }
+                    console.log(JSON.parse(JSON.stringify(this.searchCriteria)))
+                    console.log('------------------------')
+                }
             },
             addSearchCriteria() {
                 let aleatoryKey = Math.floor(Math.random() * (1000 - 2 + 1)) + 2;
 
-                let found = this.searchCriteria.find((element) => element == aleatoryKey);
+                let existingKeyIndex = this.searchCriteria.findIndex((element) => element.index == aleatoryKey);
 
-                if (found == undefined)
-                    this.searchCriteria.push(aleatoryKey);
+                if (existingKeyIndex < 0)
+                    this.searchCriteria.push({ index: aleatoryKey, type: undefined });
                 else
                     this.addSearchCriteria();
             },
             clearSearch() {
-                this.searchCriteria = [1];
+                this.searchCriteria = [];
                 this.advancedSearchQuery = {
                     advancedSearch: true,
-                    metaquery: {},
-                    taxquery: {}
+                    metaquery: [],
+                    taxquery: []
                 };
             },
             convertDateToMatchInDB(dateValue) {
@@ -367,55 +401,62 @@
                 else
                     return date;
             },
-            addMetadatumToAdvancedSearchQuery({ metadatumId, type, taxonomy }, index) {
+            addMetadatumToAdvancedSearchQuery({ metadatumId, type, taxonomy }, searchCriterion, index) {
                 if (!metadatumId)
                     return;
                     
                 if (type === 'term') {
+                    
+                    // Convert fake placeholder criterion row to a tax row
+                    let totalOfTaxCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'taxquery' ? counter += 1 : counter, 0);
+                    this.$set(this.searchCriteria[index], 'type', 'taxquery');
+                    this.$set(this.searchCriteria[index], 'index', totalOfTaxCriteria);
+
                     // Was selected a taxonomy criteria      
-                    this.advancedSearchQuery.taxquery = Object.assign({}, this.advancedSearchQuery.taxquery, {
-                        [`${index}`]: {
-                            key: metadatumId,
-                            taxonomy: taxonomy,
-                            operator: 'LIKE'
-                        }
+                    this.advancedSearchQuery.taxquery.push({
+                        key: metadatumId,
+                        taxonomy: taxonomy,
+                        operator: 'LIKE'
                     });
                 } else {
+
+                    // Convert fake placeholder criterion row to a meta row
+                    let totalOfMetaCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'metaquery' ? counter += 1 : counter, 0);
+                    this.$set(this.searchCriteria[index], 'type', 'metaquery');
+                    this.$set(this.searchCriteria[index], 'index', totalOfMetaCriteria);
+
                     // Was selected a metadatum criteria
                     if (type != 'date' && type != 'int' && type != 'float') {
-                        this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
-                            [`${index}`]: {
-                                key: metadatumId,
-                                compare: 'LIKE'
-                            }
+                        this.advancedSearchQuery.metaquery.push({
+                            key: metadatumId,
+                            compare: 'LIKE'
                         });
                     } else {
-                        this.advancedSearchQuery.metaquery = Object.assign({}, this.advancedSearchQuery.metaquery, {
-                            [`${index}`]: {
-                                key: metadatumId,
-                                compare: '='
-                            }
+                        this.advancedSearchQuery.metaquery.push({
+                            key: metadatumId,
+                            compare: '='
                         });
                     }
                 }
+                console.log(this.searchCriteria, this.advancedSearchQuery)
             },
-            addValueToAdvancedSearchQuery(value, index) {
+            addValueToAdvancedSearchQuery(value, searchCriterion) {
                 if (!value)
                     return;
 
-                if (this.advancedSearchQuery.metaquery[index])
-                    this.$set(this.advancedSearchQuery.metaquery[index], 'value', value);
-                else if (this.advancedSearchQuery.taxquery[index])
-                    this.$set(this.advancedSearchQuery.taxquery[index], 'terms', value);
+                if (searchCriterion.type == 'metaquery' && this.advancedSearchQuery.metaquery[searchCriterion.index])
+                    this.$set(this.advancedSearchQuery.metaquery[searchCriterion.index], 'value', value);
+                else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index])
+                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion.index], 'terms', value);
             },
-            addComparatorToAdvancedSearchQuery(comparator, index) {
+            addComparatorToAdvancedSearchQuery(comparator, searchCriterion) {
                 if (!comparator)
                     return;
 
-                if (this.advancedSearchQuery.metaquery[index])
-                    this.$set(this.advancedSearchQuery.metaquery[index], 'compare', comparator);
-                else if (this.advancedSearchQuery.taxquery[index])
-                    this.$set(this.advancedSearchQuery.taxquery[index], 'operator', comparator);
+                if (searchCriterion.type == 'metaquery' && this.advancedSearchQuery.metaquery[searchCriterion.index])
+                    this.$set(this.advancedSearchQuery.metaquery[searchCriterion.index], 'compare', comparator);
+                else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index])
+                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion.index], 'operator', comparator);
             },
             performAdvancedSearch() {
                 
