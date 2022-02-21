@@ -271,7 +271,7 @@
                 </p>
                 <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
                 <router-link
-                        v-if="!$adminOptions.hideItemsListFilterCreationButton && $route.name != null"
+                        v-if="!$adminOptions.hideItemsListFilterCreationButton && $route.name != null && ((isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters')) || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                         id="button-create-filter"
                         :to="isRepositoryLevel && $routerHelper ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
                         tag="button"
@@ -327,6 +327,9 @@
             taxonomyId () {
                 const taxonomyArray = this.taxonomy.split("_");
                 return taxonomyArray[taxonomyArray.length - 1];
+            },
+            collection() {
+                return this.getCollection();
             }
         },
         watch: {
@@ -409,6 +412,9 @@
         methods: {
             ...mapGetters('search',[
                 'getPostQuery'
+            ]),
+            ...mapGetters('collection',[
+                'getCollection'
             ]),
             ...mapActions('collection',[
                 'fetchAllCollectionNames'

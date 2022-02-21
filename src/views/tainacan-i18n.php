@@ -363,6 +363,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_return_to_draft'                          => __( 'Return to draft', 'tainacan' ),
 	/* translators: The verb 'to publish' not the 'publish' status */
 	'label_verb_publish'                             => _x( 'Publish', 'verb', 'tainacan' ),
+	'label_verb_publish_privately'                   => _x( 'Publish privately', 'verb', 'tainacan' ),
 	/* translators: The status 'publish' not the verb 'to publish' */
 	'label_publish'                             	 => _x( 'Publish', 'noun', 'tainacan' ),
 	'label_update'                                   => __( 'Update', 'tainacan' ),
