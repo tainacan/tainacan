@@ -534,7 +534,7 @@
                                     </div>
                                 </div>
                                 <ul v-else>
-                                    <li>
+                                    <li v-if="!$adminOptions.hideItemEditionDocumentFileInput">
                                         <button
                                                 type="button"
                                                 @click.prevent="setFileDocument($event)">
@@ -544,7 +544,7 @@
                                         </button>
                                         <p>{{ $i18n.get('label_file') }}</p>
                                     </li>
-                                    <li>
+                                    <li v-if="!$adminOptions.hideItemEditionDocumentTextInput">
                                         <button
                                                 type="button"
                                                 @click.prevent="setTextDocument()">
@@ -554,7 +554,7 @@
                                         </button>
                                         <p>{{ $i18n.get('label_text') }}</p>
                                     </li>
-                                    <li>
+                                    <li v-if="!$adminOptions.hideItemEditionDocumentUrlInput">
                                         <button
                                                 type="button"
                                                 @click.prevent="setURLDocument()">

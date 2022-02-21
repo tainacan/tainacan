@@ -616,6 +616,9 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         * hideItemEditionStatusOptions
             * hideItemEditionStatusPublishOption
         * hideItemEditionCommentsToggle
+        * hideItemEditionDocumentFileInput
+        * hideItemEditionDocumentTextInput
+        * hideItemEditionDocumentUrlInput
         * hideItemEditionThumbnail
         
         * hideBulkEditionPageTitle
