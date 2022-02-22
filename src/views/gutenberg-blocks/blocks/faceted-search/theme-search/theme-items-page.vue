@@ -55,7 +55,7 @@
 
             <!-- Text simple search -->
             <div 
-                    v-if="!hideSearch && !openAdvancedSearch"
+                    v-if="!hideSearch"
                     class="search-control-item">
                 <div 
                         role="search" 
@@ -70,12 +70,13 @@
                         @keyup.enter.native="updateSearch()"
                         icon-right="magnify"
                         icon-right-clickable
-                        @icon-right-click="updateSearch()" />
+                        @icon-right-click="updateSearch()"
+                        :disabled="openAdvancedSearch" />
                     <a
                             v-if="!hideAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
-                            style="font-size: 0.75em;"
-                            class="advanced-search-toggle has-text-secondary is-pulled-right">
+                            class="advanced-search-toggle has-text-secondary is-pulled-right"
+                            :class="openAdvancedSearch ? 'is-open' : 'is-closed'">
                         {{ $i18n.get('advanced_search') }}
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-search" />

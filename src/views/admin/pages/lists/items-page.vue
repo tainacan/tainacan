@@ -69,7 +69,8 @@
                             @keyup.enter.native="updateSearch()"
                             icon-right="magnify"
                             icon-right-clickable
-                            @icon-right-click="updateSearch()" />
+                            @icon-right-click="updateSearch()"
+                            :disabled="openAdvancedSearch" />
                     <a
                             v-if="!$adminOptions.hideItemsListAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
