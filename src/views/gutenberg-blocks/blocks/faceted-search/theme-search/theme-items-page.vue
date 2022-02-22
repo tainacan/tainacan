@@ -31,7 +31,7 @@
                     aria-controls="filters-modal"
                     :aria-expanded="isFiltersModalActive"
                     :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
-                    v-if="!showFiltersButtonInsideSearchControl && !hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    v-if="!showFiltersButtonInsideSearchControl && !hideFilters && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     id="filter-menu-compress-button"
                     :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                     @click="isFiltersModalActive = !isFiltersModalActive"
@@ -75,8 +75,11 @@
                             v-if="!hideAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
                             style="font-size: 0.75em;"
-                            class="has-text-secondary is-pulled-right">
+                            class="advanced-search-toggle has-text-secondary is-pulled-right">
                         {{ $i18n.get('advanced_search') }}
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-search" />
+                        </span>
                     </a>
                 </div>
             </div>
@@ -347,34 +350,34 @@
         </div>
 
         <!-- SIDEBAR WITH FILTERS -->
-        <b-modal
-                v-if="!hideFilters"
-                role="region"
-                aria-labelledby="filters-label-landmark"
-                id="filters-modal"     
-                ref="filters-modal"       
-                :active.sync="isFiltersModalActive"
-                :width="736"
-                animation="slide-menu"
-                :auto-focus="filtersAsModal"
-                :trap-focus="filtersAsModal"
-                full-screen
-                :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
-                :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
-                :close-button-aria-label="$i18n.get('close')">
-            <filters-items-list
-                    :is-loading-items="isLoadingItems"
-                    :autofocus="filtersAsModal"
-                    :tabindex="filtersAsModal ? -1 : 0"
-                    :aria-modal="filtersAsModal"
-                    :role="filtersAsModal ? 'dialog' : ''"
-                    id="filters-items-list"
-                    :taxonomy="taxonomy"
-                    :collection-id="collectionId"
-                    :is-repository-level="isRepositoryLevel"
-                    :filters-as-modal="filtersAsModal"
-                    :has-filtered="hasFiltered" />
-        </b-modal>
+        <template v-if="!hideFilters">
+            <b-modal
+                    role="region"
+                    aria-labelledby="filters-label-landmark"
+                    id="filters-modal"     
+                    ref="filters-modal"       
+                    :active.sync="isFiltersModalActive"
+                    :width="736"
+                    :auto-focus="filtersAsModal"
+                    :trap-focus="filtersAsModal"
+                    full-screen
+                    :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
+                    :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
+                    :close-button-aria-label="$i18n.get('close')">
+                <filters-items-list
+                        :is-loading-items="isLoadingItems"
+                        :autofocus="filtersAsModal"
+                        :tabindex="filtersAsModal ? -1 : 0"
+                        :aria-modal="filtersAsModal"
+                        :role="filtersAsModal ? 'dialog' : ''"
+                        id="filters-items-list"
+                        :taxonomy="taxonomy"
+                        :collection-id="collectionId"
+                        :is-repository-level="isRepositoryLevel"
+                        :filters-as-modal="filtersAsModal"
+                        :has-filtered="hasFiltered" />
+            </b-modal>
+        </template>
 
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
@@ -391,7 +394,7 @@
                 <advanced-search
                         :is-repository-level="isRepositoryLevel"
                         :collection-id="collectionId"
-                        :has-advanced-search-results="hasAdvancedSearchResults" />
+                        @close="openAdvancedSearch = false" />
             </div>
 
             <!-- FILTERS TAG LIST-->
@@ -444,8 +447,7 @@
                 <div 
                         v-if="hasAnOpenAlert &&
                             isSortingByCustomMetadata &&
-                            !showLoading &&
-                            ((openAdvancedSearch && hasAdvancedSearchResults) || !openAdvancedSearch)"
+                            !showLoading"
                         class="metadata-alert">
                     <p class="text">
                         {{ 
@@ -470,16 +472,14 @@
                        
                 <!-- Theme View Modes -->
                 <div 
-                        v-if="((openAdvancedSearch && hasAdvancedSearchResults) || !openAdvancedSearch) &&
-                              !showLoading &&
+                        v-if="!showLoading &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
 
                 <component
                         v-if="registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'component' &&
-                              ((openAdvancedSearch && hasAdvancedSearchResults) || !openAdvancedSearch)"
+                              registeredViewModes[viewMode].type == 'component'"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata" 
                         :items="items"
@@ -495,8 +495,7 @@
                         v-show="!hidePaginationArea"
                         :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
                         v-if="totalItems > 0 &&
-                            ((registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                            (hasAdvancedSearchResults || !openAdvancedSearch)"
+                            ((registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination))"
                         :hide-items-per-page-button="hideItemsPerPageButton"
                         :hide-go-to-page-button="hideGoToPageButton"/>
 
@@ -574,7 +573,6 @@
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
-                hasAdvancedSearchResults: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
@@ -640,7 +638,6 @@
             openAdvancedSearch(newValue){
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
-                    this.hasAdvancedSearchResults = false;
                     this.isFiltersModalActive = !this.startWithFiltersHidden;
                 } else {
                     this.isFiltersModalActive = false;
@@ -698,9 +695,6 @@
             });
             
             if (!this.hideAdvancedSearch) {
-                this.$eventBusSearch.$on('hasAdvancedSearchResults', hasAdvancedSearchResults => {
-                    this.hasAdvancedSearchResults = hasAdvancedSearchResults;
-                });
 
                 if (this.$route.query && this.$route.query.advancedSearch) {
                     this.openAdvancedSearch = this.$route.query.advancedSearch;
@@ -1167,8 +1161,6 @@
                 // $eventBusSearch
                 this.$eventBusSearch.$off('isLoadingItems');
                 this.$eventBusSearch.$off('hasFiltered');
-                if (!this.hideAdvancedSearch)
-                    this.$eventBusSearch.$off('hasAdvancedSearchResults');
                 this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
 
             },
@@ -1212,58 +1204,6 @@
         }
     }
 
-    .advanced-search-criteria-title {
-       margin-bottom: 40px;
-
-        h1, h2 {
-            font-size: 1.25em !important;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 2px;
-            background-color: var(--tainacan-secondary);
-            border: none;
-        }
-    }
-
-    .has-advanced-search-results-title {
-        margin-bottom: 40px;
-        margin: 0 var(--tainacan-one-column) 42px var(--tainacan-one-column);
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-        }
-    }
-
     .advanced-search-form-submit {
         display: flex;
         justify-content: flex-end;
@@ -1272,16 +1212,6 @@
         margin-bottom: 1em;
 
         p { margin-left: 0.75em; }
-    }
-
-    .tnc-advanced-search-close {
-        padding-top: 47px;
-        padding-right: var(--tainacan-one-column);
-        padding-left: var(--tainacan-one-column);
-
-        .column {
-            padding: 0 0.3em 0.3em !important;
-        }
     }
 
     .page-container {
@@ -1476,15 +1406,27 @@
                     width: 100%;
                     margin: -2px 0 5px 0;
                 }
-                .is-pulled-right {
-                    position: absolute;
-                    right: 0;
-                    top: 100%;
-                }
-                a {
+                a.advanced-search-toggle {
                     margin-left: 12px;
                     white-space: nowrap; 
-                } 
+                    position: absolute;
+                    font-size: 0.75em;
+                    right: 15px;
+                    left: unset;
+                    top: 100%;
+                    transition: font-size 0.2s ease, right 0.3s ease, left 0.3s ease, top 0.4s ease;
+                    
+                    .icon {
+                        display: 0;
+                        opacity: 0.0;
+                        max-width: 0;
+                        transition: opacity 0.2s ease, max-width 0.2s ease;                            
+                    }
+
+                    &.is-open {
+                        font-size: 0;
+                    }
+                }
             }
 
             &#tainacanFiltersButton.is-filters-modal-active .gray-icon i::before {

@@ -469,7 +469,7 @@
                     <advanced-search
                             :collection-id="collectionId"
                             :is-repository-level="isRepositoryLevel"
-                            :has-advanced-search-results="hasAdvancedSearchResults" />
+                            @close="openAdvancedSearch = false" />
                 </div>
             </transition>
 
@@ -519,8 +519,7 @@
                 <div 
                         v-if="hasAnOpenAlert &&
                             isSortingByCustomMetadata &&
-                            !showLoading &&
-                            ((openAdvancedSearch && hasAdvancedSearchResults) || !openAdvancedSearch)"
+                            !showLoading"
                         class="metadata-alert">
                     <p class="text">
                         {{ 
@@ -545,9 +544,7 @@
 
                 <!-- Admin View Modes-->
                 <items-list
-                        v-if="!showLoading &&
-                              totalItems > 0 &&
-                              ((openAdvancedSearch && hasAdvancedSearchResults) || !openAdvancedSearch)"
+                        v-if="!showLoading && totalItems > 0"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
@@ -597,7 +594,7 @@
                 <div ref="items-pagination">
                     <pagination
                             :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
-                            v-if="totalItems > 0 && (hasAdvancedSearchResults || !openAdvancedSearch)"/>
+                            v-if="totalItems > 0"/>
                 </div>
             </div>
         </div>
@@ -642,7 +639,6 @@
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
-                hasAdvancedSearchResults: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
@@ -707,7 +703,6 @@
             openAdvancedSearch(newValue) {
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
-                    this.hasAdvancedSearchResults = false;
                     this.isFiltersModalActive = true;
                 } else {
                     this.isFiltersModalActive = false;
@@ -749,10 +744,6 @@
 
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
-            });
-
-            this.$eventBusSearch.$on('hasAdvancedSearchResults', hasAdvancedSearchResults => {
-                this.hasAdvancedSearchResults = hasAdvancedSearchResults;
             });
 
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
@@ -1288,7 +1279,6 @@
                 // $eventBusSearch
                 this.$eventBusSearch.$off('isLoadingItems');
                 this.$eventBusSearch.$off('hasFiltered');
-                this.$eventBusSearch.$off('hasAdvancedSearchResults');
                 this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
             }
         }
@@ -1306,58 +1296,6 @@
 
     .repository-level-page {
         overflow-y: auto;
-    }
-
-    .advanced-search-criteria-title {
-        margin-bottom: 40px;
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 2px;
-            background-color: var(--tainacan-secondary);
-            border: none;
-        }
-    }
-
-    .has-advanced-search-results-title {
-        margin-bottom: 40px;
-        margin: 0 var(--tainacan-one-column) 42px var(--tainacan-one-column);
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-        }
     }
 
     .advanced-search-form-submit {
@@ -1499,10 +1437,6 @@
                         padding-right: 0;
                         max-width: 100% !important;
                     }
-                    .advanced-search-toggle.is-closed {
-                        position: relative;
-                        right: 0px !important;
-                    }
                 }
             }
 
@@ -1592,39 +1526,23 @@
                     margin-left: 12px;
                     white-space: nowrap; 
                     position: absolute;
+                    font-size: 0.75em;
+                    right: 15px;
+                    left: unset;
+                    top: 100%;
                     transition: font-size 0.2s ease, right 0.3s ease, left 0.3s ease, top 0.4s ease;
                     
                     .icon {
+                        display: 0;
+                        opacity: 0.0;
+                        max-width: 0;
                         transition: opacity 0.2s ease, max-width 0.2s ease;                            
                     }
 
-                    &.is-closed {
-                        font-size: 0.75em;
-                        right: 15px;
-                        left: unset;
-                        top: 100%;
-
-                        .icon {
-                            display: 0;
-                            opacity: 0.0;
-                            max-width: 0;
-                        }
-                    }
                     &.is-open {
-                        font-size: 1em;
-                        right: unset;
-                        left: 15px;
-                        top: 6.125em;
-                        z-index: 9;
-
-                        .icon {
-                            display: inline;
-                            opacity: 1.0;
-                            max-width: 1.5em;
-                        }
+                        font-size: 0;
                     }
                 }
-                
             }
 
         }

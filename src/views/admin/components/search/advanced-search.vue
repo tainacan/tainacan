@@ -1,5 +1,8 @@
 <template>
-    <div class="tnc-advanced-search-container">
+    <div 
+            tabindex="0"
+            class="tnc-advanced-search-container">
+        <h3>{{ $i18n.get('advanced_search') }}</h3>
         <transition-group name="filter-item">
             <b-field
                     v-for="(searchCriterion, index) in searchCriteria"
@@ -130,10 +133,8 @@
 
         <!-- Add button -->
         <div class="add-link-advanced-search">
-            <a
-                    @click="addSearchCriteria"
-                    style="font-size: 0.75em;">
-                <span class="icon is-small">
+            <a @click="addSearchCriteria">
+                <span class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-add"/>
                 </span>
                 {{ searchCriteria.length &lt;= 0 ?
@@ -141,24 +142,36 @@
                         $i18n.get('add_another_search_criterion')
                 }}
             </a>
+            <a
+                    v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 || Object.keys(advancedSearchQuery.metaquery).length > 0"
+                    @click="clearSearch();">
+                <span class="icon">
+                    <i class="has-text-secondary tainacan-icon tainacan-icon-remove"/>
+                </span>
+                {{ $i18n.get('label_remove_all_criteria') }}
+            </a>
         </div>
 
         <!-- Clear and search button -->
         <div class="field is-grouped is-justify-content-flex-end">
-            <p
-                    v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 || Object.keys(advancedSearchQuery.metaquery).length > 0"
-                    class="control">
+            <p class="control">
                 <button
-                        @click="clearSearch(); performAdvancedSearch();"
-                        class="button is-outlined">{{ $i18n.get('clear_search') }}</button>
+                        @click="$emit('close')"
+                        class="button is-outlined">
+                    {{ $i18n.get('label_close_search') }}
+                </button>
             </p>
             <p class="control">
                 <button
                         @click="performAdvancedSearch()"
-                        class="button is-success">{{ $i18n.get('apply') }}</button>
+                        class="button is-secondary">
+                    {{ $i18n.get('apply') }}
+                </button>
             </p>
         </div>
-
+        <b-loading 
+                :is-full-page="false" 
+                :active.sync="isLoadingMetadata" />
         <section
                 v-if="!isLoadingMetadata && metadataAsArray && metadataAsArray.length <= 0"
                 class="field is-grouped-centered section">
@@ -187,7 +200,6 @@
         mixins: [ dateInter ],
         props: {
             isRepositoryLevel: false,
-            hasAdvancedSearchResults: false,
             collectionId: ''
         },
         data() {
@@ -333,40 +345,6 @@
                     this.addSearchCriteria();
                 }
             },
-            removeCriterion(searchCriterion) {
-                let searchCriterionIndex = this.searchCriteria.findIndex((element) => element.index == searchCriterion.index && element.type == searchCriterion.type);
-                
-                if (searchCriterionIndex >= 0) {
-                    
-                    this.advancedSearchQuery[searchCriterion.type].splice(searchCriterion.index, 1);
-                    this.searchCriteria.splice(searchCriterionIndex, 1);
-
-                    for (let queryIndex = 0; queryIndex < this.advancedSearchQuery.metaquery.length; queryIndex++) { 
-                        let isCriterionIndexUpdated = false;
-                        let expectedIndex = queryIndex;
-                        while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
-                            if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'metaquery') {
-                                this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
-                                isCriterionIndexUpdated = true;
-                            } else {
-                                expectedIndex++;
-                            }
-                        }
-                    }
-                    for (let queryIndex = 0; queryIndex < this.advancedSearchQuery.taxquery.length; queryIndex++) {
-                        let isCriterionIndexUpdated = false;
-                        let expectedIndex = queryIndex;
-                        while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
-                            if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'taxquery') {
-                                this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
-                                isCriterionIndexUpdated = true;
-                            } else {
-                                expectedIndex++;
-                            }
-                        }
-                    }
-                }
-            },
             addSearchCriteria() {
                 let aleatoryKey = Math.floor(Math.random() * (1000 - 2 + 1)) + 2;
 
@@ -376,6 +354,50 @@
                     this.searchCriteria.push({ index: aleatoryKey, type: undefined });
                 else
                     this.addSearchCriteria();
+            },
+            removeCriterion(searchCriterion) {
+                
+                // First, check if this criterion row is defined
+                if (!searchCriterion.type) {
+                    let searchCriterionIndex = this.searchCriteria.findIndex((element) => element.index == searchCriterion.index);
+                    if (searchCriterionIndex >= 0)
+                        this.searchCriteria.splice(searchCriterionIndex, 1);
+
+                // If it was defined, then we need to update advancedSearchQuery properly when removing
+                } else {
+                    let searchCriterionIndex = this.searchCriteria.findIndex((element) => element.index == searchCriterion.index && element.type == searchCriterion.type);
+                
+                    if (searchCriterionIndex >= 0) {
+                        
+                        this.advancedSearchQuery[searchCriterion.type].splice(searchCriterion.index, 1);
+                        this.searchCriteria.splice(searchCriterionIndex, 1);
+
+                        for (let queryIndex = 0; queryIndex < this.advancedSearchQuery.metaquery.length; queryIndex++) { 
+                            let isCriterionIndexUpdated = false;
+                            let expectedIndex = queryIndex;
+                            while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
+                                if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'metaquery') {
+                                    this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
+                                    isCriterionIndexUpdated = true;
+                                } else {
+                                    expectedIndex++;
+                                }
+                            }
+                        }
+                        for (let queryIndex = 0; queryIndex < this.advancedSearchQuery.taxquery.length; queryIndex++) {
+                            let isCriterionIndexUpdated = false;
+                            let expectedIndex = queryIndex;
+                            while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
+                                if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'taxquery') {
+                                    this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
+                                    isCriterionIndexUpdated = true;
+                                } else {
+                                    expectedIndex++;
+                                }
+                            }
+                        }
+                    }
+                }
             },
             clearSearch() {
                 this.searchCriteria = [];
@@ -522,22 +544,33 @@
 
     #advanced-search-container {
         width: calc(100% - (2 * var(--tainacan-one-column)));
-        margin: 0.5em var(--tainacan-one-column) 0.875em;
+        margin: 0 var(--tainacan-one-column) 0.875em;
         background: var(--tainacan-input-background-color);
         border: 1px solid var(--tainacan-input-border-color);
         border-radius: 1px;
+        transition: height 0.2s ease;
     }
 
     .tnc-advanced-search-container {
-        padding: 1em;
-        padding-top: 3.5em;
+        position: relative;
+        padding: 1.25em;
 
-        .column {
-            padding: 0 0.5em 0.75em !important;
+        h3 {
+            font-size: 1em !important;
+            padding-top: 0 !important;
+            color: var(--tainacan-heading-color) !important;
+            margin-bottom: 1em !important;
         }
-
+        .tainacan-form {
+            margin-bottom: 0.125em !important;
+        }
+        .column {
+            padding: 0;
+        }
         .control {
             font-size: 1em;
+            margin-bottom: 0px !important;
+
             .select{
                 width: 100% !important;
                 select{
@@ -546,8 +579,10 @@
             }
         }
 
-        .add-link-advanced-search {
-            padding-left: 8px !important;
+        .add-link-advanced-search a {
+            font-size: 0.8125em;
+            display: inline-flex;
+            align-items: center;
         }
 
         @media screen and (max-width: 768px) {

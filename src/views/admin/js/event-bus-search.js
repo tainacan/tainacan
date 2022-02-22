@@ -384,9 +384,6 @@ export default {
                             resp.request.then((res) => {
                                 this.$emit( 'isLoadingItems', false);
                                 this.$emit( 'hasFiltered', res.hasFiltered);
-
-                                if (res.hasAdvancedSearchResults)
-                                    this.$emit('hasAdvancedSearchResults', res.hasAdvancedSearchResults);
                             })
                             .catch(() => {
                                 this.$emit( 'isLoadingItems', false);
