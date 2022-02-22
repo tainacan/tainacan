@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/item-gallery",
+    "title": "Tainacan Item Gallery",
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "document", "carousel", "attachments", "zoom" ],
+    "description": "The media gallery of the item, displaying document and attachments.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "query",
+            "selector": "div"
+        },
+        "collectionId": {
+            "type": "string",
+            "default": ""
+        },
+        "itemId": {
+            "type": "string",
+            "default": ""
+        },
+        "isModalOpen": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true
+    },
+    "editorScript": "item-gallery",
+	"editorStyle": "item-gallery"
+}

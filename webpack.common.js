@@ -19,7 +19,8 @@ module.exports = {
         block_facets_list: './src/views/gutenberg-blocks/blocks/facets-list/index.js',
         block_item_submission_form: './src/views/gutenberg-blocks/blocks/item-submission-form/index.js',
         block_faceted_search: './src/views/gutenberg-blocks/blocks/faceted-search/index.js',
-        block_carousel_terms_list: './src/views/gutenberg-blocks/blocks/carousel-terms-list/index.js'
+        block_carousel_terms_list: './src/views/gutenberg-blocks/blocks/carousel-terms-list/index.js',
+        block_item_gallery: './src/views/gutenberg-blocks/blocks/item-gallery/index.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/js/'),

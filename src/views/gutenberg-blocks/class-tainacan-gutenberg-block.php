@@ -15,7 +15,8 @@ const TAINACAN_BLOCKS = [
 	'related-items-list' => [],
 	'terms-list' => [],
 	'faceted-search' => [],
-	'item-submission-form' => []
+	'item-submission-form' => [],
+	'item-gallery' => ['render_callback' => 'gutenberg_examples_dynamic_render_callback']
 ];
 
 // Lets do this!
@@ -75,6 +76,17 @@ function tainacan_blocks_register_and_enqueue_all_blocks() {
 	}
 }
 
+/**
+ * Plugin Name: Gutenberg examples dynamic
+ */
+ 
+function gutenberg_examples_dynamic_render_callback( $block_attributes, $content ) {
+	error_log($content);
+	error_log(json_encode($block_attributes));
+	$content = '<p>TESTE</p>';
+    return $content;
+}
+
 /** 
  * Registers a 'generic' Tainacan Block, according to the TAINACAN_BLOCKs array
  * 
@@ -125,10 +137,16 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	);
 	$register_params['style'] = $block_slug;
 
+	// If there is a server side render callback...
+	if ( isset($options['render_callback']) ) {
+		$register_params['render_callback'] = $options['render_callback'];
+		$register_params['skip_inner_blocks'] = true;
+	}
+	
 	// Registers the new block
 	if (function_exists('register_block_type')) {
 		if ( version_compare( $wp_version, '5.8-RC', '>=') )
-			register_block_type( __DIR__ . '/blocks/' . $block_slug );
+			register_block_type( __DIR__ . '/blocks/' . $block_slug, $register_params );
 		else
 			register_block_type( 'tainacan/' . $block_slug, $register_params );
 	}
