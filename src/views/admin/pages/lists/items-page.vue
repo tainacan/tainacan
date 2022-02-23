@@ -461,7 +461,7 @@
                 @mousemove="handleMouseMoveOverList">
 
             <!-- ADVANCED SEARCH -->
-            <transition name="item-appear">
+            <transition name="filter-item">
                 <div
                         id="advanced-search-container"
                         role="search"

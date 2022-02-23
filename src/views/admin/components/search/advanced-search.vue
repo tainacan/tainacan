@@ -1,6 +1,7 @@
 <template>
-    <div 
+    <form 
             tabindex="0"
+            @submit.prevent.stop="performAdvancedSearch"
             class="tnc-advanced-search-container">
         <h3>{{ $i18n.get('advanced_search') }}</h3>
         <transition-group name="filter-item">
@@ -114,8 +115,9 @@
 
                 <div class="field">
                     <button
-                            @click="removeCriterion(searchCriterion)"
-                            class="button is-white is-pulled-right has-text-secondary">
+                            @click.prevent="removeCriterion(searchCriterion)"
+                            class="button is-white is-pulled-right has-text-secondary"
+                            type="button">
                         <span 
                                 v-tooltip="{
                                     content: $i18n.get('remove_search_criterion'),
@@ -153,25 +155,32 @@
         </div>
 
         <!-- Clear and search button -->
-        <div class="field is-grouped is-justify-content-flex-end">
+        <div 
+                style="margin-bottom: 0;"
+                class="field is-grouped is-justify-content-flex-end">
             <p class="control">
                 <button
-                        @click="$emit('close')"
+                        type="reset"
+                        @click="clearSearch(); $emit('close')"
                         class="button is-outlined">
                     {{ $i18n.get('label_close_search') }}
                 </button>
             </p>
             <p class="control">
                 <button
-                        @click="performAdvancedSearch()"
+                        type="submit"
+                        :disabled="!hasUpdatedSearch"
+                        @click.prevent="performAdvancedSearch"
                         class="button is-secondary">
                     {{ $i18n.get('apply') }}
                 </button>
             </p>
         </div>
+
         <b-loading 
                 :is-full-page="false" 
                 :active.sync="isLoadingMetadata" />
+        
         <section
                 v-if="!isLoadingMetadata && metadataAsArray && metadataAsArray.length <= 0"
                 class="field is-grouped-centered section">
@@ -187,7 +196,7 @@
             </div>
         </section>
 
-</div>
+    </form>
 </template>
 
 <script>
@@ -231,10 +240,11 @@
                 isLoadingMetadata: false,
                 metadataAsObject: {},
                 metadataAsArray: [],
-                metadataSearchCancel: undefined
+                metadataSearchCancel: undefined,
+                hasUpdatedSearch: false
             }
         },
-        created() {
+        mounted() {
             this.isLoadingMetadata = true;
 
             this.fetchMetadata({
@@ -249,7 +259,7 @@
                         .then((metadata) => {
                             // We create and object keyed by IDs to easily match the query params,
                             // but keep an array version to use the order in the select
-                            this.metadataAsArray = metadata;
+                            this.metadataAsArray = JSON.parse(JSON.stringify(metadata));
                             metadata.forEach(metadatum => {
                                 this.metadataAsObject[metadatum.id] = metadatum;
                             });
@@ -289,19 +299,21 @@
                 }
             },
             buildAdvancedSearchQueryFromRoute() {
-                if (
-                    (this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) ||
-                    (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0)
-                ) {
-                    this.searchCriteria = [];
-                }
 
-                if (this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0) {
+                const hasMetaQueries = this.$route.query.metaquery && Object.keys(this.$route.query.metaquery).length > 0;
+                const hasTaxQueries = this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0;
+                if (hasMetaQueries || hasTaxQueries)
+                    this.searchCriteria = [];
+
+                if (hasMetaQueries) {
 
                     let metaquery = this.$route.query.metaquery;
 
                     for (let meta in metaquery) {
-                        if ( this.metaqueryOperatorsRegular.hasOwnProperty(metaquery[meta]['operator']) || this.metaqueryOperatorsForInterval.hasOwnProperty(metaquery[meta]['operator']) )
+                        if (
+                            this.metaqueryOperatorsRegular.hasOwnProperty(metaquery[meta]['compare']) ||
+                            this.metaqueryOperatorsForInterval.hasOwnProperty(metaquery[meta]['compare'])
+                        )
                             this.$set(this.advancedSearchQuery.metaquery, `${meta}`, metaquery[meta]);
                     }
 
@@ -314,10 +326,9 @@
 
                     for (let metakey of metakeys)
                         this.searchCriteria.push({ index: metakey, type: 'metaquery' });
-
                 }
 
-                if (this.$route.query.taxquery && Object.keys(this.$route.query.taxquery).length > 0) {
+                if (hasTaxQueries) {
                     let taxquery = this.$route.query.taxquery;
 
                     for (let tax in taxquery) {
@@ -398,6 +409,8 @@
                         }
                     }
                 }
+
+                this.hasUpdatedSearch = true;
             },
             clearSearch() {
                 this.searchCriteria = [];
@@ -406,6 +419,7 @@
                     metaquery: [],
                     taxquery: []
                 };
+                this.hasUpdatedSearch = true;
             },
             convertDateToMatchInDB(dateValue) {
                 return moment(dateValue,  this.dateFormat).toISOString().split('T')[0];
@@ -466,6 +480,8 @@
                     this.$set(this.advancedSearchQuery.metaquery[searchCriterion.index], 'value', value);
                 else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index])
                     this.$set(this.advancedSearchQuery.taxquery[searchCriterion.index], 'terms', value);
+
+                this.hasUpdatedSearch = true;
             },
             addComparatorToAdvancedSearchQuery(comparator, searchCriterion) {
                 if (!comparator)
@@ -475,9 +491,11 @@
                     this.$set(this.advancedSearchQuery.metaquery[searchCriterion.index], 'compare', comparator);
                 else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index])
                     this.$set(this.advancedSearchQuery.taxquery[searchCriterion.index], 'operator', comparator);
+
+                this.hasUpdatedSearch = true;
             },
             performAdvancedSearch() {
-                
+
                 if (
                     Object.keys(this.advancedSearchQuery.taxquery).length > 0 &&
                     Object.keys(this.advancedSearchQuery.metaquery).length > 0
@@ -523,6 +541,7 @@
                     }
                 }
 
+                this.hasUpdatedSearch = false;
                 this.$eventBusSearch.$emit('performAdvancedSearch', this.advancedSearchQuery);
             },
             getAdvancedSearchQueryCriterionMetadataType(searchCriterion) {
@@ -583,6 +602,7 @@
             font-size: 0.8125em;
             display: inline-flex;
             align-items: center;
+            margin-right: 1em;
         }
 
         @media screen and (max-width: 768px) {

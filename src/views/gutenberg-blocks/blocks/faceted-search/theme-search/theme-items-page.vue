@@ -387,16 +387,18 @@
                 class="items-list-area">
 
             <!-- ADVANCED SEARCH -->
-            <div 
-                    id="advanced-search-container"
-                    role="search"
-                    v-if="openAdvancedSearch && !hideAdvancedSearch">
+            <transition name="filter-item">
+                <div 
+                        id="advanced-search-container"
+                        role="search"
+                        v-if="openAdvancedSearch && !hideAdvancedSearch">
 
-                <advanced-search
-                        :is-repository-level="isRepositoryLevel"
-                        :collection-id="collectionId"
-                        @close="openAdvancedSearch = false" />
-            </div>
+                    <advanced-search
+                            :is-repository-level="isRepositoryLevel"
+                            :collection-id="collectionId"
+                            @close="openAdvancedSearch = false" />
+                </div>
+            </transition>
 
             <!-- FILTERS TAG LIST-->
             <filters-tags-list
