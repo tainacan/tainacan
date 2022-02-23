@@ -429,7 +429,6 @@
                             this.isUpdating = false;
                             this.closedByForm = true;
 
-                            this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
                             this.$emit('onEditionFinished');
                         })
                         .catch((errors) => {
@@ -468,7 +467,6 @@
                             this.isUpdating = false;
                             this.closedByForm = true;
 
-                            this.$root.$emit('metadatumUpdated', this.isRepositoryLevel);
                             this.$emit('onEditionFinished');
                         })
                         .catch((errors) => {

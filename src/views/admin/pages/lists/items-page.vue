@@ -9,27 +9,8 @@
 
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
-                v-if="!$adminOptions.hideItemsListPageTitle && !openAdvancedSearch" 
+                v-if="!$adminOptions.hideItemsListPageTitle" 
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
-        <div 
-                v-else-if="openAdvancedSearch"
-                class="tnc-advanced-search-close"> 
-            <div class="advanced-search-criteria-title">
-                <div class="is-flex">
-                    <h1>{{ $i18n.get('info_search_criteria') }}</h1>
-                    <div
-                            :style="{'margin-bottom': 'auto'}"
-                            class="field is-grouped">
-                        <a 
-                                class="back-link"
-                                @click="openAdvancedSearch = false">
-                            {{ $i18n.get('back') }}
-                        </a>
-                    </div>
-                </div>
-                <hr>
-            </div>
-        </div>
 
         <!-- SEARCH CONTROL ------------------------- -->
         <h3 
@@ -41,7 +22,6 @@
                 aria-labelledby="search-control-landmark"
                 role="region"
                 ref="search-control"
-                v-if="((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
                 class="search-control"  
                 :style="( $adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || $adminOptions.itemsSearchSelectionMode ) ? '--tainacan-container-padding: 6px;' : ''">
 
@@ -75,9 +55,7 @@
             </button>
 
             <!-- Text simple search -->
-            <div 
-                    v-if="!openAdvancedSearch"
-                    class="search-control-item">
+            <div class="search-control-item">
                 <div 
                         role="search"
                         class="search-area">
@@ -91,19 +69,24 @@
                             @keyup.enter.native="updateSearch()"
                             icon-right="magnify"
                             icon-right-clickable
-                            @icon-right-click="updateSearch()" />
+                            @icon-right-click="updateSearch()"
+                            :disabled="openAdvancedSearch" />
                     <a
                             v-if="!$adminOptions.hideItemsListAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
-                            style="font-size: 0.75em;"
-                            class="has-text-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
+                            class="advanced-search-toggle has-text-secondary"
+                            :class="openAdvancedSearch ? 'is-open' : 'is-closed'">
+                        {{ $i18n.get('advanced_search') }}
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-search" />
+                        </span>
+                    </a>
                 </div>
             </div>
 
             <!-- Item Creation Dropdown (or button, if few options are available) -->
             <div 
                     v-if="!$adminOptions.hideItemsListCreationDropdown &&
-                            !openAdvancedSearch &&
                             collection && 
                             collection.current_user_can_edit_items"
                     class="search-control-item">
@@ -478,41 +461,22 @@
                 @mousemove="handleMouseMoveOverList">
 
             <!-- ADVANCED SEARCH -->
-            <div
-                    id="advanced-search-container"
-                    role="search"
-                    v-if="openAdvancedSearch">
-                
-                <advanced-search
-                        :collection-id="collectionId"
-                        :is-repository-level="isRepositoryLevel"
-                        :advanced-search-results="advancedSearchResults"
-                        :open-form-advanced-search="openFormAdvancedSearch"
-                        :is-doing-search="isDoingSearch"/>
-
-                <div class="advanced-search-form-submit">
-                    <p
-                            v-if="advancedSearchResults"
-                            class="control">
-                        <button
-                                aria-controls="items-list-results"
-                                @click="advancedSearchResults = !advancedSearchResults"
-                                class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
-                    </p>
-                    <p
-                            v-if="advancedSearchResults"
-                            class="control">
-                        <button
-                                aria-controls="items-list-results"
-                                @click="isDoingSearch = !isDoingSearch"
-                                class="button is-success">{{ $i18n.get('search') }}</button>
-                    </p>
+            <transition name="filter-item">
+                <div
+                        id="advanced-search-container"
+                        role="search"
+                        v-if="openAdvancedSearch">
+                    
+                    <advanced-search
+                            :collection-id="collectionId"
+                            :is-repository-level="isRepositoryLevel"
+                            @close="openAdvancedSearch = false" />
                 </div>
-            </div>
+            </transition>
 
             <!-- STATUS TABS, only on Admin -------- -->
             <items-status-tabs 
-                    v-if="!openAdvancedSearch && !$adminOptions.hideItemsListStatusTabs"
+                    v-if="!$adminOptions.hideItemsListStatusTabs"
                     :is-repository-level="isRepositoryLevel"/>
 
             <!-- FILTERS TAG LIST-->
@@ -556,8 +520,7 @@
                 <div 
                         v-if="hasAnOpenAlert &&
                             isSortingByCustomMetadata &&
-                            !showLoading &&
-                            ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                            !showLoading"
                         class="metadata-alert">
                     <p class="text">
                         {{ 
@@ -582,9 +545,7 @@
 
                 <!-- Admin View Modes-->
                 <items-list
-                        v-if="!showLoading &&
-                              totalItems > 0 &&
-                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                        v-if="!showLoading && totalItems > 0"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
@@ -634,7 +595,7 @@
                 <div ref="items-pagination">
                     <pagination
                             :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
-                            v-if="totalItems > 0 && (advancedSearchResults || !openAdvancedSearch)"/>
+                            v-if="totalItems > 0"/>
                 </div>
             </div>
         </div>
@@ -679,9 +640,6 @@
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
-                openFormAdvancedSearch: false,
-                advancedSearchResults: false,
-                isDoingSearch: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
@@ -746,7 +704,6 @@
             openAdvancedSearch(newValue) {
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
-                    this.advancedSearchResults = false;
                     this.isFiltersModalActive = true;
                 } else {
                     this.isFiltersModalActive = false;
@@ -788,10 +745,6 @@
 
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
-            });
-
-            this.$eventBusSearch.$on('advancedSearchResults', advancedSearchResults => {
-                this.advancedSearchResults = advancedSearchResults;
             });
 
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
@@ -1327,7 +1280,6 @@
                 // $eventBusSearch
                 this.$eventBusSearch.$off('isLoadingItems');
                 this.$eventBusSearch.$off('hasFiltered');
-                this.$eventBusSearch.$off('advancedSearchResults');
                 this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
             }
         }
@@ -1345,58 +1297,6 @@
 
     .repository-level-page {
         overflow-y: auto;
-    }
-
-    .advanced-search-criteria-title {
-        margin-bottom: 40px;
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 2px;
-            background-color: var(--tainacan-secondary);
-            border: none;
-        }
-    }
-
-    .advanced-search-results-title {
-        margin-bottom: 40px;
-        margin: 0 var(--tainacan-one-column) 42px var(--tainacan-one-column);
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-        }
     }
 
     .advanced-search-form-submit {
@@ -1516,7 +1416,7 @@
                 opacity: 1;
             }
 
-            .search-area .is-pulled-right {
+            .search-area .advanced-search-toggle {
                 display: none;
             }
         }
@@ -1537,10 +1437,6 @@
                     .search-area {
                         padding-right: 0;
                         max-width: 100% !important;
-                    }
-                    .is-pulled-right {
-                        position: relative;
-                        right: 0px !important;
                     }
                 }
             }
@@ -1627,14 +1523,26 @@
                     width: 100%;
                     margin-bottom: 5px;
                 }
-                .is-pulled-right {
-                    position: absolute;
-                    right: 15px;
-                    top: 100%;
-                }
-                a {
+                a.advanced-search-toggle {
                     margin-left: 12px;
                     white-space: nowrap; 
+                    position: absolute;
+                    font-size: 0.75em;
+                    right: 15px;
+                    left: unset;
+                    top: 100%;
+                    transition: font-size 0.2s ease, right 0.3s ease, left 0.3s ease, top 0.4s ease;
+                    
+                    .icon {
+                        display: 0;
+                        opacity: 0.0;
+                        max-width: 0;
+                        transition: opacity 0.2s ease, max-width 0.2s ease;                            
+                    }
+
+                    &.is-open {
+                        font-size: 0;
+                    }
                 }
             }
 
