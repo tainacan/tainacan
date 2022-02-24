@@ -237,7 +237,7 @@ class Item_Metadata extends Repository {
 			$item_metadata->set_value([]);
 			$this->save_terms_metadatum_value( $item_metadata );
 		} elseif ( $metadata_type->get_primitive_type() == 'compound' ) {
-			$this->remove_compound_value($item_metadata->get_item(), $item_metadata->get_metadatum(), $item_metadata->get_parent_meta_id() );
+			$this->remove_compound_value($item_metadata->get_parent_meta_id() );
 		} else {
 			delete_post_meta( $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() );
 		}
@@ -249,8 +249,7 @@ class Item_Metadata extends Repository {
 		return $item_metadata;
 	}
 
-	public function remove_compound_value(\Tainacan\Entities\Item $item, $metadatum, $parent_meta_id ) {
-		$post_id = $item->get_id();
+	public function remove_compound_value($parent_meta_id ) {
 		$current_childrens = get_metadata_by_mid( 'post', $parent_meta_id );
 		if ( is_object( $current_childrens ) ) {
 			$current_childrens = $current_childrens->meta_value;
@@ -260,7 +259,7 @@ class Item_Metadata extends Repository {
 			$current_childrens = [];
 		}
 		foreach($current_childrens as $meta_children) {
-			delete_post_meta('post', $meta_children);
+			delete_metadata_by_mid('post', $meta_children);
 		}
 		delete_metadata_by_mid('post', $parent_meta_id);
 		return $current_childrens;
