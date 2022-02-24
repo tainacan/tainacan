@@ -7,7 +7,8 @@
                 :value="value"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                 @input="onInput($event)"
-                @blur="onBlur"/>
+                @blur="onBlur"
+                @focus="onMobileSpecialFocus" />
         <b-autocomplete
                 v-else
                 :disabled="disabled"
@@ -22,7 +23,8 @@
                 clearable
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                 check-infinite-scroll
-                @infinite-scroll="searchMore">
+                @infinite-scroll="searchMore"
+                @focus="onMobileSpecialFocus">
             <template #header>
                 <span v-if="!isLoadingOptions && options && options.length">
                     {{ $i18n.get('info_metadata_autocomplete_suggestions') }}
@@ -160,6 +162,9 @@
                 this.shouldAddOptions = true;
                 this.search(this.searchQuery);
             }, 250),
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
+            }
         }
     }
 </script>

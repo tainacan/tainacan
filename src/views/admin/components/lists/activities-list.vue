@@ -35,12 +35,12 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: activity.title,
                                     autoHide: false,
-                                    classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                     placement: 'auto-start'
                                 }">
                             {{ activity.title }}
@@ -55,12 +55,12 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: activity.user_name,
                                     autoHide: false,
-                                    classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                     placement: 'auto-start'
                                 }"
                                 v-html="activity.user_name"/>
@@ -74,12 +74,12 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: activity.date,
                                     autoHide: false,
-                                    classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                     placement: 'auto-start'
                                 }"
                                 v-html="activity.date"/>

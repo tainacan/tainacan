@@ -20,7 +20,8 @@
                     v-tooltip="{
                         content: $i18n.get('info_items_hidden_due_sorting'),
                         autoHide: false,
-                        placement: 'auto-start'
+                        placement: 'auto-start',
+                        popperClass: ['tainacan-tooltip', 'tooltip']
                     }"
                     style="margin-top: -3px"
                     class="icon has-text-warning"

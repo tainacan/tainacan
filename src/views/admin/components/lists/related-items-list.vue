@@ -40,7 +40,7 @@
                                     style="margin-left: auto;"
                                     class="column is-narrow">
                                 <div class="section-status">
-                                    <div class="field has-addons">
+                                    <div class="field">
                                         <b-button
                                                 class="button is-secondary"
                                                 tag="router-link"
@@ -66,7 +66,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('status_' + relatedItem.status),
                                                 autoHide: true,
-                                                placement: 'auto-start'
+                                                placement: 'auto-start',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-1em"
@@ -92,13 +93,14 @@
                                     <p
                                             v-tooltip="{
                                                 delay: {
-                                                    show: 500,
+                                                    shown: 500,
                                                     hide: 300,
                                                 },
                                                 content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                                 html: true,
                                                 autoHide: false,
-                                                placement: 'auto-start'
+                                                placement: 'auto-start',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
                                 </div>
@@ -115,12 +117,13 @@
                                             <span
                                                     v-tooltip="{
                                                          delay: {
-                                                            show: 500,
+                                                            shown: 500,
                                                             hide: 100,
                                                         },
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
-                                                        placement: 'auto'
+                                                        placement: 'auto',
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }"
                                                     class="icon">
                                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
@@ -140,7 +143,7 @@
                         :close-button-aria-label="$i18n.get('close')">
                     <iframe 
                             width="100%"
-                            style="height: 85vh"
+                            :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
                             :src="adminURL + 'itemEditionMode=true' + ($adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + $routerHelper.getItemEditPath(collectionId, editItemId) + '?editingmetadata=' + editMetadataId" />
                 </b-modal>
             </div>
@@ -157,7 +160,8 @@
             isLoading: Boolean,
             isEditable: Boolean,
             itemId: String,
-            collectionId: String
+            collectionId: String,
+            isMobileScreen: Boolean
         },
         data() {
             return {

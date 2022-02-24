@@ -1,17 +1,20 @@
 <template>
     <span 
             @mouseenter="loadMetadataElements"
-            class="help-wrapper">
-        <a class="help-button has-text-danger">
-            <span class="icon is-small">
-                <i class="tainacan-icon tainacan-icon-alertcircle" />
-            </span>
-        </a>
-        <div class="help-tooltip">
-            <div class="help-tooltip-header">
+            class="tainacan-help-tooltip-trigger">
+        <v-tooltip 
+                :popper-class="['tainacan-tooltip', 'tooltip', 'tainacan-helper-tooltip', 'is-danger']"
+                delay="{
+                    shown: 0,
+                    hide: 400,
+                }">
+            <a class="help-button has-text-danger">
+                <span class="icon">
+                    <i class="tainacan-icon tainacan-icon-alertcircle" />
+                </span>
+            </a>
+            <template #popper>
                 <h5>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</h5>
-            </div>
-            <div class="help-tooltip-body">
                 <ol>
                     <template v-for="(error, index) of formErrors">
                         <li 
@@ -31,14 +34,18 @@
                         </li>
                     </template>
                 </ol>
-            </div>
-        </div> 
+            </template>
+        </v-tooltip>
     </span>
 </template>
 
 <script>
+import { VTooltip } from 'floating-vue'; 
 export default {
     name: 'HelpButton',
+    components: [
+        VTooltip
+    ],
     props: {
         formErrors: Array
     },
@@ -72,92 +79,8 @@ export default {
 
 <style scoped lang="scss">
 
-    .help-wrapper {
-        position: absolute;
-        font-size: 1.25em;
-    }
-
     a.help-button .icon {
-        i, i::before { font-size: 1em !important }
-    }
-
-    .help-wrapper:hover .help-tooltip {
-        margin-bottom: 12px;
-        margin-left: -37px;
-        visibility: visible;
-        opacity: 1; 
-    }
-    .help-tooltip {
-        z-index: 99999999999999999999;
-        color: var(--tainacan-red2);
-        background-color: var(--tainacan-red1);
-        border: none;
-        display: block;
-        border-radius: 5px;
-        min-width: 280px;
-        max-width: 100%;
-        transition: margin-bottom 0.2s ease, opacity 0.3s ease;
-        position: absolute;
-        bottom: calc(100% - 6px);
-        left: 0%;            
-        margin-bottom: -27px;
-        visibility: hidden;
-        opacity: 0;
-
-        .help-tooltip-header {
-            padding: 0.8em 0.8em 0em 0.8em;
-
-            h5 {
-                font-size: 0.875em !important;
-                font-weight: bold;
-                color: var(--tainacan-red2);
-                margin-bottom: 0;
-                margin-top: 0;
-            }
-        }
-
-        .help-tooltip-body {
-            padding: 0.5em 1.0em 1.0em 1.0em;
-            max-height: 100% !important;
-
-            p, a {
-                font-size: 0.875em !important;
-                font-weight: normal !important;
-                white-space: normal !important;
-                overflow: visible !important;
-                line-height: normal;
-                color: var(--tainacan-red2) !important;
-            }
-            a {
-                text-decoration: underline;
-            }
-            a:hover {
-                color: var(--tainacan-red2) !important;
-            }
-            ol, ul {
-                margin: 4px 4px;
-                padding-left: 16px;
-            }
-            li {
-                line-height: 0.875em;
-            }
-        }
-        &:before {
-            content: "";
-            display: block;
-            position: absolute;
-            left: 30px;
-            width: 0;
-            height: 0;
-            border-style: solid;
-        }
-        &:before {
-            border-color: var(--tainacan-red1) transparent transparent transparent;
-            border-right-width: 14px;
-            border-top-width: 12px;
-            border-left-width: 14px;
-            bottom: -15px;
-        }
+        i, i::before { font-size: 1.125em !important }
     }
     
 </style>

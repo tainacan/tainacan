@@ -238,6 +238,17 @@ export default {
         padding: var(--tainacan-container-padding) calc(2 * var(--tainacan-one-column)) !important;
         width: 100vw;
 
+        @media screen and (max-width: 768px) {
+            padding: 0 0.5em 0 0 !important;
+
+            h1 {
+                display: none;
+            }
+            a {
+                margin-left: auto
+            }
+        }
+
         .home-section {
             
             &.home-section-repository{

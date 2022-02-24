@@ -30,7 +30,8 @@
                         @typing="search"
                         check-infinite-scroll
                         @infinite-scroll="searchMore"
-                        :has-counter="false">
+                        :has-counter="false"
+                        @focus="onMobileSpecialFocus">
                     <template slot-scope="props">
                         <div 
                                 v-if="!isDisplayingRelatedItemMetadata"
@@ -127,7 +128,7 @@
             <iframe 
                     :id="relationshipInputId + '_item-edition-modal'"
                     width="100%"
-                    style="height: 85vh"
+                    :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
                     :src="itemModalSrc" />
         </b-modal>
     </div>
@@ -144,7 +145,8 @@
             maxtags: undefined,
             disabled: false,
             allowNew: true,
-            isLastMetadatum: false
+            isLastMetadatum: false,
+            isMobileScreen: false
         },
         data() {
             return {
@@ -480,6 +482,9 @@
                     this.selected.splice(indexOfRemovedItem, 1);
                     this.onInput(this.selected);
                 }
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }

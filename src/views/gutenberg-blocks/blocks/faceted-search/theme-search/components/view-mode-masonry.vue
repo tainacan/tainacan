@@ -57,11 +57,12 @@
                                     v-if="isSlideshowViewModeEnabled"
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 100,
                                         },
                                         content: $i18n.get('label_see_on_fullscreen'),
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"          
                                     @click.prevent="starSlideshowFromHere(index)"
                                     class="icon slideshow-icon">

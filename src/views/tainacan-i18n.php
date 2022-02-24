@@ -363,6 +363,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_return_to_draft'                          => __( 'Return to draft', 'tainacan' ),
 	/* translators: The verb 'to publish' not the 'publish' status */
 	'label_verb_publish'                             => _x( 'Publish', 'verb', 'tainacan' ),
+	'label_verb_publish_privately'                   => _x( 'Publish privately', 'verb', 'tainacan' ),
 	/* translators: The status 'publish' not the verb 'to publish' */
 	'label_publish'                             	 => _x( 'Publish', 'noun', 'tainacan' ),
 	'label_update'                                   => __( 'Update', 'tainacan' ),
@@ -613,6 +614,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 	'label_items_selection'							 => __( 'Items selection', 'tainacan'),
 	'label_default_orderby' 						 => __(	'Initial default sorting', 'tainacan' ),
+	'label_focus_mode'		 						 => __(	'Start focus mode', 'tainacan' ),
 	'label_close_search' 					 		 => __(	'Close search', 'tainacan' ),
 	'label_remove_all_criteria' 					 => __(	'Remove all criteria', 'tainacan' ),
 	'label_string_to_search_for'                     => __( 'String to search for', 'tainacan' ),

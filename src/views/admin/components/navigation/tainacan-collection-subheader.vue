@@ -101,7 +101,7 @@
                 <li 
                         v-if="collection && collection.current_user_can_edit_users"
                         :class="activeRoute == 'CollectionCapabilitiesPage' ? 'is-active':''"
-                        class="level-item">
+                        class="level-item is-hidden-mobile">
                     <router-link 
                             tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionCapabilitiesPath(collection.id) : '' }"
@@ -326,18 +326,6 @@ export default {
                 }
             }
         }
-
-        .tainacan-tooltip.is-primary {
-            z-index: 99;
-        }
-        .tainacan-tooltip.is-primary::after {
-            background-color: var(--tainacan-turquoise1);
-            color: var(--tainacan-turquoise5);
-        }
-        .tainacan-tooltip.is-primary::before {
-            border-bottom-color: var(--tainacan-turquoise1);
-        }
-
     }
 </style>
 

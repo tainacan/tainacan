@@ -9,6 +9,7 @@
                 v-model="dateValue"
                 @input.native="onInput"
                 @blur="onBlur"
+                @focus="onMobileSpecialFocus"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : dateFormat.toLowerCase()" />
         <p
                 v-if="isInvalidDate && dateValue"
@@ -79,6 +80,9 @@
             }, 300),
             onBlur() {
                 this.$emit('blur');
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }

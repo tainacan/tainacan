@@ -38,7 +38,7 @@
         background-color: var(--tainacan-blue3) !important;
     }
     button.link-style, button.link-style:focus button.link-style:active {
-        color: var(--tainacan-blue4);
+        color: var(--tainacan-blue4) !important;
     }
     .button[disabled]:not(.is-white), .button:hover[disabled]:not(.is-white) {
         border: none !important;
@@ -141,4 +141,11 @@
             border-color: transparent transparent transparent var(--tainacan-blue1) !important;
         }
     }
+}
+.v-popper--theme-tooltip.tainacan-repository-tooltip {
+     --tainacan-primary: var(--tainacan-blue1);
+}
+.v-popper--theme-tooltip.tainacan-repository-header-tooltip {
+    --tainacan-primary: var(--tainacan-blue4);
+    --tainacan-info-color: var(--tainacan-white);
 }

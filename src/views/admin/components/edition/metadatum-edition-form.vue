@@ -533,7 +533,7 @@
                 -webkit-column-span: all;
                 column-span: all;
             }
-            .help-wrapper {
+            .tainacan-help-tooltip-trigger {
                 font-size: 1.25em;
             }
         }

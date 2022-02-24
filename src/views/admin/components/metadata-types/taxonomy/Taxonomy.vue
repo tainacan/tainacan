@@ -31,6 +31,8 @@
                 :amount-selected="Array.isArray(valueComponent) ? valueComponent.length : (valueComponent ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
+                :is-mobile-screen="isMobileScreen"
+                @mobileSpecialFocus="onMobileSpecialFocus"
             />
         <div
                 v-if="displayCreateNewTerm && !isTermCreationPanelOpen && (maxMultipleValues !== undefined ? (maxMultipleValues > valueComponent.length) : true)"
@@ -49,6 +51,7 @@
         <!-- Term creation modal, used on admin for a complete term creation -->
         <b-modal
                 v-model="isTermCreationModalOpen"
+                :width="768"
                 trap-focus
                 aria-role="dialog"
                 aria-modal
@@ -95,6 +98,7 @@
             maxtags: '',
             allowNew: false,
             allowSelectToCreate: false,
+            isMobileScreen: false,
         },
         data(){
             return {
@@ -207,6 +211,9 @@
                     this.isTermCreationPanelOpen = true;
                 else
                     this.isTermCreationModalOpen = true;
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }

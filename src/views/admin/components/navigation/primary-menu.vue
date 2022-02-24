@@ -90,7 +90,9 @@
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
                 </li>
-                <li v-if="$userCaps.hasCapability('tnc_rep_edit_users') && !$adminOptions.hidePrimaryMenuCapabilitiesButton">
+                <li 
+                        class="is-hidden-mobile"
+                        v-if="$userCaps.hasCapability('tnc_rep_edit_users') && !$adminOptions.hidePrimaryMenuCapabilitiesButton">
                     <router-link
                             tag="a"
                             :to="this.$routerHelper.getCapabilitiesPath()"
@@ -154,7 +156,7 @@ export default {
         max-height: 100%;
         max-height: 100vh;
         overflow: auto;
-        z-index: 101;
+        z-index: 9;
         max-width: 10em;
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;
@@ -251,7 +253,8 @@ export default {
         }
 
         &.is-compressed {
-            max-width: $header-height;
+            max-width: var(--tainacan-sidebar-width, $sidebar-width);
+
             .menu-text {
                 visibility: hidden;
                 opacity: 0;

@@ -37,33 +37,37 @@
                         :aria-setsize="totalItems"
                         :aria-posinset="getPosInSet(index)"
                         :data-tainacan-item-id="item.id"
-                        v-for="(item, index) of items">
-                    <a 
-                            href="getItemLink(item.url, index)"
-                            class="tainacan-card">                                
+                        v-for="(item, index) of items">        
+
+                    <a
+                            class="tainacan-card"
+                            :href="getItemLink(item.url, index)">     
+
                         <!-- Title -->
                         <div class="metadata-title">
                             <p 
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: item.title != undefined ? item.title : '',
                                         html: true,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
                                     v-html="item.title != undefined ? item.title : ''" />                
                             <span 
                                     v-if="isSlideshowViewModeEnabled"
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 100,
                                         },
                                         content: $i18n.get('label_see_on_fullscreen'),
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"          
                                     @click.prevent="starSlideshowFromHere(index)"
                                     class="icon slideshow-icon">
@@ -92,20 +96,21 @@
                                 <p 
                                         v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
-                                            content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
+                                            content: item.title != undefined ? item.title : '',
                                             html: true,
                                             autoHide: false,
-                                            placement: 'auto-start'
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"   
                                         class="metadata-description"
                                         v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />                                                        
                                 <br>
+
                             </div>
                         </div>
-                
                     </a>
                 </div>
             </div>

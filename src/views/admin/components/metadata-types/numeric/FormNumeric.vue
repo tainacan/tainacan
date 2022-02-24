@@ -36,7 +36,8 @@
                             v-tooltip="{
                                 content: $i18n.get('edit'),
                                 autoHide: true,
-                                placement: 'bottom'
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
                             }"
                             class="icon">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary"/>
@@ -59,7 +60,8 @@
                             v-tooltip="{
                                 content: $i18n.get('close'),
                                 autoHide: true,
-                                placement: 'bottom'
+                                placement: 'bottom',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
                             }"
                             class="icon">
                         <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary"/>
@@ -96,7 +98,7 @@
     section{
         margin-bottom: 10px;
     }
-    .help-wrapper {
+    .tainacan-help-tooltip-trigger {
         font-size: 1.25em;
     }
 </style>

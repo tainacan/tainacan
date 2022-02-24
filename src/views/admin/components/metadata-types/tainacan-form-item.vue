@@ -7,10 +7,11 @@
             :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                @click="!hideCollapses ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
+                @click="(!hideCollapses && !isMetadataNavigation) ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
             <span 
                     v-if="!hideCollapses"
-                    class="icon">
+                    class="icon"
+                    @click="(!hideCollapses && isMetadataNavigation) ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown' : isCollapsed || errorMessage,
@@ -53,7 +54,11 @@
                         @input="changeValue"
                         @blur="performValueChange"
                         :metadata-name-filter-string="metadataNameFilterString"
-                        :hide-collapses="hideCollapses" />
+                        :hide-collapses="hideCollapses"
+                        :is-mobile-screen="isMobileScreen"
+                        @mobileSpecialFocus="onMobileSpecialFocus"
+                        :is-focused="isFocused"
+                        :is-metadata-navigation="isMetadataNavigation" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
                             name="filter-item"
@@ -68,7 +73,11 @@
                                     @input="changeValue"
                                     @blur="performValueChange"
                                     :metadata-name-filter-string="metadataNameFilterString"
-                                    :hide-collapses="hideCollapses" />
+                                    :hide-collapses="hideCollapses"
+                                    :is-mobile-screen="isMobileScreen"
+                                    @mobileSpecialFocus="onMobileSpecialFocus"
+                                    :is-focused="isFocused"
+                                    :is-metadata-navigation="isMetadataNavigation" />
                             <a 
                                     v-if="index > 0" 
                                     @click="removeValue(index)"
@@ -94,6 +103,7 @@
                 </template>
             </div>
         </transition>
+
         <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
         <transition name="filter-item">
             <div 
@@ -112,7 +122,11 @@
                         @blur="performValueChange"
                         :is-last-metadatum="isLastMetadatum"
                         :hide-collapses="hideCollapses"
-                        :metadata-name-filter-string="metadataNameFilterString" />
+                        :is-mobile-screen="isMobileScreen"
+                        :metadata-name-filter-string="metadataNameFilterString"
+                        @mobileSpecialFocus="onMobileSpecialFocus"
+                        :is-focused="isFocused"
+                        :is-metadata-navigation="isMetadataNavigation" />
             </div>
         </transition>
     </b-field>
@@ -128,7 +142,10 @@
             isCollapsed: true,
             hideCollapses: false,
             isLastMetadatum: false,
-            metadataNameFilterString: ''
+            metadataNameFilterString: '',
+            isMobileScreen: false,
+            isFocused: false,
+            isMetadataNavigation: false
         },
         data(){
             return {
@@ -164,7 +181,8 @@
                     (this.metadatumComponent ? ' tainacan-metadatum-component--' + this.metadatumComponent : '') +
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.placeholder ? ' has-placeholder' : '') +  
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.description ? ' has-description' : '') +  
-                    (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '');  
+                    (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.id ? ' tainacan-metadatum-id--' + this.itemMetadatum.metadatum.id : '') +
+                    (this.isFocused ? ' is-focused' : '');  
             }
         },
         created() {
@@ -178,11 +196,12 @@
                     }
                 }
                 this.errorMessage = updatedErrorMessage;
-            });
+            }); 
         },
         beforeDestroy() {
-            if (this.itemMetadatum && this.itemMetadatum.metadatum)
+            if (this.itemMetadatum && this.itemMetadatum.metadatum) {
                 eventBusItemMetadata.$off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
+            }
         },
         mounted () {
             if (this.$route && this.$route.query && this.$route.query.editingmetadata) {
@@ -279,6 +298,9 @@
             removeValue(index) {
                 this.values.splice(index, 1);
                 this.changeValue();
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }
@@ -293,6 +315,23 @@
         justify-content: space-between;
     }
 
+    /deep/ .is-special-hidden-for-mobile,
+    /deep/ .is-special-hidden-for-mobile:focus,
+    /deep/ .is-special-hidden-for-mobile:focus-visible {
+        opacity: 0;
+        width: 0;
+        height: 0 !important;
+        min-height: 0;
+        min-width: 0;
+        padding: 0 !important;
+        line-height: 0px !important;
+        border: none !important;
+        border-color: transparent !important;
+        border-width: 0px !important;
+        font-size: 0px !important;
+        display: block !important;
+    }
+
     .field {
         border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
@@ -303,6 +342,18 @@
             animation-name: metadatum-highlight;
             animation-duration: 3s;
             animation-iteration-count: 2; 
+        }
+
+        &.is-metadata-navigation-active {
+            transition: filter 0.2s ease, opacity 0.2s ease;
+        }
+        &:not(.is-focused).is-metadata-navigation-active {
+            opacity: 0.3;
+            filter: grayscale(1);
+        }
+        &.is-focused.is-metadata-navigation-active {
+            opacity: 1.0;
+            filter: none;
         }
 
         &.has-collapses-hidden {

@@ -29,6 +29,7 @@
                         content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
                         autoHide: true,
                         placement: 'auto',
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }">
                 <a>
                     <span 

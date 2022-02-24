@@ -54,7 +54,7 @@
                                             content: $i18n.get('remove_value'),
                                             autoHide: true,
                                             placement: 'bottom',
-                                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         }"
                                         class="icon">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close"/>
@@ -524,7 +524,7 @@ export default {
         align-items: center;
     }
     hr {
-        margin: 0.5rem 0 1.5rem 0;
+        margin: 0.5em 0 1.5em 0;
     }
 
 </style>
