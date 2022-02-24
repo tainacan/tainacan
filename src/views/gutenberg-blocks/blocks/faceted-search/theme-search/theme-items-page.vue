@@ -8,19 +8,25 @@
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }"
             aria-live="polite">
+        <h2 
+                id="items-list-container-landmark"
+                class="sr-only">
+            {{ $i18n.get('label_items_list') }}
+        </h2>
 
         <!-- SEARCH CONTROL ------------------------- -->
-        <h3 
-                id="search-control-landmark"
-                class="sr-only">
-            {{ $i18n.get('label_sort_visualization') }}
-        </h3>
         <div
                 :aria-label="$i18n.get('label_sort_visualization')"
                 role="region"
                 ref="search-control"
                 v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="search-control">
+            
+            <h3 
+                    id="search-control-landmark"
+                    class="sr-only">
+                {{ $i18n.get('label_sort_visualization') }}
+            </h3>
 
             <!-- <b-loading
                     :is-full-page="false"
@@ -264,12 +270,11 @@
                             :inline="showInlineViewModeOptions"
                             :mobile-modal="true"
                             position="is-bottom-left"
-                            :aria-label="$i18n.get('label_view_mode')"
                             aria-role="list"
                             trap-focus>
                         <button 
                                 class="button is-white" 
-                                :aria-label="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization')"
+                                :aria-label="$i18n.get('label_view_mode') + (registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : '')"
                                 slot="trigger">
                             <span 
                                     class="gray-icon view-mode-icon"
@@ -354,7 +359,6 @@
         <template v-if="!hideFilters">
             <b-modal
                     role="region"
-                    aria-labelledby="filters-label-landmark"
                     id="filters-modal"     
                     ref="filters-modal"       
                     :active.sync="isFiltersModalActive"
@@ -420,7 +424,7 @@
                 <h3 
                         id="items-list-landmark"
                         class="sr-only">
-                    {{ $i18n.get('label_items_list') }}
+                    {{ $i18n.get('label_items_list_results') }}
                 </h3>
                 
                 <!-- This is used by intersection observers to set filters menu as fixed -->

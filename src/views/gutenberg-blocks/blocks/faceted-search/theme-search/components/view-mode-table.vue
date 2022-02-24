@@ -84,13 +84,19 @@
                                 v-if="isSlideshowViewModeEnabled"
                                 class="actions-header">
                             &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_actions_column') }}
+                            </span>
                             <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody role="list">
                     <tr     
                             :data-tainacan-item-id="item.id"
+                            :aria-setsize="totalItems"
+                            :aria-posinset="getPosInSet(index)"
+                            role="listitem"
                             :key="index"
                             v-for="(item, index) of items">
                         

@@ -13,7 +13,8 @@
                         class="repository-label">
                     <router-link
                             tag="a"
-                            :to="$routerHelper.getCollectionsPath()">
+                            :to="$routerHelper.getCollectionsPath()"
+                            :aria-label="$i18n.get('repository')">
                         <span v-if="!isMenuCompressed">{{ $i18n.get('repository') }}</span>
                         <span 
                                 v-else

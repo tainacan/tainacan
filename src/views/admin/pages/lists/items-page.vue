@@ -13,18 +13,17 @@
                 :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
 
         <!-- SEARCH CONTROL ------------------------- -->
-        <h3 
-                id="search-control-landmark"
-                class="sr-only">
-            {{ $i18n.get('label_sort_visualization') }}
-        </h3>
         <div
                 aria-labelledby="search-control-landmark"
                 role="region"
                 ref="search-control"
                 class="search-control"  
                 :style="( $adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || $adminOptions.itemsSearchSelectionMode ) ? '--tainacan-container-padding: 6px;' : ''">
-
+            <h3 
+                    id="search-control-landmark"
+                    class="sr-only">
+                {{ $i18n.get('label_sort_visualization') }}
+            </h3>
             <!-- <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingMetadata"/> -->
@@ -432,7 +431,6 @@
          <!-- SIDEBAR WITH FILTERS -->
         <b-modal
                 role="region"
-                aria-labelledby="filters-label-landmark"
                 id="filters-modal"     
                 ref="filters-modal"       
                 :active.sync="isFiltersModalActive"

@@ -22,6 +22,9 @@
 
         &:hover {
             background-color: var(--tainacan-item-hover-background-color) !important;
+            a {
+                text-decoration: none;
+            }
         }
         &.selected-list-item {
             background-color: var(--tainacan-turquoise1);

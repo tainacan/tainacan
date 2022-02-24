@@ -16,6 +16,7 @@
                     <b-select
                             :loading="isLoadingMetadata"
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
+                            :aria-label="$i18n.get('instruction_select_a_metadatum')"
                             :disabled="advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index]"
                             :value="(advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index] ) ? advancedSearchQuery[searchCriterion.type][searchCriterion.index].key : null"
                             @input="addMetadatumToAdvancedSearchQuery(
@@ -61,7 +62,9 @@
                             :loading="isLoadingMetadata"
                             v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index]"
                             @input="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.metaquery[searchCriterion.index].compare">
+                            :value="advancedSearchQuery.metaquery[searchCriterion.index].compare"
+                            :placeholder="$i18n.get('label_criterion_to_compare')"
+                            :aria-label="$i18n.get('label_criterion_to_compare')">
                         <option 
                                 v-for="(comparator, key) in getComparators(searchCriterion)"
                                 :key="key"
@@ -72,7 +75,9 @@
                             :loading="isLoadingMetadata"
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
                             @input="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.taxquery[searchCriterion.index].operator">
+                            :value="advancedSearchQuery.taxquery[searchCriterion.index].operator"
+                            :placeholder="$i18n.get('label_criterion_to_compare')"
+                            :aria-label="$i18n.get('label_criterion_to_compare')">
                         <option 
                                 v-for="(comparator, key) in getComparators(searchCriterion)"
                                 :key="key"
@@ -82,7 +87,8 @@
                     <b-input
                             v-else
                             type="text"
-                            disabled />
+                            disabled
+                            :aria-label="$i18n.get('label_disabled')" />
                 </b-field>
 
                 <!-- Inputs -->
@@ -93,6 +99,8 @@
                             step="any"
                             @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
                             :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
+                            :placeholder="$i18n.get('label_string_to_search_for')"
+                            :aria-label="$i18n.get('label_string_to_search_for')"
                     />
                     <input
                             v-else-if="searchCriterion.type == 'metaquery' && getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
@@ -101,23 +109,28 @@
                             v-mask="dateMask"
                             @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
                             :placeholder="dateFormat" 
-                            type="text" >
+                            type="text"
+                            :aria-label="$i18n.get('label_date_to_search_for')" >
                     <b-input
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
                             :value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
                             @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                            type="text" />
+                            type="text"
+                            :placeholder="$i18n.get('label_number_to_search_for')"
+                            :aria-label="$i18n.get('label_number_to_search_for')" />
                     <b-input
                             v-else
                             type="text"
-                            disabled />
+                            disabled
+                            :aria-label="$i18n.get('label_disabled')" />
                 </b-field>
 
                 <div class="field">
                     <button
                             @click.prevent="removeCriterion(searchCriterion)"
                             class="button is-white is-pulled-right has-text-secondary"
-                            type="button">
+                            type="button"
+                            :aria-label="$i18n.get('remove_search_criterion')">
                         <span 
                                 v-tooltip="{
                                     content: $i18n.get('remove_search_criterion'),
@@ -135,7 +148,9 @@
 
         <!-- Add button -->
         <div class="add-link-advanced-search">
-            <a @click="addSearchCriteria">
+            <a 
+                    role="button"
+                    @click="addSearchCriteria">
                 <span class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-add"/>
                 </span>
@@ -145,6 +160,7 @@
                 }}
             </a>
             <a
+                    role="button"
                     v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 || Object.keys(advancedSearchQuery.metaquery).length > 0"
                     @click="clearSearch();">
                 <span class="icon">
@@ -168,6 +184,7 @@
             </p>
             <p class="control">
                 <button
+                        aria-controls="items-list-results"
                         type="submit"
                         :disabled="!hasUpdatedSearch"
                         @click.prevent="performAdvancedSearch"

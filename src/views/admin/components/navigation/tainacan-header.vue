@@ -8,13 +8,14 @@
                     class="level-item home-area">
                 <router-link
                         tag="a"
-                        to="/">
+                        to="/"
+                        :aria-label="$i18n.get('label_plugin_home_page')">
                     <span
                             v-tooltip="{
                                 content: $i18n.get('label_plugin_home_page'),
                                 autoHide: true,
                                 placement: 'auto',
-                               classes: ['tainacan-tooltip', 'repository-header-tooltips', 'tooltip']
+                                classes: ['tainacan-tooltip', 'repository-header-tooltips', 'tooltip']
                             }"
                             class="icon">
                         <i class="tainacan-icon tainacan-icon-home has-text-blue5"/>
@@ -24,7 +25,8 @@
             <div class="level-item logo-area">
                 <router-link
                         tag="a"
-                        to="/">
+                        to="/"
+                        :aria-label="$i18n.get('label_plugin_home_page')">
                     <img
                             class="tainacan-logo"
                             alt="Tainacan Logo"
@@ -38,7 +40,8 @@
                     class="is-hidden-tablet">
                 <button
                         @click="$router.push($routerHelper.getItemsPath())"
-                        class="button is-small is-white level-item">
+                        class="button is-small is-white level-item"
+                        :aria-label="$i18n.get('search')">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
                     </span>
@@ -70,7 +73,8 @@
             <button
                     v-if="!$adminOptions.hideTainacanHeaderProcessesPopup"
                     @click="showProcesses = !showProcesses"
-                    class="button is-small is-white level-item">
+                    class="button is-small is-white level-item"
+                    :aria-label="$i18n.get('processes')">
                 <span
                         v-tooltip="{
                             content: $i18n.get('processes'),
@@ -87,7 +91,8 @@
                     @closeProcessesPopup="showProcesses = false"/>
             <a
                     class="level-item"
-                    :href="wordpressAdmin">
+                    :href="wordpressAdmin"
+                    :aria-label="$i18n.get('label_wordpress_admin_page')">
                 <span
                         v-tooltip="{
                             content: $i18n.get('label_wordpress_admin_page'),

@@ -19,7 +19,8 @@
                     class="is-hidden-mobile"
                     id="menu-compress-button"
                     :style="{ top: menuCompressButtonTop }"
-                    @click="isMenuCompressed = !isMenuCompressed">          
+                    @click="isMenuCompressed = !isMenuCompressed"      
+                    :aria-label="$i18n.get('label_shrink_menu')">    
                 <span
                         v-tooltip="{
                             content: $i18n.get('label_shrink_menu'),
