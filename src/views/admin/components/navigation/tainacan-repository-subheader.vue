@@ -9,7 +9,8 @@
                 class="back-button is-hidden-mobile">
             <button     
                     @click="$router.go(-1)"
-                    class="button is-turquoise4">
+                    class="button is-turquoise4"
+                    :aria-label="$i18n.get('back')">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-previous"/>
                 </span>
@@ -60,7 +61,8 @@
                         @click="openAvailableExportersModal"
                         class="button"
                         id="exporter-collection-button"
-                        v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton">
+                        v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton"
+                        :aria-label="$i18n.get('exporters')">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                     </span>
@@ -82,11 +84,11 @@
                         target="_blank"
                         v-if="!isRepositoryLevel && collection && collection.url && !$adminOptions.hideRepositorySubheaderViewCollectionButton"
                         class="button"
-                        id="view-collection-button">
+                        id="view-collection-button"
+                        :aria-label="$i18n.get('label_view_collection_on_website')">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
-                    <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
             </li>
             <li     
@@ -105,15 +107,14 @@
                         target="_blank"
                         v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewCollectionsButton"
                         class="button"
-                        id="view-repository-button">
+                        id="view-repository-button"
+                        :aria-label="$i18n.get('label_view_repository')">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
-                    <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
             </li>
         </ul>
-
 
     </div>
 </template>

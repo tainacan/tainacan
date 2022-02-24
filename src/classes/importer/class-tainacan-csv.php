@@ -900,7 +900,7 @@ class CSV extends Importer {
 		$compound_item_metadata_value = $this->is_assoc($compound_item_metadata_value) ? [$compound_item_metadata_value] : $compound_item_metadata_value;
 		foreach($compound_item_metadata_value as $item_metadata_value) {
 			foreach ($item_metadata_value as $itemMetadata) {
-				$Tainacan_Item_Metadata->remove_compound_value($item, $compound_metadata, $itemMetadata->get_parent_meta_id());
+				$Tainacan_Item_Metadata->remove_compound_value($itemMetadata->get_parent_meta_id());
 			}
 		}
 	}

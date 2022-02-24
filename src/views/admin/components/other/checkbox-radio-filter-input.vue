@@ -5,11 +5,12 @@
             :class="{ 'tainacan-modal-content': isModal }"
             :tabindex="isModal ? -1 : 0"
             :aria-modal="isModal"
+            :aria-labelledby="'checkbox-radio-filter--title-' + filter.id"
             ref="CheckboxRadioFilterInput">
         <header 
                 v-if="isModal"
                 class="tainacan-modal-title">
-            <h2>{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
+            <h2 :id="'checkbox-radio-filter--title-' + filter.id">{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <hr>
         </header>
 

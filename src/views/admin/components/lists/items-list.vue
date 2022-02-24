@@ -184,12 +184,17 @@
                         <b-checkbox
                                 v-if="!$adminOptions.itemsSingleSelectionMode"
                                 :value="getSelectedItemChecked(item.id)"
-                                @input="setSelectedItemChecked(item.id)"/>
+                                @input="setSelectedItemChecked(item.id)">
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                        </b-checkbox>
                         <b-radio
                                 v-else
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                v-model="singleItemSelection"/>
+                                v-model="singleItemSelection"
+                                :aria-label="$i18n.get('label_select_item')">
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                        </b-radio>
                     </div>
 
                     <!-- Title -->
@@ -341,8 +346,9 @@
                                     name="item-single-selection"
                                     :value="item.id"
                                     v-model="singleItemSelection">
-                                <span class="check" />
-                                <span class="control-label" />
+                            <span class="check" />
+                            <span class="control-label" />
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </label>
                     </div>
 
@@ -469,12 +475,16 @@
                         <b-checkbox
                                 v-if="!$adminOptions.itemsSingleSelectionMode"
                                 :value="getSelectedItemChecked(item.id)"
-                                @input="setSelectedItemChecked(item.id)"/>
+                                @input="setSelectedItemChecked(item.id)">
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                        </b-checkbox>
                         <b-radio
                                 v-else
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                v-model="singleItemSelection"/>
+                                v-model="singleItemSelection">
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                        </b-radio>
                     </div>
 
                     <!-- Title -->
@@ -681,8 +691,9 @@
                                     name="item-single-selection"
                                     :value="item.id"
                                     v-model="singleItemSelection">
-                                <span class="check" />
-                                <span class="control-label" />
+                            <span class="check" />
+                            <span class="control-label" />
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </label>
                     </div>
 
@@ -901,12 +912,13 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody role="list">
                     <tr
                             :class="{
                                 'selected-row': getSelectedItemChecked(item.id) == true,
                                 'highlighted-item': highlightedItem == item.id
                             }"
+                            role="listitem"
                             :key="index"
                             :data-tainacan-item-id="item.id"
                             v-for="(item, index) of items">
@@ -919,12 +931,16 @@
                             <b-checkbox
                                     v-if="!$adminOptions.itemsSingleSelectionMode"
                                     :value="getSelectedItemChecked(item.id)"
-                                    @input="setSelectedItemChecked(item.id)"/>
+                                    @input="setSelectedItemChecked(item.id)">
+                                <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                            </b-checkbox>
                             <b-radio
                                     v-else
                                     name="item-single-selection"
                                     :native-value="item.id"
-                                    v-model="singleItemSelection"/>
+                                    v-model="singleItemSelection">
+                                <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                            </b-radio>
                         </td>
                         <td 
                                 v-if="isOnAllItemsTabs"
@@ -1168,15 +1184,18 @@
                                     v-if="!$adminOptions.itemsSingleSelectionMode"
                                     type="checkbox"
                                     :checked="getSelectedItemChecked(item.id)"
-                                    @input="setSelectedItemChecked(item.id)">
+                                    @input="setSelectedItemChecked(item.id)"
+                                    :aria-label="$i18n.get('label_select_item')">
                             <input
                                     v-else
                                     type="radio"
                                     name="item-single-selection"
                                     :value="item.id"
-                                    v-model="singleItemSelection">
-                                <span class="check" />
-                                <span class="control-label" />
+                                    v-model="singleItemSelection"
+                                   :aria-label="$i18n.get('label_select_item')">
+                            <span class="check" />
+                            <span class="control-label" />
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </label>
                     </div>
 

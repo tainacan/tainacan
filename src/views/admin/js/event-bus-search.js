@@ -26,12 +26,12 @@ export default {
                 this.$root.$on('closeAdvancedSearch', () => {
                     this.$store.dispatch('search/setPage', 1);
                     
-                    this.searchAdvanced({});
+                    this.performAdvancedSearch({});
                 });
 
-                this.$root.$on('searchAdvanced', advancedSearchQuery => {
+                this.$root.$on('performAdvancedSearch', advancedSearchQuery => {
                     this.$store.dispatch('search/setPage', 1);
-                    this.searchAdvanced(advancedSearchQuery);
+                    this.performAdvancedSearch(advancedSearchQuery);
 
                     this.updateURLQueries();
                 });
@@ -177,7 +177,7 @@ export default {
                 }
             },
             methods: {
-                searchAdvanced(data) {
+                performAdvancedSearch(data) {
                     this.$store.dispatch('search/set_advanced_query', data);
                     this.updateURLQueries();
                 },
@@ -384,10 +384,6 @@ export default {
                             resp.request.then((res) => {
                                 this.$emit( 'isLoadingItems', false);
                                 this.$emit( 'hasFiltered', res.hasFiltered);
-
-                                if (res.advancedSearchResults){
-                                    this.$emit('advancedSearchResults', res.advancedSearchResults);
-                                }
                             })
                             .catch(() => {
                                 this.$emit( 'isLoadingItems', false);

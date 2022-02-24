@@ -6,7 +6,8 @@
         <div class="back-button is-hidden-mobile">
             <button     
                     @click="$router.go(-1)"
-                    class="button is-turquoise4">
+                    class="button is-turquoise4"
+                    :aria-label="$i18n.get('back')">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-previous"/>
                 </span>
@@ -17,7 +18,8 @@
                 <div class="back-button is-hidden-tablet level-item">
                     <button     
                             @click="$router.go(-1)"
-                            class="button is-turquoise4">
+                            class="button is-turquoise4"
+                            :aria-label="$i18n.get('back')">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-previous"/>
                         </span>

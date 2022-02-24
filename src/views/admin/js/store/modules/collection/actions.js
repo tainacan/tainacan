@@ -25,7 +25,6 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
             // Sets a flag to inform components that an empty sate is or not due to filtering
             let hasFiltered = false;
-            let advancedSearchResults = false;
             
             // We mark as filtered if there is a metaquery, taxquery or a postin
             if ( 
@@ -38,13 +37,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 (postQueries.postin != undefined &&
                     postQueries.postin.length
                 )
-            ) {
-                
+            )
                 hasFiltered = true;
-                        
-                if (postQueries.advancedSearch)
-                    advancedSearchResults = postQueries.advancedSearch;
-            }
 
             // Admin default tab should load publish, private and draft statuses
             if (!isOnTheme && !postQueries.status) {
@@ -93,7 +87,6 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             'itemsListTemplate': res.data.template, 
                             'total': res.headers['x-wp-total'], 
                             hasFiltered: hasFiltered, 
-                            advancedSearchResults:  advancedSearchResults,
                             itemsPerPage: res.headers['x-wp-itemperpage']});
                     } else {
                         commit('setItems', items);
@@ -102,7 +95,6 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             'total': res.headers['x-wp-total'],
                             totalPages: res.headers['x-wp-totalpages'], 
                             hasFiltered: hasFiltered, 
-                            advancedSearchResults: advancedSearchResults ,
                             itemsPerPage: res.headers['x-wp-itemperpage'] });                            
                     }
                     dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
