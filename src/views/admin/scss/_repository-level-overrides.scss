@@ -129,10 +129,15 @@
     .active-metadatum-item.not-focusable-item>.handle>.metadatum-name {
         color: var(--tainacan-blue3) !important;
     }
+}
+.v-popper--theme-tooltip.tainacan-repository-tooltip {
+    --tainacan-primary: var(--tainacan-blue1);
+    --tainacan-secondary: var(--tainacan-blue5);
+
     .metadata-type-preview {
         background-color: var(--tainacan-blue1) !important;
         .metadata-type-label {
-            color: var(--tainacan-blue4) !important;
+            color: var(--tainacan-blue5) !important;
         }
         .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
             background-color: #f9fcff !important;
@@ -141,9 +146,6 @@
             border-color: transparent transparent transparent var(--tainacan-blue1) !important;
         }
     }
-}
-.v-popper--theme-tooltip.tainacan-repository-tooltip {
-     --tainacan-primary: var(--tainacan-blue1);
 }
 .v-popper--theme-tooltip.tainacan-repository-header-tooltip {
     --tainacan-primary: var(--tainacan-blue4);

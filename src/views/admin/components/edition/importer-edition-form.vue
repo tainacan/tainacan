@@ -24,7 +24,8 @@
                         <label class="label">{{ $i18n.get('label_source_file') }}</label>
                         <help-button 
                                 :title="$i18n.get('label_source_file')" 
-                                :message="$i18n.get('info_source_file_upload')"/>
+                                :message="$i18n.get('info_source_file_upload')"
+                                extra-classes="tainacan-repository-tooltip"/>
                         <br>
                         <b-upload
                                 v-if="importer.tmp_file == undefined && (importerFile == undefined || importerFile == null || importerFile == '')" 
@@ -75,7 +76,8 @@
                             :label="$i18n.get('label_url_source_link')">
                         <help-button 
                                 :title="$i18n.get('label_url_source_link')" 
-                                :message="$i18n.get('info_url_source_link_helper')"/>
+                                :message="$i18n.get('info_url_source_link_helper')"
+                                extra-classes="tainacan-repository-tooltip"/>
                         <b-input
                                 id="tainacan-url-link-source"
                                 v-model="url"/>  
@@ -100,7 +102,8 @@
                             :label="$i18n.get('label_target_collection')">
                         <help-button 
                                 :title="$i18n.get('label_target_collection')" 
-                                :message="$i18n.get('info_target_collection_helper')"/>
+                                :message="$i18n.get('info_target_collection_helper')"
+                                extra-classes="tainacan-repository-tooltip"/>
                         <br>
                         <div class="is-inline">
                             <b-select

@@ -33,7 +33,8 @@
                                 :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span>
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'name')"
-                                :message="$i18n.getHelperMessage('metadata', 'name')"/>
+                                :message="$i18n.getHelperMessage('metadata', 'name')"
+                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </label>
                     <b-input
                             v-model="form.name"
@@ -58,7 +59,8 @@
                         {{ $i18n.get('label_description') }}
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'description')"
-                                :message="$i18n.getHelperMessage('metadata', 'description')"/>
+                                :message="$i18n.getHelperMessage('metadata', 'description')"
+                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </label>
                     <b-input
                             type="textarea"
@@ -77,7 +79,8 @@
                         {{ $i18n.getHelperTitle('metadata', 'placeholder') }}
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'placeholder')"
-                                :message="$i18n.getHelperMessage('metadata', 'placeholder')"/>
+                                :message="$i18n.getHelperMessage('metadata', 'placeholder')"
+                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </label>
                     <b-input
                             v-model="form.placeholder"
@@ -94,7 +97,8 @@
                         {{ $i18n.get('label_status') }}
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'status')"
-                                :message="$i18n.getHelperMessage('metadata', 'status')"/>
+                                :message="$i18n.getHelperMessage('metadata', 'status')"
+                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </label>
                     <div class="is-flex is-justify-content-space-between">
                         <b-radio
@@ -132,7 +136,8 @@
                         {{ $i18n.get('label_display') }}
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'display')"
-                                :message="$i18n.getHelperMessage('metadata', 'display')"/>
+                                :message="$i18n.getHelperMessage('metadata', 'display')"
+                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </label>
                     <b-select 
                             expanded
@@ -168,7 +173,8 @@
                             {{ $i18n.get('label_required') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata', 'required')"
-                                    :message="$i18n.getHelperMessage('metadata', 'required')"/>
+                                    :message="$i18n.getHelperMessage('metadata', 'required')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </b-checkbox>
                     </b-field>
 
@@ -186,7 +192,8 @@
                             {{ $i18n.get('label_unique_value') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata', 'collection_key')"
-                                    :message="$i18n.getHelperMessage('metadata', 'collection_key')"/>
+                                    :message="$i18n.getHelperMessage('metadata', 'collection_key')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </b-checkbox>
                     </b-field>
 
@@ -204,7 +211,8 @@
                             {{ $i18n.get('label_allow_multiple') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata', 'multiple')"
-                                    :message="$i18n.getHelperMessage('metadata', 'multiple')"/>
+                                    :message="$i18n.getHelperMessage('metadata', 'multiple')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </b-checkbox>
                         
                     </b-field>
@@ -230,7 +238,8 @@
                         {{ $i18n.getHelperTitle('metadata', 'cardinality') }}
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'cardinality')"
-                                :message="$i18n.getHelperMessage('metadata', 'cardinality')"/>
+                                :message="$i18n.getHelperMessage('metadata', 'cardinality')"
+                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </label>
                     <b-numberinput
                             :disabled="!showCardinalityOptions || form.multiple != 'yes'"
@@ -250,8 +259,9 @@
                             false-value="no">
                         {{ $i18n.get('label_repository_metadata') }}
                         <help-button
-                                    :title="$i18n.getHelperTitle('metadata', 'repository_level')"
-                                    :message="$i18n.getHelperMessage('metadata', 'repository_level')"/>
+                                :title="$i18n.getHelperTitle('metadata', 'repository_level')"
+                                :message="$i18n.getHelperMessage('metadata', 'repository_level')"
+                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </b-checkbox>
                 </b-field>
             </div>
@@ -315,7 +325,8 @@
                             {{ $i18n.get('label_semantic_uri') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata', 'semantic_uri')"
-                                    :message="$i18n.getHelperMessage('metadata', 'semantic_uri')"/>
+                                    :message="$i18n.getHelperMessage('metadata', 'semantic_uri')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </label>
                         <b-input
                                 v-model="form.semantic_uri"
