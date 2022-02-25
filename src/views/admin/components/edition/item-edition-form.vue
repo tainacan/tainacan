@@ -87,7 +87,7 @@
                                             style="display: flex; flex-direction: column; font-size: 1rem;"
                                             class="field has-addons">
                                         <b-radio
-                                                v-if="$adminOptions.hideItemEditionStatusPublishOption"
+                                                v-if="!$adminOptions.hideItemEditionStatusPublishOption"
                                                 v-model="visibility"
                                                 value="publish"
                                                 native-value="publish">
@@ -808,13 +808,13 @@
                             v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
                             @click="onSubmit(visibility)"
                             type="button"
-                            class="button is-success">{{ $adminOptions.hideItemEditionStatusPublishOption ? $i18n.get('label_verb_publish') : $i18n.get('label_verb_publish_privately') }}</button>
+                            class="button is-success">{{ !$adminOptions.hideItemEditionStatusPublishOption ? $i18n.get('label_verb_publish') : $i18n.get('label_verb_publish_privately') }}</button>
                     <button 
                             v-else
                             @click="onSubmit(visibility, 'next')"
                             type="button"
                             class="button is-success">
-                        <span>{{ $adminOptions.hideItemEditionStatusPublishOption ? $i18n.get('label_verb_publish') : $i18n.get('label_verb_publish_privately') }}</span>
+                        <span>{{ !$adminOptions.hideItemEditionStatusPublishOption ? $i18n.get('label_verb_publish') : $i18n.get('label_verb_publish_privately') }}</span>
                         <span class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
                         </span>
@@ -988,7 +988,7 @@ export default {
             isLoading: false,
             metadataCollapses: [],
             collapseAll: true,
-            visibility: this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private',
+            visibility: !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private',
             form: {
                 collectionId: Number,
                 status: '',
@@ -1382,7 +1382,7 @@ export default {
                 this.initializeMediaFrames();
 
                 // Pre-fill status with publish to incentivate it
-                this.visibility = this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private';
+                this.visibility = !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private';
                 this.form.status = 'auto-draft'
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;

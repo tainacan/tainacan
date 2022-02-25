@@ -100,7 +100,7 @@ export default (element) => {
                 defaultTooltipAnimated: true
             });
             Vue.use(VTooltip, {
-                popperTriggers: ['hover'],
+                popperTriggers: ['hover', 'touch'],
                 themes: {
                     'taianacan-tooltip': {
                         '$extend': 'tooltip',
