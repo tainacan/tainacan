@@ -34,9 +34,13 @@
                 ({{ itemMetadatum.metadatum.metadata_type_object.name }})
             </span>
             <help-button
-                    v-if="!$parent.hideHelpButtons && !$parent.helpInfoBellowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description" 
+                    v-if="!$parent.hideHelpButtons &&
+                        !$parent.helpInfoBellowLabel &&
+                        itemMetadatum.metadatum &&
+                        itemMetadatum.metadatum.description_bellow_name !== 'yes' &&
+                        itemMetadatum.metadatum.description" 
                     :title="itemMetadatum.metadatum.name"
-                    :message="itemMetadatum.metadatum.description"/>
+                    :message="itemMetadatum.metadatum.description" />
         </span>
         <transition name="filter-item">
             <div   
@@ -44,7 +48,12 @@
                     v-if="isTextInputComponent">
                 <p
                         class="metadatum-description-help-info"
-                        v-if="!$parent.hideHelpButtons && $parent.helpInfoBellowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description">
+                        v-if="itemMetadatum.metadatum &&
+                            itemMetadatum.metadatum.description &&
+                            (
+                                (!$parent.hideHelpButtons && $parent.helpInfoBellowLabel) ||
+                                (itemMetadatum.metadatum.description_bellow_name === 'yes')
+                            )">
                     {{ itemMetadatum.metadatum.description }}
                 </p>
                 <component 
@@ -111,7 +120,12 @@
                     v-if="!isTextInputComponent">
                 <p
                         class="metadatum-description-help-info"
-                        v-if="!$parent.hideHelpButtons && $parent.helpInfoBellowLabel && itemMetadatum.metadatum && itemMetadatum.metadatum.description">
+                        v-if="itemMetadatum.metadatum &&
+                            itemMetadatum.metadatum.description &&
+                            (
+                                (!$parent.hideHelpButtons && $parent.helpInfoBellowLabel) ||
+                                (itemMetadatum.metadatum.description_bellow_name === 'yes')
+                            )">
                     {{ itemMetadatum.metadatum.description }}
                 </p>
                 <component

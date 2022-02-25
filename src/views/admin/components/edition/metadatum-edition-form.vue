@@ -70,6 +70,26 @@
                             @focus="clearErrors('description')"/>
                 </b-field>
 
+                <b-field 
+                        :addons="false"
+                        :label="$i18n.getHelperTitle('metadata', 'description_bellow_name')"
+                        :type="formErrors['description_bellow_name'] != undefined ? 'is-danger' : ''"
+                        :message="formErrors['description_bellow_name'] != undefined ? formErrors['description_bellow_name'] : ''">
+                        &nbsp;
+                    <b-switch
+                            size="is-small"
+                            @input="clearErrors('description_bellow_name')"
+                            v-model="form.description_bellow_name"
+                            true-value="yes"
+                            false-value="no"
+                            name="description_bellow_name">
+                    <help-button
+                            :title="$i18n.getHelperTitle('metadata', 'description_bellow_name')"
+                            :message="$i18n.getHelperMessage('metadata', 'description_bellow_name')"
+                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                    </b-switch>
+                </b-field>
+
                 <b-field
                         v-if="form.metadata_type_object.component != 'tainacan-compound'"
                         :addons="false"
@@ -188,7 +208,7 @@
                                 true-value="yes"
                                 false-value="no"
                                 class="is-inline-block"
-                                name="collecion_key">
+                                name="collection_key">
                             {{ $i18n.get('label_unique_value') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata', 'collection_key')"
