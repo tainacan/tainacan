@@ -64,6 +64,10 @@ export const viewModesMixin = {
         },
         starSlideshowFromHere(index) {
             this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }}).catch((error) => this.$console.log(error));
+        },
+        getPosInSet(index) {
+            if (Number(this.queries.paged) !== NaN && Number(this.queries.perpage) !== NaN)
+                return ((Number(this.queries.paged) - 1) * Number(this.queries.perpage)) + index + 1;
         }
     }
 }

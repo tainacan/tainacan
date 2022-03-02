@@ -87,10 +87,19 @@ class Metadata extends Repository {
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The metadatum description. This may provide information on how to fill this metadatum, which will appear inside a tooltip alongside the input label.', 'tainacan' ),
+				'description' => __( 'The metadatum description. This may provide information on how to fill this metadatum, which will appear inside a tooltip alongside the input label, or bellow it.', 'tainacan' ),
 				'default'     => '',
 				//'on_error'   => __('The description should be a text value', 'tainacan'),
 				//'validation' => v::stringType()->notEmpty(),
+			],
+			'description_bellow_name' => [
+				'map'         => 'meta',
+				'title'       => __( 'Description bellow name', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Whether the metadatum description should be displayed bellow the input label instead of inside a tooltip.', 'tainacan' ),
+				'on_error'    => __( 'Please set the "Description bellow name" value as "yes" or "no"', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'default'     => 'no'
 			],
 			'placeholder'     => [
 				'map'         => 'meta',

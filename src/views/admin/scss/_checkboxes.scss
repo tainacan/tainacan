@@ -1,19 +1,15 @@
 .b-checkbox.checkbox {
-    font-family: var(--tainacan-font-family, inherit);
 
     input[type="checkbox"] {
         box-shadow: none !important;
     }
 
     input[type="checkbox"] + .check {
-        width: 0.75em;
-        height: 0.75em;
         flex-shrink: 0;
         border-radius: 2px;
         display: inline-block;
         transition: background 150ms ease-out;
         border-style: solid;
-        border-width: 1px;
         box-shadow: none !important;
     }
     input[type="checkbox"]:not([disabled=disabled]) + .check {

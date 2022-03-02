@@ -24,6 +24,7 @@
     letter-spacing: normal !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+	overflow-wrap: normal;
     
 }
 

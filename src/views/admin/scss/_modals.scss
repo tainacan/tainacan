@@ -1,4 +1,11 @@
 // Tainacan modals
+.tainacan-modal.is-active {
+    justify-content: center;
+
+    @media screen and (max-width: 769px) {
+        justify-content: flex-end;
+    }
+}
 .tainacan-modal .animation-content {
     background: none;
     width: calc(100% - (2 * var(--tainacan-one-column)));
@@ -12,12 +19,19 @@
         max-height: 95%;
         max-height: 95vh;
     }
+    @media only screen and (max-width: 498px) {
+        max-height: 100%;
+        max-height: 100vh;
+        width: 100%;
+        width: 100vw;
+    }
 }
 
 .tainacan-modal .modal-close {
     z-index: 99999;
     @media only screen and (max-width: 768px) {
-        &:before, &:after { background-color: var(--tainacan-white, white); }
+        background-color: var(--tainacan-background-color, #ffffff);
+        &:before, &:after { background-color: var(--tainacan-secondary, #298596); }
     }
 }
 
@@ -63,13 +77,9 @@
     overflow-y: auto;
     overflow-x: hidden;
 
-    @media only screen and (max-width: 768px) {
-        padding: 40px calc(2 * var(--tainacan-one-column));
-        padding: 40px 8.333333vw;
-    }
-
     .modal-card-body {
         background-color: var(--tainacan-background-color);
+        padding: 22px 20px 12px 20px;
     }
 
     nav {
@@ -88,11 +98,20 @@
     .form-submit {
         padding: 40px 0em 0em 0em !important;
     }
-
+    
     @media only screen and (max-width: 768px) {
+        padding: 40px calc(2 * var(--tainacan-one-column));
+        padding: 40px 8.333333vw;
+    }
+    @media only screen and (max-width: 498px) {
+        padding: 20px;
         max-height: 100%;
         max-height: 100vh;
         display: block;
+
+        .modal-card-body {
+            padding: 18px 16px 10px 16px;
+        }
     }
 }
 
@@ -235,6 +254,16 @@
             white-space: nowrap;
             overflow: hidden;
         }
+        .media-frame-title {
+            padding-left: 0px;
+        }
+    }
+
+    @media only screen and (max-width: 498px) {
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
     }
 }
 .media-modal .tainacan-item-attachments-modal button.check {

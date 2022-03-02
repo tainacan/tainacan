@@ -1,5 +1,12 @@
 <template>
-    <div class="tainacan-form">
+    <div 
+            class="tainacan-form">
+        <input 
+                type="text"
+                aria-hidden="true"
+                class="is-special-hidden-for-mobile"
+                autocomplete="on"
+                @focus="onMobileSpecialFocus">
         <b-tabs
                 size="is-small"
                 animated
@@ -162,7 +169,8 @@
                         v-if="!isSearching && isTaxonomy"
                         class="modal-card-body tainacan-finder-columns-container"
                         :style="{ height: expandResultsSection ? 'auto' : '0px' }"
-                        name="page-left">
+                        name="page-left"
+                        ref="tainacan-finder-scrolling-container">
                     <div 
                             v-for="(finderColumn, key) in finderColumns"
                             class="tainacan-finder-column"
@@ -213,6 +221,7 @@
                                             v-tooltip="{
                                                 content: option.total_children + ' ' + $i18n.get('label_children_terms'),
                                                 autoHide: false,
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }" 
                                             v-else>{{ option.total_children }}</span>
                                     <span class="icon is-pulled-right">
@@ -335,7 +344,8 @@
                 default: true,
             },
             amountSelected: 0,
-            maxMultipleValues: undefined
+            maxMultipleValues: undefined,
+            isMobileScreen: false
         },
         data() {
             return {
@@ -452,6 +462,7 @@
                     }
                     
                 } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
+                    
                     this.isSelectedTermsLoading = true;
 
                     axios.get(`/items/?${qs.stringify({ fetch_only: 'title', postin: selected})}`)
@@ -680,6 +691,28 @@
                     this.finderColumns.splice(first, 1, { label: label, children: children, lastTerm: res.data.last_term.es_term });
                 else
                     this.finderColumns.push({ label: label, children: children, lastTerm: res.data.last_term.es_term });
+
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        if (
+                            this.$refs &&
+                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`] &&
+                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0] &&
+                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el &&
+                            this.$refs['tainacan-finder-scrolling-container'] &&
+                            this.$refs['tainacan-finder-scrolling-container'].$el) {
+
+                            // Scroll Into does not solve as it would scroll vertically as well...
+                            //this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
+
+                            this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
+                                top: 0,
+                                left: first != undefined ? 0 : this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.offsetLeft,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 500);
+                }); 
             },
             appendMore(options, key, lastTerm) {
                 for (let option of options)
@@ -774,6 +807,10 @@
             },
             renderHierarchicalPath(hierachyPath, label) {
                 return '<span style="color: var(--tainacan-info-color);">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
+            },
+            onMobileSpecialFocus($event) {
+                $event.target.blur();
+                this.$emit('mobileSpecialFocus');
             }
         }
     }
@@ -813,8 +850,20 @@
     .tainacan-form {
         margin-top: 12px;
         max-width: 100%;
+
         .form-submit {
             padding-top: 16px !important;
+        }
+        &.is-expanded-on-mobile:focus,
+        &.is-expanded-on-mobile:focus-within,
+        &.is-expanded-on-mobile:focus-visible {
+            background-color: var(--tainacan-background-color);
+            z-index: 9999999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
     }
 
@@ -835,7 +884,7 @@
     .tainacan-li-checkbox-modal {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: stretch;
         padding: 0;
         -webkit-break-inside: avoid;
         break-inside: avoid;
@@ -846,14 +895,24 @@
             margin-left: 0.7em;
             margin-bottom: 0px !important;
             height: auto;
-            padding-top: 2px;
-            padding-bottom: 2px;
+            padding-top: 0px;
+            padding-bottom: 0px;
             -webkit-break-inside: avoid;
             break-inside: avoid;
 
             .control-label {
                 white-space: normal;
                 overflow: visible;
+            }
+
+            @media screen and (max-width: 768px) {
+                .control-label {
+                    padding-top: 0.8125em;
+                    padding-bottom: 0.8125em;
+                    padding-left: calc(0.875em - 1px);
+                    width: 100%;
+                    border-bottom: 1px solid var(--tainacan-gray1);
+                }
             }
 
             &.is-disabled {
@@ -877,7 +936,7 @@
         -webkit-break-inside: avoid;
         break-inside: avoid;
 
-        .b-checkbox, .b-radio {
+        /deep/ .b-checkbox, /deep/ .b-radio {
             margin-right: 0px;
             margin-bottom: 0;
             -webkit-break-inside: avoid;
@@ -890,6 +949,15 @@
             &.is-disabled {
                 cursor: not-allowed;
                 opacity: 0.5;
+            }
+            @media screen and (max-width: 768px) {
+                .control-label {
+                    padding-top: 0.8125em;
+                    padding-bottom: 0.8125em;
+                    padding-left: calc(0.875em - 1px);
+                    width: 100%;
+                    border-bottom: 1px solid var(--tainacan-gray1);
+                }
             }
         }
 
@@ -914,6 +982,8 @@
         margin-top: -1px;
         display: flex;
         overflow: auto;
+        scroll-snap-type: x mandatory;
+        scroll-snap-align: start;
         padding: 0 !important;
         max-height: 40vh;
         transition: heigth 0.5s ease, min-height 0.5s ease;
@@ -935,6 +1005,7 @@
 
         &.has-only-one-column {
             max-width: 100%;
+            border-right: none;
 
             ul {
                 -moz-column-count: 2;
@@ -965,6 +1036,7 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
+
             .tainacan-icon {
                 font-size: 1.5em;
             }
@@ -1029,6 +1101,7 @@
 
     .tainacan-checkbox-search-section {
         margin-bottom: 0;
+
         .control {
             margin: 0;
         }
@@ -1169,13 +1242,41 @@
     @media screen and (max-width: 768px) {
 
         .tainacan-modal-checkbox-list-body,
-        .tainacan-finder-column.has-only-one-column,
+        .tainacan-finder-column.has-only-one-column ul,
         .tainacan-modal-checkbox-search-results-body {
             -moz-column-count: auto;
             -webkit-column-count: auto;
             column-count: auto;
+            overflow-y: auto;
         }
+        .tainacan-modal-checkbox-search-results-body,
+        .tainacan-modal-checkbox-list-body,
+        .tainacan-finder-columns-container {
+            font-size: 1.125em;
+        }
+        .tainacan-finder-columns-container {
+            max-height: calc(100vh - 184px - 56px);
 
+            .tainacan-finder-column,
+            .tainacan-finder-column ul {
+                max-height: 100%;
+            }
+            .tainacan-finder-column {
+                max-width: calc(99vw - 0.75em - 0.75em - 2px);
+                min-width: calc(99vw - 0.75em - 0.75em - 2px);
+            }
+            .tainacan-finder-column .column-label+ul {
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 3px);
+            }
+            .tainacan-finder-column a {
+                width: 3.5em;
+                border-left: 1px solid var(--tainacan-gray1);
+                border-bottom: 1px solid var(--tainacan-gray1);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
         .tainacan-li-checkbox-list {
             max-width: calc(100% - 20px) !important;
         }

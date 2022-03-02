@@ -40,7 +40,8 @@
                     <span class="required-term-asterisk">*</span>
                     <help-button
                             :title="$i18n.get('label_name')"
-                            :message="$i18n.get('info_help_term_name')"/> 
+                            :message="$i18n.get('info_help_term_name')"
+                            extra-classes="tainacan-repository-tooltip" /> 
                 </label>
                 <b-input
                         :placeholder="$i18n.get('label_term_without_name')"
@@ -84,7 +85,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">
@@ -100,7 +101,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">
@@ -123,7 +124,8 @@
                             {{ $i18n.get('label_description') }}
                             <help-button
                                     :title="$i18n.get('label_description')"
-                                    :message="$i18n.get('info_help_term_description')"/>
+                                    :message="$i18n.get('info_help_term_description')"
+                                    extra-classes="tainacan-repository-tooltip"/>
                         </label>
                         <b-input
                                 type="textarea"
@@ -148,7 +150,8 @@
                             v-model="hasParent" />
                     <help-button
                             :title="$i18n.get('label_parent_term')"
-                            :message="$i18n.get('info_help_parent_term')"/>
+                            :message="$i18n.get('info_help_parent_term')"
+                            extra-classes="tainacan-repository-tooltip"/>
                 </label>
                 <b-autocomplete
                         id="tainacan-add-parent-field"

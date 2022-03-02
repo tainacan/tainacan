@@ -363,6 +363,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_return_to_draft'                          => __( 'Return to draft', 'tainacan' ),
 	/* translators: The verb 'to publish' not the 'publish' status */
 	'label_verb_publish'                             => _x( 'Publish', 'verb', 'tainacan' ),
+	'label_verb_publish_privately'                   => _x( 'Publish privately', 'verb', 'tainacan' ),
 	/* translators: The status 'publish' not the verb 'to publish' */
 	'label_publish'                             	 => _x( 'Publish', 'noun', 'tainacan' ),
 	'label_update'                                   => __( 'Update', 'tainacan' ),
@@ -399,6 +400,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_show_filters'                             => __( 'Show filters panel', 'tainacan' ),
 	'label_select_all_items'                         => __( 'Select all items', 'tainacan' ),
 	'label_select_all'                               => __( 'Select all', 'tainacan' ),
+	'label_select_item'                              => __( 'Select item', 'tainacan' ),
 	'label_untrash_selected_items'                   => __( 'Restore from trash', 'tainacan' ),
 	'label_value_not_provided'                       => __( 'No value provided.', 'tainacan' ),
 	'label_description_not_provided'                 => __( 'No description provided.', 'tainacan' ),
@@ -462,6 +464,7 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: The slides/slideshow fullscreen view mode */
 	'label_slides'			                 	 	 => __( 'Slides', 'tainacan' ),
 	'label_items_list'			                 	 => __( 'Items List', 'tainacan' ),
+	'label_items_list_results'	                 	 => __( 'Items list results', 'tainacan' ),
 	'label_list_pagination'			                 => __( 'List pagination', 'tainacan' ),
 	'label_sort_visualization'		                 => __( 'Sorting and visualization control', 'tainacan' ),
 	'label_tainacan_api'			                 => __( 'Tainacan API', 'tainacan' ),
@@ -611,6 +614,13 @@ return apply_filters( 'tainacan-i18n', [
 	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 	'label_items_selection'							 => __( 'Items selection', 'tainacan'),
 	'label_default_orderby' 						 => __(	'Initial default sorting', 'tainacan' ),
+	'label_focus_mode'		 						 => __(	'Start focus mode', 'tainacan' ),
+	'label_close_search' 					 		 => __(	'Close search', 'tainacan' ),
+	'label_remove_all_criteria' 					 => __(	'Remove all criteria', 'tainacan' ),
+	'label_string_to_search_for'                     => __( 'String to search for', 'tainacan' ),
+	'label_number_to_search_for'                     => __( 'Number to search for', 'tainacan' ),
+	'label_date_to_search_for'                       => __( 'Date to search for', 'tainacan' ),
+	'label_criterion_to_compare'                     => __( 'Criterion to compare', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

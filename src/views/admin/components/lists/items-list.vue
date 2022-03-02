@@ -184,12 +184,17 @@
                         <b-checkbox
                                 v-if="!$adminOptions.itemsSingleSelectionMode"
                                 :value="getSelectedItemChecked(item.id)"
-                                @input="setSelectedItemChecked(item.id)"/>
+                                @input="setSelectedItemChecked(item.id)">
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                        </b-checkbox>
                         <b-radio
                                 v-else
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                v-model="singleItemSelection"/>
+                                v-model="singleItemSelection"
+                                :aria-label="$i18n.get('label_select_item')">
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                        </b-radio>
                     </div>
 
                     <!-- Title -->
@@ -199,13 +204,14 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)">
@@ -215,7 +221,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -257,7 +263,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -271,7 +278,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -286,7 +294,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i
@@ -337,8 +346,9 @@
                                     name="item-single-selection"
                                     :value="item.id"
                                     v-model="singleItemSelection">
-                                <span class="check" />
-                                <span class="control-label" />
+                            <span class="check" />
+                            <span class="control-label" />
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </label>
                     </div>
 
@@ -357,7 +367,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -398,7 +408,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -412,7 +423,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -427,7 +439,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i
@@ -462,12 +475,16 @@
                         <b-checkbox
                                 v-if="!$adminOptions.itemsSingleSelectionMode"
                                 :value="getSelectedItemChecked(item.id)"
-                                @input="setSelectedItemChecked(item.id)"/>
+                                @input="setSelectedItemChecked(item.id)">
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                        </b-checkbox>
                         <b-radio
                                 v-else
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                v-model="singleItemSelection"/>
+                                v-model="singleItemSelection">
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                        </b-radio>
                     </div>
 
                     <!-- Title -->
@@ -479,13 +496,14 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)">
@@ -495,7 +513,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -520,7 +538,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -534,7 +553,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -549,7 +569,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i
@@ -585,13 +606,14 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="metadata-description"
                                     v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
@@ -599,13 +621,14 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: item.author_name != undefined ? item.author_name : '',
                                         html: false,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="metadata-author-creation">
                                 {{ $i18n.get('info_created_by') + ' ' + (item.author_name != undefined ? item.author_name : '') }}
@@ -614,13 +637,14 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '',
                                         html: false,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="metadata-author-creation">
                                 {{ $i18n.get('info_date') + ' ' + (item.creation_date != undefined ? parseDateToNavigatorLanguage(item.creation_date) : '') }}
@@ -667,8 +691,9 @@
                                     name="item-single-selection"
                                     :value="item.id"
                                     v-model="singleItemSelection">
-                                <span class="check" />
-                                <span class="control-label" />
+                            <span class="check" />
+                            <span class="control-label" />
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </label>
                     </div>
 
@@ -684,7 +709,7 @@
                                 v-tooltip="{
                                     content: $i18n.get('status_' + item.status),
                                     autoHide: true,
-                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }">
                             <i 
@@ -695,13 +720,14 @@
                         <p 
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 v-for="(column, columnIndex) in displayedMetadata"
                                 :key="columnIndex"
@@ -712,13 +738,14 @@
                         <p
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: item.title != undefined ? item.title : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 v-for="(column, columnIndex) in displayedMetadata"
                                 :key="columnIndex"
@@ -741,7 +768,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -755,7 +783,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -770,7 +799,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i
@@ -882,12 +912,13 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody role="list">
                     <tr
                             :class="{
                                 'selected-row': getSelectedItemChecked(item.id) == true,
                                 'highlighted-item': highlightedItem == item.id
                             }"
+                            role="listitem"
                             :key="index"
                             :data-tainacan-item-id="item.id"
                             v-for="(item, index) of items">
@@ -900,12 +931,16 @@
                             <b-checkbox
                                     v-if="!$adminOptions.itemsSingleSelectionMode"
                                     :value="getSelectedItemChecked(item.id)"
-                                    @input="setSelectedItemChecked(item.id)"/>
+                                    @input="setSelectedItemChecked(item.id)">
+                                <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                            </b-checkbox>
                             <b-radio
                                     v-else
                                     name="item-single-selection"
                                     :native-value="item.id"
-                                    v-model="singleItemSelection"/>
+                                    v-model="singleItemSelection">
+                                <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
+                            </b-radio>
                         </td>
                         <td 
                                 v-if="isOnAllItemsTabs"
@@ -916,7 +951,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
-                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }">
                                 <i 
@@ -951,12 +986,13 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
                                     v-if="collectionId == undefined &&
@@ -966,11 +1002,12 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         autoHide: false,
                                         placement: 'auto-start'
                                     }"
@@ -981,10 +1018,10 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
-                                        classes: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
+                                        popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         content: renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                         html: true,
                                         autoHide: false,
@@ -1015,13 +1052,14 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: item[column.slug],
                                         html: true,
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     v-if="column.metadatum == 'row_author'">
                                     {{ item[column.slug] }}
@@ -1029,12 +1067,13 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: parseDateToNavigatorLanguage(item[column.slug]),
                                         html: true,
                                         autoHide: false,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
                                     v-if="column.metadatum == 'row_modification'">
@@ -1043,12 +1082,13 @@
                             <p
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: parseDateToNavigatorLanguage(item[column.slug]),
                                         html: true,
                                         autoHide: false,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
                                     v-if="column.metadatum == 'row_creation'">
@@ -1072,7 +1112,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                placement: 'auto'
+                                                placement: 'auto',
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -1086,7 +1127,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('label_recover_from_trash'),
                                                 autoHide: true,
-                                                placement: 'auto'
+                                                placement: 'auto',
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
                                         <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -1101,7 +1143,8 @@
                                             v-tooltip="{
                                                 content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                                 autoHide: true,
-                                                placement: 'auto'
+                                                placement: 'auto',
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
                                     <i
@@ -1141,15 +1184,18 @@
                                     v-if="!$adminOptions.itemsSingleSelectionMode"
                                     type="checkbox"
                                     :checked="getSelectedItemChecked(item.id)"
-                                    @input="setSelectedItemChecked(item.id)">
+                                    @input="setSelectedItemChecked(item.id)"
+                                    :aria-label="$i18n.get('label_select_item')">
                             <input
                                     v-else
                                     type="radio"
                                     name="item-single-selection"
                                     :value="item.id"
-                                    v-model="singleItemSelection">
-                                <span class="check" />
-                                <span class="control-label" />
+                                    v-model="singleItemSelection"
+                                   :aria-label="$i18n.get('label_select_item')">
+                            <span class="check" />
+                            <span class="control-label" />
+                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </label>
                     </div>
 
@@ -1165,7 +1211,7 @@
                                 v-tooltip="{
                                     content: $i18n.get('status_' + item.status),
                                     autoHide: true,
-                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }">
                             <i 
@@ -1176,13 +1222,14 @@
                         <p 
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: item.metadata != undefined ? renderMetadata(item.metadata, column) : '',
                                     html: true,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)"
@@ -1206,7 +1253,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -1220,7 +1268,8 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
@@ -1235,7 +1284,8 @@
                                     v-tooltip="{
                                         content: isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('delete'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
                                 <i
@@ -1313,7 +1363,8 @@ export default {
         isLoading: false,
         isOnTrash: false,
         totalItems: Number,
-        viewMode: 'card'
+        viewMode: 'card',
+        isRepositoryLevel: false
     },
     data(){
         return {

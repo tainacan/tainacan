@@ -100,7 +100,7 @@
                                                 autoHide: true,
                                                 delay: 0,
                                                 placement: 'bottom',
-                                                classes: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                                popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
                                             }"
                                             :key="index"
                                             :id="'capability-' + capability">
@@ -182,7 +182,7 @@
                                                     autoHide: true,
                                                     delay: 0,
                                                     placement: 'bottom',
-                                                    classes: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
+                                                    popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
                                                 }"
                                                 :key="index"
                                                 :id="'capability-' + capability.replace('%d', selectedCollection)">

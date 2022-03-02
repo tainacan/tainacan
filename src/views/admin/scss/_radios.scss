@@ -1,28 +1,26 @@
 .b-radio.radio {
-    font-family: var(--tainacan-font-family, inherit);
-
     input[type="radio"] + .check {
-        width: 0.755em !important;
-        height: 0.755em !important;
-        border: 1px solid var(--tainacan-gray4) !important;    
+        border-width: 1px !important;
+        border-color: var(--tainacan-input-color) !important;
     }
     input[type="radio"] + .check::before {
-        background: var(--tainacan-black) !important;
-        width: calc(0.755em + 1px) !important;
-        height: calc(0.755em + 1px) !important;
-        margin-left: calc(-1* (0.75em + 1px)/2) !important;
-        margin-bottom: calc(-1* (0.75em + 1px)/2) !important;
+        background-color: var(--tainacan-input-color) !important;
     }
+    & input[type="radio"] + .check,
     &:focus input[type="radio"] + .check,
     &:active input[type="radio"] + .check,
-    &:hover input[type="radio"] + .check {
+    &:hover input[type="radio"] + .check,
+    &:focus input[type="radio"]:checked + .check,
+    &:hover input[type="radio"]:checked + .check,
+    &:active input[type="radio"]:checked + .check,
+    & input[type="radio"]:checked + .check,
+    &:focus input[type="radio"] + .check::before,
+    &:active input[type="radio"] + .check::before,
+    &:hover input[type="radio"] + .check::before,
+    & input[type="radio"]:checked + .check::before,
+    &:focus input[type="radio"]:checked + .check::before,
+    &:hover input[type="radio"]:checked + .check::before,
+    &:active input[type="radio"]:checked + .check::before {
         box-shadow: none !important;
     }
-    input[type="radio"]:checked + .check {
-        border-color: var(--tainacan-gray4) !important;
-    }
-    &:focus input[type="radio"]:checked + .check {
-        box-shadow: none !important;
-    }
-
 }

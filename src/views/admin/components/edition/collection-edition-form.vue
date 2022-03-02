@@ -71,7 +71,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                placement: 'bottom'
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']  
                                             }"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-edit"/>
@@ -86,7 +87,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                placement: 'bottom'
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']  
                                             }"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-delete"/>
@@ -143,7 +145,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('remove_value'),
                                                 autoHide: true,
-                                                placement: 'bottom'
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']  
                                             }"
                                             class="icon is-small">
                                         <i class="tainacan-icon tainacan-icon-close"/>
@@ -161,7 +164,8 @@
                                         v-tooltip="{
                                             content: $i18n.get('see'),
                                             autoHide: true,
-                                            placement: 'bottom'
+                                            placement: 'bottom',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon is-small">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
@@ -175,7 +179,8 @@
                                         v-tooltip="{
                                             content: $i18n.get('edit'),
                                             autoHide: true,
-                                            placement: 'bottom'
+                                            placement: 'bottom',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon is-small">
                                     <i class="tainacan-icon tainacan-icon-edit"/>
@@ -395,7 +400,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('edit'),
                                                 autoHide: true,
-                                                placement: 'bottom'
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-edit"/>
@@ -410,7 +416,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('delete'),
                                                 autoHide: true,
-                                                placement: 'bottom'
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             class="icon">
                                         <i class="tainacan-icon tainacan-icon-delete"/>

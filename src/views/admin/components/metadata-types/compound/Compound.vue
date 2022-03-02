@@ -4,12 +4,12 @@
             v-if="!hideCollapses && childItemMetadataGroups.length > 0"
             class="collapse-all"
             @click="toggleCollapseAllChildren()">
-        {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
         <span class="icon">
             <i
                     :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright' : !collapseAllChildren }"
                     class="tainacan-icon tainacan-icon-1-25em"/>
         </span>
+        {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
     </a>
     
     <div
@@ -54,12 +54,23 @@
                         v-else
                         v-show="(metadataNameFilterString == '' || filterByMetadatumName(childItemMetadatum))"
                         :key="groupIndex + '-' + childIndex"
+                        :ref="'tainacan-form-item--' + groupIndex + '-' + childIndex"
                         :item-metadatum="childItemMetadatum"
                         :hide-collapses="hideCollapses"
                         :is-collapsed="childItemMetadatum.collapse"
+                        :is-mobile-screen="isMobileScreen"
                         @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
-                        :class="{ 'is-last-input': childIndex == childItemMetadata.length - 1}"
+                        :class="{ 
+                            'is-last-input': childIndex == childItemMetadata.length - 1,
+                            'is-metadata-navigation-active': isMetadataNavigation
+                        }"
+                        :is-focused="(focusedGroupMetadatum === groupIndex) && (focusedChildMetadatum === childIndex)"
+                        :is-metadata-navigation="isMetadataNavigation"
+                        @touchstart.native="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
+                        @mousedown.native="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
+                        @mobileSpecialFocus="setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: true })"
                     />
+
             </template>
             <a 
                     v-if="isMultiple" 
@@ -109,7 +120,10 @@
             value: [String, Number, Array],
             disabled: false,
             hideCollapses: false,
-            metadataNameFilterString: ''
+            metadataNameFilterString: '',
+            isMobileScreen: false,
+            isMetadataNavigation: false,
+            isFocused: false
         },
         data() {
             return {
@@ -117,7 +131,9 @@
                 isCreatingGroup: false,
                 children: [],
                 collapseAllChildren: true,
-                childItemMetadataGroups: []
+                childItemMetadataGroups: [],
+                focusedGroupMetadatum: false,
+                focusedChildMetadatum: false
             }
         },
         computed: {
@@ -147,13 +163,26 @@
                     this.createChildMetadataGroups();
                 },
                 immediate: true
+            },
+            isMetadataNavigation() {
+                this.focusedGroupMetadatum = 0;
+                this.focusedChildMetadatum = 0;
+            },
+            isFocused() {                
+                if (this.isFocused) {
+                    this.setMetadatumChildFocus({ groupIndex: this.focusedGroupMetadatum, childIndex: this.focusedChildMetadatum, scrollIntoView: true });
+                }
             }
         },
         created() {
             eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', () => this.$nextTick(() => this.isRemovingGroup = false));
+            eventBusItemMetadata.$on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            eventBusItemMetadata.$on('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         beforeDestroy() {
             eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', () => this.$nextTick(() => this.isRemovingGroup = false));
+            eventBusItemMetadata.$off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            eventBusItemMetadata.$off('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         methods: {
             createChildMetadataGroups() {
@@ -274,6 +303,14 @@
                         
                         this.childItemMetadataGroups.push(newEmptyGroup);
                         
+                        if (this.isMetadataNavigation) {
+
+                            this.informItemEditionFormOfChildNavigation();
+                            
+                            this.focusedChildMetadatum = -1;
+                            this.focusNextChildMetadatum();
+                        }
+
                         this.isCreatingGroup = false;
                     });
 
@@ -319,15 +356,93 @@
                 } else {
                     this.childItemMetadataGroups.splice(groupIndex, 1);
                 }
+
+                if (this.isMetadataNavigation) {
+                    if (this.focusedGroupMetadatum > 0)
+                        this.focusedGroupMetadatum -= 1;
+
+                    this.informItemEditionFormOfChildNavigation();
+
+                    this.focusPreviousChildMetadatum();
+                }
             },
             filterByMetadatumName(itemMetadatum) {
                 return this.metadataNameFilterString ? (itemMetadatum.metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0) : true;
+            },
+            focusPreviousChildMetadatum() {
+
+                if (this.isFocused) {
+                    if ((this.focusedGroupMetadatum - 1) >= 0 && (this.focusedChildMetadatum - 1) < 0)
+                        this.setMetadatumChildFocus({ groupIndex: this.focusedGroupMetadatum - 1, childIndex: this.childItemMetadataGroups[this.focusedGroupMetadatum - 1].length - 1, scrollIntoView: true })
+                    else if ((this.focusedChildMetadatum - 1) >= 0)
+                        this.setMetadatumChildFocus({ groupIndex: this.focusedGroupMetadatum, childIndex: this.focusedChildMetadatum - 1, scrollIntoView: true })
+                }
+            },
+            focusNextChildMetadatum() {
+
+                if (this.isFocused && this.childItemMetadataGroups[this.focusedGroupMetadatum]) {
+                    if ((this.focusedChildMetadatum + 1) >= this.childItemMetadataGroups[this.focusedGroupMetadatum].length)
+                        this.setMetadatumChildFocus({ groupIndex: this.focusedGroupMetadatum + 1, childIndex: 0, scrollIntoView: true })
+                    else
+                        this.setMetadatumChildFocus({ groupIndex: this.focusedGroupMetadatum, childIndex: this.focusedChildMetadatum + 1, scrollIntoView: true })
+                }
+
+                // This keeps the navigation going on when no child input exists
+                if (this.childItemMetadataGroups.length === 0) {
+                    eventBusItemMetadata.$emit('isOnFirstMetadatumOfCompoundNavigation', true);
+                    eventBusItemMetadata.$emit('isOnLastMetadatumOfCompoundNavigation', true);
+                }
+            },
+            informItemEditionFormOfChildNavigation() {
+                eventBusItemMetadata.$emit('isOnFirstMetadatumOfCompoundNavigation', this.focusedGroupMetadatum === 0 && this.focusedChildMetadatum === 0);
+                eventBusItemMetadata.$emit('isOnLastMetadatumOfCompoundNavigation', (this.focusedGroupMetadatum === this.childItemMetadataGroups.length - 1) && (this.focusedChildMetadatum === this.childItemMetadataGroups[this.focusedGroupMetadatum].length - 1) );
+            },
+            setMetadatumChildFocus({ groupIndex = 0, childIndex = 0, scrollIntoView = false }) {
+                const previousGroupIndex = this.focusedGroupMetadatum;
+                this.focusedGroupMetadatum = groupIndex;
+
+                const previousChildIndex = this.focusedChildMetadatum;
+                this.focusedChildMetadatum = childIndex;
+                
+                if ( (previousGroupIndex === groupIndex) && (previousChildIndex === childIndex) && !scrollIntoView)
+                    return;
+                
+                let fieldElement = this.$refs['tainacan-form-item--' + groupIndex + '-' + childIndex] && this.$refs['tainacan-form-item--' + groupIndex + '-' + childIndex][0] && this.$refs['tainacan-form-item--' + groupIndex + '-' + childIndex][0]['$el'];
+                if (fieldElement) {
+                    
+                    let inputElement = fieldElement.getElementsByTagName('input')[0] || fieldElement.getElementsByTagName('select')[0] || fieldElement.getElementsByTagName('textarea')[0];
+                    if (inputElement) {
+
+                        setTimeout(() => {
+                            
+                            if ( (previousGroupIndex !== groupIndex) && (previousChildIndex !== childIndex)  && inputElement !== document.activeElement) {
+                                inputElement.focus();
+                                
+                                if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio' && !inputElement.classList.contains('is-special-hidden-for-mobile'))
+                                    inputElement.click();
+                            }
+                            
+                            if (scrollIntoView) {
+                                setTimeout(() => {
+                                    fieldElement.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: this.isMobileScreen ? 'start' : 'center'
+                                    });
+                                }, 300);
+                            }
+
+                            this.informItemEditionFormOfChildNavigation();
+
+                        }, 100);
+                    }
+                }
             }
         }
     }
 </script>
 
 <style lang="scss" scoped>
+
     @import '../../../admin/scss/_variables.scss';
 
     .child-metadata-inputs {
@@ -341,8 +456,12 @@
             min-height: 30px;
         }
         .collapse-all {
-            margin-left: -8px;
+            margin-left: -13px;
             font-size: 0.75em;
+
+            .icon {
+                font-size: 1.25em;
+            }
         }
         .field {
             padding-right: 0;

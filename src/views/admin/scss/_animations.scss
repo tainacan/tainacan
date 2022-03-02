@@ -121,6 +121,17 @@
         transform: translate(0, 0px);
     }
 }
+.item-appear-enter-active {
+    animation-name: item-appear;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;   
+}
+.item-appear-leave-active {
+    animation-name: item-appear;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in;   
+    animation-direction: reverse;
+}
 
 // Filter Item Collapse 
 @keyframes filter-item-in {

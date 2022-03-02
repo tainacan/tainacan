@@ -478,7 +478,7 @@ class Elastic_Press {
 			$custom_filter = $default_filters;
 			$temp = [];
 			foreach ($custom_filter['bool']['must'] as $item) {
-				if ( isset($item['bool'])) {
+				if ( isset($item['bool']) && isset($item['bool']["must"]) ) {
 					foreach ($item['bool']["must"] as $item_filter) {
 						if ( !isset( $item_filter["terms"][$filter['key']] ) ) { //do use array_filter ?
 						 	$temp[] = $item;

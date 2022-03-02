@@ -5,11 +5,12 @@
             :class="{ 'tainacan-modal-content': isModal }"
             :tabindex="isModal ? -1 : 0"
             :aria-modal="isModal"
+            :aria-labelledby="'checkbox-radio-filter--title-' + filter.id"
             ref="CheckboxRadioFilterInput">
         <header 
                 v-if="isModal"
                 class="tainacan-modal-title">
-            <h2>{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
+            <h2 :id="'checkbox-radio-filter--title-' + filter.id">{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <hr>
         </header>
 
@@ -131,6 +132,7 @@
                                                     v-tooltip="{
                                                         content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                         autoHide: false,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }" 
                                                     class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
                                             <span 
@@ -194,6 +196,7 @@
                                                     v-tooltip="{
                                                         content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                         autoHide: false,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }" 
                                                     class="checkbox-label-text">{{ `${option.label}` }}</span> 
                                             <span 
@@ -215,6 +218,7 @@
                                                 v-tooltip="{
                                                     content: option.total_children + ' ' + $i18n.get('label_children_terms'),
                                                     autoHide: false,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }" 
                                                 v-else>{{ option.total_children }}</span>
                                         <span class="icon is-pulled-right">
@@ -901,6 +905,13 @@
             margin-bottom: 0px !important;
         }
 
+        @media screen and (max-width: 768px) {
+            .control-label {
+                padding-top: 0.45em;
+                padding-bottom: 0.45em;
+            }
+        }
+
         &:hover {
             background-color: var(--tainacan-gray1);
         }
@@ -1220,6 +1231,23 @@
             -moz-column-count: auto !important;
             -webkit-column-count: auto !important;
             column-count: auto !important;
+        }
+
+        .tainacan-modal-checkbox-search-results-body,
+        .tainacan-checkbox-list-container,
+        .tainacan-finder-columns-container {
+            font-size: 1.125em;
+        }
+
+        .tainacan-finder-columns-container {
+            max-height: 48vh;
+            .tainacan-finder-column,
+            .tainacan-finder-column ul {
+                max-height: 100%;
+            }
+            .tainacan-finder-column .column-label+ul {
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em);
+            }
         }
 
         .tainacan-li-checkbox-list {

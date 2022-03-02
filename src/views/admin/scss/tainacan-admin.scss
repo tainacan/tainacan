@@ -60,14 +60,20 @@ body.tainacan-admin-page #wp-auth-check-wrap {
 #tainacan-admin-app * {
     // For Firefox
     scrollbar-color: var(--tainacan-gray3) transparent;
-    scrollbar-width: thin;
 
     // For Chromium and related
-    &::-webkit-scrollbar {
-        width: 0.4em;
-    }
     &::-webkit-scrollbar-thumb {
         background-color: var(--tainacan-gray3);
+    }
+
+    @media screen and (min-width: 770px) {
+        // For Firefox
+        scrollbar-width: thin;
+
+        // For Chromium and related
+        &::-webkit-scrollbar {
+            width: 0.4em;
+        }
     }
 }
 

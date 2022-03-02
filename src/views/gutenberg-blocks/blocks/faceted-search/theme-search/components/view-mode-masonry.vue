@@ -38,46 +38,52 @@
                     :cols="masonryCols"
                     :gutter="25"
                     class="tainacan-masonry-container">
-                <a 
+                <div
                         role="listitem"
                         :data-tainacan-item-id="item.id"
+                        :aria-setsize="totalItems"
+                        :aria-posinset="getPosInSet(index)"
                         :key="index"
-                        v-for="(item, index) of items"
-                        class="tainacan-masonry-item" 
-                        :href="getItemLink(item.url, index)">
+                        v-for="(item, index) of items">
+                    <a 
+                            
+                            class="tainacan-masonry-item" 
+                            :href="getItemLink(item.url, index)">
 
-                    <!-- Title -->
-                    <div class="metadata-title">
-                        <p v-html="item.title != undefined ? item.title : ''" />
-                        <span 
-                                v-if="isSlideshowViewModeEnabled"
-                                v-tooltip="{
-                                    delay: {
-                                        show: 500,
-                                        hide: 100,
-                                    },
-                                    content: $i18n.get('label_see_on_fullscreen'),
-                                    placement: 'auto-start'
-                                }"          
-                                @click.prevent="starSlideshowFromHere(index)"
-                                class="icon slideshow-icon">
-                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
-                        </span>
-                    </div>
+                        <!-- Title -->
+                        <div class="metadata-title">
+                            <p v-html="item.title != undefined ? item.title : ''" />
+                            <span 
+                                    v-if="isSlideshowViewModeEnabled"
+                                    v-tooltip="{
+                                        delay: {
+                                            shown: 500,
+                                            hide: 100,
+                                        },
+                                        content: $i18n.get('label_see_on_fullscreen'),
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                    }"          
+                                    @click.prevent="starSlideshowFromHere(index)"
+                                    class="icon slideshow-icon">
+                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                            </span>
+                        </div>
 
-                    <!-- Thumbnail -->
-                    <blur-hash-image
-                            v-if="item.thumbnail != undefined"
-                            class="tainacan-masonry-item-thumbnail"
-                            :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
-                            :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
-                            :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
-                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
-                            :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
-                            :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                            :transition-duration="500"
-                        />
-                </a>
+                        <!-- Thumbnail -->
+                        <blur-hash-image
+                                v-if="item.thumbnail != undefined"
+                                class="tainacan-masonry-item-thumbnail"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                :transition-duration="500"
+                            />
+                    </a>
+                </div>
             </masonry>
         </div> 
     </div>

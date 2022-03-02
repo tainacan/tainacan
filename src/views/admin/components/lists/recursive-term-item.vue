@@ -19,7 +19,7 @@
                 v-tooltip="{
                     content: $i18n.get('label_show_children_terms'),
                     autoHide: true,
-                    classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                     placement: 'bottom'
                 }"
                 class="children-dropdown icon">
@@ -58,7 +58,7 @@
                         v-tooltip="{
                             content: $i18n.get('label_new_child'),
                             autoHide: true,
-                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon">
@@ -71,7 +71,7 @@
                         v-tooltip="{
                             content: $i18n.get('edit'),
                             autoHide: true,
-                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon">
@@ -83,7 +83,7 @@
                         v-tooltip="{
                             content: $i18n.get('delete'),
                             autoHide: true,
-                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon">

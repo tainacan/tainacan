@@ -31,100 +31,88 @@
                     role="list"
                     v-if="!isLoading && items.length > 0"
                     class="tainacan-cards-container">
-                <!-- <div> -->
-                <a
+                <div 
                         role="listitem"
                         :key="index"
+                        :aria-setsize="totalItems"
+                        :aria-posinset="getPosInSet(index)"
                         :data-tainacan-item-id="item.id"
-                        v-for="(item, index) of items"
-                        class="tainacan-card"
-                        :href="getItemLink(item.url, index)">                                
-                    <!-- Title -->
-                    <div class="metadata-title">
-                        <p 
-                                v-tooltip="{
-                                    delay: {
-                                        show: 500,
-                                        hide: 300,
-                                    },
-                                    content: item.title != undefined ? item.title : '',
-                                    html: true,
-                                    autoHide: false,
-                                    placement: 'auto-start'
-                                }"
-                                v-html="item.title != undefined ? item.title : ''" />                
-                        <span 
-                                v-if="isSlideshowViewModeEnabled"
-                                v-tooltip="{
-                                    delay: {
-                                        show: 500,
-                                        hide: 100,
-                                    },
-                                    content: $i18n.get('label_see_on_fullscreen'),
-                                    placement: 'auto-start'
-                                }"          
-                                @click.prevent="starSlideshowFromHere(index)"
-                                class="icon slideshow-icon">
-                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
-                        </span>
-                    </div>
-                    <!-- Remaining metadata -->
-                    <div class="media">
-                        <div 
-                                v-if="!shouldHideItemsThumbnail"
-                                class="card-thumbnail">
-                        <blur-hash-image
-                                v-if="item.thumbnail != undefined"
-                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
-                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
-                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
-                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                :transition-duration="500"
-                        />
-                        </div>
-                        
-                        <div class="list-metadata media-body">
-                           <!-- Description -->
+                        v-for="(item, index) of items">        
+
+                    <a
+                            class="tainacan-card"
+                            :href="getItemLink(item.url, index)">     
+
+                        <!-- Title -->
+                        <div class="metadata-title">
                             <p 
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
-                                        content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
+                                        content: item.title != undefined ? item.title : '',
                                         html: true,
                                         autoHide: false,
-                                        placement: 'auto-start'
-                                    }"   
-                                    class="metadata-description"
-                                    v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />                                                        
-                            <br>
-                            <!-- Author and Creation Date-->
-<!--                            <p 
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                    }"
+                                    v-html="item.title != undefined ? item.title : ''" />                
+                            <span 
+                                    v-if="isSlideshowViewModeEnabled"
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
-                                            hide: 300,
+                                            shown: 500,
+                                            hide: 100,
                                         },
-                                        content: column.metadatum == 'row_author' || column.metadatum == 'row_creation',
-                                        html: false,
-                                        autoHide: false,
-                                        placement: 'auto-start'
-                                    }"   
-                                    v-for="(column, index) in displayedMetadata"
-                                    :key="index"
-                                    v-if="column.metadatum == 'row_author' || column.metadatum == 'row_creation'"
-                                    class="metadata-author-creation">   
-                                {{ column.metadatum == 'row_author' ? $i18n.get('info_created_by') + ' ' + item[column.slug] : $i18n.get('info_date') + ' ' + item[column.slug] }}
-                            </p>   
--->                       
+                                        content: $i18n.get('label_see_on_fullscreen'),
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                    }"          
+                                    @click.prevent="starSlideshowFromHere(index)"
+                                    class="icon slideshow-icon">
+                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                            </span>
                         </div>
-                    </div>
-               
-                </a>
-                <!-- </div> -->
+                        <!-- Remaining metadata -->
+                        <div class="media">
+                            <div 
+                                    v-if="!shouldHideItemsThumbnail"
+                                    class="card-thumbnail">
+                            <blur-hash-image
+                                    v-if="item.thumbnail != undefined"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
+                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                    :transition-duration="500"
+                            />
+                            </div>
+                            
+                            <div class="list-metadata media-body">
+                            <!-- Description -->
+                                <p 
+                                        v-tooltip="{
+                                            delay: {
+                                                shown: 500,
+                                                hide: 300,
+                                            },
+                                            content: item.title != undefined ? item.title : '',
+                                            html: true,
+                                            autoHide: false,
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                        }"   
+                                        class="metadata-description"
+                                        v-html="item.description != undefined && item.description != '' ? getLimitedDescription(item.description) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />                                                        
+                                <br>
+
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div> 
     </div>

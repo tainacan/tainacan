@@ -25,7 +25,8 @@
                                     <span class="required-metadatum-asterisk">*</span>
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'name')" 
-                                            :message="$i18n.getHelperMessage('taxonomies', 'name')"/>
+                                            :message="$i18n.getHelperMessage('taxonomies', 'name')"
+                                            extra-classes="tainacan-repository-tooltip"/>
                                     <b-input
                                             id="tainacan-text-name"
                                             v-model="form.name"
@@ -51,7 +52,8 @@
                                         :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'description')" 
-                                            :message="$i18n.getHelperMessage('taxonomies', 'description')"/>
+                                            :message="$i18n.getHelperMessage('taxonomies', 'description')"
+                                            extra-classes="tainacan-repository-tooltip"/>
                                     <b-input
                                             id="tainacan-text-description"
                                             type="textarea"
@@ -71,7 +73,8 @@
                                                     false-value="no" />
                                             <help-button 
                                                 :title="$i18n.getHelperTitle('taxonomies', 'allow_insert')" 
-                                                :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"/>
+                                                :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"
+                                                extra-classes="tainacan-repository-tooltip"/>
                                         </label>
                                 </b-field>
                             </div>
@@ -86,7 +89,8 @@
                                         :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'status')" 
-                                            :message="$i18n.getHelperMessage('taxonomies', 'status')"/>
+                                            :message="$i18n.getHelperMessage('taxonomies', 'status')"
+                                            extra-classes="tainacan-repository-tooltip"/>
                                     <div class="status-radios">
                                         <b-radio
                                                 v-model="form.status"
@@ -111,7 +115,8 @@
                                         :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'slug')" 
-                                            :message="$i18n.getHelperMessage('taxonomies', 'slug')"/>
+                                            :message="$i18n.getHelperMessage('taxonomies', 'slug')"
+                                            extra-classes="tainacan-repository-tooltip"/>
                                     <b-input
                                             @input="updateSlug()"
                                             id="tainacan-text-slug"
@@ -128,7 +133,8 @@
                                         :message="editFormErrors['enabled_post_types'] != undefined ? editFormErrors['enabled_post_types'] : ''">
                                     <help-button 
                                         :title="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')" 
-                                        :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"/>
+                                        :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"
+                                        extra-classes="tainacan-repository-tooltip"/>
 
                                     <div 
                                             v-for="wpPostType in wpPostTypes"

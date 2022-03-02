@@ -78,7 +78,7 @@
                                         v-tooltip="{
                                             content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
                                             autoHide: true,
-                                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
                                         class="icon grip-icon">
@@ -105,7 +105,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('status_private'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }">
                                         <i class="tainacan-icon tainacan-icon-private"/>
@@ -114,7 +114,7 @@
                                             v-tooltip="{
                                                 content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="icon icon-level-identifier">
@@ -149,7 +149,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
                                                     autoHide: true,
-                                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'bottom'
                                                 }"
                                                 class="icon">
@@ -164,7 +164,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('delete'),
                                                     autoHide: true,
-                                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'bottom'
                                                 }"
                                                 class="icon">
@@ -233,7 +233,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('instruction_click_or_drag_filter_create'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }" 
                                             class="icon grip-icon">
@@ -243,7 +243,7 @@
                                             v-tooltip="{
                                                 content: metadatum.name + (metadatum.parent_name ? (' (' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')') : ''),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="metadatum-name">
@@ -259,7 +259,7 @@
                                             v-tooltip="{
                                                 content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="icon icon-level-identifier">
@@ -989,6 +989,9 @@ export default {
                 .label-details {
                     font-weight: normal;
                     color: var(--tainacan-gray3);
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
                 .not-saved {
                     font-style: italic;
@@ -1153,6 +1156,9 @@ export default {
                 .label-details {
                     font-weight: normal;
                     color: var(--tainacan-gray3);
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
             }
             .sortable-drag {

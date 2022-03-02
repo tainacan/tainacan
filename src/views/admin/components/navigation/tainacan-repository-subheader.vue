@@ -9,7 +9,8 @@
                 class="back-button is-hidden-mobile">
             <button     
                     @click="$router.go(-1)"
-                    class="button is-turquoise4">
+                    class="button is-turquoise4"
+                    :aria-label="$i18n.get('back')">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-previous"/>
                 </span>
@@ -25,15 +26,18 @@
                 v-else
                 :style="$adminOptions.hideCollectionSubheader ? 'margin-right: auto;' : ''">
             {{ $i18n.get('collection') + '' }} 
-            <span class="has-text-weight-bold">
-                {{ collection && collection.name ? collection.name : '' }}
+            <router-link 
+                    v-if="collection && collection.id"
+                    :to="$routerHelper.getCollectionPath(collection.id)"
+                    class="has-text-weight-bold has-text-white">
+                {{ collection.name ? collection.name : '' }}
                 <span 
-                        v-if="collection && collection.status && $statusHelper.hasIcon(collection.status)"
+                        v-if="collection.status && $statusHelper.hasIcon(collection.status)"
                         class="icon has-text-white"
                         v-tooltip="{
                             content: $i18n.get('status_' + collection.status),
                             autoHide: true,
-                            classes: ['tainacan-tooltip', 'tooltip'],
+                            popperClass: ['tainacan-tooltip', 'tooltip'],
                             placement: 'auto-start'
                         }">
                     <i 
@@ -41,26 +45,27 @@
                             :class="$statusHelper.getIcon(collection.status)"
                             />
                 </span>
-            </span>
+            </router-link>
         </h1>
 
         <ul class="repository-subheader-icons">
             <li
                     v-tooltip="{
                             delay: {
-                                show: 500,
+                                shown: 500,
                                 hide: 300,
                             },
                             content: $i18n.get('exporters'),
                             autoHide: false,
                             placement: 'bottom-start',
-                            classes: ['tainacan-tooltip', 'header-tooltips', 'tooltip']
+                            popperClass: ['tainacan-tooltip', 'tainacan-header-tooltip', 'tooltip']
                         }">
                 <a
                         @click="openAvailableExportersModal"
                         class="button"
                         id="exporter-collection-button"
-                        v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton">
+                        v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton"
+                        :aria-label="$i18n.get('exporters')">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                     </span>
@@ -69,51 +74,50 @@
             <li     
                     v-tooltip="{
                             delay: {
-                                show: 500,
+                                shown: 500,
                                 hide: 300,
                             },
                             content: $i18n.get('label_view_collection_on_website'),
                             autoHide: false,
                             placement: 'bottom-end',
-                            classes: ['tainacan-tooltip', 'header-tooltips', 'tooltip']
+                            popperClass: ['tainacan-tooltip', 'tainacan-header-tooltip', 'tooltip']
                         }">
                 <a
                         :href="collection && collection.url ? collection.url : ''"
                         target="_blank"
                         v-if="!isRepositoryLevel && collection && collection.url && !$adminOptions.hideRepositorySubheaderViewCollectionButton"
                         class="button"
-                        id="view-collection-button">
+                        id="view-collection-button"
+                        :aria-label="$i18n.get('label_view_collection_on_website')">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
-                    <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
             </li>
             <li     
                     v-tooltip="{
                             delay: {
-                                show: 500,
+                                shown: 500,
                                 hide: 300,
                             },
                             content: $i18n.get('label_view_repository'),
                             autoHide: false,
                             placement: 'bottom-end',
-                            classes: [ 'tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-header-tooltips' : 'header-tooltips']
+                            popperClass: [ 'tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-header-tooltip' : 'tainacan-header-tooltip']
                         }">
                 <a
                         :href="repositoryURL"
                         target="_blank"
                         v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewCollectionsButton"
                         class="button"
-                        id="view-repository-button">
+                        id="view-repository-button"
+                        :aria-label="$i18n.get('label_view_repository')">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
-                    <!-- {{ $i18n.get('label_view_collection_on_website') }} -->
                 </a>
             </li>
         </ul>
-
 
     </div>
 </template>
@@ -206,7 +210,7 @@ export default {
         right: 0;
         top: $header-height;
         position: absolute;
-        z-index: 100;
+        z-index: 8;
         transition: padding-left 0.2s linear, background-color 0.2s linear;
 
         &.is-repository-level {

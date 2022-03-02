@@ -14,6 +14,7 @@ class Metadatum extends Entity {
 		$order,
 		$parent,
 		$description,
+		$description_bellow_name,
 		$placeholder,
 		$required,
 		$multiple,
@@ -110,6 +111,15 @@ class Metadatum extends Entity {
 	 */
 	function get_description() {
 		return $this->get_mapped_property('description');
+	}
+
+	/**
+	 * Return the metadatum description_bellow_name
+	 *
+	 * @return string
+	 */
+	function get_description_bellow_name() {
+		return $this->get_mapped_property('description_bellow_name');
 	}
 
 	/**
@@ -296,6 +306,16 @@ class Metadatum extends Entity {
 	 */
 	function set_description($value) {
 		$this->set_mapped_property('description', $value);
+	}
+
+	/**
+	 * Set metadatum description_bellow_name
+	 *
+	 * @param [string] $value If the description will be displayed bellow the name instead of inside a tooltip (yes/no)
+	 * @return void
+	 */
+	function set_description_bellow_name($value) {
+		$this->set_mapped_property('description_bellow_name', $value);
 	}
 
 	/**

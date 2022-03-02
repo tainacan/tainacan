@@ -29,7 +29,8 @@
                         v-tooltip="{
                             content: $i18n.get('edit'),
                             autoHide: true,
-                            placement: 'auto'
+                            placement: 'auto',
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                         }"
                         class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -40,7 +41,8 @@
                         v-tooltip="{
                             content: $i18n.get('delete'),
                             autoHide: true,
-                            placement: 'auto'
+                            placement: 'auto',
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                         }"
                         class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
