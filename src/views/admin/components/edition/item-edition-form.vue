@@ -39,7 +39,9 @@
                     label-width="120px">
                 <div class="columns">
 
-                    <div class="column is-7">
+                    <div
+                            class="column"
+                            :class="!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail ? 'is-7' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginRightForm">
@@ -390,7 +392,9 @@
                         </div>
                     </div>
 
-                    <div class="column is-5">
+                    <div 
+                            v-if="!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail"
+                            class="column is-5">
                 
                         <div class="sticky-container">
 
@@ -403,13 +407,17 @@
                             </template>
 
                             <!-- Document -------------------------------- -->
-                            <div class="section-label">
+                            <div 
+                                    v-if="!$adminOptions.hideItemEditionDocument"
+                                    class="section-label">
                                 <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
                                 <help-button
                                         :title="$i18n.getHelperTitle('items', 'document')"
                                         :message="$i18n.getHelperMessage('items', 'document')"/>
                             </div>
-                            <div class="section-box document-field">
+                            <div 
+                                    v-if="!$adminOptions.hideItemEditionDocument"
+                                    class="section-box document-field">
                                 <div
                                         v-if="form.document != undefined && form.document != null &&
                                                 form.document_type != undefined && form.document_type != null &&

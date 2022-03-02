@@ -26,7 +26,9 @@
         <div class="tainacan-form">
             <div class="columns">
 
-                <div class="column is-7">
+                <div
+                        class="column"
+                        :class="!$adminOptions.hideItemSingleDocument || !$adminOptions.hideItemSingleThumbnail ? 'is-7' : 'is-12'">
 
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginRightForm">
@@ -268,7 +270,9 @@
                     </b-tabs>
                 </div>
 
-                <div class="column is-5">
+                <div 
+                        v-if="!$adminOptions.hideItemSingleDocument || !$adminOptions.hideItemSingleThumbnail"
+                        class="column is-5">
                     <div class="sticky-container">
 
                         <!-- Hook for extra Form options -->
@@ -280,12 +284,16 @@
                         </template>
 
                         <!-- Document -------------------------------- -->
-                        <div class="section-label">
+                        <div 
+                                v-if="!$adminOptions.hideItemSingleDocument"
+                                class="section-label">
                             <label>{{ item.document !== undefined && item.document !== null && item.document !== ''
                                 ?
                                 $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
                         </div>
-                        <div class="section-box document-field">
+                        <div 
+                                v-if="!$adminOptions.hideItemSingleDocument"
+                                class="section-box document-field">
                             <div
                                     v-if="item.document !== undefined && item.document !== null &&
                                     item.document_type !== undefined && item.document_type !== null &&
