@@ -233,7 +233,7 @@
                             
                         </b-tab-item>
 
-                        <b-tab-item>
+                        <b-tab-item v-if="!$adminOptions.hideItemSingleAttachments">
                             <template slot="header">
                                 <span class="icon has-text-gray5">
                                     <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>

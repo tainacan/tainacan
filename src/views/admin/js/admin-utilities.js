@@ -620,6 +620,7 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         * hideItemEditionDocumentTextInput
         * hideItemEditionDocumentUrlInput
         * hideItemEditionThumbnail
+        * hideItemEditionAttachments
         
         * hideBulkEditionPageTitle
         
@@ -629,6 +630,7 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         * hideItemSingleCurrentVisibility
         * hideItemSingleCommentsOpen
         * hideItemSingleThumbnail
+        * hideItemSingleAttachments
         * hideItemSingleActivities
         * hideItemSingleExposers
     */

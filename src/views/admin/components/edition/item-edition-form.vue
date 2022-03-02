@@ -355,7 +355,7 @@
 
                                 <!-- Attachments ------------------------------------------ -->
                                 <div    
-                                        v-if="activeTab === 'attachments'"
+                                        v-if="activeTab === 'attachments' && !$adminOptions.hideItemEditionAttachments"
                                         class="tab-item"
                                         role="tabpanel"
                                         aria-labelledby="attachments-tab-label"
@@ -1066,12 +1066,14 @@ export default {
                     total: this.totalRelatedItems
                 });
             }
-            pageTabs.push({
-                slug: 'attachments',
-                icon: 'attachments',
-                name: this.$i18n.get('label_attachments'),
-                total: this.totalAttachments
-            });
+            if (!this.$adminOptions.hideItemEditionAttachments) {
+                pageTabs.push({
+                    slug: 'attachments',
+                    icon: 'attachments',
+                    name: this.$i18n.get('label_attachments'),
+                    total: this.totalAttachments
+                });
+            }
             return pageTabs;
         },
         isCurrentlyFocusedOnCompoundMetadatum() {
