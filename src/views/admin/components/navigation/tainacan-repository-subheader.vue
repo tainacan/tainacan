@@ -26,7 +26,9 @@
                 v-else
                 :style="$adminOptions.hideCollectionSubheader ? 'margin-right: auto;' : ''">
             {{ $i18n.get('collection') + '' }} 
-            <span class="has-text-weight-bold">
+            <router-link 
+                    :to="$routerHelper.getCollectionPath(collection.id)"
+                    class="has-text-weight-bold has-text-white">
                 {{ collection && collection.name ? collection.name : '' }}
                 <span 
                         v-if="collection && collection.status && $statusHelper.hasIcon(collection.status)"
@@ -42,7 +44,7 @@
                             :class="$statusHelper.getIcon(collection.status)"
                             />
                 </span>
-            </span>
+            </router-link>
         </h1>
 
         <ul class="repository-subheader-icons">
