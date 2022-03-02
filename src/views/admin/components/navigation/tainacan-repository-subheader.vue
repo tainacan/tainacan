@@ -27,11 +27,12 @@
                 :style="$adminOptions.hideCollectionSubheader ? 'margin-right: auto;' : ''">
             {{ $i18n.get('collection') + '' }} 
             <router-link 
+                    v-if="collection && collection.id"
                     :to="$routerHelper.getCollectionPath(collection.id)"
                     class="has-text-weight-bold has-text-white">
-                {{ collection && collection.name ? collection.name : '' }}
+                {{ collection.name ? collection.name : '' }}
                 <span 
-                        v-if="collection && collection.status && $statusHelper.hasIcon(collection.status)"
+                        v-if="collection.status && $statusHelper.hasIcon(collection.status)"
                         class="icon has-text-white"
                         v-tooltip="{
                             content: $i18n.get('status_' + collection.status),
