@@ -4,7 +4,7 @@ const { Spinner, Button, Placeholder } = wp.components;
 
 const { InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
-import RelatedItemsModal from './related-items-modal.js';
+import SingleItemModal from '../../js/selection/single-item-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
@@ -50,7 +50,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
             });
     }
     
-    function openRelatedItemsModal() {
+    function openSingleItemModal() {
         isModalOpen = true;
         setAttributes( { 
             isModalOpen: isModalOpen
@@ -144,7 +144,9 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 ( 
                 <div>
                     { isModalOpen ?   
-                        <RelatedItemsModal
+                        <SingleItemModal
+                            modalTitle={ __('Select one item that has relations', 'tainacan') }
+                            applyButtonLabel={ __('Get relations of this item', 'tainacan') }
                             existingCollectionId={ collectionId }
                             existingItemId={ itemId }
                             onSelectCollection={ (selectedCollectionId) => {
@@ -157,7 +159,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                                     relatedItems: relatedItems
                                 });
                             }}
-                            onApplyRelatedItem={ (selectedItemId) => {
+                            onApplySelectedItem={ (selectedItemId) => {
                                 if (itemId != selectedItemId) {
                                     relatedItems = [];
                                     relatedItemsTemplate = [];
@@ -202,7 +204,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                     <Button
                         isPrimary
                         type="button"
-                        onClick={ () => openRelatedItemsModal() }>
+                        onClick={ () => openSingleItemModal() }>
                         {__('Select Item', 'tainacan')}
                     </Button>
                 </Placeholder>
