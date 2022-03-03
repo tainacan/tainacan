@@ -10,7 +10,7 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 	
 	if ( !isset($block_attributes['itemId']) )
 		return '';
-
+	
 	// Gets options from block attributes
 	$item_id = $block_attributes['itemId'];
 	$block_id = $block_attributes['blockId'];

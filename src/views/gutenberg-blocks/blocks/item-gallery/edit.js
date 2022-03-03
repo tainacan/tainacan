@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { Button, Placeholder, ToggleControl, PanelBody } = wp.components;
 
-const { serverSideRender: ServerSideRender } = wp.serverSideRender;
+const ServerSideRender = wp.serverSideRender;
 const { InspectorControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
@@ -10,7 +10,6 @@ import SingleItemModal from '../../js/selection/single-item-modal.js';
 export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
     
     let {
-        blockId,
         content, 
         collectionId,
         itemId,
@@ -34,13 +33,6 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
-
-    function openSingleItemModal() {
-        isModalOpen = true;
-        setAttributes( { 
-            isModalOpen: isModalOpen
-        });
-    }
 
     return content == 'preview' ? 
             <div className={className}>
@@ -278,7 +270,13 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                     <Button
                         isPrimary
                         type="button"
-                        onClick={ () => openSingleItemModal() }>
+                        onClick={ () => {
+                                isModalOpen = true;
+                                setAttributes( { 
+                                    isModalOpen: isModalOpen
+                                }); 
+                            }
+                        }>
                         {__('Select Item', 'tainacan')}
                     </Button>
                 </Placeholder>
@@ -286,13 +284,12 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
             }
             
             {  itemId ? (
-
-                    <div className={ 'item-gallery-edit-container' }>
-                            { JSON.stringify(attributes) }
-                            {/* <ServerSideRender
-                                block="tainacan/facets-list"
-                            /> */}
-                    </div>
+                <div className={ 'item-gallery-edit-container' }>
+                    <ServerSideRender
+                        block="tainacan/item-gallery"
+                        attributes={ attributes }
+                    />
+                </div>
                 ) : null
             }
             
