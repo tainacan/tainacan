@@ -23,8 +23,7 @@ const addDataModuleToOldBlocks = () => {
         'carousel-items-list',
         'carousel-terms-list',
         'related-items-list',
-        'carousel-collections-list',
-        'item-gallery'
+        'carousel-collections-list'
     ];
     
     // Looks for Tainacan Blocks based on their classes.
@@ -36,7 +35,7 @@ const addDataModuleToOldBlocks = () => {
         });
     });
 
-    // Extra case for the items list and item submission, as their
+    // Extra case for the items list, item gallery and item submission, as their
     // theme wrapper does not uses gutenberg classes, but the div ID
     let existingItemListOnPage = document.getElementById('tainacan-items-page');
     if ( existingItemListOnPage && !existingItemListOnPage.getAttribute('data-module') )
@@ -45,6 +44,14 @@ const addDataModuleToOldBlocks = () => {
     let existingItemSubmissionFormOnPage = document.getElementById('tainacan-item-submission-form');
     if ( existingItemSubmissionFormOnPage && !existingItemSubmissionFormOnPage.getAttribute('data-module') )
         existingItemSubmissionFormOnPage.setAttribute('data-module', 'item-submission-form');
+
+    let existingItemGalleryOnPages = document.getElementsByClassName('wp-block-tainacan-item-gallery');
+    [...existingItemGalleryOnPages].forEach((existingItemGalleryOnPage) => {
+        let mediaComponentDiv = existingItemGalleryOnPage.getElementsByClassName('tainacan-media-component');
+        if ( mediaComponentDiv[0] && !mediaComponentDiv[0].getAttribute('data-module') )
+            mediaComponentDiv[0].setAttribute('data-module', 'item-gallery');
+    });
+
 }
 
 performWhenDocumentIsLoaded(() => {

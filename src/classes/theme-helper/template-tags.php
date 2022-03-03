@@ -333,11 +333,14 @@ function tainacan_get_the_media_component(
 	$args['media_thumbs_id'] = $media_id . '-thumbs';
 	$args['media_id'] = $media_id;
 	
+	ob_start();
+
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
 		// Modal lightbox layer for rendering photoswipe
 		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
 	
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
+
 		?>
 
 		<script>
@@ -422,7 +425,12 @@ function tainacan_get_the_media_component(
 
 	<?php endif; ?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
 	
-<?php
+	<?php
+
+	$content = ob_get_contents();
+	ob_end_clean();
+
+	return $content;
 }
 
 

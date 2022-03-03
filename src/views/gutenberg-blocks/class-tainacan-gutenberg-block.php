@@ -82,15 +82,6 @@ function tainacan_blocks_register_and_enqueue_all_blocks() {
 	}
 }
 
-/**
- * Plugin Name: Gutenberg examples dynamic
- */
- 
-function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
-	$content = '<p>TESTE</p>';
-	return '<h1>EITA</h1>';
-}
-
 /** 
  * Registers a 'generic' Tainacan Block, according to the TAINACAN_BLOCKs array
  * 
@@ -109,6 +100,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 
 	// If there is a server side render callback, we add its render function
 	if ( isset($options['render_callback']) ) {
+		require_once( __DIR__ . '/blocks/' . $block_slug . '/save.php' );
 		$register_params['render_callback'] = $options['render_callback'];
 		$register_params['skip_inner_blocks'] = true;
 
@@ -120,7 +112,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	}
 
 	// Defines dependencies for editor script
-	$editor_script_deps = array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components');
+	$editor_script_deps = array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-server-side-render');
 	if ( version_compare( $wp_version, '5.2', '<') )
 		$editor_script_deps[] = 'wp-editor';
 	else

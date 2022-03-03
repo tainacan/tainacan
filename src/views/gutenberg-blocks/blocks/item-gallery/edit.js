@@ -1,36 +1,46 @@
 const { __ } = wp.i18n;
 
-const { Spinner, Button, Placeholder } = wp.components;
+const { Button, Placeholder, ToggleControl, PanelBody } = wp.components;
 
-const { InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { serverSideRender: ServerSideRender } = wp.serverSideRender;
+const { InspectorControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
-import tainacan from '../../js/axios.js';
-import axios from 'axios';
 
-export default function ({ attributes, setAttributes, className, isSelected }) {
+export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
     
     let {
+        blockId,
         content, 
         collectionId,
         itemId,
         isModalOpen,
-        isLoading,
+        layoutElements,
+        mediaSources,
+        hideFileNameMain,
+        hideFileCaptionMain,
+        hideFileDescriptionMain,
+        hideFileNameThumbnails,
+        hideFileCaptionThumbnails,
+        hideFileDescriptionThumbnails,
+        hideFileNameLightbox,
+        hideFileCaptionLightbox,
+        hideFileDescriptionLightbox,
+        openLightboxOnClick
     } = attributes;
 
-    function setContent(){
-    }
-    
+    // Gets blocks props from hook
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+
+    // Obtains block's client id to render it on save function
+    setAttributes({ blockId: clientId });
+
     function openSingleItemModal() {
         isModalOpen = true;
         setAttributes( { 
             isModalOpen: isModalOpen
-        } );
+        });
     }
-
-    // Executed only on the first load of page
-    if(content && content.length && content[0].type)
-        setContent();
 
     return content == 'preview' ? 
             <div className={className}>
@@ -39,7 +49,182 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                         src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
             </div>
         : (
-        <div className={className}>
+        <div { ...blockProps }>
+
+            <InspectorControls>
+                
+                <PanelBody
+                        title={__('Media item sources', 'tainacan')}
+                        initialOpen={ true }
+                    >
+                    <ToggleControl
+                        label={__('Document', 'tainacan')}
+                        checked={ mediaSources['document'] === true }
+                        onChange={ ( isChecked ) => {
+                                let updatedSources = JSON.parse(JSON.stringify(mediaSources));
+                                updatedSources['document'] = isChecked;
+                                setAttributes({ mediaSources: updatedSources });
+                            } 
+                        }
+                    />
+                    <ToggleControl
+                        label={__('Attachments', 'tainacan')}
+                        checked={ mediaSources['attachments'] === true }
+                        onChange={ ( isChecked ) => {
+                                let updatedSources = JSON.parse(JSON.stringify(mediaSources));
+                                updatedSources['attachments'] = isChecked;
+                                setAttributes({ mediaSources: updatedSources });
+                            } 
+                        }
+                    />
+                    <ToggleControl
+                        label={__('Metadata', 'tainacan')}
+                        checked={ mediaSources['metadata'] === true }
+                        onChange={ ( isChecked ) => {
+                                let updatedSources = JSON.parse(JSON.stringify(mediaSources));
+                                updatedSources['metadata'] = isChecked;
+                                setAttributes({ mediaSources: updatedSources });
+                            } 
+                        }
+                    />
+                </PanelBody>
+                <PanelBody
+                        title={__('Layout elements', 'tainacan')}
+                        initialOpen={ true }
+                    >
+                    <ToggleControl
+                        label={__('Main slider', 'tainacan')}
+                        checked={ layoutElements['main'] === true }
+                        onChange={ ( isChecked ) => {
+                                let updatedElements = JSON.parse(JSON.stringify(layoutElements));
+                                updatedElements['main'] = isChecked;
+                                setAttributes({ layoutElements: updatedElements });
+                            } 
+                        }
+                    />
+                    <ToggleControl
+                        label={__('Thumbnails carousel', 'tainacan')}
+                        checked={ layoutElements['thumbnails'] === true }
+                        onChange={ (isChecked) => {
+                                let updatedElements = JSON.parse(JSON.stringify(layoutElements));
+                                updatedElements['thumbnails'] = isChecked;
+                                setAttributes({ layoutElements: updatedElements });
+                            } 
+                        }
+                    />
+                    <ToggleControl
+                        label={__('Open lightbox on click', 'tainacan')}
+                        checked={ openLightboxOnClick }
+                        onChange={ ( isChecked ) => {
+                                openLightboxOnClick = isChecked;
+                                setAttributes({ openLightboxOnClick: openLightboxOnClick });
+                            } 
+                        }
+                    />
+                </PanelBody>
+                { layoutElements['main'] === true ?
+                    <PanelBody
+                            title={__('Main slider settings', 'tainacan')}
+                            initialOpen={ true }
+                        >
+                        <ToggleControl
+                            label={__('Hide file name', 'tainacan')}
+                            checked={ hideFileNameMain }
+                            onChange={ ( isChecked ) => {
+                                    hideFileNameMain = isChecked;
+                                    setAttributes({ hideFileNameMain: hideFileNameMain });
+                                } 
+                            }
+                        />
+                       <ToggleControl
+                            label={__('Hide file caption', 'tainacan')}
+                            checked={ hideFileCaptionMain }
+                            onChange={ ( isChecked ) => {
+                                    hideFileCaptionMain = isChecked;
+                                    setAttributes({ hideFileCaptionMain: hideFileCaptionMain });
+                                } 
+                            }
+                        />
+                        <ToggleControl
+                            label={__('Hide file description', 'tainacan')}
+                            checked={ hideFileDescriptionMain }
+                            onChange={ ( isChecked ) => {
+                                    hideFileDescriptionMain = isChecked;
+                                    setAttributes({ hideFileDescriptionMain: hideFileDescriptionMain });
+                                } 
+                            }
+                        />
+                    </PanelBody>
+                : null }
+                { layoutElements['thumbnails'] === true ?
+                    <PanelBody
+                            title={__('Thumbnails carousel settings', 'tainacan')}
+                            initialOpen={ true }
+                        >
+                        <ToggleControl
+                            label={__('Hide file name', 'tainacan')}
+                            checked={ hideFileNameThumbnails }
+                            onChange={ ( isChecked ) => {
+                                    hideFileNameThumbnails = isChecked;
+                                    setAttributes({ hideFileNameThumbnails: hideFileNameThumbnails });
+                                } 
+                            }
+                        />
+                       <ToggleControl
+                            label={__('Hide file caption', 'tainacan')}
+                            checked={ hideFileCaptionThumbnails }
+                            onChange={ ( isChecked ) => {
+                                    hideFileCaptionThumbnails = isChecked;
+                                    setAttributes({ hideFileCaptionThumbnails: hideFileCaptionThumbnails });
+                                } 
+                            }
+                        />
+                        <ToggleControl
+                            label={__('Hide file description', 'tainacan')}
+                            checked={ hideFileDescriptionThumbnails }
+                            onChange={ ( isChecked ) => {
+                                    hideFileDescriptionThumbnails = isChecked;
+                                    setAttributes({ hideFileDescriptionThumbnails: hideFileDescriptionThumbnails });
+                                } 
+                            }
+                        />
+                    </PanelBody>
+                : null }
+                { openLightboxOnClick ?
+                    <PanelBody
+                            title={__('Lightbox settings', 'tainacan')}
+                            initialOpen={ true }
+                        >
+                        <ToggleControl
+                            label={__('Hide file name', 'tainacan')}
+                            checked={ hideFileNameLightbox }
+                            onChange={ ( isChecked ) => {
+                                    hideFileNameLightbox = isChecked;
+                                    setAttributes({ hideFileNameLightbox: hideFileNameLightbox });
+                                } 
+                            }
+                        />
+                       <ToggleControl
+                            label={__('Hide file caption', 'tainacan')}
+                            checked={ hideFileCaptionLightbox }
+                            onChange={ ( isChecked ) => {
+                                    hideFileCaptionLightbox = isChecked;
+                                    setAttributes({ hideFileCaptionLightbox: hideFileCaptionLightbox });
+                                } 
+                            }
+                        />
+                        <ToggleControl
+                            label={__('Hide file description', 'tainacan')}
+                            checked={ hideFileDescriptionLightbox }
+                            onChange={ ( isChecked ) => {
+                                    hideFileDescriptionLightbox = isChecked;
+                                    setAttributes({ hideFileDescriptionLightbox: hideFileDescriptionLightbox });
+                                } 
+                            }
+                        />
+                    </PanelBody>
+                : null }
+            </InspectorControls>
 
             { isSelected ? 
                 ( 
@@ -51,29 +236,17 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                             existingCollectionId={ collectionId }
                             existingItemId={ itemId }
                             onSelectCollection={ (selectedCollectionId) => {
-                                // if (collectionId != selectedCollectionId)
-                                //     relatedItems = [];
-                                
                                 collectionId = selectedCollectionId;
                                 setAttributes({ 
-                                    collectionId: collectionId,
-                                    // relatedItems: relatedItems
+                                    collectionId: collectionId
                                 });
                             }}
                             onApplySelectedItem={ (selectedItemId) => {
-                                // if (itemId != selectedItemId) {
-                                //     relatedItems = [];
-                                //     relatedItemsTemplate = [];
-                                // }
-                                
                                 itemId = selectedItemId;
                                 setAttributes({
                                     itemId: itemId,
-                                    // relatedItems: relatedItems,
-                                    // relatedItemsTemplate: relatedItemsTemplate,
                                     isModalOpen: false
                                 });
-                                setContent();
                             }}
                             onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
                         : null
@@ -83,7 +256,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 ) : null
             }
 
-            { !itemId && !isLoading ? (
+            { !itemId ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
@@ -112,19 +285,15 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 ) : null
             }
             
-            { isLoading ? 
-                <div class="spinner-container">
-                    <Spinner />
-                </div> :
-                <div>
-                    {  itemId ? (
+            {  itemId ? (
 
-                        <div className={ 'item-gallery-edit-container' }>
-
-                        </div>
-                        ) : null
-                    }
-                </div>
+                    <div className={ 'item-gallery-edit-container' }>
+                            { JSON.stringify(attributes) }
+                            {/* <ServerSideRender
+                                block="tainacan/facets-list"
+                            /> */}
+                    </div>
+                ) : null
             }
             
         </div>
