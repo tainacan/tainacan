@@ -111,7 +111,11 @@
             </b-tab-item>
         </b-tabs>
         <a
-                v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id && (maxMultipleValues === undefined || maxMultipleValues > selected.length)"
+                v-if="currentUserCanEditItems && 
+                    itemMetadatum.item &&
+                    itemMetadatum.item.id &&
+                    (maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
+                    (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
                 :disabled="$adminOptions.itemEditionMode"
                 @click="editItemModalOpen = !editItemModalOpen"
                 class="add-link">
