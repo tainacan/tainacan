@@ -53,7 +53,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         label={__('Document', 'tainacan')}
                         checked={ mediaSources['document'] === true }
                         onChange={ ( isChecked ) => {
-                                let updatedSources = JSON.parse(JSON.stringify(mediaSources));
+                                let updatedSources = Object.assign({},mediaSources);
                                 updatedSources['document'] = isChecked;
                                 setAttributes({ mediaSources: updatedSources });
                             } 
@@ -63,7 +63,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         label={__('Attachments', 'tainacan')}
                         checked={ mediaSources['attachments'] === true }
                         onChange={ ( isChecked ) => {
-                                let updatedSources = JSON.parse(JSON.stringify(mediaSources));
+                                let updatedSources = Object.assign({},mediaSources);
                                 updatedSources['attachments'] = isChecked;
                                 setAttributes({ mediaSources: updatedSources });
                             } 
@@ -73,7 +73,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         label={__('Metadata', 'tainacan')}
                         checked={ mediaSources['metadata'] === true }
                         onChange={ ( isChecked ) => {
-                                let updatedSources = JSON.parse(JSON.stringify(mediaSources));
+                                let updatedSources = Object.assign({},mediaSources);
                                 updatedSources['metadata'] = isChecked;
                                 setAttributes({ mediaSources: updatedSources });
                             } 
@@ -88,7 +88,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         label={__('Main slider', 'tainacan')}
                         checked={ layoutElements['main'] === true }
                         onChange={ ( isChecked ) => {
-                                let updatedElements = JSON.parse(JSON.stringify(layoutElements));
+                                let updatedElements = Object.assign({},layoutElements);
                                 updatedElements['main'] = isChecked;
                                 setAttributes({ layoutElements: updatedElements });
                             } 
@@ -98,7 +98,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         label={__('Thumbnails carousel', 'tainacan')}
                         checked={ layoutElements['thumbnails'] === true }
                         onChange={ (isChecked) => {
-                                let updatedElements = JSON.parse(JSON.stringify(layoutElements));
+                                console.log(typeof layoutElements['thumbnails'])
+                                let updatedElements = Object.assign({},layoutElements);
                                 updatedElements['thumbnails'] = isChecked;
                                 setAttributes({ layoutElements: updatedElements });
                             } 

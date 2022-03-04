@@ -10,7 +10,7 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 	
 	if ( !isset($block_attributes['itemId']) )
 		return '';
-	
+
 	// Gets options from block attributes
 	$item_id = $block_attributes['itemId'];
 	$block_id = $block_attributes['blockId'];
@@ -26,14 +26,14 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 	$hide_file_caption_lightbox = isset($block_attributes['hideFileCaptionLightbox']) ? $block_attributes['hideFileCaptionLightbox'] : false;
 	$hide_file_description_lightbox = isset($block_attributes['hideFileDescriptionLightbox']) ? $block_attributes['hideFileDescriptionLightbox'] : false;
 	$open_lightbox_on_click = isset($block_attributes['openLightboxOnClick']) ? $block_attributes['openLightboxOnClick'] : true;
-	
+
 	$media_items_main = array();
 	$media_items_thumbnails = array();
 
-	if ( isset($media_sources['attachments']) && $media_sources['attachments'] )
+	if ( isset($media_sources['attachments']) && ($media_sources['attachments'] === true || $media_sources['attachments'] == 'true') )
 		$attachments = tainacan_get_the_attachments(null, $item_id);
 
-	if ( isset($layout_elements['main']) && $layout_elements['main'] ) {
+	if ( isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true') ) {
 
 		$class_slide_metadata = '';
 		if ($hide_file_name_main)
@@ -43,7 +43,7 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 		if ($hide_file_caption_main)
 			$class_slide_metadata .= ' hide-caption';
 
-		if ( isset($media_sources['document']) && $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
+		if ( isset($media_sources['document']) && ($media_sources['document'] === true || $media_sources['document'] == 'true') && !empty(tainacan_get_the_document($item_id)) ) {
 			$is_document_type_attachment = tainacan_get_the_document_type($item_id) === 'attachment';
 			$media_items_main[] =
 				tainacan_get_the_media_component_slide(array(
@@ -60,7 +60,7 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 				));
 		}
 		
-		if ( isset($media_sources['attachments']) && $media_sources['attachments'] ) {
+		if ( isset($media_sources['attachments']) && ($media_sources['attachments'] === true || $media_sources['attachments'] == 'true') ) {
 			foreach ( $attachments as $attachment ) {
 				$media_items_main[] =
 					tainacan_get_the_media_component_slide(array(
@@ -78,8 +78,8 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 			}
 		}
 	}
-
-	if ( isset($layout_elements['thumbnails']) && $layout_elements['thumbnails'] ) {
+	
+	if ( isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true') ) {
 
 		$class_slide_metadata = '';
 		if ($hide_file_name_thumbnails)
@@ -89,7 +89,7 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 		if ($hide_file_caption_thumbnails)
 			$class_slide_metadata .= ' hide-caption';
 
-		if ( isset($media_sources['document']) && $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
+		if ( isset($media_sources['document']) && ($media_sources['document'] === true && $media_sources['document'] == 'true') && !empty(tainacan_get_the_document($item_id)) ) {
 			$is_document_type_attachment = tainacan_get_the_document_type($item_id) === 'attachment';
 			$media_items_thumbnails[] =
 				tainacan_get_the_media_component_slide(array(
@@ -103,7 +103,7 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 				));			
 		}
 
-		if ( isset($media_sources['attachments']) && $media_sources['attachments'] ) {
+		if ( isset($media_sources['attachments']) && ($media_sources['attachments'] === true || $media_sources['attachments'] == 'true') ) {
 			foreach ( $attachments as $attachment ) {
 				$media_items_thumbnails[] = 
 					tainacan_get_the_media_component_slide(array(
@@ -126,12 +126,12 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 		$wrapper_attributes,
 		tainacan_get_the_media_component(
 			'tainacan-item-gallery-block_id-' . $block_id,
-			(isset($layout_elements['thumbnails']) && $layout_elements['thumbnails']) ? $media_items_thumbnails : null,
-			(isset($layout_elements['main']) && $layout_elements['main']) ? $media_items_main : null,
+			(isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true')) ? $media_items_thumbnails : null,
+			(isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? $media_items_main : null,
 			array(
 				'class_main_div' => '',
 				'class_thumbs_div' => '',
-				'swiper_main_options' => (isset($layout_elements['main']) && $layout_elements['main']) ? array(
+				'swiper_main_options' => (isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? array(
 					'navigation' => array(
 						'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
 						'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
@@ -139,7 +139,7 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 						'lazy' => true
 					)
 				) : '',
-				'swiper_thumbs_options' => (isset($layout_elements['thumbnails']) && $layout_elements['thumbnails'] && (!isset($layout_elements['main']) || !$layout_elements['main']) ) ? array(
+				'swiper_thumbs_options' => (isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true') && (!isset($layout_elements['main']) || !($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ) ? array(
 					'navigation' => array(
 						'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',
 						'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',
