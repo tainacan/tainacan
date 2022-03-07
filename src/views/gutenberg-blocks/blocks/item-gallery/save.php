@@ -120,15 +120,39 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 	}
 	
 	$block_custom_css = '';
-	$block_custom_css .= (isset($block_attributes['style']) && isset($block_attributes['style']['color']) && isset($block_attributes['style']['color']['link'])) ? ('--swiper-theme-color: ' . $block_attributes['style']['color']['link'] . ';') : '';
-	$block_custom_css .= isset($block_attributes['textColor']) ? ('--tainacan-media-metadata-color: ' . $block_attributes['textColor'] . ';') : '';
+	
+	// Text color. First we check for custom preset colors, then actual values
+	$block_custom_css .= isset($block_attributes['textColor']) ? ('--tainacan-media-metadata-color:  var(--wp--preset--color--' . $block_attributes['textColor'] . ');') : '';
+	$block_custom_css .= (isset($block_attributes['style']) && isset($block_attributes['style']['color']) && isset($block_attributes['style']['color']['text'])) ? ('--tainacan-media-metadata-color: ' . $block_attributes['style']['color']['text'] . ';') : '';
+	
+	// Background color. First we check for custom preset colors, then actual values
+	$block_custom_css .= isset($block_attributes['backgroundColor']) ? ('--tainacan-media-background:  var(--wp--preset--color--' . $block_attributes['backgroundColor'] . ');') : '';
 	$block_custom_css .= (isset($block_attributes['style']) && isset($block_attributes['style']['color']) && isset($block_attributes['style']['color']['background'])) ? ('--tainacan-media-background: ' . $block_attributes['style']['color']['background'] . ';') : '';
+
+	// Link color, if enabled. Firts we check for custom preset colors, then actual values.
+	$block_custom_css .= isset($block_attributes['linkColor']) ? ('--swiper-theme-color: var(--wp--preset--color--' . $block_attributes['linkColor'] . ');') : '';
+	if (
+		isset($block_attributes['style']) &&
+		isset($block_attributes['style']['elements']) &&
+		isset($block_attributes['style']['elements']['link']) &&
+		isset($block_attributes['style']['elements']['link']['color']) &&
+		isset($block_attributes['style']['elements']['link']['color']['text'])
+	) {
+		$link_color = $block_attributes['style']['elements']['link']['color']['text'];
+		if ( strpos( $link_color, 'var:' ) !== false ) {
+			$link_color = str_replace('|', '--', $link_color);
+			$link_color = str_replace('var:', 'var(--wp--', $link_color) . ')';
+		}
+		$block_custom_css .= '--swiper-theme-color: ' . $link_color . ';';
+	}
+		
+	// Other values are obtained directly from the attributes
 	$block_custom_css .= (isset($block_attributes['arrowsSize']) && is_numeric($block_attributes['arrowsSize'])) ? ('--swiper-navigation-size: ' . $block_attributes['arrowsSize'] . 'px;') : '';
 	$block_custom_css .= (isset($block_attributes['mainSliderHeight']) && is_numeric($block_attributes['mainSliderHeight'])) ? ('--tainacan-media-main-carousel-height: ' . $block_attributes['mainSliderHeight'] . 'vh;') : '';
 	$block_custom_css .= (isset($block_attributes['mainSliderWidth']) && is_numeric($block_attributes['mainSliderWidth'])) ? ('--tainacan-media-main-carousel-width: ' . $block_attributes['mainSliderWidth'] . '%;') : '';
 	$block_custom_css .= (isset($block_attributes['thumbnailsCarouselWidth']) && is_numeric($block_attributes['thumbnailsCarouselWidth'])) ? ('--tainacan-media-thumbs-carousel-width: ' . $block_attributes['thumbnailsCarouselWidth'] . '%;') : '';
 	$block_custom_css .= (isset($block_attributes['thumbnailsCarouselItemSize']) && is_numeric($block_attributes['thumbnailsCarouselItemSize'])) ? ('--tainacan-media-thumbs-carousel-item-size: ' . $block_attributes['thumbnailsCarouselItemSize'] . 'px;') : '';
-	var_dump($block_attributes);
+	// var_dump($block_attributes['style']['elements']);
 	$wrapper_attributes = get_block_wrapper_attributes(
 		array(
 			'style' => $block_custom_css,

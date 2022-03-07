@@ -118,6 +118,9 @@
             "background": true,
             "gradients": true,
             "link": true
+        },
+        "spacing": {
+            "padding": true
         }
     },
     "editorScript": "item-gallery",

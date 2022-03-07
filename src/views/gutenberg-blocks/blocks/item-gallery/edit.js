@@ -240,7 +240,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                 { openLightboxOnClick ?
                     <PanelBody
                             title={__('Lightbox settings', 'tainacan')}
-                            initialOpen={ true }
+                            initialOpen={ false }
                         >
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}
