@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 
-const { Button, Placeholder, ToggleControl, PanelBody } = wp.components;
+const { Button, Placeholder, RangeControl, ToggleControl, PanelBody } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
 const { InspectorControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
@@ -25,7 +25,12 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         hideFileNameLightbox,
         hideFileCaptionLightbox,
         hideFileDescriptionLightbox,
-        openLightboxOnClick
+        openLightboxOnClick,
+        arrowsSize,
+        mainSliderHeight,
+        mainSliderWidth,          
+        thumbnailsCarouselWidth,
+        thumbnailsCarouselItemSize
     } = attributes;
 
     // Gets blocks props from hook
@@ -98,7 +103,6 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         label={__('Thumbnails carousel', 'tainacan')}
                         checked={ layoutElements['thumbnails'] === true }
                         onChange={ (isChecked) => {
-                                console.log(typeof layoutElements['thumbnails'])
                                 let updatedElements = Object.assign({},layoutElements);
                                 updatedElements['thumbnails'] = isChecked;
                                 setAttributes({ layoutElements: updatedElements });
@@ -120,6 +124,36 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             title={__('Main slider settings', 'tainacan')}
                             initialOpen={ true }
                         >
+                        <RangeControl
+                            label={ __('Arrows size (px)', 'tainacan') }
+                            value={ arrowsSize }
+                            onChange={ ( updatedArrowsSize ) => {
+                                arrowsSize = updatedArrowsSize;
+                                setAttributes({ arrowsSize: updatedArrowsSize });
+                            }}
+                            min={ 8 }
+                            max={ 64 }
+                        />
+                        <RangeControl
+                            label={ __('Slider height (vh)', 'tainacan') }
+                            value={ mainSliderHeight }
+                            onChange={ ( updatedMainSliderHeight ) => {
+                                mainSliderHeight = updatedMainSliderHeight;
+                                setAttributes({ mainSliderHeight: updatedMainSliderHeight });
+                            }}
+                            min={ 10 }
+                            max={ 150 }
+                        />
+                        <RangeControl
+                            label={ __('Slider width (%)', 'tainacan') }
+                            value={ mainSliderWidth }
+                            onChange={ ( updatedMainSliderWidth ) => {
+                                mainSliderWidth = updatedMainSliderWidth;
+                                setAttributes({ mainSliderWidth: updatedMainSliderWidth });
+                            }}
+                            min={ 10 }
+                            max={ 150 }
+                        />
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}
                             checked={ hideFileNameMain }
@@ -154,6 +188,26 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             title={__('Thumbnails carousel settings', 'tainacan')}
                             initialOpen={ true }
                         >
+                        <RangeControl
+                            label={ __('Carousel width (%)', 'tainacan') }
+                            value={ thumbnailsCarouselWidth }
+                            onChange={ ( updatedThumbnailsCarouselWidth ) => {
+                                thumbnailsCarouselWidth = updatedThumbnailsCarouselWidth;
+                                setAttributes({ thumbnailsCarouselWidth: updatedThumbnailsCarouselWidth });
+                            }}
+                            min={ 10 }
+                            max={ 150 }
+                        />
+                        <RangeControl
+                            label={ __('Carousel item size (px)', 'tainacan') }
+                            value={ thumbnailsCarouselItemSize }
+                            onChange={ ( updatedThumbnailsCarouselItemSize ) => {
+                                thumbnailsCarouselItemSize = updatedThumbnailsCarouselItemSize;
+                                setAttributes({ thumbnailsCarouselItemSize: updatedThumbnailsCarouselItemSize });
+                            }}
+                            min={ 32 }
+                            max={ 400 }
+                        />
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}
                             checked={ hideFileNameThumbnails }
@@ -266,7 +320,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 width="24px">
                             <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
                         </svg>
-                        {__('Select an item to create a set of lists with items related to it via relationship metadata.', 'tainacan')}
+                        {__('Select an item to display its media gallery, including Document and Attachments.', 'tainacan')}
                     </p>
                     <Button
                         isPrimary

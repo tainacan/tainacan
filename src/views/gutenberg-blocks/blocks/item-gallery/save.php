@@ -118,37 +118,48 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 			}
 		}
 	}
-	
-	$wrapper_attributes = get_block_wrapper_attributes();
 
-	return sprintf(
-		'<div %1$s>%2$s</div>',
-		$wrapper_attributes,
-		tainacan_get_the_media_component(
-			'tainacan-item-gallery-block_id-' . $block_id,
-			(isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true')) ? $media_items_thumbnails : null,
-			(isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? $media_items_main : null,
-			array(
-				'class_main_div' => '',
-				'class_thumbs_div' => '',
-				'swiper_main_options' => (isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? array(
-					'navigation' => array(
-						'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
-						'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
-						'preloadImages' => false,
-						'lazy' => true
-					)
-				) : '',
-				'swiper_thumbs_options' => (isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true') && (!isset($layout_elements['main']) || !($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ) ? array(
-					'navigation' => array(
-						'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',
-						'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',
-						'preloadImages' => false,
-						'lazy' => true
-					)
-				) : '',
-				'disable_lightbox' => !$open_lightbox_on_click,
-			)
+	$block_custom_css = '';
+	$block_custom_css .= isset($block_attributes['linkColor']) ? ('--swiper-theme-color: ' . $block_attributes['linkColor'] . ';') : '';
+	$block_custom_css .= isset($block_attributes['backgroundColor']) ? ('--tainacan-media-background: ' . $block_attributes['backgroundColor'] . ';') : '';
+	$block_custom_css .= (isset($block_attributes['arrowsSize']) && is_numeric($block_attributes['arrowsSize'])) ? ('--swiper-navigation-size: ' . $block_attributes['arrowsSize'] . 'px;') : '';
+	$block_custom_css .= (isset($block_attributes['mainSliderHeight']) && is_numeric($block_attributes['mainSliderHeight'])) ? ('--tainacan-media-main-carousel-height: ' . $block_attributes['mainSliderHeight'] . 'vh;') : '';
+	$block_custom_css .= (isset($block_attributes['mainSliderWidth']) && is_numeric($block_attributes['mainSliderWidth'])) ? ('--tainacan-media-main-carousel-width: ' . $block_attributes['mainSliderWidth'] . '%;') : '';
+	$block_custom_css .= (isset($block_attributes['thumbnailsCarouselWidth']) && is_numeric($block_attributes['thumbnailsCarouselWidth'])) ? ('--tainacan-media-thumbs-carousel-width: ' . $block_attributes['thumbnailsCarouselWidth'] . '%;') : '';
+	$block_custom_css .= (isset($block_attributes['thumbnailsCarouselItemSize']) && is_numeric($block_attributes['thumbnailsCarouselItemSize'])) ? ('--tainacan-media-thumbs-carousel-item-size: ' . $block_attributes['thumbnailsCarouselItemSize'] . 'px;') : '';
+
+	$wrapper_attributes = get_block_wrapper_attributes(
+		array(
+			'style' => $block_custom_css,
+			'class' => 'tainacan-media-component'
 		)
-	); 
+	);
+	
+	return tainacan_get_the_media_component(
+		'tainacan-item-gallery-block_id-' . $block_id,
+		(isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true')) ? $media_items_thumbnails : null,
+		(isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? $media_items_main : null,
+		array(
+			'wrapper_attributes' => $wrapper_attributes,
+			'class_main_div' => '',
+			'class_thumbs_div' => '',
+			'swiper_main_options' => (isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? array(
+				'navigation' => array(
+					'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
+					'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
+					'preloadImages' => false,
+					'lazy' => true
+				)
+			) : '',
+			'swiper_thumbs_options' => (isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true') && (!isset($layout_elements['main']) || !($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ) ? array(
+				'navigation' => array(
+					'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',
+					'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',
+					'preloadImages' => false,
+					'lazy' => true
+				)
+			) : '',
+			'disable_lightbox' => !$open_lightbox_on_click,
+		)
+	);
 }

@@ -278,6 +278,7 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  * @param array        $media_items_main       Array of media items to be rendered inside main, bigger the carousel. Default to empty array
  * @param array|string $args {
  *   Optional. Array of arguments.
+ * 	   @type string      wrapper_attributes       String containing attrs (style, class) for the wrapper div. If used, remember to pass class="tainacan-media-component"
  *     @type string      before_main_div          String to be added before the main gallery div
  *     @type string      after_main_div           String to be added after the main gallery div
  *     @type string      before_thumbs_div        String to be added before the thumbs gallery div
@@ -308,6 +309,7 @@ function tainacan_get_the_media_component(
 	global $TAINACAN_BASE_URL;
 
 	$args = array_merge(array(
+		'wrapper_attributes' => 'class="tainacan-media-component"',
 		'before_main_div' => '',
 		'after_main_div' => '',
 		'before_thumbs_div' => '',
@@ -353,7 +355,7 @@ function tainacan_get_the_media_component(
 			tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
 		</script>	
 
-		<div id="<?php echo $media_id ?>" class="tainacan-media-component" data-module='item-gallery'>
+		<div id="<?php echo $media_id ?>" <?php echo $args['wrapper_attributes']; ?> data-module='item-gallery'>
 
 			<?php if ( $args['has_media_main'] ) : ?>
 				

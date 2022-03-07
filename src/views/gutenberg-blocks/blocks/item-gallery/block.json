@@ -1,11 +1,11 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/item-gallery",
-    "title": "Tainacan Item Gallery",
+    "title": "Tainacan Item Media Gallery",
     "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "item", "document", "carousel", "attachments", "zoom" ],
-    "description": "The media gallery of the item, displaying document and attachments.",
+    "description": "The media gallery of the item, displaying document, attachments and more.",
     "textdomain": "tainacan",
     "example": {
         "attributes": {
@@ -88,11 +88,37 @@
         "openLightboxOnClick": {
             "type": "boolean",
             "default": true
+        },
+        "arrowsSize": {
+            "type": "integer",
+            "default": 44
+        },
+        "mainSliderHeight": {
+            "type": "integer",
+            "default": 60
+        },
+        "mainSliderWidth": {
+            "type": "integer",
+            "default": 100
+        },
+        "thumbnailsCarouselWidth": {
+            "type": "integer",
+            "default": 100
+        },
+        "thumbnailsCarouselItemSize": {
+            "type": "integer",
+            "default": 136
         }
     },
     "supports": {
         "align": ["full", "wide"],
-        "multiple": true
+        "multiple": true,
+        "color": {
+            "text": true,
+            "background": true,
+            "gradients": true,
+            "link": true
+        }
     },
     "editorScript": "item-gallery",
 	"editorStyle": "item-gallery"

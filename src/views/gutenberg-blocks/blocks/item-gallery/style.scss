@@ -113,6 +113,10 @@ $pswp__include-minimal-style: true !default;
                 display: none;
                 visibility: hidden;
             }
+            &.hide-name.hide-description.hide-caption {
+                display: none;
+                visibility: hidden;
+            }
         }
 
         .swiper-slide-metadata__name {
@@ -207,6 +211,8 @@ $pswp__include-minimal-style: true !default;
         img {
             width: auto;
             max-height: var(--tainacan-media-main-carousel-height, 60vh);
+            max-width: 100%;
+            height: auto;
         }
         .twitter-tweet {
             margin-left: auto;
@@ -298,6 +304,10 @@ $pswp__include-minimal-style: true !default;
                 visibility: hidden;
             }
             &.hide-name.hide-description.hide-caption br {
+                display: none;
+                visibility: hidden;
+            }
+            &.hide-name.hide-description.hide-caption {
                 display: none;
                 visibility: hidden;
             }
