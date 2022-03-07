@@ -612,16 +612,18 @@ a.pswp__share--download:hover {
 .tainacan-media-component {
   --swiper-theme-color: var(--tainacan-secondary, #298596);
   --swiper-navigation-size: 44px;
+  --tainacan-media-metadata-color: var(--tainacan-label-color, #454647);
   --tainacan-media-background: var(--tainacan-background-color, transparent);
   --tainacan-media-main-carousel-height: 60vh;
   --tainacan-media-main-carousel-width: 100%;
   --tainacan-media-thumbs-carousel-width: 100%;
   --tainacan-media-thumbs-carousel-item-size: 136px;
-  width: 100%;
   height: auto;
   display: block;
   background-color: var(--tainacan-media-background, transparent);
   box-sizing: border-box; }
+  .tainacan-media-component:not(.alignfull):not(.alignwide) {
+    width: 100%; }
   .tainacan-media-component .swiper-slide,
   .tainacan-media-component .swiper-slide::after,
   .tainacan-media-component .swiper-slide::before {
@@ -695,13 +697,15 @@ a.pswp__share--download:hover {
     .tainacan-media-component__swiper-main li.swiper-slide .swiper-slide-metadata__name {
       font-size: 1em;
       font-weight: bold;
-      color: var(--tainacan-label-color, #454647); }
+      color: var(--tainacan-media-metadata-color, #454647);
+      opacity: 0.75; }
     .tainacan-media-component__swiper-main li.swiper-slide .swiper-slide-metadata__caption {
       font-size: 0.9375em;
-      color: var(--tainacan-input-color, #1d1d1d); }
+      color: var(--tainacan-media-metadata-color, #454647); }
     .tainacan-media-component__swiper-main li.swiper-slide .swiper-slide-metadata__caption {
       font-size: 0.875em;
-      color: var(--tainacan-info-color, #555758); }
+      color: var(--tainacan-media-metadata-color, #454647);
+      opacity: 0.85; }
   .tainacan-media-component__swiper-main .swiper-slide-content {
     width: 100%;
     height: 100%;
@@ -811,13 +815,15 @@ a.pswp__share--download:hover {
       border-bottom-color: var(--swiper-theme-color, #298596); }
     .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__name {
       font-size: 1em;
-      color: var(--tainacan-label-color, #454647); }
+      color: var(--tainacan-media-metadata-color, #454647);
+      opacity: 0.75; }
     .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__caption {
       font-size: 0.9375em;
-      color: var(--tainacan-input-color, #1d1d1d); }
+      color: var(--tainacan-media-metadata-color, #454647); }
     .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__caption {
       font-size: 0.875em;
-      color: var(--tainacan-info-color, #555758); }
+      color: var(---tainacan-media-metadata-color, #454647);
+      opacity: 0.85; }
     .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata {
       text-align: center;
       display: block;

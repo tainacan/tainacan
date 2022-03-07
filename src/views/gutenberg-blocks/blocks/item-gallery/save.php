@@ -118,23 +118,23 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 			}
 		}
 	}
-
+	
 	$block_custom_css = '';
-	$block_custom_css .= isset($block_attributes['linkColor']) ? ('--swiper-theme-color: ' . $block_attributes['linkColor'] . ';') : '';
-	$block_custom_css .= isset($block_attributes['backgroundColor']) ? ('--tainacan-media-background: ' . $block_attributes['backgroundColor'] . ';') : '';
+	$block_custom_css .= (isset($block_attributes['style']) && isset($block_attributes['style']['color']) && isset($block_attributes['style']['color']['link'])) ? ('--swiper-theme-color: ' . $block_attributes['style']['color']['link'] . ';') : '';
+	$block_custom_css .= isset($block_attributes['textColor']) ? ('--tainacan-media-metadata-color: ' . $block_attributes['textColor'] . ';') : '';
+	$block_custom_css .= (isset($block_attributes['style']) && isset($block_attributes['style']['color']) && isset($block_attributes['style']['color']['background'])) ? ('--tainacan-media-background: ' . $block_attributes['style']['color']['background'] . ';') : '';
 	$block_custom_css .= (isset($block_attributes['arrowsSize']) && is_numeric($block_attributes['arrowsSize'])) ? ('--swiper-navigation-size: ' . $block_attributes['arrowsSize'] . 'px;') : '';
 	$block_custom_css .= (isset($block_attributes['mainSliderHeight']) && is_numeric($block_attributes['mainSliderHeight'])) ? ('--tainacan-media-main-carousel-height: ' . $block_attributes['mainSliderHeight'] . 'vh;') : '';
 	$block_custom_css .= (isset($block_attributes['mainSliderWidth']) && is_numeric($block_attributes['mainSliderWidth'])) ? ('--tainacan-media-main-carousel-width: ' . $block_attributes['mainSliderWidth'] . '%;') : '';
 	$block_custom_css .= (isset($block_attributes['thumbnailsCarouselWidth']) && is_numeric($block_attributes['thumbnailsCarouselWidth'])) ? ('--tainacan-media-thumbs-carousel-width: ' . $block_attributes['thumbnailsCarouselWidth'] . '%;') : '';
 	$block_custom_css .= (isset($block_attributes['thumbnailsCarouselItemSize']) && is_numeric($block_attributes['thumbnailsCarouselItemSize'])) ? ('--tainacan-media-thumbs-carousel-item-size: ' . $block_attributes['thumbnailsCarouselItemSize'] . 'px;') : '';
-
+	var_dump($block_attributes);
 	$wrapper_attributes = get_block_wrapper_attributes(
 		array(
 			'style' => $block_custom_css,
 			'class' => 'tainacan-media-component'
 		)
 	);
-	
 	return tainacan_get_the_media_component(
 		'tainacan-item-gallery-block_id-' . $block_id,
 		(isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true')) ? $media_items_thumbnails : null,
