@@ -22,9 +22,6 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         hideFileNameThumbnails,
         hideFileCaptionThumbnails,
         hideFileDescriptionThumbnails,
-        hideFileNameLightbox,
-        hideFileCaptionLightbox,
-        hideFileDescriptionLightbox,
         openLightboxOnClick,
         arrowsSize,
         mainSliderHeight,
@@ -74,7 +71,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             } 
                         }
                     />
-                    <ToggleControl
+                    {/* <ToggleControl
                         label={__('Metadata', 'tainacan')}
                         checked={ mediaSources['metadata'] === true }
                         onChange={ ( isChecked ) => {
@@ -83,7 +80,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                 setAttributes({ mediaSources: updatedSources });
                             } 
                         }
-                    />
+                    /> */}
                 </PanelBody>
                 <PanelBody
                         title={__('Layout elements', 'tainacan')}
@@ -237,40 +234,6 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                         />
                     </PanelBody>
                 : null }
-                { openLightboxOnClick ?
-                    <PanelBody
-                            title={__('Lightbox settings', 'tainacan')}
-                            initialOpen={ false }
-                        >
-                        <ToggleControl
-                            label={__('Hide file name', 'tainacan')}
-                            checked={ hideFileNameLightbox }
-                            onChange={ ( isChecked ) => {
-                                    hideFileNameLightbox = isChecked;
-                                    setAttributes({ hideFileNameLightbox: hideFileNameLightbox });
-                                } 
-                            }
-                        />
-                       <ToggleControl
-                            label={__('Hide file caption', 'tainacan')}
-                            checked={ hideFileCaptionLightbox }
-                            onChange={ ( isChecked ) => {
-                                    hideFileCaptionLightbox = isChecked;
-                                    setAttributes({ hideFileCaptionLightbox: hideFileCaptionLightbox });
-                                } 
-                            }
-                        />
-                        <ToggleControl
-                            label={__('Hide file description', 'tainacan')}
-                            checked={ hideFileDescriptionLightbox }
-                            onChange={ ( isChecked ) => {
-                                    hideFileDescriptionLightbox = isChecked;
-                                    setAttributes({ hideFileDescriptionLightbox: hideFileDescriptionLightbox });
-                                } 
-                            }
-                        />
-                    </PanelBody>
-                : null }
             </InspectorControls>
 
             { isSelected ? 
@@ -340,6 +303,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
             
             {  itemId ? (
                 <div className={ 'item-gallery-edit-container' }>
+                    <div class="preview-warning">{__('Warning: this is just a demonstration. To see the gallery in action, either preview or publish your post.', 'tainacan') }</div>
                     <ServerSideRender
                         block="tainacan/item-gallery"
                         attributes={ attributes }

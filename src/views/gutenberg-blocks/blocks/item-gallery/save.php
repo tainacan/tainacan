@@ -22,9 +22,6 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 	$hide_file_name_thumbnails = isset($block_attributes['hideFileNameThumbnails']) ? $block_attributes['hideFileNameThumbnails'] : true;
 	$hide_file_caption_thumbnails = isset($block_attributes['hideFileCaptionThumbnails']) ? $block_attributes['hideFileCaptionThumbnails'] : true;
 	$hide_file_description_thumbnails = isset($block_attributes['hideFileDescriptionThumbnails']) ? $block_attributes['hideFileDescriptionThumbnails'] : true;
-	$hide_file_name_lightbox = isset($block_attributes['hideFileNameLightbox']) ? $block_attributes['hideFileNameLightbox'] : false;
-	$hide_file_caption_lightbox = isset($block_attributes['hideFileCaptionLightbox']) ? $block_attributes['hideFileCaptionLightbox'] : false;
-	$hide_file_description_lightbox = isset($block_attributes['hideFileDescriptionLightbox']) ? $block_attributes['hideFileDescriptionLightbox'] : false;
 	$open_lightbox_on_click = isset($block_attributes['openLightboxOnClick']) ? $block_attributes['openLightboxOnClick'] : true;
 
 	$media_items_main = array();
@@ -152,13 +149,14 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 	$block_custom_css .= (isset($block_attributes['mainSliderWidth']) && is_numeric($block_attributes['mainSliderWidth'])) ? ('--tainacan-media-main-carousel-width: ' . $block_attributes['mainSliderWidth'] . '%;') : '';
 	$block_custom_css .= (isset($block_attributes['thumbnailsCarouselWidth']) && is_numeric($block_attributes['thumbnailsCarouselWidth'])) ? ('--tainacan-media-thumbs-carousel-width: ' . $block_attributes['thumbnailsCarouselWidth'] . '%;') : '';
 	$block_custom_css .= (isset($block_attributes['thumbnailsCarouselItemSize']) && is_numeric($block_attributes['thumbnailsCarouselItemSize'])) ? ('--tainacan-media-thumbs-carousel-item-size: ' . $block_attributes['thumbnailsCarouselItemSize'] . 'px;') : '';
-	// var_dump($block_attributes['style']['elements']);
+
 	$wrapper_attributes = get_block_wrapper_attributes(
 		array(
 			'style' => $block_custom_css,
 			'class' => 'tainacan-media-component'
 		)
 	);
+
 	return tainacan_get_the_media_component(
 		'tainacan-item-gallery-block_id-' . $block_id,
 		(isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true')) ? $media_items_thumbnails : null,

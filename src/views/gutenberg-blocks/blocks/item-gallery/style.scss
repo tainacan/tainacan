@@ -11,6 +11,24 @@ $pswp__include-minimal-style: true !default;
 @import '../../../../../node_modules/photoswipe/src/css/main.scss';
 @import '../../../../../node_modules/photoswipe/src/css/default-skin/default-skin.scss';
 
+.item-gallery-edit-container {
+    .tainacan-media-component {
+        .swiper-slide,
+        .swiper-button-prev,
+        .swiper-button-next {
+            cursor: not-allowed !important;
+        } 
+    } 
+    .preview-warning {
+        width: 100%;
+        font-size: 0.875rem;
+        font-style: italic;
+        color: inherit;
+        text-align: center;
+        margin: 0 auto;
+        padding: 8px 2px 2px 2px;
+    }
+}
 .tainacan-media-component {
     --swiper-theme-color: var(--tainacan-secondary, #298596);
     --swiper-navigation-size: 44px;

@@ -609,6 +609,19 @@ a.pswp__share--download:hover {
 .pswp--minimal--dark .pswp__top-bar {
   background: none; }
 
+.item-gallery-edit-container .tainacan-media-component .swiper-slide,
+.item-gallery-edit-container .tainacan-media-component .swiper-button-prev,
+.item-gallery-edit-container .tainacan-media-component .swiper-button-next {
+  cursor: not-allowed !important; }
+.item-gallery-edit-container .preview-warning {
+  width: 100%;
+  font-size: 0.875rem;
+  font-style: italic;
+  color: inherit;
+  text-align: center;
+  margin: 0 auto;
+  padding: 8px 2px 2px 2px; }
+
 .tainacan-media-component {
   --swiper-theme-color: var(--tainacan-secondary, #298596);
   --swiper-navigation-size: 44px;
