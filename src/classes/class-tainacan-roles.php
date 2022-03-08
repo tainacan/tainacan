@@ -581,7 +581,7 @@ class Roles {
 					 * We are only interested in checks for a specific collection.
 					 * $args[2] will be set if this came from a meta cap of a specific collection ( e.g. current_user_can('tnc_rep_edit_collection', 3) ).
 					 */
-					if ( isset( $args[2] ) && is_numeric( $args[2] ) ) {
+					if ( in_array( $cap, (array) $collection_capabilities ) && isset( $args[2] ) && is_numeric( $args[2] ) ) {
 						$col_id = $args[2];
 					/**
 					 * Or we extract the collection id from the capability itself. Example: tnc_col_3_delete_items
