@@ -885,7 +885,7 @@
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        padding: 0;
+        padding: 2px 0;
         -webkit-break-inside: avoid;
         break-inside: avoid;
 
