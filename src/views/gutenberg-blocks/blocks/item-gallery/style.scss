@@ -40,13 +40,12 @@ $pswp__include-minimal-style: true !default;
 /* Style valid for both cases of carousel, main and thumbs */
 .tainacan-media-component__swiper-main,
 .tainacan-media-component__swiper-thumbs {
-    .swiper-button-prev::after,
-    .swiper-container-rtl .swiper-button-next::after {
+    .swiper-button-prev:not(.swiper-button-has-svg)::after,
+    .swiper-container-rtl .swiper-button-next:not(.swiper-button-has-svg)::after {
         content: 'previous';
     }
-
-    .swiper-button-next::after,
-    .swiper-button-prev::after {
+    .swiper-button-next:not(.swiper-button-has-svg)::after,
+    .swiper-button-prev:not(.swiper-button-has-svg)::after {
         font-family: "TainacanIcons";
         opacity: 0.7;
         transition: opacity ease 0.2s;
@@ -56,6 +55,16 @@ $pswp__include-minimal-style: true !default;
         .swiper-button-prev::after {
             opacity: 1;
         }
+    }
+    .swiper-button-next.swiper-button-has-svg::after,
+    .swiper-button-prev.swiper-button-has-svg::after {
+        display: none;
+    }
+    .swiper-button-next.swiper-button-has-svg svg,
+    .swiper-button-prev.swiper-button-has-svg svg {
+        min-width: calc(var(--swiper-navigation-size) * 1.35);
+        min-height: calc(var(--swiper-navigation-size) * 1.35);
+        fill: currentColor;
     }
     ul.swiper-wrapper { 
         list-style: none;

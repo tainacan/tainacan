@@ -278,24 +278,27 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  * @param array        $media_items_main       Array of media items to be rendered inside main, bigger the carousel. Default to empty array
  * @param array|string $args {
  *   Optional. Array of arguments.
- * 	   @type string      wrapper_attributes       String containing attrs (style, class) for the wrapper div. If used, remember to pass class="tainacan-media-component"
- *     @type string      before_main_div          String to be added before the main gallery div
- *     @type string      after_main_div           String to be added after the main gallery div
- *     @type string      before_thumbs_div        String to be added before the thumbs gallery div
- *     @type string      after_thumbs_div         String to be added after the thumbs gallery div
- *     @type string      before_main_ul           String to be added before the main gallery ul
- *     @type string      after_main_ul            String to be added after the main gallery ul
- *     @type string      before_thumbs_ul         String to be added before the thumbs gallery ul
- *     @type string      after_thumbs_ul          String to be added after the thumbs gallery ul
- *     @type string      class_main_div           Class to be added to the main gallery div
- *     @type string      class_main_ul	          Class to be added to the main gallery ul
- *     @type string      class_main_li            Class to be added to the main gallery li
- *     @type string      class_thumbs_div         Class to be added to the thumbs gallery div
- *     @type string      class_thumbs_ul          Class to be added to the thumbs gallery ul
- *     @type string      class_thumbs_li          Class to be added to the thumbs gallery li
- *     @type array       swiper_main_options      Object with SwiperJS options for the main gallery
- *     @type array       swiper_thumbs_options    Object with SwiperJS options for the thumb gallery
- *     @type bool        show_share_button        Shows share button on lightbox
+ * 	   @type string      wrapper_attributes       		String containing attrs (style, class) for the wrapper div. If used, remember to pass class="tainacan-media-component"
+ *     @type string      before_main_div          		String to be added before the main gallery div
+ *     @type string      after_main_div           		String to be added after the main gallery div
+ *     @type string      before_thumbs_div        		String to be added before the thumbs gallery div
+ *     @type string      after_thumbs_div         		String to be added after the thumbs gallery div
+ *     @type string      before_main_ul           		String to be added before the main gallery ul
+ *     @type string      after_main_ul            		String to be added after the main gallery ul
+ *     @type string      before_thumbs_ul         		String to be added before the thumbs gallery ul
+ *     @type string      after_thumbs_ul          		String to be added after the thumbs gallery ul
+ *     @type string      class_main_div           		Class to be added to the main gallery div
+ *     @type string      class_main_ul	          		Class to be added to the main gallery ul
+ *     @type string      class_main_li            		Class to be added to the main gallery li
+ *     @type string      class_thumbs_div         		Class to be added to the thumbs gallery div
+ *     @type string      class_thumbs_ul          		Class to be added to the thumbs gallery ul
+ *     @type string      class_thumbs_li          		Class to be added to the thumbs gallery li
+ *     @type array       swiper_main_options      		Object with SwiperJS options for the main gallery
+ *     @type array       swiper_thumbs_options    		Object with SwiperJS options for the thumb gallery
+ * 	   @type bool		 swiper_arrows_as_svg	  		Uses SVG icons insetead of Tainacan Icon font for navigation arrows
+ *     @type string      swiper_arrow_next_custom_svg 	Custom SVG icon to render next navigation arrow
+ *     @type string      swiper_arrow_prev_custom_svg 	Custom SVG icon to render previous navigation arrow
+ *     @type bool        show_share_button        		Shows share button on lightbox
  * }
  * @return string
  */
@@ -326,6 +329,9 @@ function tainacan_get_the_media_component(
 		'class_thumbs_li' => '',
 		'swiper_main_options' => [],
 		'swiper_thumbs_options' => [],
+		'swiper_arrows_as_svg' => false,
+		'swiper_arrow_next_custom_svg' => '',
+		'swiper_arrow_prev_custom_svg' => '',
 		'show_share_button' => false
 	), $args);
 
@@ -381,8 +387,30 @@ function tainacan_get_the_media_component(
 
 					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['navigation']) ) : ?>
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_main_id'] ?>"></div>
-						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_main_id'] ?>"></div>
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_main_id'] ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+							<?php if ( $args['swiper_arrows_as_svg'] ): ?>
+								<?php if ( $args['swiper_arrow_prev_custom_svg'] ): ?>
+									<?php echo $args['swiper_arrow_prev_custom_svg']; ?>
+								<?php else: ?>
+									<svg width="var(--swiper-navigation-size)" height="var(--swiper-navigation-size)" viewBox="0 0 24 24">
+										<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+										<path d="M0 0h24v24H0z" fill="none"/>
+									</svg>
+								<?php endif; ?>
+							<?php endif; ?>
+						</div>
+						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_main_id'] ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+							<?php if ( $args['swiper_arrows_as_svg'] ): ?>	
+								<?php if ( $args['swiper_arrow_next_custom_svg'] ): ?>
+									<?php echo $args['swiper_arrow_next_custom_svg']; ?>
+								<?php else: ?>
+									<svg width="42" height="42" viewBox="0 0 24 24">
+										<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+										<path d="M0 0h24v24H0z" fill="none"/>
+									</svg>
+								<?php endif; ?>
+							<?php endif; ?>
+						</div>
 					<?php endif; ?>
 				</div>
 				<?php echo $args['after_main_div'] ?>
@@ -412,8 +440,30 @@ function tainacan_get_the_media_component(
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_thumbs_id'] ?>"></div>
-						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_thumbs_id'] ?>"></div>
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_thumbs_id'] ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+							<?php if ( $args['swiper_arrows_as_svg'] ): ?>
+								<?php if ( $args['swiper_arrow_prev_custom_svg'] ): ?>
+									<?php echo $args['swiper_arrow_prev_custom_svg']; ?>
+								<?php else: ?>
+									<svg width="var(--swiper-navigation-size)" height="var(--swiper-navigation-size)" viewBox="0 0 24 24">
+										<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+										<path d="M0 0h24v24H0z" fill="none"/>
+									</svg>
+								<?php endif; ?>
+							<?php endif; ?>
+						</div>
+						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_thumbs_id'] ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+							<?php if ( $args['swiper_arrows_as_svg'] ): ?>	
+								<?php if ( $args['swiper_arrow_next_custom_svg'] ): ?>
+									<?php echo $args['swiper_arrow_next_custom_svg']; ?>
+								<?php else: ?>
+									<svg width="42" height="42" viewBox="0 0 24 24">
+										<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+										<path d="M0 0h24v24H0z" fill="none"/>
+									</svg>
+								<?php endif; ?>
+							<?php endif; ?>
+						</div>
 					<?php endif; ?>
 
 					<!-- These elements will create a gradient on the side of the carousel -->

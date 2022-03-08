@@ -630,15 +630,15 @@ a.pswp__share--download:hover {
     box-sizing: border-box; }
 
 /* Style valid for both cases of carousel, main and thumbs */
-.tainacan-media-component__swiper-main .swiper-button-prev::after,
-.tainacan-media-component__swiper-main .swiper-container-rtl .swiper-button-next::after,
-.tainacan-media-component__swiper-thumbs .swiper-button-prev::after,
-.tainacan-media-component__swiper-thumbs .swiper-container-rtl .swiper-button-next::after {
+.tainacan-media-component__swiper-main .swiper-button-prev:not(.swiper-button-has-svg)::after,
+.tainacan-media-component__swiper-main .swiper-container-rtl .swiper-button-next:not(.swiper-button-has-svg)::after,
+.tainacan-media-component__swiper-thumbs .swiper-button-prev:not(.swiper-button-has-svg)::after,
+.tainacan-media-component__swiper-thumbs .swiper-container-rtl .swiper-button-next:not(.swiper-button-has-svg)::after {
   content: 'previous'; }
-.tainacan-media-component__swiper-main .swiper-button-next::after,
-.tainacan-media-component__swiper-main .swiper-button-prev::after,
-.tainacan-media-component__swiper-thumbs .swiper-button-next::after,
-.tainacan-media-component__swiper-thumbs .swiper-button-prev::after {
+.tainacan-media-component__swiper-main .swiper-button-next:not(.swiper-button-has-svg)::after,
+.tainacan-media-component__swiper-main .swiper-button-prev:not(.swiper-button-has-svg)::after,
+.tainacan-media-component__swiper-thumbs .swiper-button-next:not(.swiper-button-has-svg)::after,
+.tainacan-media-component__swiper-thumbs .swiper-button-prev:not(.swiper-button-has-svg)::after {
   font-family: "TainacanIcons";
   opacity: 0.7;
   transition: opacity ease 0.2s; }
@@ -647,6 +647,18 @@ a.pswp__share--download:hover {
 .tainacan-media-component__swiper-thumbs:hover .swiper-button-next::after,
 .tainacan-media-component__swiper-thumbs:hover .swiper-button-prev::after {
   opacity: 1; }
+.tainacan-media-component__swiper-main .swiper-button-next.swiper-button-has-svg::after,
+.tainacan-media-component__swiper-main .swiper-button-prev.swiper-button-has-svg::after,
+.tainacan-media-component__swiper-thumbs .swiper-button-next.swiper-button-has-svg::after,
+.tainacan-media-component__swiper-thumbs .swiper-button-prev.swiper-button-has-svg::after {
+  display: none; }
+.tainacan-media-component__swiper-main .swiper-button-next.swiper-button-has-svg svg,
+.tainacan-media-component__swiper-main .swiper-button-prev.swiper-button-has-svg svg,
+.tainacan-media-component__swiper-thumbs .swiper-button-next.swiper-button-has-svg svg,
+.tainacan-media-component__swiper-thumbs .swiper-button-prev.swiper-button-has-svg svg {
+  min-width: calc(var(--swiper-navigation-size) * 1.35);
+  min-height: calc(var(--swiper-navigation-size) * 1.35);
+  fill: currentColor; }
 .tainacan-media-component__swiper-main ul.swiper-wrapper,
 .tainacan-media-component__swiper-thumbs ul.swiper-wrapper {
   list-style: none;

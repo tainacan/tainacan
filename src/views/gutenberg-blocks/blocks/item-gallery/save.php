@@ -183,6 +183,7 @@ function tainacan_blocks_render_items_gallery( $block_attributes, $content ) {
 					'lazy' => true
 				)
 			) : '',
+			'swiper_arrows_as_svg' => true,
 			'disable_lightbox' => !$open_lightbox_on_click,
 		)
 	);
