@@ -478,8 +478,12 @@
                     let formData = new FormData(formElement);
                     let formObj = {};
 
-                    for (let [key, value] of formData.entries())
-                        formObj[key] = value;
+                    for (let [key, value] of formData.entries()) {
+                        if (key === 'description_bellow_name')
+                            formObj[key] = value ? 'yes' : 'no';
+                        else
+                            formObj[key] = value;
+                    }
 
                     this.fillExtraFormData(formObj);
                     this.isUpdating = true;

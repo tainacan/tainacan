@@ -3,6 +3,7 @@
             class="filter-item-forms"
             :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}">
         <b-collapse
+                v-if="displayFilter"
                 class="show" 
                 :open.sync="open"
                 animation="filter-item">
@@ -28,7 +29,10 @@
                     slot-scope="props">
                 <span class="icon">
                     <i 
-                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                            :class="{
+                                'tainacan-icon-arrowdown' : props.open,
+                                'tainacan-icon-arrowright' : !props.open
+                            }"
                             class="tainacan-icon tainacan-icon-1-25em"/>
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
@@ -47,6 +51,34 @@
                         :filters-as-modal="filtersAsModal"/>
             </div>
         </b-collapse>
+        <div 
+                v-if="beginWithFilterCollapsed && !displayFilter"
+                class="collapse show">
+            <div class="collapse-trigger">
+                <button
+                        
+                        :for="'filter-input-id-' + filter.id"
+                        :aria-controls="'filter-input-id-' + filter.id"
+                        v-tooltip="{
+                            delay: {
+                                shown: 500,
+                                hide: 300,
+                            },
+                            content: $i18n.get('instruction_click_to_load_filter'),
+                            html: false,
+                            autoHide: false,
+                            placement: 'top-start',
+                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                        }"
+                        @click="displayFilter = true"
+                        class="label">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-add tainacan-icon-1em"/>
+                    </span>
+                    <span class="collapse-label">{{ filter.name }}</span>
+                </button>
+            </div>
+        </div>
     </b-field>
 </template>
 
@@ -63,7 +95,21 @@
         },
         data() {
             return {
-                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+                displayFilter: false
+            }
+        },
+        computed: {
+            beginWithFilterCollapsed() {
+                return this.filter && this.filter.begin_with_filter_collapsed && this.filter.begin_with_filter_collapsed === 'yes';
+            }
+        },
+        watch: {
+            beginWithFilterCollapsed: {
+                handler() {
+                    this.displayFilter = !this.beginWithFilterCollapsed;
+                },
+                immediate: true
             }
         },
         methods: {

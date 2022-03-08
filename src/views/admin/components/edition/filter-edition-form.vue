@@ -152,6 +152,26 @@
                 </div>
             </b-field>
 
+             <b-field 
+                    :addons="false"
+                    :label="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
+                    :type="formErrors['begin_with_filter_collapsed'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['begin_with_filter_collapsed'] != undefined ? formErrors['begin_with_filter_collapsed'] : ''">
+                    &nbsp;
+                <b-switch
+                        size="is-small"
+                        @input="clearErrors('begin_with_filter_collapsed')"
+                        v-model="form.begin_with_filter_collapsed"
+                        true-value="yes"
+                        false-value="no"
+                        name="begin_with_filter_collapsed">
+                <help-button
+                        :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
+                        :message="$i18n.getHelperMessage('filters', 'begin_with_filter_collapsed')"
+                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                </b-switch>
+            </b-field>
+
             <component
                     :errors="formErrors['filter_type_options']"
                     v-if="(form.filter_type_object && form.filter_type_object.form_component) || form.edit_form == ''"
@@ -253,6 +273,7 @@ export default {
                 
                 this.isLoading = true;
                 // this.fillExtraFormData(this.form);
+
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.form})
                     .then(() => {
                         this.form = {};
@@ -280,7 +301,10 @@ export default {
                 let formObj = {};
 
                 for (let [key, value] of formData.entries()) {
-                    formObj[key] = value;
+                    if (key === 'begin_with_filter_collapsed')
+                        formObj[key] = value ? 'yes' : 'no';
+                    else
+                        formObj[key] = value;
                 }
 
                 this.fillExtraFormData(formObj);
