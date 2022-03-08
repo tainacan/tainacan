@@ -685,6 +685,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_thumbnail_alt'						 => __( 'Type here a descriptive text for the image thumbnail...', 'tainacan'),
 	'instruction_click_to_see_%s_child_terms'	 	 => __( 'Click to see %s child terms', 'tainacan'),
 	'instruction_click_to_see_%s_child_term'	 	 => __( 'Click to see %s child term', 'tainacan'),
+	'instruction_click_to_load_filter'				 => __( 'Click to load the filter', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
