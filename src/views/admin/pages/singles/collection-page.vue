@@ -34,7 +34,12 @@ export default {
     },
     watch: {
         '$route' (to, from) {
-            if (!this.isRepositoryLevel && from.path != undefined && to.path != from.path && this.collectionId != this.$route.params.collectionId) {
+            if (!this.isRepositoryLevel &&
+                (from != undefined) &&
+                (from.path != undefined) &&
+                (to.path != from.path) &&
+                (this.collectionId != this.$route.params.collectionId)
+            ) {
                 this.collectionId = this.$route.params.collectionId;
                 this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
                     .catch((error) => this.$console.error(error));

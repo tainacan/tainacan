@@ -1179,7 +1179,7 @@
                     })
                     .catch(() => this.isLoadingMetadata = false);     
             },
-            updateCollectionInfo () {
+            updateCollectionInfo() {
                 // Only needed for displaying totalItems on tabs.
                 if (this.collectionId)
                     this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true });
