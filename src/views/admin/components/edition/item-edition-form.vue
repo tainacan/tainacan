@@ -1943,7 +1943,7 @@ export default {
                 this.setMetadatumFocus({ index: this.focusedMetadatum + 1, scrollIntoView: true });  
         },
         setMetadatumFocus({ index = 0, scrollIntoView = false }) {
-
+ 
             const previousIndex = this.focusedMetadatum;
             this.focusedMetadatum = index;
 
