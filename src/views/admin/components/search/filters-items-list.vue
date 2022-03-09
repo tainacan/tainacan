@@ -85,7 +85,7 @@
                                 v-for="(filter, filterIndex) in taxonomyFilter"
                                 :key="filterIndex"
                                 :filter="filter"
-                                :open="!collapseAll"
+                                :expand-all="!collapseAll"
                                 :is-repository-level="key == 'repository-filters'"
                                 :filters-as-modal="filtersAsModal"/>
                     </template>
@@ -133,7 +133,7 @@
                                 v-for="(filter, filterIndex) in taxonomyFilter"
                                 :key="filterIndex"
                                 :filter="filter"
-                                :open="!collapseAll"
+                                :expand-all="!collapseAll"
                                 :is-repository-level="key == 'repository-filters'"
                                 :filters-as-modal="filtersAsModal"/>
                     </template>
@@ -185,7 +185,7 @@
                                 v-for="(filter, filterIndex) in repositoryCollectionFilter"
                                 :key="filterIndex"
                                 :filter="filter"
-                                :open="!collapseAll"
+                                :expand-all="!collapseAll"
                                 :is-repository-level="key == 'repository-filters'"
                                 :filters-as-modal="filtersAsModal"/>
                     </template>
@@ -233,7 +233,7 @@
                                 v-for="(filter, filterIndex) in repositoryCollectionFilter"
                                 :key="filterIndex"
                                 :filter="filter"
-                                :open="!collapseAll"
+                                :expand-all="!collapseAll"
                                 :is-repository-level="key == 'repository-filters'"
                                 :filters-as-modal="filtersAsModal"/>
                     </template>
@@ -256,7 +256,7 @@
                         v-for="(filter, index) in filters"
                         :key="index"
                         :filter="filter"
-                        :open="!collapseAll"
+                        :expand-all="!collapseAll"
                         :is-repository-level="isRepositoryLevel"
                         :filters-as-modal="filtersAsModal"/>
             </template>

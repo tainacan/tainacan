@@ -5,12 +5,12 @@
         <b-collapse
                 v-if="displayFilter"
                 class="show" 
-                :open.sync="open"
+                :open.sync="singleCollapseOpen"
                 animation="filter-item">
             <button
                     :for="'filter-input-id-' + filter.id"
                     :aria-controls="'filter-input-id-' + filter.id"
-                    :aria-expanded="open"
+                    :aria-expanded="singleCollapseOpen"
                     v-tooltip="{
                         delay: {
                             shown: 500,
@@ -53,7 +53,7 @@
         </b-collapse>
         <div 
                 v-if="beginWithFilterCollapsed && !displayFilter"
-                class="collapse show">
+                class="collapse show disabled-filter">
             <div class="collapse-trigger">
                 <button
                         
@@ -73,7 +73,7 @@
                         @click="displayFilter = true"
                         class="label">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-add tainacan-icon-1em"/>
+                        <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em"/>
                     </span>
                     <span class="collapse-label">{{ filter.name }}</span>
                 </button>
@@ -89,14 +89,15 @@
             filter: Object,
             query: Object,
             isRepositoryLevel: Boolean,
-            open: true,
+            expandAll: true,
             isLoadingItems: true,
             filtersAsModal: Boolean
         },
         data() {
             return {
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
-                displayFilter: false
+                displayFilter: false,
+                singleCollapseOpen: this.expandAll
             }
         },
         computed: {
@@ -105,6 +106,11 @@
             }
         },
         watch: {
+            expandAll() {
+                this.singleCollapseOpen = this.expandAll;
+                if (this.expandAll)
+                    this.displayFilter = true;
+            },
             beginWithFilterCollapsed: {
                 handler() {
                     this.displayFilter = !this.beginWithFilterCollapsed;
@@ -119,7 +125,7 @@
             onFilterUpdateParentCollapse(open) {
                 const componentsThatShouldCollapseIfEmpty = ['tainacan-filter-taxonomy-checkbox', 'tainacan-filter-selectbox', 'tainacan-filter-checkbox'];
                 if (componentsThatShouldCollapseIfEmpty.includes(this.filter.filter_type_object.component))
-                    this.open = open;
+                    this.singleCollapseOpen = open;
             }
         }
     }
@@ -151,6 +157,9 @@
                 text-overflow: ellipsis;
                 line-height: 1.4em;
             }
+        }
+        .disabled-filter {
+            opacity: 0.75;
         }
         .collapse-content {
             margin-top: 12px;
