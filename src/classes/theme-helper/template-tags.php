@@ -1065,8 +1065,8 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
  * @param array $args {
  	*     Optional. Array of arguments.
  	*     @type string  $collection_id					The Collection ID
- 	*     @type string  $search_URL					A query string to fetch items from, if load strategy is 'search'
- 	*     @type array   $selected_items				An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'
+ 	*     @type string  $search_URL						A query string to fetch items from, if load strategy is 'search'
+ 	*     @type array   $selected_items					An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'
  	*     @type string  $load_strategy					Either 'search' or 'selection', to determine how items will be fetch
  	*     @type integer $max_items_number				Maximum number of items to be fetch
  	*     @type integer $max_tems_per_screen			Maximum columns of items to be displayed on a row of the carousel
@@ -1075,9 +1075,9 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
  	*     @type bool    $auto_play						Should the Caroulsel start automatically to slide?
  	*     @type integer $auto_play_speed				The time in s to translate to the next slide automatically 
  	*     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
- 	*     @type bool    $hide_title					Should the title of the items be displayed?
+ 	*     @type bool    $hide_title						Should the title of the items be displayed?
  	*     @type bool    $crop_images_to_square			Should it use the `tainacan-medium-size` instead of the `tainacan-medium-large-size`?
- 	*     @type bool    $show_collection_header		Should it display a small version of the collection header?
+ 	*     @type bool    $show_collection_header			Should it display a small version of the collection header?
  	*     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
  	*     @type string  $collection_background_color	Color of the collection header background
  	*     @type string  $collection_text_color			Color of the collection header text
@@ -1138,4 +1138,30 @@ function tainacan_has_related_items($item_id = false) {
 			return true;
 	}
 	return false;
+}
+
+
+/**
+ * Renders the content of the item gallery block
+ * using Tainacan template functions that create
+ * a Swiper.js carousel and slider, with a PhotoSwipe.js 
+ * lightbox
+ *
+ * @param array $args {
+	*     Optional. Array of arguments.
+	*     @type string  $item_id						  The Item ID
+	* 	   @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,
+	* 	   @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'
+	* 	   @type array 	 $mediaSources 					  Array of sources for the gallery. Possible values are 'document' and 'attachments'
+	* 	   @type bool 	 $hideFileNameMain 				  Hides the Main slider file name
+	* 	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
+	* 	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
+	* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
+	* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
+	* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
+	* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
+	* @return void
+ */
+function tainacan_the_item_gallery($args = []) {
+	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_item_gallery($args);
 }
