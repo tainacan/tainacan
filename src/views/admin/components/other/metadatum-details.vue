@@ -30,6 +30,7 @@
                     v-if="metadatum.multiple === 'yes' &&
                         metadatum.cardinality != undefined &&
                         metadatum.cardinality != 0 &&
+                        metadatum.cardinality != 1 &&
                         metadatum.cardinality != ''">
                 &nbsp;({{ $i18n.getWithVariables('label_maximum_of_%s_values', [ metadatum.cardinality ]) }})
             </span>
