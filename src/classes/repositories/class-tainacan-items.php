@@ -252,7 +252,12 @@ class Items extends Repository {
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
 				try {
-					return new Entities\Item( $existing_post );
+					$item = new Entities\Item( $existing_post );
+					$collection = $item->get_collection();
+					if (isset($collection) && $collection->can_read()) {
+						return $item;
+					}
+					return [];
 				} catch (\Exception $e) {
 					return [];
 				}

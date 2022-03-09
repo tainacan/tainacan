@@ -343,7 +343,11 @@ class Collections extends Repository {
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
 				try {
-					return new Entities\Collection( $existing_post );
+					$col = new Entities\Collection( $existing_post );
+					if ( $col->can_read() ) {
+						return $col;
+					}
+					return [];
 				} catch (\Exception $e) {
 					return [];
 				}
