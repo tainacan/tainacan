@@ -298,6 +298,7 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  * 	   @type bool		 swiper_arrows_as_svg	  		Uses SVG icons insetead of Tainacan Icon font for navigation arrows
  *     @type string      swiper_arrow_next_custom_svg 	Custom SVG icon to render next navigation arrow
  *     @type string      swiper_arrow_prev_custom_svg 	Custom SVG icon to render previous navigation arrow
+ *     @type bool 		 disable_lightbox				Do not open Photoswiper layer on click
  *     @type bool        show_share_button        		Shows share button on lightbox
  * }
  * @return string
@@ -332,6 +333,7 @@ function tainacan_get_the_media_component(
 		'swiper_arrows_as_svg' => false,
 		'swiper_arrow_next_custom_svg' => '',
 		'swiper_arrow_prev_custom_svg' => '',
+		'disable_lightbox' => false,
 		'show_share_button' => false
 	), $args);
 
@@ -344,8 +346,10 @@ function tainacan_get_the_media_component(
 	ob_start();
 
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
+
 		// Modal lightbox layer for rendering photoswipe
-		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
+		if (!$args['disable_lightbox'])
+			add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
 	
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
 
@@ -1160,6 +1164,7 @@ function tainacan_has_related_items($item_id = false) {
 	* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 	* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
 	* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
+	*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
 	* @return void
  */
 function tainacan_the_item_gallery($args = []) {

@@ -1122,13 +1122,14 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 		* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
 		* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
+		*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery($args = []) {
 
 		$defaults = array(
 			'blockId' => 						uniqid(),
-			'layoutElements' => 				array('main' => true, 'thumbnails' => true),
+			'layoutElements' => 				array( 'main' => true, 'thumbnails' => true ),
 			'mediaSources' => 					array( 'document' => true, 'attachments' => true, 'metadata' => false),
 			'hideFileNameMain' => 				true, 
 			'hideFileCaptionMain' => 			false,
@@ -1136,7 +1137,8 @@ class Theme_Helper {
 			'hideFileNameThumbnails' => 		true, 
 			'hideFileCaptionThumbnails' => 		true,
 			'hideFileDescriptionThumbnails' =>  true,
-			'openLightboxOnClick' => 			true
+			'openLightboxOnClick' => 			true,
+			'showDownloadButtonMain' =>			true
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -1157,14 +1159,26 @@ class Theme_Helper {
 		$hide_file_caption_thumbnails = $args['hideFileCaptionThumbnails'];
 		$hide_file_description_thumbnails = $args['hideFileDescriptionThumbnails'];
 		$open_lightbox_on_click = $args['openLightboxOnClick'];
+		$show_download_button_main = $args['showDownloadButtonMain'];
+
+		// Prefils arrays with proper values to avoid messsy IFs
+		$layout_elements = array(
+			'main' => (isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? true : false,
+			'thumbnails' => (isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true')) ? true : false
+		);
+		$media_sources = array(
+			'document' => (isset($media_sources['document']) && ($media_sources['document'] === true || $media_sources['document'] == 'true')) ? true : false,
+			'attachments' => (isset($media_sources['attachments']) && ($media_sources['attachments'] === true || $media_sources['attachments'] == 'true')) ? true : false,
+			'metadata' => (isset($media_sources['metadata']) && ($media_sources['metadata'] === true || $media_sources['metadata'] == 'true')) ? true : false
+		);
 
 		$media_items_main = array();
 		$media_items_thumbnails = array();
 
-		if ( isset($media_sources['attachments']) && ($media_sources['attachments'] === true || $media_sources['attachments'] == 'true') )
+		if ( $media_sources['attachments'] )
 			$attachments = tainacan_get_the_attachments(null, $item_id);
 
-		if ( isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true') ) {
+		if ( $layout_elements['main'] ) {
 
 			$class_slide_metadata = '';
 			if ($hide_file_name_main)
@@ -1174,32 +1188,39 @@ class Theme_Helper {
 			if ($hide_file_caption_main)
 				$class_slide_metadata .= ' hide-caption';
 
-			if ( isset($media_sources['document']) && ($media_sources['document'] === true || $media_sources['document'] == 'true') && !empty(tainacan_get_the_document($item_id)) ) {
+			if ( $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
 				$is_document_type_attachment = tainacan_get_the_document_type($item_id) === 'attachment';
+				
+				// Document description is a bit more tricky
+				if ($is_document_type_attachment) {
+					$attachment = get_post(tainacan_get_the_document_raw($item_id));
+					$document_description = ($attachment instanceof WP_Post) ? $attachment->post_content : '';
+				}
+
 				$media_items_main[] =
 					tainacan_get_the_media_component_slide(array(
-						'after_slide_metadata' => (( !get_theme_mod( 'tainacan_single_item_hide_download_document', false ) && tainacan_the_item_document_download_link($item_id) != '' ) ?
+						'after_slide_metadata' => (( $show_download_button_main && tainacan_the_item_document_download_link($item_id) != '' ) ?
 														('<span class="tainacan-item-file-download">' . tainacan_the_item_document_download_link($item_id) . '</span>')
 												: ''),
 						'media_content' => tainacan_get_the_document($item_id),
-						'media_content_full' => $is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : ('<div class="attachment-without-image">' . tainacan_get_the_document($item_id, 'full') . '</div>'),
+						'media_content_full' => $open_lightbox_on_click ? ( $is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : ('<div class="attachment-without-image">' . tainacan_get_the_document($item_id, 'full') . '</div>') ) : '',
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
-						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',
+						'media_description' => $is_document_type_attachment ? $document_description : '',
 						'media_caption' => $is_document_type_attachment ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
 						'media_type' => tainacan_get_the_document_type($item_id),
 						'class_slide_metadata' => $class_slide_metadata
 					));
 			}
 			
-			if ( isset($media_sources['attachments']) && ($media_sources['attachments'] === true || $media_sources['attachments'] == 'true') ) {
+			if ( $media_sources['attachments'] ) {
 				foreach ( $attachments as $attachment ) {
 					$media_items_main[] =
 						tainacan_get_the_media_component_slide(array(
-							'after_slide_metadata' => (( !get_theme_mod( 'tainacan_single_item_hide_download_document', false ) && tainacan_the_item_attachment_download_link($attachment->ID) != '' ) ?
+							'after_slide_metadata' => (( $show_download_button_main && tainacan_the_item_attachment_download_link($attachment->ID) != '' ) ?
 															'<span class="tainacan-item-file-download">' . tainacan_the_item_attachment_download_link($attachment->ID) . '</span>'
 													: ''),
 							'media_content' => tainacan_get_attachment_as_html($attachment->ID, $item_id),
-							'media_content_full' => wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : ('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe" src="' . tainacan_get_attachment_html_url($attachment->ID) . '"></iframe></div>'),
+							'media_content_full' => $open_lightbox_on_click ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : ('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--' . $block_id . '" src="' . tainacan_get_attachment_html_url($attachment->ID) . '"></iframe></div>') ) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,
@@ -1210,7 +1231,7 @@ class Theme_Helper {
 			}
 		}
 		
-		if ( isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true') ) {
+		if ( $layout_elements['thumbnails'] ) {
 
 			$class_slide_metadata = '';
 			if ($hide_file_name_thumbnails)
@@ -1220,12 +1241,12 @@ class Theme_Helper {
 			if ($hide_file_caption_thumbnails)
 				$class_slide_metadata .= ' hide-caption';
 
-			if ( isset($media_sources['document']) && ($media_sources['document'] === true && $media_sources['document'] == 'true') && !empty(tainacan_get_the_document($item_id)) ) {
+			if ( $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
 				$is_document_type_attachment = tainacan_get_the_document_type($item_id) === 'attachment';
 				$media_items_thumbnails[] =
 					tainacan_get_the_media_component_slide(array(
 						'media_content' => get_the_post_thumbnail(null, 'tainacan-medium'),
-						'media_content_full' => $is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : ('<div class="attachment-without-image">' . tainacan_get_the_document($item_id, 'full') . '</div>'),
+						'media_content_full' => $open_lightbox_on_click ? ($is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : ('<div class="attachment-without-image">' . tainacan_get_the_document($item_id, 'full') . '</div>') ) : '',
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',
 						'media_caption' => $is_document_type_attachment ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
@@ -1234,12 +1255,12 @@ class Theme_Helper {
 					));			
 			}
 
-			if ( isset($media_sources['attachments']) && ($media_sources['attachments'] === true || $media_sources['attachments'] == 'true') ) {
+			if ( $media_sources['attachments'] ) {
 				foreach ( $attachments as $attachment ) {
 					$media_items_thumbnails[] = 
 						tainacan_get_the_media_component_slide(array(
 							'media_content' => wp_get_attachment_image( $attachment->ID, 'tainacan-medium', false ),
-							'media_content_full' => wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : ('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe" src="' . tainacan_get_attachment_html_url($attachment->ID) . '"></iframe></div>'),
+							'media_content_full' => ( $open_lightbox_on_click && !$layout_elements['main'] ) ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : ('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--' . $block_id . '" src="' . tainacan_get_attachment_html_url($attachment->ID) . '"></iframe></div>') ) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,
@@ -1287,13 +1308,13 @@ class Theme_Helper {
 
 		return tainacan_get_the_media_component(
 			'tainacan-item-gallery-block_id-' . $block_id,
-			(isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true')) ? $media_items_thumbnails : null,
-			(isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? $media_items_main : null,
+			$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
+			$layout_elements['main'] ? $media_items_main : null,
 			array(
 				'wrapper_attributes' => $wrapper_attributes,
 				'class_main_div' => '',
 				'class_thumbs_div' => '',
-				'swiper_main_options' => (isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? array(
+				'swiper_main_options' => $layout_elements['main'] ? array(
 					'navigation' => array(
 						'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
 						'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
@@ -1301,7 +1322,7 @@ class Theme_Helper {
 						'lazy' => true
 					)
 				) : '',
-				'swiper_thumbs_options' => (isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true') && (!isset($layout_elements['main']) || !($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ) ? array(
+				'swiper_thumbs_options' => ( $layout_elements['thumbnails'] && !$layout_elements['main'] ) ? array(
 					'navigation' => array(
 						'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',
 						'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',

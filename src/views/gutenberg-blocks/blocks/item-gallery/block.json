@@ -96,6 +96,10 @@
         "thumbnailsCarouselItemSize": {
             "type": "integer",
             "default": 136
+        },
+        "showDownloadButtonMain": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {

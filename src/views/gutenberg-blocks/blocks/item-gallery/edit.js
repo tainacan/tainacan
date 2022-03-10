@@ -27,7 +27,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         mainSliderHeight,
         mainSliderWidth,          
         thumbnailsCarouselWidth,
-        thumbnailsCarouselItemSize
+        thumbnailsCarouselItemSize,
+        showDownloadButtonMain
     } = attributes;
 
     // Gets blocks props from hook
@@ -175,6 +176,15 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             onChange={ ( isChecked ) => {
                                     hideFileDescriptionMain = isChecked;
                                     setAttributes({ hideFileDescriptionMain: hideFileDescriptionMain });
+                                } 
+                            }
+                        />
+                        <ToggleControl
+                            label={__('Show download button', 'tainacan')}
+                            checked={ showDownloadButtonMain }
+                            onChange={ ( isChecked ) => {
+                                    showDownloadButtonMain = isChecked;
+                                    setAttributes({ showDownloadButtonMain: showDownloadButtonMain });
                                 } 
                             }
                         />
