@@ -33,6 +33,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+    const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
@@ -317,6 +318,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                     <ServerSideRender
                         block="tainacan/item-gallery"
                         attributes={ attributes }
+                        httpMethod={ currentWPVersion >= '5.5' ? 'POST' : 'GET' }
                     />
                 </div>
                 ) : null

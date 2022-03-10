@@ -1200,10 +1200,10 @@ class Theme_Helper {
 				$media_items_main[] =
 					tainacan_get_the_media_component_slide(array(
 						'after_slide_metadata' => (( $show_download_button_main && tainacan_the_item_document_download_link($item_id) != '' ) ?
-														('<span class="tainacan-item-file-download">' . tainacan_the_item_document_download_link($item_id) . '</span>')
+														sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_document_download_link($item_id))
 												: ''),
 						'media_content' => tainacan_get_the_document($item_id),
-						'media_content_full' => $open_lightbox_on_click ? ( $is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : ('<div class="attachment-without-image">' . tainacan_get_the_document($item_id, 'full') . '</div>') ) : '',
+						'media_content_full' => $open_lightbox_on_click ? ( $is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $is_document_type_attachment ? $document_description : '',
 						'media_caption' => $is_document_type_attachment ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
@@ -1217,10 +1217,10 @@ class Theme_Helper {
 					$media_items_main[] =
 						tainacan_get_the_media_component_slide(array(
 							'after_slide_metadata' => (( $show_download_button_main && tainacan_the_item_attachment_download_link($attachment->ID) != '' ) ?
-															'<span class="tainacan-item-file-download">' . tainacan_the_item_attachment_download_link($attachment->ID) . '</span>'
+															sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_attachment_download_link($attachment->ID))
 													: ''),
 							'media_content' => tainacan_get_attachment_as_html($attachment->ID, $item_id),
-							'media_content_full' => $open_lightbox_on_click ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : ('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--' . $block_id . '" src="' . tainacan_get_attachment_html_url($attachment->ID) . '"></iframe></div>') ) : '',
+							'media_content_full' => $open_lightbox_on_click ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID)) ) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,
@@ -1246,7 +1246,7 @@ class Theme_Helper {
 				$media_items_thumbnails[] =
 					tainacan_get_the_media_component_slide(array(
 						'media_content' => get_the_post_thumbnail(null, 'tainacan-medium'),
-						'media_content_full' => $open_lightbox_on_click ? ($is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : ('<div class="attachment-without-image">' . tainacan_get_the_document($item_id, 'full') . '</div>') ) : '',
+						'media_content_full' => $open_lightbox_on_click ? ($is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',
 						'media_caption' => $is_document_type_attachment ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
@@ -1260,7 +1260,7 @@ class Theme_Helper {
 					$media_items_thumbnails[] = 
 						tainacan_get_the_media_component_slide(array(
 							'media_content' => wp_get_attachment_image( $attachment->ID, 'tainacan-medium', false ),
-							'media_content_full' => ( $open_lightbox_on_click && !$layout_elements['main'] ) ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : ('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--' . $block_id . '" src="' . tainacan_get_attachment_html_url($attachment->ID) . '"></iframe></div>') ) : '',
+							'media_content_full' => ( $open_lightbox_on_click && !$layout_elements['main'] ) ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID)) ) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,
@@ -1274,30 +1274,30 @@ class Theme_Helper {
 		$block_custom_css = '';
 		
 		// Text color. First we check for custom preset colors, then actual values
-		$block_custom_css .= isset($args['textColor']) ? ('--tainacan-media-metadata-color:  var(--wp--preset--color--' . $args['textColor'] . ');') : '';
-		$block_custom_css .= isset($args['style']['color']['text']) ? ('--tainacan-media-metadata-color: ' . $args['style']['color']['text'] . ';') : '';
+		$block_custom_css .= isset($args['textColor']) ? sprintf('--tainacan-media-metadata-color: var(--wp--preset--color--%s);', $args['textColor']) : '';
+		$block_custom_css .= isset($args['style']['color']['text']) ? sprintf('--tainacan-media-metadata-color: %s;', $args['style']['color']['text']) : '';
 		
 		// Background color. First we check for custom preset colors, then actual values
-		$block_custom_css .= isset($args['backgroundColor']) ? ('--tainacan-media-background:  var(--wp--preset--color--' . $args['backgroundColor'] . ');') : '';
-		$block_custom_css .= isset($args['style']['color']['background']) ? ('--tainacan-media-background: ' . $args['style']['color']['background'] . ';') : '';
+		$block_custom_css .= isset($args['backgroundColor']) ? sprintf('--tainacan-media-background: var(--wp--preset--color--%s);', $args['backgroundColor']) : '';
+		$block_custom_css .= isset($args['style']['color']['background']) ? sprintf('--tainacan-media-background: %s;', $args['style']['color']['background']) : '';
 
 		// Link color, if enabled. Firts we check for custom preset colors, then actual values.
-		$block_custom_css .= isset($args['linkColor']) ? ('--swiper-theme-color: var(--wp--preset--color--' . $args['linkColor'] . ');') : '';
+		$block_custom_css .= isset($args['linkColor']) ? sprintf('--swiper-theme-color: var(--wp--preset--color--%s);', $args['linkColor']) : '';
 		if ( isset($args['style']['elements']['link']['color']['text']) ) {
 			$link_color = $args['style']['elements']['link']['color']['text'];
 			if ( strpos( $link_color, 'var:' ) !== false ) {
 				$link_color = str_replace('|', '--', $link_color);
 				$link_color = str_replace('var:', 'var(--wp--', $link_color) . ')';
 			}
-			$block_custom_css .= '--swiper-theme-color: ' . $link_color . ';';
+			$block_custom_css .= sprintf('--swiper-theme-color: %s;', $link_color);
 		}
 			
 		// Other values are obtained directly from the attributes
-		$block_custom_css .= (isset($args['arrowsSize']) && is_numeric($args['arrowsSize'])) ? ('--swiper-navigation-size: ' . $args['arrowsSize'] . 'px;') : '';
-		$block_custom_css .= (isset($args['mainSliderHeight']) && is_numeric($args['mainSliderHeight'])) ? ('--tainacan-media-main-carousel-height: ' . $args['mainSliderHeight'] . 'vh;') : '';
-		$block_custom_css .= (isset($args['mainSliderWidth']) && is_numeric($args['mainSliderWidth'])) ? ('--tainacan-media-main-carousel-width: ' . $args['mainSliderWidth'] . '%;') : '';
-		$block_custom_css .= (isset($args['thumbnailsCarouselWidth']) && is_numeric($args['thumbnailsCarouselWidth'])) ? ('--tainacan-media-thumbs-carousel-width: ' . $args['thumbnailsCarouselWidth'] . '%;') : '';
-		$block_custom_css .= (isset($args['thumbnailsCarouselItemSize']) && is_numeric($args['thumbnailsCarouselItemSize'])) ? ('--tainacan-media-thumbs-carousel-item-size: ' . $args['thumbnailsCarouselItemSize'] . 'px;') : '';
+		$block_custom_css .= (isset($args['arrowsSize']) && is_numeric($args['arrowsSize'])) ? sprintf('--swiper-navigation-size: %spx;', $args['arrowsSize']) : '';
+		$block_custom_css .= (isset($args['mainSliderHeight']) && is_numeric($args['mainSliderHeight'])) ? sprintf('--tainacan-media-main-carousel-height: %svh;', $args['mainSliderHeight']) : '';
+		$block_custom_css .= (isset($args['mainSliderWidth']) && is_numeric($args['mainSliderWidth'])) ? sprintf('--tainacan-media-main-carousel-width: %s%%;', $args['mainSliderWidth']) : '';
+		$block_custom_css .= (isset($args['thumbnailsCarouselWidth']) && is_numeric($args['thumbnailsCarouselWidth'])) ? sprintf('--tainacan-media-thumbs-carousel-width: %s%%;', $args['thumbnailsCarouselWidth']) : '';
+		$block_custom_css .= (isset($args['thumbnailsCarouselItemSize']) && is_numeric($args['thumbnailsCarouselItemSize'])) ? sprintf('--tainacan-media-thumbs-carousel-item-size: %spx;', $args['thumbnailsCarouselItemSize']) : '';
 
 		$wrapper_attributes = get_block_wrapper_attributes(
 			array(
@@ -1316,16 +1316,16 @@ class Theme_Helper {
 				'class_thumbs_div' => '',
 				'swiper_main_options' => $layout_elements['main'] ? array(
 					'navigation' => array(
-						'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
-						'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-main',
+						'nextEl' => sprintf('.swiper-navigation-next_tainacan-item-gallery-block_id-%s-main', $block_id),
+						'prevEl' => sprintf('.swiper-navigation-prev_tainacan-item-gallery-block_id-%s-main', $block_id),
 						'preloadImages' => false,
 						'lazy' => true
 					)
 				) : '',
 				'swiper_thumbs_options' => ( $layout_elements['thumbnails'] && !$layout_elements['main'] ) ? array(
 					'navigation' => array(
-						'nextEl' => '.swiper-navigation-next_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',
-						'prevEl' => '.swiper-navigation-prev_' . 'tainacan-item-gallery-block_id-' . $block_id . '-thumbs',
+						'nextEl' => sprintf('.swiper-navigation-next_tainacan-item-gallery-block_id-%s-thumbs', $block_id),
+						'prevEl' => sprintf('.swiper-navigation-prev_tainacan-item-gallery-block_id-%s-thumbs', $block_id),
 						'preloadImages' => false,
 						'lazy' => true
 					)
