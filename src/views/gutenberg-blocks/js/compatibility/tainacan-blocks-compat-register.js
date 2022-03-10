@@ -24,33 +24,29 @@ function tainacanBlocksLocalizeMetadata(metadata) {
 export default function({ metadata, icon, edit, save, deprecated, transforms }) {
     
     const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
+    let attributes = {
+        icon: {
+            src: icon,
+            foreground: '#298596',
+        },
+        edit,
+        deprecated,
+        transforms
+    }
+    if (save)
+        attributes['save'] = save;
+
     if (currentWPVersion >= '5.8-RC') {
 
         // Registers block type using new strategy from WP 5.8
-        registerBlockType( metadata, {
-            icon: {
-                src: icon,
-                foreground: '#298596',
-            },
-            edit,
-            save,
-            deprecated,
-            transforms
-        });
+        registerBlockType( metadata, attributes);
     
     } else {
-    
+
         // Converts this array to a valid array previous to WP 5.8
         registerBlockType( metadata.name, {
             ...tainacanBlocksLocalizeMetadata(metadata),
-            icon: {
-                src: icon,
-                foreground: '#298596',
-            },
-            edit,
-            save,
-            deprecated,
-            transforms
+            ...attributes
         });
     }
 };

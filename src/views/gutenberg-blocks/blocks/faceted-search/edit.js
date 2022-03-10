@@ -24,7 +24,7 @@ const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2'
 
 import CollectionModal from './collection-modal.js';
 import TermModal from './term-modal.js';
-import TainacanBlocksCompatColorPicker from '../../js/tainacan-blocks-compat-colorpicker.js';
+import TainacanBlocksCompatColorPicker from '../../js/compatibility/tainacan-blocks-compat-colorpicker.js';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }) {
     let {

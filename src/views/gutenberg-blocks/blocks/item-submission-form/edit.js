@@ -18,8 +18,8 @@ const { InspectorControls, BlockControls, RichText, useBlockProps } = (tainacan_
 
 import tainacan from '../../js/axios.js';
 import CollectionModal from '../faceted-search/collection-modal.js';
-import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
-import TainacanBlocksCompatColorPicker from '../../js/tainacan-blocks-compat-colorpicker.js';
+import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
+import TainacanBlocksCompatColorPicker from '../../js/compatibility/tainacan-blocks-compat-colorpicker.js';
 
 export default function ({ attributes, setAttributes, className }) {
     let {

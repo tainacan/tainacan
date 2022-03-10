@@ -1,4 +1,4 @@
-import  tainacanRegisterBlockType from '../../js/tainacan-blocks-compat-register.js';
+import  tainacanRegisterBlockType from '../../js/compatibility/tainacan-blocks-compat-register.js';
 
 import metadata from './block.json';
 import icon from './icon.js';

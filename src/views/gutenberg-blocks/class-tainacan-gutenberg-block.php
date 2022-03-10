@@ -15,7 +15,8 @@ const TAINACAN_BLOCKS = [
 	'related-items-list' => [],
 	'terms-list' => [],
 	'faceted-search' => [],
-	'item-submission-form' => []
+	'item-submission-form' => [],
+	'item-gallery' => ['render_callback' => 'tainacan_blocks_render_items_gallery']
 ];
 
 // Lets do this!
@@ -41,9 +42,12 @@ function tainacan_blocks_initialize() {
 		if ( !is_admin() ) {
 			add_action( 'init', 'tainacan_blocks_add_common_theme_scripts', 90 );
 			add_action( 'init', 'tainacan_blocks_get_common_theme_styles', 90 );
-			// On the admin side, we need the blocks registered and their assets (editor-side)
 		}
-		add_action('admin_init', 'tainacan_blocks_register_and_enqueue_all_blocks');
+
+		// On the admin side, we need the blocks registered and their assets (editor-side)
+		// The reason why we don't use admin_init here is because server side blocks
+		// need to be registered whithin the init
+		add_action('init', 'tainacan_blocks_register_and_enqueue_all_blocks');
 	}
 }
 
@@ -67,9 +71,12 @@ function tainacan_blocks_register_categories($categories, $editor_context) {
  * both 'generic' and 'special' blocks
  */
 function tainacan_blocks_register_and_enqueue_all_blocks() {
-	tainacan_blocks_get_category_icon_script();
-	tainacan_blocks_get_common_editor_styles();
-
+	// Only needed inside the editor
+	if ( is_admin() ) {
+		tainacan_blocks_get_category_icon_script();
+		tainacan_blocks_get_common_editor_styles();
+	}
+	// May be needed outside the editor, if server side render is used
 	foreach(TAINACAN_BLOCKS as $block_slug => $block_options) {
 		tainacan_blocks_register_block($block_slug, $block_options);
 	}
@@ -91,8 +98,21 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	// Creates Register params based on registered scripts and styles
 	$register_params = [];
 
+	// If there is a server side render callback, we add its render function
+	if ( isset($options['render_callback']) ) {
+		require_once( __DIR__ . '/blocks/' . $block_slug . '/save.php' );
+		$register_params['render_callback'] = $options['render_callback'];
+		$register_params['skip_inner_blocks'] = true;
+
+	// Also, none of the rest is necessary regarding 
+	// blocks that are non server side, their content
+	// is independent of editor side scripts and styles.
+	} else if ( !is_admin() ) {
+		return;
+	}
+
 	// Defines dependencies for editor script
-	$editor_script_deps = array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components');
+	$editor_script_deps = array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-server-side-render');
 	if ( version_compare( $wp_version, '5.2', '<') )
 		$editor_script_deps[] = 'wp-editor';
 	else
@@ -128,7 +148,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	// Registers the new block
 	if (function_exists('register_block_type')) {
 		if ( version_compare( $wp_version, '5.8-RC', '>=') )
-			register_block_type( __DIR__ . '/blocks/' . $block_slug );
+			register_block_type( __DIR__ . '/blocks/' . $block_slug, $register_params );
 		else
 			register_block_type( 'tainacan/' . $block_slug, $register_params );
 	}

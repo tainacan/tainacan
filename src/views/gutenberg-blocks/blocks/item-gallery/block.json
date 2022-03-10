@@ -1,0 +1,120 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/item-gallery",
+    "title": "Tainacan Item Media Gallery",
+    "apiVersion": 2,
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "document", "carousel", "attachments", "zoom" ],
+    "description": "The media gallery of the item, displaying document, attachments and more.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "blockId": {
+            "type": "string",
+            "default": ""
+        },
+        "content": {
+            "type": "array",
+            "source": "query",
+            "selector": "div"
+        },
+        "collectionId": {
+            "type": "string",
+            "default": ""
+        },
+        "itemId": {
+            "type": "string",
+            "default": ""
+        },
+        "isModalOpen": {
+            "type": "boolean",
+            "default": false
+        },
+        "layoutElements": {
+            "type": "object",
+            "default": {
+                "main": true,
+                "thumbnails": true
+            }
+        },
+        "mediaSources": {
+            "type": "object",
+            "default": {
+                "document": true,
+                "attachments": true,
+                "metadata": false
+            }
+        },
+        "hideFileNameMain": {
+            "type": "boolean",
+            "default": true
+        },
+        "hideFileCaptionMain": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideFileDescriptionMain": {
+            "type": "boolean",
+            "default": true
+        },
+        "hideFileNameThumbnails": {
+            "type": "boolean",
+            "default": true
+        },
+        "hideFileCaptionThumbnails": {
+            "type": "boolean",
+            "default": true
+        },
+        "hideFileDescriptionThumbnails": {
+            "type": "boolean",
+            "default": true
+        },
+        "openLightboxOnClick": {
+            "type": "boolean",
+            "default": true
+        },
+        "arrowsSize": {
+            "type": "integer",
+            "default": 44
+        },
+        "mainSliderHeight": {
+            "type": "integer",
+            "default": 60
+        },
+        "mainSliderWidth": {
+            "type": "integer",
+            "default": 100
+        },
+        "thumbnailsCarouselWidth": {
+            "type": "integer",
+            "default": 100
+        },
+        "thumbnailsCarouselItemSize": {
+            "type": "integer",
+            "default": 136
+        },
+        "showDownloadButtonMain": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true,
+        "color": {
+            "text": true,
+            "background": true,
+            "gradients": true,
+            "link": true
+        },
+        "spacing": {
+            "padding": true
+        }
+    },
+    "editorScript": "item-gallery",
+	"editorStyle": "item-gallery"
+}

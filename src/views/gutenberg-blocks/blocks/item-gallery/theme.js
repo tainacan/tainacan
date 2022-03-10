@@ -114,7 +114,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         
         // Parse URL and open gallery if it contains #&pid=3&gid=1
         let hashData = this.photoswipeParseHash();
-        
+
         if (hashData.pid && hashData.gid)
             this.openPhotoSwipe(hashData.pid, galleryElement, true, true);
     }

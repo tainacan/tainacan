@@ -1,4 +1,4 @@
-import tainacan from '../../js/axios.js';
+import tainacan from '../axios.js';
 import axios from 'axios';
 
 const { __ } = wp.i18n;
@@ -6,7 +6,7 @@ const { __ } = wp.i18n;
 const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
 const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
-export default class RelatedItemsModal extends React.Component {
+export default class SingleItemModal extends React.Component {
     constructor(props) {
         super(props);
 
@@ -36,7 +36,7 @@ export default class RelatedItemsModal extends React.Component {
         this.fetchCollections = this.fetchCollections.bind(this);
         this.fetchModalCollections = this.fetchModalCollections.bind(this);
         this.fetchCollection = this.fetchCollection.bind(this);
-        this.applyRelatedItem = this.applyRelatedItem.bind(this);
+        this.applySelectedItem = this.applySelectedItem.bind(this);
     }
 
     componentWillMount() {
@@ -167,13 +167,13 @@ export default class RelatedItemsModal extends React.Component {
             });
     }
 
-    applyRelatedItem() {
+    applySelectedItem() {
         let iframe = document.getElementById("itemsFrame");
         if (iframe) {
             let params = new URLSearchParams(iframe.contentWindow.location.search);
             let selectedItems = params.getAll('selecteditems');
             params.delete('selecteditems')
-            this.props.onApplyRelatedItem(selectedItems[0]);
+            this.props.onApplySelectedItem(selectedItems[0]);
         }
     }
 
@@ -201,10 +201,10 @@ export default class RelatedItemsModal extends React.Component {
             // Items modal
         <Modal
                 className={ 'wp-block-tainacan-modal dynamic-modal ' + (currentWPVersion < 5.9 ? 'wp-version-smaller-than-5-9' : '') }
-                title={ __('Select one item that has relations', 'tainacan') }
+                title={ this.props.modalTitle ? this.props.modalTitle : __('Select one item for the block', 'tainacan') }
                 onRequestClose={ () => this.cancelSelection() }
                 shouldCloseOnClickOutside={ false }
-                contentLabel={ __('Select one item that has relations', 'tainacan') }>
+                contentLabel={ this.props.modalTitle ? this.props.modalTitle : __('Select one item for the block', 'tainacan') }>
                 <iframe
                         id="itemsFrame"
                         src={ this.state.searchURL } />
@@ -217,8 +217,8 @@ export default class RelatedItemsModal extends React.Component {
                     <Button
                         style={{ marginLeft: 'auto' }} 
                         isPrimary
-                        onClick={ () => this.applyRelatedItem() }>
-                        {__('Get relations of this item', 'tainacan')}
+                        onClick={ () => this.applySelectedItem() }>
+                        { this.props.applyButtonLabel ? this.props.applyButtonLabel : __('Use this item', 'tainacan') }
                     </Button>
                 </div>
         </Modal>
