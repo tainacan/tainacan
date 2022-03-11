@@ -371,7 +371,7 @@ function tainacan_get_the_media_component(
 				
 				<!-- Slider main container -->
 				<?php echo $args['before_main_div'] ?>
-				<div id="<?php echo $args['media_main_id'] ?>" class="tainacan-media-component__swiper-main swiper-container <?php echo $args['class_main_div'] ?>">
+				<div id="<?php echo $args['media_main_id'] ?>" class="tainacan-media-component__swiper-main swiper <?php echo $args['class_main_div'] ?>">
 					
 					<!-- Additional required wrapper -->
 					<?php echo $args['before_main_ul'] ?>
@@ -424,7 +424,7 @@ function tainacan_get_the_media_component(
 
 				<!-- Slider thumbs container -->
 				<?php echo $args['before_thumbs_div'] ?>
-				<div id="<?php echo $args['media_thumbs_id'] ?>" class="tainacan-media-component__swiper-thumbs swiper-container <?php echo $args['class_thumbs_div'] ?>">
+				<div id="<?php echo $args['media_thumbs_id'] ?>" class="tainacan-media-component__swiper-thumbs swiper <?php echo $args['class_thumbs_div'] ?>">
 					
 					<!-- Additional required wrapper -->
 					<?php echo $args['before_thumbs_ul'] ?>

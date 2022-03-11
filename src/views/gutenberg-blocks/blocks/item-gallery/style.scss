@@ -59,7 +59,7 @@ $pswp__include-minimal-style: true !default;
 .tainacan-media-component__swiper-main,
 .tainacan-media-component__swiper-thumbs {
     .swiper-button-prev:not(.swiper-button-has-svg)::after,
-    .swiper-container-rtl .swiper-button-next:not(.swiper-button-has-svg)::after {
+    .swiper-rtl .swiper-button-next:not(.swiper-button-has-svg)::after {
         content: 'previous';
     }
     .swiper-button-next:not(.swiper-button-has-svg)::after,

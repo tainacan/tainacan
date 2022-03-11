@@ -4,8 +4,10 @@
 // as a carousel with a lightbox. Check examples in the end of the file 
 import PhotoSwipe from 'photoswipe/dist/photoswipe.min.js';
 import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default.min.js';
-import Swiper from 'swiper';
-import 'swiper/css/swiper.min.css';
+import Swiper, { Navigation, A11y } from 'swiper';
+import 'swiper/swiper.min.css';
+import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/modules/a11y/a11y.min.css';
 
 const { __ } = wp.i18n;
 
@@ -61,6 +63,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
                     lastSlideMessage: __('This is the last slide', 'tainacan')
                 },
+                modules: [Navigation, A11y]
             };
             thumbsSwiperOptions = {...thumbsSwiperOptions, ...this.options.swiper_thumbs_options };
             this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbsSwiperOptions);
@@ -85,6 +88,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
                     lastSlideMessage: __('This is the last slide', 'tainacan')
                 },
+                modules: [Navigation, A11y]
             };
             if (this.thumbsSwiper) {
                 mainSwiperOptions.thumbs = {
@@ -391,48 +395,3 @@ export default (element) => {
         );
     }
 };
-
-
-/*
-
----- Carousel of thumbnails only ----------------------------------------
-
-<div class="swiper-container-thumbs swiper-container">
-  <ul class="swiper-wrapper">
-    <li class="swiper-slide">
-      <a href="link-to-full-image-or-file">
-        <img href="link-to-thumbnail" alt..>
-        <span class="swiper-slide-name>File name</span>
-      </a>
-    </li>
-  </ul>
-</div>
-
-new TainacanMediaGallery(.swiper-container-thumbs, null, {...});
-
-
----- Carousel of thumbnails with main slider ----------------------------
-
-<div class="swiper-container-main swiper-container">
-  <ul class="swiper-wrapper">
-    <li class="swiper-slide">
-      <a href="link-to-full-image-or-file">
-        <img href="link-to-medium-or-large" alt..>
-        <span class="swiper-slide-name>File name</span>
-        
-      </a>
-    </li>
-  </ul>
-</div>
-<div class="swiper-container-thumbs swiper-container">
-  <ul class="swiper-wrapper">
-    <li class="swiper-slide">
-      <img href="link-to-thumbnail" alt..>
-      <span class="swiper-slide-name>File name</span>
-    </li>
-  </ul>
-</div>
-
-new TainacanMediaGallery(.swiper-container-thumbs, .swiper-container-main, {...});
-
-*/

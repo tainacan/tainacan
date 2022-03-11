@@ -219,7 +219,7 @@
                     <!-- The Swiper slider itself -->
                     <div   
                             id="tainacan-slide-container"
-                            class="swiper-container">
+                            class="swiper">
                         <div 
                                 role="list"
                                 class="swiper-wrapper" />
@@ -325,8 +325,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import axios from '../../../../../admin/js/axios';
-import 'swiper/css/swiper.min.css';
-import Swiper from 'swiper';
+import 'swiper/swiper.min.css';
+import 'swiper/modules/mousewheel/mousewheel.min.css';
+import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/modules/virtual/virtual.min.css';
+import Swiper, {Navigation, Virtual, Mousewheel } from 'swiper';
 import CircularCounter from './circular-counter.vue';
 import SlidesHelpModal from './slides-help-modal.vue'
 import { viewModesMixin } from '../js/view-modes-mixin.js';
@@ -480,7 +483,8 @@ export default {
                         self.itemPosition = null;
                     }
                 }
-            }
+            },
+            modules: [Navigation, Virtual, Mousewheel]
         });
 
         // Adds clipped class to root html

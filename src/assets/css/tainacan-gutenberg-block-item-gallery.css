@@ -644,9 +644,9 @@ a.pswp__share--download:hover {
 
 /* Style valid for both cases of carousel, main and thumbs */
 .tainacan-media-component__swiper-main .swiper-button-prev:not(.swiper-button-has-svg)::after,
-.tainacan-media-component__swiper-main .swiper-container-rtl .swiper-button-next:not(.swiper-button-has-svg)::after,
+.tainacan-media-component__swiper-main .swiper-rtl .swiper-button-next:not(.swiper-button-has-svg)::after,
 .tainacan-media-component__swiper-thumbs .swiper-button-prev:not(.swiper-button-has-svg)::after,
-.tainacan-media-component__swiper-thumbs .swiper-container-rtl .swiper-button-next:not(.swiper-button-has-svg)::after {
+.tainacan-media-component__swiper-thumbs .swiper-rtl .swiper-button-next:not(.swiper-button-has-svg)::after {
   content: 'previous'; }
 .tainacan-media-component__swiper-main .swiper-button-next:not(.swiper-button-has-svg)::after,
 .tainacan-media-component__swiper-main .swiper-button-prev:not(.swiper-button-has-svg)::after,
