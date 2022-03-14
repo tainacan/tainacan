@@ -2,8 +2,9 @@
 //
 // Counts on some HMTL markup to make a list of media links be displayed
 // as a carousel with a lightbox. Check examples in the end of the file 
-import PhotoSwipe from 'photoswipe/dist/photoswipe.min.js';
-import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default.min.js';
+import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
+import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
+import 'photoswipe/dist/photoswipe.css';
 import Swiper, { Navigation, A11y } from 'swiper';
 import 'swiper/swiper.min.css';
 import 'swiper/modules/navigation/navigation.min.css';
@@ -206,7 +207,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             zoomEl: true,
             counterEl: true,
             arrowEl: true,
-            preloaderEl: true,
+            preloadFirstSlide: false,
+            preload: [0,0],
             shareEl: this.options.show_share_button ? this.options.show_share_button : false,
             bgOpacity: 1,
             // define gallery index (for URL)
@@ -249,7 +251,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             },
 
         };
-    
+
         // PhotoSwipe opened from URL
         if (fromURL) {
             if (options.galleryPIDs) {
@@ -268,7 +270,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         } else {
             options.index = parseInt(index, 10);
         }
-    
+
         // exit if index not found
         if (isNaN(options.index))
             return;
@@ -277,13 +279,18 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             options.showAnimationDuration = 0;
     
         // Pass data to PhotoSwipe and initialize it
-        gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
-        gallery.init();
-        
+        gallery = new PhotoSwipeLightbox({
+            gallery: pswpElement,
+            pswpModule: PhotoSwipe,
+            children: items,
+            ...options
+        });
+        gallery.loadAndOpen(options.index);
+
         /* Updates PhotoSwiper instance from Swiper */
         let swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;
     
-        gallery.listen("unbindEvents", () => {
+        gallery.on("unbindEvents", () => {
             // This is index of current photoswipe slide
             let getCurrentIndex = gallery.getCurrentIndex();
             // Update position of the slider
@@ -294,14 +301,14 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         });
     
         // Swiper autoplay stop when image zoom */
-        gallery.listen('initialZoomIn', () => {
+        gallery.on('initialZoomIn', () => {
             if (swiperInstance.params && swiperInstance.params.autoplay && swiperInstance.params.autoplay.enabled && swiperInstance.autoplay.running)
                 swiperInstance.autoplay.stop();
         });
 
         // On destroy we make a copy of the inner content to clear it
         // and set again. This stops YouTube player, for example. 
-        gallery.listen('destroy', () => { 
+        gallery.on('destroy', () => { 
             let actualGalleryContainer = document.getElementsByClassName("pswp__container")[0];
             if (actualGalleryContainer) {
                 let currentData = actualGalleryContainer.innerHTML;
@@ -316,9 +323,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
     onThumbnailsClick(e, self) {
         e = e || window.event;
         e.preventDefault ? e.preventDefault() : (e.returnValue = false);
-    
-        let eTarget = e.target || e.srcElement;
 
+        let eTarget = e.target || e.srcElement;
+        
         // find root element of slide
         let closest = function closest(el, fn) {
             return el && (fn(el) ? el : closest(el.parentNode, fn));
@@ -338,7 +345,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             numChildNodes = childNodes.length,
             nodeIndex = 0,
             index;
-
+            
         for (let i = 0; i < numChildNodes; i++) {
             if (childNodes[i].nodeType !== 1)
                 continue;
@@ -349,7 +356,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             }
             nodeIndex++;
         }
-        
+    
         // open PhotoSwipe if valid index found
         if (index >= 0)
             self.openPhotoSwipe(index, clickedGallery);

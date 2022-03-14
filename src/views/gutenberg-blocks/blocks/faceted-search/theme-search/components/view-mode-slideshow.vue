@@ -499,7 +499,8 @@ export default {
         window.removeEventListener('keyup', this.handleKeyboardKeys);
 
         clearInterval(this.intervalId);
-        if (this.swiper)
+
+        if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },
     methods: {

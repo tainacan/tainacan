@@ -8,8 +8,7 @@ $pswp__assets-path: '../images/' !default; // path to skin assets folder (preloa
 $pswp__error-text-color: #CCC !default; // "Image not loaded" text color
 $pswp__include-minimal-style: true !default;
 
-@import '../../../../../node_modules/photoswipe/src/css/main.scss';
-@import '../../../../../node_modules/photoswipe/src/css/default-skin/default-skin.scss';
+// @import '../../../../../node_modules/photoswipe/dist/photoswipe.css';
 
 .item-gallery-edit-container {
     .tainacan-media-component {
