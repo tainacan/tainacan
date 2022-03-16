@@ -181,8 +181,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
         // Update position of the slider
         this.lightbox.on("change", () => {
-
-            if (thisLightbox.pswp && thisLightbox.pswp.currIndex) {
+            if (thisLightbox.pswp && !isNaN(thisLightbox.pswp.currIndex) && thisLightbox.pswp.currIndex >= 0) {
                 // This is the index of current photoswipe slide
                 swiperInstance.slideTo(thisLightbox.pswp.currIndex);
 
