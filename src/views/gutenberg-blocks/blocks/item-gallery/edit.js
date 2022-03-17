@@ -22,6 +22,9 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         hideFileNameThumbnails,
         hideFileCaptionThumbnails,
         hideFileDescriptionThumbnails,
+        hideFileNameLightbox,
+        hideFileCaptionLightbox,
+        hideFileDescriptionLightbox,
         openLightboxOnClick,
         arrowsSize,
         mainSliderHeight,
@@ -240,6 +243,40 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             onChange={ ( isChecked ) => {
                                     hideFileDescriptionThumbnails = isChecked;
                                     setAttributes({ hideFileDescriptionThumbnails: hideFileDescriptionThumbnails });
+                                } 
+                            }
+                        />
+                    </PanelBody>
+                : null }
+                { openLightboxOnClick === true ?
+                    <PanelBody
+                            title={__('Lightbox settings', 'tainacan')}
+                            initialOpen={ true }
+                        >
+                        <ToggleControl
+                            label={__('Hide file name', 'tainacan')}
+                            checked={ hideFileNameLightbox }
+                            onChange={ ( isChecked ) => {
+                                    hideFileNameLightbox = isChecked;
+                                    setAttributes({ hideFileNameLightbox: hideFileNameLightbox });
+                                } 
+                            }
+                        />
+                       <ToggleControl
+                            label={__('Hide file caption', 'tainacan')}
+                            checked={ hideFileCaptionLightbox }
+                            onChange={ ( isChecked ) => {
+                                    hideFileCaptionLightbox = isChecked;
+                                    setAttributes({ hideFileCaptionLightbox: hideFileCaptionLightbox });
+                                } 
+                            }
+                        />
+                        <ToggleControl
+                            label={__('Hide file description', 'tainacan')}
+                            checked={ hideFileDescriptionLightbox }
+                            onChange={ ( isChecked ) => {
+                                    hideFileDescriptionLightbox = isChecked;
+                                    setAttributes({ hideFileDescriptionLightbox: hideFileDescriptionLightbox });
                                 } 
                             }
                         />

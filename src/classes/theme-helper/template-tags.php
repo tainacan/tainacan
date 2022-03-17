@@ -1090,6 +1090,9 @@ function tainacan_has_related_items($item_id = false) {
 	* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
 	* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 	* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
+	* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
+	* 	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
+	* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 	* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 	*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
 	* @return void

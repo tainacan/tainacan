@@ -73,6 +73,18 @@
             "type": "boolean",
             "default": true
         },
+        "hideFileNameLightbox": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideFileCaptionLightbox": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideFileDescriptionLightbox": {
+            "type": "boolean",
+            "default": false
+        },
         "openLightboxOnClick": {
             "type": "boolean",
             "default": true

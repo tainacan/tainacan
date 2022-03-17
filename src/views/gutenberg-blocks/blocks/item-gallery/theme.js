@@ -24,6 +24,10 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
      * @param  {Object}  options.swiper_main_options      object with SwiperJS options for the main list
      * @param  {Boolean} options.disable_lightbox         do not open photoswipes lightbox when clicking the main gallery
      * @param  {Boolean} options.show_share_button        show share button on lightbox
+     * @param  {Boolean} options.show_download_button     show share download button on lightbox
+     * @param  {Boolean} options.hide_media_name          hide media name on lightbox
+     * @param  {Boolean} options.hide_media_caption       hide media caption on lightbox
+     * @param  {Boolean} options.hide_media_description   hide media description tbox
      * 
      * @return {Object}                                   TainacanMediaGallery instance
      */
@@ -150,7 +154,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         
         /* Updates Swiper instance from Photoswipe */
         const swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;    
-        const thisLightbox = this.lightbox;
+        const self = this;
 
         // Parse URL and open gallery from it if contains #&pid=3&gid=1
         const hashData = this.photoswipeParseHash();
@@ -181,18 +185,18 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
         // Update position of the slider
         this.lightbox.on("change", () => {
-            if (thisLightbox.pswp && !isNaN(thisLightbox.pswp.currIndex) && thisLightbox.pswp.currIndex >= 0) {
+            if (self.lightbox.pswp && !isNaN(self.lightbox.pswp.currIndex) && self.lightbox.pswp.currIndex >= 0) {
                 // This is the index of current photoswipe slide
-                swiperInstance.slideTo(thisLightbox.pswp.currIndex);
+                swiperInstance.slideTo(self.lightbox.pswp.currIndex);
 
                 // Also updates URL for history navigation
                 // We only add to the history if it is the first time opening
                 let currentURL = window.location.toString();
                 if (currentURL.indexOf("#") > 0) {
                     currentURL = currentURL.substring(0, currentURL.indexOf("#"));
-                    window.history.replaceState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (thisLightbox.pswp.currIndex + 1));
+                    window.history.replaceState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));
                 } else {
-                    window.history.pushState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (thisLightbox.pswp.currIndex + 1));  
+                    window.history.pushState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));  
                 } 
             }
         });
@@ -209,40 +213,56 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 window.history.replaceState({},'', currentURL.substring(0, currentURL.indexOf("#")));
         });
 
-        // Adds caption
+        // Adds name, caption, description
         this.lightbox.on('uiRegister', () => {
-            thisLightbox.pswp.ui.registerElement({
+            self.lightbox.pswp.ui.registerElement({
+                name: 'name',
+                order: 7,
+                isButton: false,
+                appendTo: 'bar',
+                onInit: (el, pswp) => {
+                    self.lightbox.pswp.on('change', () => {
+                        const item = pswp.currSlide.data;
+                        let innerHTML = '';
+                        if (
+                            item &&
+                            item.title &&
+                            item.title.name &&
+                            !self.options.hide_media_name
+                        )
+                            innerHTML += item.title.name.innerHTML;
+                        el.innerHTML += item.title.name.innerHTML;
+                    });
+                }
+            });
+            self.lightbox.pswp.ui.registerElement({
                 name: 'caption',
                 order: 15,
                 isButton: false,
                 appendTo: 'root',
                 onInit: (el, pswp) => {
-                    thisLightbox.pswp.on('change', () => {
+                    self.lightbox.pswp.on('change', () => {
                         const item = pswp.currSlide.data;
-                        if (item && item.title) {
-                            let innerHTML = '';
-                                
+                        let innerHTML = '';
+                        if (
+                            item &&
+                            item.title &&
+                            (
+                                (item.title.caption && !self.options.hide_media_caption) ||
+                                (item.title.description && !self.options.hide_media_description)
+                            )
+                        ) {
                             innerHTML += '<div class="pswp__caption-inner">';
                             
-                            if (item.title.caption)
+                            if (item.title.caption && !self.options.hide_media_caption)
                                 innerHTML += '<span class="pswp__figure_caption">' + item.title.caption.innerHTML + '</span>';
 
-                            if (item.title.name && item.title.caption || (!item.title.name && item.title.caption && item.title.description) )
-                                innerHTML += '<br>';
-
-                            if (item.title.name)
-                                innerHTML += '<span class="pswp__name">' + item.title.name.innerHTML + '</span>';
-                                
-                            if (item.title.description && item.title.name)
-                                innerHTML += '<br>';
-
-                            if (item.title.description)
+                            if (item.title.description && !self.options.hide_media_description)
                                 innerHTML += '<span class="pswp__description">' + item.title.description.innerHTML + '</span>';
                             
                             innerHTML += '</div>';
-
-                            el.innerHTML = innerHTML;
                         }
+                        el.innerHTML = innerHTML;
                     });
                 }
             });
