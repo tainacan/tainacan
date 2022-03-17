@@ -298,7 +298,7 @@
   --pswp-icon-stroke-color: var(--tainacan-lightbox-background-contrast, #4f4f4f); }
   .tainacan-photoswipe-layer.has-light-color-scheme {
     --tainacan-lightbox-background: #fafafa;
-    --tainacan-lightbox-text-color: #1d1d1d;
+    --tainacan-lightbox-text-color: #202020;
     --tainacan-lightbox-background-contrast: #dbdbdb; }
   .tainacan-photoswipe-layer .pswp__counter {
     min-width: 50px; }
