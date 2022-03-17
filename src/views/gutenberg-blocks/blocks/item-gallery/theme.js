@@ -231,7 +231,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                             !self.options.hide_media_name
                         )
                             innerHTML += item.title.name.innerHTML;
-                        el.innerHTML += item.title.name.innerHTML;
+                        el.innerHTML += innerHTML;
                     });
                 }
             });

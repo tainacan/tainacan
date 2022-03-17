@@ -311,18 +311,21 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    transition: opacity 0.4s ease; }
+    transition: opacity 0.1s ease; }
     .tainacan-photoswipe-layer .pswp__name:hover {
       opacity: 1.0; }
   .tainacan-photoswipe-layer .pswp__caption {
-    bottom: 0;
     position: fixed;
     padding: 8px;
     width: 100%;
     display: flex;
-    justify-content: center; }
+    justify-content: center;
+    bottom: 0;
+    opacity: 0.75;
+    transition: opacity 0.4s ease, bottom 0.2s ease; }
+    .tainacan-photoswipe-layer .pswp__caption:hover {
+      opacity: 1.0; }
     .tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner {
-      opacity: 0.75;
       background-color: var(--pswp-bg);
       color: var(--pswp-icon-color);
       text-shadow: 1px 1px 3px var(--pswp-icon-color-secondary);
@@ -331,20 +334,20 @@
       line-height: 20px;
       text-align: center;
       font-size: 1em;
-      border-radius: 4px;
-      transition: opacity 0.4s ease; }
-      .tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner:hover {
-        opacity: 1.0; }
+      border-radius: 4px; }
       .tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__figure_caption {
         font-size: 0.875em;
         font-style: italic;
         display: block; }
-        .tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__figure_caption:not(:only-child) {
-          margin-bottom: 1.25em; }
+      .tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__figure_caption + .pswp__description {
+        margin-bottom: 1.5em; }
       .tainacan-photoswipe-layer .pswp__caption .pswp__caption-inner .pswp__description {
         font-size: 0.9375em;
         display: block; }
-  .tainacan-photoswipe-layer.pswp--zoomed-in .pswp__name, .tainacan-photoswipe-layer.pswp--zoomed-in .pswp__caption-inner {
+  .tainacan-photoswipe-layer.pswp--zoomed-in .pswp__name {
+    opacity: 0.0; }
+  .tainacan-photoswipe-layer.pswp--zoomed-in .pswp__caption {
+    bottom: -40px;
     opacity: 0.0; }
   .tainacan-photoswipe-layer .pswp__button--arrow--left::before,
   .tainacan-photoswipe-layer .pswp__button--arrow--right::before {
