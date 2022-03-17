@@ -1126,7 +1126,8 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 		* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 		*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
-		* @return string  The HTML div to be used for rendering the item galery component
+		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
+		@return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery($args = []) {
 
@@ -1144,7 +1145,8 @@ class Theme_Helper {
 			'hideFileCaptionLightbox' => 		false,
 			'hideFileDescriptionLightbox' =>	false,
 			'openLightboxOnClick' => 			true,
-			'showDownloadButtonMain' =>			true
+			'showDownloadButtonMain' =>			true,
+			'lightboxHasLightBackground' => 	false
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -1169,6 +1171,7 @@ class Theme_Helper {
 		$hide_file_description_lightbox = $args['hideFileDescriptionLightbox'];
 		$open_lightbox_on_click = $args['openLightboxOnClick'];
 		$show_download_button_main = $args['showDownloadButtonMain'];
+		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -1343,7 +1346,8 @@ class Theme_Helper {
 				'disable_lightbox' => !$open_lightbox_on_click,
 				'hide_media_name' => $hide_file_name_lightbox,
 				'hide_media_caption' => $hide_file_caption_lightbox,
-				'hide_media_description' => $hide_file_description_lightbox
+				'hide_media_description' => $hide_file_description_lightbox,
+				'lightbox_has_light_background' => $lightbox_has_light_background
 			)
 		);
 	}

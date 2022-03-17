@@ -1095,6 +1095,7 @@ function tainacan_has_related_items($item_id = false) {
 	* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 	* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 	*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
+	*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 	* @return void
  */
 function tainacan_the_item_gallery($args = []) {

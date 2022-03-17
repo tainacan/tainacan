@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 
-const { Button, Placeholder, RangeControl, ToggleControl, PanelBody } = wp.components;
+const { Button, ButtonGroup, BaseControl, Placeholder, RangeControl, ToggleControl, PanelBody } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
 const { InspectorControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
@@ -31,7 +31,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         mainSliderWidth,          
         thumbnailsCarouselWidth,
         thumbnailsCarouselItemSize,
-        showDownloadButtonMain
+        showDownloadButtonMain,
+        lightboxHasLightBackground
     } = attributes;
 
     // Gets blocks props from hook
@@ -253,6 +254,30 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             title={__('Lightbox settings', 'tainacan')}
                             initialOpen={ true }
                         >
+                        <BaseControl
+                                id="lightbox-color-scheme"
+                                label={ __('Background color scheme', 'tainacan') }>
+                            <ButtonGroup id="lightbox-color-scheme">   
+                                <Button 
+                                        onClick={ () => {
+                                                lightboxHasLightBackground = false;
+                                                setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                                            }
+                                        }
+                                        variant={ lightboxHasLightBackground ? 'secondary' : 'primary' }>
+                                    { __('Dark', 'tainacan') }
+                                </Button>
+                                <Button 
+                                        onClick={ () => {
+                                                lightboxHasLightBackground = true;
+                                                setAttributes({ lightboxHasLightBackground: lightboxHasLightBackground });
+                                            }
+                                        }
+                                        variant={ lightboxHasLightBackground ? 'primary' : 'secondary' }>
+                                    { __('Light', 'tainacan') }
+                                </Button>
+                            </ButtonGroup>
+                        </BaseControl>
                         <ToggleControl
                             label={__('Hide file name', 'tainacan')}
                             checked={ hideFileNameLightbox }

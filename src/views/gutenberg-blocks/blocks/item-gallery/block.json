@@ -112,6 +112,10 @@
         "showDownloadButtonMain": {
             "type": "boolean",
             "default": false
+        },
+        "lightboxHasLightBackground": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {

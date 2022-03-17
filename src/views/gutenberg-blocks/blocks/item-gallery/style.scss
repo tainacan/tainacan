@@ -379,9 +379,17 @@
 
 // Photoswip zoom ---------------------------------
 .tainacan-photoswipe-layer {
-    --pswp-bg: var(--tainacan-lightbox-background, #000);
-    --pswp-error-text-color: var(--tainacan-lightbox-text-color, #f7f7f7);
-    --pswp-icon-color: var(--tainacan-lightbox-text-color, #fff);
+    --pswp-bg: var(--tainacan-lightbox-background, #1d1d1d);
+    --pswp-error-text-color: var(--tainacan-lightbox-text-color, #fafafa);
+    --pswp-icon-color: var(--tainacan-lightbox-text-color, #fafafa);
+    --pswp-icon-color-secondary: var(--tainacan-lightbox-background-contrast, #4f4f4f);
+    --pswp-icon-stroke-color: var(--tainacan-lightbox-background-contrast, #4f4f4f);
+
+    &.has-light-color-scheme {
+        --tainacan-lightbox-background: #fafafa;
+        --tainacan-lightbox-text-color: #202020;
+        --tainacan-lightbox-background-contrast: #dbdbdb; 
+    }
 
     .pswp__counter {
         min-width: 50px;

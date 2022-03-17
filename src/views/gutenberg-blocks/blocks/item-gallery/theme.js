@@ -17,17 +17,18 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
 
     /**
      * Constructor initializes the instance. Options are Snake Case because they come from PHP side
-     * @param  {String}  thumbs_gallery_selector          html element to be queried containing the thumbnails list
-     * @param  {String}  main_gallery_selector            html element to be queried containing the main list
-     * @param  {Object}  options                          several options to be tweaked
-     * @param  {Object}  options.swiper_thumbs_options    object with SwiperJS options for the thumbnails list (https://swiperjs.com/swiper-api)
-     * @param  {Object}  options.swiper_main_options      object with SwiperJS options for the main list
-     * @param  {Boolean} options.disable_lightbox         do not open photoswipes lightbox when clicking the main gallery
-     * @param  {Boolean} options.show_share_button        show share button on lightbox
-     * @param  {Boolean} options.show_download_button     show share download button on lightbox
-     * @param  {Boolean} options.hide_media_name          hide media name on lightbox
-     * @param  {Boolean} options.hide_media_caption       hide media caption on lightbox
-     * @param  {Boolean} options.hide_media_description   hide media description tbox
+     * @param  {String}  thumbs_gallery_selector                html element to be queried containing the thumbnails list
+     * @param  {String}  main_gallery_selector                  html element to be queried containing the main list
+     * @param  {Object}  options                                several options to be tweaked
+     * @param  {Object}  options.swiper_thumbs_options          object with SwiperJS options for the thumbnails list (https://swiperjs.com/swiper-api)
+     * @param  {Object}  options.swiper_main_options            object with SwiperJS options for the main list
+     * @param  {Boolean} options.disable_lightbox               do not open photoswipes lightbox when clicking the main gallery
+     * @param  {Boolean} options.show_share_button              show share button on lightbox
+     * @param  {Boolean} options.show_download_button           show share download button on lightbox
+     * @param  {Boolean} options.hide_media_name                hide media name on lightbox
+     * @param  {Boolean} options.hide_media_caption             hide media caption on lightbox
+     * @param  {Boolean} options.hide_media_description         hide media description lightbox
+     * @param  {Boolean} options.lightbox_has_light_background  shows a light instead of dark background color scheme on the lightbox
      * 
      * @return {Object}                                   TainacanMediaGallery instance
      */
@@ -120,7 +121,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         let photoswipeOptions = {
             loop: false,
             preloadFirstSlide: false,
-            mainClass: 'tainacan-photoswipe-layer', 
+            mainClass: 'tainacan-photoswipe-layer' + (this.options.lightbox_has_light_background ? ' has-light-color-scheme' : ''), 
             bgOpacity: 0.85,
             clickToCloseNonZoomable: false,
             closeTitle: __( 'Close lightbox', 'tainacan'),
