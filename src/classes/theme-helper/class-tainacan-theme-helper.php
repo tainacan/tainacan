@@ -1201,6 +1201,7 @@ class Theme_Helper {
 					
 					if ($document_type === 'attachment')  {
 						// Uses this moment to also see if we have an image
+						$attachment = get_post(tainacan_get_the_document_raw($item_id));
 						$media_includes_images = wp_attachment_is('image', $attachment->ID);
 					} else if ($document_type === 'url') {
 						$document_options = $item->get_document_options();
@@ -1266,6 +1267,11 @@ class Theme_Helper {
 			}
 		}
 		
+		// Make sure we have more than one media item otherwise 
+		// we don't need to show thumbnails if the main carousel exists
+		if ( $layout_elements['main'] && count($media_items_main) <= 1 )
+			$layout_elements['thumbnails'] = false;
+
 		if ( $layout_elements['thumbnails'] ) {
 
 			$class_slide_metadata = '';
