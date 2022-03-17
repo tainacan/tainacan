@@ -59,7 +59,7 @@
                         {{ $i18n.get('info_no_item_found') }}
                     </template>
                     <template
-                            v-if="currentUserCanEditItems && !$adminOptions.itemEditionMode" 
+                            v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)" 
                             slot="footer">
                         <a @click="editItemModalOpen = true">
                             {{ $i18n.get('label_create_new_item') + ' "' + searchQuery + '"' }}
@@ -81,7 +81,7 @@
                                 style="position: relative;">
                             <div v-html="itemValue.valuesAsHtml" />
                             <a 
-                                    v-if="currentUserCanEditItems && !$adminOptions.itemEditionMode"
+                                    v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)"
                                     @click="editSelected(itemValue.value)"
                                     class="relationship-value-button--edit">
                                 <span class="icon">
@@ -116,7 +116,7 @@
                     itemMetadatum.item.id &&
                     (maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
                     (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
-                :disabled="$adminOptions.itemEditionMode"
+                :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
                 @click="editItemModalOpen = !editItemModalOpen"
                 class="add-link">
             <span class="icon is-small">
@@ -447,7 +447,11 @@
                 let valuesAsHtml = '';
                 valuesAsHtml += `<div class="tainacan-relationship-metadatum" data-item-id="${ item.id }">
                     <div class="tainacan-relationship-metadatum-header">`;
-                    if (this.isDisplayingRelatedItemMetadata && this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf('thumbnail') >= 0)
+                    if (
+                        this.isDisplayingRelatedItemMetadata &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf('thumbnail') >= 0
+                    )
                         valuesAsHtml += `<img src="${ this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype) }" class="attachment-tainacan-small size-tainacan-small" alt="${ item.thumbnail_alt }" loading="lazy" width="40" height="40">`;
                 
                     valuesAsHtml += `<h4 class="label">
@@ -458,6 +462,7 @@
                 Object.values(item.metadata).forEach(metadatumValue => {
                     if (
                         metadatumValue.id != this.itemMetadatum.metadatum.metadata_type_options.search &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
                         this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf(metadatumValue.id) >= 0 &&
                         metadatumValue.value_as_html
                     ) {
