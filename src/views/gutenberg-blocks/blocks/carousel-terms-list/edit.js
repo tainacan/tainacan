@@ -10,7 +10,10 @@ import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
-import 'swiper/css/swiper.min.css';
+import 'swiper/swiper.min.css';
+import 'swiper/modules/a11y/a11y.min.css';
+import 'swiper/modules/autoplay/autoplay.min.css';
+import 'swiper/modules/navigation/navigation.min.css';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }){
     let {
@@ -52,7 +55,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         return (
             <li
                 key={ term.id }
-                className={ 'term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid ' : '') + (maxTermsPerScreen ? ' max-terms-per-screen-' + maxTermsPerScreen : '') }>
+                className={ 'swiper-slide term-list-item ' + (!showTermThumbnail ? 'term-list-item-grid ' : '') + (maxTermsPerScreen ? ' max-terms-per-screen-' + maxTermsPerScreen : '') }>
                 { tainacan_blocks.wp_version < '5.4' ?
                     <IconButton
                         onClick={ () => removeItemOfId(term.id) }
@@ -407,6 +410,11 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     '--spaceBetweenTerms': !isNaN(spaceBetweenTerms) ? (spaceBetweenTerms + 'px') : '32px',
                                     '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
                                 }}>
+                            <div className={'swiper'}>
+                                <ul className={'swiper-wrapper terms-list-edit'}>
+                                    { terms }
+                                </ul>
+                            </div>
                             <button
                                     class="swiper-button-prev"
                                     slot="button-prev"
@@ -426,9 +434,6 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             fill="none"/>
                                 </svg>
                             </button>
-                            <ul className={'terms-list-edit'}>
-                                { terms }
-                            </ul>
                             <button
                                     class="swiper-button-next"
                                     slot="button-next"

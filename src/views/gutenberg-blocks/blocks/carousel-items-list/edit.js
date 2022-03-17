@@ -11,7 +11,10 @@ import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import TainacanBlocksCompatColorPicker from '../../js/compatibility/tainacan-blocks-compat-colorpicker.js';
-import 'swiper/css/swiper.min.css';
+import 'swiper/swiper.min.css';
+import 'swiper/modules/a11y/a11y.min.css';
+import 'swiper/modules/autoplay/autoplay.min.css';
+import 'swiper/modules/navigation/navigation.min.css';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }){
     let {
@@ -65,7 +68,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         return (
             <li 
                 key={ item.id }
-                className={ 'item-list-item ' + (maxItemsPerScreen ? ' max-itens-per-screen-' + maxItemsPerScreen : '') + (cropImagesToSquare ? ' is-forced-square' : '') }>   
+                className={ 'swiper-slide item-list-item ' + (maxItemsPerScreen ? ' max-itens-per-screen-' + maxItemsPerScreen : '') + (cropImagesToSquare ? ' is-forced-square' : '') }>   
                 { loadStrategy == 'selection' ?
                     ( tainacan_blocks.wp_version < '5.4' ?
                         <IconButton
@@ -657,13 +660,21 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         : null
                     }
                     {  items.length ? (
-
                         <div
                                 className={'items-list-edit-container ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
                                 style={{
                                     '--spaceBetweenItems': !isNaN(spaceBetweenItems) ? (spaceBetweenItems + 'px') : '32px',
                                     '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
                                 }}>
+                            <div className={'swiper'}>
+                                <ul 
+                                    style={{ 
+                                        marginTop: showCollectionHeader ? '1.5rem' : '0px'
+                                    }}
+                                    className={ 'swiper-wrapper items-list-edit' }>
+                                    { items }
+                                </ul>
+                            </div>
                             <button 
                                     class="swiper-button-prev" 
                                     slot="button-prev"
@@ -683,13 +694,6 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             fill="none"/>
                                 </svg>
                             </button>
-                            <ul 
-                                style={{ 
-                                    marginTop: showCollectionHeader ? '1.5rem' : '0px'
-                                }}
-                                className={ 'items-list-edit' }>
-                                { items }
-                            </ul>
                             <button 
                                     class="swiper-button-next" 
                                     slot="button-next"

@@ -1,16 +1,3 @@
-$pswp__show-hide-transition-duration: 333ms !default;
-$pswp__controls-transition-duration: 333ms !default;
-$pswp__background-color: rgba(0,0,0, 0.8) !default;
-$pswp__placeholder-color: #222 !default;
-$pswp__box-sizing-border-box: true !default; // disable .pswp * { box-sizing:border-box } (in case you already have it in your site css)
-$pswp__root-z-index: 9999999 !default;
-$pswp__assets-path: '../images/' !default; // path to skin assets folder (preloader, PNG and SVG sprite)
-$pswp__error-text-color: #CCC !default; // "Image not loaded" text color
-$pswp__include-minimal-style: true !default;
-
-@import '../../../../../node_modules/photoswipe/src/css/main.scss';
-@import '../../../../../node_modules/photoswipe/src/css/default-skin/default-skin.scss';
-
 .item-gallery-edit-container {
     .tainacan-media-component {
         .swiper-slide,
@@ -59,7 +46,7 @@ $pswp__include-minimal-style: true !default;
 .tainacan-media-component__swiper-main,
 .tainacan-media-component__swiper-thumbs {
     .swiper-button-prev:not(.swiper-button-has-svg)::after,
-    .swiper-container-rtl .swiper-button-next:not(.swiper-button-has-svg)::after {
+    .swiper-rtl .swiper-button-next:not(.swiper-button-has-svg)::after {
         content: 'previous';
     }
     .swiper-button-next:not(.swiper-button-has-svg)::after,
@@ -392,12 +379,89 @@ $pswp__include-minimal-style: true !default;
 
 // Photoswip zoom ---------------------------------
 .tainacan-photoswipe-layer {
-    .pswp__bg {
-        background-color: rgba(0, 0, 0, 0.85);
+    --pswp-bg: var(--tainacan-lightbox-background, #1d1d1d);
+    --pswp-error-text-color: var(--tainacan-lightbox-text-color, #fafafa);
+    --pswp-icon-color: var(--tainacan-lightbox-text-color, #fafafa);
+    --pswp-icon-color-secondary: var(--tainacan-lightbox-background-contrast, #4f4f4f);
+    --pswp-icon-stroke-color: var(--tainacan-lightbox-background-contrast, #4f4f4f);
+
+    &.has-light-color-scheme {
+        --tainacan-lightbox-background: #fafafa;
+        --tainacan-lightbox-text-color: #202020;
+        --tainacan-lightbox-background-contrast: #dbdbdb; 
     }
-    .pswp__ui--fit .pswp__top-bar,
-    .pswp__ui--fit .pswp__caption {
-        background-color: rgba(0, 0, 0, 0.7);
+
+    .pswp__counter {
+        min-width: 50px;
+    }
+    .pswp__name {
+        display: block;
+        height: 30px;
+        line-height: 30px;
+        margin: 15px auto;
+        color: var(--pswp-icon-color);
+        text-shadow: 1px 1px 3px var(--pswp-icon-color-secondary);
+        max-width: calc(100% - 220px);
+        width: 100%;
+        padding: 0 12px;
+        text-align: center;
+        font-size: 0.875em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition: opacity 0.1s ease;
+    
+        &:hover {
+            opacity: 1.0;
+        }
+    }
+    .pswp__caption {
+        position: fixed;
+        padding: 8px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        bottom: 0;
+        opacity: 0.75;
+        transition: opacity 0.4s ease, bottom 0.2s ease;
+
+        &:hover {
+            opacity: 1.0;
+        }
+
+        .pswp__caption-inner {
+            background-color: var(--pswp-bg);
+            color: var(--pswp-icon-color);
+            text-shadow: 1px 1px 3px var(--pswp-icon-color-secondary);
+            max-width: 920px;
+            padding: 12px;
+            line-height: 20px;
+            text-align: center;
+            font-size: 1em;
+            border-radius: 4px;
+            
+            .pswp__figure_caption {
+                font-size: 0.875em;
+                font-style: italic;
+                display: block;
+            }
+            .pswp__figure_caption+.pswp__description {
+                margin-bottom: 1.5em;
+            }
+            .pswp__description {
+                font-size: 0.9375em;
+                display: block;
+            }
+        }
+    }
+    &.pswp--zoomed-in {
+        .pswp__name {
+            opacity: 0.0;
+        }
+        .pswp__caption {
+            bottom: -40px;
+            opacity: 0.0;
+        }
     }
     .pswp__button--arrow--left::before,
     .pswp__button--arrow--right::before {
@@ -487,7 +551,7 @@ $pswp__include-minimal-style: true !default;
             z-index: 99;
             padding: 1rem 4.33337vw;
             background: var(--tainacan-media-background, #ffffff);
-            border-radius: var(--borderRadius, 3px);
+            border-radius: 3px;
             word-wrap: break-word;
         }
         audio {
@@ -501,33 +565,5 @@ $pswp__include-minimal-style: true !default;
             min-height: 56px;
             max-width: 80%;
         }
-    }
-    .pswp__top-bar .pswp__name {
-        color: white;
-        text-align: center;
-        font-size: 1.125em;
-        display: block;
-        height: 44px;
-        max-width: calc(100% - 240px);
-        width: 100%;
-        left: 44px;
-        position: absolute;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        line-height: 44px;
-        padding: 0 10px;
-    }
-    .pswp__figure_caption {
-        font-size: 0.875em;
-        font-style: italic;
-    }
-    .pswp__description {
-        font-size: 0.9375em;
-    }
-    .pswp__caption__center {
-        text-align: center;
-        font-size: 1em;
-        max-width: 800px;
     }
 }

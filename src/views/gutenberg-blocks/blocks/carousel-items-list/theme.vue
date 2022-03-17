@@ -47,24 +47,43 @@
                         }"/>
             </a>   
         </div>
-        <div v-if="!isLoading">
-            <div  
-                    :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
-                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
-                    v-if="items.length > 0">
-                <swiper 
+        <div  
+                :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
+                :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
+                v-if="items.length > 0 || isLoading">
+            <div 
+                    class="swiper"
+                    :id="blockId + '-carousel'">
+                <ul 
+                        v-if="isLoading"
                         role="list"
-                        :options="swiperOptions"
-                        ref="myItemSwiper"
+                        class="swiper-wrapper"
                         :style="{
                             marginTop: showCollectionHeader ? '1.35em' : '0px'
                         }">
-                    <swiper-slide 
+                    <li 
                             role="listitem"
-                            ref="myItemSwiperSlide"
+                            :key="index"
+                            v-for="index in 18"
+                            class="swiper-slide collection-list-item skeleton">
+                        <a>
+                            <img>
+                            <span v-if="!hideName" />
+                        </a>
+                    </li>
+                </ul>
+                <ul 
+                        v-else
+                        role="list"
+                        class="swiper-wrapper"
+                        :style="{
+                            marginTop: showCollectionHeader ? '1.35em' : '0px'
+                        }">
+                    <li
+                            role="listitem"
                             :key="index"
                             v-for="(item, index) of items"
-                            class="item-list-item"
+                            class="swiper-slide item-list-item"
                             :class="{ 'is-forced-square': cropImagesToSquare }">
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
@@ -79,120 +98,54 @@
                                     :transition-duration="500" />
                             <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
                         </a>
-                    </swiper-slide>
-                </swiper>
-                <button 
-                        class="swiper-button-prev" 
-                        :id="blockId + '-prev'" 
-                        slot="button-prev"
-                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
-                    <svg
-                            :width="largeArrows ? 60 : 42"
-                            :height="largeArrows ? 60 : 42"
-                            viewBox="0 0 24 24">
-                        <path
-                                v-if="arrowsStyle === 'type-2'"
-                                d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
-                        <path 
-                                v-else
-                                d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                        <path
-                                d="M0 0h24v24H0z"
-                                fill="none"/>
-                    </svg>
-                </button>
-                <button 
-                        class="swiper-button-next" 
-                        :id="blockId + '-next'" 
-                        slot="button-next"
-                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
-                    <svg
-                            :width="largeArrows ? 60 : 42"
-                            :height="largeArrows ? 60 : 42"
-                            viewBox="0 0 24 24">
-                        <path
-                                v-if="arrowsStyle === 'type-2'"
-                                d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
-                        <path 
-                                v-else
-                                d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                        <path
-                                d="M0 0h24v24H0z"
-                                fill="none"/>
-                    </svg>
-                </button>
+                    </li>
+                </ul>
             </div>
-            <div
-                    v-else
-                    class="spinner-container">
-                {{ $root.__(errorMessage, 'tainacan') }}
-            </div>
-            <!-- Swiper buttons are hidden as they actually swipe from slide to slide -->
+            <button 
+                    class="swiper-button-prev" 
+                    :id="blockId + '-prev'" 
+                    slot="button-prev"
+                    :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+                <svg
+                        :width="largeArrows ? 60 : 42"
+                        :height="largeArrows ? 60 : 42"
+                        viewBox="0 0 24 24">
+                    <path
+                            v-if="arrowsStyle === 'type-2'"
+                            d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
+                    <path 
+                            v-else
+                            d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    <path
+                            d="M0 0h24v24H0z"
+                            fill="none"/>
+                </svg>
+            </button>
+            <button 
+                    class="swiper-button-next" 
+                    :id="blockId + '-next'" 
+                    slot="button-next"
+                    :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+                <svg
+                        :width="largeArrows ? 60 : 42"
+                        :height="largeArrows ? 60 : 42"
+                        viewBox="0 0 24 24">
+                    <path
+                            v-if="arrowsStyle === 'type-2'"
+                            d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
+                    <path 
+                            v-else
+                            d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                    <path
+                            d="M0 0h24v24H0z"
+                            fill="none"/>
+                </svg>
+            </button>
         </div>
-        <div v-else>
-            <div 
-                    :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
-                    :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') ">
-                <swiper 
-                        role="list"
-                        :options="{ ...JSON.parse(JSON.stringify(swiperOptions)), autoplay: false, loop: false }"
-                        ref="myItemSwiperSkeleton"
-                        :style="{
-                            marginTop: showCollectionHeader ? '1.35em' : '0px'
-                        }">
-                    <swiper-slide 
-                            role="listitem"
-                            :key="index"
-                            ref="myItemSwiperSlideSkeleton"
-                            v-for="(item, index) of 18"
-                            class="item-list-item skeleton">      
-                        <a>
-                            <img>
-                            <span v-if="!hideTitle" />
-                        </a>
-                    </swiper-slide>
-                </swiper>
-                <button 
-                        class="swiper-button-prev" 
-                        :id="blockId + '-prev'" 
-                        slot="button-prev"
-                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
-                    <svg
-                            :width="largeArrows ? 60 : 42"
-                            :height="largeArrows ? 60 : 42"
-                            viewBox="0 0 24 24">
-                        <path
-                                v-if="arrowsStyle === 'type-2'"
-                                d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
-                        <path 
-                                v-else
-                                d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                        <path
-                                d="M0 0h24v24H0z"
-                                fill="none"/>
-                    </svg>
-                </button>
-                <button 
-                        class="swiper-button-next" 
-                        :id="blockId + '-next'"   
-                        slot="button-next"
-                        :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
-                    <svg
-                            :width="largeArrows ? 60 : 42"
-                            :height="largeArrows ? 60 : 42"
-                            viewBox="0 0 24 24">
-                        <path
-                                v-if="arrowsStyle === 'type-2'"
-                                d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
-                        <path 
-                                v-else
-                                d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                        <path
-                                d="M0 0h24v24H0z"
-                                fill="none"/>
-                    </svg>
-                </button>
-            </div>
+        <div
+                v-else-if="items.length <= 0 && !isLoading"
+                class="spinner-container">
+            {{ $root.__('No items found.', 'tainacan') }}
         </div>
     </div>
 </template>
@@ -200,15 +153,14 @@
 <script>
 import axios from 'axios';
 import qs from 'qs';
-import 'swiper/css/swiper.min.css';
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+import 'swiper/swiper.min.css';
+import 'swiper/modules/a11y/a11y.min.css';
+import 'swiper/modules/autoplay/autoplay.min.css';
+import 'swiper/modules/navigation/navigation.min.css';
+import Swiper, { Autoplay, Navigation, A11y } from 'swiper';
 
 export default {
     name: "CarouselItemsListTheme",
-    components: {
-        Swiper,
-        SwiperSlide
-    },
     props: {
         blockId: String,
         collectionId: String,  
@@ -248,33 +200,7 @@ export default {
             tainacanAxios: undefined,
             paged: undefined,
             totalItems: 0,
-            swiperOptions: {
-                watchOverflow: true,
-                mousewheel: {
-                    forceToAxis: true
-                },
-                observer: true,
-                preventInteractionOnTransition: true,
-                allowClick: true,
-                allowTouchMove: true, 
-                slidesPerView: 1,
-                slidesPerGroup: 1,
-                spaceBetween: this.spaceBetweenItems,
-                slideToClickedSlide: true,
-                navigation: {
-                    nextEl: '#' + this.blockId + '-next',
-                    prevEl: '#' + this.blockId + '-prev',
-                }, 
-                breakpoints: {
-                    498:  { slidesPerView: 2, spaceBetween: this.spaceBetweenItems }, 
-                    768:  { slidesPerView: 3, spaceBetween: this.spaceBetweenItems },
-                    1024: { slidesPerView: 4, spaceBetween: this.spaceBetweenItems },
-                    1366: { slidesPerView: 5, spaceBetween: this.spaceBetweenItems },
-                    1600: { slidesPerView: 6, spaceBetween: this.spaceBetweenItems }
-                },
-                autoplay: this.autoPlay ? { delay: this.autoPlaySpeed*1000 } : false,
-                loop: this.loopSlides ? this.loopSlides : false
-            },
+            swiper: {},
             errorMessage: 'No items found.'
         }
     },
@@ -287,23 +213,20 @@ export default {
             this.fetchCollectionForHeader();
 
         this.fetchItems();
-
-        if (!isNaN(this.maxItemsPerScreen) && this.maxItemsPerScreen != 6) {
-            this.swiperOptions.breakpoints = {
-                498:  { slidesPerView: this.maxItemsPerScreen - 4 > 0 ? this.maxItemsPerScreen - 4 : 1, spaceBetween: this.spaceBetweenItems }, 
-                768:  { slidesPerView: this.maxItemsPerScreen - 3 > 0 ? this.maxItemsPerScreen - 3 : 1, spaceBetween: this.spaceBetweenItems },
-                1024: { slidesPerView: this.maxItemsPerScreen - 2 > 0 ? this.maxItemsPerScreen - 2 : 1, spaceBetween: this.spaceBetweenItems },
-                1366: { slidesPerView: this.maxItemsPerScreen - 1 > 0 ? this.maxItemsPerScreen - 1 : 1, spaceBetween: this.spaceBetweenItems },
-                1600: { slidesPerView: this.maxItemsPerScreen > 0 ? this.maxItemsPerScreen : 1, spaceBetween: this.spaceBetweenItems },
-            }
-            this.swiperOptions.slidesPerView = 1;
-        }
+    },
+    beforeDestroy() {
+        if (typeof this.swiper.destroy == 'function')
+            this.swiper.destroy();
     },
     methods: {
         fetchItems() {
  
             this.isLoading = true;
             this.errorMessage = 'No items found.';
+
+            this.$nextTick(() => {
+                this.mountCarousel();
+            });
             
             if (this.itemsRequestSource != undefined && typeof this.itemsRequestSource == 'function')
                 this.itemsRequestSource.cancel('Previous items search canceled.');
@@ -318,6 +241,10 @@ export default {
                     this.isLoading = false;
                     this.totalItems = this.items.length;
 
+                    this.$nextTick(() => {
+                        this.mountCarousel();
+                    });
+
             } else if (this.loadStrategy == 'selection') {
                 let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.selectedItems.length }) + '&fetch_only=title,url,thumbnail';
                 
@@ -329,6 +256,10 @@ export default {
 
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
+
+                        this.$nextTick(() => {
+                            this.mountCarousel();
+                        });
 
                     }).catch((error) => { 
                         this.isLoading = false;
@@ -376,6 +307,10 @@ export default {
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
 
+                        this.$nextTick(() => {
+                            this.mountCarousel();
+                        });
+
                     }).catch((error) => { 
                         this.isLoading = false;
                         if (error.response && error.response.status && error.response.status == 401)
@@ -394,6 +329,49 @@ export default {
                         this.isLoadingCollection = false;      
                     });
             }
+        },
+        mountCarousel() {
+            const self = this;
+            this.swiper = new Swiper('#' + self.blockId + '-carousel', {
+                watchOverflow: true,
+                mousewheel: {
+                    forceToAxis: true
+                },
+                observer: true,
+                preventInteractionOnTransition: true,
+                allowClick: true,
+                allowTouchMove: true, 
+                slidesPerView: 1,
+                slidesPerGroup: 1,
+                spaceBetween: self.spaceBetweenItems,
+                slideToClickedSlide: true,
+                navigation: {
+                    nextEl: '#' + self.blockId + '-next',
+                    prevEl: '#' + self.blockId + '-prev',
+                }, 
+                breakpoints: (!isNaN(self.maxItemsPerScreen) && self.maxItemsPerScreen != 6) ? {
+                    498:  { slidesPerView: self.maxItemsPerScreen - 4 > 0 ? self.maxItemsPerScreen - 4 : 1, spaceBetween: self.spaceBetweenItems }, 
+                    768:  { slidesPerView: self.maxItemsPerScreen - 3 > 0 ? self.maxItemsPerScreen - 3 : 1, spaceBetween: self.spaceBetweenItems },
+                    1024: { slidesPerView: self.maxItemsPerScreen - 2 > 0 ? self.maxItemsPerScreen - 2 : 1, spaceBetween: self.spaceBetweenItems },
+                    1366: { slidesPerView: self.maxItemsPerScreen - 1 > 0 ? self.maxItemsPerScreen - 1 : 1, spaceBetween: self.spaceBetweenItems },
+                    1600: { slidesPerView: self.maxItemsPerScreen > 0 ? self.maxItemsPerScreen : 1, spaceBetween: self.spaceBetweenItems },
+                } : {
+                    498:  { slidesPerView: 2, spaceBetween: self.spaceBetweenItems }, 
+                    768:  { slidesPerView: 3, spaceBetween: self.spaceBetweenItems },
+                    1024: { slidesPerView: 4, spaceBetween: self.spaceBetweenItems },
+                    1366: { slidesPerView: 5, spaceBetween: self.spaceBetweenItems },
+                    1600: { slidesPerView: 6, spaceBetween: self.spaceBetweenItems }
+                },
+                autoplay: self.autoPlay ? { delay: self.autoPlaySpeed*1000 } : false,
+                loop: self.loopSlides ? self.loopSlides : false,
+                a11y: {
+                    prevSlideMessage: self.$root.__( 'Previous slide', 'tainacan'),
+                    nextSlideMessage: self.$root.__( 'Next slide', 'tainacan'),
+                    firstSlideMessage: self.$root.__('This is the first slide', 'tainacan'),
+                    lastSlideMessage: self.$root.__('This is the last slide', 'tainacan')
+                },
+                modules: [Autoplay, Navigation, A11y]
+            });
         }
     }
 }

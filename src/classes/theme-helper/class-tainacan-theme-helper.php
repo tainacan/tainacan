@@ -1121,8 +1121,12 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
 		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 		* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
+		* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
+		* 	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
+		* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 		* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 		*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
+		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
@@ -1138,8 +1142,12 @@ class Theme_Helper {
 			'hideFileNameThumbnails' => 		true, 
 			'hideFileCaptionThumbnails' => 		true,
 			'hideFileDescriptionThumbnails' =>  true,
+			'hideFileNameLightbox' =>	 		false, 
+			'hideFileCaptionLightbox' => 		false,
+			'hideFileDescriptionLightbox' =>	false,
 			'openLightboxOnClick' => 			true,
 			'showDownloadButtonMain' =>			true,
+			'lightboxHasLightBackground' => 	false,
 			'showArrowsAsSVG' =>				true
 		);
 		$args = wp_parse_args($args, $defaults);
@@ -1160,8 +1168,12 @@ class Theme_Helper {
 		$hide_file_name_thumbnails = $args['hideFileNameThumbnails'];
 		$hide_file_caption_thumbnails = $args['hideFileCaptionThumbnails'];
 		$hide_file_description_thumbnails = $args['hideFileDescriptionThumbnails'];
+		$hide_file_name_lightbox = $args['hideFileNameLightbox'];
+		$hide_file_caption_lightbox = $args['hideFileCaptionLightbox'];
+		$hide_file_description_lightbox = $args['hideFileDescriptionLightbox'];
 		$open_lightbox_on_click = $args['openLightboxOnClick'];
 		$show_download_button_main = $args['showDownloadButtonMain'];
+		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
 		$show_arrows_as_svg = $args['showArrowsAsSVG'];
 
 		// Prefils arrays with proper values to avoid messsy IFs
@@ -1373,6 +1385,10 @@ class Theme_Helper {
 				) : '',
 				'swiper_arrows_as_svg' => $show_arrows_as_svg,
 				'disable_lightbox' => !$open_lightbox_on_click,
+				'hide_media_name' => $hide_file_name_lightbox,
+				'hide_media_caption' => $hide_file_caption_lightbox,
+				'hide_media_description' => $hide_file_description_lightbox,
+				'lightbox_has_light_background' => $lightbox_has_light_background
 			)
 		);
 	}

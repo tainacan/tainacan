@@ -139,10 +139,9 @@
 
                         <div class="b-tabs">
                             <nav 
-                                    role="list"
-                                    ref="tainacanTabsSwiper"
-                                    v-swiper:mySwiper="swiperOptions"
-                                    class="tabs">
+                                    
+                                    id="tainacanTabsSwiper"       
+                                    class="swiper tabs">
                                 <ul class="swiper-wrapper">
                                     <li 
                                             v-for="(tab, tabIndex) of tabs"
@@ -948,7 +947,10 @@ import CustomDialog from '../other/custom-dialog.vue';
 import AttachmentsList from '../lists/attachments-list.vue';
 import { formHooks } from '../../js/mixins';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
-import { directive } from 'vue-awesome-swiper';
+import 'swiper/swiper.min.css';
+import 'swiper/modules/mousewheel/mousewheel.min.css';
+import 'swiper/modules/navigation/navigation.min.css';
+import Swiper, { Mousewheel, Navigation } from 'swiper';
 import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
 import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
 import ItemThumbnailAltTextModal from '../modals/item-thumbnail-alt-text-modal.vue';
@@ -962,26 +964,10 @@ export default {
         RelatedItemsList,
         ItemMetadatumErrorsTooltip
     },
-    directives: {
-        swiper: directive
-    },
     mixins: [ formHooks ],
     data(){
         return {
-            swiperOptions: {
-                watchOverflow: true,
-                mousewheel: true,
-                observer: true,
-                preventInteractionOnTransition: true,
-                allowClick: true,
-                allowTouchMove: true,
-                slideToClickedSlide: true,
-                slidesPerView: 'auto',
-                navigation: {
-                    nextEl: '#tainacan-tabs-next',
-                    prevEl: '#tainacan-tabs-prev',
-                }
-            },
+            swiper: {},
             selected: 'Home',
             pageTitle: '',
             itemId: Number,
@@ -1123,6 +1109,32 @@ export default {
 
             // Obtains current Sequence Group Info
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
+        },
+        tabs:{
+            handler() {
+                if (typeof this.swiper.update == 'function')
+                    this.swiper.update();
+                else {
+                    this.$nextTick(() => {
+                        this.swiper = new Swiper('#tainacanTabsSwiper', {
+                            watchOverflow: true,
+                            mousewheel: true,
+                            observer: true,
+                            preventInteractionOnTransition: true,
+                            allowClick: true,
+                            allowTouchMove: true,
+                            slideToClickedSlide: true,
+                            slidesPerView: 'auto',
+                            navigation: {
+                                nextEl: '#tainacan-tabs-next',
+                                prevEl: '#tainacan-tabs-prev',
+                            },
+                            modules: [Mousewheel, Navigation]
+                        });
+                    });
+                }
+            },
+            immediate: true
         }
     },
     created() {
@@ -1207,6 +1219,8 @@ export default {
         eventBusItemMetadata.$off('isOnFirstMetadatumOfCompoundNavigation');
         eventBusItemMetadata.$off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
+        if (typeof this.swiper.destroy == 'function')
+            this.swiper.destroy();
     },
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
@@ -2302,7 +2316,7 @@ export default {
     .tab-content {
         border-top: 1px solid var(--tainacan-input-border-color);
     }
-    .swiper-container {
+    .swiper {
         width: 100%;
         position: relative;
         margin: 0;
@@ -2325,16 +2339,16 @@ export default {
             bottom: 0;
         }
         .swiper-button-prev::after,
-        .swiper-container-rtl .swiper-button-next::after {
+        .swiper-rtl .swiper-button-next::after {
             content: 'previous';
         }
         .swiper-button-next,
-        .swiper-container-rtl .swiper-button-prev {
+        .swiper-rtl .swiper-button-prev {
             right: 0;
             background-image: linear-gradient(90deg, rgba(255,255,255,0) 0%, var(--tainacan-background-color) 40%);
         }
         .swiper-button-prev,
-        .swiper-container-rtl .swiper-button-next {
+        .swiper-rtl .swiper-button-next {
             left: 0;
             background-image: linear-gradient(90deg, var(--tainacan-background-color) 0%, rgba(255,255,255,0) 60%);
         }
