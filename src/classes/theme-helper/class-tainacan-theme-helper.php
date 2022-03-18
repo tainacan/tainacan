@@ -1249,7 +1249,12 @@ class Theme_Helper {
 														sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_document_download_link($item_id))
 												: ''),
 						'media_content' => tainacan_get_the_document($item_id),
-						'media_content_full' => $open_lightbox_on_click ? ( $document_type === 'attachment' ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
+						'media_content_full' => $open_lightbox_on_click ?
+												(
+													$document_type === 'attachment' ?
+													tainacan_get_the_document($item_id, 'full') :
+													sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full'))
+												) : '',
 						'media_title' => $document_type === 'attachment' ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $document_type === 'attachment' ? $document_description : '',
 						'media_caption' => $document_type === 'attachment' ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
@@ -1268,7 +1273,12 @@ class Theme_Helper {
 															sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_attachment_download_link($attachment->ID))
 													: ''),
 							'media_content' => tainacan_get_attachment_as_html($attachment->ID, $item_id),
-							'media_content_full' => $open_lightbox_on_click ? ( $is_attachment_an_image ? wp_get_attachment_image( $attachment->ID, 'full', false) : sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID)) ) : '',
+							'media_content_full' => $open_lightbox_on_click ?
+													( 
+														$is_attachment_an_image ?
+														wp_get_attachment_image( $attachment->ID, 'full', false) :
+														sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID))
+													) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,

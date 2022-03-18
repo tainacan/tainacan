@@ -366,28 +366,28 @@
     justify-content: center; }
     .tainacan-photoswipe-layer .pswp__container .attachment-without-image {
       width: 100%;
-      height: calc(100% - 44px);
+      height: calc(100% - 60px);
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 44px;
-      margin-top: 22px;
-      margin-bottom: 22px; }
+      padding: 60px;
+      margin-top: 30px;
+      margin-bottom: 30px; }
       .tainacan-photoswipe-layer .pswp__container .attachment-without-image > iframe:not(.wp-embedded-content) {
         width: 90vw;
-        height: 90vh;
+        height: calc(100vh - 120px);
         border: none;
-        margin: 44px;
+        margin: 60px;
         display: block;
         background-image: url("../images/preloader.gif");
         background-repeat: no-repeat;
         background-position: center; }
     .tainacan-photoswipe-layer .pswp__container .pswp__zoom-wrap > iframe#iframePDF {
       width: 90vw;
-      height: 90vh;
+      height: calc(100vh - 120px);
       border: none;
-      margin: 44px auto;
+      margin: 60px auto;
       display: block;
       background-image: url("../images/preloader.gif");
       background-repeat: no-repeat;
@@ -418,6 +418,8 @@
         max-width: calc((90vh * 9) / 16); }
       .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-1-2 {
         max-width: calc((90vh * 1) / 2); }
+    .tainacan-photoswipe-layer .pswp__container .pswp__content > .tainacan-content-embed:not(.attachment-without-image) {
+      margin-top: 60px; }
     .tainacan-photoswipe-layer .pswp__container a:first-of-type,
     .tainacan-photoswipe-layer .pswp__container p:first-of-type,
     .tainacan-photoswipe-layer .pswp__container article:first-of-type {
@@ -435,5 +437,7 @@
     .tainacan-photoswipe-layer .pswp__container video {
       min-height: 56px;
       max-width: 80%; }
+    .tainacan-photoswipe-layer .pswp__container iframe {
+      border: none; }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-item-gallery.css.map */

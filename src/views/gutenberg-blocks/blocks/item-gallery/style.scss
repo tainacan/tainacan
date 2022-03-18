@@ -477,20 +477,20 @@
 
         .attachment-without-image {
             width: 100%;
-            height: calc(100% - 44px);
+            height: calc(100% - 60px);
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 44px;
-            margin-top: 22px;
-            margin-bottom: 22px;
+            padding: 60px;
+            margin-top: 30px;
+            margin-bottom: 30px;
 
             &>iframe:not(.wp-embedded-content) {
                 width: 90vw;
-                height: 90vh;
+                height: calc(100vh - 120px);
                 border: none;
-                margin: 44px;
+                margin: 60px;
                 display: block;
                 background-image: url('../images/preloader.gif');
                 background-repeat: no-repeat;
@@ -500,9 +500,9 @@
         // PDFs file that come from document instead of attachments
         .pswp__zoom-wrap>iframe#iframePDF {
             width: 90vw;
-            height: 90vh;
+            height: calc(100vh - 120px);
             border: none;
-            margin: 44px auto;
+            margin: 60px auto;
             display: block;
             background-image: url('../images/preloader.gif');
             background-repeat: no-repeat;
@@ -545,6 +545,9 @@
                 max-width: calc((90vh * 1) / 2);
             }
         }
+        .pswp__content>.tainacan-content-embed:not(.attachment-without-image) {
+            margin-top: 60px;
+        }
         a:first-of-type,
         p:first-of-type ,
         article:first-of-type {
@@ -564,6 +567,9 @@
         video {
             min-height: 56px;
             max-width: 80%;
+        }
+        iframe {
+            border: none;
         }
     }
 }
