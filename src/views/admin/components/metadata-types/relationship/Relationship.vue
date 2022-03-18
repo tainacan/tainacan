@@ -110,31 +110,33 @@
                 </div>
             </b-tab-item>
         </b-tabs>
-        <a
+        <template 
                 v-if="currentUserCanEditItems && 
                     itemMetadatum.item &&
                     itemMetadatum.item.id &&
                     (maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
-                    (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
-                :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
-                @click="editItemModalOpen = !editItemModalOpen"
-                class="add-link">
-            <span class="icon is-small">
-                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
-            </span>
-            &nbsp;{{ $i18n.get('label_create_new_item') }}
-        </a>
-        <b-modal 
-                :width="1200"
-                :active.sync="editItemModalOpen"
-                :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
-                :close-button-aria-label="$i18n.get('close')">
-            <iframe 
-                    :id="relationshipInputId + '_item-edition-modal'"
-                    width="100%"
-                    :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
-                    :src="itemModalSrc" />
-        </b-modal>
+                    (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )">
+            <a
+                    :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
+                    @click="editItemModalOpen = !editItemModalOpen"
+                    class="add-link">
+                <span class="icon is-small">
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                </span>
+                &nbsp;{{ $i18n.get('label_create_new_item') }}
+            </a>
+            <b-modal 
+                    :width="1200"
+                    :active.sync="editItemModalOpen"
+                    :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
+                    :close-button-aria-label="$i18n.get('close')">
+                <iframe 
+                        :id="relationshipInputId + '_item-edition-modal'"
+                        width="100%"
+                        :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
+                        :src="itemModalSrc" />
+            </b-modal>
+        </template>
     </div>
 </template>
 
