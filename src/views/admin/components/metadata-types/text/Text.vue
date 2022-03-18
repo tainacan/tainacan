@@ -130,7 +130,7 @@
                     promise = this.getValuesPlainText({
                         metadatumId: this.itemMetadatum.metadatum.id,
                         search: this.searchQuery,
-                        isRepositoryLevel: false, 
+                        isRepositoryLevel: this.currentCollectionId == 'default', 
                         valuesToIgnore: [], 
                         offset: this.searchOffset,
                         number: this.searchNumber,
