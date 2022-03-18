@@ -22,6 +22,7 @@ $rest_oaipmh_expose_controller        = new \Tainacan\API\EndPoints\REST_Oaipmh_
 $rest_item_metadata_controller        = new \Tainacan\API\EndPoints\REST_Item_Metadata_Controller();
 $rest_sequence_edit_controller        = new \Tainacan\API\EndPoints\REST_Sequence_Edit_Controller();
 $rest_metadata_types_controller       = new \Tainacan\API\EndPoints\REST_Metadata_Types_Controller();
+$rest_metadata_section_controller     = new \Tainacan\API\EndPoints\REST_Metadata_Section_Controller();
 $rest_metadatum_mappers_controller    = new \Tainacan\API\EndPoints\REST_Metadatum_Mappers_Controller();
 $rest_background_processes_controller = new \Tainacan\API\EndPoints\REST_Background_Processes_Controller();
 // Add here other endpoints imports
