@@ -115,8 +115,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         // Loop through all gallery elements and bind events
         let galleryElement = document.querySelector(gallerySelector);
         galleryElement.setAttribute("data-pswp-uid", this.options.media_id);
-        console.log(this.options.media_id);
-
+        
         let items = this.parseThumbnailElements(galleryElement);
         let photoswipeOptions = {
             loop: false,

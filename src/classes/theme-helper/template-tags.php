@@ -300,6 +300,7 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  *     @type string      swiper_arrow_prev_custom_svg 	Custom SVG icon to render previous navigation arrow
  *     @type bool 		 disable_lightbox				Do not open Photoswiper layer on click
  *     @type bool        show_share_button        		Shows share button on lightbox
+ *	   @type bool	 	 lightbox_has_light_background  Show a light background instead of dark in the lightbox 
  * }
  * @return string
  */
@@ -334,7 +335,8 @@ function tainacan_get_the_media_component(
 		'swiper_arrow_next_custom_svg' => '',
 		'swiper_arrow_prev_custom_svg' => '',
 		'disable_lightbox' => false,
-		'show_share_button' => false
+		'show_share_button' => false,
+		'lightbox_has_light_background' => false
 	), $args);
 
 	$args['has_media_main'] = $media_items_main && is_array($media_items_main) && count($media_items_main);
@@ -348,7 +350,6 @@ function tainacan_get_the_media_component(
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
 	
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
-
 		?>
 
 		<script>
