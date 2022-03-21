@@ -406,7 +406,7 @@
                 const message = event.message ? 'message' : 'data';
                 const data = event[message];
 
-                if (data.type == 'itemEditionMessage') {
+                if (data.type == 'itemEditionMessage' && data.item !== null) {
                     this.editItemModalOpen = false;
 
                     // An item is being edited from the modal

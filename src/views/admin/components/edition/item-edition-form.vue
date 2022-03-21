@@ -1337,13 +1337,14 @@ export default {
                             this.onPrevInSequence();
                     }
 
-                } else {
-                    parent.postMessage({ 
-                        type: 'itemEditionMessage',
-                        item: this.item
-                    },
-                    tainacan_plugin.admin_url);
                 }
+
+                // Sends info to iframe containing item edition form and other use cases
+                parent.postMessage({ 
+                    type: 'itemEditionMessage',
+                    item: this.$adminOptions.itemEditionMode ? this.item : null
+                },
+                tainacan_plugin.admin_url);
             })
             .catch((errors) => {
                 
@@ -1367,12 +1368,12 @@ export default {
         onDiscard() {
             if (!this.$adminOptions.itemEditionMode)
                 this.$router.go(-1);
-            else
-                parent.postMessage({ 
-                        type: 'itemEditionMessage',
-                        item: null
-                    },
-                    tainacan_plugin.admin_url);
+            
+            parent.postMessage({ 
+                    type: 'itemEditionMessage',
+                    item: this.$adminOptions.itemEditionMode ? false : null
+                },
+                tainacan_plugin.admin_url);
 
         },
         createNewItem() {
