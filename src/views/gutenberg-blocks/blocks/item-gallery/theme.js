@@ -116,6 +116,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         let galleryElement = document.querySelector(gallerySelector);
         galleryElement.setAttribute("data-pswp-uid", this.options.media_id);
         
+        const self = this;
+
         let items = this.parseThumbnailElements(galleryElement);
         let photoswipeOptions = {
             loop: false,
@@ -130,17 +132,15 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             getClickedIndexFn: (clickedElement) => {
                 return items.findIndex(anItem => anItem.el.contains(clickedElement.target));
             },
-            padding: { top: 60, bottom: 60, left: 40, right: 40 },
-            // paddingFn: (viewportSize, itemData, index) => {
-            //     console.log(viewportSize, itemData, index)
-            //     return {
-            //         // check based on slide index
-            //         top: 60,
-            //         bottom: 0,
-            //         left: 0,
-            //         right: 0
-            //     };
-            // }
+            paddingFn: (viewportSize, itemData, index) => {
+                return {
+                    // check based on slide index
+                    top: (itemData.title && itemData.title.name && !self.options.hide_media_name) ? 60 : 0,
+                    bottom: (itemData.title && ((!self.options.hide_media_caption && itemData.title.caption) || (!self.options.hide_media_description && itemData.title.description))) ? 60 : 0,
+                    left: 40,
+                    right: 40
+                };
+            }
         };
 
         // Pass data to PhotoSwipe and initialize it
@@ -154,7 +154,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         
         /* Updates Swiper instance from Photoswipe */
         const swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;    
-        const self = this;
+
 
         // Parse URL and open gallery from it if contains #&pid=3&gid=1
         const hashData = this.photoswipeParseHash();
