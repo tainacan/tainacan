@@ -495,18 +495,20 @@
                 contextEdit: true,    
                 fetchOnly: 'title,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html,related_items'       
             })
-             .then((resp) => {
+            .then((resp) => {
                 resp.request.then((item) => {
                     this.$root.$emit('onCollectionBreadCrumbUpdate', [
                         {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
                         {path: '', label: item.title}
                     ]);
                     this.loadMetadata();
-                });
+                })
+                .catch(() => this.isLoading = false);
 
                 // Item resquest token for cancelling
                 this.itemRequestCancel = resp.source;
-            });
+            })
+            .catch(() => this.isLoading = false);
 
         },
         methods: {
