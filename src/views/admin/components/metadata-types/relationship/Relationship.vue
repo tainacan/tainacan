@@ -113,10 +113,10 @@
         <template 
                 v-if="currentUserCanEditItems && 
                     itemMetadatum.item &&
-                    itemMetadatum.item.id &&
-                    (maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
-                    (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )">
+                    itemMetadatum.item.id">
             <a
+                    v-if="(maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
+                            (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
                     :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
                     @click="editItemModalOpen = !editItemModalOpen"
                     class="add-link">
