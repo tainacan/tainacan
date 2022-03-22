@@ -81,9 +81,7 @@
                     </span>
                     <span   
                             v-if="metadatum.id != undefined && metadatum.metadata_type_object"
-                            class="label-details">  
-                        ({{ metadatum.metadata_type_object.name }}) 
-                        <!-- <em v-if="metadatum.collection_id != collectionId">{{ $i18n.get('label_inherited') }}</em> -->
+                            class="label-details">
                         <span 
                                 v-if="metadatum.required === 'yes'"
                                 v-tooltip="{
@@ -94,6 +92,8 @@
                                 }">
                             *&nbsp;
                         </span>
+                        ({{ metadatum.metadata_type_object.name }}) 
+                        <!-- <em v-if="metadatum.collection_id != collectionId">{{ $i18n.get('label_inherited') }}</em> -->
                         <em 
                                 v-if="metadatum.metadata_type_object.core && 
                                     metadatum.metadata_type_object.related_mapped_prop == 'title'">

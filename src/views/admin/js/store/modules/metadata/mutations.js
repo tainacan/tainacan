@@ -90,3 +90,11 @@ export const setMetadatumMappers = (state, metadatumMappers) => {
 export const cleanMetadata = (state) => {
     state.metadata = [];
 }
+
+export const setMetadataSections = (state, metadataSections) => {
+    state.metadataSections = metadatumSections;
+}
+
+export const cleanMetadataSections = (state) => {
+    state.metadataSections = [];
+}

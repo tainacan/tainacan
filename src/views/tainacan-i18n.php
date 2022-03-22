@@ -621,6 +621,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_number_to_search_for'                     => __( 'Number to search for', 'tainacan' ),
 	'label_date_to_search_for'                       => __( 'Date to search for', 'tainacan' ),
 	'label_criterion_to_compare'                     => __( 'Criterion to compare', 'tainacan' ),
+	'label_metadata_and_sections'					 => __( 'Metadata and Sections', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

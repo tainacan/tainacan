@@ -236,6 +236,7 @@ export const updateMetadatumTypes = ({commit}, metadatumTypes) => {
     commit('setMetadatumTypes', metadatumTypes);
 };
 
+// METADATA MAPPERS
 export const fetchMetadatumMappers = ({commit}) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.get('/metadatum-mappers')
@@ -271,4 +272,21 @@ export const updateMetadatumMappers = ({commit}, metadatumMappers) => {
     commit('setMetadatumMappers', metadatumMappers);
 };
 
+// METADATA SECTIONS
+export const fetchMetadataSections = ({commit}, collectionId) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get('/collection/' + collectionId + '/metadatasection')
+            .then((res) => {
+                let metadataSections = res.data;
+                commit('setMetadataSections', metadataSections);
+                resolve(metadataSections);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
 
+export const cleanMetadataSections = ({commit}) => {
+    commit('cleanMetadataSections');
+};

@@ -14,7 +14,7 @@
             <b-tabs 
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
                     v-model="activeTab">    
-                <b-tab-item :label="$i18n.get('metadata')">
+                <b-tab-item :label="$i18n.get('label_metadata_and_sections')">
                     <div
                             :style="{ height: activeMetadatumList && activeMetadatumList.length <= 0 && !isLoadingMetadata ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                             class="columns"
@@ -24,7 +24,7 @@
                         <div class="column">
                            
                             <div class="tainacan-form sub-header">
-                                <h3>{{ $i18n.get('metadata') + ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</h3>
+                                <h3>{{ $i18n.get('metadata') }}<span class="has-text-gray">{{ ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</span></h3>
 
                                 <template v-if="activeMetadatumList && !isLoadingMetadata">
                                     <b-field class="header-item">
@@ -172,9 +172,7 @@
                                             <span   
                                                     v-if="metadatum.id != undefined && metadatum.metadata_type_object"
                                                     class="label-details"
-                                                    :class="{ 'has-text-weight-bold': metadatum.metadata_type_object.core }">  
-                                                ({{ metadatum.metadata_type_object.name }}) 
-                                                <!-- <em v-if="metadatum.inherited">{{ $i18n.get('label_inherited') }}</em> -->
+                                                    :class="{ 'has-text-weight-bold': metadatum.metadata_type_object.core }">
                                                 <span 
                                                         v-if="metadatum.required === 'yes'"
                                                         v-tooltip="{
@@ -185,6 +183,8 @@
                                                         }">
                                                     *&nbsp;
                                                 </span>
+                                                ({{ metadatum.metadata_type_object.name }}) 
+                                                <!-- <em v-if="metadatum.inherited">{{ $i18n.get('label_inherited') }}</em> -->
                                                 <span 
                                                         v-if="metadatum.status === 'private'"
                                                         class="icon"
@@ -508,17 +508,20 @@ export default {
             'updateMetadata',
             'updateCollectionMetadataOrder',
             'cleanMetadata',
+            'fetchMetadataSections',
+            'cleanMetadataSections'
         ]),
         ...mapGetters('metadata',[
             'getMetadatumTypes',
             'getMetadata',
+            'getMetadataSections'
         ]),
         handleChange(event) {
-            if (event.added) {
+            if (event.added)
                 this.addNewMetadatum(event.added.element, event.added.newIndex);
-            } else if (event.removed) {
+            else if (event.removed)
                 this.removeMetadatum(event.removed.element);
-            } else if (event.moved) {
+            else if (event.moved) {
                 if (!this.isRepositoryLevel)
                     this.updateMetadataOrder();
             }
