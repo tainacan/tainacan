@@ -14,7 +14,7 @@
             <b-tabs 
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
                     v-model="activeTab">    
-                <b-tab-item :label="$i18n.get('metadata') + ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' )">
+                <b-tab-item :label="$i18n.get('metadata')">
                     <div
                             :style="{ height: activeMetadatumList && activeMetadatumList.length <= 0 && !isLoadingMetadata ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
                             class="columns"
@@ -24,7 +24,7 @@
                         <div class="column">
                            
                             <div class="tainacan-form sub-header">
-                                <h3>{{ $i18n.get('metadata') }}</h3>
+                                <h3>{{ $i18n.get('metadata') + ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</h3>
 
                                 <template v-if="activeMetadatumList && !isLoadingMetadata">
                                     <b-field class="header-item">
@@ -132,6 +132,26 @@
                                                 :ref="'metadatum-handler-' + metadatum.id"
                                                 class="handle">
                                             <span 
+                                                    :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
+                                                    v-tooltip="{
+                                                        content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
+                                                        autoHide: true,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                        placement: 'auto-start'
+                                                    }"
+                                                    class="icon grip-icon">
+                                                <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
+                                                <svg 
+                                                        xmlns="http://www.w3.org/2000/svg" 
+                                                        height="24px"
+                                                        viewBox="0 0 24 24"
+                                                        width="24px"
+                                                        fill="currentColor">
+                                                    <path d="M0 0h24v24H0V0z" fill="transparent"/>
+                                                    <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                                </svg>
+                                            </span>
+                                            <span 
                                                     v-tooltip="{
                                                         content: $i18n.get('label_view_metadata_details'),
                                                         autoHide: true,
@@ -143,17 +163,7 @@
                                                     :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }">
                                                 <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
                                             </span>
-                                            <span 
-                                                    :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
-                                                    v-tooltip="{
-                                                        content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
-                                                        autoHide: true,
-                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                                        placement: 'auto-start'
-                                                    }"
-                                                    class="icon grip-icon">
-                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
-                                            </span>
+
                                             <span class="metadatum-name">
                                                     {{ metadatum.name }}
                                             </span>
@@ -162,7 +172,17 @@
                                                     class="label-details"
                                                     :class="{ 'has-text-weight-bold': metadatum.metadata_type_object.core }">  
                                                 ({{ metadatum.metadata_type_object.name }}) 
-                                                <em v-if="metadatum.inherited">{{ $i18n.get('label_inherited') }}</em>
+                                                <!-- <em v-if="metadatum.inherited">{{ $i18n.get('label_inherited') }}</em> -->
+                                                <span 
+                                                        v-if="metadatum.required === 'yes'"
+                                                        v-tooltip="{
+                                                            content: $i18n.get('label_required'),
+                                                            autoHide: true,
+                                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                            placement: 'auto-start'
+                                                        }">
+                                                    *&nbsp;
+                                                </span>
                                                 <span 
                                                         v-if="metadatum.status === 'private'"
                                                         class="icon"
@@ -175,16 +195,6 @@
                                                     <i class="tainacan-icon tainacan-icon-private"/>
                                                 </span>
                                                 <span 
-                                                        v-if="metadatum.required === 'yes'"
-                                                        v-tooltip="{
-                                                            content: $i18n.get('label_required'),
-                                                            autoHide: true,
-                                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                                            placement: 'auto-start'
-                                                        }">
-                                                    *&nbsp;
-                                                </span>
-                                                <span 
                                                         v-tooltip="{
                                                             content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
                                                             autoHide: true,
@@ -194,7 +204,7 @@
                                                         class="icon icon-level-identifier">
                                                     <i 
                                                         :class="{ 
-                                                            'tainacan-icon-collections': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                            'tainacan-icon-collection': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
                                                             'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
                                                             'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
                                                             'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
@@ -311,7 +321,16 @@
                                                     placement: 'auto-start'
                                                 }"   
                                                 class="icon grip-icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
+                                            <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
+                                            <svg 
+                                                    xmlns="http://www.w3.org/2000/svg" 
+                                                    height="24px"
+                                                    viewBox="0 0 24 24"
+                                                    width="24px"
+                                                    fill="currentColor">
+                                                <path d="M0 0h24v24H0V0z" fill="transparent"/>
+                                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                            </svg>
                                         </span>
                                         <span class="metadatum-name">
                                             {{ metadatum.name }}
@@ -731,6 +750,7 @@ export default {
             overflow: visible;
             min-height: 300px;
             padding-bottom: 0;
+            padding-left: 0;
         }
 
         .column {
@@ -768,7 +788,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5em 1em 0.5em 0.5em;
+            padding: 0.5em 1em 0.5em 2em;
 
             .header-item {
                 margin-left: 0.75rem;
@@ -803,7 +823,7 @@ export default {
         .collapse-all {
             display: inline-flex;
             align-items: center;
-            margin-left: 0.25em;
+            margin-left: 1.5em;
         }
         .collapse-all__text {
             font-size: 0.75em !important;
@@ -999,7 +1019,6 @@ export default {
                 
                 .grip-icon { 
                     color: var(--tainacan-gray3);
-                    top: -6px;
                     position: relative;
                     display: inline-block;
                 }

@@ -490,9 +490,9 @@ return apply_filters( 'tainacan-i18n', [
 	'label_expand_menu'								 => __( 'Expand menu', 'tainacan' ),
 	'label_document_uploaded'						 => __( 'Document uploaded', 'tainacan' ),
 	/* translators: Filter of the repository, not a repository of filter! */
-	'label_repository_filter'						 => __( 'Repository filter', 'tainacan' ),
+	'label_repository_filter'						 => __( 'Filter inherited from the repository', 'tainacan' ),
 	/* translators: Metadatum of the repository, not a repository of metadatum! */
-	'label_repository_metadatum'					 => __( 'Repository metadatum', 'tainacan' ),
+	'label_repository_metadatum'					 => __( 'Metadatum inherited from the repository', 'tainacan' ),
 	/* translators: Metadata of the repository, not a repository of metadata! */
 	'label_repository_metadata'					     => __( 'Repository metadata', 'tainacan' ),
 	/* translators: Filters of the repository, not a repository of filters! */
