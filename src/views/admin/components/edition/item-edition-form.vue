@@ -541,7 +541,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <ul v-else>
+                                <ul 
+                                        v-else
+                                        class="document-field-placeholder">
                                     <li v-if="!$adminOptions.hideItemEditionDocumentFileInput">
                                         <button
                                                 type="button"
@@ -2255,31 +2257,6 @@ export default {
         padding: 0 var(--tainacan-one-column) 0 0;
         margin-top: 12px;
         margin-bottom: 16px;
-
-        ul {
-            display: flex;
-            justify-content: space-evenly;
-            li {
-                text-align: center;
-                button {
-                    border-radius: 50px;
-                    height: 72px;
-                    width: 72px;
-                    border: none;
-                    background-color: var(--tainacan-gray2);
-                    color: var(--tainacan-secondary);
-                    margin-bottom: 6px;
-                    &:hover {
-                        background-color: var(--tainacan-primary);
-                        cursor: pointer;
-                    }
-                }
-                p { 
-                    color: var(--tainacan-secondary); 
-                    font-size: 0.8125em;
-                }
-            }
-        }
     }
     .section-status {
         padding-bottom: 16px;
@@ -2360,6 +2337,34 @@ export default {
             text-align: right;
             top: -21px;
             position: relative;
+        }
+
+        .document-field-placeholder {
+            display: flex;
+            justify-content: space-evenly;
+            padding: 1.5rem 1rem 2rem 1rem;
+            border: 1px solid var(--tainacan-input-border-color);
+
+            li {
+                text-align: center;
+                button {
+                    border-radius: 0px;
+                    height: 72px;
+                    width: 72px;
+                    border: none;
+                    background-color: var(--tainacan-background-color);
+                    color: var(--tainacan-secondary);
+                    margin-bottom: 6px;
+                    &:hover {
+                        background-color: var(--tainacan-primary);
+                        cursor: pointer;
+                    }
+                }
+                p { 
+                    color: var(--tainacan-secondary); 
+                    font-size: 0.8125em;
+                }
+            }
         }
     }
 
