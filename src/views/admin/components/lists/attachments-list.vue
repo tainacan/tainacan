@@ -194,7 +194,7 @@
 
         .file-item-container {
             display: inline-block;
-            margin: 15px;
+            margin: 10px 12px;
             position: relative;
 
             &:hover .file-item-control {
@@ -206,7 +206,7 @@
             .file-item-control {
                 position: absolute;
                 background-color: var(--tainacan-gray1);
-                width: 112px;
+                width: 94px;
                 margin: 6px 0;
                 bottom: 0px;
                 padding: 2px 8px 4px 8px;

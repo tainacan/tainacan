@@ -5,10 +5,10 @@
                 :class="{'shows-modal-on-click' : modalOnClick}"
                 @click="modalOnClick? isPreviewModalActive = true : null">
             <figcaption 
-                    :style="{ 'max-width': size != undefined ? size + 'px' : '112px' }"
+                    :style="{ 'max-width': size != undefined ? size + 'px' : '94px' }"
                     v-if="showName && file.title != undefined">{{ file.title }}</figcaption>
             <div 
-                    :style="{ 'width': size != undefined ? size + 'px' : '112px', 'height': size != undefined ? size + 'px' : '112px' }"
+                    :style="{ 'width': size != undefined ? size + 'px' : '94px', 'height': size != undefined ? size + 'px' : '94px' }"
                     class="image-wrapper">
                 <div
                         v-if="file.media_type == 'image'" 
@@ -76,7 +76,7 @@ export default {
     name: 'FileItem',
     props: {
         file: Object,
-        size: 112,
+        size: 94,
         showName: false,
         isSelected: false,
         modalOnClick: true

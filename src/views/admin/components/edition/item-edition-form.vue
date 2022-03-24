@@ -120,6 +120,7 @@
 
                         <div class="b-tabs">
                             <nav 
+                                    v-if="tabs.length >= 2"
                                     role="list"
                                     ref="tainacanTabsSwiper"
                                     v-swiper:mySwiper="swiperOptions"
@@ -175,7 +176,25 @@
                                 </button>
                             </nav>
                         
-                            <section class="tab-content">
+                            <section 
+                                    :style="tabs.length < 2 ? 'border-top: none;' : ''"
+                                    class="tab-content">
+
+                                <div 
+                                        v-if="tabs.length < 2"
+                                        class="section-label">
+                                    <label>
+                                        <span class="icon has-text-gray4">
+                                            <i class="tainacan-icon tainacan-icon-metadata"/>
+                                        </span>
+                                        {{ $i18n.get('metadata') }}&nbsp;
+                                        <span 
+                                                v-if="metadatumList.length"
+                                                class="has-text-gray has-text-weight-normal">
+                                            ({{ metadatumList.length }})
+                                        </span>
+                                    </label>
+                                </div>
                                 
                                 <!-- Metadata from Collection-------------------------------- -->
                                 <div    
@@ -336,39 +355,6 @@
                                     
                                 </div>
 
-                                <!-- Attachments ------------------------------------------ -->
-                                <div    
-                                        v-if="activeTab === 'attachments' && !$adminOptions.hideItemEditionAttachments"
-                                        class="tab-item"
-                                        role="tabpanel"
-                                        aria-labelledby="attachments-tab-label"
-                                        tabindex="0">
-
-                                    <div v-if="item != undefined && item.id != undefined">
-                                        <div class="attachments-list-heading">
-                                            <button
-                                                    style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                                    type="button"
-                                                    class="button is-secondary"
-                                                    @click.prevent="attachmentMediaFrame.openFrame($event)"
-                                                    :disabled="isLoadingAttachments">
-                                                {{ $i18n.get("label_edit_attachments") }}
-                                            </button>
-                                            <p>
-                                                {{ $i18n.get("info_edit_attachments") }}
-                                            </p>
-                                        </div>
-
-                                        <attachments-list
-                                                v-if="item != undefined && item.id != undefined"
-                                                :item="item"
-                                                :is-editable="true"
-                                                :is-loading.sync="isLoadingAttachments"
-                                                @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
-                                                @onDeleteAttachment="deleteAttachment($event)"/>
-                                    </div>
-                                </div>
-
                             </section>
                         </div>
                     </div>
@@ -391,7 +377,12 @@
                             <div 
                                     v-if="!$adminOptions.hideItemEditionDocument"
                                     class="section-label">
-                                <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
+                                <label>
+                                    <span class="icon has-text-gray4">
+                                        <i :class="'tainacan-icon tainacan-icon-' + ( (!form.document_type || form.document_type == 'empty' ) ? 'item' : (form.document_type == 'attachment' ? 'attachments' : form.document_type))"/>
+                                    </span>
+                                    {{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}
+                                </label>
                                 <help-button
                                         :title="$i18n.getHelperTitle('items', 'document')"
                                         :message="$i18n.getHelperMessage('items', 'document')"/>
@@ -483,7 +474,12 @@
                             <div 
                                     v-if="!$adminOptions.hideItemEditionThumbnail"
                                     class="section-label">
-                                <label>{{ $i18n.get('label_thumbnail') }}</label>
+                                <label>
+                                    <span class="icon has-text-gray4">
+                                        <i class="tainacan-icon tainacan-icon-image"/>
+                                    </span>
+                                    {{ $i18n.get('label_thumbnail') }}
+                                </label>
                                 <help-button
                                         :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
                                         :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
@@ -575,12 +571,25 @@
                             <div 
                                     v-if="!$adminOptions.hideItemEditionAttachments"
                                     class="section-label">
-                                <label>{{ $i18n.get('label_attachments') }}</label>
+                                <label>
+                                    <span class="icon has-text-gray4">
+                                        <i class="tainacan-icon tainacan-icon-attachments"/>
+                                    </span>
+                                    {{ $i18n.get('label_attachments') }}&nbsp;
+                                    <span 
+                                            v-if="totalAttachments"
+                                            class="has-text-gray has-text-weight-normal">
+                                        ({{ totalAttachments }})
+                                    </span>
+                                </label>
                             </div>
                             <div 
                                     v-if="item != undefined && item.id != undefined && !isLoading && !$adminOptions.hideItemEditionAttachments"
                                     class="section-box section-attachments">
                                 <div class="attachments-list-heading">
+                                    <p>
+                                        {{ $i18n.get("info_edit_attachments") }}
+                                    </p>
                                     <button
                                             style="margin-left: calc(var(--tainacan-one-column) + 12px)"
                                             type="button"
@@ -589,9 +598,6 @@
                                             :disabled="isLoadingAttachments">
                                         {{ $i18n.get("label_edit_attachments") }}
                                     </button>
-                                    <p>
-                                        {{ $i18n.get("info_edit_attachments") }}
-                                    </p>
                                 </div>
 
                                 <attachments-list
@@ -1005,14 +1011,6 @@ export default {
                     icon: 'processes tainacan-icon-rotate-270',
                     name: this.$i18n.get('label_related_items'),
                     total: this.totalRelatedItems
-                });
-            }
-            if (!this.$adminOptions.hideItemEditionAttachments) {
-                pageTabs.push({
-                    slug: 'attachments',
-                    icon: 'attachments',
-                    name: this.$i18n.get('label_attachments'),
-                    total: this.totalAttachments
                 });
             }
             return pageTabs;
@@ -2003,7 +2001,7 @@ export default {
                         position: sticky;
                         top: -25px;
                         margin: 3px 0;
-                        max-height: calc(100vh - 202px);
+                        max-height: calc(100vh - 185px);
                         overflow-y: auto;
                         overflow-x: hidden;
                     }
@@ -2034,6 +2032,15 @@ export default {
                     padding-right: var(--tainacan-one-column);
                     max-width: 100%;
                 }
+            }
+
+            @media screen and (max-width: 1440px) {
+                 &>.column.is-7 {
+                     padding-left: 0.75em;
+                 }
+                 &>.column.is-5 {
+                     padding-right: 0.75em;
+                 }
             }
 
             @media screen and (max-width: 769px) {
@@ -2107,6 +2114,10 @@ export default {
             color: var(--tainacan-label-color) !important;
             line-height: 1.2em;
         }
+    }
+    .section-box+.section-label {
+        border-top: 1px dashed var(--tainacan-info-color);
+        padding-top: 6px;
     }
 
     .sub-header {
@@ -2194,12 +2205,6 @@ export default {
         }
     }
 
-    .section-box {
-        padding: 0 var(--tainacan-one-column);
-        margin-top: 12px;
-        margin-bottom: 24px;
-        position: relative;
-    }
     .section-status {
         padding-bottom: 16px;
         font-size: 0.875em;
@@ -2270,10 +2275,17 @@ export default {
         }
     }   
 
+    .section-box {
+        padding: 0 1em 0 1.875em;
+        margin-top: 10px;
+        margin-bottom: 16px;
+        position: relative;
+    }
+
     .document-buttons-row,
     .thumbnail-buttons-row {
         bottom: -6px;
-        left: 6px;
+        left: 0.875em;
         position: absolute;
     }
 
@@ -2303,13 +2315,13 @@ export default {
     .document-field {
 
         .document-field-content {
-            max-height: 26vh;
+            max-height: 32vh;
 
             /deep/ img,
             /deep/ video,
             /deep/ figure {
                 max-width: 100%;
-                max-height: 26vh;
+                max-height: 32vh;
                 width: auto;
                 margin: 0;
             }
@@ -2321,10 +2333,25 @@ export default {
             /deep/ iframe,
             /deep/ blockquote {
                 max-width: 100%;
-                max-height: 26vh;
+                max-height: 32vh;
                 width: 100%;
                 margin: 0;
                 min-height: 150px;
+            }
+
+            @media screen and (max-height: 770px) {
+                max-height: 25vh;
+
+                /deep/ img,
+                /deep/ video,
+                /deep/ figure {
+                    max-height: 25vh;
+                }
+                /deep/ audio,
+                /deep/ iframe,
+                /deep/ blockquote {
+                    max-height: 25vh;
+                }
             }
         }
 
@@ -2399,11 +2426,18 @@ export default {
     .attachments-list-heading {
         display: flex;
         align-items: center;
-        margin-top: 12px;
-        margin-bottom: 24px;
-
+        justify-content: space-between;
+        margin-left: 1.5em;
+        margin-top: 10px;
+        margin-bottom: var(--tainacan-container-padding);
+        p {
+            color: var(--tainacan-info-color);
+        }
         button {
-            margin-right: 12px;
+            margin-left: 12px;
+        }
+        @media screen and (max-width: 768px) {
+            flex-wrap: wrap;
         }
     }
 
