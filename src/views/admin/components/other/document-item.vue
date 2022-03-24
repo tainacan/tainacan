@@ -66,6 +66,7 @@ export default {
             }
         }
         .image-wrapper {
+            max-height: 50vh;
 
             .document-placeholder {
                 height: 100%;
@@ -79,7 +80,10 @@ export default {
                 -o-transition: all .3s;
                 transition: all .3s;
             }
-
+            img {
+                max-height: 50vh;
+                width: auto;
+            }
             iframe {
                 height: 640px;
                 height: 50vh;

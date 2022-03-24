@@ -80,14 +80,14 @@
 
                 switch (amountOfElementsAbove) {
                     case 3:
-                        return 'calc(3.05em + 12px)';
+                        return 'calc(2.05em + 12px)';
                     case 2:
-                        return 'calc(5.65em + 12px)';
+                        return 'calc(4.65em + 12px)';
                     case 1:
-                        return 'calc(8.5em + 12px)';
+                        return 'calc(7.5em + 12px)';
                     case 0:
                     default:
-                        return 'calc(11.125em + 12px)';
+                        return 'calc(10.125em + 12px)';
                 }
             }
         },
@@ -168,7 +168,7 @@
         }
     }
     #primary-menu.is-compressed~.is-main-content {
-        --tainacan-sidebar-width: 3.25em;
+        --tainacan-sidebar-width: 3.0em;
     }
     #primary-menu:not(.is-compressed)~.is-main-content {
         --tainacan-sidebar-width: 10em;
@@ -176,11 +176,11 @@
 
     .is-secondary-content {
         padding: 0px !important;
-        margin: 5.875em auto 0 auto;
+        margin: 5.4em auto 0 auto;
         position: relative;
         overflow-y: hidden;
         overflow-x: hidden;
-        height: calc(100% - 5.875em);
+        height: calc(100vh - 5.4em);
 
         @media screen and (max-width: 769px) {
             overflow-y: visible;
@@ -197,7 +197,7 @@
     #menu-compress-button {
         position: absolute;
         z-index: 999;
-        top: calc(11.125em + 12px);
+        top: calc(10.125em + 12px);
         left: 0px;
         max-width: 1.5625em;
         height: 1.5625em;

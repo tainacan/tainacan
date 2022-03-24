@@ -52,25 +52,6 @@
                         </template>
 
                         <div class="columns">
- 
-                            <!-- Collection -------------------------------- -->
-                            <div 
-                                    v-if="!$adminOptions.hideItemEditionCollectionName"
-                                    class="column is-narrow">
-                                <div class="section-label">
-                                    <label>{{ $i18n.get('collection') }}</label>
-                                </div>
-                                <div class="section-status">
-                                    <div class="field has-addons">
-                                        <span>
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-collection"/>
-                                            </span>
-                                            {{ collection && collection.name ? collection.name : '' }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
 
                             <!-- Visibility (status public or private) -------------------------------- -->
                             <div
@@ -86,7 +67,7 @@
                                 </div>
                                 <div class="section-status">
                                     <div
-                                            style="display: flex; flex-direction: column; font-size: 1rem;"
+                                            style="display: flex; font-size: 1rem;"
                                             class="field has-addons">
                                         <b-radio
                                                 v-if="!$adminOptions.hideItemEditionStatusPublishOption"
@@ -418,98 +399,19 @@
                             <div 
                                     v-if="!$adminOptions.hideItemEditionDocument"
                                     class="section-box document-field">
-                                <div
+                                <template
                                         v-if="form.document != undefined && form.document != null &&
                                                 form.document_type != undefined && form.document_type != null &&
                                                 form.document != '' && form.document_type != 'empty'">
-                                    <div v-if="form.document_type == 'attachment'">
-                                        <!-- <div v-html="item.document_as_html" /> -->
-                                        <document-item :document-html="item.document_as_html"/>
-
-                                        <div class="document-buttons-row">
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    id="button-edit-document"
-                                                    :aria-label="$i18n.get('label_button_edit_document')"
-                                                    @click.prevent="setFileDocument($event)">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('edit'),
-                                                            autoHide: true,
-                                                            placement: 'bottom',
-                                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-edit"/>
-                                                </span>
-                                            </a>
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    id="button-delete-document"
-                                                    :aria-label="$i18n.get('label_button_delete_document')"
-                                                    @click.prevent="removeDocument()">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('delete'),
-                                                            autoHide: true,
-                                                            placement: 'bottom',
-                                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-delete"/>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div v-if="form.document_type == 'text'">
-                                        <div v-html="item.document_as_html" />
-                                        <div class="document-buttons-row">
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    :aria-label="$i18n.get('label_button_edit_document')"
-                                                    id="button-edit-document"
-                                                    @click.prevent="setTextDocument()">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('edit'),
-                                                            autoHide: true,
-                                                            placement: 'bottom',
-                                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-edit"/>
-                                                </span>
-                                            </a>
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    :aria-label="$i18n.get('label_button_delete_document')"
-                                                    id="button-delete-document"
-                                                    @click.prevent="removeDocument()">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('delete'),
-                                                            autoHide: true,
-                                                            placement: 'bottom',
-                                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-delete"/>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div v-if="form.document_type == 'url'">
+                                    <div :class="'document-field-content has-document-mimetype--' + item.document_mimetype">
                                         <div v-html="item.document_as_html" />
                                         <div class="document-buttons-row">
                                             <a
                                                     class="button is-rounded is-secondary"
                                                     size="is-small"
-                                                    :aria-label="$i18n.get('label_button_edit_document')"
                                                     id="button-edit-document"
-                                                    @click.prevent="setURLDocument()">
+                                                    :aria-label="$i18n.get('label_button_edit_document')"
+                                                    @click.prevent="($event) => setDocument($event, form.document_type)">
                                                 <span
                                                         v-tooltip="{
                                                             content: $i18n.get('edit'),
@@ -524,8 +426,8 @@
                                             <a
                                                     class="button is-rounded is-secondary"
                                                     size="is-small"
-                                                    :aria-label="$i18n.get('label_button_delete_document')"
                                                     id="button-delete-document"
+                                                    :aria-label="$i18n.get('label_button_delete_document')"
                                                     @click.prevent="removeDocument()">
                                                 <span
                                                         v-tooltip="{
@@ -540,7 +442,7 @@
                                             </a>
                                         </div>
                                     </div>
-                                </div>
+                                </template>
                                 <ul 
                                         v-else
                                         class="document-field-placeholder">
@@ -595,7 +497,7 @@
                                             v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                             :show-name="false"
                                             :modal-on-click="false"
-                                            :size="148"
+                                            :size="125"
                                             :file="{
                                                 media_type: 'image',
                                                 thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
@@ -667,6 +569,37 @@
                                         </a>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Attachments -------------------------------- -->
+                            <div 
+                                    v-if="!$adminOptions.hideItemEditionAttachments"
+                                    class="section-label">
+                                <label>{{ $i18n.get('label_attachments') }}</label>
+                            </div>
+                            <div 
+                                    v-if="item != undefined && item.id != undefined && !isLoading && !$adminOptions.hideItemEditionAttachments"
+                                    class="section-box section-attachments">
+                                <div class="attachments-list-heading">
+                                    <button
+                                            style="margin-left: calc(var(--tainacan-one-column) + 12px)"
+                                            type="button"
+                                            class="button is-secondary"
+                                            @click.prevent="attachmentMediaFrame.openFrame($event)"
+                                            :disabled="isLoadingAttachments">
+                                        {{ $i18n.get("label_edit_attachments") }}
+                                    </button>
+                                    <p>
+                                        {{ $i18n.get("info_edit_attachments") }}
+                                    </p>
+                                </div>
+
+                                <attachments-list
+                                        :item="item"
+                                        :is-editable="true"
+                                        :is-loading.sync="isLoadingAttachments"
+                                        @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
+                                        @onDeleteAttachment="deleteAttachment($event)"/>
                             </div>
 
                             <!-- Hook for extra Form options -->
@@ -944,7 +877,6 @@ import { mapActions, mapGetters } from 'vuex';
 import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
-import DocumentItem from '../other/document-item.vue';
 import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 import AttachmentsList from '../lists/attachments-list.vue';
@@ -959,7 +891,6 @@ export default {
     name: 'ItemEditionForm',
     components: {
         FileItem,
-        DocumentItem,
         AttachmentsList,
         RelatedItemsList,
         ItemMetadatumErrorsTooltip
@@ -1448,6 +1379,14 @@ export default {
 
                 this.isLoading = false;
             });
+        },
+        setDocument(event, documentType) {
+            if (documentType === 'attachment')
+                this.setFileDocument(event);
+            else if (documentType === 'text')
+                this.setTextDocument();
+            else if (documentType === 'url')
+                this.setURLDocument();
         },
         setFileDocument(event) {
             this.fileMediaFrame.openFrame(event);
@@ -2003,7 +1942,7 @@ export default {
 
         .tainacan-page-title {
             padding: 0 var(--tainacan-one-column);
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
@@ -2054,6 +1993,7 @@ export default {
             margin-right: var(--tainacan-one-column);
 
             .column.is-5 {
+                padding-top: 0;
                 padding-left: var(--tainacan-one-column);
                 padding-right: var(--tainacan-one-column);
 
@@ -2070,6 +2010,7 @@ export default {
                 }
             }
             .column.is-7 {
+                padding-top: 0;
                 padding-left: var(--tainacan-one-column);
                 padding-right: 0;
 
@@ -2254,16 +2195,17 @@ export default {
     }
 
     .section-box {
-        padding: 0 var(--tainacan-one-column) 0 0;
+        padding: 0 var(--tainacan-one-column);
         margin-top: 12px;
-        margin-bottom: 16px;
+        margin-bottom: 24px;
+        position: relative;
     }
     .section-status {
         padding-bottom: 16px;
         font-size: 0.875em;
 
         .field {
-            padding: 10px 0 14px 0px !important;
+            padding: 10px 0 0px 0px !important;
 
             .b-radio {
                 margin-right: 24px;
@@ -2328,15 +2270,62 @@ export default {
         }
     }   
 
-    .document-field {
-        /deep/ iframe {
-            max-width: 100%;
-            max-height: 100%;
+    .document-buttons-row,
+    .thumbnail-buttons-row {
+        bottom: -6px;
+        left: 6px;
+        position: absolute;
+    }
+
+    #button-edit-thumbnail,
+    #button-edit-document,
+    #button-delete-thumbnail,
+    #button-alt-text-thumbnail,
+    #button-delete-document {
+        border-radius: 100px !important;
+        max-height: 2.125em !important;
+        max-width: 2.125em !important;
+        min-height: 2.125em !important;
+        min-width: 2.125em !important;
+        padding: 0 !important;
+        z-index: 99;
+        margin-right: 6px !important;
+
+        .icon {
+            display: inherit;
+            padding: 0;
+            margin: 0;
+            margin-top: -2px;
+            font-size: 1.125em;
         }
-        .document-buttons-row {
-            text-align: right;
-            top: -21px;
-            position: relative;
+    }
+
+    .document-field {
+
+        .document-field-content {
+            max-height: 26vh;
+
+            /deep/ img,
+            /deep/ video,
+            /deep/ figure {
+                max-width: 100%;
+                max-height: 26vh;
+                width: auto;
+                margin: 0;
+            }
+            /deep/ a {
+                min-height: 60px;
+                display: block;
+            }
+            /deep/ audio,
+            /deep/ iframe,
+            /deep/ blockquote {
+                max-width: 100%;
+                max-height: 26vh;
+                width: 100%;
+                margin: 0;
+                min-height: 150px;
+            }
         }
 
         .document-field-placeholder {
@@ -2368,29 +2357,6 @@ export default {
         }
     }
 
-    #button-edit-thumbnail,
-    #button-edit-document,
-    #button-delete-thumbnail,
-    #button-alt-text-thumbnail,
-    #button-delete-document {
-        border-radius: 100px !important;
-        max-height: 2.125em !important;
-        max-width: 2.125em !important;
-        min-height: 2.125em !important;
-        min-width: 2.125em !important;
-        padding: 0 !important;
-        z-index: 99;
-        margin-left: 6px !important;
-
-        .icon {
-            display: inherit;
-            padding: 0;
-            margin: 0;
-            margin-top: -2px;
-            font-size: 1.125em;
-        }
-    }
-
     .thumbnail-field {
 
         .content {
@@ -2398,8 +2364,8 @@ export default {
             font-size: 0.8em;
         }
         img {
-            height: 148px;
-            width: 148px;
+            height: 125px;
+            width: 125px;
         }
         .image-placeholder {
             position: absolute;
@@ -2414,12 +2380,6 @@ export default {
             max-width: 84px;
         }
 
-        .thumbnail-buttons-row {
-            position: relative;
-            left: 33px;
-            bottom: 1.25em;
-        }
-
         .thumbnail-alt-input {
             .label {
                 font-size: 0.875em;
@@ -2429,6 +2389,11 @@ export default {
                 margin-top: 0.15em;
             }
         }
+    }
+
+    .section-attachments {
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .attachments-list-heading {
@@ -2468,14 +2433,14 @@ export default {
     }
 
     .footer {
-        padding: 18px var(--tainacan-one-column);
+        padding: 14px var(--tainacan-one-column);
         position: fixed;
         bottom: 0;
         right: 0;
         z-index: 9999;
         background-color: var(--tainacan-gray1);
         width: calc(100% - var(--tainacan-sidebar-width, 3.25em));
-        height: 65px;
+        height: 60px;
         display: flex;
         justify-content: flex-end;
         align-items: center;

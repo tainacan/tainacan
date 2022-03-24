@@ -229,7 +229,6 @@ export default {
         h1 {
             font-size: 1.125em;
             color: var(--tainacan-white);
-            line-height: 1.4em;
             max-width: 100%;
             text-overflow: ellipsis;
             white-space: nowrap;

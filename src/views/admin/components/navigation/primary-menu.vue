@@ -205,7 +205,7 @@ export default {
                 white-space: nowrap;
                 overflow: hidden;
                 padding: 8px 15px;
-                line-height: 1.5em;
+                line-height: 1.28em;
                 border-radius: 0px;
                 -webkit-transition: padding 0.2s linear, background-color 0.3s ease; /* Safari */
                 transition: padding 0.2s linear, background-color 0.3s ease;

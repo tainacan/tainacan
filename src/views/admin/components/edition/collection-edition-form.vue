@@ -1330,7 +1330,7 @@ export default {
         }
     }
     .thumbnail-field {  
-        padding: 24px;
+        padding: 16px;
         // margin-top: 16px;
         // margin-bottom: 38px;
 
