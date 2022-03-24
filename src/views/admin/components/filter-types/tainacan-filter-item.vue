@@ -1,6 +1,9 @@
 <template>
     <b-field
             class="filter-item-forms"
+            :ref="isMobileScreen ? ('filter-field-id-' + filter.id) : null"
+            @touchstart.native="setFilterFocus(filter.id)"
+            @mousedown.native="setFilterFocus(filter.id)"
             :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}">
         <b-collapse
                 v-if="displayFilter"
@@ -48,7 +51,7 @@
                         :current-collection-id="$eventBusSearch.collectionId"
                         @input="onInput"
                         @updateParentCollapse="onFilterUpdateParentCollapse" 
-                        :filters-as-modal="filtersAsModal"/>
+                        :filters-as-modal="filtersAsModal" />
             </div>
         </b-collapse>
         <div 
@@ -91,7 +94,9 @@
             isRepositoryLevel: Boolean,
             expandAll: true,
             isLoadingItems: true,
-            filtersAsModal: Boolean
+            filtersAsModal: Boolean,
+            isMobileScreen: false,
+            focusedElement: false
         },
         data() {
             return {
@@ -126,6 +131,18 @@
                 const componentsThatShouldCollapseIfEmpty = ['tainacan-filter-taxonomy-checkbox', 'tainacan-filter-selectbox', 'tainacan-filter-checkbox'];
                 if (componentsThatShouldCollapseIfEmpty.includes(this.filter.filter_type_object.component))
                     this.singleCollapseOpen = open;
+            },
+            setFilterFocus(filterId) {
+                if (this.isMobileScreen) {
+                    let fieldElement = this.$refs['filter-field-id-' + filterId] && this.$refs['filter-field-id-' + filterId]['$el'];
+                    if (this.focusedElement !== filterId && fieldElement && (typeof fieldElement.scrollIntoView == 'function')) {
+                        this.focusedElement = filterId;
+                        fieldElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        })
+                    }
+                }
             }
         }
     }

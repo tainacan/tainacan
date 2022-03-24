@@ -38,12 +38,23 @@
 
     @media screen and (max-width: 768px) {
 
-        .modal-content {
-            background-color: var(--tainacan-background-color);
-            margin: 0 12% 0 0;
-            margin: 0 12vw 0 0;
-            padding: var(--tainacan-container-padding);
-            max-width: calc(100% - 12vw) !important;
-       }
+        &:not(.filters-menu-modal) {
+            .modal-content {
+                background-color: var(--tainacan-background-color);
+                margin: 0 12% 0 0;
+                margin: 0 12vw 0 0;
+                padding: var(--tainacan-container-padding);
+                max-width: calc(100% - 12vw) !important;
+            }
+            .modal-close {
+                top: 16px;
+            }
+        }
+        &.filters-menu-modal {
+            .modal-close {
+                right: 12px;
+                box-shadow: 0 0 11px -6px var(--tainacan-black, #000);
+            }
+        }
     }
 }

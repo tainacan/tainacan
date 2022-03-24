@@ -643,7 +643,8 @@
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,
-                metadataSearchCancel: undefined
+                metadataSearchCancel: undefined,
+                isMobileScreen: false
             }
         },
         computed: {
@@ -1218,9 +1219,10 @@
                 this.$nextTick(() => {
  
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
-                        const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
+                        const previousIsMobile = this.isMobileScreen;
+                        this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
                         
-                        if (isMobile || this.openAdvancedSearch) {
+                        if ((!previousIsMobile && this.isMobileScreen) || this.openAdvancedSearch) {
                             this.isFiltersModalActive = false;
                         } else {
                             this.isFiltersModalActive = true;

@@ -87,7 +87,8 @@
                                 :filter="filter"
                                 :expand-all="!collapseAll"
                                 :is-repository-level="key == 'repository-filters'"
-                                :filters-as-modal="filtersAsModal"/>
+                                :filters-as-modal="filtersAsModal"
+                                :is-mobile-screen="isMobileScreen" />
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -135,7 +136,8 @@
                                 :filter="filter"
                                 :expand-all="!collapseAll"
                                 :is-repository-level="key == 'repository-filters'"
-                                :filters-as-modal="filtersAsModal"/>
+                                :filters-as-modal="filtersAsModal"
+                                :is-mobile-screen="isMobileScreen" />
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -187,7 +189,8 @@
                                 :filter="filter"
                                 :expand-all="!collapseAll"
                                 :is-repository-level="key == 'repository-filters'"
-                                :filters-as-modal="filtersAsModal"/>
+                                :filters-as-modal="filtersAsModal"
+                                :is-mobile-screen="isMobileScreen" />
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -235,7 +238,8 @@
                                 :filter="filter"
                                 :expand-all="!collapseAll"
                                 :is-repository-level="key == 'repository-filters'"
-                                :filters-as-modal="filtersAsModal"/>
+                                :filters-as-modal="filtersAsModal"
+                                :is-mobile-screen="isMobileScreen" />
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -258,7 +262,8 @@
                         :filter="filter"
                         :expand-all="!collapseAll"
                         :is-repository-level="isRepositoryLevel"
-                        :filters-as-modal="filtersAsModal"/>
+                        :filters-as-modal="filtersAsModal"
+                        :is-mobile-screen="isMobileScreen" />
             </template>
         </div>
         <section
@@ -299,7 +304,8 @@
             taxonomy: String,
             filtersAsModal: Boolean,
             hasFiltered: Boolean,
-            isLoadingItems: Boolean
+            isLoadingItems: Boolean,
+            isMobileScreen: false
         },
         data() {
             return {

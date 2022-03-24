@@ -250,6 +250,10 @@
             --swiper-navigation-size: 2em;
             --swiper-navigation-color: var(--tainacan-secondary);
 
+            ul.swiper-wrapper {
+                padding-inline-start: 0;
+            }
+
             .swiper-slide {
                 width: auto;
             }
