@@ -113,7 +113,7 @@
         data() {
             return {
                 attachmentsPage: 1,
-                attachmentsPerPage: 24
+                attachmentsPerPage: 12
             }
         },
         computed: {

@@ -80,7 +80,7 @@
     // Not really used in EVERY container, but a rather frequent value
     --tainacan-container-padding: #{$container-padding};
 
-    @media screen and (max-height: 770px) {
+    @media screen and (max-height: 760px) {
         --tainacan-container-padding: #{$container-narrow-padding};
     }
 }

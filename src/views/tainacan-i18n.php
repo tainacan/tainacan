@@ -304,7 +304,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_select_all_items_page'                    => __( 'Select all items on page', 'tainacan' ),
 	'label_select_all_taxonomies_page'               => __( 'Select all taxonomies on page', 'tainacan' ),
 	'label_select_all_processes_page'                => __( 'Select all processes on page', 'tainacan' ),
-	'label_edit_attachments'                         => __( 'Edit attachments', 'tainacan' ),
+	'label_add_or_update_attachments'                         => __( 'Add or update attachments', 'tainacan' ),
 	'label_blank_collection'                         => __( 'Blank collection', 'tainacan' ),
 	/* translators: the metadata scheme https://dublincore.org/ */
 	'label_dublin_core'                              => __( 'Dublin Core', 'tainacan' ),
@@ -622,6 +622,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_date_to_search_for'                       => __( 'Date to search for', 'tainacan' ),
 	'label_criterion_to_compare'                     => __( 'Criterion to compare', 'tainacan' ),
 	'label_metadata_and_sections'					 => __( 'Metadata and Sections', 'tainacan' ),
+	'label_view_activity_logs'						 => __( 'View activity logs', 'tainacan' ),
+	'label_item_activities'						 	 => __( 'Item activities', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

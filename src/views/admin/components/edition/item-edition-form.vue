@@ -5,10 +5,10 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
 
-        <div 
+        <tainacan-title 
                 v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)"
-                class="tainacan-page-title">
-            <h1 v-if="isCreatingNewItem">
+                :bread-crumb-items="[{ path: '', label: $i18n.get('item') }]">
+           <h1 v-if="isCreatingNewItem">
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
@@ -22,13 +22,7 @@
                 {{ $i18n.get('title_edit_item') + ' ' }}
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
-            <a
-                    @click="$router.go(-1)"
-                    class="back-link has-text-secondary">
-                {{ $i18n.get('back') }}
-            </a>
-            <hr>
-        </div>
+        </tainacan-title>
         
         <transition
                 mode="out-in"
@@ -97,12 +91,19 @@
                                     class="column is-narrow"
                                     v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
                                 <div class="section-label">
-                                    <label>{{ $i18n.get('label_comments') }}</label>
+                                    <label>
+                                        <span class="icon has-text-gray4">
+                                            <i class="tainacan-icon tainacan-icon-comment"/>
+                                        </span>
+                                        {{ $i18n.get('label_comments') }}
+                                    </label>
                                     <help-button
-                                                :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                                :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                                            :title="$i18n.getHelperTitle('items', 'comment_status')"
+                                            :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                                 </div>
-                                <div class="section-status">
+                                <div 
+                                        style="margin-left: 2em;"
+                                        class="section-status">
                                     <div class="field has-addons">
                                         <b-switch
                                                 id="tainacan-checkbox-comment-status"
@@ -340,7 +341,7 @@
                                         aria-labelledby="related-tab-label"
                                         tabindex="0"> 
 
-                                    <div class="attachments-list-heading">
+                                    <div class="related-items-list-heading">
                                         <p>
                                             {{ $i18n.get("info_related_items") }}
                                         </p>
@@ -390,50 +391,49 @@
                             <div 
                                     v-if="!$adminOptions.hideItemEditionDocument"
                                     class="section-box document-field">
-                                <template
+                                <div
                                         v-if="form.document != undefined && form.document != null &&
                                                 form.document_type != undefined && form.document_type != null &&
-                                                form.document != '' && form.document_type != 'empty'">
-                                    <div :class="'document-field-content has-document-mimetype--' + item.document_mimetype">
-                                        <div v-html="item.document_as_html" />
-                                        <div class="document-buttons-row">
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    id="button-edit-document"
-                                                    :aria-label="$i18n.get('label_button_edit_document')"
-                                                    @click.prevent="($event) => setDocument($event, form.document_type)">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('edit'),
-                                                            autoHide: true,
-                                                            placement: 'bottom',
-                                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-edit"/>
-                                                </span>
-                                            </a>
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    id="button-delete-document"
-                                                    :aria-label="$i18n.get('label_button_delete_document')"
-                                                    @click.prevent="removeDocument()">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('delete'),
-                                                            autoHide: true,
-                                                            placement: 'bottom',
-                                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-delete"/>
-                                                </span>
-                                            </a>
-                                        </div>
+                                                form.document != '' && form.document_type != 'empty'"
+                                        class="document-field-content">
+                                    <div v-html="item.document_as_html" />
+                                    <div class="document-buttons-row">
+                                        <a
+                                                class="button is-rounded is-secondary"
+                                                size="is-small"
+                                                id="button-edit-document"
+                                                :aria-label="$i18n.get('label_button_edit_document')"
+                                                @click.prevent="($event) => setDocument($event, form.document_type)">
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('edit'),
+                                                        autoHide: true,
+                                                        placement: 'bottom',
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                                    }"
+                                                    class="icon">
+                                                <i class="tainacan-icon tainacan-icon-edit"/>
+                                            </span>
+                                        </a>
+                                        <a
+                                                class="button is-rounded is-secondary"
+                                                size="is-small"
+                                                id="button-delete-document"
+                                                :aria-label="$i18n.get('label_button_delete_document')"
+                                                @click.prevent="removeDocument()">
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('delete'),
+                                                        autoHide: true,
+                                                        placement: 'bottom',
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                                    }"
+                                                    class="icon">
+                                                <i class="tainacan-icon tainacan-icon-delete"/>
+                                            </span>
+                                        </a>
                                     </div>
-                                </template>
+                                </div>
                                 <ul 
                                         v-else
                                         class="document-field-placeholder">
@@ -582,23 +582,24 @@
                                         ({{ totalAttachments }})
                                     </span>
                                 </label>
+                                <help-button
+                                        :title="$i18n.get('label_attachments')"
+                                        :message="$i18n.get('info_edit_attachments')"/>
+                                <button
+                                        style="float: right; font-size: 0.875em; margin: 2px 4px;"
+                                        type="button"
+                                        class="link-style"
+                                        @click.prevent="attachmentMediaFrame.openFrame($event)"
+                                        :disabled="isLoadingAttachments">
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                    </span>
+                                    {{ $i18n.get('label_add_or_update_attachments') }}
+                                </button>
                             </div>
                             <div 
                                     v-if="item != undefined && item.id != undefined && !isLoading && !$adminOptions.hideItemEditionAttachments"
                                     class="section-box section-attachments">
-                                <div class="attachments-list-heading">
-                                    <p>
-                                        {{ $i18n.get("info_edit_attachments") }}
-                                    </p>
-                                    <button
-                                            style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                            type="button"
-                                            class="button is-secondary"
-                                            @click.prevent="attachmentMediaFrame.openFrame($event)"
-                                            :disabled="isLoadingAttachments">
-                                        {{ $i18n.get("label_edit_attachments") }}
-                                    </button>
-                                </div>
 
                                 <attachments-list
                                         :item="item"
@@ -1940,25 +1941,7 @@ export default {
 
         .tainacan-page-title {
             padding: 0 var(--tainacan-one-column);
-            margin-bottom: 28px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
-
-            h1, h2 {
-                font-size: 1.25em;
-                font-weight: 500;
-                color: var(--tainacan-heading-color);
-                display: inline-block;
-                width: 80%;
-                flex-shrink: 1;
-                flex-grow: 1;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                max-width: 80%;
-            }
+        
             .status-tag {
                 color: var(--tainacan-white);
                 background: var(--tainacan-secondary);
@@ -1968,17 +1951,7 @@ export default {
                 font-weight: 600;
                 position: relative;
                 top: -2px;
-            }
-            a.back-link {
-                font-weight: 500;
-                float: right;
-                margin-top: 5px;
-            }
-            hr {
-                margin: 3px 0px 4px 0px;
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-                width: 100%;
+                border-radius: 2px;
             }
 
             @media screen and (max-width: 769px) {
@@ -1999,9 +1972,9 @@ export default {
                     .sticky-container {
                         position: relative;
                         position: sticky;
-                        top: -25px;
-                        margin: 3px 0;
-                        max-height: calc(100vh - 185px);
+                        top: 0px;
+                        margin: 0;
+                        max-height: calc(100vh - 202px);
                         overflow-y: auto;
                         overflow-x: hidden;
                     }
@@ -2100,10 +2073,6 @@ export default {
                 }
             }
         }
-
-        // .b-tabs {
-        //     overflow: hidden !important;
-        // }
     }
 
     .section-label {
@@ -2116,7 +2085,7 @@ export default {
         }
     }
     .section-box+.section-label {
-        border-top: 1px dashed var(--tainacan-info-color);
+        border-top: 1px dashed var(--tainacan-gray3);
         padding-top: 6px;
     }
 
@@ -2339,7 +2308,7 @@ export default {
                 min-height: 150px;
             }
 
-            @media screen and (max-height: 770px) {
+            @media screen and (max-height: 760px) {
                 max-height: 25vh;
 
                 /deep/ img,
@@ -2364,13 +2333,15 @@ export default {
             li {
                 text-align: center;
                 button {
-                    border-radius: 0px;
+                    border-radius: 1px;
                     height: 72px;
                     width: 72px;
                     border: none;
                     background-color: var(--tainacan-background-color);
                     color: var(--tainacan-secondary);
                     margin-bottom: 6px;
+                    transition: background-color 0.3s ease;
+                    
                     &:hover {
                         background-color: var(--tainacan-primary);
                         cursor: pointer;
@@ -2396,14 +2367,14 @@ export default {
         }
         .image-placeholder {
             position: absolute;
-            margin-left: 32px;
-            margin-right: 32px;
+            margin-left: 20px;
+            margin-right: 20px;
             font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: var(--tainacan-info-color);
-            top: 60px;
+            top: 45px;
             max-width: 84px;
         }
 
@@ -2423,7 +2394,7 @@ export default {
         padding-right: 0;
     }
 
-    .attachments-list-heading {
+    .related-items-list-heading {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -2432,9 +2403,6 @@ export default {
         margin-bottom: var(--tainacan-container-padding);
         p {
             color: var(--tainacan-info-color);
-        }
-        button {
-            margin-left: 12px;
         }
         @media screen and (max-width: 768px) {
             flex-wrap: wrap;

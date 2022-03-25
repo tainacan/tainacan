@@ -4,25 +4,20 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
 
-        <div 
-                v-if="!$adminOptions.hideItemSinglePageTitle"
-                class="tainacan-page-title">
+        <tainacan-title 
+                 v-if="!$adminOptions.hideItemSinglePageTitle"
+                :bread-crumb-items="[{ path: '', label: $i18n.get('item') }]">
             <h1>
-            <span
-                    v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                    class="status-tag">
-                {{ $i18n.get('status_' + item.status) }}
-            </span>
-                {{ $i18n.get('title_item_page') + ' ' }}
-                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                <span
+                        v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
+                        class="status-tag">
+                    {{ $i18n.get('status_' + item.status) }}
+                </span>
+                    {{ $i18n.get('title_item_page') + ' ' }}
+                    <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
-            <a
-                    @click="$router.go(-1)"
-                    class="back-link has-text-secondary">
-                {{ $i18n.get('back') }}
-            </a>
-            <hr>
-        </div>
+        </tainacan-title>
+
         <div class="tainacan-form">
             <div class="columns">
 
@@ -41,25 +36,6 @@
                     <div
                             style="flex-wrap: wrap"
                             class="columns">
-
-                        <!-- Collection -------------------------------- -->
-                        <div 
-                                v-if="!$adminOptions.hideItemSingleCollectionName"
-                                class="column is-narrow">
-                            <div class="section-label">
-                                <label>{{ $i18n.get('collection') }}</label>
-                            </div>
-                            <div class="section-status">
-                                <div class="field has-addons">
-                                    <span>
-                                        <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-collection"/>
-                                        </span>
-                                        {{ collection && collection.name ? collection.name : '' }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Status (status public or private) -------------------------------- -->
                         <div 
@@ -139,6 +115,9 @@
                                 v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemSingleCommentsOpen"
                                 class="column is-narrow">
                             <div class="section-label">
+                                <span class="icon has-text-gray4">
+                                    <i class="tainacan-icon tainacan-icon-comment"/>
+                                </span>
                                 <label>{{ $i18n.get('label_comments') }}</label>
                             </div>
                             <div class="section-status">
@@ -220,7 +199,7 @@
                                 </span>
                             </template>
 
-                            <div class="attachments-list-heading">
+                            <div class="related-items-list-heading">
                                 <p>
                                     {{ $i18n.get("info_related_items") }}
                                 </p>
@@ -233,39 +212,6 @@
                                     :is-editable="false"
                                     :is-loading.sync="isLoading" />
                             
-                        </b-tab-item>
-
-                        <b-tab-item v-if="!$adminOptions.hideItemSingleAttachments">
-                            <template slot="header">
-                                <span class="icon has-text-gray5">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
-                                </span>
-                                <span>
-                                    {{ $i18n.get('label_attachments') }}
-                                    <span
-                                            v-if="totalAttachments != null && totalAttachments != undefined"
-                                            class="has-text-gray">
-                                        ({{ totalAttachments }})
-                                    </span>
-                                </span>
-                            </template>
-                        
-                            <attachments-list
-                                    v-if="item != undefined && item.id != undefined"
-                                    :item="item"
-                                    :is-loading.sync="isLoadingAttachments"
-                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading" />    
-                        </b-tab-item>
-
-                        <b-tab-item :visible="!$adminOptions.hideItemSingleActivities">
-                            <template slot="header">
-                                <span class="icon has-text-gray5">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-activities"/>
-                                </span>
-                                <span>{{ $i18n.get('activities') }}</span>
-                            </template>
-                            
-                            <activities-page v-if="activeTab == (totalRelatedItems ? 3 : 2)"/>
                         </b-tab-item>
                     </b-tabs>
                 </div>
@@ -287,30 +233,22 @@
                         <div 
                                 v-if="!$adminOptions.hideItemSingleDocument"
                                 class="section-label">
-                            <label>{{ item.document !== undefined && item.document !== null && item.document !== ''
-                                ?
-                                $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
+                            <label>
+                                <span class="icon has-text-gray4">
+                                    <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))"/>
+                                </span>
+                                {{ item.document != undefined && item.document != null && item.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}
+                            </label>
                         </div>
                         <div 
                                 v-if="!$adminOptions.hideItemSingleDocument"
                                 class="section-box document-field">
                             <div
                                     v-if="item.document !== undefined && item.document !== null &&
-                                    item.document_type !== undefined && item.document_type !== null &&
-                                    item.document !== '' && item.document_type !== 'empty'">
-
-                                <div v-if="item.document_type === 'attachment'">
-                                    <!-- <div v-html="item.document_as_html"/> -->
-                                    <document-item :document-html="item.document_as_html"/>
-                                </div>
-
-                                <div v-else-if="item.document_type === 'text'">
-                                    <div v-html="item.document_as_html"/>
-                                </div>
-
-                                <div v-else-if="item.document_type === 'url'">
-                                    <div v-html="item.document_as_html"/>
-                                </div>
+                                            item.document_type !== undefined && item.document_type !== null &&
+                                            item.document !== '' && item.document_type !== 'empty'"
+                                    class="document-field-content">
+                                <div v-html="item.document_as_html"/>
                             </div>
                             <div v-else>
                                 <p>{{ $i18n.get('info_no_document_to_item') }}</p>
@@ -321,7 +259,12 @@
                         <div 
                                 v-if="!$adminOptions.hideItemSingleThumbnail"
                                 class="section-label">
-                            <label>{{ $i18n.get('label_thumbnail') }}</label>
+                            <label>
+                                <span class="icon has-text-gray4">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-image"/>
+                                </span>
+                                {{ $i18n.get('label_thumbnail') }}
+                            </label>
                         </div>
                         <div 
                                 v-if="!$adminOptions.hideItemSingleThumbnail"
@@ -331,7 +274,7 @@
                                         v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                         :show-name="false"
                                         :modal-on-click="false"
-                                        :size="148"
+                                        :size="125"
                                         :file="{
                                     media_type: 'image',
                                     thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
@@ -361,7 +304,34 @@
                                         :message="$i18n.get('info_thumbnail_alt')"/>
                                 <p> {{ item.thumbnail_alt }}</p>
                             </div>
-                        </div>        
+                        </div>  
+
+                        <!-- Attachments -------------------------------- -->
+                        <div 
+                                v-if="!$adminOptions.hideItemSingleAttachments"
+                                class="section-label">
+                            <label slot="header">
+                                <span class="icon has-text-gray4">
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
+                                </span>
+                                <span>
+                                    {{ $i18n.get('label_attachments') }}&nbsp;
+                                    <span
+                                            v-if="totalAttachments"
+                                            class="has-text-gray has-text-weight-normal">
+                                        ({{ totalAttachments }})
+                                    </span>
+                                </span>
+                            </label> 
+                        </div>   
+                        <div 
+                                v-if="item != undefined && item.id != undefined && !isLoading && !$adminOptions.hideItemSingleAttachments"
+                                class="section-box section-attachments">
+                            <attachments-list
+                                    :item="item"
+                                    :is-loading.sync="isLoadingAttachments"
+                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading" />
+                        </div>   
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasEndLeftForm">
@@ -398,6 +368,17 @@
                         <span>{{ $i18n.getFrom('items','edit_item') }}</span>
                     </router-link>
                     <button 
+                            v-if="!$adminOptions.hideItemSingleActivities"
+                            class="button sequence-button"
+                            :aria-label="$i18n.get('label_view_activity_logs')"
+                            :disabled="isLoading"
+                            @click="openActivitiesModal()">
+                        <span class="icon is-large">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
+                        </span>
+                        <span class="is-hidden-touch">{{ $i18n.get('label_view_activity_logs') }}</span>
+                    </button>
+                    <button 
                             v-if="!$adminOptions.hideItemSingleExposers"
                             class="button sequence-button"
                             :aria-label="$i18n.get('label_view_as')"
@@ -426,8 +407,7 @@
 <script>
     import {mapActions, mapGetters} from 'vuex';
     import FileItem from '../../components/other/file-item.vue';
-    import DocumentItem from '../../components/other/document-item.vue';
-    import {formHooks} from '../../js/mixins';
+    import { formHooks } from '../../js/mixins';
     import ActivitiesPage from '../lists/activities-page.vue';
     import ExposersModal from '../../components/modals/exposers-modal.vue';
     import AttachmentsList from '../../components/lists/attachments-list.vue';
@@ -437,7 +417,6 @@
         name: 'ItemPage',
         components: {
             FileItem,
-            DocumentItem,
             ActivitiesPage,
             RelatedItemsList,
             AttachmentsList
@@ -543,6 +522,14 @@
                     customClass: 'tainacan-modal',
                     closeButtonAriaLabel: this.$i18n.get('close')
                 });
+            },
+            openActivitiesModal() {
+                this.$buefy.modal.open({
+                    parent: this,
+                    component: ActivitiesPage,
+                    customClass: 'tainacan-modal',
+                    closeButtonAriaLabel: this.$i18n.get('close')
+                });
             }
         }
     }
@@ -554,7 +541,7 @@
         padding: var(--tainacan-container-padding) 0;
 
         & > .tainacan-form {
-            margin-bottom: 110px;
+            margin-bottom: 64px;
 
             .field:not(:last-child) {
                 margin-bottom: 0.5em;
@@ -563,25 +550,7 @@
 
         .tainacan-page-title {
             padding: 0 var(--tainacan-one-column);
-            margin-bottom: 28px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
 
-            h1, h2 {
-                font-size: 1.25em;
-                font-weight: 500;
-                color: var(--tainacan-heading-color);
-                display: inline-block;
-                width: 80%;
-                flex-shrink: 1;
-                flex-grow: 1;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                max-width: 80%;
-            }
             .status-tag {
                 color: var(--tainacan-white);
                 background: var(--tainacan-turquoise5);
@@ -591,44 +560,37 @@
                 font-weight: 600;
                 position: relative;
                 top: -2px;
+                border-radius: 2px;
             }
-            a.back-link {
-                font-weight: 500;
-                float: right;
-                margin-top: 5px;
-            }
-            hr {
-                margin: 3px 0px 4px 0px;
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-                width: 100%;
+
+            @media screen and (max-width: 769px) {
+                padding: 0 0.5em;
             }
         }
 
         .tainacan-form > .columns {
-            margin-bottom: 70px;
             margin-left: var(--tainacan-one-column);
             margin-right: var(--tainacan-one-column);
 
             .column.is-5 {
+                padding-top: 0;
                 padding-left: var(--tainacan-one-column);
                 padding-right: var(--tainacan-one-column);
 
-                .sticky-container {
-                    position: relative;
-                    position: sticky;
-                    top: -25px;
-                    margin: 3px 0;
-                    max-height: calc(100vh - 202px);
-                    overflow-y: auto;
-                    overflow-x: hidden;
-                }
-
-                @media screen and (max-width: 769px) {
-                    width: 100%;
+                @media screen and (min-width: 770px) {
+                    .sticky-container {
+                        position: relative;
+                        position: sticky;
+                        top: 0;
+                        margin: 0;
+                        max-height: calc(100vh - 202px);
+                        overflow-y: auto;
+                        overflow-x: hidden;
+                    }
                 }
             }
             .column.is-7 {
+                padding-top: 0;
                 padding-left: var(--tainacan-one-column);
                 padding-right: 0;
 
@@ -651,13 +613,69 @@
                 }
             }
 
+            @media screen and (max-width: 1440px) {
+                 &>.column.is-7 {
+                     padding-left: 0.75em;
+                 }
+                 &>.column.is-5 {
+                     padding-right: 0.75em;
+                 }
+            }
+
             @media screen and (max-width: 769px) {
                 margin-left: 0;
                 margin-right: 0;
+                display: flex;
+                flex-direction: column-reverse;
 
-                 &>.column {
+                &>.column.is-7 {
                     padding-left: 0;
                     padding-right: 0;
+                    max-width: 100%;
+                    widows: 100%;
+
+                    .sub-header {
+                        padding-right: 0.5em;
+                        padding-left: 0.5em;
+                    }
+
+                    .field {
+                        padding: 1em 0.75em;
+                        
+                        /deep/ .collapse-handle {
+                            font-size: 1em;
+                            margin-left: 0;
+                            margin-right: 22px;
+                            width: 100%;
+                            display: block;
+
+                            .label {
+                                margin-left: 2px;
+                            }
+                            .icon {
+                                float: right;
+                                width: 3em;
+                                justify-content: flex-end;
+                            }
+                        }
+                    }
+                    .tab-content {
+                        padding-left: 0;
+                        padding-right: 0;
+
+                    }
+                    .tab-item>.field:last-child {
+                        margin-bottom: 24px;
+                    }
+                    &>.columns {
+                        display: flex;
+                    }
+                }
+                &>.column.is-5 {
+                    max-width: 100%;
+                    widows: 100%;
+                    padding-left: 0.5em;
+                    padding-right: 0.5em;
                 }
             }
         }
@@ -698,74 +716,90 @@
         label {
             font-size: 1em !important;
             font-weight: 500 !important;
-            color: var(--tainacan-gray5) !important;
+            color: var(--tainacan-label-color) !important;
             line-height: 1.2em;
         }
     }
+    .section-box+.section-label {
+        border-top: 1px dashed var(--tainacan-gray3);
+        padding-top: 6px;
+    }
 
     .section-box {
-        background-color: var(--tainacan-white);
-        padding: 0 var(--tainacan-one-column) 0 0;
-        margin-top: 12px;
-        margin-bottom: 18px;
-
-        ul {
-            display: flex;
-            justify-content: space-evenly;
-            li {
-                text-align: center;
-                button {
-                    border-radius: 50px;
-                    height: 72px;
-                    width: 72px;
-                    border: none;
-                    background-color: var(--tainacan-gray2);
-                    color: var(--tainacan-secondary);
-                    margin-bottom: 6px;
-                    &:hover {
-                        background-color: var(--tainacan-turquoise2);
-                        cursor: pointer;
-                    }
-                }
-                p {
-                    color: var(--tainacan-secondary);
-                    font-size: 0.8125em;
-                }
-            }
-        }
+        padding: 0 1em 0 1.875em;
+        margin-top: 10px;
+        margin-bottom: 16px;
+        position: relative;
     }
 
     .section-status {
         padding-bottom: 16px;
-        font-size: 0.75em;
+        font-size: 0.875em;
 
         .field {
             border-bottom: none;
 
             .icon {
                 font-size: 1.125em !important;
-                color: var(--tainacan-gray3);
+                color: var(--tainacan-info-color);
             }
         }
     }
 
-    .document-field {
-        /deep/ iframe {
-            max-width: 100%;
-            max-height: 100%;
+    .section-thumbnail {
+        display: flex;
+        
+        .thumbnail-alt-input {
+            margin-left: 1em;
         }
-        .document-buttons-row {
-            text-align: right;
-            top: -21px;
-            position: relative;
+    }
+
+    .document-field {
+        .document-field-content {
+            max-height: 32vh;
+
+            /deep/ img,
+            /deep/ video,
+            /deep/ figure {
+                max-width: 100%;
+                max-height: 32vh;
+                width: auto;
+                margin: 0;
+            }
+            /deep/ a {
+                min-height: 60px;
+                display: block;
+            }
+            /deep/ audio,
+            /deep/ iframe,
+            /deep/ blockquote {
+                max-width: 100%;
+                max-height: 32vh;
+                width: 100%;
+                margin: 0;
+                min-height: 150px;
+            }
+
+            @media screen and (max-height: 760px) {
+                max-height: 25vh;
+
+                /deep/ img,
+                /deep/ video,
+                /deep/ figure {
+                    max-height: 25vh;
+                }
+                /deep/ audio,
+                /deep/ iframe,
+                /deep/ blockquote {
+                    max-height: 25vh;
+                }
+            }
         }
     }
 
     .section-attachments {
-        margin-top: 0;
-        p {
-            margin: 4px 15px
-        }
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .uploaded-files {
@@ -782,31 +816,35 @@
             font-size: 0.8em;
         }
         img {
-            height: 148px;
-            width: 148px;
+            height: 125px;
+            width: 125px;
         }
         .image-placeholder {
             position: absolute;
-            margin-left: 32px;
-            margin-right: 32px;
+            margin-left: 20px;
+            margin-right: 20px;
             font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: var(--tainacan-info-color);
-            top: 60px;
+            top: 45px;
             max-width: 84px;
         }
     }
 
-    .attachments-list-heading {
+    .related-items-list-heading {
         display: flex;
         align-items: center;
-        margin-top: 12px;
-        margin-bottom: 24px;
-
-        button {
-            margin-right: 12px;
+        justify-content: space-between;
+        margin-left: 1.5em;
+        margin-top: 10px;
+        margin-bottom: var(--tainacan-container-padding);
+        p {
+            color: var(--tainacan-info-color);
+        }
+        @media screen and (max-width: 768px) {
+            flex-wrap: wrap;
         }
     }
 
