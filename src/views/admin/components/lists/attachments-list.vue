@@ -189,6 +189,12 @@
         
 <style lang="scss" scoped>
 
+    @media screen and (max-width: 769px) {
+        .table-container {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
     .uploaded-files {
         display: block;
 

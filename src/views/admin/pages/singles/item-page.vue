@@ -71,7 +71,7 @@
                             <div class="section-status">
                                 <div class="field has-addons">
                                     <span style="display: flex;">
-                                        <span class="icon">
+                                        <span class="icon has-text-gray4">
                                             <i 
                                                     v-if="itemVisibility == 'open_access'"
                                                     class="tainacan-icon tainacan-icon-see"/>
@@ -99,7 +99,7 @@
                                                         <g 
                                                                 id="use1344"
                                                                 transform="matrix(0.157413,0,0,0.157413,74.965914,165.96635)"
-                                                                style="fill:var(--tainacan-gray3);fill-opacity:1" />
+                                                                style="fill:var(--tainacan-gray4);fill-opacity:1" />
                                                     </g>
                                                 </svg>
                                             </i>
@@ -140,80 +140,119 @@
                         </div>
                     </div>
 
-                    <b-tabs v-model="activeTab">
-                        <b-tab-item>
-                            <template slot="header">
-                                <span class="icon has-text-gray5">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
-                                </span>
-                                <span>{{ $i18n.get('metadata') }}</span>
-                            </template>
+                    <div class="b-tabs">
+                        <nav 
+                                v-if="tabs.length >= 2 "
+                                role="list"
+                                class="tabs">
+                            <ul>
+                                <li 
+                                        v-for="(tab, tabIndex) of tabs"
+                                        :key="tabIndex"
+                                        :class="{ 'is-active': activeTab === tab.slug }"
+                                        @click="activeTab = tab.slug"
+                                        :id="tab.slug + '-tab-label'">
+                                    <a>
+                                        <span class="icon has-text-gray4">
+                                            <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
+                                        </span>
+                                        <span>{{ tab.name }}</span>
+                                        <span 
+                                                v-if="tab.total"
+                                                class="has-text-gray">
+                                            &nbsp;({{ tab.total }})
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
 
-                            <!-- Metadata -------------------------------- -->
-                            <div class="metadata-area">
-                                <div
-                                        v-for="(itemMetadatum, index) of metadatumList"
-                                        :key="index"
-                                        class="field">
-                                    <label class="label">{{ itemMetadatum.metadatum.name }}</label>
+                        <section 
+                                :style="tabs.length < 2 ? 'border-top: none; padding-top: 0;' : ''"
+                                class="tab-content">
+
+                            <div 
+                                    v-if="tabs.length < 2"
+                                    class="section-label">
+                                <label id="metadata-tab-label">
+                                    <span class="icon has-text-gray4">
+                                        <i class="tainacan-icon tainacan-icon-metadata"/>
+                                    </span>
+                                    {{ $i18n.get('metadata') }}&nbsp;
+                                    <span 
+                                            v-if="metadatumList.length"
+                                            class="has-text-gray has-text-weight-normal">
+                                        ({{ metadatumList.length }})
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div 
+                                    v-if="activeTab === 'metadata'"
+                                    class="tab-item"
+                                    role="tabpanel"
+                                    aria-labelledby="metadata-tab-label">
+
+                                <!-- Metadata -------------------------------- -->
+                                <div class="metadata-area">
                                     <div
-                                            :class="{ 
-                                                'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
-                                                'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound',
-                                                'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
-                                            }"
-                                            class="content">
-                                        <component 
-                                                :is="
-                                                    itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
-                                                    (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
-                                                     itemMetadatum.metadatum.metadata_type_object.options &&
-                                                     itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
-                                                     itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
-                                                    ) ? 'div' : 'p'" 
-                                                v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
+                                            v-for="(itemMetadatum, index) of metadatumList"
+                                            :key="index"
+                                            class="field">
+                                        <label class="label">{{ itemMetadatum.metadatum.name }}</label>
+                                        <div
+                                                :class="{ 
+                                                    'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
+                                                    'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound',
+                                                    'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
+                                                }"
+                                                class="content">
+                                            <component 
+                                                    :is="
+                                                        itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
+                                                        (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
+                                                        itemMetadatum.metadatum.metadata_type_object.options &&
+                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
+                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
+                                                        ) ? 'div' : 'p'" 
+                                                    v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <!-- Hook for extra Form options -->
+                                <template v-if="hasEndRightForm">
+                                    <div
+                                            id="view-item-end-right"
+                                            class="form-hook-region"
+                                            v-html="getEndRightForm"/>
+                                </template>
                             </div>
 
-                            <!-- Hook for extra Form options -->
-                            <template v-if="hasEndRightForm">
-                                <div
-                                        id="view-item-end-right"
-                                        class="form-hook-region"
-                                        v-html="getEndRightForm"/>
-                            </template>
-                        </b-tab-item>
+                            <!-- Related items -->
+                            <div 
+                                    v-if="totalRelatedItems && activeTab === 'related'"
+                                    class="tab-item"
+                                    role="tabpanel"
+                                    aria-labelledby="related-tab-label"
+                                    tabindex="0">
 
-                        <!-- Related items -->
-                        <b-tab-item v-if="totalRelatedItems">
-                            <template slot="header">
-                                <span class="icon has-text-gray5">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes tainacan-icon-rotate-270"/>
-                                </span>
-                                <span>
-                                    {{ $i18n.get('label_related_items') }}
-                                    <span class="has-text-gray">
-                                        ({{ totalRelatedItems }})
-                                    </span>
-                                </span>
-                            </template>
+                                <div class="related-items-list-heading">
+                                    <p>
+                                        {{ $i18n.get("info_related_items") }}
+                                    </p>
+                                </div>
 
-                            <div class="related-items-list-heading">
-                                <p>
-                                    {{ $i18n.get("info_related_items") }}
-                                </p>
+                                <related-items-list
+                                        :item-id="itemId"
+                                        :collection-id="collectionId"
+                                        :related-items="item.related_items"
+                                        :is-editable="false"
+                                        :is-loading.sync="isLoading" />
                             </div>
 
-                            <related-items-list
-                                    :item-id="itemId"
-                                    :collection-id="collectionId"
-                                    :related-items="item.related_items"
-                                    :is-editable="false"
-                                    :is-loading.sync="isLoading" />
-                            
-                        </b-tab-item>
-                    </b-tabs>
+                        </section>
+                    </div>
                 </div>
 
                 <div 
@@ -430,7 +469,7 @@
                 isLoading: false,
                 open: true,
                 urls_open: false,
-                activeTab: 0
+                activeTab: 'metadata'
             }
         },
         computed: {
@@ -454,7 +493,24 @@
             },
             itemVisibility() {
                 return (this.collection && this.collection.status == 'publish' && this.item && this.item.status == 'publish') ? 'open_access' : 'restrict_access'
-            }
+            },
+            tabs() {
+                let pageTabs = [{
+                    slug: 'metadata',
+                    icon: 'metadata',
+                    name: this.$i18n.get('metadata'),
+                    total: this.metadatumList.length
+                }];
+                if (this.totalRelatedItems) {
+                    pageTabs.push({
+                        slug: 'related',
+                        icon: 'processes tainacan-icon-rotate-270',
+                        name: this.$i18n.get('label_related_items'),
+                        total: this.totalRelatedItems
+                    });
+                }
+                return pageTabs;
+            },
         },
         created() {
             // Obtains item and collection ID
@@ -538,10 +594,10 @@
 <style lang="scss" scoped>
 
     .page-container {
-        padding: var(--tainacan-container-padding) 0;
+        padding: var(--tainacan-container-padding) 0px 0px 0px;
 
         & > .tainacan-form {
-            margin-bottom: 64px;
+            margin-bottom: 60px;
 
             .field:not(:last-child) {
                 margin-bottom: 0.5em;
@@ -688,8 +744,8 @@
 
     .metadata-area {
         .field {
-            border-bottom: 1px solid var(--tainacan-gray2);
-            padding: 10px var(--tainacan-container-padding);
+            border-bottom: 1px dashed var(--tainacan-gray3);
+            padding: 10px var(--tainacan-container-padding) !important;
             margin-left: 0px !important;
 
             .label {
@@ -708,7 +764,6 @@
                 visibility: hidden;
             }
         } 
-        
     }
 
     .section-label {

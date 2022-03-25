@@ -178,7 +178,7 @@
                             </nav>
                         
                             <section 
-                                    :style="tabs.length < 2 ? 'border-top: none;' : ''"
+                                    :style="tabs.length < 2 ? 'border-top: none; padding-top: 0;' : ''"
                                     class="tab-content">
 
                                 <div 
@@ -588,7 +588,7 @@
                                         :title="$i18n.get('label_attachments')"
                                         :message="$i18n.get('info_edit_attachments')"/>
                                 <button
-                                        style="float: right; font-size: 0.875em; margin: 2px 4px;"
+                                        style="float: right; font-size: 0.875em; margin: 2px 5px;"
                                         type="button"
                                         class="link-style"
                                         @click.prevent="attachmentMediaFrame.openFrame($event)"
@@ -1931,10 +1931,10 @@ export default {
 <style lang="scss" scoped>
 
     .page-container {
-        padding: var(--tainacan-container-padding) 0px;
+        padding: var(--tainacan-container-padding) 0px 0px 0px;
 
         &>.tainacan-form {
-            margin-bottom: 64px;
+            margin-bottom: 60px;
 
             .field:not(:last-child) {
                 margin-bottom: 0em;
@@ -2010,23 +2010,22 @@ export default {
             }
 
             @media screen and (max-width: 1440px) {
-                 &>.column.is-7 {
-                     padding-left: 0.75em;
-                 }
-                 &>.column.is-5 {
-                     padding-right: 0.75em;
-                 }
+                &>.column.is-7 {
+                    padding-left: 0.75em;
+                }
+                &>.column.is-5 {
+                    padding-right: 0.75em;
+                }
             }
 
             @media screen and (max-width: 769px) {
                 margin-left: 0;
                 margin-right: 0;
-                display: flex;
-                flex-direction: column-reverse;
 
                 &>.column.is-7 {
                     padding-left: 0;
                     padding-right: 0;
+                    padding-top: 1.75em;
                     max-width: 100%;
                     width: 100%;
 
@@ -2070,9 +2069,8 @@ export default {
                 &>.column.is-5 {
                     max-width: 100%;
                     width: 100%;
-                    padding-top: 2em;
-                    padding-left: 0.5em;
-                    padding-right: 0.5em;
+                    padding-left: 0;
+                    padding-right: 0;
                 }
             }
         }
