@@ -288,7 +288,7 @@ export default {
                     height: $header-height;
                 }
                 a {
-                    padding: 0.8em !important;
+                    padding: 0.85em !important;
                     text-align: center;
                 }
                 .menu-text {

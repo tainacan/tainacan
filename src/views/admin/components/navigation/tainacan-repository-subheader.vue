@@ -295,7 +295,7 @@ export default {
         }
 
         @media screen and (max-width: 769px) {
-            top: 102px;
+            top: 96px;
             padding-left: var(--tainacan-one-column) !important;
         }
     }

@@ -632,7 +632,7 @@
                     padding-left: 0;
                     padding-right: 0;
                     max-width: 100%;
-                    widows: 100%;
+                    width: 100%;
 
                     .sub-header {
                         padding-right: 0.5em;
@@ -673,7 +673,7 @@
                 }
                 &>.column.is-5 {
                     max-width: 100%;
-                    widows: 100%;
+                    width: 100%;
                     padding-left: 0.5em;
                     padding-right: 0.5em;
                 }

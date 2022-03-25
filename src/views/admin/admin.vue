@@ -41,7 +41,8 @@
                     :is-menu-compressed="isMenuCompressed"/>
             <div 
                     id="repository-container"
-                    class="column is-main-content">  
+                    class="column is-main-content"
+                    :style="$adminOptions.hidePrimaryMenu ? '--tainacan-sidebar-width: 0px' : ''">  
                 <router-view /> 
             </div>
         </template>
@@ -184,7 +185,7 @@
 
         @media screen and (max-width: 769px) {
             overflow-y: visible;
-            margin: 40px auto 0 auto;
+            margin: 38px auto 0 auto;
             
         } 
 

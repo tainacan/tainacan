@@ -364,7 +364,9 @@
                             v-if="!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail"
                             class="column is-5">
                 
-                        <div class="sticky-container">
+                        <div 
+                                :style="isMetadataNavigation && !isMobileScreen ? 'max-height: calc(100vh - 142px);' : ''"
+                                class="sticky-container">
 
                             <!-- Hook for extra Form options -->
                             <template v-if="hasBeginLeftForm">
@@ -2026,7 +2028,7 @@ export default {
                     padding-left: 0;
                     padding-right: 0;
                     max-width: 100%;
-                    widows: 100%;
+                    width: 100%;
 
                     .sub-header {
                         padding-right: 0.5em;
@@ -2067,7 +2069,8 @@ export default {
                 }
                 &>.column.is-5 {
                     max-width: 100%;
-                    widows: 100%;
+                    width: 100%;
+                    padding-top: 2em;
                     padding-left: 0.5em;
                     padding-right: 0.5em;
                 }
@@ -2100,7 +2103,7 @@ export default {
         }
 
         &.is-metadata-navigation-active {
-            width: calc(58.33333337% - (2 * var(--tainacan-one-column)) - 3.25em);
+            width: calc(58.33333337% - (2 * var(--tainacan-one-column)) - var(--tainacan-sidebar-width, 3.25em));
             position: fixed;
             z-index: 99999;
             bottom: 0;
@@ -2114,6 +2117,10 @@ export default {
             .metadata-name-search {
                 top: 0.25em;
                 max-width: 220px;
+            }
+
+            @media screen and (max-width: 1440px) {
+                width: calc(58.33333337% - var(--tainacan-sidebar-width, 3.25em) - var(--tainacan-one-column));
             }
         }
 
@@ -2182,6 +2189,7 @@ export default {
             padding: 10px 0 0px 0px !important;
 
             .b-radio {
+                width: auto;
                 margin-right: 24px;
                 margin-left: 0;
             }
