@@ -514,6 +514,16 @@
                                                 :alt="$i18n.get('label_thumbnail')"
                                                 :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                                     </figure>
+                                    <b-field
+                                            :addons="false" 
+                                            :label="$i18n.get('label_thumbnail_alt')">
+                                        <help-button 
+                                                :title="$i18n.get('label_thumbnail_alt')" 
+                                                :message="$i18n.get('info_thumbnail_alt')"/>
+                                        <b-input
+                                                id="tainacan-text-description"
+                                                type="textarea" />
+                                    </b-field>    
                                     <div class="thumbnail-buttons-row">
                                         <a
                                                 class="button is-rounded is-secondary"

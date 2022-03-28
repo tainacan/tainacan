@@ -176,7 +176,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_slug'                                     => __( 'Slug', 'tainacan' ),
 	'label_image'                                    => __( 'Image', 'tainacan' ),
 	'label_thumbnail'                                => __( 'Thumbnail', 'tainacan' ),
-	'label_thumbnail_alt'                            => __( 'Thumbnail alternative text', 'tainacan' ),
+	'label_thumbnail_alt'                            => __( 'Alternative text', 'tainacan' ),
 	'label_empty_thumbnail'                          => __( 'Empty thumbnail', 'tainacan' ),
 	'label_empty_term_image'                         => __( 'Empty term image', 'tainacan' ),
 	'label_parent_collection'                        => __( 'Parent collection', 'tainacan' ),
@@ -304,7 +304,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_select_all_items_page'                    => __( 'Select all items on page', 'tainacan' ),
 	'label_select_all_taxonomies_page'               => __( 'Select all taxonomies on page', 'tainacan' ),
 	'label_select_all_processes_page'                => __( 'Select all processes on page', 'tainacan' ),
-	'label_add_or_update_attachments'                         => __( 'Add or update attachments', 'tainacan' ),
+	'label_add_or_update_attachments'                => __( 'Add or update attachments', 'tainacan' ),
 	'label_blank_collection'                         => __( 'Blank collection', 'tainacan' ),
 	/* translators: the metadata scheme https://dublincore.org/ */
 	'label_dublin_core'                              => __( 'Dublin Core', 'tainacan' ),
