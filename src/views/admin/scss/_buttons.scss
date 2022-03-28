@@ -27,11 +27,13 @@ button.link-style:active {
     margin-bottom: 0px !important;
     height: inherit !important;
     box-shadow: none !important;
-    display: inline-flex !important;
     cursor: pointer;
     background-color: var(--tainacan-white);
     text-shadow: none !important;
 
+    &:not(.hidden) {
+        display: inline-flex !important;
+    }
     &.is-secondary, &.is-secondary:hover, &.is-secondary:focus {
         background: var(--tainacan-secondary) !important;
         color: var(--tainacan-white) !important;
