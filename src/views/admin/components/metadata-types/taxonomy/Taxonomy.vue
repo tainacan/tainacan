@@ -4,7 +4,7 @@
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
                 :disabled="disabled"
                 :is="getComponent"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 v-model="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNewFromOptions"
