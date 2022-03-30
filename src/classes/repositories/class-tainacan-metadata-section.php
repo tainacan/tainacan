@@ -48,6 +48,13 @@ class Metadata_Section extends Repository {
 				'type'        => 'string',
 				'description' => __( 'A unique and sanitized string representation of the metadata sction', 'tainacan' ),
 			],
+			'status'                     => [
+				'map'         => 'post_status',
+				'title'       => __( 'Status', 'tainacan' ),
+				'type'        => 'string',
+				'default'     => 'public',
+				'description' => __( 'Status', 'tainacan' )
+			],
 			'description'           => [
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
@@ -60,6 +67,15 @@ class Metadata_Section extends Repository {
 				'title'       => __( 'Collection', 'tainacan' ),
 				'type'        => ['integer', 'string'],
 				'description' => __( 'The collection ID', 'tainacan' ),
+			],
+			'metadatum_list'         => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadatum list', 'tainacan' ),
+				'type'        => 'array',
+				'items' => [
+					'type' => 'integer'
+				],
+				'description' => __( 'The metadatum ID list', 'tainacan' ),
 			]
 		] );
 	}
@@ -276,6 +292,39 @@ class Metadata_Section extends Repository {
 	 */
 	public function update( $object, $new_values = null ) {
 		return $this->insert( $object );
+	}
+
+	public function add_metadatum($metadata_section_id, $metadatum_list) {
+		$metadata_section = $this->fetch($metadata_section_id);
+		$list = $metadata_section->get_metadatum_list();
+		$metadatum_list = array_merge($list, $metadatum_list);
+		$metadata_section->set_metadatum_list($metadatum_list);
+		if($metadata_section->validate()) {
+			$metadata_section = $this->update($metadata_section);
+			return $metadata_section;
+		}
+		return false;
+	}
+
+	public function delete_metadatum($metadata_section_id, $metadatum_list) {
+		$metadata_section = $this->fetch($metadata_section_id);
+		$list = $metadata_section->get_metadatum_list();
+		$list = array_diff($list, $metadatum_list);
+		$metadata_section->set_metadatum_list($list);
+		if($metadata_section->validate()) {
+			$metadata_section = $this->update($metadata_section);
+			return $metadata_section;
+		}
+		return false;
+	}
+
+	public function get_metadatum_list($metadata_section_id) {
+		$metadata_section = $this->fetch($metadata_section_id);
+		$list = $metadata_section->get_metadatum_list();
+		$args = array('post__in' => $list);
+		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
+		$metadatum_list = $metadata_repository->fetch($args, 'OBJECT');
+		return $metadatum_list;
 	}
 
 	/**
