@@ -158,46 +158,6 @@ a:hover {
     color: var(--tainacan-gray3);
 }
 
-.column-large-width {
-    .tainacan-compound-group {
-        display: inline-block;
-        font-size: 1.125em;
-        margin-top: -0.25em;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        max-width: 100%;
-
-        & * {
-            display: inline-block;
-        }
-        .label {
-            font-size: 1em;
-            color: var(--tainacan-info-color);
-            &:not(:first-child)::before {
-                content: ', ';
-                font-size: 1em;
-                font-weight: normal;
-                color: var(--tainacan-info-color);
-                display: inline-block;
-                margin-right: 0.35em;
-                margin-left: -0.15em;
-            }
-            &::after {
-                content: ': ';
-                font-size: 1em;
-                color: var(--tainacan-info-color);
-                display: inline-block;
-                margin-right: 0.15em;
-            }
-        }
-        p {
-            font-size: 1em !important;
-            line-height: 1.25em !important;
-        }
-    }
-}
-
 // Inside one of the view modes
 .metadata-value {
     .tainacan-compound-group {
