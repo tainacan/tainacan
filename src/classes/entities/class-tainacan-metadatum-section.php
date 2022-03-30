@@ -10,20 +10,13 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Metadatum_Section extends Entity {
 	// Collection getter and setter declared here
 	use \Tainacan\Traits\Entity_Collection_Relation;
-	
-	static $post_type = 'tainacan-metadatum-section';
+
+	static $post_type = 'tainacan-metasection';
 	protected
 		$name,
 		$slug,
-		$order,
-		$description;
-	/**
-	 * {@inheritDoc}
-	 * @see \Tainacan\Entities\Entity::capability_type
-	 * @var string
-	 */
-	protected static $capability_type = ['tainacan-metadatum-section'];
-
+		$description,
+		$metadatum_list;
 
 	/**
 	 * {@inheritDoc}
@@ -37,7 +30,7 @@ class Metadatum_Section extends Entity {
 	}
 
 	/**
-	 * Return the metadatum name
+	 * Return the metadatum section name
 	 *
 	 * @return string
 	 */
@@ -46,7 +39,7 @@ class Metadatum_Section extends Entity {
 	}
 	
 	/**
-	 * Get metadatum slug
+	 * Get metadatum section slug
 	 *
 	 * @return string
 	 */
@@ -55,7 +48,7 @@ class Metadatum_Section extends Entity {
 	}
 
 	/**
-	 * Return the metadatum description
+	 * Return the metadatum section description
 	 *
 	 * @return string
 	 */
@@ -64,7 +57,16 @@ class Metadatum_Section extends Entity {
 	}
 
 	/**
-	 * Set the metadatum name
+	 * Return the metadatum_list of section
+	 *
+	 * @return [int]
+	 */
+	function get_metadatum_list() {
+		return $this->get_mapped_property('metadatum_list');
+	}
+
+	/**
+	 * Set the metadatum section name
 	 *
 	 * @param [string] $value
 	 * @return void
@@ -90,13 +92,24 @@ class Metadatum_Section extends Entity {
 	}
 
 	/**
-	 * Set metadatum description
+	 * Set metadatum section description
 	 *
 	 * @param [string] $value The text description
 	 * @return void
 	 */
 	function set_description($value) {
 		$this->set_mapped_property('description', $value);
+	}
+
+
+	/**
+	 * Set metadatum list of the section
+	 *
+	 * @param [string|int] $value The array of list metadatum
+	 * @return void
+	 */
+	function set_metadatum_list($value) {
+		$this->set_mapped_property('metadatum_list', array_unique($value));
 	}
 
 	/**
@@ -108,7 +121,22 @@ class Metadatum_Section extends Entity {
 	 * @throws \Exception
 	 */
 	public function validate() {
-		$this->add_error($this->get_id(), __("Error", 'tainacan'));
-		return false;
+		$no_errors = true;
+		$metadatum_list = $this->get_metadatum_list();
+		$name = $this->get_name();
+
+		if ( !isset($name) ) {
+			$this->add_error($this->get_id(), __("name is required", 'tainacan'));
+			$no_errors = false;
+		}
+		if( !empty($metadatum_list) ) {
+			foreach($metadatum_list as $metadatum_id) {
+				if(get_post_type($metadatum_id) != \Tainacan\Entities\Metadatum::$post_type ) {
+					$this->add_error($this->get_id(), __("is not a valid metadata", 'tainacan'));
+					$no_errors = false;
+				}
+			}
+		}
+		return $no_errors;
 	}
 }
