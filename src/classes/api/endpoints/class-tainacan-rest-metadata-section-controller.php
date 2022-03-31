@@ -290,22 +290,6 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 			$collection = new Entities\Collection( $collection_id );
 
 			$result = $this->metadatum_section_repository->fetch_by_collection( $collection, $args );
-		} else {
-			$args = [
-				'meta_query' => [
-					[
-						'key'     => 'collection_id',
-						'value'   => 'default',
-						'compare' => '='
-					]
-				]
-			];
-
-			if ($request['include_control_metadata_types'] === 'true') {
-				$args['include_control_metadata_types'] = true;
-			}
-
-			$result = $this->metadatum_section_repository->fetch( $args, 'OBJECT' );
 		}
 
 		$prepared_item = [];

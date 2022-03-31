@@ -124,6 +124,12 @@ class Metadatum_Section extends Entity {
 		$no_errors = true;
 		$metadatum_list = $this->get_metadatum_list();
 		$name = $this->get_name();
+		$collection = $this->get_collection();
+
+		if( empty($collection) ) {
+			$this->add_error($this->get_id(), __("collection is required", 'tainacan'));
+			$no_errors = false;
+		}
 
 		if ( !isset($name) ) {
 			$this->add_error($this->get_id(), __("name is required", 'tainacan'));
@@ -136,6 +142,9 @@ class Metadatum_Section extends Entity {
 					$no_errors = false;
 				}
 			}
+		}
+		if($no_errors) {
+			$this->set_as_valid();
 		}
 		return $no_errors;
 	}

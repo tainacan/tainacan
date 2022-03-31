@@ -52,7 +52,7 @@ class Metadata_Section extends Repository {
 				'map'         => 'post_status',
 				'title'       => __( 'Status', 'tainacan' ),
 				'type'        => 'string',
-				'default'     => 'public',
+				'default'     => 'publish',
 				'description' => __( 'Status', 'tainacan' )
 			],
 			'description'           => [
@@ -233,8 +233,7 @@ class Metadata_Section extends Repository {
 
 				// Add public states.
 				$statuses = get_post_stati( array( 'public' => true ) );
-
-				$read_private_cap = $this->get_default_metadata_attribute() == $parent_id ? 'tnc_rep_read_private_metadata_section' : 'tnc_col_' . $parent_id . '_read_private_metadata_section';
+				$read_private_cap = 'tnc_col_' . $parent_id . '_read_private_metadata_section';
 				if ( current_user_can($read_private_cap) ) {
 					$statuses = array_merge( $statuses, get_post_stati( array( 'private' => true ) ) );
 				}
