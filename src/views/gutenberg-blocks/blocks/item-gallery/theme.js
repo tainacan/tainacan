@@ -129,6 +129,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             zoomTitle: __( 'Zoom', 'tainacan'),
             arrowPrevTitle: __( 'Previous slide', 'tainacan'),
             arrowNextTitle: __( 'Next slide', 'tainacan'),
+            errorMsg: __('The image cannot be loaded', 'tainacan'),
+            wheelToZoom: true,
             getClickedIndexFn: (clickedElement) => {
                 return items.findIndex(anItem => anItem.el.contains(clickedElement.target));
             },
@@ -154,7 +156,6 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
         
         /* Updates Swiper instance from Photoswipe */
         const swiperInstance = this.mainSwiper ? this.mainSwiper : this.thumbsSwiper;    
-
 
         // Parse URL and open gallery from it if contains #&pid=3&gid=1
         const hashData = this.photoswipeParseHash();
