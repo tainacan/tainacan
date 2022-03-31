@@ -514,6 +514,18 @@
                                                 :alt="$i18n.get('label_thumbnail')"
                                                 :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                                     </figure>
+                                    <b-field
+                                            :addons="false" 
+                                            :label="$i18n.get('label_thumbnail_alt')">
+                                        <help-button 
+                                                :title="$i18n.get('label_thumbnail_alt')" 
+                                                :message="$i18n.get('info_thumbnail_alt')"/>
+                                        <textarea
+                                                id="tainacan-text-description"
+                                                class="textarea"
+                                                rows="4"
+                                                v-model="form.thumbnail_alt" />
+                                    </b-field>    
                                     <div class="thumbnail-buttons-row">
                                         <a
                                                 class="button is-rounded is-secondary"
@@ -529,23 +541,6 @@
                                                     }"
                                                     class="icon">
                                                 <i class="tainacan-icon tainacan-icon-edit"/>
-                                            </span>
-                                        </a>
-                                        <a
-                                                v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
-                                                id="button-alt-text-thumbnail"
-                                                class="button is-rounded is-secondary"
-                                                :aria-label="$i18n.get('label_button_delete_thumb')"
-                                                @click="openThumbnailModalAltText">
-                                            <span
-                                                    v-tooltip="{
-                                                        content: $i18n.get('label_thumbnail_alt'),
-                                                        autoHide: true,
-                                                        placement: 'bottom',
-                                                        popperClass: ['tainacan-tooltip', 'tooltip']
-                                                    }"
-                                                    class="icon">
-                                                <i class="tainacan-icon tainacan-icon-text"/>
                                             </span>
                                         </a>
                                         <a
@@ -894,7 +889,6 @@ import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.v
 import { directive } from 'vue-awesome-swiper';
 import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
 import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
-import ItemThumbnailAltTextModal from '../modals/item-thumbnail-alt-text-modal.vue';
 
 export default {
     name: 'ItemEditionForm',
@@ -1550,27 +1544,6 @@ export default {
                     }
                 }
                 this.formErrorMessage = errors.error_message;
-            });
-        },
-        openThumbnailModalAltText() {
-            this.$buefy.modal.open({
-                parent: this,
-                component: ItemThumbnailAltTextModal,
-                canCancel: false,
-                width: 640,
-                scroll: 'keep',
-                trapFocus: true,
-                autoFocus: false,
-                ariaModal: true,
-                ariaRole: 'dialog',
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close'),
-                props: {
-                    altText: this.form.thumbnail_alt ? this.form.thumbnail_alt : ''
-                },
-                events: {
-                    onUpdateThumbnailAlt: (altText) => this.form.thumbnail_alt = altText
-                }
             });
         },
         deleteThumbnail() {
@@ -2362,7 +2335,12 @@ export default {
     }
 
     .thumbnail-field {
+        display: flex;
 
+        .field {
+            margin-left: 12px;
+            width: 100%;
+        }
         .content {
             padding: 10px;
             font-size: 0.8em;
@@ -2399,7 +2377,9 @@ export default {
         padding-left: 0;
         padding-right: 0;
     }
-
+    .section-thumbnaill {
+        padding-right: 0;
+    }
     .related-items-list-heading {
         display: flex;
         align-items: center;
