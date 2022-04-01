@@ -1,6 +1,5 @@
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const terserPlugin = new TerserPlugin({
@@ -21,9 +20,6 @@ const terserPlugin = new TerserPlugin({
 module.exports = merge(common, {
     mode: 'production',
     devtool: '',
-    plugins: [
-        new VueLoaderPlugin(),
-    ],
     optimization: {
         minimize: true,
         minimizer: [terserPlugin]

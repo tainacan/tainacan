@@ -1,5 +1,7 @@
 let path = require('path');
 const webpack = require('webpack');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader');
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
@@ -30,21 +32,9 @@ module.exports = {
     module: {
         rules: [
             {
-                enforce: "pre",
                 test: /\.vue$/,
                 exclude: /node_modules/,
-                loader: "eslint-loader",
-                options: {
-                    fix: false,
-                },
-            },
-            {
-                test: /\.vue$/,
-                exclude: /node_modules/,
-                loader: 'vue-loader',
-                options: {
-                    prettify: false
-                }
+                loader: 'vue-loader'
             },
             {
                 test: /\.js$/,
@@ -76,27 +66,42 @@ module.exports = {
                     {
                         loader: 'sass-loader',
                         options: {
-                            includePaths: [path.resolve(__dirname, './src/views/admin/scss/_variables.scss')]
+                            sassOptions: {
+                                includePaths: [path.resolve(__dirname, './src/views/admin/scss/_variables.scss')]
+                            }
                         }
                     },
                 ],
             }
         ]
     },
-    node: {
-        fs: 'empty',
-        net: 'empty',
-        tls: 'empty'
+    resolve: {
+        fallback: {
+            fs: false,
+            net: false,
+            tls: false
+        }
     },
     performance: {
         hints: false
     },
     plugins: [
+        new VueLoaderPlugin({
+            prettify: false
+        }),
         new webpack.ProvidePlugin({
             'PhotoSwipe': 'PhotoSwipe'
         }),
         new MomentLocalesPlugin({
             localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
+        }),
+        new ESLintPlugin({
+            extensions: ['vue'],
+            exclude: ['/node_modules/']
         })
-    ]
+    ],
+    stats: {
+        errorDetails: true,
+        children: true
+    }
 };

@@ -130,10 +130,10 @@
 <script>
 import axios from 'axios';
 import qs from 'qs';
-import 'swiper/swiper.min.css';
-import 'swiper/modules/a11y/a11y.min.css';
-import 'swiper/modules/autoplay/autoplay.min.css';
-import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/css';
+import 'swiper/css/a11y';
+import 'swiper/css/autoplay';
+import 'swiper/css/navigation';
 import Swiper, { Autoplay, Navigation, A11y } from 'swiper';
 
 export default {

@@ -11,10 +11,10 @@ import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import TainacanBlocksCompatColorPicker from '../../js/compatibility/tainacan-blocks-compat-colorpicker.js';
-import 'swiper/swiper.min.css';
-import 'swiper/modules/a11y/a11y.min.css';
-import 'swiper/modules/autoplay/autoplay.min.css';
-import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/css';
+import 'swiper/css/a11y';
+import 'swiper/css/autoplay';
+import 'swiper/css/navigation';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }){
     let {
