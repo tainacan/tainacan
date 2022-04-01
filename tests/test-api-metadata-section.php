@@ -360,7 +360,6 @@ class TAINACAN_REST_Metadata_Section_Controller extends TAINACAN_UnitApiTestCase
 		);
 		$response = $this->server->dispatch($request);
 		$response_data = $response->get_data();
-		// echo json_encode( $response_data );
 
 		$this->assertEquals(2, count($response_data));
 	}

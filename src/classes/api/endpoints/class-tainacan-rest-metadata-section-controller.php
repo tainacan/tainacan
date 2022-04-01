@@ -20,6 +20,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 	 */
 	public function init_objects() {
 		$this->metadatum_section_repository = Repositories\Metadata_Section::get_instance();
+		$this->metadatum_repository = Repositories\Metadata::get_instance();
 	}
 
 	/**
@@ -250,6 +251,15 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 				// $item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
+			if( !empty($item_arr['metadatum_list']) ) {
+				$metadatum_list = $item_arr['metadatum_list'];
+				$item_arr['metadatum_object_list'] = [];
+				foreach($metadatum_list as $metadatum_id) {
+					$meta = $this->metadatum_repository->fetch($metadatum_id, 'OBJECT');
+					$item_arr['metadatum_object_list'][] = $meta->_toArray();
+				}
+			}
+
 			/**
 			 * Use this filter to add additional post_meta to the api response
 			 * Use the $request object to get the context of the request and other variables
@@ -281,10 +291,6 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 
 			if ($request['include_disabled'] === 'true') {
 				$args['include_disabled'] = true;
-			}
-
-			if ($request['include_control_metadata_types'] === 'true') {
-				$args['include_control_metadata_types'] = true;
 			}
 
 			$collection = new Entities\Collection( $collection_id );
