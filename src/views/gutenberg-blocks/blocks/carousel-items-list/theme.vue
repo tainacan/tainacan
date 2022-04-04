@@ -1,6 +1,6 @@
 <template>
     <div 
-            :style="style"
+            :style="customStyle"
             :class="className + ' has-mounted'">
         <div v-if="showCollectionHeader">
             <div
@@ -186,7 +186,7 @@ export default {
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String,
-        style: String
+        customStyle: String
     },
     data() {
         return {

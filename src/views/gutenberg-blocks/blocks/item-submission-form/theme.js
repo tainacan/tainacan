@@ -50,7 +50,7 @@ export default (element) => {
     function renderItemSubmissionForm() {
 
         // Vue Dev Tools!
-        Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+        Vue.config.devtools = TAINACAN_ENV === 'development';
 
         // Gets the div with the content of the block
         let blockElement = element ? element : document.getElementById('tainacan-item-submission-form');

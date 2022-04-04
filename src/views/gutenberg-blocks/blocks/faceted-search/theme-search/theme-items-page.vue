@@ -371,6 +371,7 @@
                     :close-button-aria-label="$i18n.get('close')">
                 <filters-items-list
                         :is-loading-items="isLoadingItems"
+                        @updateIsLoadingItemsState="(state) => isLoadingItems = state"
                         :autofocus="filtersAsModal"
                         :tabindex="filtersAsModal ? -1 : 0"
                         :aria-modal="filtersAsModal"

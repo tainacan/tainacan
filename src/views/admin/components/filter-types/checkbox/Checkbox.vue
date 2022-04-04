@@ -43,6 +43,7 @@
                     :is-modal="false" 
                     :filter="filter"
                     :selected="selected"
+                    @input="(newSelected) => selected = newSelected"
                     :metadatum-id="metadatumId"
                     :collection-id="collectionId"
                     :metadatum_type="metadatumType"

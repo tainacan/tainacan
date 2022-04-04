@@ -381,7 +381,7 @@
                                                 v-if="item != undefined && item.id != undefined"
                                                 :item="item"
                                                 :is-editable="true"
-                                                :is-loading.sync="isLoadingAttachments"
+                                                :is-loading="isLoadingAttachments"
                                                 @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
                                                 @onDeleteAttachment="deleteAttachment($event)"/>
                                     </div>
@@ -965,6 +965,27 @@ export default {
         ItemMetadatumErrorsTooltip
     },
     mixins: [ formHooks ],
+    beforeRouteLeave ( to, from, next ) {
+        if (this.item.status == 'auto-draft') {
+            this.$buefy.modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_item_not_saved'),
+                    onConfirm: () => {
+                        next();
+                    },
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });
+        } else {
+            next()
+        }
+    },
     data(){
         return {
             swiper: {},
@@ -1221,27 +1242,6 @@ export default {
         window.removeEventListener('resize', this.handleWindowResize);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
-    },
-    beforeRouteLeave ( to, from, next ) {
-        if (this.item.status == 'auto-draft') {
-            this.$buefy.modal.open({
-                parent: this,
-                component: CustomDialog,
-                props: {
-                    icon: 'alert',
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_item_not_saved'),
-                    onConfirm: () => {
-                        next();
-                    },
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });
-        } else {
-            next()
-        }
     },
     methods: {
         ...mapActions('item', [

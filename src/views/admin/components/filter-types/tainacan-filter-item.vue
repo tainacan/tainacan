@@ -47,7 +47,7 @@
                         :query="query"
                         :is-using-elastic-search="isUsingElasticSearch"
                         :is-repository-level="isRepositoryLevel"
-                        :is-loading-items.sync="isLoadingItems"
+                        :is-loading-items="isLoadingItems"
                         :current-collection-id="$eventBusSearch.collectionId"
                         @input="onInput"
                         @updateParentCollapse="onFilterUpdateParentCollapse" 
@@ -95,14 +95,14 @@
             expandAll: true,
             isLoadingItems: true,
             filtersAsModal: Boolean,
-            isMobileScreen: false,
-            focusedElement: false
+            isMobileScreen: false
         },
         data() {
             return {
                 isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
                 displayFilter: false,
-                singleCollapseOpen: this.expandAll
+                singleCollapseOpen: this.expandAll,
+                focusedElement: false
             }
         },
         computed: {

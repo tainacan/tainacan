@@ -71,7 +71,7 @@
                                         class="b-checkbox checkbox">
                                     <input
                                             :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
-                                            v-model="selected"
+                                            @input="$emit('input', $event.target.value)"
                                             :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                             type="checkbox"> 
                                     <span class="check" /> 
@@ -83,7 +83,8 @@
                                 </label>
                                 <b-radio
                                         v-else
-                                        v-model="selected"
+                                        :value="selected"
+                                        @input="$emit('input', $event.target.value)"
                                         :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
                                     <span 
                                                 class="checkbox-label-text"
@@ -140,7 +141,7 @@
                             <label class="b-checkbox checkbox">
                                 <input 
                                         :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
-                                        v-model="selected"
+                                        @input="$emit('input', $event.target.value)"
                                         :value="option.value"
                                         type="checkbox"> 
                                 <span class="check" /> 
@@ -195,7 +196,7 @@
                                         :class="{ 'is-disabled': (Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length }">
                                     <input 
                                             :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
-                                            v-model="selected"
+                                            @input="$emit('input', $event.target.value)"
                                             :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                             type="checkbox"> 
                                     <span class="check" /> 
@@ -205,7 +206,8 @@
                                 </label>
                                 <b-radio
                                         v-else
-                                        v-model="selected"
+                                        :value="selected"
+                                        @input="$emit('input', $event.target.value)"
                                         :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
                                     {{ `${option.label}` }}
                                 </b-radio>
@@ -281,7 +283,7 @@
                                     attached
                                     closable
                                     class="is-small"
-                                    @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
+                                    @close="selected instanceof Array ? $emit('input', JSON.parse(JSON.stringify(selected)).splice(index, 1)) : $emit('input', '')">
                                  <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                             </b-tag>
                         </div>

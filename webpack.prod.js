@@ -4,8 +4,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 const terserPlugin = new TerserPlugin({
     parallel: true,
-    sourceMap: false,
-    cache: true,
     extractComments: false,
     terserOptions: {
         output: {
@@ -19,7 +17,7 @@ const terserPlugin = new TerserPlugin({
 
 module.exports = merge(common, {
     mode: 'production',
-    devtool: '',
+    devtool: undefined,
     optimization: {
         minimize: true,
         minimizer: [terserPlugin]

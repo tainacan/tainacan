@@ -1,6 +1,6 @@
 <template>
     <div 
-            :style="style"
+            :style="customStyle"
             :class="className + ' has-mounted'">
         <div v-if="showCollectionHeader">
             <div
@@ -130,7 +130,7 @@
             <button
                     :style="{ marginLeft: paged <= 1 ? 'auto' : '0' }"
                     class="next-button"
-                    v-if="paged < totalItems/maxItemsNumber && items.length < totalItems"
+                    v-if="paged < totalItems/localMaxItemsNumber && items.length < totalItems"
                     @click="paged++; fetchItems()"
                     :label="$root.__('Next page', 'tainacan')">
                 <span class="icon">
@@ -160,7 +160,7 @@
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
                 <li
                         :key="item"
-                        v-for="item in Number(maxItemsNumber)"
+                        v-for="item in Number(localMaxItemsNumber)"
                         class="item-list-item skeleton"
                         :style="{ 
                             marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
@@ -307,7 +307,7 @@ export default {
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String,
-        style: String
+        customStyle: String
     },    
     data() {
         return {
@@ -332,6 +332,7 @@ export default {
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
             
         this.localOrder = this.order;
+        this.localMaxItemsNumber = this.maxItemsNumber;
   
         if (this.showCollectionHeader)
             this.fetchCollectionForHeader();
@@ -370,9 +371,9 @@ export default {
 
             } else if (this.loadStrategy == 'selection') {
     
-                this.maxItemsNumber = this.selectedItems.length;
+                this.localMaxItemsNumber = this.selectedItems.length;
                 
-                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.maxItemsNumber }) + '&fetch_only=title,url,thumbnail';
+                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&fetch_only=title,url,thumbnail';
 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {
@@ -395,8 +396,8 @@ export default {
                 let queryObject = qs.parse(query);
 
                 // Set up max items to be shown
-                if (this.maxItemsNumber != undefined && Number(this.maxItemsNumber) > 0)
-                    queryObject.perpage = this.maxItemsNumber;
+                if (this.localMaxItemsNumber != undefined && Number(this.localMaxItemsNumber) > 0)
+                    queryObject.perpage = this.localMaxItemsNumber;
                 else if (queryObject.perpage != undefined && queryObject.perpage > 0)
                     this.localMaxItemsNumber = queryObject.perpage;
                 else {

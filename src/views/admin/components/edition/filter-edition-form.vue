@@ -254,13 +254,13 @@ export default {
     },
     beforeDestroy() {
         if (this.closedByForm) {
-            this.editedFilter.saved = true;
+            this.$emit('onUpdateSavedState', true);
         } else {
             this.oldForm.saved = this.form.saved;
             if (JSON.stringify(this.form) != JSON.stringify(this.oldForm)) 
-                this.editedFilter.saved = false;
+                this.$emit('onUpdateSavedState', false);
             else    
-                this.editedFilter.saved = true;
+                this.$emit('onUpdateSavedState', true);
         }
     },
     methods: {

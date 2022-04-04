@@ -88,7 +88,7 @@
                                 :expand-all="!collapseAll"
                                 :is-repository-level="key == 'repository-filters'"
                                 :filters-as-modal="filtersAsModal"
-                                :is-mobile-screen="isMobileScreen" />
+                                :is-mobile-screen="isMobileScreen"/>
                     </template>
                     <!-- <p   
                             class="has-text-gray"
@@ -394,9 +394,8 @@
                  */
                 this.prepareFilters();
             });
-            if (this.isUsingElasticSearch) {
+            if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$on('isLoadingItems', this.updateIsLoadingItems);
-            }
         },
         beforeDestroy() {
             // Cancels previous collection name Request
@@ -496,7 +495,7 @@
                 }
             },
             updateIsLoadingItems(isLoadingItems) {
-                this.isLoadingItems = isLoadingItems 
+                this.$emit('updateIsLoadingItemsState', isLoadingItems); 
             }
         }
     }

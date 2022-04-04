@@ -6,7 +6,7 @@ import VueBlurHash from 'vue-blurhash';
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanTermsCarouselBlocks() {
         
@@ -66,7 +66,7 @@ export default (element) => {
                                 tainacanBaseUrl: this.tainacanBaseUrl,
                                 className: this.className,
                                 taxonomyId: this.taxonomyId,
-                                style: this.style
+                                customStyle: this.style
                             }
                         });
                     },
@@ -88,7 +88,7 @@ export default (element) => {
                         this.showTermThumbnail = this.$el.attributes['show-term-thumbnail'] != undefined ? this.$el.attributes['show-term-thumbnail'].value == 'true' : false;
                         this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
                         this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
-                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
+                        this.customStyle = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
                     },
                     methods: {
                         __(text, domain) {

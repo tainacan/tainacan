@@ -51,6 +51,7 @@
                     :filter="filter"
                     :taxonomy_id="taxonomyId"
                     :selected="selected"
+                    @input="(newSelected) => selected = newSelected"
                     :metadatum-id="metadatumId"
                     :taxonomy="taxonomy"
                     :collection-id="collectionId"

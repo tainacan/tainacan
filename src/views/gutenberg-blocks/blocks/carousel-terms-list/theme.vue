@@ -1,6 +1,6 @@
 <template>
     <div 
-            :style="style"
+            :style="customStyle"
             :class="className + ' has-mounted'">
 
         <div  
@@ -157,7 +157,7 @@ export default {
         tainacanBaseUrl: String,
         className: String,
         taxonomyId: String,
-        style: String
+        customStyle: String
     },
     data() {
         return {

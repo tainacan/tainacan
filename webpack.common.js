@@ -86,6 +86,9 @@ module.exports = {
         hints: false
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'TAINACAN_ENV': JSON.stringify(process.env.NODE_ENV)
+        }),
         new VueLoaderPlugin({
             prettify: false
         }),

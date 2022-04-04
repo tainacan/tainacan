@@ -95,7 +95,7 @@
                         v-if="$userCaps.hasCapability('tnc_rep_edit_users') && !$adminOptions.hidePrimaryMenuCapabilitiesButton">
                     <router-link
                             tag="a"
-                            :to="this.$routerHelper.getCapabilitiesPath()"
+                            :to="$routerHelper.getCapabilitiesPath()"
                             :class="activeRoute == 'CapabilitiesPage' ? 'is-active':''">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-capability"/>

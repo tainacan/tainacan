@@ -69,6 +69,9 @@ import FilterTaxonomyTaginput from '../components/filter-types/taxonomy/Taginput
 // Term edition form must be imported here so that it is not necessary on item-submission bundle
 import TermEditionForm from '../components/edition/term-edition-form.vue';
 
+// Term Recursive item component needs to be imported here, otherwise would cause ciruclar dependency
+import RecursiveTermItem from '../components/lists/recursive-term-item.vue';
+
 import FormFilterNumeric from '../components/filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../components/filter-types/numeric-interval/FormNumericInterval.vue';
 import FormFilterNumericListInterval from '../components/filter-types/numeric-list-interval/FormNumericListInterval.vue';
@@ -103,7 +106,7 @@ import {
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanAdminPage() {
 
@@ -244,6 +247,7 @@ export default (element) => {
             Vue.component('tainacan-filter-item', TainacanFiltersList);
 
             /* Others */
+            Vue.component('recursive-term-item', RecursiveTermItem);
             Vue.component('help-button', HelpButton);
             Vue.component('draggable', draggable);
             Vue.component('tainacan-title', TainacanTitle);

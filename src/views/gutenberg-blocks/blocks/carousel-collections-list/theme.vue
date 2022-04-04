@@ -1,6 +1,6 @@
 <template>
     <div 
-            :style="style"
+            :style="customStyle"
             :class="className + ' has-mounted'">
         <div  
                 :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
@@ -177,7 +177,7 @@ export default {
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String,
-        style: String
+        customStyle: String
     },
     data() {
         return {

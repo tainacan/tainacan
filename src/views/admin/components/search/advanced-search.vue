@@ -328,8 +328,8 @@
 
                     for (let meta in metaquery) {
                         if (
-                            this.metaqueryOperatorsRegular.hasOwnProperty(metaquery[meta]['compare']) ||
-                            this.metaqueryOperatorsForInterval.hasOwnProperty(metaquery[meta]['compare'])
+                            Object.prototype.hasOwnProperty.call(this.metaqueryOperatorsRegular, metaquery[meta]['compare']) ||
+                            Object.prototype.hasOwnProperty.call(this.metaqueryOperatorsForInterval, metaquery[meta]['compare'])
                         )
                             this.$set(this.advancedSearchQuery.metaquery, `${meta}`, metaquery[meta]);
                     }
@@ -349,7 +349,7 @@
                     let taxquery = this.$route.query.taxquery;
 
                     for (let tax in taxquery) {
-                        if ( this.taxqueryOperators.hasOwnProperty(taxquery[tax]['operator']) )
+                        if ( Object.prototype.hasOwnProperty.call(this.taxqueryOperators, taxquery[tax]['operator']) )
                             this.$set(this.advancedSearchQuery.taxquery, `${tax}`, taxquery[tax]);
                     }
 
@@ -520,9 +520,9 @@
                     this.advancedSearchQuery.relation = 'AND';
                 } 
 
-                if (Object.keys(this.advancedSearchQuery.taxquery).length > 1)
+                if ( Object.keys(this.advancedSearchQuery.taxquery).length > 1 )
                     this.$set(this.advancedSearchQuery.taxquery, 'relation', 'AND');
-                else if (this.advancedSearchQuery.taxquery.hasOwnProperty('relation'))
+                else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.taxquery, 'relation') )
                     delete this.advancedSearchQuery.taxquery.relation;
 
                 // Convert date values to a format (ISO_8601) that will match in database
@@ -538,12 +538,12 @@
                     }
                 }
 
-                if (Object.keys(this.advancedSearchQuery.metaquery).length > 1)
+                if ( Object.keys(this.advancedSearchQuery.metaquery).length > 1 )
                     this.$set(this.advancedSearchQuery.metaquery, 'relation', 'AND');
-                else if (this.advancedSearchQuery.metaquery.hasOwnProperty('relation'))
+                else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.metaquery, 'relation') )
                     delete this.advancedSearchQuery.metaquery.relation;
                 
-                if (this.advancedSearchQuery.hasOwnProperty('relation') && Object.keys(this.advancedSearchQuery).length <= 3)
+                if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery, 'relation') && Object.keys(this.advancedSearchQuery).length <= 3)
                     delete this.advancedSearchQuery.relation;
                 
                 if (Object.keys(this.advancedSearchQuery.metaquery).length > 0) {

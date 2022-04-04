@@ -31,7 +31,7 @@ import ptBrLocaleConfig from 'apexcharts/dist/locales/pt-br.json';
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanReportsPage() {
         

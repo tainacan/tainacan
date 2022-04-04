@@ -11,7 +11,7 @@ import RolesPage from '../roles.vue';
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanRolePage() {
 

@@ -175,12 +175,12 @@
             }
         },
         created() {
-            eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', () => this.$nextTick(() => this.isRemovingGroup = false));
+            eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', () => { this.$nextTick(() => this.isRemovingGroup = false) });
             eventBusItemMetadata.$on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
             eventBusItemMetadata.$on('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         beforeDestroy() {
-            eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', () => this.$nextTick(() => this.isRemovingGroup = false));
+            eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', () => { this.$nextTick(() => this.isRemovingGroup = false) });
             eventBusItemMetadata.$off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
             eventBusItemMetadata.$off('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
