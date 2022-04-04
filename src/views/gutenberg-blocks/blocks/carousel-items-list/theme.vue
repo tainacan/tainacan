@@ -269,8 +269,8 @@ export default {
             } else {
 
                 this.items = [];
-
-                let endpoint = '/collection' + this.searchURL.split('#')[1].split('/collections')[1];
+                
+                let endpoint = this.searchURL != undefined ? ('/collection' + this.searchURL.split('#')[1].split('/collections')[1]) : '';
                 let query = endpoint.split('?')[1];
                 let queryObject = qs.parse(query);
 
