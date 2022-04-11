@@ -295,12 +295,14 @@ class Metadata_Section extends Repository {
 
 	public function add_metadatum($metadata_section_id, $metadatum_list) {
 		$metadata_section = $this->fetch($metadata_section_id);
-		$list = $metadata_section->get_metadatum_list();
-		$metadatum_list = array_merge($list, $metadatum_list);
-		$metadata_section->set_metadatum_list($metadatum_list);
-		if($metadata_section->validate()) {
-			$metadata_section = $this->update($metadata_section);
-			return $metadata_section;
+		if ($metadata_section) {
+			$list = $metadata_section->get_metadatum_list();
+			$metadatum_list = array_merge($list, $metadatum_list);
+			$metadata_section->set_metadatum_list($metadatum_list);
+			if($metadata_section->validate()) {
+				$metadata_section = $this->update($metadata_section);
+				return $metadata_section;
+			}
 		}
 		return false;
 	}

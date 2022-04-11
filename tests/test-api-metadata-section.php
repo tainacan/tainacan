@@ -89,6 +89,7 @@ class TAINACAN_REST_Metadata_Section_Controller extends TAINACAN_UnitApiTestCase
 				'name' => 'name-1',
 				'description' => 'description-1',
 				'collection' => $collection,
+				'status'      => 'publish',
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			),
 			true
@@ -100,6 +101,7 @@ class TAINACAN_REST_Metadata_Section_Controller extends TAINACAN_UnitApiTestCase
 				'name' => 'name-2',
 				'description' => 'description-2',
 				'collection' => $collection,
+				'status'      => 'publish',
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			),
 			true
@@ -111,6 +113,7 @@ class TAINACAN_REST_Metadata_Section_Controller extends TAINACAN_UnitApiTestCase
 				'name' => 'name-3',
 				'description' => 'description-3',
 				'collection' => $collection,
+				'status'      => 'publish',
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 			),
 			true
@@ -122,6 +125,7 @@ class TAINACAN_REST_Metadata_Section_Controller extends TAINACAN_UnitApiTestCase
 				'name'        => 'Section',
 				'description' => 'Section Description',
 				'collection' => $collection,
+				'status'      => 'publish',
 				'metadatum_list' => [$metadatum_1->get_id(), $metadatum_1->get_id()]
 			),
 			true
@@ -147,6 +151,50 @@ class TAINACAN_REST_Metadata_Section_Controller extends TAINACAN_UnitApiTestCase
 		$this->assertContains($metadatum_1->get_id(), $metadatum_section_added['metadatum_list']);
 		$this->assertContains($metadatum_2->get_id(), $metadatum_section_added['metadatum_list']);
 		$this->assertContains($metadatum_3->get_id(), $metadatum_section_added['metadatum_list']);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name'        => 'Data',
+				'description' => 'Descreve o dado do campo data.',
+				'collection'  => $collection,
+				'status'      => 'publish',
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'multiple'    => 'yes'
+			),
+			true
+		);
+
+		$values = json_encode([
+			'name'        => 'Dia/Mês/Ano',
+			'description' => 'Continua descrevendo o dado do campo.',
+			'metadatum_section_id' => $metadatum_section->get_id()
+		]);
+
+		$request = new \WP_REST_Request(
+			'PATCH',
+			$this->namespace . '/collection/' . $collection->get_id() . '/metadata/' . $metadatum->get_id()
+		);
+
+		$request->set_body($values);
+		$response = $this->server->dispatch($request);
+		$data = $response->get_data();
+
+		$this->assertEquals($metadatum->get_id(), $data['id']);
+		$this->assertEquals('Dia/Mês/Ano', $data['name']);
+		$this->assertEquals($metadatum_section->get_id(), $data['metadatum_section_id']);
+
+		$request = new \WP_REST_Request(
+			'GET',
+			$this->namespace . '/collection/' . $collection->get_id() . '/metadata-sections/' . $metadatum_section->get_id() . '/metadatum'
+		);
+		$response = $this->server->dispatch($request);
+		$metadata_list = $response->get_data();
+		$this->assertEquals(4, count($metadata_list));
+		$this->assertNotNull(array_search($metadatum_1->get_id(), array_column($metadata_list, "id")));
+		$this->assertNotNull(array_search($metadatum_2->get_id(), array_column($metadata_list, "id")));
+		$this->assertNotNull(array_search($metadatum_3->get_id(), array_column($metadata_list, "id")));
+		$this->assertNotNull(array_search($metadatum->get_id(), array_column($metadata_list, "id")));
 	}
 
 	public function test_delete_metadata_metadatum_section() {

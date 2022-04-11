@@ -225,6 +225,12 @@ class Metadata extends Repository {
 				// yes or no. It cant be multiple if its collection_key
 				'default'     => 'no'
 			],
+			'metadatum_section_id' => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadatum section', 'tainacan' ),
+				'type'        => ['integer', 'string', 'array'],
+				'description' => __( 'The metadatum section ID', 'tainacan' ),
+			],
 		] );
 	}
 
@@ -651,6 +657,7 @@ class Metadata extends Repository {
 
 		$this->update_taxonomy_metadatum( $new_metadatum );
 		$this->update_metadata_type_index( $new_metadatum );
+		$this->update_metadatum_section( $new_metadatum );
 
 		return $new_metadatum;
 	}
@@ -1585,6 +1592,7 @@ class Metadata extends Repository {
 	 */
 	public function delete( Entities\Entity $entity, $permanent = true ) {
 		$this->delete_taxonomy_metadatum($entity);
+		$this->update_metadatum_section($entity, true);
 		return parent::delete($entity, $permanent);
 	}
 
@@ -1713,6 +1721,16 @@ class Metadata extends Repository {
 			}
 		}
 		return false;
+	}
+
+
+	public function update_metadatum_section( Entities\Metadatum $metadatum, $remove = false ) {
+		$metadatum_section_repository = Metadata_Section::get_instance();
+		if (!$remove) {
+			$metadatum_section_repository->add_metadatum($metadatum->get_metadatum_section_id(), [$metadatum->get_id()]);
+		} else {
+			$metadatum_section_repository->delete_metadatum($metadatum->get_metadatum_section_id(), [$metadatum->get_id()]);
+		}
 	}
 
 }
