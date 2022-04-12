@@ -9,7 +9,7 @@
             ref="availableExportersModal">
         <div style="width: auto">
             <header class="tainacan-modal-title">
-                <h2>{{ this.$i18n.get('exporters') }}</h2>
+                <h2>{{ $i18n.get('exporters') }}</h2>
                 <hr>
             </header>
             

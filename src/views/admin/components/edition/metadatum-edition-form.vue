@@ -440,15 +440,13 @@
 
                 if ( (metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
                     let repository = this.form.repository_level;
-                    if (repository && repository === 'yes')
-                        this.isRepositoryLevel = true;
 
                     this.fillExtraFormData(this.form);
                     this.isUpdating = true;
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,
-                        isRepositoryLevel: this.isRepositoryLevel,
+                        isRepositoryLevel: this.isRepositoryLevel || (repository && repository === 'yes'),
                         index: this.index,
                         options: this.form,
                         includeOptionsAsHtml: true
@@ -485,12 +483,14 @@
                             formObj[key] = value;
                     }
 
+                    let repository = formObj['repository_level'];
+
                     this.fillExtraFormData(formObj);
                     this.isUpdating = true;
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: metadatum.id,
-                        isRepositoryLevel: this.isRepositoryLevel,
+                        isRepositoryLevel: this.isRepositoryLevel || (repository && repository === 'yes'),
                         index: this.index,
                         options: formObj,
                         includeOptionsAsHtml: true

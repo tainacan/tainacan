@@ -7,7 +7,7 @@
                }">
             <tainacan-title
                     v-if="!isItemLevel"
-                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('activities') }]"/>
+                    :bread-crumb-items="[{ path: '', label: $i18n.get('activities') }]"/>
             <div :class="{ 'above-subheader': isRepositoryLevel }">
 
                 <div 

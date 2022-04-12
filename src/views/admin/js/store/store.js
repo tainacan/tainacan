@@ -17,7 +17,7 @@ import capability from './modules/capability';
 import report from './modules/report';
 
 // Vue Dev Tools!
-Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+Vue.config.devtools = TAINACAN_ENV === 'development';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -28,7 +28,7 @@ export default new Vuex.Store({
         on the state tree for detecting inappropriate mutations, and it can be quite expensive when you make
         large amount of mutations to the state. Make sure to turn it off in production to avoid the performance cost.
     */
-    strict: process.env.NODE_ENV !== 'production',
+    strict: TAINACAN_ENV !== 'production',
     modules: {
         item,
         collection,

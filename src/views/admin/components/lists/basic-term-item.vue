@@ -58,7 +58,7 @@ import { mapActions } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
-    name: 'RecursiveTermItem',
+    name: 'BasicTermItem',
     props: {
         term: Object,
         index: Number,
@@ -88,8 +88,7 @@ export default {
             'deleteTerm'
         ]),
         editTerm() {        
-            this.term.opened = !this.term.opened;
-            
+            this.$emit('onUpdateTermOpenedState', !this.term.opened);
             this.$eventBusTermsList.onEditTerm(this.term);
         },
         tryToRemoveTerm() {
@@ -138,11 +137,11 @@ export default {
         },
         eventOnTermEditionSaved() {
             this.isEditingTerm = false;
-            this.term.opened = false;
+            this.$emit('onUpdateTermOpenedState', false);
         },
         eventOnTermEditionCanceled() {
             this.isEditingTerm = false;
-            this.term.opened = false;
+            this.$emit('onUpdateTermOpenedState', false);
         }
     }
 }

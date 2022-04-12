@@ -63,7 +63,7 @@
                                         :key="key">
                                     <label class="b-checkbox checkbox">
                                         <input                                     
-                                                v-model="selected"
+                                                @input="$emit('input', $event.target.value)"
                                                 :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                                 type="checkbox"> 
                                         <span class="check" /> 
@@ -123,7 +123,7 @@
                                         :key="key">
                                     <label class="b-checkbox checkbox">
                                         <input 
-                                                v-model="selected"
+                                                @input="$emit('input', $event.target.value)"
                                                 :value="option.value"
                                                 type="checkbox"> 
                                         <span class="check" /> 
@@ -187,7 +187,7 @@
                                         :key="index">
                                     <label class="b-checkbox checkbox">
                                         <input 
-                                                v-model="selected"
+                                                @input="$emit('input', $event.target.value)"
                                                 :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
                                                 type="checkbox"> 
                                         <span class="check" /> 
@@ -251,7 +251,7 @@
                     
                 </b-tab-item>
 
-                <b-tab-item :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
+                <b-tab-item :label="( isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values') ) + ( Array.isArray(selected) && selected.length ? (' (' + selected.length + ')') : '' )">
                     <div class="modal-card-body tainacan-tags-container">
                         <b-field
                                 v-if="(selected instanceof Array ? selected.length > 0 : selected) && !isSelectedTermsLoading"
@@ -266,7 +266,7 @@
                                         attached
                                         closable
                                         :class="isModal ? '' : 'is-small'"
-                                        @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
+                                        @close="$emit('input', term)">
                                        <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                                 </b-tag>
                             </div>

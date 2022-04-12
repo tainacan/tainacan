@@ -325,10 +325,10 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import axios from '../../../../../admin/js/axios';
-import 'swiper/swiper.min.css';
-import 'swiper/modules/mousewheel/mousewheel.min.css';
-import 'swiper/modules/navigation/navigation.min.css';
-import 'swiper/modules/virtual/virtual.min.css';
+import 'swiper/css';
+import 'swiper/css/mousewheel';
+import 'swiper/css/navigation';
+import 'swiper/css/virtual';
 import Swiper, {Navigation, Virtual, Mousewheel } from 'swiper';
 import CircularCounter from './circular-counter.vue';
 import SlidesHelpModal from './slides-help-modal.vue'

@@ -43,6 +43,7 @@
                     :is-modal="false" 
                     :filter="filter"
                     :selected="selected"
+                    @input="(newSelected) => selected = newSelected"
                     :metadatum-id="metadatumId"
                     :collection-id="collectionId"
                     :metadatum_type="metadatumType"
@@ -185,6 +186,13 @@
                     events: {
                         appliedCheckBoxModal: () => {
                             this.loadOptions();
+                        },
+                        input: (newSelected) => {
+                            const existingValue = this.selected.indexOf(newSelected); 
+                            if (existingValue >= 0)
+                                this.selected.splice(existingValue, 1);
+                            else
+                                this.selected.push(newSelected);
                         } 
                     },
                     trapFocus: true,

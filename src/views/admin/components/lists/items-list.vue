@@ -1557,8 +1557,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_remove_item_from_trash'),
                     onConfirm: () => {
-                        this.isLoading = true;
-                        this.$emit('updateIsLoading', this.isLoading);
+                        this.$emit('updateIsLoading', true);
 
                         this.createEditGroup({
                             collectionId: this.collectionId,
@@ -1589,8 +1588,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                     onConfirm: () => {
-                        this.isLoading = true;
-                        this.$emit('updateIsLoading', this.isLoading);
+                        this.$emit('updateIsLoading', true);
 
                         this.deleteItem({
                             itemId: itemId,
@@ -1615,8 +1613,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_selected_items_remove_from_trash'),
                     onConfirm: () => {
-                        this.isLoading = true;
-                        this.$emit('updateIsLoading', this.isLoading);
+                        this.$emit('updateIsLoading', true);
 
                         this.createEditGroup({
                             collectionId: this.collectionId,
@@ -1648,8 +1645,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
                     onConfirm: () => {
-                        this.isLoading = true;
-                        this.$emit('updateIsLoading', this.isLoading);
+                        this.$emit('updateIsLoading', true);
 
                         this.createEditGroup({
                             collectionId: this.collectionId,

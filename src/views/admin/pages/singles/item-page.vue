@@ -253,7 +253,7 @@
                             <attachments-list
                                     v-if="item != undefined && item.id != undefined"
                                     :item="item"
-                                    :is-loading.sync="isLoadingAttachments"
+                                    :is-loading="isLoadingAttachments"
                                     @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading" />    
                         </b-tab-item>
 

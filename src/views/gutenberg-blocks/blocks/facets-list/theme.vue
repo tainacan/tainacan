@@ -1,6 +1,6 @@
 <template>
     <div
-            :style="style"
+            :style="customStyle"
             :class="className + ' has-mounted'">
         <div
                 v-if="showSearchBar"
@@ -194,7 +194,7 @@ export default {
         tainacanBaseUrl: String,
         tainacanSiteUrl: String,
         className: String,
-        style: String
+        customStyle: String
     },
     data() {
         return {
@@ -211,7 +211,8 @@ export default {
             tainacanAxios: undefined,
             offset: undefined,
             totalFacets: 0,
-            lastTerm: undefined
+            lastTerm: undefined,
+            localParentTermId: ''
         }
     },
     computed: {
@@ -229,6 +230,7 @@ export default {
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
 
         this.offset = 0;
+        this.localParentTermId = this.parentTermId;
         this.fetchFacets();
 
         this.applySearchString = debounce(this.applySearchString, 750);
@@ -301,11 +303,11 @@ export default {
                 queryObject.last_term = this.lastTerm;
 
             // Set up parentTerm for taxonomies
-            if (this.parentTermId !== undefined && this.parentTermId !== null && this.parentTermId !== '' && this.isMetadatumTypeTaxonomy)
-                queryObject.parent = this.parentTermId;
+            if (this.localParentTermId !== undefined && this.localParentTermId !== null && this.localParentTermId !== '' && this.isMetadatumTypeTaxonomy)
+                queryObject.parent = this.localParentTermId;
             else {
                 delete queryObject.parent;
-                this.parentTermId = null;
+                this.localParentTermId = null;
             }
 
             // Parameter fo tech entity object with image and url

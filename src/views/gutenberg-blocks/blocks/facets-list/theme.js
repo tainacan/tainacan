@@ -5,7 +5,7 @@ import FacetsListThemeUnit from './facet-unit.vue';
 export default (element) => {
     
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
     Vue.component('facets-list-theme-unit', FacetsListThemeUnit);
 
     function renderTainacanFacetsListBlock() {
@@ -75,7 +75,7 @@ export default (element) => {
                                 tainacanBaseUrl: this.tainacanBaseUrl,
                                 tainacanSiteUrl: this.tainacanSiteUrl,
                                 className: this.className,
-                                style: this.style
+                                customStyle: this.style
                             }
                         });
                     },

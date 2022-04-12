@@ -381,8 +381,8 @@
                                                 v-if="item != undefined && item.id != undefined"
                                                 :item="item"
                                                 :is-editable="true"
-                                                :is-loading.sync="isLoadingAttachments"
-                                                @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
+                                                :is-loading="isLoadingAttachments"
+                                                @isLoadingAttachments="(isLoadingState) => isLoadingAttachments = isLoadingState"
                                                 @onDeleteAttachment="deleteAttachment($event)"/>
                                     </div>
                                 </div>
@@ -947,9 +947,9 @@ import CustomDialog from '../other/custom-dialog.vue';
 import AttachmentsList from '../lists/attachments-list.vue';
 import { formHooks } from '../../js/mixins';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
-import 'swiper/swiper.min.css';
-import 'swiper/modules/mousewheel/mousewheel.min.css';
-import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/css';
+import 'swiper/css/mousewheel';
+import 'swiper/css/navigation';
 import Swiper, { Mousewheel, Navigation } from 'swiper';
 import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
 import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
@@ -965,6 +965,27 @@ export default {
         ItemMetadatumErrorsTooltip
     },
     mixins: [ formHooks ],
+    beforeRouteLeave ( to, from, next ) {
+        if (this.item.status == 'auto-draft') {
+            this.$buefy.modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_item_not_saved'),
+                    onConfirm: () => {
+                        next();
+                    },
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });
+        } else {
+            next()
+        }
+    },
     data(){
         return {
             swiper: {},
@@ -1221,27 +1242,6 @@ export default {
         window.removeEventListener('resize', this.handleWindowResize);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
-    },
-    beforeRouteLeave ( to, from, next ) {
-        if (this.item.status == 'auto-draft') {
-            this.$buefy.modal.open({
-                parent: this,
-                component: CustomDialog,
-                props: {
-                    icon: 'alert',
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_item_not_saved'),
-                    onConfirm: () => {
-                        next();
-                    },
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });
-        } else {
-            next()
-        }
     },
     methods: {
         ...mapActions('item', [

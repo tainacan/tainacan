@@ -232,7 +232,7 @@
         name: 'TermEditionForm',
         mixins: [ formHooks ],
         props: {
-            form: Object,
+            originalForm: Object,
             taxonomyId: '',
             isModal: false
         },
@@ -250,8 +250,12 @@
                 entityName: 'term',
                 isLoading: false,
                 parentTermSearchQuery: '',
-                parentTermSearchOffset: 0
+                parentTermSearchOffset: 0,
+                form: {}
             }
+        },
+        created() {
+            this.form = JSON.parse(JSON.stringify(this.originalForm));
         },
         mounted() {
 

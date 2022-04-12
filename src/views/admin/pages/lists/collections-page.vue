@@ -2,7 +2,7 @@
     <div class="repository-level-page page-container">
         <b-loading :active.sync="isLoading"/>
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: this.$i18n.get('collections') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]"/>
         <div class="sub-header">
             
             <!-- New Collection button -->

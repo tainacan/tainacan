@@ -10,7 +10,7 @@
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
                 v-if="!$adminOptions.hideItemsListPageTitle" 
-                :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('items') }]"/>
 
         <!-- SEARCH CONTROL ------------------------- -->
         <div
@@ -443,6 +443,7 @@
                 :close-button-aria-label="$i18n.get('close')">
             <filters-items-list
                     :is-loading-items="isLoadingItems"
+                    @updateIsLoadingItemsState="(state) => isLoadingItems = state"
                     autofocus="true"
                     tabindex="-1"
                     aria-modal
@@ -552,7 +553,7 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"
                         :is-repository-level="isRepositoryLevel"
-                        @updateIsLoading="newIsLoading => isLoadingItems = newIsLoading"/>
+                        @updateIsLoading="(newIsLoadingState) => isLoadingItems = newIsLoadingState"/>
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section

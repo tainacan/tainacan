@@ -75,9 +75,9 @@
 
 <script>
     import { mapGetters } from 'vuex';
-    import 'swiper/swiper.min.css';
-    import 'swiper/modules/mousewheel/mousewheel.min.css';
-    import 'swiper/modules/navigation/navigation.min.css';
+    import 'swiper/css';
+    import 'swiper/css/mousewheel';
+    import 'swiper/css/navigation';
     import Swiper, { Mousewheel, Navigation } from 'swiper';
 
     export default {

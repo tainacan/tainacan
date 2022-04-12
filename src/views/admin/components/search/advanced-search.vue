@@ -93,31 +93,41 @@
 
                 <!-- Inputs -->
                 <b-field class="column is-half">
-                    <b-input
-                            v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index] && getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) != 'date'"
-                            :type="(getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float') ? 'number' : 'text'"
-                            step="any"
-                            @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
-                            :placeholder="$i18n.get('label_string_to_search_for')"
-                            :aria-label="$i18n.get('label_string_to_search_for')"
-                    />
-                    <input
-                            v-else-if="searchCriterion.type == 'metaquery' && getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
-                            class="input"
-                            :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion.index].value)"
-                            v-mask="dateMask"
-                            @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
-                            :placeholder="dateFormat" 
-                            type="text"
-                            :aria-label="$i18n.get('label_date_to_search_for')" >
+                    <template v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index]">
+                        <b-input
+                                v-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float'"
+                                type="number"
+                                step="any"
+                                @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                                :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
+                                :placeholder="$i18n.get('label_number_to_search_for')"
+                                :aria-label="$i18n.get('label_number_to_search_for')"
+                        />
+                        <input
+                                v-else-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
+                                class="input"
+                                :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion.index].value)"
+                                v-mask="dateMask"
+                                @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
+                                :placeholder="dateFormat" 
+                                type="text"
+                                :aria-label="$i18n.get('label_date_to_search_for')" >
+                        <b-input
+                                v-else
+                                type="text"
+                                @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                                :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
+                                :placeholder="$i18n.get('label_string_to_search_for')"
+                                :aria-label="$i18n.get('label_string_to_search_for')"
+                        />
+                    </template>
                     <b-input
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
                             :value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
                             @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
                             type="text"
-                            :placeholder="$i18n.get('label_number_to_search_for')"
-                            :aria-label="$i18n.get('label_number_to_search_for')" />
+                            :placeholder="$i18n.get('label_string_to_search_for')"
+                            :aria-label="$i18n.get('label_string_to_search_for')" />
                     <b-input
                             v-else
                             type="text"
@@ -328,8 +338,8 @@
 
                     for (let meta in metaquery) {
                         if (
-                            this.metaqueryOperatorsRegular.hasOwnProperty(metaquery[meta]['compare']) ||
-                            this.metaqueryOperatorsForInterval.hasOwnProperty(metaquery[meta]['compare'])
+                            Object.prototype.hasOwnProperty.call(this.metaqueryOperatorsRegular, metaquery[meta]['compare']) ||
+                            Object.prototype.hasOwnProperty.call(this.metaqueryOperatorsForInterval, metaquery[meta]['compare'])
                         )
                             this.$set(this.advancedSearchQuery.metaquery, `${meta}`, metaquery[meta]);
                     }
@@ -349,7 +359,7 @@
                     let taxquery = this.$route.query.taxquery;
 
                     for (let tax in taxquery) {
-                        if ( this.taxqueryOperators.hasOwnProperty(taxquery[tax]['operator']) )
+                        if ( Object.prototype.hasOwnProperty.call(this.taxqueryOperators, taxquery[tax]['operator']) )
                             this.$set(this.advancedSearchQuery.taxquery, `${tax}`, taxquery[tax]);
                     }
 
@@ -520,9 +530,9 @@
                     this.advancedSearchQuery.relation = 'AND';
                 } 
 
-                if (Object.keys(this.advancedSearchQuery.taxquery).length > 1)
+                if ( Object.keys(this.advancedSearchQuery.taxquery).length > 1 )
                     this.$set(this.advancedSearchQuery.taxquery, 'relation', 'AND');
-                else if (this.advancedSearchQuery.taxquery.hasOwnProperty('relation'))
+                else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.taxquery, 'relation') )
                     delete this.advancedSearchQuery.taxquery.relation;
 
                 // Convert date values to a format (ISO_8601) that will match in database
@@ -538,12 +548,12 @@
                     }
                 }
 
-                if (Object.keys(this.advancedSearchQuery.metaquery).length > 1)
+                if ( Object.keys(this.advancedSearchQuery.metaquery).length > 1 )
                     this.$set(this.advancedSearchQuery.metaquery, 'relation', 'AND');
-                else if (this.advancedSearchQuery.metaquery.hasOwnProperty('relation'))
+                else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.metaquery, 'relation') )
                     delete this.advancedSearchQuery.metaquery.relation;
                 
-                if (this.advancedSearchQuery.hasOwnProperty('relation') && Object.keys(this.advancedSearchQuery).length <= 3)
+                if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery, 'relation') && Object.keys(this.advancedSearchQuery).length <= 3)
                     delete this.advancedSearchQuery.relation;
                 
                 if (Object.keys(this.advancedSearchQuery.metaquery).length > 0) {

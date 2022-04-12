@@ -2,14 +2,14 @@
 //
 // Counts on some HMTL markup to make a list of media links be displayed
 // as a carousel with a lightbox. Check examples in the end of the file 
-import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm';
-import PhotoSwipe from 'photoswipe/dist/photoswipe.esm';
+import PhotoSwipeLightbox from 'photoswipe/lightbox';
+import PhotoSwipe from 'photoswipe';
 import 'photoswipe/dist/photoswipe.css';
 import Swiper, { Navigation, A11y, Thumbs } from 'swiper';
-import 'swiper/swiper.min.css';
-import 'swiper/modules/navigation/navigation.min.css';
-import 'swiper/modules/a11y/a11y.min.css';
-import 'swiper/modules/controller/controller.min.css';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/a11y';
+import 'swiper/css/controller';
 
 const { __ } = wp.i18n;
 

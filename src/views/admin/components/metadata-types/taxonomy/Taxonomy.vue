@@ -60,7 +60,7 @@
                 :close-button-aria-label="$i18n.get('close')">
             <term-edition-form
                     :taxonomy-id="taxonomyId"
-                    :form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                     :is-modal="true"
                     @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
                     @onEditionCanceled="() => $console.log('Editing canceled')"
@@ -72,7 +72,7 @@
             <term-creation-panel
                     v-if="isTermCreationPanelOpen"
                     :taxonomy-id="taxonomyId"
-                    :form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                     @onEditionFinished="($event) => addTermToBeCreated($event)"
                     @onEditionCanceled="() => isTermCreationPanelOpen = false"
                     @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />

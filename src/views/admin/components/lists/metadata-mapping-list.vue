@@ -265,9 +265,9 @@ export default {
                     item.selected = '';
                     item.isCustom = false;
                     this.activeMetadatumList.forEach((metadatum) => {
-                        if(
-                                metadatum.exposer_mapping.hasOwnProperty(metadatumMapper.slug) &&
-                                metadatum.exposer_mapping[metadatumMapper.slug] == item.slug
+                        if (
+                            Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, metadatumMapper.slug) &&
+                            metadatum.exposer_mapping[metadatumMapper.slug] == item.slug
                         ) {
                             item.selected = metadatum.id;
                             this.mappedMetadata.push(metadatum.id);
@@ -276,9 +276,9 @@ export default {
                     this.mapperMetadata.push(item);
                 }
                 this.activeMetadatumList.forEach((metadatum) => {
-                    if(
-                            metadatum.exposer_mapping.hasOwnProperty(metadatumMapper.slug) &&
-                            typeof metadatum.exposer_mapping[metadatumMapper.slug] == 'object'
+                    if (
+                        Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, metadatumMapper.slug) &&
+                        typeof metadatum.exposer_mapping[metadatumMapper.slug] == 'object'
                     ) {
                         this.newMapperMetadataList.push(Object.assign({},metadatum.exposer_mapping[metadatumMapper.slug]));
                         this.mappedMetadata.push(metadatum.id);
