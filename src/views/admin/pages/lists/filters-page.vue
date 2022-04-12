@@ -179,7 +179,7 @@
                                             @onEditionFinished="onEditionFinished()"
                                             @onEditionCanceled="onEditionCanceled()"
                                             @onErrorFound="formWithErrors = filter.id"
-                                            @onUpdateSavedState="(state) => editForms[openedFilterId].saved = state"
+                                            @onUpdateSavedState="(state) => editForms[filter.id].saved = state"
                                             :index="index"
                                             :original-filter="filter"
                                             :edited-filter="editForms[openedFilterId]"/>
@@ -708,12 +708,15 @@ export default {
         },
         removeFilter(removedFilter) {
 
+            if (this.editForms[removedFilter.id])
+                delete this.editForms[removedFilter.id];
+
             this.deleteFilter(removedFilter.id)
-            .then(() => {
-                // Reload Available Metadatum Types List
-                this.updateListOfMetadata();
-            })
-            .catch((error) => { this.$console.log(error)});
+                .then(() => {
+                    // Reload Available Metadatum Types List
+                    this.updateListOfMetadata();
+                })
+                .catch((error) => { this.$console.log(error)});
         
             if (!this.isRepositoryLevel)
                 this.updateFiltersOrder(); 
@@ -759,13 +762,11 @@ export default {
         },
         onEditionFinished() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
             this.$router.push({ query: {}});
         },
         onEditionCanceled() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
             this.$router.push({ query: {}});
         },

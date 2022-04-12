@@ -167,8 +167,7 @@ export default {
         }
     },
     watch: {
-        bgProcesses(newBG) {
-            this.hasAnyProcessExecuting = newBG.some((element) => element.done <= 0);
+        updatedProcesses() {
             if (this.updatedProcesses.length !== 0) {
                 for (let updatedProcess of this.updatedProcesses) {
                     let updatedProcessIndex = this.bgProcesses.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
@@ -176,6 +175,9 @@ export default {
                         this.$set(this.bgProcesses, updatedProcessIndex, updatedProcess);
                 }
             }
+        },
+        bgProcesses(newBG) {
+            this.hasAnyProcessExecuting = newBG.some((element) => element.done <= 0);
         }
     },
     created() {

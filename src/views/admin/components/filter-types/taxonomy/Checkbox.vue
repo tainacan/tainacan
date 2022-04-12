@@ -254,6 +254,13 @@
                     events: {
                         appliedCheckBoxModal: () => {
                             this.loadOptions();
+                        },
+                        input: (newSelected) => {
+                            const existingValue = this.selected.indexOf(newSelected); 
+                            if (existingValue >= 0)
+                                this.selected.splice(existingValue, 1);
+                            else
+                                this.selected.push(newSelected);
                         } 
                     },
                     width: 'calc(100% - (4 * var(--tainacan-one-column)))',

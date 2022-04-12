@@ -93,31 +93,41 @@
 
                 <!-- Inputs -->
                 <b-field class="column is-half">
-                    <b-input
-                            v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index] && getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) != 'date'"
-                            :type="(getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float') ? 'number' : 'text'"
-                            step="any"
-                            @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
-                            :placeholder="$i18n.get('label_string_to_search_for')"
-                            :aria-label="$i18n.get('label_string_to_search_for')"
-                    />
-                    <input
-                            v-else-if="searchCriterion.type == 'metaquery' && getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
-                            class="input"
-                            :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion.index].value)"
-                            v-mask="dateMask"
-                            @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
-                            :placeholder="dateFormat" 
-                            type="text"
-                            :aria-label="$i18n.get('label_date_to_search_for')" >
+                    <template v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index]">
+                        <b-input
+                                v-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float'"
+                                type="number"
+                                step="any"
+                                @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                                :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
+                                :placeholder="$i18n.get('label_number_to_search_for')"
+                                :aria-label="$i18n.get('label_number_to_search_for')"
+                        />
+                        <input
+                                v-else-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
+                                class="input"
+                                :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion.index].value)"
+                                v-mask="dateMask"
+                                @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
+                                :placeholder="dateFormat" 
+                                type="text"
+                                :aria-label="$i18n.get('label_date_to_search_for')" >
+                        <b-input
+                                v-else
+                                type="text"
+                                @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                                :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
+                                :placeholder="$i18n.get('label_string_to_search_for')"
+                                :aria-label="$i18n.get('label_string_to_search_for')"
+                        />
+                    </template>
                     <b-input
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
                             :value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
                             @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
                             type="text"
-                            :placeholder="$i18n.get('label_number_to_search_for')"
-                            :aria-label="$i18n.get('label_number_to_search_for')" />
+                            :placeholder="$i18n.get('label_string_to_search_for')"
+                            :aria-label="$i18n.get('label_string_to_search_for')" />
                     <b-input
                             v-else
                             type="text"

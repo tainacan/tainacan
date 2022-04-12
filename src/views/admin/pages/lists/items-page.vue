@@ -553,7 +553,7 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"
                         :is-repository-level="isRepositoryLevel"
-                        @updateIsLoading="newIsLoading => isLoadingItems = newIsLoading"/>
+                        @updateIsLoading="(newIsLoadingState) => isLoadingItems = newIsLoadingState"/>
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section

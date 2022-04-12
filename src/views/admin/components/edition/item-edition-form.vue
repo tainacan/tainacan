@@ -382,7 +382,7 @@
                                                 :item="item"
                                                 :is-editable="true"
                                                 :is-loading="isLoadingAttachments"
-                                                @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
+                                                @isLoadingAttachments="(isLoadingState) => isLoadingAttachments = isLoadingState"
                                                 @onDeleteAttachment="deleteAttachment($event)"/>
                                     </div>
                                 </div>

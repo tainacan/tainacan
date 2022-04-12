@@ -251,7 +251,7 @@
                     
                 </b-tab-item>
 
-                <b-tab-item :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
+                <b-tab-item :label="( isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values') ) + ( Array.isArray(selected) && selected.length ? (' (' + selected.length + ')') : '' )">
                     <div class="modal-card-body tainacan-tags-container">
                         <b-field
                                 v-if="(selected instanceof Array ? selected.length > 0 : selected) && !isSelectedTermsLoading"
@@ -266,7 +266,7 @@
                                         attached
                                         closable
                                         :class="isModal ? '' : 'is-small'"
-                                        @close="selected instanceof Array ? $emit('input', JSON.parse(JSON.stringify(selected)).splice(index, 1)) : $emit('input', '')">
+                                        @close="$emit('input', term)">
                                        <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                                 </b-tag>
                             </div>
