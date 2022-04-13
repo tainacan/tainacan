@@ -92,7 +92,26 @@ export const cleanMetadata = (state) => {
 }
 
 export const setMetadataSections = (state, metadataSections) => {
-    state.metadataSections = metadatumSections;
+    state.metadataSections = metadataSections;
+}
+
+export const setSingleMetadataSection = (state, { metadataSection, index }) => {
+      
+    if (index != undefined && index != null)
+        Vue.set( state.metadataSections, index, metadataSection);
+    else {
+        const existingIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == metadataSection.id);
+        
+        if (existingIndex >= 0)
+            Vue.set( state.metadataSections, existingIndex, metadataSection)
+    } 
+}
+
+
+export const deleteMetadataSection = ( state, metadataSection ) => {
+    let index = state.metadataSection.findIndex(deletedMetadataSection => deletedMetadataSection.id == metadataSection.id);
+    if (index >= 0)
+        state.metadataSection.splice(index, 1);
 }
 
 export const cleanMetadataSections = (state) => {

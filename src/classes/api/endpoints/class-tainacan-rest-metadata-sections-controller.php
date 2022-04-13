@@ -6,7 +6,7 @@ use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
 
-class REST_Metadata_Section_Controller extends REST_Controller {
+class REST_Metadata_Sections_Controller extends REST_Controller {
 	public function __construct() {
 		parent::__construct();
 		$this->rest_base = 'metadata-sections';
@@ -19,8 +19,8 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function init_objects() {
-		$this->metadatum_section_repository = Repositories\Metadata_Section::get_instance();
-		$this->metadatum_repository = Repositories\Metadata::get_instance();
+		$this->metadata_sections_repository = Repositories\Metadata_Sections::get_instance();
+		$this->metadata_repository = Repositories\Metadata::get_instance();
 	}
 
 	/**
@@ -84,23 +84,23 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 				'schema'                  => [$this, 'get_schema']
 			)
 		);
-		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_section_id>[\d]+)/metadatum',
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_section_id>[\d]+)/metadata',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_metadatum_list'),
+					'callback'            => array($this, 'get_metadata_list'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
-					'callback'            => array($this, 'add_metadatum'),
+					'callback'            => array($this, 'add_metadata'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE),
 				),
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
-					'callback'            => array($this, 'delete_metadatum'),
+					'callback'            => array($this, 'delete_metadata'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE),
 				),
@@ -125,7 +125,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 			$number = $request['number'];
 		}
 
-		$result = $this->metadatum_section_repository->fetch($metadatum_id, 'OBJECT');
+		$result = $this->metadata_sections_repository->fetch($metadatum_id, 'OBJECT');
 
 		if (! $result instanceof Entities\Metadatum) {
 			return new \WP_REST_Response([
@@ -144,7 +144,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_item_permissions_check( $request ) {
-		$metadatum = $this->metadatum_section_repository->fetch($request['metadatum_id']);
+		$metadatum = $this->metadata_sections_repository->fetch($request['metadatum_id']);
 
 		if ( $metadatum instanceof Entities\Metadatum ) {
 			return $metadatum->can_read();
@@ -165,15 +165,15 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 		if($collection_id == null) {
 			throw new \InvalidArgumentException('You need provide a collection id');
 		}
-		$metadatum_section = new Entities\Metadatum_Section();
+		$metadata_section = new Entities\Metadata_Section();
 		$meta = json_decode( $request, true );
 		foreach ( $meta as $key => $value ) {
 			$set_ = 'set_' . $key;
-			$metadatum_section->$set_( $value );
+			$metadata_section->$set_( $value );
 		}
 		$collection = new Entities\Collection( $collection_id );
-		$metadatum_section->set_collection( $collection );
-		return $metadatum_section;
+		$metadata_section->set_collection( $collection );
+		return $metadata_section;
 	}
 
 	/**
@@ -193,8 +193,8 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 			}
 
 			if($prepared->validate()) {
-				$metadatum_section = $this->metadatum_section_repository->insert($prepared);
-				$response = $this->prepare_item_for_response($metadatum_section, $request);
+				$metadata_section = $this->metadata_sections_repository->insert($prepared);
+				$response = $this->prepare_item_for_response($metadata_section, $request);
 				return new \WP_REST_Response($response, 201);
 			} else {
 				return new \WP_REST_Response([
@@ -251,12 +251,12 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 				// $item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
-			if( !empty($item_arr['metadatum_list']) ) {
-				$metadatum_list = $item_arr['metadatum_list'];
-				$item_arr['metadatum_object_list'] = [];
-				foreach($metadatum_list as $metadatum_id) {
-					$meta = $this->metadatum_repository->fetch($metadatum_id, 'OBJECT');
-					$item_arr['metadatum_object_list'][] = $meta->_toArray();
+			if( !empty($item_arr['metadata_list']) ) {
+				$metadata_list = $item_arr['metadata_list'];
+				$item_arr['metadata_object_list'] = [];
+				foreach($metadata_list as $metadatum_id) {
+					$meta = $this->metadata_repository->fetch($metadatum_id, 'OBJECT');
+					$item_arr['metadata_object_list'][] = $meta->_toArray();
 				}
 			}
 
@@ -267,7 +267,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 			 *
 			 * Also take care to do any permissions verification before exposing the data
 			 */
-			$extra_metadata = apply_filters('tainacan-api-response-metadatum-section-meta', [], $request);
+			$extra_metadata = apply_filters('tainacan-api-response-metadata-section-meta', [], $request);
 
 			foreach ($extra_metadata as $extra_meta) {
 				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
@@ -295,7 +295,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 
 			$collection = new Entities\Collection( $collection_id );
 
-			$result = $this->metadatum_section_repository->fetch_by_collection( $collection, $args );
+			$result = $this->metadata_sections_repository->fetch_by_collection( $collection, $args );
 		}
 
 		$prepared_item = [];
@@ -341,7 +341,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 	public function delete_item( $request ) {
 		$metadatum_id = $request['metadatum_id'];
 
-		$metadatum = $this->metadatum_section_repository->fetch($metadatum_id);
+		$metadatum = $this->metadata_sections_repository->fetch($metadatum_id);
 
 		if (! $metadatum instanceof Entities\Metadatum) {
 			return new \WP_REST_Response([
@@ -350,7 +350,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 			], 400);
 		}
 
-		$metadatum_trashed = $this->metadatum_section_repository->trash($metadatum);
+		$metadatum_trashed = $this->metadata_sections_repository->trash($metadatum);
 
 		$prepared = $this->prepare_item_for_response($metadatum_trashed, $request);
 
@@ -364,7 +364,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function delete_item_permissions_check( $request ) {
-		$metadatum = $this->metadatum_section_repository->fetch($request['metadatum_id']);
+		$metadatum = $this->metadata_sections_repository->fetch($request['metadatum_id']);
 
 		if ($metadatum instanceof Entities\Metadatum) {
 			return $metadatum->can_delete();
@@ -396,7 +396,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 				$attributes[$att] = $value;
 			}
 
-			$metadatum = $this->metadatum_section_repository->fetch($metadatum_id);
+			$metadatum = $this->metadata_sections_repository->fetch($metadatum_id);
 
 			$error_message = __('Metadata with this ID was not found', 'tainacan');
 
@@ -425,7 +425,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 				$prepared_metadata = $this->prepare_item_for_updating($metadatum, $attributes);
 
 				if($prepared_metadata->validate()){
-					$updated_metadata = $this->metadatum_section_repository->update($prepared_metadata);
+					$updated_metadata = $this->metadata_sections_repository->update($prepared_metadata);
 
 					$response = $this->prepare_item_for_response($updated_metadata, $request);
 
@@ -455,17 +455,17 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 		if( !empty($request->get_body()) && isset($request['metadata_section_id']) ){
 			$body = json_decode($request->get_body(), true);
 			$metadata_section_id = $request['metadata_section_id'];
-			$metadatum_list = $body['metadatum_list'];
+			$metadata_list = $body['metadata_list'];
 
 			try {
-				$metadatum_section = $this->metadatum_section_repository->add_metadatum($metadata_section_id, $metadatum_list);
-				if($metadatum_section == false) {
+				$metadata_section = $this->metadata_sections_repository->add_metadatum($metadata_section_id, $metadata_list);
+				if($metadata_section == false) {
 					return new \WP_REST_Response([
 						'error_message' => __('One or more values are invalid.', 'tainacan'),
 						'item'          => $request->get_body()
 					], 400);
 				}
-				$response = $this->prepare_item_for_response($metadatum_section, $request);
+				$response = $this->prepare_item_for_response($metadata_section, $request);
 				return new \WP_REST_Response($response, 201);
 			} catch (\Exception $exception) {
 				return new \WP_REST_Response($exception->getMessage(), 400);
@@ -481,17 +481,17 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 		if( !empty($request->get_body()) && isset($request['metadata_section_id']) ){
 			$body = json_decode($request->get_body(), true);
 			$metadata_section_id = $request['metadata_section_id'];
-			$metadatum_list = $body['metadatum_list'];
+			$metadata_list = $body['metadata_list'];
 
 			try {
-				$metadatum_section = $this->metadatum_section_repository->delete_metadatum($metadata_section_id, $metadatum_list);
-				if($metadatum_section == false) {
+				$metadata_section = $this->metadata_sections_repository->delete_metadatum($metadata_section_id, $metadata_list);
+				if($metadata_section == false) {
 					return new \WP_REST_Response([
 						'error_message' => __('One or more values are invalid.', 'tainacan'),
 						'item'          => $request->get_body()
 					], 400);
 				}
-				$response = $this->prepare_item_for_response($metadatum_section, $request);
+				$response = $this->prepare_item_for_response($metadata_section, $request);
 				return new \WP_REST_Response($response, 201);
 			} catch (\Exception $exception) {
 				return new \WP_REST_Response($exception->getMessage(), 400);
@@ -503,12 +503,12 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 		], 400);
 	}
 
-	public function get_metadatum_list( $request ) {
+	public function get_metadata_list( $request ) {
 		if(isset($request['metadata_section_id']) ){
 			$metadata_section_id = $request['metadata_section_id'];
 
 			try {
-				$result = $this->metadatum_section_repository->get_metadatum_list($metadata_section_id);
+				$result = $this->metadata_sections_repository->get_metadata_list($metadata_section_id);
 				$prepared_item = [];
 				foreach ( $result as $item ) {
 					$prepared_item[] = $item->_toArray();
@@ -532,7 +532,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 	 */
 	public function update_item_permissions_check( $request ) {
 		return true;
-		$metadatum = $this->metadatum_section_repository->fetch($request['metadatum_id']);
+		$metadatum = $this->metadata_sections_repository->fetch($request['metadatum_id']);
 
 		if ($metadatum instanceof Entities\Metadatum) {
 			return $metadatum->can_edit();
@@ -575,7 +575,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
                 parent::get_wp_query_params()
             );
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
-			$map = $this->metadatum_section_repository->get_map();
+			$map = $this->metadata_sections_repository->get_map();
 
 			foreach ($map as $mapped => $value){
 				$set_ = 'set_'. $mapped;
@@ -599,7 +599,7 @@ class REST_Metadata_Section_Controller extends REST_Controller {
 			'type' => 'object'
 		];
 
-		$main_schema = parent::get_repository_schema( $this->metadatum_section_repository );
+		$main_schema = parent::get_repository_schema( $this->metadata_sections_repository );
 		$permissions_schema = parent::get_permissions_schema();
 
 		// $item_metadata_scheme = parent::get_repository_schema( $this->item_metadata_repository );

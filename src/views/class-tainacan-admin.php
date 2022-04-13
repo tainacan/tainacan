@@ -254,20 +254,22 @@ class Admin {
 	function get_admin_js_localization_params() {
 		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-		$Tainacan_Metadata    = \Tainacan\Repositories\Metadata::get_instance();
-		$Tainacan_Filters     = \Tainacan\Repositories\Filters::get_instance();
-		$Tainacan_Items       = \Tainacan\Repositories\Items::get_instance();
-		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Collections 		= \Tainacan\Repositories\Collections::get_instance();
+		$Tainacan_Metadata    		= \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Metadata_Sections = \Tainacan\Repositories\Metadata_Sections::get_instance();
+		$Tainacan_Filters     		= \Tainacan\Repositories\Filters::get_instance();
+		$Tainacan_Items       		= \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Taxonomies  		= \Tainacan\Repositories\Taxonomies::get_instance();
 
 		$tainacan_admin_i18n = require( 'tainacan-i18n.php' );
 
 		$entities_labels = [
-			'collections' => $Tainacan_Collections->get_cpt_labels(),
-			'metadata'      => $Tainacan_Metadata->get_cpt_labels(),
-			'filters'     => $Tainacan_Filters->get_cpt_labels(),
-			'items'       => $Tainacan_Items->get_cpt_labels(),
-			'taxonomies'  => $Tainacan_Taxonomies->get_cpt_labels(),
+			'collections' 		=> $Tainacan_Collections->get_cpt_labels(),
+			'metadata'      	=> $Tainacan_Metadata->get_cpt_labels(),
+			'metadata-sections' => $Tainacan_Metadata_Sections->get_cpt_labels(),
+			'filters'     		=> $Tainacan_Filters->get_cpt_labels(),
+			'items'       		=> $Tainacan_Items->get_cpt_labels(),
+			'taxonomies'  		=> $Tainacan_Taxonomies->get_cpt_labels(),
 		];
 
 		$tainacan_admin_i18n['entities_labels'] = $entities_labels;

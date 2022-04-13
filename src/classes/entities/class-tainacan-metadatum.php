@@ -25,7 +25,7 @@ class Metadatum extends Entity {
 		$default_value,
 		$metadata_type,
 		$metadata_type_options,
-		$metadatum_section_id;
+		$metadata_section_id;
 
 	// Collection getter and setter declared here
 	use \Tainacan\Traits\Entity_Collection_Relation;
@@ -254,12 +254,12 @@ class Metadatum extends Entity {
 	}
 
 	/**
-	 * Return the metadatum_section_id
+	 * Return the metadata_section_id
 	 *
 	 * @return string
 	 */
-	function get_metadatum_section_id(){
-		return $this->get_mapped_property('metadatum_section_id');
+	function get_metadata_section_id(){
+		return $this->get_mapped_property('metadata_section_id');
 	}
 
 	/**
@@ -450,8 +450,8 @@ class Metadatum extends Entity {
 	 * @param [string] $value
 	 * @return void
 	 */
-	function set_metadatum_section_id( $value) {
-		return $this->set_mapped_property('metadatum_section_id', $value);
+	function set_metadata_section_id( $value) {
+		return $this->set_mapped_property('metadata_section_id', $value);
 	}
 	
 	/**

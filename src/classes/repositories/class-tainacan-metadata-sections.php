@@ -11,9 +11,9 @@ use \Respect\Validation\Validator as v;
 /**
  * Class Metadata
  */
-class Metadata_Section extends Repository {
+class Metadata_Sections extends Repository {
 
-	public $entities_type = '\Tainacan\Entities\Metadatum_Section';
+	public $entities_type = '\Tainacan\Entities\Metadata_Section';
 	private static $instance = null;
 
 	protected function __construct() {
@@ -59,7 +59,7 @@ class Metadata_Section extends Repository {
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The metadatum section description.', 'tainacan' ),
+				'description' => __( 'The metadata section description.', 'tainacan' ),
 				'default'     => '',
 			],
 			'collection_id'         => [
@@ -68,14 +68,14 @@ class Metadata_Section extends Repository {
 				'type'        => ['integer', 'string'],
 				'description' => __( 'The collection ID', 'tainacan' ),
 			],
-			'metadatum_list'         => [
+			'metadata_list'         => [
 				'map'         => 'meta',
-				'title'       => __( 'Metadatum list', 'tainacan' ),
+				'title'       => __( 'Metadata list', 'tainacan' ),
 				'type'        => 'array',
 				'items' => [
 					'type' => 'integer'
 				],
-				'description' => __( 'The metadatum ID list', 'tainacan' ),
+				'description' => __( 'The metadata ID list', 'tainacan' ),
 			]
 		] );
 	}
@@ -87,7 +87,7 @@ class Metadata_Section extends Repository {
 	 */
 	public function get_cpt_labels() {
 		return array(
-			'name'               => __( 'Metadata Section', 'tainacan' ),
+			'name'               => __( 'Metadata Sections', 'tainacan' ),
 			'singular_name'      => __( 'Metadata Section', 'tainacan' ),
 			'add_new'            => __( 'Add new', 'tainacan' ),
 			'add_new_item'       => __( 'Add new Metadata Section', 'tainacan' ),
@@ -125,24 +125,24 @@ class Metadata_Section extends Repository {
 				'page-attributes'
 			]
 		);
-		register_post_type( Entities\Metadatum_Section::get_post_type(), $args );
+		register_post_type( Entities\Metadata_Section::get_post_type(), $args );
 	}
 
 	/**
-	 * fetch metadatum section based on ID or WP_Query args
+	 * fetch metadata section based on ID or WP_Query args
 	 *
-	 * metadatum section are stored as posts. Check WP_Query docs
+	 * metadata section are stored as posts. Check WP_Query docs
 	 * to learn all args accepted in the $args parameter (@see https://developer.wordpress.org/reference/classes/wp_query/)
 	 * You can also use a mapped property, such as name and description, as an argument and it will be mapped to the
 	 * appropriate WP_Query argument
 	 *
-	 * If a number is passed to $args, it will return a \Tainacan\Entities\Metadatum_Section object. But if the post is not found or
+	 * If a number is passed to $args, it will return a \Tainacan\Entities\Metadata_Section object. But if the post is not found or
 	 * does not match the entity post type, it will return an empty array
 	 *
-	 * @param array $args WP_Query args || int $args the metadatum section id
+	 * @param array $args WP_Query args || int $args the metadata section id
 	 * @param string $output The desired output format (@see \Tainacan\Repositories\Repository::fetch_output() for possible values)
 	 *
-	 * @return Entities\Metadatum_Section|\WP_Query|Array an instance of wp query OR array of entities;
+	 * @return Entities\Metadata_Section|\WP_Query|Array an instance of wp query OR array of entities;
 	 * @throws \Exception
 	 */
 	public function fetch( $args, $output = null ) {
@@ -151,7 +151,7 @@ class Metadata_Section extends Repository {
 			$existing_post = get_post( $args );
 			if ( $existing_post instanceof \WP_Post ) {
 				try {
-					return new Entities\Metadatum_Section( $existing_post );
+					return new Entities\Metadata_Section( $existing_post );
 				} catch (\Exception $e) {
 					return [];
 				}
@@ -164,7 +164,7 @@ class Metadata_Section extends Repository {
 			], $args );
 
 			$args = $this->parse_fetch_args( $args );
-			$args['post_type'] = Entities\Metadatum_Section::get_post_type();
+			$args['post_type'] = Entities\Metadata_Section::get_post_type();
 			$args = apply_filters( 'tainacan_fetch_args', $args, 'metadata-section' );
 
 			$wp_query = new \WP_Query( $args );
@@ -193,12 +193,12 @@ class Metadata_Section extends Repository {
 	}
 
 	/**
-	 * fetch metadatum section by collection
+	 * fetch metadata section by collection
 	 *
 	 * @param Entities\Collection $collection
 	 * @param array $args WP_Query args
 	 *
-	 * @return array Entities\Metadatum_Section
+	 * @return array Entities\Metadata_Section
 	 * @throws \Exception
 	 */
 	public function fetch_by_collection( Entities\Collection $collection, $args = [] ) {
@@ -271,19 +271,19 @@ class Metadata_Section extends Repository {
 	}
 
 	/**
-	 * @param \Tainacan\Entities\Metadatum_Section $metadatum_section
+	 * @param \Tainacan\Entities\Metadata_Section $metadata_section
 	 *
-	 * @return \Tainacan\Entities\Metadatum_Section
+	 * @return \Tainacan\Entities\Metadata_Section
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::insert()
 	 */
-	public function insert( $metadatum_section ) {
-		$new_metadatum_section = parent::insert( $metadatum_section );
-		return $new_metadatum_section;
+	public function insert( $metadata_section ) {
+		$new_metadata_section = parent::insert( $metadata_section );
+		return $new_metadata_section;
 	}
 
 	/**
-	 * @param \Tainacan\Entities\Metadatum_Section $object
+	 * @param \Tainacan\Entities\Metadata_Section $object
 	 * @param $new_values
 	 *
 	 * @return mixed|string|Entities\Entity
@@ -293,12 +293,12 @@ class Metadata_Section extends Repository {
 		return $this->insert( $object );
 	}
 
-	public function add_metadatum($metadata_section_id, $metadatum_list) {
+	public function add_metadatum($metadata_section_id, $metadata_list) {
 		$metadata_section = $this->fetch($metadata_section_id);
 		if ($metadata_section) {
-			$list = $metadata_section->get_metadatum_list();
-			$metadatum_list = array_merge($list, $metadatum_list);
-			$metadata_section->set_metadatum_list($metadatum_list);
+			$list = $metadata_section->get_metadata_list();
+			$metadata_list = array_merge($list, $metadata_list);
+			$metadata_section->set_metadata_list($metadata_list);
 			if($metadata_section->validate()) {
 				$metadata_section = $this->update($metadata_section);
 				return $metadata_section;
@@ -307,11 +307,11 @@ class Metadata_Section extends Repository {
 		return false;
 	}
 
-	public function delete_metadatum($metadata_section_id, $metadatum_list) {
+	public function delete_metadatum($metadata_section_id, $metadata_list) {
 		$metadata_section = $this->fetch($metadata_section_id);
-		$list = $metadata_section->get_metadatum_list();
-		$list = array_diff($list, $metadatum_list);
-		$metadata_section->set_metadatum_list($list);
+		$list = $metadata_section->get_metadata_list();
+		$list = array_diff($list, $metadata_list);
+		$metadata_section->set_metadata_list($list);
 		if($metadata_section->validate()) {
 			$metadata_section = $this->update($metadata_section);
 			return $metadata_section;
@@ -319,13 +319,13 @@ class Metadata_Section extends Repository {
 		return false;
 	}
 
-	public function get_metadatum_list($metadata_section_id) {
+	public function get_metadata_list($metadata_section_id) {
 		$metadata_section = $this->fetch($metadata_section_id);
-		$list = $metadata_section->get_metadatum_list();
+		$list = $metadata_section->get_metadata_list();
 		$args = array('post__in' => $list);
 		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
-		$metadatum_list = $metadata_repository->fetch($args, 'OBJECT');
-		return $metadatum_list;
+		$metadata_list = $metadata_repository->fetch($args, 'OBJECT');
+		return $metadata_list;
 	}
 
 	/**

@@ -7,7 +7,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 /**
  * Represents the Entity Metadatum
  */
-class Metadatum_Section extends Entity {
+class Metadata_Section extends Entity {
 	// Collection getter and setter declared here
 	use \Tainacan\Traits\Entity_Collection_Relation;
 
@@ -16,7 +16,7 @@ class Metadatum_Section extends Entity {
 		$name,
 		$slug,
 		$description,
-		$metadatum_list;
+		$metadata_list;
 
 	/**
 	 * {@inheritDoc}
@@ -26,11 +26,11 @@ class Metadatum_Section extends Entity {
 	protected $repository = 'Metadata_Section';
 	
 	public function __toString() {
-		return apply_filters("tainacan-metadatum-section-to-string", $this->get_name(), $this);
+		return apply_filters("tainacan-metadata-section-to-string", $this->get_name(), $this);
 	}
 
 	/**
-	 * Return the metadatum section name
+	 * Return the metadata section name
 	 *
 	 * @return string
 	 */
@@ -39,7 +39,7 @@ class Metadatum_Section extends Entity {
 	}
 	
 	/**
-	 * Get metadatum section slug
+	 * Get metadata section slug
 	 *
 	 * @return string
 	 */
@@ -48,7 +48,7 @@ class Metadatum_Section extends Entity {
 	}
 
 	/**
-	 * Return the metadatum section description
+	 * Return the metadata section description
 	 *
 	 * @return string
 	 */
@@ -57,16 +57,16 @@ class Metadatum_Section extends Entity {
 	}
 
 	/**
-	 * Return the metadatum_list of section
+	 * Return the metadata_list of section
 	 *
 	 * @return [int]
 	 */
-	function get_metadatum_list() {
-		return $this->get_mapped_property('metadatum_list');
+	function get_metadata_list() {
+		return $this->get_mapped_property('metadata_list');
 	}
 
 	/**
-	 * Set the metadatum section name
+	 * Set the metadata section name
 	 *
 	 * @param [string] $value
 	 * @return void
@@ -76,9 +76,9 @@ class Metadatum_Section extends Entity {
 	}
 
 	/**
-	 * Set the metadatum section slug
+	 * Set the metadata section slug
 	 *
-	 * If you dont set the metadatum slug, it will be set automatically based on the name and
+	 * If you dont set the metadata slug, it will be set automatically based on the name and
 	 * following WordPress default behavior of creating slugs for posts.
 	 *
 	 * If you set the slug for an existing one, WordPress will append a number at the end of in order
@@ -92,7 +92,7 @@ class Metadatum_Section extends Entity {
 	}
 
 	/**
-	 * Set metadatum section description
+	 * Set metadata section description
 	 *
 	 * @param [string] $value The text description
 	 * @return void
@@ -103,26 +103,26 @@ class Metadatum_Section extends Entity {
 
 
 	/**
-	 * Set metadatum list of the section
+	 * Set metadata list of the section
 	 *
-	 * @param [string|int] $value The array of list metadatum
+	 * @param [string|int] $value The array of metadata in this section
 	 * @return void
 	 */
-	function set_metadatum_list($value) {
-		$this->set_mapped_property('metadatum_list', array_unique($value));
+	function set_metadata_list($value) {
+		$this->set_mapped_property('metadata_list', array_unique($value));
 	}
 
 	/**
 	 * {@inheritdoc }
 	 *
-	 * Also validates the metadatum, calling the validate_options callback of the Metadatum Type
+	 * Also validates the metadata, calling the validate_options callback of the Metadatum Type
 	 *
 	 * @return bool valid or not
 	 * @throws \Exception
 	 */
 	public function validate() {
 		$no_errors = true;
-		$metadatum_list = $this->get_metadatum_list();
+		$metadata_list = $this->get_metadata_list();
 		$name = $this->get_name();
 		$collection = $this->get_collection();
 
@@ -135,8 +135,8 @@ class Metadatum_Section extends Entity {
 			$this->add_error($this->get_id(), __("name is required", 'tainacan'));
 			$no_errors = false;
 		}
-		if( !empty($metadatum_list) ) {
-			foreach($metadatum_list as $metadatum_id) {
+		if( !empty($metadata_list) ) {
+			foreach($metadata_list as $metadatum_id) {
 				if(get_post_type($metadatum_id) != \Tainacan\Entities\Metadatum::$post_type ) {
 					$this->add_error($this->get_id(), __("is not a valid metadata", 'tainacan'));
 					$no_errors = false;

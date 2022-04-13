@@ -295,6 +295,22 @@
                                                 @onEditionCanceled="onEditionCanceled()"
                                                 :index="index" />
                                     </b-modal>
+
+                                    <b-modal 
+                                            @close="onSectionEditionCanceled()"
+                                            :active="openedMetadataSectionId == metadataSection.id"
+                                            trap-focus
+                                            aria-modal
+                                            aria-role="dialog"
+                                            custom-class="tainacan-modal"
+                                            :close-button-aria-label="$i18n.get('close')">
+                                        <metadata-section-edition-form
+                                                :collection-id="collectionId"
+                                                :original-metadata-section="metadataSection"
+                                                @onEditionFinished="onSectionEditionFinished()"
+                                                @onEditionCanceled="onSectionEditionCanceled()"
+                                                :index="sectionIndex" />
+                                    </b-modal>
                                 </div>
                             </draggable>
                         </div>
@@ -358,6 +374,59 @@
                                                 v-if="hightlightedMetadatum == metadatum.name"/>
                                     </div>
                                 </draggable>
+
+                                <draggable
+                                        v-if="!isRepositoryLevel" 
+                                        v-model="availableMetadataSectionsList"
+                                        :sort="false" 
+                                        :group="{ name:'metadata', pull: 'clone', put: false, revertClone: true }"
+                                        drag-class="sortable-drag">
+                                    <div 
+                                            :id="metadataSection.id"
+                                            @click.prevent="addMetadataSectionViaButton(metadatum)"
+                                            class="available-metadata-section-item"
+                                            v-for="(metadataSection, index) in availableMetadataSectionsList"
+                                            :key="index">
+                                        <span
+                                                v-tooltip="{
+                                                    content: $i18n.get('instruction_click_or_drag_metadatum_create'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                    placement: 'auto-start'
+                                                }"   
+                                                class="icon grip-icon">
+                                            <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
+                                            <svg 
+                                                    xmlns="http://www.w3.org/2000/svg" 
+                                                    height="24px"
+                                                    viewBox="0 0 24 24"
+                                                    width="24px"
+                                                    fill="currentColor">
+                                                <path
+                                                        d="M0 0h24v24H0V0z"
+                                                        fill="transparent"/>
+                                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                            </svg>
+                                        </span>
+                                        <span class="metadatum-name">
+                                            {{ metadataSection.label }}
+                                            <span 
+                                                    v-tooltip="{
+                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '', 'metadata-type-preview-tooltip'],
+                                                        content: '',//getPreviewTemplateContent(metadatum),
+                                                        html: true,
+                                                        delay: {
+                                                            shown: 0,
+                                                            hide: 100,
+                                                        },
+                                                        placement: 'top',
+                                                    }"
+                                                    class="icon preview-help-icon has-text-secondary">
+                                                <i class="tainacan-icon tainacan-icon-help"/>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </draggable>
                             </div>
                         </div> 
                     </div>
@@ -380,13 +449,14 @@
                     <p>{{ $i18n.get('info_can_not_edit_metadata') }}</p>
                 </div>
             </section>
-            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import MetadataMappingList from '../../components/lists/metadata-mapping-list.vue';
 import MetadatumEditionForm from '../../components/edition/metadatum-edition-form.vue';
+import MetadataSectionEditionForm from '../../components/edition/metadata-section-edition-form.vue';
 import MetadatumDetails from '../../components/other/metadatum-details.vue';
 import ChildMetadataList from '../../components/metadata-types/compound/child-metadata-list.vue';
 import CustomDialog from '../../components/other/custom-dialog.vue';
@@ -397,6 +467,7 @@ export default {
     components: {
         MetadataMappingList,
         MetadatumEditionForm,
+        MetadataSectionEditionForm,
         ChildMetadataList,
         MetadatumDetails
     },
@@ -407,14 +478,21 @@ export default {
             collectionId: '',
             isLoadingMetadatumTypes: true,
             isLoadingMetadata: false,
+            isLoadingMetadataSections: false,
             isUpdatingMetadataOrder: false,
             openedMetadatumId: '',
+            openedMetadataSectionId: '',
             hightlightedMetadatum: '',
             collapses: {},
             columnsTopY: 0,
             collapseAll: false,
             metadataNameFilterString: '',
-            metadataTypeFilterOptions: []
+            metadataTypeFilterOptions: [],
+            availableMetadataSectionsList: [{ 
+                label: this.$i18n.get('label_add_new_section'),
+                id: 'metadataSectionCreator'
+            }],
+            isUpdatingMetadataSectionsOrder: false
         }
     },
     computed: {
@@ -439,6 +517,14 @@ export default {
             set(value) {
                 this.updateMetadata(value);
             }
+        },
+        activeMetadataSectionsList: {
+            get() {
+                return this.getMetadataSections();
+            },
+            set(value) {
+                this.updateMetadataSections(value);
+            }
         }
     },
     watch: {
@@ -448,6 +534,10 @@ export default {
                     let existingMetadataIndex = this.activeMetadatumList.findIndex((metadatum) => metadatum && (metadatum.id == newQuery.edit));
                     if (existingMetadataIndex >= 0)
                         this.editMetadatum(this.activeMetadatumList[existingMetadataIndex])                        
+                } else if (newQuery.sectionEdit != undefined) {
+                    let existingMetadataSectionIndex = this.activeMetadataSectionsList.findIndex((metadataSection) => metadataSection && (metadataSection.id == newQuery.sectionEdit));
+                    if (existingMetadataSectionIndex >= 0)
+                        this.editMetadataSection(this.activeMetadataSectionsList[existingMetadataSectionIndex])                        
                 }
             },
             immediate: true
@@ -469,6 +559,7 @@ export default {
         });
 
         this.cleanMetadata();
+        this.cleanMetadataSections();
         this.isLoadingMetadatumTypes = true;
 
         this.fetchMetadatumTypes()
@@ -486,14 +577,30 @@ export default {
             .catch(() => {
                 this.isLoadingMetadatumTypes = false;
             });
-        this.refreshMetadata();
+
+        if (this.isRepositoryLevel) {
+            this.collectionId = 'default';
+            this.refreshMetadata();
+        } else {
+            this.collectionId = this.$route.params.collectionId;
+            this.isLoadingMetadataSections = true;
+            this.fetchMetadataSections({ collectionId: this.collectionId })
+                .then(() => {
+                    this.activeMetadataSectionsList.forEach((aMetadataSection) => {
+                        this.refreshMetadata(aMetadataSection);
+                    });
+                    this.isLoadingMetadataSections = false;
+                })
+                .catch((error) => {
+                    this.$console.error(error);
+                    this.isLoadingMetadataSections = false;
+                });
+        }
     },
     beforeDestroy() {
-
         // Cancels previous Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
-
     },
     methods: {
          ...mapGetters('collection', [
@@ -504,10 +611,12 @@ export default {
             'updateMetadatumTypes',
             'fetchMetadata',
             'sendMetadatum',
+            'sendMetadataSection',
             'deleteMetadatum',
             'updateMetadata',
             'updateCollectionMetadataOrder',
             'cleanMetadata',
+            'updateMetadataSections',
             'fetchMetadataSections',
             'cleanMetadataSections'
         ]),
@@ -537,6 +646,17 @@ export default {
                 .then(() => this.isUpdatingMetadataOrder = false)
                 .catch(() => this.isUpdatingMetadataOrder = false);
         },
+        updateMetadataSectionsOrder() {
+            let metadataSectionsOrder = [];
+            for (let metadataSection of this.activeMetadataSectionsList)
+                if (metadataSection != undefined)
+                    metadataSectionsOrder.push({ 'id': metadataSection.id, 'enabled': metadataSection.enabled });
+            
+            this.isUpdatingMetadataSectionsOrder = true;
+            this.updateCollectionMetadataSectionsOrder({ collectionId: this.collectionId, metadataSectionsOrder: metadataSectionsOrder })
+                .then(() => this.isUpdatingMetadataSectionsOrder = false)
+                .catch(() => this.isUpdatingMetadataSectionsOrder = false);
+        },
         onChangeEnable($event, index) {
             let metadataOrder = [];
             for (let metadatum of this.activeMetadatumList)
@@ -553,8 +673,12 @@ export default {
             let lastIndex = this.activeMetadatumList.length;
             this.addNewMetadatum(metadatumType, lastIndex);
             
-            // Higlights the clicker metadatum
+            // Higlights the clicked metadatum
             this.hightlightedMetadatum = metadatumType.name;
+        },
+        addMetadataSectionViaButton() {
+            let lastIndex = this.activeMetadataSectionsList.length;
+            this.addNewMetadataSection(lastIndex);
         },
         addNewMetadatum(newMetadatum, newIndex) {
             this.sendMetadatum({
@@ -573,6 +697,21 @@ export default {
 
                 this.toggleMetadatumEdition(metadatum)
                 this.hightlightedMetadatum = '';
+            })
+            .catch((error) => {
+                this.$console.error(error);
+            });
+        },
+        addNewMetadataSection(newIndex) {
+            this.sendMetadataSection({
+                collectionId: this.collectionId, 
+                name: '', 
+                status: 'auto-draft',  
+                newIndex: newIndex
+            })
+            .then((metadataSection) => {
+                this.updateMetadataSectionOrder();
+                this.toggleMetadataSectionEdition(metadataSection)
             })
             .catch((error) => {
                 this.$console.error(error);
@@ -602,11 +741,40 @@ export default {
                 closeButtonAriaLabel: this.$i18n.get('close')
             }); 
         },
+        removeMetadataSection(removedMetadataSection) {
+            this.$buefy.modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_metadata_section_delete'),
+                    onConfirm: () => { 
+                        this.deleteMetadataSection({ collectionId: this.collectionId, metadataSectionId: removedMetadataSection.id })
+                            .then(() => {
+                                this.updateMetadataSectionOrder();
+                            })
+                            .catch(() => {
+                                this.$console.log("Error deleting metadata section.")
+                            });
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            }); 
+        },
         toggleMetadatumEdition(metadatum) {
             this.$router.push({ query: { edit: metadatum.id } });
         },
+        toggleMetadataSectionEdition(metadataSection) {
+            this.$router.push({ query: { sectionEdit: metadataSection.id } });
+        },
         editMetadatum(metadatum) {
             this.openedMetadatumId = metadatum.id;
+        },
+        editMetadataSection(metadataSection) {
+            this.openedMetadataSectionId = metadataSection.id;
         },
         onEditionFinished() {
             this.openedMetadatumId = '';
@@ -616,17 +784,21 @@ export default {
             this.openedMetadatumId = '';
             this.$router.push({ query: {}});
         },
-        refreshMetadata() {
+        onSectionEditionFinished() {
+            this.openedMetadataSectionId = '';
+            this.$router.push({ query: {}});
+        },
+        onSectionEditionCanceled() {
+            this.openedMetadataSectionId = '';
+            this.$router.push({ query: {}});
+        },
+        refreshMetadata(metadataSection) {
+            console.log(metadataSection)
             this.isLoadingMetadata = true;
 
             // Cancels previous Request
             if (this.metadataSearchCancel != undefined)
                 this.metadataSearchCancel.cancel('Metadata search Canceled.');
-
-            if (this.isRepositoryLevel)
-                this.collectionId = 'default';
-            else
-                this.collectionId = this.$route.params.collectionId;
 
             this.fetchMetadata({
                 collectionId: this.collectionId, 
@@ -1003,7 +1175,9 @@ export default {
                     margin: 1em 0em 1em 0em !important;
                 }
                 .available-metadatum-item::before,
-                .available-metadatum-item::after {
+                .available-metadatum-item::after,
+                .available-metadata-section-item::before,
+                .available-metadata-section-item::after {
                     display: none !important;
                 }
             }
@@ -1012,7 +1186,8 @@ export default {
                 margin: 0.875em 0em 1em 0em;
             }
 
-            .available-metadatum-item {
+            .available-metadatum-item,
+            .available-metadata-section-item {
                 padding: 0.6em;
                 margin: 4px 4px 4px 1.2em;
                 background-color: var(--tainacan-white);
@@ -1071,6 +1246,15 @@ export default {
                     border-top-width: 1.4286em;
                     border-bottom-width: 1.4286em;
                     left: -20px;
+                }
+            }
+
+            .available-metadata-section-item {
+                margin-top: 2em;
+                color: var(--tainacan-secondary);
+                border-color: var(--tainacan-secondary);
+                &::before {
+                    border-color: transparent var(--tainacan-secondary) transparent transparent;
                 }
             }
 
@@ -1151,7 +1335,8 @@ export default {
                     animation-iteration-count: 2;
                 }
             }
-            .available-metadatum-item:hover {
+            .available-metadatum-item:hover,
+            .available-metadata-section-item::hover {
                 background-color: var(--tainacan-turquoise1);
                 border-color: var(--tainacan-turquoise2);
                 position: relative;
@@ -1182,7 +1367,8 @@ export default {
                     color: var(--tainacan-blue5) !important; 
                 }
             }
-            &.available-metadatum-item:hover {
+            &.available-metadatum-item:hover,
+            &.available-metadata-section-item::hover {
                 background-color: var(--tainacan-blue1) !important;
                 border-color: var(--tainacan-blue2) !important;
 

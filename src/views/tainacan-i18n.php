@@ -624,6 +624,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_metadata_and_sections'					 => __( 'Metadata and Sections', 'tainacan' ),
 	'label_view_activity_logs'						 => __( 'View activity logs', 'tainacan' ),
 	'label_item_activities'						 	 => __( 'Item activities', 'tainacan' ),
+	'label_add_new_section'							 => __( 'Add new section', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -659,7 +660,9 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_drop_file_or_click_to_upload'       => __( 'Drop your source file or click here to upload.', 'tainacan' ),
 	'instruction_select_metadatum_type'              => __( 'Select a metadatum type', 'tainacan' ),
 	'instruction_configure_new_metadatum'            => __( 'Configure new metadatum', 'tainacan' ),
-	'instruction_configure_the_metadatum'                => __( 'Configure the metadatum', 'tainacan' ),
+	'instruction_configure_the_metadatum'            => __( 'Configure the metadatum', 'tainacan' ),
+	'instruction_configure_new_metadata_section'     => __( 'Configure new metadata section', 'tainacan' ),
+	'instruction_configure_the_metadata_section'     => __( 'Configure the metadata section', 'tainacan' ),
 	'instruction_insert_mapper_metadatum_info'       => __( 'Insert the new mapper\'s metadatum info', 'tainacan' ),
 	'instruction_select_max_options_to_show'         => __( 'Select maximum options to show', 'tainacan' ),
 	'instruction_select_collection_fetch_items'      => __( 'Select a collection to fetch items', 'tainacan' ),
@@ -756,6 +759,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_remove_item_from_trash'            => __( 'Do you really want to remove this item from trash?', 'tainacan' ),
 	'info_warning_item_trash'                        => __( 'Do you really want to trash this item?', 'tainacan' ),
 	'info_warning_metadatum_delete'                  => __( 'Do you really want to permanently delete this metadatum?', 'tainacan' ),
+	'info_warning_metadata_section_delete'			 => __( 'Do you really want to permanently delete this metadata section?', 'tainacan' ),
 	'info_warning_taxonomy_delete'                   => __( 'Do you really want to delete this taxonomy?', 'tainacan' ),
 	'info_warning_selected_collections_delete'       => __( 'Do you really want to permanently delete the selected collections?', 'tainacan' ),
 	'info_warning_selected_collections_trash'        => __( 'Do you really want to trash the selected collections?', 'tainacan' ),
