@@ -23,7 +23,7 @@ class Metadata_Section extends Entity {
 	 * @see \Tainacan\Entities\Entity::repository
 	 * @var string
 	 */
-	protected $repository = 'Metadata_Section';
+	protected $repository = 'Metadata_Sections';
 	
 	public function __toString() {
 		return apply_filters("tainacan-metadata-section-to-string", $this->get_name(), $this);
