@@ -275,9 +275,6 @@ export const deletePermanentlyAttachment = ( { commit }, attachmentId) => {
 };
 
 export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId, documentId, thumbnailId }) => {
-    commit('cleanAttachments');
-    commit('setTotalAttachments', null);
-
     let endpoint = '/items/' + itemId + '/attachments?order=ASC&orderby=menu_order&perpage=' + attachmentsPerPage + '&paged=' + page;
 
     if (documentId && !isNaN(documentId) && thumbnailId && !isNaN(thumbnailId))

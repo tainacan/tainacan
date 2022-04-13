@@ -4,8 +4,8 @@
                 style="position: relative;"
                 class="table-container">
             <b-loading
-                    is-full-page="false" 
-                    :active="isLoading" />
+                    :is-full-page="false" 
+                    :active.sync="isLoading" />
             <div
                     v-if="attachments.length > 0"
                     class="table-wrapper">
@@ -107,13 +107,14 @@
         },
         props: {
             item: Object,
-            isLoading: Boolean,
+            shouldLoadAttachments: Boolean,
             isEditable: Boolean,
         },
         data() {
             return {
                 attachmentsPage: 1,
-                attachmentsPerPage: 12
+                attachmentsPerPage: 12,
+                isLoading: false
             }
         },
         computed: {
@@ -122,6 +123,11 @@
             },
             totalAttachments() {
                 return this.getTotalAttachments();
+            }
+        },
+        watch: {
+            shouldLoadAttachments() {
+                this.loadAttachments();
             }
         },
         created() {
@@ -159,7 +165,7 @@
                 return last > this.totalAttachments ? this.totalAttachments : last;
             },
             loadAttachments() {
-                this.$emit('isLoadingAttachments', true);
+                this.isLoading = true;
 
                 this.fetchAttachments({
                     page: this.attachmentsPage,
@@ -169,11 +175,11 @@
                     thumbnailId: this.item.thumbnail_id
                 })
                     .then((response) => {
-                        this.$emit('isLoadingAttachments', false);
+                        this.isLoading = false;
                         this.totalAttachments = response.total;
                     })
                     .catch((error) => {
-                        this.$emit('isLoadingAttachments', false);
+                        this.isLoading = false;
                         this.$console.error(error);
                     }) 
             },
