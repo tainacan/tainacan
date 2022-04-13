@@ -227,9 +227,9 @@ class Metadata extends Repository {
 			],
 			'metadata_section_id' => [
 				'map'         => 'meta',
-				'title'       => __( 'Metadatum section', 'tainacan' ),
+				'title'       => __( 'Metadata section', 'tainacan' ),
 				'type'        => ['integer', 'string', 'array'],
-				'description' => __( 'The metadatum section ID', 'tainacan' ),
+				'description' => __( 'The metadata section ID', 'tainacan' ),
 			],
 		] );
 	}
@@ -1725,7 +1725,7 @@ class Metadata extends Repository {
 
 
 	public function update_metadata_section( Entities\Metadatum $metadatum, $remove = false ) {
-		$metadata_section_repository = Metadata_Section::get_instance();
+		$metadata_section_repository = Metadata_Sections::get_instance();
 		if (!$remove) {
 			$metadata_section_repository->add_metadatum($metadatum->get_metadata_section_id(), [$metadatum->get_id()]);
 		} else {
