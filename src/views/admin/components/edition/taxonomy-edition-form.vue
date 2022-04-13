@@ -245,31 +245,7 @@
             TermsList
         },
         mixins: [ wpAjax, formHooks ],
-        data(){
-            return {
-                taxonomyId: String,
-                tabIndex: 0,
-                taxonomy: null,
-                isLoadingTaxonomy: false,
-                isUpdatingSlug: false,
-                isEditingTerm: false,
-                form: {
-                    name: String,
-                    status: String,
-                    description: String,
-                    slug: String,
-                    allowInsert: String,
-                    enabledPostTypes: Array
-                },
-                wpPostTypes: tainacan_plugin.wp_post_types,
-                editFormErrors: {},
-                formErrorMessage: '',
-                entityName: 'taxonomy',
-                updatedAt: undefined,
-                shouldReloadTermsList: false
-            }
-        },
-        beforeRouteLeave( to, from, next ) {
+         beforeRouteLeave( to, from, next ) {
             let formNotSaved = false;
 
             if (this.taxonomy) {
@@ -322,6 +298,30 @@
             } else {
                 next();
             }  
+        },
+        data(){
+            return {
+                taxonomyId: String,
+                tabIndex: 0,
+                taxonomy: null,
+                isLoadingTaxonomy: false,
+                isUpdatingSlug: false,
+                isEditingTerm: false,
+                form: {
+                    name: String,
+                    status: String,
+                    description: String,
+                    slug: String,
+                    allowInsert: String,
+                    enabledPostTypes: Array
+                },
+                wpPostTypes: tainacan_plugin.wp_post_types,
+                editFormErrors: {},
+                formErrorMessage: '',
+                entityName: 'taxonomy',
+                updatedAt: undefined,
+                shouldReloadTermsList: false
+            }
         },
         mounted(){
   

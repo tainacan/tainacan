@@ -6,7 +6,7 @@ import VueBlurHash from 'vue-blurhash';
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanCollectionsCarouselBlocks() {
 
@@ -66,7 +66,7 @@ export default (element) => {
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
                                 className: this.className,
-                                style: this.style
+                                customStyle: this.style
                             }
                         });
                     },

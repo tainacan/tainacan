@@ -5,7 +5,7 @@
                 'page-container': isRepositoryLevel
             }">
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: this.$i18n.get('capabilities') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('capabilities') }]"/>
 
         <div class="sub-header">
             <b-field 

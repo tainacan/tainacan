@@ -113,7 +113,8 @@
                     :index="childIndex"
                     :taxonomy-id="taxonomyId"
                     :order="order"
-                    :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
+                    :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
+                    @onUpdateTermOpenedState="(state) => childTerm.opened = state"/>
         </div>
     </transition-group>
     <a 
@@ -128,14 +129,10 @@
 
 <script>
 import { mapActions } from 'vuex';
-import RecursiveTermItem from './recursive-term-item.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'RecursiveTermItem',
-    components: {
-        RecursiveTermItem,
-    },
     props: {
         term: Object,
         index: Number,
@@ -217,7 +214,7 @@ export default {
         },
         editTerm() {
                     
-            this.term.opened = !this.term.opened;
+            this.$emit('onUpdateTermOpenedState', !this.term.opened);
             
             this.$eventBusTermsList.onEditTerm(this.term);
         
@@ -316,11 +313,11 @@ export default {
             }
 
             this.isEditingTerm = false;
-            this.term.opened = false;
+            this.$emit('onUpdateTermOpenedState', false);
         },
         eventOnTermEditionCanceled() {
             this.isEditingTerm = false;
-            this.term.opened = false;
+            this.$emit('onUpdateTermOpenedState', false);
         }
     }
 }

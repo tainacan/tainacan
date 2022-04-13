@@ -113,7 +113,7 @@
         name: 'TermEditionForm',
         mixins: [ formHooks ],
         props: {
-            form: Object,
+            originalForm: Object,
             taxonomyId: ''
         },
         data() {
@@ -128,11 +128,14 @@
                 entityName: 'term',
                 isLoading: false,
                 parentTermSearchQuery: '',
-                parentTermSearchOffset: 0
+                parentTermSearchOffset: 0,
+                form: {}
             }
         },
+        created() {
+            this.form = JSON.parse(JSON.stringify(this.originalForm));
+        },
         mounted() {
-            
             this.hasParent = this.form.parent != undefined && this.form.parent > 0;
             this.initialParentId = this.form.parent;
 
@@ -174,10 +177,9 @@
                 this.$emit('onEditionCanceled', this.form);
             },
             clearErrors(attributes) {
-                if (attributes instanceof Object){
-                    for(let attribute in attributes){
+                if (attributes instanceof Object) {
+                    for (let attribute in attributes)
                         this.formErrors[attribute] = undefined;
-                    }
                 } else {
                     this.formErrors[attributes] = undefined;
                 }

@@ -1,6 +1,26 @@
 // Main imports
 import Vue from 'vue';
-import Buefy from 'buefy';
+import {
+    Field,
+    Input,
+    Collapse,
+    Autocomplete,
+    Taginput,
+    Tabs,
+    Select,
+    Button,
+    Datepicker,
+    Checkbox,
+    Radio,
+    Tag,
+    Loading,
+    Dropdown,
+    Modal,
+    Dialog,
+    Snackbar,
+    Toast,
+    Numberinput
+} from 'buefy';
 import VTooltip from 'floating-vue';
 import VueMasonry from 'vue-masonry-css';
 import cssVars from 'css-vars-ponyfill';
@@ -50,7 +70,7 @@ import {
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanItemsListComponent() {
 
@@ -68,9 +88,25 @@ export default (element) => {
             }
 
             // Configure and Register Plugins
-            Vue.use(Buefy, {
-                defaultTooltipAnimated: true
-            });
+            Vue.use(Field);
+            Vue.use(Input);
+            Vue.use(Autocomplete);
+            Vue.use(Taginput);
+            Vue.use(Collapse);
+            Vue.use(Button); 
+            Vue.use(Datepicker);
+            Vue.use(Select);
+            Vue.use(Checkbox);
+            Vue.use(Radio);
+            Vue.use(Tag);
+            Vue.use(Tabs);
+            Vue.use(Loading);
+            Vue.use(Dropdown);
+            Vue.use(Modal);
+            Vue.use(Dialog);
+            Vue.use(Snackbar);
+            Vue.use(Toast);
+            Vue.use(Numberinput);
             Vue.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {

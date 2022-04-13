@@ -8,6 +8,11 @@
     overflow-y: auto;
     overflow-x: hidden;
 
+    .v-popper__arrow-container {
+        visibility: hidden;
+        display: none;
+    }
+
     .v-popper__inner {
         background: var(--tainacan-primary);
         color: var(--tainacan-info-color);

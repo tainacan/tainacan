@@ -88,7 +88,7 @@
     --swiper-theme-color: var(--tainacan-block-primary, $primary);
 
     // Spinner
-    .spinner-container {
+    .spinner {
         min-height: 56px;
         padding: 1em;
         display: flex;
@@ -134,8 +134,14 @@
         width: calc(100% + 40px);
         left: -20px;
 
-        .swiper-container {
+        .swiper {
             margin: 0 var(--spaceAroundCarousel, 50px);
+
+            ul.swiper-wrapper { 
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
 
             a>span,
             a:hover>span {
@@ -247,7 +253,7 @@
     .tainacan-carousel {
         position: relative;
         
-        & .skeleton {
+        .skeleton {
             min-height: 150px;
             max-height: 260px;
         }
@@ -298,6 +304,7 @@
         padding: 0;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 10px;
+        max-width: calc(100% - 2 * var(--spaceAroundCarousel));
 
         li.collection-list-item {
             position: relative;
@@ -615,7 +622,7 @@
     max-width: calc(100% - 72px);
 }
 .block-editor-block-list__block:not(.has-text-color)>.wp-block-tainacan-carousel-collections-list {
-    .swiper-container,
+    .swiper,
     li.collection-list-item {
         a>span,
         a:hover>span {

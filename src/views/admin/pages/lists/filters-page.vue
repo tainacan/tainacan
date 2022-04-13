@@ -1,6 +1,6 @@
 <template>
     <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
-        <tainacan-title :bread-crumb-items="[{ path: '', label: this.$i18n.get('filters') }]"/>
+        <tainacan-title :bread-crumb-items="[{ path: '', label: $i18n.get('filters') }]"/>
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_filters_inheritance') }}</p>
@@ -190,6 +190,7 @@
                                             @onEditionFinished="onEditionFinished()"
                                             @onEditionCanceled="onEditionCanceled()"
                                             @onErrorFound="formWithErrors = filter.id"
+                                            @onUpdateSavedState="(state) => editForms[filter.id].saved = state"
                                             :index="index"
                                             :original-filter="filter"
                                             :edited-filter="editForms[openedFilterId]"/>
@@ -349,7 +350,7 @@
                         class="tainacan-modal-content" 
                         style="width: auto">
                     <header class="tainacan-modal-title">
-                        <h2>{{ this.$i18n.get('label_available_filter_types') }}</h2>
+                        <h2>{{ $i18n.get('label_available_filter_types') }}</h2>
                         <hr>
                     </header>
                     <section class="tainacan-form">
@@ -426,6 +427,33 @@ export default {
     components: {
         FilterEditionForm
     },
+    beforeRouteLeave ( to, from, next ) {
+        let hasUnsavedForms = false;
+        for (let editForm in this.editForms) {
+            if (!this.editForms[editForm].saved) 
+                hasUnsavedForms = true;
+        }
+        if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
+            this.$buefy.modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_filters_not_saved'),
+                    onConfirm: () => {
+                        this.onEditionCanceled();
+                        next();
+                    },
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        } else {
+            next()
+        }  
+    },
     data(){
         return {
             isRepositoryLevel: false,
@@ -478,33 +506,6 @@ export default {
             },
             immediate: true
         }
-    },
-    beforeRouteLeave ( to, from, next ) {
-        let hasUnsavedForms = false;
-        for (let editForm in this.editForms) {
-            if (!this.editForms[editForm].saved) 
-                hasUnsavedForms = true;
-        }
-        if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
-            this.$buefy.modal.open({
-                parent: this,
-                component: CustomDialog,
-                props: {
-                    icon: 'alert',
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_filters_not_saved'),
-                    onConfirm: () => {
-                        this.onEditionCanceled();
-                        next();
-                    },
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });  
-        } else {
-            next()
-        }  
     },
     created() {
         this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
@@ -729,12 +730,15 @@ export default {
         },
         removeFilter(removedFilter) {
 
+            if (this.editForms[removedFilter.id])
+                delete this.editForms[removedFilter.id];
+
             this.deleteFilter(removedFilter.id)
-            .then(() => {
-                // Reload Available Metadatum Types List
-                this.updateListOfMetadata();
-            })
-            .catch((error) => { this.$console.log(error)});
+                .then(() => {
+                    // Reload Available Metadatum Types List
+                    this.updateListOfMetadata();
+                })
+                .catch((error) => { this.$console.log(error)});
         
             if (!this.isRepositoryLevel)
                 this.updateFiltersOrder(); 
@@ -780,13 +784,11 @@ export default {
         },
         onEditionFinished() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
             this.$router.push({ query: {}});
         },
         onEditionCanceled() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
             this.$router.push({ query: {}});
         },

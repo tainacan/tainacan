@@ -1,6 +1,24 @@
 // Main imports
 import Vue from 'vue';
-import Buefy from 'buefy';
+import {
+    Field,
+    Numberinput,
+    Switch,
+    Tabs,
+    Tag,
+    Checkbox,
+    Collapse,
+    Radio,
+    Button,
+    Upload,
+    Autocomplete,
+    Datepicker,
+    Dropdown,
+    Loading,
+    Input,
+    Select,
+    Taginput
+} from 'buefy';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueTheMask from 'vue-the-mask';
@@ -32,7 +50,7 @@ export default (element) => {
     function renderItemSubmissionForm() {
 
         // Vue Dev Tools!
-        Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+        Vue.config.devtools = TAINACAN_ENV === 'development';
 
         // Gets the div with the content of the block
         let blockElement = element ? element : document.getElementById('tainacan-item-submission-form');
@@ -47,9 +65,23 @@ export default (element) => {
             }
 
             // Configure and Register Plugins
-            Vue.use(Buefy, {
-                defaultTooltipAnimated: true
-            });
+            Vue.use(Field);
+            Vue.use(Numberinput);
+            Vue.use(Switch);
+            Vue.use(Tabs);
+            Vue.use(Tag);
+            Vue.use(Checkbox);
+            Vue.use(Radio);
+            Vue.use(Button);
+            Vue.use(Select);
+            Vue.use(Loading);
+            Vue.use(Dropdown);
+            Vue.use(Datepicker);
+            Vue.use(Upload);
+            Vue.use(Taginput);
+            Vue.use(Autocomplete);
+            Vue.use(Collapse);
+            Vue.use(Input);
             Vue.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {

@@ -2,7 +2,7 @@
     <div>
         <div class="repository-level-page page-container">
             <tainacan-title 
-                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('taxonomies') }]"/>
+                    :bread-crumb-items="[{ path: '', label: $i18n.get('taxonomies') }]"/>
             <div class="sub-header">
 
                 <!-- New Taxonomy Button ----  -->

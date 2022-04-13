@@ -3,7 +3,7 @@
             :class="{ 'repository-level-page page-container': isRepositoryLevel }"
             style="padding-bottom: 0;">
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: this.$i18n.get('metadata') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('metadata') }]"/>
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
@@ -271,7 +271,7 @@
                                     
                                     <child-metadata-list
                                             v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
-                                            :parent.sync="metadatum"
+                                            :parent.sync="activeMetadatumList[index]"
                                             :metadata-name-filter-string="metadataNameFilterString"
                                             :metadata-type-filter-options="metadataTypeFilterOptions"
                                             :has-some-metadata-type-filter-applied="hasSomeMetadataTypeFilterApplied"

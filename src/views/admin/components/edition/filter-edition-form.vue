@@ -162,8 +162,9 @@
                         size="is-small"
                         @input="clearErrors('begin_with_filter_collapsed')"
                         v-model="form.begin_with_filter_collapsed"
-                        true-value="yes"
-                        false-value="no"
+                        :true-value="'yes'"
+                        :false-value="'no'"
+                        :native-value="form.begin_with_filter_collapsed == 'yes' ? 'yes' : 'no'"
                         name="begin_with_filter_collapsed">
                 <help-button
                         :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
@@ -254,13 +255,13 @@ export default {
     },
     beforeDestroy() {
         if (this.closedByForm) {
-            this.editedFilter.saved = true;
+            this.$emit('onUpdateSavedState', true);
         } else {
             this.oldForm.saved = this.form.saved;
             if (JSON.stringify(this.form) != JSON.stringify(this.oldForm)) 
-                this.editedFilter.saved = false;
+                this.$emit('onUpdateSavedState', false);
             else    
-                this.editedFilter.saved = true;
+                this.$emit('onUpdateSavedState', true);
         }
     },
     methods: {
@@ -272,9 +273,15 @@ export default {
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
                 
                 this.isLoading = true;
-                // this.fillExtraFormData(this.form);
 
-                this.updateFilter({ filterId: filter.id, index: this.index, options: this.form})
+                for (let [key, value] of this.form) {
+                    if (key === 'begin_with_filter_collapsed')
+                        this.form[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
+                }
+                if (this.form['begin_with_filter_collapsed'] === undefined)
+                    this.form['begin_with_filter_collapsed'] = 'no';
+                
+                this.updateFilter({ filterId: filter.id, index: this.index, options: this.form })
                     .then(() => {
                         this.form = {};
                         this.formErrors = {};
@@ -299,17 +306,19 @@ export default {
                 let formElement = document.getElementById('filterEditForm');
                 let formData = new FormData(formElement); 
                 let formObj = {};
-
+                
                 for (let [key, value] of formData.entries()) {
                     if (key === 'begin_with_filter_collapsed')
-                        formObj[key] = value ? 'yes' : 'no';
+                        formObj[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
                     else
                         formObj[key] = value;
                 }
-
+                if (formObj['begin_with_filter_collapsed'] === undefined)
+                    formObj['begin_with_filter_collapsed'] = 'no';
+                    
                 this.fillExtraFormData(formObj);
                 this.isLoading = true;
-                this.updateFilter({ filterId: filter.id, index: this.index, options: formObj})
+                this.updateFilter({ filterId: filter.id, index: this.index, options: formObj })
                     .then(() => {
                         this.form = {};
                         this.formErrors = {};

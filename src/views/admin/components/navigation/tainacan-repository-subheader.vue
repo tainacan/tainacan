@@ -7,14 +7,16 @@
         <div 
                 v-if="$adminOptions.hideCollectionSubheader"
                 class="back-button is-hidden-mobile">
-            <button     
-                    @click="$router.go(-1)"
+            <router-link
+                    v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
+                    :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
                     class="button is-turquoise4"
+                    tag="button"
                     :aria-label="$i18n.get('back')">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-previous"/>
                 </span>
-            </button>
+            </router-link>
         </div>
 
         <h1 

@@ -4,7 +4,7 @@
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
                 :disabled="disabled"
                 :is="getComponent"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 v-model="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNewFromOptions"
@@ -60,7 +60,7 @@
                 :close-button-aria-label="$i18n.get('close')">
             <term-edition-form
                     :taxonomy-id="taxonomyId"
-                    :form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                     :is-modal="true"
                     @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
                     @onEditionCanceled="() => $console.log('Editing canceled')"
@@ -72,7 +72,7 @@
             <term-creation-panel
                     v-if="isTermCreationPanelOpen"
                     :taxonomy-id="taxonomyId"
-                    :form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                     @onEditionFinished="($event) => addTermToBeCreated($event)"
                     @onEditionCanceled="() => isTermCreationPanelOpen = false"
                     @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />

@@ -10,7 +10,10 @@ import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
-import 'swiper/css/swiper.min.css';
+import 'swiper/css';
+import 'swiper/css/a11y';
+import 'swiper/css/autoplay';
+import 'swiper/css/navigation';
 
 export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
     let {
@@ -56,7 +59,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         return (
             <li
                 key={ collection.id }
-                className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>
+                className={ 'swiper-slide collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>
                 { tainacan_blocks.wp_version < '5.4' ?
                     <IconButton
                         onClick={ () => removeItemOfId(collection.id) }
@@ -426,6 +429,11 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     '--spaceBetweenCollections': !isNaN(spaceBetweenCollections) ? (spaceBetweenCollections + 'px') : '32px',
                                     '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
                                 }}>
+                            <div className={'swiper'}>
+                                <ul className={'swiper-wrapper collections-list-edit'}>
+                                    { collections }
+                                </ul>
+                            </div>
                             <button
                                     class="swiper-button-prev"
                                     slot="button-prev"
@@ -445,9 +453,6 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                             fill="none"/>
                                 </svg>
                             </button>
-                            <ul className={'collections-list-edit'}>
-                                { collections }
-                            </ul>
                             <button
                                     class="swiper-button-next"
                                     slot="button-next"

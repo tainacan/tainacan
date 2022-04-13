@@ -236,7 +236,8 @@
         &>div audio,
         &>div img,
         &>div video,
-        &>div.tainacan-embed-container {
+        &>div.tainacan-embed-container,
+        &>figure.tainacan-embed-container {
             width: 100%;
             max-width: 100vw;
             text-align: center;
@@ -251,6 +252,7 @@
         }
         iframe {
             border: none;
+            padding: 4em;
         }
 
         .empty-document {

@@ -17,7 +17,7 @@
                         @add="onAdd"
                         @remove="onRemove"
                         :data="options"
-                        :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
+                        :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                         autocomplete
                         :remove-on-keys="[]"
                         :dropdown-position="isLastMetadatum ? 'top' :'auto'"
@@ -59,7 +59,7 @@
                         {{ $i18n.get('info_no_item_found') }}
                     </template>
                     <template
-                            v-if="currentUserCanEditItems && !$adminOptions.itemEditionMode" 
+                            v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)" 
                             slot="footer">
                         <a @click="editItemModalOpen = true">
                             {{ $i18n.get('label_create_new_item') + ' "' + searchQuery + '"' }}
@@ -81,7 +81,7 @@
                                 style="position: relative;">
                             <div v-html="itemValue.valuesAsHtml" />
                             <a 
-                                    v-if="currentUserCanEditItems && !$adminOptions.itemEditionMode"
+                                    v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)"
                                     @click="editSelected(itemValue.value)"
                                     class="relationship-value-button--edit">
                                 <span class="icon">
@@ -110,31 +110,33 @@
                 </div>
             </b-tab-item>
         </b-tabs>
-        <a
+        <template 
                 v-if="currentUserCanEditItems && 
                     itemMetadatum.item &&
-                    itemMetadatum.item.id &&
-                    (maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
-                    (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
-                :disabled="$adminOptions.itemEditionMode"
-                @click="editItemModalOpen = !editItemModalOpen"
-                class="add-link">
-            <span class="icon is-small">
-                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
-            </span>
-            &nbsp;{{ $i18n.get('label_create_new_item') }}
-        </a>
-        <b-modal 
-                :width="1200"
-                :active.sync="editItemModalOpen"
-                :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
-                :close-button-aria-label="$i18n.get('close')">
-            <iframe 
-                    :id="relationshipInputId + '_item-edition-modal'"
-                    width="100%"
-                    :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
-                    :src="itemModalSrc" />
-        </b-modal>
+                    itemMetadatum.item.id">
+            <a
+                    v-if="(maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
+                            (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
+                    :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
+                    @click="editItemModalOpen = !editItemModalOpen"
+                    class="add-link">
+                <span class="icon is-small">
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                </span>
+                &nbsp;{{ $i18n.get('label_create_new_item') }}
+            </a>
+            <b-modal 
+                    :width="1200"
+                    :active.sync="editItemModalOpen"
+                    :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
+                    :close-button-aria-label="$i18n.get('close')">
+                <iframe 
+                        :id="relationshipInputId + '_item-edition-modal'"
+                        width="100%"
+                        :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
+                        :src="itemModalSrc" />
+            </b-modal>
+        </template>
     </div>
 </template>
 
@@ -404,7 +406,7 @@
                 const message = event.message ? 'message' : 'data';
                 const data = event[message];
 
-                if (data.type == 'itemEditionMessage') {
+                if (data.type == 'itemEditionMessage' && data.item !== null) {
                     this.editItemModalOpen = false;
 
                     // An item is being edited from the modal
@@ -447,7 +449,11 @@
                 let valuesAsHtml = '';
                 valuesAsHtml += `<div class="tainacan-relationship-metadatum" data-item-id="${ item.id }">
                     <div class="tainacan-relationship-metadatum-header">`;
-                    if (this.isDisplayingRelatedItemMetadata && this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf('thumbnail') >= 0)
+                    if (
+                        this.isDisplayingRelatedItemMetadata &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf('thumbnail') >= 0
+                    )
                         valuesAsHtml += `<img src="${ this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype) }" class="attachment-tainacan-small size-tainacan-small" alt="${ item.thumbnail_alt }" loading="lazy" width="40" height="40">`;
                 
                     valuesAsHtml += `<h4 class="label">
@@ -458,6 +464,7 @@
                 Object.values(item.metadata).forEach(metadatumValue => {
                     if (
                         metadatumValue.id != this.itemMetadatum.metadatum.metadata_type_options.search &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
                         this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf(metadatumValue.id) >= 0 &&
                         metadatumValue.value_as_html
                     ) {

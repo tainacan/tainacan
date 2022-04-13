@@ -1121,8 +1121,13 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
 		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
 		* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
+		* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
+		* 	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
+		* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 		* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
 		*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
+		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
+		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
 		* @return string  The HTML div to be used for rendering the item galery component
 	 */
 	public function get_tainacan_item_gallery($args = []) {
@@ -1137,8 +1142,13 @@ class Theme_Helper {
 			'hideFileNameThumbnails' => 		true, 
 			'hideFileCaptionThumbnails' => 		true,
 			'hideFileDescriptionThumbnails' =>  true,
+			'hideFileNameLightbox' =>	 		false, 
+			'hideFileCaptionLightbox' => 		false,
+			'hideFileDescriptionLightbox' =>	false,
 			'openLightboxOnClick' => 			true,
-			'showDownloadButtonMain' =>			true
+			'showDownloadButtonMain' =>			true,
+			'lightboxHasLightBackground' => 	false,
+			'showArrowsAsSVG' =>				true
 		);
 		$args = wp_parse_args($args, $defaults);
 		
@@ -1158,8 +1168,13 @@ class Theme_Helper {
 		$hide_file_name_thumbnails = $args['hideFileNameThumbnails'];
 		$hide_file_caption_thumbnails = $args['hideFileCaptionThumbnails'];
 		$hide_file_description_thumbnails = $args['hideFileDescriptionThumbnails'];
+		$hide_file_name_lightbox = $args['hideFileNameLightbox'];
+		$hide_file_caption_lightbox = $args['hideFileCaptionLightbox'];
+		$hide_file_description_lightbox = $args['hideFileDescriptionLightbox'];
 		$open_lightbox_on_click = $args['openLightboxOnClick'];
 		$show_download_button_main = $args['showDownloadButtonMain'];
+		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
+		$show_arrows_as_svg = $args['showArrowsAsSVG'];
 
 		// Prefils arrays with proper values to avoid messsy IFs
 		$layout_elements = array(
@@ -1188,11 +1203,42 @@ class Theme_Helper {
 			if ($hide_file_caption_main)
 				$class_slide_metadata .= ' hide-caption';
 
+			// Checks if there is at least one image alongside the media sources
+			// to decide if loading the lighbox is worthy on the main slider
+			if ($open_lightbox_on_click) {
+				$media_includes_images = false;
+
+				if ( $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
+					$document_type = tainacan_get_the_document_type($item_id);
+					
+					if ($document_type === 'attachment')  {
+						// Uses this moment to also see if we have an image
+						$attachment = get_post(tainacan_get_the_document_raw($item_id));
+						$media_includes_images = wp_attachment_is('image', $attachment->ID);
+					} else if ($document_type === 'url') {
+						$document_options = $item->get_document_options();
+						$media_includes_images = isset($document_options['is_image']) && $document_options['is_image'];
+					}
+				}
+				
+				if ( $media_sources['attachments'] ) {
+					foreach ( $attachments as $attachment ) {
+						$is_attachment_an_image = wp_attachment_is('image', $attachment->ID);
+
+						if ($is_attachment_an_image)
+							$media_includes_images = true; // Do not asign directly as we want to check if at least one is true
+					}
+				}
+
+				if (!$media_includes_images)
+					$open_lightbox_on_click = false;
+			}
+
 			if ( $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
-				$is_document_type_attachment = tainacan_get_the_document_type($item_id) === 'attachment';
+				$document_type = tainacan_get_the_document_type($item_id);
 				
 				// Document description is a bit more tricky
-				if ($is_document_type_attachment) {
+				if ($document_type === 'attachment')  {
 					$attachment = get_post(tainacan_get_the_document_raw($item_id));
 					$document_description = ($attachment instanceof WP_Post) ? $attachment->post_content : '';
 				}
@@ -1203,10 +1249,15 @@ class Theme_Helper {
 														sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_document_download_link($item_id))
 												: ''),
 						'media_content' => tainacan_get_the_document($item_id),
-						'media_content_full' => $open_lightbox_on_click ? ( $is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
-						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
-						'media_description' => $is_document_type_attachment ? $document_description : '',
-						'media_caption' => $is_document_type_attachment ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
+						'media_content_full' => $open_lightbox_on_click ?
+												(
+													$document_type === 'attachment' ?
+													tainacan_get_the_document($item_id, 'full') :
+													sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full'))
+												) : '',
+						'media_title' => $document_type === 'attachment' ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
+						'media_description' => $document_type === 'attachment' ? $document_description : '',
+						'media_caption' => $document_type === 'attachment' ? wp_get_attachment_caption(tainacan_get_the_document_raw($item_id)) : '',
 						'media_type' => tainacan_get_the_document_type($item_id),
 						'class_slide_metadata' => $class_slide_metadata
 					));
@@ -1214,13 +1265,20 @@ class Theme_Helper {
 			
 			if ( $media_sources['attachments'] ) {
 				foreach ( $attachments as $attachment ) {
+					$is_attachment_an_image = wp_attachment_is('image', $attachment->ID);
+
 					$media_items_main[] =
 						tainacan_get_the_media_component_slide(array(
 							'after_slide_metadata' => (( $show_download_button_main && tainacan_the_item_attachment_download_link($attachment->ID) != '' ) ?
 															sprintf('<span class="tainacan-item-file-download">%s</span>', tainacan_the_item_attachment_download_link($attachment->ID))
 													: ''),
 							'media_content' => tainacan_get_attachment_as_html($attachment->ID, $item_id),
-							'media_content_full' => $open_lightbox_on_click ? ( wp_attachment_is('image', $attachment->ID) ? wp_get_attachment_image( $attachment->ID, 'full', false) : sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID)) ) : '',
+							'media_content_full' => $open_lightbox_on_click ?
+													( 
+														$is_attachment_an_image ?
+														wp_get_attachment_image( $attachment->ID, 'full', false) :
+														sprintf('<div class="attachment-without-image tainacan-embed-container"><iframe id="tainacan-attachment-iframe--%s" src="%s"></iframe></div>', $block_id, tainacan_get_attachment_html_url($attachment->ID))
+													) : '',
 							'media_title' => $attachment->post_title,
 							'media_description' => $attachment->post_content,
 							'media_caption' => $attachment->post_excerpt,
@@ -1231,6 +1289,11 @@ class Theme_Helper {
 			}
 		}
 		
+		// Make sure we have more than one media item otherwise 
+		// we don't need to show thumbnails if the main carousel exists
+		if ( $layout_elements['main'] && count($media_items_main) <= 1 )
+			$layout_elements['thumbnails'] = false;
+
 		if ( $layout_elements['thumbnails'] ) {
 
 			$class_slide_metadata = '';
@@ -1330,8 +1393,12 @@ class Theme_Helper {
 						'lazy' => true
 					)
 				) : '',
-				'swiper_arrows_as_svg' => true,
+				'swiper_arrows_as_svg' => $show_arrows_as_svg,
 				'disable_lightbox' => !$open_lightbox_on_click,
+				'hide_media_name' => $hide_file_name_lightbox,
+				'hide_media_caption' => $hide_file_caption_lightbox,
+				'hide_media_description' => $hide_file_description_lightbox,
+				'lightbox_has_light_background' => $lightbox_has_light_background
 			)
 		);
 	}

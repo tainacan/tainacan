@@ -371,6 +371,7 @@
                     :close-button-aria-label="$i18n.get('close')">
                 <filters-items-list
                         :is-loading-items="isLoadingItems"
+                        @updateIsLoadingItemsState="(state) => isLoadingItems = state"
                         :autofocus="filtersAsModal"
                         :tabindex="filtersAsModal ? -1 : 0"
                         :aria-modal="filtersAsModal"
@@ -380,7 +381,8 @@
                         :collection-id="collectionId"
                         :is-repository-level="isRepositoryLevel"
                         :filters-as-modal="filtersAsModal"
-                        :has-filtered="hasFiltered" />
+                        :has-filtered="hasFiltered"
+                        :is-mobile-screen="isMobileScreen" />
             </b-modal>
         </template>
 
@@ -586,7 +588,7 @@
                 hasAnOpenAlert: true,                
                 metadataSearchCancel: undefined,
                 latestNonFullscreenViewMode: '',
-                isMobile: false,
+                isMobileScreen: false,
                 initialItemPosition: null,
                 isFiltersListFixedAtTop: false,
                 isFiltersListFixedAtBottom: false,
@@ -660,7 +662,7 @@
                         if (this.filtersAsModal && this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
                             this.$refs['filters-modal'].focus();
                             
-                        if (!this.filtersAsModal && !this.isMobile && document.documentElement && (this.registeredViewModes[this.viewMode] == undefined || !this.registeredViewModes[this.viewMode].full_screen))
+                        if (!this.filtersAsModal && !this.isMobileScreen && document.documentElement && (this.registeredViewModes[this.viewMode] == undefined || !this.registeredViewModes[this.viewMode].full_screen))
                             document.documentElement.classList.remove('is-clipped');
                     }, 800);
                     
@@ -1145,11 +1147,11 @@
             },
             hideFiltersOnMobile: _.debounce( function() {
                 this.$nextTick(() => {
- 
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
-                        this.isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
+                        const previousisMobileScreen = this.isMobileScreen;
+                        this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
                         
-                        if (this.isMobile || this.startWithFiltersHidden || this.openAdvancedSearch)
+                        if ((!previousisMobileScreen && this.isMobileScreen) || this.startWithFiltersHidden || this.openAdvancedSearch)
                             this.isFiltersModalActive = false;
                         else
                             this.isFiltersModalActive = true;

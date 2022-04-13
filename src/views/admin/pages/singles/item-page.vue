@@ -201,7 +201,7 @@
                                             class="field">
                                         <label class="label">{{ itemMetadatum.metadatum.name }}</label>
                                         <div
-                                                :class="{ 
+                                                :class="{
                                                     'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
                                                     'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound',
                                                     'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
@@ -273,7 +273,7 @@
                                 v-if="!$adminOptions.hideItemSingleDocument"
                                 class="section-label">
                             <label>
-                                <span class="icon has-text-gray4">
+                                <span class="icon has-text-gray4 tainacan-icon-1-125em">
                                     <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))"/>
                                 </span>
                                 {{ item.document != undefined && item.document != null && item.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}
@@ -300,7 +300,7 @@
                                 class="section-label">
                             <label>
                                 <span class="icon has-text-gray4">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-image"/>
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-image"/>
                                 </span>
                                 {{ $i18n.get('label_thumbnail') }}
                             </label>
@@ -351,7 +351,7 @@
                                 class="section-label">
                             <label slot="header">
                                 <span class="icon has-text-gray4">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments"/>
                                 </span>
                                 <span>
                                     {{ $i18n.get('label_attachments') }}&nbsp;
@@ -367,9 +367,7 @@
                                 v-if="item != undefined && item.id != undefined && !isLoading && !$adminOptions.hideItemSingleAttachments"
                                 class="section-box section-attachments">
                             <attachments-list
-                                    :item="item"
-                                    :is-loading.sync="isLoadingAttachments"
-                                    @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading" />
+                                    :item="item" />
                         </div>   
 
                         <!-- Hook for extra Form options -->
@@ -530,18 +528,20 @@
                 contextEdit: true,    
                 fetchOnly: 'title,thumbnail,status,modification_date,document_type,document_mimetype,document,comment_status,document_as_html,related_items'       
             })
-             .then((resp) => {
+            .then((resp) => {
                 resp.request.then((item) => {
                     this.$root.$emit('onCollectionBreadCrumbUpdate', [
                         {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
                         {path: '', label: item.title}
                     ]);
                     this.loadMetadata();
-                });
+                })
+                .catch(() => this.isLoading = false);
 
                 // Item resquest token for cancelling
                 this.itemRequestCancel = resp.source;
-            });
+            })
+            .catch(() => this.isLoading = false);
 
         },
         methods: {

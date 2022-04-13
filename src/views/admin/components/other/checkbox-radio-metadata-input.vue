@@ -67,28 +67,24 @@
                                     v-for="(option, key) in searchResults"
                                     :key="key">
                                 <label 
-                                        v-if="isCheckbox"
-                                        class="b-checkbox checkbox">
+                                        :class="{ 
+                                            'b-checkbox checkbox': isCheckbox,
+                                            'b-radio radio': !isCheckbox,
+                                            'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
+                                        }">
                                     <input
-                                            :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
-                                            v-model="selected"
-                                            :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
-                                            type="checkbox"> 
+                                            :disabled="!isOptionSelected(option.id ? option.id : option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
+                                            @input="updateLocalSelection($event.target.value)"
+                                            :checked="isOptionSelected(option.id ? option.id : option.value)"
+                                            :value="option.id ? getOptionValue(option.id) : getOptionValue(option.value)"
+                                            :type="isCheckbox ? 'checkbox' : 'radio'"> 
                                     <span class="check" /> 
                                     <span class="control-label">
                                         <span 
                                                 class="checkbox-label-text"
                                                 v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
                                     </span>
-                                </label>
-                                <b-radio
-                                        v-else
-                                        v-model="selected"
-                                        :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                    <span 
-                                                class="checkbox-label-text"
-                                                v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" />
-                                </b-radio>
+                                </label>                                
                             </li>
                         </template>
                         <template v-if="!isLoadingSearch && !searchResults.length">
@@ -137,12 +133,18 @@
                                 class="tainacan-li-checkbox-list"
                                 v-for="(option, key) in options"
                                 :key="key">
-                            <label class="b-checkbox checkbox">
+                            <label
+                                :class="{ 
+                                    'b-checkbox checkbox': isCheckbox,
+                                    'b-radio radio': !isCheckbox,
+                                    'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
+                                }">
                                 <input 
-                                        :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
-                                        v-model="selected"
-                                        :value="option.value"
-                                        type="checkbox"> 
+                                        :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
+                                        :checked="isOptionSelected(option.value)"
+                                        @input="updateLocalSelection($event.target.value)"
+                                        :value="getOptionValue(option.value)"
+                                        :type="isCheckbox ? 'checkbox' : 'radio'"> 
                                 <span class="check" /> 
                                 <span class="control-label">
                                     <span class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
@@ -190,25 +192,22 @@
                                     :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                                     :key="index">
                                 <label 
-                                        v-if="isCheckbox"
-                                        class="b-checkbox checkbox"
-                                        :class="{ 'is-disabled': (Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length }">
+                                        :class="{
+                                            'b-checkbox checkbox': isCheckbox,
+                                            'b-radio radio': !isCheckbox, 
+                                            'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
+                                        }" >
                                     <input 
-                                            :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
-                                            v-model="selected"
-                                            :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
-                                            type="checkbox"> 
+                                            :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
+                                            @input="updateLocalSelection($event.target.value)"
+                                            :checked="isOptionSelected(option.value)"
+                                            :value="getOptionValue(option.value)"
+                                            :type="isCheckbox ? 'checkbox' : 'radio'"> 
                                     <span class="check" /> 
                                     <span class="control-label">
-                                        <span class="checkbox-label-text">{{ `${option.label}` }}</span>
+                                        <span class="checkbox-label-text">{{ option.label }}</span>
                                     </span>
                                 </label>
-                                <b-radio
-                                        v-else
-                                        v-model="selected"
-                                        :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                    {{ `${option.label}` }}
-                                </b-radio>
                                 <a
                                         v-if="option.total_children > 0"
                                         @click="getOptionChildren(option, key, index)">
@@ -281,7 +280,7 @@
                                     attached
                                     closable
                                     class="is-small"
-                                    @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
+                                    @close="updateLocalSelection(term)">
                                  <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                             </b-tag>
                         </div>
@@ -395,7 +394,6 @@
                 this.highlightHierarchyPath();
         },
         created() {
-
             if (this.shouldBeginWithListExpanded)
                 this.initializeValues();
 
@@ -811,6 +809,35 @@
             onMobileSpecialFocus($event) {
                 $event.target.blur();
                 this.$emit('mobileSpecialFocus');
+            },
+            isOptionSelected(optionValue) {
+                if (Array.isArray(this.selected))
+                    return (this.selected.indexOf((isNaN(Number(optionValue)) ? optionValue : Number(optionValue))) >= 0)
+                else
+                    return optionValue == this.selected;
+            },
+            getOptionValue(optionValue) {
+                return isNaN(Number(optionValue)) ? optionValue : Number(optionValue)
+            },
+            updateLocalSelection(newSelected) {
+
+                let localSelection = this.isCheckbox ? this.selected : (Array.isArray(this.selected) ? this.selected[0] : this.selected);
+
+                if (Array.isArray(localSelection)) {
+                    const existingValueIndex = this.selected.indexOf(isNaN(Number(newSelected)) ? newSelected : Number(newSelected));
+                    
+                    if (existingValueIndex >= 0)
+                        localSelection.splice(existingValueIndex, 1);
+                    else
+                        localSelection.push(isNaN(Number(newSelected)) ? newSelected : Number(newSelected));
+                } else {
+
+                    if (newSelected == localSelection)
+                        localSelection = false;
+                    else
+                        localSelection = isNaN(Number(newSelected)) ? newSelected : Number(newSelected);
+                }
+                this.$emit('input', localSelection);
             }
         }
     }
@@ -1263,7 +1290,7 @@
             }
             .tainacan-finder-column {
                 max-width: calc(99vw - 0.75em - 0.75em - 2px);
-                min-width: calc(99vw - 0.75em - 0.75em - 2px);
+                min-width: calc(99vw - 0.75em - 0.75em - 24px);
             }
             .tainacan-finder-column .column-label+ul {
                 max-height: calc(100% - 0.75em - 0.45em - 0.45em - 3px);

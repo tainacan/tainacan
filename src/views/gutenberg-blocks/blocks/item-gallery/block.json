@@ -73,6 +73,18 @@
             "type": "boolean",
             "default": true
         },
+        "hideFileNameLightbox": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideFileCaptionLightbox": {
+            "type": "boolean",
+            "default": false
+        },
+        "hideFileDescriptionLightbox": {
+            "type": "boolean",
+            "default": false
+        },
         "openLightboxOnClick": {
             "type": "boolean",
             "default": true
@@ -98,6 +110,10 @@
             "default": 136
         },
         "showDownloadButtonMain": {
+            "type": "boolean",
+            "default": false
+        },
+        "lightboxHasLightBackground": {
             "type": "boolean",
             "default": false
         }

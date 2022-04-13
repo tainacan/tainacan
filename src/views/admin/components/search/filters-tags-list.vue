@@ -15,30 +15,31 @@
                     </a>
                 </span>
             </p>
-            <swiper 
-                        role="list"
-                        ref="tainacanFilterTagsSwiper"
-                        :options="swiperOptions">
-                <swiper-slide 
-                        v-for="(filterTag, index) of filterTags"
-                        :key="index"
-                        class="filter-tag"
-                        :class="{ 'is-readonly': !filterTag.filterId && filterTag.argType != 'postin' }">
-                    <span class="">
-                        <div class="filter-tag-metadatum-name">
-                            {{ filterTag.metadatumName }}
-                        </div>
-                        <div
-                                class="filter-tag-metadatum-value"
-                                v-html="filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label"/>
-                    </span>
-                    <a
-                            v-if="filterTag.filterId || filterTag.argType == 'postin'"
-                            role="button"
-                            tabindex="0"
-                            class="tag is-delete"
-                            @click="removeMetaQuery(filterTag)" />
-                </swiper-slide>
+            <div 
+                    class="swiper"
+                    id="tainacanFilterTagsSwiper">
+                <ul class="swiper-wrapper">
+                    <li 
+                            v-for="(filterTag, index) of filterTags"
+                            :key="index"
+                            class="swiper-slide filter-tag"
+                            :class="{ 'is-readonly': !filterTag.filterId && filterTag.argType != 'postin' }">
+                        <span class="">
+                            <div class="filter-tag-metadatum-name">
+                                {{ filterTag.metadatumName }}
+                            </div>
+                            <div
+                                    class="filter-tag-metadatum-value"
+                                    v-html="filterTag.singleLabel != undefined ? filterTag.singleLabel : filterTag.label"/>
+                        </span>
+                        <a
+                                v-if="filterTag.filterId || filterTag.argType == 'postin'"
+                                role="button"
+                                tabindex="0"
+                                class="tag is-delete"
+                                @click="removeMetaQuery(filterTag)" />
+                    </li>
+                </ul>
                 <button 
                         class="swiper-button-prev" 
                         id="tainacan-filter-tags-prev" 
@@ -67,37 +68,23 @@
                                 fill="none"/>
                     </svg>
                 </button>
-            </swiper>
+            </div>
         </div>
     </transition>
 </template>
 
 <script>
     import { mapGetters } from 'vuex';
-    import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
+    import 'swiper/css';
+    import 'swiper/css/mousewheel';
+    import 'swiper/css/navigation';
+    import Swiper, { Mousewheel, Navigation } from 'swiper';
 
     export default {
         name: 'FiltersTagsList',
-        components: {
-            Swiper,
-            SwiperSlide
-        },
         data() {
             return {
-                swiperOptions: {
-                    watchOverflow: true,
-                    mousewheel: true,
-                    observer: true,
-                    preventInteractionOnTransition: true,
-                    allowClick: true,
-                    allowTouchMove: true,
-                    slideToClickedSlide: true,
-                    slidesPerView: 'auto',
-                    navigation: {
-                        nextEl: '#tainacan-filter-tags-next',
-                        prevEl: '#tainacan-filter-tags-prev',
-                    }
-                },
+                swiper: {}
             }
         },
         computed: {
@@ -131,12 +118,41 @@
                         });
                     }
                 });
-                
+
                 return flattenTags;
             },
             totalItems() {
                 return this.getTotalItems()
             }
+        },
+        watch: {
+            filterTags() {
+                if (typeof this.swiper.update == 'function')
+                    this.swiper.update();
+            }
+        },
+        mounted() {
+           this.$nextTick(() => {
+                this.swiper = new Swiper('#tainacanFilterTagsSwiper', {
+                    mousewheel: true,
+                    observer: true,
+                    resizeObserver: true,
+                    preventInteractionOnTransition: true,
+                    allowClick: true,
+                    allowTouchMove: true,
+                    slideToClickedSlide: true,
+                    slidesPerView: 'auto',
+                    navigation: {
+                        nextEl: '#tainacan-filter-tags-next',
+                        prevEl: '#tainacan-filter-tags-prev',
+                    },
+                    modules: [Mousewheel, Navigation]
+                });
+            });
+        },
+        beforeDestroy() {
+            if (typeof this.swiper.destroy == 'function')
+                this.swiper.destroy();
         },
         methods: {
             ...mapGetters('search',[
@@ -227,12 +243,16 @@
             }
         }
 
-        .swiper-container {
+        .swiper {
             width: 100%;
             position: relative;
             margin: 0;
             --swiper-navigation-size: 2em;
             --swiper-navigation-color: var(--tainacan-secondary);
+
+            ul.swiper-wrapper {
+                padding-inline-start: 0;
+            }
 
             .swiper-slide {
                 width: auto;
@@ -247,16 +267,16 @@
                 bottom: 0;
             }
             .swiper-button-prev::after,
-            .swiper-container-rtl .swiper-button-next::after {
+            .swiper-rtl .swiper-button-next::after {
                 content: 'previous';
             }
             .swiper-button-next,
-            .swiper-container-rtl .swiper-button-prev {
+            .swiper-rtl .swiper-button-prev {
                 right: 0;
                 background-image: linear-gradient(90deg, rgba(255,255,255,0) 0%, var(--tainacan-background-color) 40%);
             }
             .swiper-button-prev,
-            .swiper-container-rtl .swiper-button-next {
+            .swiper-rtl .swiper-button-next {
                 left: 0;
                 background-image: linear-gradient(90deg, var(--tainacan-background-color) 0%, rgba(255,255,255,0) 60%);
             }
@@ -288,15 +308,15 @@
                 flex-direction: row;
                 justify-content: space-between;
             }
-            .swiper-container {
+            .swiper {
                 margin-top: 1em;
 
                 .swiper-button-next,
-                .swiper-container-rtl .swiper-button-prev {
+                .swiper-rtl .swiper-button-prev {
                     padding-right: 8px;
                 }
                 .swiper-button-prev,
-                .swiper-container-rtl .swiper-button-next {
+                .swiper-rtl .swiper-button-next {
                     padding-left: 8px;
                 }
             }

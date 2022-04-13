@@ -122,10 +122,8 @@
                         <div class="b-tabs">
                             <nav 
                                     v-if="tabs.length >= 2"
-                                    role="list"
-                                    ref="tainacanTabsSwiper"
-                                    v-swiper:mySwiper="swiperOptions"
-                                    class="tabs">
+                                    id="tainacanTabsSwiper"       
+                                    class="swiper tabs">
                                 <ul class="swiper-wrapper">
                                     <li 
                                             v-for="(tab, tabIndex) of tabs"
@@ -587,7 +585,7 @@
                                         type="button"
                                         class="link-style"
                                         @click.prevent="attachmentMediaFrame.openFrame($event)"
-                                        :disabled="isLoadingAttachments">
+                                        :disabled="isLoading">
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-edit"/>
                                     </span>
@@ -601,8 +599,7 @@
                                 <attachments-list
                                         :item="item"
                                         :is-editable="true"
-                                        :is-loading.sync="isLoadingAttachments"
-                                        @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
+                                        :should-load-attachments="shouldLoadAttachments"
                                         @onDeleteAttachment="deleteAttachment($event)"/>
                             </div>
 
@@ -886,7 +883,10 @@ import CustomDialog from '../other/custom-dialog.vue';
 import AttachmentsList from '../lists/attachments-list.vue';
 import { formHooks } from '../../js/mixins';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
-import { directive } from 'vue-awesome-swiper';
+import 'swiper/css';
+import 'swiper/css/mousewheel';
+import 'swiper/css/navigation';
+import Swiper, { Mousewheel, Navigation } from 'swiper';
 import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
 import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
 
@@ -898,26 +898,31 @@ export default {
         RelatedItemsList,
         ItemMetadatumErrorsTooltip
     },
-    directives: {
-        swiper: directive
-    },
     mixins: [ formHooks ],
+    beforeRouteLeave ( to, from, next ) {
+        if (this.item.status == 'auto-draft') {
+            this.$buefy.modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_item_not_saved'),
+                    onConfirm: () => {
+                        next();
+                    },
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });
+        } else {
+            next()
+        }
+    },
     data(){
         return {
-            swiperOptions: {
-                watchOverflow: true,
-                mousewheel: true,
-                observer: true,
-                preventInteractionOnTransition: true,
-                allowClick: true,
-                allowTouchMove: true,
-                slideToClickedSlide: true,
-                slidesPerView: 'auto',
-                navigation: {
-                    nextEl: '#tainacan-tabs-next',
-                    prevEl: '#tainacan-tabs-prev',
-                }
-            },
+            swiper: {},
             selected: 'Home',
             pageTitle: '',
             itemId: Number,
@@ -952,7 +957,7 @@ export default {
             isUpdatingValues: false,
             entityName: 'item',
             activeTab: 'metadata',
-            isLoadingAttachments: false,
+            shouldLoadAttachments: false,
             metadataNameFilterString: '',
             
             urlForcedIframe: false,
@@ -1051,6 +1056,34 @@ export default {
 
             // Obtains current Sequence Group Info
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
+        },
+        tabs:{
+            handler() {
+                if (this.tabs.length >= 2) {
+                    if (typeof this.swiper.update == 'function')
+                        this.swiper.update();
+                    else {
+                        this.$nextTick(() => {
+                            this.swiper = new Swiper('#tainacanTabsSwiper', {
+                                watchOverflow: true,
+                                mousewheel: true,
+                                observer: true,
+                                preventInteractionOnTransition: true,
+                                allowClick: true,
+                                allowTouchMove: true,
+                                slideToClickedSlide: true,
+                                slidesPerView: 'auto',
+                                navigation: {
+                                    nextEl: '#tainacan-tabs-next',
+                                    prevEl: '#tainacan-tabs-prev',
+                                },
+                                modules: [Mousewheel, Navigation]
+                            });
+                        });
+                    }
+                }
+            },
+            immediate: true
         }
     },
     created() {
@@ -1135,27 +1168,8 @@ export default {
         eventBusItemMetadata.$off('isOnFirstMetadatumOfCompoundNavigation');
         eventBusItemMetadata.$off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
-    },
-    beforeRouteLeave ( to, from, next ) {
-        if (this.item.status == 'auto-draft') {
-            this.$buefy.modal.open({
-                parent: this,
-                component: CustomDialog,
-                props: {
-                    icon: 'alert',
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_item_not_saved'),
-                    onConfirm: () => {
-                        next();
-                    },
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });
-        } else {
-            next()
-        }
+        if (typeof this.swiper.destroy == 'function')
+            this.swiper.destroy();
     },
     methods: {
         ...mapActions('item', [
@@ -1251,13 +1265,14 @@ export default {
                             this.onPrevInSequence();
                     }
 
-                } else {
-                    parent.postMessage({ 
-                        type: 'itemEditionMessage',
-                        item: this.item
-                    },
-                    tainacan_plugin.admin_url);
                 }
+
+                // Sends info to iframe containing item edition form and other use cases
+                parent.postMessage({ 
+                    type: 'itemEditionMessage',
+                    item: this.$adminOptions.itemEditionMode ? this.item : null
+                },
+                tainacan_plugin.admin_url);
             })
             .catch((errors) => {
                 
@@ -1281,12 +1296,12 @@ export default {
         onDiscard() {
             if (!this.$adminOptions.itemEditionMode)
                 this.$router.go(-1);
-            else
-                parent.postMessage({ 
-                        type: 'itemEditionMessage',
-                        item: null
-                    },
-                    tainacan_plugin.admin_url);
+            
+            parent.postMessage({ 
+                    type: 'itemEditionMessage',
+                    item: this.$adminOptions.itemEditionMode ? false : null
+                },
+                tainacan_plugin.admin_url);
 
         },
         createNewItem() {
@@ -1340,10 +1355,6 @@ export default {
 
                 // Loads metadata and attachments
                 this.loadMetadata();
-                this.isLoadingAttachments = true;
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId })
-                    .then(() => this.isLoadingAttachments = false)
-                    .catch(() => this.isLoadingAttachments = false);
 
             })
             .catch((error) => {
@@ -1523,16 +1534,7 @@ export default {
             })
             .then(() => {
                 this.item.document_mimetype = 'empty';
-                this.isLoadingAttachments = true;
-                this.fetchAttachments({
-                    page: 1,
-                    attachmentsPerPage: 24,
-                    itemId: this.itemId,
-                    documentId: this.form.document,
-                    thumbnailId: this.form.thumbnail_id
-                })
-                    .then(() => this.isLoadingAttachments = false)
-                    .catch(() => this.isLoadingAttachments = false);
+                this.shouldLoadAttachments = !this.shouldLoadAttachments;
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
@@ -1567,17 +1569,7 @@ export default {
                     onConfirm: () => {
                         this.deletePermanentlyAttachment(attachment.id)
                             .then(() => {
-                                this.isLoadingAttachments = true;
-
-                                this.fetchAttachments({ 
-                                        page: 1,
-                                        attachmentsPerPage: 24,
-                                        itemId: this.itemId,
-                                        documentId: this.form.document,
-                                        thumbnailId: this.form.thumbnail_id
-                                    })
-                                    .then(() => this.isLoadingAttachments = false)
-                                    .catch(() => this.isLoadingAttachments = false);
+                                this.shouldLoadAttachments = !this.shouldLoadAttachments;
                             })
                             .catch((error) => {
                                 this.$console.error(error);
@@ -1661,16 +1653,7 @@ export default {
                     thumbnailId: this.form.thumbnail_id ? this.form.thumbnail_id : null, 
                     onSave: () => {
                         // Fetch current existing attachments
-                        this.isLoadingAttachments = true;
-                        this.fetchAttachments({ 
-                            page: 1,
-                            attachmentsPerPage: 24,
-                            itemId: this.itemId,
-                            documentId: this.form.document,
-                            thumbnailId: this.form.thumbnail_id
-                        })
-                            .then(() => this.isLoadingAttachments = false)
-                            .catch(() => this.isLoadingAttachments = false);
+                        this.shouldLoadAttachments = !this.shouldLoadAttachments;
                     }
                 }
             );
@@ -2174,7 +2157,7 @@ export default {
     .tab-content {
         border-top: 1px solid var(--tainacan-input-border-color);
     }
-    .swiper-container {
+    .swiper {
         width: 100%;
         position: relative;
         margin: 0;
@@ -2197,16 +2180,16 @@ export default {
             bottom: 0;
         }
         .swiper-button-prev::after,
-        .swiper-container-rtl .swiper-button-next::after {
+        .swiper-rtl .swiper-button-next::after {
             content: 'previous';
         }
         .swiper-button-next,
-        .swiper-container-rtl .swiper-button-prev {
+        .swiper-rtl .swiper-button-prev {
             right: 0;
             background-image: linear-gradient(90deg, rgba(255,255,255,0) 0%, var(--tainacan-background-color) 40%);
         }
         .swiper-button-prev,
-        .swiper-container-rtl .swiper-button-next {
+        .swiper-rtl .swiper-button-next {
             left: 0;
             background-image: linear-gradient(90deg, var(--tainacan-background-color) 0%, rgba(255,255,255,0) 60%);
         }

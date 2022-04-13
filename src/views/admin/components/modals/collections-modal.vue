@@ -11,7 +11,7 @@
                 class="tainacan-modal-content" 
                 style="width: auto">
             <header class="tainacan-modal-title">
-                <h2>{{ this.$i18n.get('collections') }}</h2>
+                <h2>{{ $i18n.get('collections') }}</h2>
                 <hr>
             </header>
             <section class="tainacan-form">

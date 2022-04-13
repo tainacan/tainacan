@@ -5,7 +5,7 @@
                 class="table-container">
             <b-loading
                     is-full-page="false" 
-                    :active.sync="isLoading" />
+                    :active="isLoading" />
             <div
                     v-if="attachments.length > 0"
                     class="table-wrapper">
@@ -159,7 +159,6 @@
                 return last > this.totalAttachments ? this.totalAttachments : last;
             },
             loadAttachments() {
-                this.isLoading = true;
                 this.$emit('isLoadingAttachments', true);
 
                 this.fetchAttachments({
@@ -170,12 +169,10 @@
                     thumbnailId: this.item.thumbnail_id
                 })
                     .then((response) => {
-                        this.isLoading = false;
                         this.$emit('isLoadingAttachments', false);
                         this.totalAttachments = response.total;
                     })
                     .catch((error) => {
-                        this.isLoading = false;
                         this.$emit('isLoadingAttachments', false);
                         this.$console.error(error);
                     }) 
