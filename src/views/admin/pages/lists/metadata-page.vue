@@ -16,13 +16,17 @@
                     v-model="activeTab">    
                 <b-tab-item :label="$i18n.get('label_metadata_and_sections')">
                     <div
-                            :style="{ height: activeMetadatumList && activeMetadatumList.length <= 0 && !isLoadingMetadata ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
+                            :style="{
+                                height: activeMetadataSectionsList && activeMetadataSectionsList.length <= 0 && !isLoadingMetadata && !isLoadingMetadataSections ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'
+                            }"
                             class="columns"
                             ref="metadataEditionPageColumns">
-                        <b-loading :active.sync="isLoadingMetadatumTypes"/>
 
+                        <!-- Active Metadata and Sections Area -->
                         <div class="column">
                            
+                            <b-loading :active.sync="isLoadingMetadataSections"/>
+
                             <div class="tainacan-form sub-header">
                                 <h3>{{ $i18n.get('metadata') }}<span class="has-text-gray">{{ ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</span></h3>
 
@@ -102,12 +106,13 @@
                                 </div>
                             </section>
 
+                            <!-- The Metadata Sections list -->
                             <draggable 
-                                    v-model="activeMetadatumList"
-                                    class="active-metadata-area"
-                                    @change="handleChange($event)"
-                                    :group="{ name:'metadata', pull: false, put: true }"
-                                    :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
+                                    v-model="activeMetadataSectionsList"
+                                    class="active-metadata-sections-area"
+                                    @change="handleSectionChange($event)"
+                                    :group="{ name:'metadata-sections', pull: false, put: true }"
+                                    :sort="(openedMetadataSectionId == '' || openedMetadataSectionId == undefined) && (openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
                                     :handle="'.handle'"
                                     ghost-class="sortable-ghost"
                                     chosen-class="sortable-chosen"
@@ -115,32 +120,37 @@
                                     :prevent-on-filter="false"
                                     :animation="250">
                                 <div    
-                                        v-for="(metadatum, index) in activeMetadatumList.filter((meta) => meta != undefined && meta.parent == 0)"
-                                        :key="metadatum.id"
-                                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(metadatum)) && filterByMetadatumType(metadatum)">
+                                        v-for="(metadataSection, sectionIndex) in activeMetadataSectionsList"
+                                        :key="metadataSection.id">
                                     <div 
-                                            class="active-metadatum-item"
+                                            class="active-metadata-sections-item"
                                             :class="{
-                                                'is-compact-item': !isCollapseOpen(metadatum.id),
-                                                'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied,
-                                                'not-focusable-item': openedMetadatumId == metadatum.id,
-                                                'disabled-metadatum': metadatum.enabled == false,
-                                                'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
-                                                'child-metadatum': metadatum.parent > 0
+                                                'is-compact-item': !isCollapseOpen(metadataSection.id),
+                                                'not-sortable-item': 
+                                                    isRepositoryLevel ||
+                                                    metadataSection.id == undefined ||
+                                                    openedMetadatumId != '' ||
+                                                    openedMetadataSectionId != '' ||
+                                                    isUpdatingMetadataOrder ||
+                                                    isUpdatingMetadataSectionsOrder ||
+                                                    metadataNameFilterString != '' ||
+                                                    hasSomeMetadataTypeFilterApplied,
+                                                'not-focusable-item': openedMetadataSectionId == metadataSection.id,
+                                                'disabled-metadatum': metadataSection.enabled == false,
+                                                'inherited-metadatum': isRepositoryLevel
                                             }">
                                         <div 
-                                                :ref="'metadatum-handler-' + metadatum.id"
+                                                :ref="'metadata-section-handler-' + metadataSection.id"
                                                 class="handle">
                                             <span 
-                                                    :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
+                                                    :style="{ opacity: !(isRepositoryLevel || metadataSection.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || openedMetadataSectionId != '' || isUpdatingMetadataSectionsOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
                                                     v-tooltip="{
-                                                        content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
+                                                        content: isRepositoryLevel || metadataSection.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || openedMetadataSectionId != '' || isUpdatingMetadataSectionsOrder ? $i18n.get('info_not_allowed_change_order_metadata_sections') : $i18n.get('instruction_drag_and_drop_metadata_sections_sort'),
                                                         autoHide: true,
                                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon grip-icon">
-                                                <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
                                                 <svg 
                                                         xmlns="http://www.w3.org/2000/svg" 
                                                         height="24px"
@@ -153,40 +163,15 @@
                                                     <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
                                                 </svg>
                                             </span>
-                                            <span 
-                                                    v-tooltip="{
-                                                        content: $i18n.get('label_view_metadata_details'),
-                                                        autoHide: true,
-                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                                        placement: 'auto-start'
-                                                    }"
-                                                    @click="$set(collapses, metadatum.id, !isCollapseOpen(metadatum.id))"
-                                                    class="gray-icon icon"
-                                                    :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }">
-                                                <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
-                                            </span>
-
                                             <span class="metadatum-name">
-                                                    {{ metadatum.name }}
+                                                    {{ metadataSection.name }}
                                             </span>
                                             <span   
-                                                    v-if="metadatum.id != undefined && metadatum.metadata_type_object"
-                                                    class="label-details"
-                                                    :class="{ 'has-text-weight-bold': metadatum.metadata_type_object.core }">
+                                                    v-if="metadataSection.id != undefined"
+                                                    class="label-details">
+                                                ({{ metadataSection.name }}) 
                                                 <span 
-                                                        v-if="metadatum.required === 'yes'"
-                                                        v-tooltip="{
-                                                            content: $i18n.get('label_required'),
-                                                            autoHide: true,
-                                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                                            placement: 'auto-start'
-                                                        }">
-                                                    *&nbsp;
-                                                </span>
-                                                ({{ metadatum.metadata_type_object.name }}) 
-                                                <!-- <em v-if="metadatum.inherited">{{ $i18n.get('label_inherited') }}</em> -->
-                                                <span 
-                                                        v-if="metadatum.status === 'private'"
+                                                        v-if="metadataSection.status === 'private'"
                                                         class="icon"
                                                         v-tooltip="{
                                                             content: $i18n.get('status_private'),
@@ -196,44 +181,26 @@
                                                         }">
                                                     <i class="tainacan-icon tainacan-icon-private"/>
                                                 </span>
-                                                <span 
-                                                        v-tooltip="{
-                                                            content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
-                                                            autoHide: true,
-                                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                                            placement: 'auto-start'
-                                                        }"
-                                                        class="icon icon-level-identifier">
-                                                    <i 
-                                                        :class="{ 
-                                                            'tainacan-icon-collection': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                                            'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
-                                                            'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                                            'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
-                                                            'has-text-gray3': !metadatum.enabled
-                                                        }"
-                                                        class="tainacan-icon" />
-                                                </span>
                                             </span>
                                             <span 
                                                     class="loading-spinner" 
-                                                    v-if="metadatum.id == undefined"/>
+                                                    v-if="metadataSection.id == undefined"/>
                                             <span 
                                                     class="controls" 
-                                                    v-if="metadatum.id !== undefined">
+                                                    v-if="metadataSection.id !== undefined">
                                                 <b-switch 
                                                         v-if="!isRepositoryLevel"
-                                                        :disabled="isUpdatingMetadataOrder"
+                                                        :disabled="isUpdatingMetadataSectionsOrder"
                                                         size="is-small" 
-                                                        :value="metadatum.enabled"
-                                                        @input="onChangeEnable($event, index)"/>
+                                                        :value="metadataSection.enabled"
+                                                        @input="onChangeEnableSection($event, sectionIndex)"/>
                                                 <a 
-                                                        v-if="metadatum.current_user_can_edit"
+                                                        v-if="metadataSection.current_user_can_edit"
                                                         :style="{ visibility: 
-                                                                metadatum.collection_id != collectionId
+                                                                metadataSection.collection_id != collectionId
                                                                 ? 'hidden' : 'visible'
                                                             }" 
-                                                        @click.prevent="toggleMetadatumEdition(metadatum)">
+                                                        @click.prevent="toggleMetadataSectionEdition(metadataSection)">
                                                     <span 
                                                             v-tooltip="{
                                                                 content: $i18n.get('edit'),
@@ -246,9 +213,9 @@
                                                     </span>
                                                 </a>
                                                 <a 
-                                                        v-if="metadatum.current_user_can_delete"
-                                                        :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }"
-                                                        @click.prevent="removeMetadatum(metadatum)">
+                                                        v-if="metadataSection.current_user_can_delete"
+                                                        :style="{ visibility: metadataSection.collection_id != collectionId || metadataSection.core ? 'hidden' : 'visible' }"
+                                                        @click.prevent="removeMetadataSection(metadataSection)">
                                                     <span
                                                             v-tooltip="{
                                                                 content: $i18n.get('delete'),
@@ -262,40 +229,207 @@
                                                 </a>
                                             </span>
                                         </div>
-                                        <transition name="form-collapse">
-                                            <metadatum-details 
-                                                    v-if="isCollapseOpen(metadatum.id) && openedMetadatumId !== metadatum.id"
-                                                    :metadatum="metadatum" />
-                                        </transition>
                                     </div>
-                                    
-                                    <child-metadata-list
-                                            v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
-                                            :parent.sync="activeMetadatumList[index]"
-                                            :metadata-name-filter-string="metadataNameFilterString"
-                                            :metadata-type-filter-options="metadataTypeFilterOptions"
-                                            :has-some-metadata-type-filter-applied="hasSomeMetadataTypeFilterApplied"
-                                            :is-parent-multiple="metadatum.multiple == 'yes'"
-                                            :is-repository-level="isRepositoryLevel"
-                                            :collapse-all="collapseAll" />
-                                    
-                                    <b-modal 
-                                            @close="onEditionCanceled()"
-                                            :active="openedMetadatumId == metadatum.id"
-                                            trap-focus
-                                            aria-modal
-                                            aria-role="dialog"
-                                            custom-class="tainacan-modal"
-                                            :close-button-aria-label="$i18n.get('close')">
-                                        <metadatum-edition-form
-                                                :collection-id="collectionId"
-                                                :original-metadatum="metadatum"
-                                                :is-repository-level="isRepositoryLevel"
-                                                @onEditionFinished="onEditionFinished()"
-                                                @onEditionCanceled="onEditionCanceled()"
-                                                :index="index" />
-                                    </b-modal>
 
+                                    <!-- The Metadata list, inside each metadata section -->
+                                    <draggable 
+                                            v-model="activeMetadatumList"
+                                            class="active-metadata-area"
+                                            @change="handleChange($event, metadataSection.id)"
+                                            :group="{ name:'metadata', pull: false, put: true }"
+                                            :sort="(openedMetadatumId == '' || openedMetadatumId == undefined) && !isRepositoryLevel"
+                                            :handle="'.handle'"
+                                            ghost-class="sortable-ghost"
+                                            chosen-class="sortable-chosen"
+                                            filter=".not-sortable-item"
+                                            :prevent-on-filter="false"
+                                            :animation="250">
+                                        <div    
+                                                v-for="(metadatum, index) in activeMetadatumList.filter((meta) => meta != undefined && meta.parent == 0)"
+                                                :key="metadatum.id"
+                                                v-show="(metadataNameFilterString == '' || filterByMetadatumName(metadatum)) && filterByMetadatumType(metadatum)">
+                                            <div 
+                                                    class="active-metadatum-item"
+                                                    :class="{
+                                                        'is-compact-item': !isCollapseOpen(metadatum.id),
+                                                        'not-sortable-item': isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied,
+                                                        'not-focusable-item': openedMetadatumId == metadatum.id,
+                                                        'disabled-metadatum': metadatum.enabled == false,
+                                                        'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
+                                                        'child-metadatum': metadatum.parent > 0
+                                                    }">
+                                                <div 
+                                                        :ref="'metadatum-handler-' + metadatum.id"
+                                                        class="handle">
+                                                    <span 
+                                                            :style="{ opacity: !(isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
+                                                            v-tooltip="{
+                                                                content: isRepositoryLevel || metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
+                                                                autoHide: true,
+                                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                                placement: 'auto-start'
+                                                            }"
+                                                            class="icon grip-icon">
+                                                        <svg 
+                                                                xmlns="http://www.w3.org/2000/svg" 
+                                                                height="24px"
+                                                                viewBox="0 0 24 24"
+                                                                width="24px"
+                                                                fill="currentColor">
+                                                            <path
+                                                                    d="M0 0h24v24H0V0z"
+                                                                    fill="transparent"/>
+                                                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                                        </svg>
+                                                    </span>
+                                                    <span 
+                                                            v-tooltip="{
+                                                                content: $i18n.get('label_view_metadata_details'),
+                                                                autoHide: true,
+                                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                                placement: 'auto-start'
+                                                            }"
+                                                            @click="$set(collapses, metadatum.id, !isCollapseOpen(metadatum.id))"
+                                                            class="gray-icon icon"
+                                                            :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }">
+                                                        <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
+                                                    </span>
+
+                                                    <span class="metadatum-name">
+                                                            {{ metadatum.name }}
+                                                    </span>
+                                                    <span   
+                                                            v-if="metadatum.id != undefined && metadatum.metadata_type_object"
+                                                            class="label-details"
+                                                            :class="{ 'has-text-weight-bold': metadatum.metadata_type_object.core }">
+                                                        <span 
+                                                                v-if="metadatum.required === 'yes'"
+                                                                v-tooltip="{
+                                                                    content: $i18n.get('label_required'),
+                                                                    autoHide: true,
+                                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                                    placement: 'auto-start'
+                                                                }">
+                                                            *&nbsp;
+                                                        </span>
+                                                        ({{ metadatum.metadata_type_object.name }}) 
+                                                        <span 
+                                                                v-if="metadatum.status === 'private'"
+                                                                class="icon"
+                                                                v-tooltip="{
+                                                                    content: $i18n.get('status_private'),
+                                                                    autoHide: true,
+                                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                                    placement: 'auto-start'
+                                                                }">
+                                                            <i class="tainacan-icon tainacan-icon-private"/>
+                                                        </span>
+                                                        <span 
+                                                                v-tooltip="{
+                                                                    content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
+                                                                    autoHide: true,
+                                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                                    placement: 'auto-start'
+                                                                }"
+                                                                class="icon icon-level-identifier">
+                                                            <i 
+                                                                :class="{ 
+                                                                    'tainacan-icon-collection': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                                    'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
+                                                                    'has-text-turquoise5': metadatum.enabled && (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                                                    'has-text-blue5': metadatum.enabled && (metadatum.collection_id == 'default' || isRepositoryLevel),
+                                                                    'has-text-gray3': !metadatum.enabled
+                                                                }"
+                                                                class="tainacan-icon" />
+                                                        </span>
+                                                    </span>
+                                                    <span 
+                                                            class="loading-spinner" 
+                                                            v-if="metadatum.id == undefined"/>
+                                                    <span 
+                                                            class="controls" 
+                                                            v-if="metadatum.id !== undefined">
+                                                        <b-switch 
+                                                                v-if="!isRepositoryLevel"
+                                                                :disabled="isUpdatingMetadataOrder"
+                                                                size="is-small" 
+                                                                :value="metadatum.enabled"
+                                                                @input="onChangeEnable($event, index)"/>
+                                                        <a 
+                                                                v-if="metadatum.current_user_can_edit"
+                                                                :style="{ visibility: 
+                                                                        metadatum.collection_id != collectionId
+                                                                        ? 'hidden' : 'visible'
+                                                                    }" 
+                                                                @click.prevent="toggleMetadatumEdition(metadatum)">
+                                                            <span 
+                                                                    v-tooltip="{
+                                                                        content: $i18n.get('edit'),
+                                                                        autoHide: true,
+                                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                                        placement: 'auto-start'
+                                                                    }"
+                                                                    class="icon">
+                                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                                            </span>
+                                                        </a>
+                                                        <a 
+                                                                v-if="metadatum.current_user_can_delete"
+                                                                :style="{ visibility: metadatum.collection_id != collectionId || metadatum.metadata_type_object.core ? 'hidden' : 'visible' }"
+                                                                @click.prevent="removeMetadatum(metadatum)">
+                                                            <span
+                                                                    v-tooltip="{
+                                                                        content: $i18n.get('delete'),
+                                                                        autoHide: true,
+                                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                                        placement: 'auto-start'
+                                                                    }"
+                                                                    class="icon">
+                                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                                            </span>
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                                <transition name="form-collapse">
+                                                    <metadatum-details 
+                                                            v-if="isCollapseOpen(metadatum.id) && openedMetadatumId !== metadatum.id"
+                                                            :metadatum="metadatum" />
+                                                </transition>
+                                            </div>
+                                            
+                                            <!-- Child metadata list, inside each compound metadata -->
+                                            <child-metadata-list
+                                                    v-if="metadatum.metadata_type_object && metadatum.metadata_type_object.component == 'tainacan-compound'"
+                                                    :parent.sync="activeMetadatumList[index]"
+                                                    :metadata-name-filter-string="metadataNameFilterString"
+                                                    :metadata-type-filter-options="metadataTypeFilterOptions"
+                                                    :has-some-metadata-type-filter-applied="hasSomeMetadataTypeFilterApplied"
+                                                    :is-parent-multiple="metadatum.multiple == 'yes'"
+                                                    :is-repository-level="isRepositoryLevel"
+                                                    :collapse-all="collapseAll" />
+                                            
+                                            <!-- Metadata edition form, for each metadata -->
+                                            <b-modal 
+                                                    @close="onEditionCanceled()"
+                                                    :active="openedMetadatumId == metadatum.id"
+                                                    trap-focus
+                                                    aria-modal
+                                                    aria-role="dialog"
+                                                    custom-class="tainacan-modal"
+                                                    :close-button-aria-label="$i18n.get('close')">
+                                                <metadatum-edition-form
+                                                        :collection-id="collectionId"
+                                                        :original-metadatum="metadatum"
+                                                        :is-repository-level="isRepositoryLevel"
+                                                        @onEditionFinished="onEditionFinished()"
+                                                        @onEditionCanceled="onEditionCanceled()"
+                                                        :index="index" />
+                                            </b-modal>
+
+                                        </div>
+                                    </draggable><!-- End of .active-metadata-area -->
+                                    
+                                    <!-- Metadata Section edition form, for each metadata section -->
                                     <b-modal 
                                             @close="onSectionEditionCanceled()"
                                             :active="openedMetadataSectionId == metadataSection.id"
@@ -311,12 +445,18 @@
                                                 @onEditionCanceled="onSectionEditionCanceled()"
                                                 :index="sectionIndex" />
                                     </b-modal>
+
                                 </div>
-                            </draggable>
-                        </div>
+                            </draggable> <!-- End of .active-metadata-sections-area -->
+                        </div> <!-- End of .columns -->
+
+                        <!-- Available Metadata Area -->
                         <div 
                                 v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
                                 class="column available-metadata-area" >
+
+                            <b-loading :active.sync="isLoadingMetadataTypes"/>
+
                             <div class="field">
                                 <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
                                 <draggable 
@@ -432,11 +572,12 @@
                     </div>
                 </b-tab-item>
 
-                <!-- Mapping --------------- -->
+                <!-- Mapping ------------------- -->
                 <b-tab-item :label="$i18n.get('mapping')">
                     <metadata-mapping-list :is-repository-level="isRepositoryLevel"/>
                 </b-tab-item>
             </b-tabs>
+            
             <section 
                     v-else
                     class="section">
@@ -476,7 +617,7 @@ export default {
             isRepositoryLevel: false,
             activeTab: 0,
             collectionId: '',
-            isLoadingMetadatumTypes: true,
+            isLoadingMetadataTypes: true,
             isLoadingMetadata: false,
             isLoadingMetadataSections: false,
             isUpdatingMetadataOrder: false,
@@ -560,7 +701,7 @@ export default {
 
         this.cleanMetadata();
         this.cleanMetadataSections();
-        this.isLoadingMetadatumTypes = true;
+        this.isLoadingMetadataTypes = true;
 
         this.fetchMetadatumTypes()
             .then(() => {
@@ -572,10 +713,10 @@ export default {
                             type: metadatumType.className
                         }
                     });
-                this.isLoadingMetadatumTypes = false;
+                this.isLoadingMetadataTypes = false;
             })
             .catch(() => {
-                this.isLoadingMetadatumTypes = false;
+                this.isLoadingMetadataTypes = false;
             });
 
         if (this.isRepositoryLevel) {
@@ -615,6 +756,7 @@ export default {
             'deleteMetadatum',
             'updateMetadata',
             'updateCollectionMetadataOrder',
+            'updateCollectionMetadataSectionsOrder',
             'cleanMetadata',
             'updateMetadataSections',
             'fetchMetadataSections',
@@ -625,9 +767,19 @@ export default {
             'getMetadata',
             'getMetadataSections'
         ]),
-        handleChange(event) {
+        handleSectionChange(event) {
             if (event.added)
-                this.addNewMetadatum(event.added.element, event.added.newIndex);
+                this.addNewMetadataSection(event.added.element, event.added.newIndex);
+            else if (event.removed)
+                this.removeMetadataSection(event.removed.element);
+            else if (event.moved) {
+                if (!this.isRepositoryLevel)
+                    this.updateMetadataSectionsOrder();
+            }
+        },
+        handleChange(event, metadataSectionId) {
+            if (event.added)
+                this.addNewMetadatum(event.added.element, event.added.newIndex, metadataSectionId);
             else if (event.removed)
                 this.removeMetadatum(event.removed.element);
             else if (event.moved) {
@@ -669,6 +821,18 @@ export default {
                 .then(() => this.isUpdatingMetadataOrder = false)
                 .catch(() => this.isUpdatingMetadataOrder = false);
         },
+        onChangeEnableSection($event, index) {
+            let metadataSectionsOrder = [];
+            for (let metadataSection of this.activeMetadataSectionsList)
+                if (metadataSection != undefined)
+                    metadataSectionsOrder.push({'id': metadataSection.id, 'enabled': metadataSection.enabled});
+            
+            metadataSectionsOrder[index].enabled = $event;
+            this.isUpdatingMetadataSectionsOrder = true;
+            this.updateCollectionMetadataSectionsOrder({ collectionId: this.collectionId, metadataSectionsOrder: metadataSectionsOrder })
+                .then(() => this.isUpdatingMetadataSectionsOrder = false)
+                .catch(() => this.isUpdatingMetadataSectionsOrder = false);
+        },
         addMetadatumViaButton(metadatumType) {
             let lastIndex = this.activeMetadatumList.length;
             this.addNewMetadatum(metadatumType, lastIndex);
@@ -680,7 +844,7 @@ export default {
             let lastIndex = this.activeMetadataSectionsList.length;
             this.addNewMetadataSection(lastIndex);
         },
-        addNewMetadatum(newMetadatum, newIndex) {
+        addNewMetadatum(newMetadatum, newIndex, metadataSectionId) {
             this.sendMetadatum({
                 collectionId: this.collectionId, 
                 name: newMetadatum.name, 
@@ -688,7 +852,8 @@ export default {
                 status: 'auto-draft', 
                 isRepositoryLevel: this.isRepositoryLevel, 
                 newIndex: newIndex,
-                parent: '0'
+                parent: '0',
+                sectionId: metadataSectionId
             })
             .then((metadatum) => {
 
@@ -710,7 +875,7 @@ export default {
                 newIndex: newIndex
             })
             .then((metadataSection) => {
-                this.updateMetadataSectionOrder();
+                //this.updateMetadataSectionsOrder();
                 this.toggleMetadataSectionEdition(metadataSection)
             })
             .catch((error) => {
@@ -752,7 +917,7 @@ export default {
                     onConfirm: () => { 
                         this.deleteMetadataSection({ collectionId: this.collectionId, metadataSectionId: removedMetadataSection.id })
                             .then(() => {
-                                this.updateMetadataSectionOrder();
+                                //this.updateMetadataSectionsOrder();
                             })
                             .catch(() => {
                                 this.$console.log("Error deleting metadata section.")
@@ -1019,11 +1184,10 @@ export default {
             width: 1em;
         }
 
-        .active-metadata-area {
+        .active-metadata-area,
+        .active-metadata-sections-area {
             font-size: 0.875em;
-            margin-left: -0.8em;
-            padding-right: 1em;
-            min-height: 330px;
+            min-height: 3em;
 
             @media screen and (max-width: 769px) {
                 min-height: 45px;
@@ -1042,10 +1206,17 @@ export default {
                 display: initial;
             }
 
-            .active-metadatum-item {
+            &.active-metadata-sections-area {
+                margin-left: -0.8em;
+                padding-right: 1em;
+                min-height: 330px;
+            }
+
+            .active-metadatum-item,
+            .active-metadata-sections-item {
                 background-color: var(--tainacan-white);
                 padding: 0.7em 0.9em;
-                margin: 4px;
+                margin: 0px 4px;
                 min-height: 2.8571em;
                 display: block; 
                 position: relative;
@@ -1073,6 +1244,14 @@ export default {
 
                     &.is-danger {
                         color: var(--tainacan-danger) !important;
+                    }
+                }
+                &.active-metadata-sections-item {
+                    border-bottom: 1px solid var(--tainacan-gray3);
+
+                    .metadatum-name {
+                        font-size: 1.25em;
+                        color: var(--tainacan-secondary);
                     }
                 }
                 .label-details {
@@ -1135,7 +1314,8 @@ export default {
             .active-filter-item:hover.not-sortable-item .icon-level-identifier .tainacan-icon::before {
                 color: var(--tainacan-gray3) !important;
             }
-            .active-metadatum-item:hover:not(.not-sortable-item) {
+            .active-metadatum-item:hover:not(.not-sortable-item),
+            .active-metadata-section-item:hover:not(.not-sortable-item) {
                 background-color: var(--tainacan-turquoise1);
                 border-color: var(--tainacan-turquoise1);
 
@@ -1359,7 +1539,8 @@ export default {
                 &::before { background-color: var(--tainacan-blue5); }
             }
 
-            &.active-metadatum-item:hover:not(.not-sortable-item) {
+            &.active-metadatum-item:hover:not(.not-sortable-item),
+            &.active-metadata-section-item:hover:not(.not-sortable-item) {
                 background-color: var(--tainacan-blue1);
                 border-color: var(--tainacan-blue1);
                 

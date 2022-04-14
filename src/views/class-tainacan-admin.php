@@ -314,11 +314,12 @@ class Admin {
 		];
 		
 		$maps = [
-			'collections' => $Tainacan_Collections->get_map(),
-			'metadata'    => $Tainacan_Metadata->get_map(),
-			'filters'     => $Tainacan_Filters->get_map(),
-			'items'       => $Tainacan_Items->get_map(),
-			'taxonomies'  => $Tainacan_Taxonomies->get_map(),
+			'collections' 		=> $Tainacan_Collections->get_map(),
+			'metadata'    		=> $Tainacan_Metadata->get_map(),
+			'metadata-sections' => $Tainacan_Metadata_Sections->get_map(),
+			'filters'     		=> $Tainacan_Filters->get_map(),
+			'items'       		=> $Tainacan_Items->get_map(),
+			'taxonomies'  		=> $Tainacan_Taxonomies->get_map(),
 		];
 
 		$metadata_types = $Tainacan_Metadata->fetch_metadata_types();

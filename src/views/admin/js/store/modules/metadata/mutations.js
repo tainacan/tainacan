@@ -95,9 +95,18 @@ export const setMetadataSections = (state, metadataSections) => {
     state.metadataSections = metadataSections;
 }
 
-export const setSingleMetadataSection = (state, { metadataSection, index }) => {
-      
-    if (index != undefined && index != null)
+export const setMetadataSectionMetadata = (state, { metadataSectionId, metadata }) => {
+    const existingIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == metadataSectionId);
+
+    if (existingIndex >= 0) {
+        let metadataSection = state.metadataSections[existingIndex];
+        Vue.set(metadataSection, 'metadata_list', metadata);
+        Vue.set(state.metadataSections, existingIndex, metadataSection);
+    }
+}
+
+export const setSingleMetadataSection = (state, { metadataSection, index }) => {   
+    if (index !== undefined && index !== null)
         Vue.set( state.metadataSections, index, metadataSection);
     else {
         const existingIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == metadataSection.id);
@@ -107,6 +116,13 @@ export const setSingleMetadataSection = (state, { metadataSection, index }) => {
     } 
 }
 
+export const updateMetadataSectionsOrderFromCollection = (state, metadataSectionsOrder) => {
+    for (let i = 0; i < state.metadataSections.length; i++) {
+        let updatedMetadataSectionIndex = metadataSectionsOrder.findIndex(aMetadataSection => aMetadataSection.id == state.metadataSections[i].id);
+        if (updatedMetadataSectionIndex >= 0)
+            state.metadataSections[i].enabled = metadataSectionsOrder[updatedMetadataSectionIndex].enabled;  
+    }
+}
 
 export const deleteMetadataSection = ( state, metadataSection ) => {
     let index = state.metadataSection.findIndex(deletedMetadataSection => deletedMetadataSection.id == metadataSection.id);

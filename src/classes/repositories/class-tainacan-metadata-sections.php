@@ -70,12 +70,13 @@ class Metadata_Sections extends Repository {
 			],
 			'metadata_list'         => [
 				'map'         => 'meta',
-				'title'       => __( 'Metadata list', 'tainacan' ),
+				'title'       => __( 'Inner metadata list', 'tainacan' ),
 				'type'        => 'array',
 				'items' => [
 					'type' => 'integer'
 				],
-				'description' => __( 'The metadata ID list', 'tainacan' ),
+				'description' => __( 'The list of metadata IDs inside this section.', 'tainacan' ),
+				'default' => []
 			]
 		] );
 	}
@@ -299,7 +300,7 @@ class Metadata_Sections extends Repository {
 			$list = $metadata_section->get_metadata_list();
 			$metadata_list = array_merge($list, $metadata_list);
 			$metadata_section->set_metadata_list($metadata_list);
-			if($metadata_section->validate()) {
+			if ($metadata_section->validate()) {
 				$metadata_section = $this->update($metadata_section);
 				return $metadata_section;
 			}
@@ -309,12 +310,14 @@ class Metadata_Sections extends Repository {
 
 	public function delete_metadatum($metadata_section_id, $metadata_list) {
 		$metadata_section = $this->fetch($metadata_section_id);
-		$list = $metadata_section->get_metadata_list();
-		$list = array_diff($list, $metadata_list);
-		$metadata_section->set_metadata_list($list);
-		if($metadata_section->validate()) {
-			$metadata_section = $this->update($metadata_section);
-			return $metadata_section;
+		if ($metadata_section) {
+			$list = $metadata_section->get_metadata_list();
+			$list = array_diff($list, $metadata_list);
+			$metadata_section->set_metadata_list($list);
+			if ($metadata_section->validate()) {
+				$metadata_section = $this->update($metadata_section);
+				return $metadata_section;
+			}
 		}
 		return false;
 	}

@@ -84,7 +84,6 @@
                 </b-field>
 
                 <b-field
-                        v-if="form.parent == 0"
                         :addons="false"
                         :type="formErrors['status'] != undefined ? 'is-danger' : ''"
                         :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
