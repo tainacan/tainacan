@@ -24,7 +24,9 @@ const addDataModuleToOldBlocks = () => {
         'carousel-terms-list',
         'related-items-list',
         'carousel-collections-list',
-        'item-gallery'
+        'item-gallery',
+        'item-metadata',
+        'item-metadatum'
     ];
     
     // Looks for Tainacan Blocks based on their classes.

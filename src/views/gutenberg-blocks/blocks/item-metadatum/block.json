@@ -1,0 +1,61 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/item-metadatum",
+    "title": "Tainacan Item metadatum",
+    "apiVersion": 2,
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "metadatum", "field", "value" ],
+    "description": "A single item metadatum, including a label and its value.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "query",
+            "selector": "div"
+        },
+        "collectionId": {
+            "type": "integer",
+            "default": ""
+        },
+        "itemId": {
+            "type": "integer",
+            "default": ""
+        },
+        "metadatumId": {
+            "type": "integer",
+            "default": ""
+        },
+        "metadatumType": {
+            "type": "string",
+            "default": ""
+        },
+        "isModalOpen": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "usesContext": [
+        "tainacan/itemId",
+        "tainacan/collectionId"
+    ],
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true,
+        "color": {
+            "text": true,
+            "background": true,
+            "gradients": true,
+            "link": true
+        },
+        "spacing": {
+            "padding": true
+        }
+    },
+    "editorScript": "item-metadatum",
+	"editorStyle": "item-metadatum"
+}

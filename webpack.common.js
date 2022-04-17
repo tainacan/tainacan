@@ -22,7 +22,9 @@ module.exports = {
         block_item_submission_form: './src/views/gutenberg-blocks/blocks/item-submission-form/index.js',
         block_faceted_search: './src/views/gutenberg-blocks/blocks/faceted-search/index.js',
         block_carousel_terms_list: './src/views/gutenberg-blocks/blocks/carousel-terms-list/index.js',
-        block_item_gallery: './src/views/gutenberg-blocks/blocks/item-gallery/index.js'
+        block_item_gallery: './src/views/gutenberg-blocks/blocks/item-gallery/index.js',
+        block_item_metadata: './src/views/gutenberg-blocks/blocks/item-metadata/index.js',
+        block_item_metadatum: './src/views/gutenberg-blocks/blocks/item-metadatum/index.js'
     },
     output: {
         path: path.resolve(__dirname, './src/assets/js/'),
