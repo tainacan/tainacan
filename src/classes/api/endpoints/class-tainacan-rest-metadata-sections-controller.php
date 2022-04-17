@@ -243,7 +243,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @return array|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		if(!empty($item)){
+		if (!empty($item)){
 			$item_arr = $item->_toArray();
 			if ($request['context'] === 'edit') {
 				$item_arr['current_user_can_edit'] = $item->can_edit();
@@ -251,13 +251,11 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 				// $item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
-			if( !empty($item_arr['metadata_list']) ) {
-				$metadata_list = $item_arr['metadata_list'];
-				$item_arr['metadata_object_list'] = [];
-				foreach($metadata_list as $metadatum_id) {
-					$meta = $this->metadata_repository->fetch($metadatum_id, 'OBJECT');
-					$item_arr['metadata_object_list'][] = $meta->_toArray();
-				}
+			$metadata_list = !empty($item_arr['metadata_list']) ? $item_arr['metadata_list'] : [];
+			$item_arr['metadata_object_list'] = [];
+			foreach($metadata_list as $metadatum_id) {
+				$meta = $this->metadata_repository->fetch($metadatum_id, 'OBJECT');
+				$item_arr['metadata_object_list'][] = $meta->_toArray();
 			}
 
 			/**

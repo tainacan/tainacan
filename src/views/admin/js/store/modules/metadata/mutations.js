@@ -100,7 +100,7 @@ export const setMetadataSectionMetadata = (state, { metadataSectionId, metadata 
 
     if (existingIndex >= 0) {
         let metadataSection = state.metadataSections[existingIndex];
-        Vue.set(metadataSection, 'metadata_list', metadata);
+        metadataSection['metadata_list'] = metadata;
         Vue.set(state.metadataSections, existingIndex, metadataSection);
     }
 }
