@@ -67,7 +67,7 @@
                     v-if="!isRepositoryLevel" 
                     v-model="availableMetadataSectionsList"
                     :sort="false" 
-                    :group="{ name:'metadata', pull: 'clone', put: false, revertClone: true }"
+                    :group="{ name:'metadata-sections', pull: 'clone', put: false, revertClone: true }"
                     drag-class="sortable-drag">
                 <div 
                         :id="metadataSection.id"
@@ -167,11 +167,11 @@ export default {
         ...mapGetters('metadata',[
             'getMetadatumTypes'
         ]),
-        addMetadatumViaVutton(metadatumType) {
-            this.$emit('onAddMetadatumTypeViaButton', metadatumType);
+        addMetadatumViaButton(metadatumType) {
+            this.$eventBusMetadataList.onAddMetadatumViaButton(metadatumType);
         },
-        addMetadataSectionViaVutton() {
-            this.$emit('onAddMetadataSectionTypeViaButton');
+        addMetadataSectionViaButton() {
+            this.$eventBusMetadataList.onAddMetadataSectionViaButton();
         },
         getPreviewTemplateContent(metadatum) {
             return `<div class="metadata-type-preview tainacan-form">

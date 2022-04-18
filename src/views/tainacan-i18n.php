@@ -804,6 +804,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_logs_before'                               => __( 'Before', 'tainacan' ),
 	'info_logs_after'                                => __( 'After', 'tainacan' ),
 	'info_there_is_no_metadatum'                     => __( 'There is no metadata here yet.', 'tainacan' ),
+	'info_there_is_no_metadata_section'              => __( 'There is no metadata section here yet.', 'tainacan' ),
 	'info_there_is_no_filter'                        => __( 'There is no filter here yet.', 'tainacan' ),
 	'info_changes'                                   => __( 'Changes', 'tainacan' ),
 	'info_possible_external_sources'                 => __( 'Possible external sources: CSV, Instagram, YouTube, etc.', 'tainacan' ),

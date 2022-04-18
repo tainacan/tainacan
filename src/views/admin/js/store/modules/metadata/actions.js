@@ -93,6 +93,7 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
         axios.tainacan.post(endpoint, params)
             .then(res => {
                 let metadatum = res.data;
+
                 commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex, isRepositoryLevel: isRepositoryLevel });
 
                 resolve(metadatum);
@@ -281,9 +282,10 @@ export const updateMetadatumMappers = ({commit}, metadatumMappers) => {
 };
 
 // METADATA SECTIONS
-export const fetchMetadataSections = ({commit}, {collectionId}) => {
+export const fetchMetadataSections = ({commit}, { collectionId, isContextEdit }) => {
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/collection/' + collectionId + '/metadata-sections')
+        axios.tainacan.get('/collection/' + collectionId + '/metadata-sections' + (isContextEdit ? '?context=edit' : ''))
             .then((res) => {
                 let metadataSections = res.data;
                 commit('setMetadataSections', metadataSections);

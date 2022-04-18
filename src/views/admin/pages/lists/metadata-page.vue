@@ -31,8 +31,6 @@
                         <metadata-types-list 
                                 :hightlighted-metadatum="hightlightedMetadatum"
                                 :is-repository-level="isRepositoryLevel"
-                                @onAddMetadatumTypeViaButton="addMetadatumViaButton"
-                                @onAddMetadataSectionTypeViaButton="addMetadataSectionViaButton"
                                 @onFinishedLoadingMetadataTypes="createMetadataTypeFilterOptions"/>
                     </div>
                 </b-tab-item>
@@ -95,7 +93,7 @@ export default {
             this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('metadata') }]);
     },
     methods: {
-        ...mapGetters('collections',[
+        ...mapGetters('collection',[
             'getCollection'
         ]),
         ...mapGetters('metadata',[

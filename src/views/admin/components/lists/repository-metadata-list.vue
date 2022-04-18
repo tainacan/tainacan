@@ -336,6 +336,7 @@ export default {
     mounted() {
         this.cleanMetadata();
         this.refreshMetadata();
+        this.$eventBusMetadataList.$on('addMetadatumViaButton', this.addMetadatumViaButton);
     },
     beforeDestroy() {
         // Cancels previous Request
