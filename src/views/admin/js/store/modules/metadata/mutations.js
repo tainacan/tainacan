@@ -26,11 +26,9 @@ export const deleteMetadatum = ( state, metadatum ) => {
 export const setSingleMetadatum = (state, {metadatum, index, isRepositoryLevel}) => {
     if (metadatum.parent && metadatum.parent >= 0) {
         const existingParentIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.parent);
-        
         if (existingParentIndex >= 0) {
             let existingParent = JSON.parse(JSON.stringify(state.metadata[existingParentIndex]));
             let existingParentChildrenObject = existingParent.metadata_type_options.children_objects;
-            
             const existingIndex = existingParentChildrenObject.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
             if (index != undefined && index != null) {
                 if (existingIndex >= 0)

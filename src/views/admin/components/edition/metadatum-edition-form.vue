@@ -437,7 +437,6 @@
                 'updateMetadatum'
             ]),
             saveEdition(metadatum) {
-
                 if ( (metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
                     let repository = this.form.repository_level;
 

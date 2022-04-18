@@ -294,7 +294,7 @@
                 'updateChildMetadataOrder'
             ]),
             handleChange(event) {     
-               if (event.added) {
+                if (event.added) {
                     this.addNewMetadatum(event.added.element, event.added.newIndex);
                 } else if (event.removed) {
                     this.removeMetadatum(event.removed.element);
