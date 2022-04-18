@@ -8,7 +8,7 @@ import SingleItemModal from '../../js/selection/single-item-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
-export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
+export default function ({ attributes, setAttributes, className, isSelected, context }) {
     
     let {
         content, 
@@ -18,13 +18,15 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         itemRequestSource,
         isModalOpen,
         itemMetadata,
-        itemMetadataTemplate
+        itemMetadataTemplate,
+        dataSource
     } = attributes;
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
     function setContent() {
+        
         isLoading = true;
 
         setAttributes({
@@ -55,15 +57,15 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         itemMetadataTemplate = [];
 
         itemMetadata.forEach((itemMetadatum) => {
-            
             if (itemMetadatum.value && itemMetadatum.metadatum && itemMetadatum.metadatum.id) {
                 itemMetadataTemplate.push([ 
                     'tainacan/item-metadatum',
                     {
                         placeholder: __( 'Item Metadatum', 'tainacan' ),
                         metadatumId: itemMetadatum.metadatum.id,
-                        itemId: itemId,
-                        collectionId: collectionId
+                        itemId: Number(itemId),
+                        collectionId: Number(collectionId),
+                        dataSource: 'parent'
                     }
                 ]);
             }
@@ -90,13 +92,13 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             existingCollectionId={ collectionId }
                             existingItemId={ itemId }
                             onSelectCollection={ (selectedCollectionId) => {
-                                collectionId = selectedCollectionId;
+                                collectionId = Number(selectedCollectionId);
                                 setAttributes({ 
                                     collectionId: collectionId
                                 });
                             }}
                             onApplySelectedItem={ (selectedItemId) => {
-                                itemId = selectedItemId;
+                                itemId = Number(selectedItemId);
                                 setAttributes({
                                     itemId: itemId,
                                     isModalOpen: false
@@ -153,6 +155,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                 <div className={ 'item-metadata-edit-container' }>
                     {  itemMetadata.length ?
                         <InnerBlocks
+                                __experimentalCaptureToolbars={ true }
                                 allowedBlocks={ true }
                                 template={ itemMetadataTemplate } />
                         : null

@@ -18,13 +18,15 @@
             "source": "query",
             "selector": "div"
         },
-        "collectionId": {
+        "dataSource": {
             "type": "string",
-            "default": ""
+            "default": "selection"
+        },
+        "collectionId": {
+            "type": "integer"
         },
         "itemId": {
-            "type": "string",
-            "default": ""
+            "type": "integer"
         },
         "isModalOpen": {
             "type": "boolean",
@@ -48,19 +50,25 @@
         }
     },
     "providesContext": {
-        "tainacan/itemId": "itemId",
-        "tainacan/collectionId": "collectionId"
+        "tainacan/itemId": "itemId"
     },
     "supports": {
         "align": ["full", "wide"],
         "multiple": true,
+        "html": true,
+        "anchor": true,
         "color": {
             "text": true,
             "background": true,
             "gradients": true,
             "link": true
         },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
         "spacing": {
+            "margin": true,
             "padding": true
         }
     },

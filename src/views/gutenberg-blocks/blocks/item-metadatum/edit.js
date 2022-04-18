@@ -7,7 +7,7 @@ const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.b
 
 import SingleItemMetadatumModal from '../../js/selection/single-item-metadatum-modal.js';
 
-export default function ({ attributes, setAttributes, className, isSelected }) {
+export default function ({ attributes, setAttributes, className, isSelected, context }) {
     
     let {
         content, 
@@ -16,6 +16,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         metadatumId,
         metadatumType,
         isModalOpen,
+        dataSource
     } = attributes;
 
     // Gets blocks props from hook
@@ -70,7 +71,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 ) : null
             }
 
-            { !(collectionId && itemId && metadatumId) ? (
+            { dataSource == 'selection' && !(collectionId && itemId && metadatumId) ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
