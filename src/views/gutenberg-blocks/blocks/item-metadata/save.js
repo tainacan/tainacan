@@ -3,5 +3,5 @@ const { useBlockProps, InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.
 export default function({ className }) {
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps.save();
     
-    return <div data-module="item-metadata" { ...blockProps }><InnerBlocks.Content /></div>
+    return <div { ...blockProps }><InnerBlocks.Content /></div>
 };

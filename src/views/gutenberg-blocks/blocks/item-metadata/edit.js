@@ -57,7 +57,12 @@ export default function ({ attributes, setAttributes, className, isSelected, con
         itemMetadataTemplate = [];
 
         itemMetadata.forEach((itemMetadatum) => {
-            if (itemMetadatum.value && itemMetadatum.metadatum && itemMetadatum.metadatum.id) {
+            if (
+                (itemMetadatum.value !== '' && itemMetadatum.value !== false) &&
+                (!Array.isArray(itemMetadatum.value) || itemMetadatum.value.lenght) &&
+                itemMetadatum.metadatum &&
+                itemMetadatum.metadatum.id
+            ) {
                 itemMetadataTemplate.push([ 
                     'tainacan/item-metadatum',
                     {
@@ -155,7 +160,6 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                 <div className={ 'item-metadata-edit-container' }>
                     {  itemMetadata.length ?
                         <InnerBlocks
-                                __experimentalCaptureToolbars={ true }
                                 allowedBlocks={ true }
                                 template={ itemMetadataTemplate } />
                         : null

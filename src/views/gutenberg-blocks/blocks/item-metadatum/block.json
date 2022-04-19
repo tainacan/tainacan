@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/item-metadatum",
-    "title": "Tainacan Item metadatum",
+    "title": "Tainacan Item Metadatum",
     "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "item", "metadatum", "field", "value" ],
@@ -38,7 +38,14 @@
         "isModalOpen": {
             "type": "boolean",
             "default": false
-        }
+        },
+        "labelLevel": {
+			"type": "number",
+			"default": 3
+		},
+        "textAlign": {
+			"type": "string"
+		}
     },
     "usesContext": [
         "tainacan/itemId"
