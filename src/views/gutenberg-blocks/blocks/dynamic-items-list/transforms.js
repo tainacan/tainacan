@@ -65,6 +65,9 @@ export default {
         {
             type: 'block',
             blocks: [ 'tainacan/item-metadata' ],
+            isMatch: ({ items } ) => {
+                return Array.isArray(items) && items.length && items[0].key;
+            },
             transform: ( {
                 items,
                 collectionId,
