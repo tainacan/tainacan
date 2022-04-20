@@ -77,7 +77,13 @@ export default function ({ attributes, setAttributes, className, isSelected, con
         });
         setAttributes({ itemMetadataTemplate: itemMetadataTemplate });
     }
-
+    
+    // Executed only on the first load of page
+    if (content && content.length && content[0].type) {
+        setAttributes({ content: '' });
+        setContent();
+    }
+    
     return content == 'preview' ? 
             <div className={className}>
                 <img

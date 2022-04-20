@@ -61,6 +61,33 @@ export default {
                     }
                 );
             },
+        },
+        {
+            type: 'block',
+            blocks: [ 'tainacan/item-metadata' ],
+            transform: ( {
+                items,
+                collectionId,
+                align,
+                textColor,
+                fontSize
+            } ) => {
+                const itemMetadataBlocks = items.map((item) => 
+                    createBlock(
+                        'tainacan/item-metadata',
+                        {
+                            itemId: Number(item.key),
+                            content: [ { type: true } ], 
+                            collectionId: Number(collectionId),
+                            isModalOpen: false,
+                            align: align,
+                            textColor: textColor,
+                            fontSize: fontSize
+                        }
+                    )
+                );
+                return itemMetadataBlocks;
+            }
         }
     ]
 };
