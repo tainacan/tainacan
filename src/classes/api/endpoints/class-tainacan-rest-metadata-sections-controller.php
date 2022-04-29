@@ -449,14 +449,14 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		], 400);
 	}
 
-	public function add_metadatum( $request ) {
+	public function add_metadata( $request ) {
 		if( !empty($request->get_body()) && isset($request['metadata_section_id']) ){
 			$body = json_decode($request->get_body(), true);
 			$metadata_section_id = $request['metadata_section_id'];
 			$metadata_list = $body['metadata_list'];
 
 			try {
-				$metadata_section = $this->metadata_sections_repository->add_metadatum($metadata_section_id, $metadata_list);
+				$metadata_section = $this->metadata_sections_repository->add_metadata($metadata_section_id, $metadata_list);
 				if($metadata_section == false) {
 					return new \WP_REST_Response([
 						'error_message' => __('One or more values are invalid.', 'tainacan'),
@@ -475,14 +475,14 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		], 400);
 	}
 
-	public function delete_metadatum( $request ) {
+	public function delete_metadata( $request ) {
 		if( !empty($request->get_body()) && isset($request['metadata_section_id']) ){
 			$body = json_decode($request->get_body(), true);
 			$metadata_section_id = $request['metadata_section_id'];
 			$metadata_list = $body['metadata_list'];
 
 			try {
-				$metadata_section = $this->metadata_sections_repository->delete_metadatum($metadata_section_id, $metadata_list);
+				$metadata_section = $this->metadata_sections_repository->delete_metadata($metadata_section_id, $metadata_list);
 				if($metadata_section == false) {
 					return new \WP_REST_Response([
 						'error_message' => __('One or more values are invalid.', 'tainacan'),

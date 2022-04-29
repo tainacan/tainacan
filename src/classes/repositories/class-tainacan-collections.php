@@ -131,6 +131,13 @@ class Collections extends Repository {
 				'items'       => [ 'type' => 'string' ],
 				//'validation' => v::stringType(),
 			],
+			'metadata_section_order'             => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadata order', 'tainacan' ),
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
+				'description' => __( 'The order of the metadata section in the collection', 'tainacan' ),
+			],
 			'metadata_order'             => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata order', 'tainacan' ),
@@ -429,6 +436,7 @@ class Collections extends Repository {
 	function handle_parent_order_clone( &$collection ) {
 		if ($collection instanceof Entities\Collection && $collection->get_parent() != 0) {
 			$parent_collection = $this->fetch( $collection->get_parent() );
+			$collection->set_metadata_section_order($parent_collection->get_metadata_section_order());
 			$collection->set_metadata_order($parent_collection->get_metadata_order());
 			$collection->set_filters_order($parent_collection->get_filters_order());
 

@@ -263,12 +263,11 @@ class Metadata_Sections extends Repository {
 			$results = $this->fetch( $args, 'OBJECT' );
 		}
 
-		return $results;
-		// return $this->order_result(
-		// 	$results,
-		// 	$collection,
-		// 	isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
-		// );
+		return $this->order_result(
+			$results,
+			$collection,
+			isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
+		);
 	}
 
 	/**
@@ -294,7 +293,7 @@ class Metadata_Sections extends Repository {
 		return $this->insert( $object );
 	}
 
-	public function add_metadatum($metadata_section_id, $metadata_list) {
+	public function add_metadata($metadata_section_id, $metadata_list) {
 		$metadata_section = $this->fetch($metadata_section_id);
 		if ($metadata_section) {
 			$list = $metadata_section->get_metadata_list();
@@ -308,7 +307,7 @@ class Metadata_Sections extends Repository {
 		return false;
 	}
 
-	public function delete_metadatum($metadata_section_id, $metadata_list) {
+	public function delete_metadata($metadata_section_id, $metadata_list) {
 		$metadata_section = $this->fetch($metadata_section_id);
 		if ($metadata_section) {
 			$list = $metadata_section->get_metadata_list();
@@ -337,5 +336,46 @@ class Metadata_Sections extends Repository {
 	public function delete( Entities\Entity $entity, $permanent = true ) {
 		//test if not exist a metadata using this section
 		return parent::delete($entity, $permanent);
+	}
+
+	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
+		$order = $collection->get_metadata_section_order();
+
+		if ( $order ) {
+			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
+
+			if ( is_array( $result ) ) {
+				$result_ordinate = [];
+				$not_ordinate    = [];
+
+				foreach ( $result as $item ) {
+					$id    = $item->WP_Post->ID;
+					$index = array_search( $id, array_column( $order, 'id' ) );
+
+					if ( $index !== false ) {
+
+						// skipping metadata disabled if the arg is set
+						if ( ! $include_disabled && isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] ) {
+							continue;
+						}
+
+						$enable = ( isset( $order[ $index ]['enabled'] ) ) ? $order[ $index ]['enabled'] : true;
+						$item->set_enabled_for_collection( $enable );
+
+						$result_ordinate[ $index ] = $item;
+					} else {
+						$not_ordinate[] = $item;
+					}
+				}
+
+				ksort( $result_ordinate );
+				$result_ordinate = array_merge( $result_ordinate, $not_ordinate );
+
+				return $result_ordinate;
+			}
+
+		}
+
+		return $result;
 	}
 }

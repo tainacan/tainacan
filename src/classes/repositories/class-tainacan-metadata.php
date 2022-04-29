@@ -1727,9 +1727,9 @@ class Metadata extends Repository {
 	public function update_metadata_section( Entities\Metadatum $metadatum, $remove = false ) {
 		$metadata_section_repository = Metadata_Sections::get_instance();
 		if (!$remove) {
-			$metadata_section_repository->add_metadatum($metadatum->get_metadata_section_id(), [$metadatum->get_id()]);
+			$metadata_section_repository->add_metadata($metadatum->get_metadata_section_id(), [$metadatum->get_id()]);
 		} else {
-			$metadata_section_repository->delete_metadatum($metadatum->get_metadata_section_id(), [$metadatum->get_id()]);
+			$metadata_section_repository->delete_metadata($metadatum->get_metadata_section_id(), [$metadatum->get_id()]);
 		}
 	}
 

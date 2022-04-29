@@ -24,7 +24,9 @@ class Metadata_Section extends Entity {
 	 * @var string
 	 */
 	protected $repository = 'Metadata_Sections';
-	
+
+	public $enabled_for_collection = true;
+
 	public function __toString() {
 		return apply_filters("tainacan-metadata-section-to-string", $this->get_name(), $this);
 	}
@@ -111,6 +113,20 @@ class Metadata_Section extends Entity {
 	function set_metadata_list($value) {
 		$this->set_mapped_property('metadata_list', array_unique($value));
 	}
+
+	/**
+	 * Transient property used to store the status of the metadatum section for a particular collection
+	 *
+	 * Used by the API to tell front end when a metadatum section is disabled
+	 * 
+	 */
+	public function get_enabled_for_collection() {
+		return $this->enabled_for_collection;
+	}
+	public function set_enabled_for_collection($value) {
+		$this->enabled_for_collection = $value;
+	}
+	
 
 	/**
 	 * {@inheritdoc }
