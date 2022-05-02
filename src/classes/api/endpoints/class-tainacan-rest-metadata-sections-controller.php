@@ -248,6 +248,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 			if ($request['context'] === 'edit') {
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 				$item_arr['current_user_can_delete'] = $item->can_delete();
+				$item_arr['enabled'] = $item->get_enabled_for_collection();
 				// $item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
