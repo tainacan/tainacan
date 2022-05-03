@@ -382,7 +382,7 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 * @throws \Exception
 	 */
-	public function  get_item_permissions_check($request){
+	public function get_item_permissions_check($request){
 		$collection = $this->collections_repository->fetch($request['collection_id']);
 
 		if(($collection instanceof Entities\Collection)) {
@@ -641,19 +641,25 @@ class REST_Collections_Controller extends REST_Controller {
 
 			if( $collection instanceof Entities\Collection) {
 				$metadata_section_order = $collection->get_metadata_section_order();
-				foreach($metadata_section_order['metadata_section_order'] as $section) {
-					if ($section['id'] == $metadata_section_id) {
-						$section['metadata_order'] = $body['metadata_order'];
-						break;
-					}
+				if( !isset( $metadata_section_order ) || !is_array($metadata_section_order) ) {
+					$metadata_section_order = array();
+				}
+
+				$section_order_index = array_search( $metadata_section_id, array_column( $metadata_section_order, 'id' ) );
+				if ( $section_order_index !== false ) {
+					$metadata_section_order[$section_order_index]['metadata_order'] = $body['metadata_order'];
+				} else {
+					$metadata_section_order[] = array(
+						'id' => $metadata_section_id,
+						'metadata_order' => $body['metadata_order'],
+						'enabled' => true
+					);
 				}
 				$collection->set_metadata_section_order( $metadata_section_order );
 
 				if ( $collection->validate() ) {
 					$updated_collection = $this->collections_repository->update( $collection );
-
 					$response = $this->prepare_item_for_response($updated_collection, $request);
-
 					return new \WP_REST_Response( $response, 200 );
 				}
 
