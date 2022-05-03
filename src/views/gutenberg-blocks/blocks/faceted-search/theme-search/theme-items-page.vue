@@ -409,9 +409,8 @@
             <!-- FILTERS TAG LIST-->
             <filters-tags-list
                     class="filter-tags-list"
-                    v-if="!filtersAsModal &&
-                        !hideFilters &&
-                        hasFiltered && 
+                    :is-inside-modal="filtersAsModal"
+                    v-if="hasFiltered && 
                         !openAdvancedSearch &&
                         !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
 
