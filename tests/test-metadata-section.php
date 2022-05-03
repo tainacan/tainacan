@@ -223,7 +223,12 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		$update_collection = $Tainacan_Collections->update( $collection );
 		$metadata_ordinate = $Tainacan_Metadata->fetch_by_collection( $update_collection );
 		$metadata_ordinate_enabled = $Tainacan_Metadata->fetch_by_collection( $update_collection, [ 'include_disabled' => true ] );
+
 		$this->assertEquals( 'metadatum2', $metadata_ordinate[0]->get_name() );
+		$this->assertEquals( 'metadatum1', $metadata_ordinate[1]->get_name() );
+		$this->assertEquals( 4, count($metadata_ordinate) );
+
+		$this->assertEquals( 8, count($metadata_ordinate_enabled) );
 		$this->assertEquals( 'metadatum3', $metadata_ordinate_enabled[1]->get_name() );
 		$this->assertTrue($metadata_ordinate_enabled[0]->get_enabled_for_collection());
 		$this->assertFalse($metadata_ordinate_enabled[1]->get_enabled_for_collection());
