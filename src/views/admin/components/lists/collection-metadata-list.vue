@@ -548,6 +548,7 @@ export default {
             'cleanMetadata',
             'updateMetadataSections',
             'fetchMetadataSections',
+            'deleteMetadataSection',
             'cleanMetadataSections'
         ]),
         ...mapGetters('metadata',[
@@ -660,7 +661,7 @@ export default {
                 newIndex: newIndex
             })
             .then((metadataSection) => {
-                //this.updateMetadataSectionsOrder();
+                this.updateMetadataSectionsOrder();
                 this.toggleMetadataSectionEdition(metadataSection)
             })
             .catch((error) => {
