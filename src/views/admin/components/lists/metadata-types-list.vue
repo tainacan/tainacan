@@ -133,6 +133,7 @@ export default {
             isLoadingMetadataTypes: true,
             availableMetadataSectionsList: [{ 
                 label: this.$i18n.get('label_add_new_section'),
+                name: this.$i18n.get('label_new_metadata_section'),
                 id: 'metadataSectionCreator'
             }],
         }

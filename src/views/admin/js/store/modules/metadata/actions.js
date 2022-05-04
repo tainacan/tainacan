@@ -96,6 +96,9 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
 
                 commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex, isRepositoryLevel: isRepositoryLevel });
 
+                if (sectionId !== null && sectionId !== undefined)
+                    commit('updateMetadatumInsideSectionMetadata', { metadatum: metadatum, index: newIndex, sectionId: sectionId })
+
                 resolve(metadatum);
             })
             .catch(error => {
@@ -125,6 +128,9 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
             .then(res => {
                 let metadatum = res.data;
                 commit('setSingleMetadatum', { metadatum: metadatum, index: index, isRepositoryLevel: isRepositoryLevel });
+
+                if (sectionId !== null && sectionId !== undefined)
+                    commit('updateMetadatumInsideSectionMetadata', { metadatum: metadatum, index: index, sectionId: sectionId })
 
                 resolve(metadatum);
             })
@@ -309,9 +315,10 @@ export const sendMetadataSection = ({commit}, { collectionId, name, status, newI
         })
             .then(res => {
                 let metadataSection = res.data;
+                commit('clearPlaceholderMetadataSection');
                 commit('setSingleMetadataSection', { metadataSection: metadataSection, index: newIndex });
-
-                resolve(metadataSection);
+                
+                resolve(res.data);
             })
             .catch(error => {
                 reject(error.response);
@@ -361,7 +368,7 @@ export const updateMetadataSections = ({commit}, metadataSections) => {
     commit('setMetadataSections', metadataSections);
 };
 
-export const updateCollectionMetadataSectionsOrder = ({ commit }, {collectionId, metadataSectionsOrder}) => {
+export const updateCollectionMetadataSectionsOrder = ({ commit }, {collectionId, metadataSectionsOrder }) => {
 
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId + '/metadata_section_order?context=edit', {

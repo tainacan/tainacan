@@ -448,7 +448,8 @@
                         isRepositoryLevel: this.isRepositoryLevel || (repository && repository === 'yes'),
                         index: this.index,
                         options: this.form,
-                        includeOptionsAsHtml: true
+                        includeOptionsAsHtml: true,
+                        sectionId: metadatum.metadata_section_id
                     })
                         .then(() => {
                             this.form = {};
@@ -492,7 +493,8 @@
                         isRepositoryLevel: this.isRepositoryLevel || (repository && repository === 'yes'),
                         index: this.index,
                         options: formObj,
-                        includeOptionsAsHtml: true
+                        includeOptionsAsHtml: true,
+                        sectionId: metadatum.metadata_section_id
                     })
                         .then(() => {
                             this.form = {};

@@ -545,39 +545,38 @@ export default {
             'updateMetadata',
             'updateCollectionMetadataOrder',
             'updateCollectionMetadataSectionsOrder',
-            'cleanMetadata',
             'updateMetadataSections',
             'fetchMetadataSections',
             'deleteMetadataSection',
             'cleanMetadataSections'
         ]),
         ...mapGetters('metadata',[
-            'getMetadata',
             'getMetadataSections'
         ]),
         handleSectionChange(event) {
             if (event.added)
-                this.addNewMetadataSection(event.added.element, event.added.newIndex);
+                this.addNewMetadataSection(event.added.newIndex);
             else if (event.removed)
                 this.removeMetadataSection(event.removed.element);
-            else if (event.moved) {
+            else if (event.moved)
                 this.updateMetadataSectionsOrder();
-            }
         },
         handleChange(event, sectionIndex) {
             if (event.added)
                 this.addNewMetadatum(event.added.element, event.added.newIndex, sectionIndex);
             else if (event.removed)
                 this.removeMetadatum(event.removed.element, sectionIndex);
-            else if (event.moved) {
+            else if (event.moved)
                 this.updateMetadataOrder(sectionIndex);
-            }
         },
         updateMetadataOrder(sectionIndex) {
             let metadataOrder = [];
             for (let metadatum of this.activeMetadataSectionsList[sectionIndex].metadata_object_list)
                 if (metadatum != undefined)
-                    metadataOrder.push({ 'id': metadatum.id, 'enabled': metadatum.enabled });
+                    metadataOrder.push({
+                        'id': metadatum.id,
+                        'enabled': true //metadatum.enabled --> not working yet, from inside the section
+                    });
             
             this.isUpdatingMetadataOrder = true;
             this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder, metadataSectionId: this.activeMetadataSectionsList[sectionIndex].id  })
@@ -587,8 +586,13 @@ export default {
         updateMetadataSectionsOrder() {
             let metadataSectionsOrder = [];
             for (let metadataSection of this.activeMetadataSectionsList)
-                if (metadataSection != undefined)
-                    metadataSectionsOrder.push({ 'id': metadataSection.id, 'enabled': metadataSection.enabled });
+                if (metadataSection != undefined) {
+                    metadataSectionsOrder.push({
+                        'id': metadataSection.id,
+                        'enabled': metadataSection.enabled,
+                        'metadata_order': metadataSection.metadata_object_list.map((aMetadatum) => { return { 'id': aMetadatum.id, 'enabled': aMetadatum.enabled } })
+                    });
+                }
             
             this.isUpdatingMetadataSectionsOrder = true;
             this.updateCollectionMetadataSectionsOrder({ collectionId: this.collectionId, metadataSectionsOrder: metadataSectionsOrder })
@@ -611,7 +615,11 @@ export default {
             let metadataSectionsOrder = [];
             for (let metadataSection of this.activeMetadataSectionsList)
                 if (metadataSection != undefined)
-                    metadataSectionsOrder.push({'id': metadataSection.id, 'enabled': metadataSection.enabled});
+                    metadataSectionsOrder.push({
+                        'id': metadataSection.id,
+                        'enabled': metadataSection.enabled,
+                        'metadata_order': metadataSection.metadata_object_list.map((aMetadatum) => { return { 'id': aMetadatum.id, 'enabled': aMetadatum.enabled } })
+                    });
             
             metadataSectionsOrder[index].enabled = $event;
             this.isUpdatingMetadataSectionsOrder = true;
@@ -656,7 +664,7 @@ export default {
         addNewMetadataSection(newIndex) {
             this.sendMetadataSection({
                 collectionId: this.collectionId, 
-                name: '', 
+                name: this.$i18n.get('label_new_metadata_section'), 
                 status: 'auto-draft',  
                 newIndex: newIndex
             })
@@ -706,7 +714,7 @@ export default {
                     onConfirm: () => { 
                         this.deleteMetadataSection({ collectionId: this.collectionId, metadataSectionId: removedMetadataSection.id })
                             .then(() => {
-                                //this.updateMetadataSectionsOrder();
+                                this.updateMetadataSectionsOrder();
                             })
                             .catch(() => {
                                 this.$console.log("Error deleting metadata section.")

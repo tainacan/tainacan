@@ -23,7 +23,7 @@ export const deleteMetadatum = ( state, metadatum ) => {
     }
 }
 
-export const setSingleMetadatum = (state, {metadatum, index, isRepositoryLevel}) => {
+export const setSingleMetadatum = (state, {metadatum, index, isRepositoryLevel }) => {
     if (metadatum.parent && metadatum.parent >= 0) {
         const existingParentIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadatum.parent);
         if (existingParentIndex >= 0) {
@@ -98,20 +98,46 @@ export const setMetadataSectionMetadata = (state, { metadataSectionId, metadata 
 
     if (existingIndex >= 0) {
         let metadataSection = state.metadataSections[existingIndex];
-        metadataSection['metadata_list'] = metadata;
+        metadataSection['metadata_object_list'] = metadata;
+        metadataSection['metadata_list'] = metadata.map((aMetadatum) => aMetadatum.id);
         Vue.set(state.metadataSections, existingIndex, metadataSection);
     }
 }
 
-export const setSingleMetadataSection = (state, { metadataSection, index }) => {   
+export const setSingleMetadataSection = (state, { metadataSection, index }) => {  
+
     if (index !== undefined && index !== null)
         Vue.set( state.metadataSections, index, metadataSection);
     else {
         const existingIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == metadataSection.id);
-        
         if (existingIndex >= 0)
             Vue.set( state.metadataSections, existingIndex, metadataSection)
-    } 
+        else 
+            state.metadataSections.push(metadataSection);
+    }
+    
+}
+
+export const updateMetadatumInsideSectionMetadata = (state, { metadatum, index, sectionId }) => {
+    const existingSectionIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == sectionId);
+    if (existingSectionIndex >= 0) {
+        let metadataSection = state.metadataSections[existingSectionIndex];
+
+        const existingMetadatumIndex = metadataSection['metadata_object_list'].findIndex((aMetadatum) => { return !!aMetadatum['id'] && (aMetadatum.id == metadatum.id) });
+        if (existingMetadatumIndex >= 0)
+            metadataSection['metadata_object_list'].splice(existingMetadatumIndex, 1, metadatum);
+        else {
+            // Replaces placeholder (a metadata type object, not a metadatum)
+            if (metadataSection['metadata_object_list'][index] && !metadataSection['metadata_object_list'][index]['id'])
+                metadataSection['metadata_object_list'].splice(index, 1, metadatum);
+            else
+                metadataSection['metadata_object_list'].splice(index, 0, metadatum);
+        }
+        
+        metadataSection['metadata_list'] = metadataSection['metadata_object_list'].map((aMetadatum) => aMetadatum.id);
+        Vue.set(state.metadataSections, existingSectionIndex, metadataSection);
+    }
+        
 }
 
 export const updateMetadataSectionsOrderFromCollection = (state, metadataSectionsOrder) => {
@@ -120,6 +146,12 @@ export const updateMetadataSectionsOrderFromCollection = (state, metadataSection
         if (updatedMetadataSectionIndex >= 0)
             state.metadataSections[i].enabled = metadataSectionsOrder[updatedMetadataSectionIndex].enabled;  
     }
+}
+
+export const clearPlaceholderMetadataSection = (state) => {
+    const existingPlaceholder = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == 'metadataSectionCreator');
+    if (existingPlaceholder >= 0)
+        state.metadataSections.splice(existingPlaceholder, 1);
 }
 
 export const deleteMetadataSection = ( state, metadataSection ) => {
