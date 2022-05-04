@@ -36,9 +36,9 @@
                 </b-tab-item>
 
                 <!-- Mapping ------------------- -->
-                <b-tab-item :label="$i18n.get('mapping')">
+                <!-- <b-tab-item :label="$i18n.get('mapping')">
                     <metadata-mapping-list :is-repository-level="isRepositoryLevel"/>
-                </b-tab-item>
+                </b-tab-item> -->
             </b-tabs>
             
             <section 
@@ -70,7 +70,7 @@ export default {
         RepositoryMetadataList,
         CollectionMetadataList,
         MetadataTypesList,
-        MetadataMappingList,
+        // MetadataMappingList,
     },
     data() {
         return {
@@ -159,8 +159,9 @@ export default {
             overflow-y: auto;
             padding: 0.75em 0;
 
-            &>section.field {
+            section.field.is-grouped-centered.section {
                 position: absolute;
+                width: 63%;
             }
 
             &:not(.available-metadata-area){
@@ -387,7 +388,7 @@ export default {
                 border: 1px dashed var(--tainacan-gray2);
                 background: var(--tainacan-white);
                 display: block;
-                padding: 0.7em 0.9em;
+                padding: 0.25em 0.9em;
                 margin: 4px;
                 height: 2.8571em;
                 position: relative;

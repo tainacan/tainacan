@@ -625,6 +625,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_view_activity_logs'						 => __( 'View activity logs', 'tainacan' ),
 	'label_item_activities'						 	 => __( 'Item activities', 'tainacan' ),
 	'label_add_new_section'							 => __( 'Add new section', 'tainacan' ),
+	'label_new_metadata_section'					 => __( 'New metadata section', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
