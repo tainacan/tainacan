@@ -255,23 +255,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 			$item_arr['metadata_object_list'] = [];
 			foreach($metadata_list as $metadatum_id) {
 				$meta = $this->metadata_repository->fetch($metadatum_id, 'OBJECT');
-				$meta_arr = $meta->_toArray();
-				if ($request['context'] === 'edit') {
-					$meta_arr['current_user_can_edit'] = $meta->can_edit();
-					$meta_arr['current_user_can_delete'] = $meta->can_delete();
-					ob_start();
-					$meta->get_metadata_type_object()->form();
-					$form = ob_get_clean();
-					$meta_arr['edit_form'] = $form;
-					$meta_arr['enabled'] = $meta->get_enabled_for_collection();
-
-					if(isset($meta_arr['metadata_type_options']) && isset($meta_arr['metadata_type_options']['children_objects'])) {
-						foreach ($meta_arr['metadata_type_options']['children_objects'] as $index => $children) {
-							$meta_arr['metadata_type_options']['children_objects'][$index]['current_user_can_edit'] = $meta->can_edit();
-							$meta_arr['metadata_type_options']['children_objects'][$index]['current_user_can_delete'] = $meta->can_delete();
-						}
-					}
-				}
+				$meta_arr = $this->prepare_metadata_for_response($meta, $request);
 				$item_arr['metadata_object_list'][] = $meta_arr;
 			}
 
@@ -289,6 +273,64 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 			}
 			return $item_arr;
 		}
+		return $item;
+	}
+
+	/**
+	 * @param mixed $item
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return array|\WP_Error|\WP_REST_Response
+	 */
+	public function prepare_metadata_for_response( $item, $request ) {
+		if(!empty($item)){
+			$item_arr = $item->_toArray();
+			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
+
+			if ( isset($request['include_options_as_html']) && $request['include_options_as_html'] == 'yes' )
+				$item_arr['options_as_html'] = $item->get_metadata_type_object()->get_options_as_html();
+
+			if ( isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id']) ) {
+				$taxonomy = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $item_arr['metadata_type_options']['taxonomy_id'] );
+				//$taxonomy = new Entities\Taxonomy($item_arr['metadata_type_options']['taxonomy_id']);
+				//$item_arr['metadata_type_options']['taxonomy'] = $taxonomy->get_db_identifier();
+				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy;
+			}
+
+			if ($request['context'] === 'edit') {
+				$item_arr['current_user_can_edit'] = $item->can_edit();
+				$item_arr['current_user_can_delete'] = $item->can_delete();
+				ob_start();
+				$item->get_metadata_type_object()->form();
+				$form = ob_get_clean();
+				$item_arr['edit_form'] = $form;
+				$item_arr['enabled'] = $item->get_enabled_for_collection();
+
+				if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['children_objects'])) {
+					foreach ($item_arr['metadata_type_options']['children_objects'] as $index => $children) {
+						$item_arr['metadata_type_options']['children_objects'][$index]['current_user_can_edit'] = $item->can_edit();
+						$item_arr['metadata_type_options']['children_objects'][$index]['current_user_can_delete'] = $item->can_delete();
+					}
+				}
+			}
+
+			/**
+			 * Use this filter to add additional post_meta to the api response
+			 * Use the $request object to get the context of the request and other variables
+			 * For example, id context is edit, you may want to add your meta or not.
+			 *
+			 * Also take care to do any permissions verification before exposing the data
+			 */
+			$extra_metadata = apply_filters('tainacan-api-response-metadatum-meta', [], $request);
+
+			foreach ($extra_metadata as $extra_meta) {
+				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
+			}
+			$item_arr['inherited'] = $item_arr['collection_id'] != $request['collection_id'];
+
+			return $item_arr;
+		}
+
 		return $item;
 	}
 
