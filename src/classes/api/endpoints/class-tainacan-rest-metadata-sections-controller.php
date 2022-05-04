@@ -249,14 +249,30 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 				$item_arr['current_user_can_edit'] = $item->can_edit();
 				$item_arr['current_user_can_delete'] = $item->can_delete();
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
-				// $item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
 			$metadata_list = !empty($item_arr['metadata_list']) ? $item_arr['metadata_list'] : [];
 			$item_arr['metadata_object_list'] = [];
 			foreach($metadata_list as $metadatum_id) {
 				$meta = $this->metadata_repository->fetch($metadatum_id, 'OBJECT');
-				$item_arr['metadata_object_list'][] = $meta->_toArray();
+				$meta_arr = $meta->_toArray();
+				if ($request['context'] === 'edit') {
+					$meta_arr['current_user_can_edit'] = $meta->can_edit();
+					$meta_arr['current_user_can_delete'] = $meta->can_delete();
+					ob_start();
+					$meta->get_metadata_type_object()->form();
+					$form = ob_get_clean();
+					$meta_arr['edit_form'] = $form;
+					$meta_arr['enabled'] = $meta->get_enabled_for_collection();
+
+					if(isset($meta_arr['metadata_type_options']) && isset($meta_arr['metadata_type_options']['children_objects'])) {
+						foreach ($meta_arr['metadata_type_options']['children_objects'] as $index => $children) {
+							$meta_arr['metadata_type_options']['children_objects'][$index]['current_user_can_edit'] = $meta->can_edit();
+							$meta_arr['metadata_type_options']['children_objects'][$index]['current_user_can_delete'] = $meta->can_delete();
+						}
+					}
+				}
+				$item_arr['metadata_object_list'][] = $meta_arr;
 			}
 
 			/**
