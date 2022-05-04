@@ -739,11 +739,13 @@ class Collection extends Entity {
 	 * @return void
 	 */
 	function set_metadata_section_order( $value ) {
-		$metadata_order = array( );
-		foreach($value as $section) {
-			$metadata_order =  array_merge($metadata_order, $section['metadata_order']);
+		if( !empty($value) ) {
+			$metadata_order = array( );
+			foreach($value as $section) {
+				$metadata_order =  array_merge($metadata_order, $section['metadata_order']);
+			}
+			$this->set_metadata_order($metadata_order);
 		}
-		$this->set_metadata_order($metadata_order);
 		$this->set_mapped_property( 'metadata_section_order', $value );
 	}
 
