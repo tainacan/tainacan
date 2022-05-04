@@ -136,8 +136,21 @@ export const updateMetadatumInsideSectionMetadata = (state, { metadatum, index, 
         
         metadataSection['metadata_list'] = metadataSection['metadata_object_list'].map((aMetadatum) => aMetadatum.id);
         Vue.set(state.metadataSections, existingSectionIndex, metadataSection);
-    }
+    }  
+}
+
+export const deleteMetadatumInsideMetadataSection = (state, metadatum) => {
+    const existingSectionIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == metadatum.metadata_section_id);
+    if (existingSectionIndex >= 0) {
+        let metadataSection = state.metadataSections[existingSectionIndex];
+
+        const existingMetadatumIndex = metadataSection['metadata_object_list'].findIndex((aMetadatum) => { return !!aMetadatum['id'] && (aMetadatum.id == metadatum.id) });
+        if (existingMetadatumIndex >= 0)
+            metadataSection['metadata_object_list'].splice(existingMetadatumIndex, 1);
         
+        metadataSection['metadata_list'] = metadataSection['metadata_object_list'].map((aMetadatum) => aMetadatum.id);
+        Vue.set(state.metadataSections, existingSectionIndex, metadataSection);
+    }
 }
 
 export const updateMetadataSectionsOrderFromCollection = (state, metadataSectionsOrder) => {

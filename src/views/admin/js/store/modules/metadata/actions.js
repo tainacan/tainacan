@@ -178,12 +178,17 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         axios.tainacan.delete(endpoint)
             .then(res => {
                 const metadatum = res.data;
-                commit('deleteMetadatum', metadatum);
+                
+                if (metadatum.metadata_section_id)
+                    commit('deleteMetadatumInsideMetadataSection', metadatum)
+                else
+                    commit('deleteMetadatum', metadatum);
+           
                 resolve(res.data);
-            }).catch((error) => {
-            console.log(error);
-            reject(error);
-        });
+            })
+            .catch((error) => {
+                reject(error);
+            });
 
     });
 };

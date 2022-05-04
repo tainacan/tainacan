@@ -141,9 +141,9 @@
                                 {{ metadataSection.name }}
                         </span>
                         <span   
-                                v-if="metadataSection.id != undefined"
+                                v-if="metadataSection.id != undefined && metadataSection.core"
                                 class="label-details">
-                            ({{ metadataSection.name }}) 
+                            ({{ $i18n.get('label_core_section') }}) 
                             <span 
                                     v-if="metadataSection.status === 'private'"
                                     class="icon"
@@ -187,7 +187,8 @@
                             </a>
                             <a 
                                     v-if="metadataSection.current_user_can_delete"
-                                    :style="{ visibility: metadataSection.collection_id != collectionId || metadataSection.core ? 'hidden' : 'visible' }"
+                                    :disabled="metadataSection.metadata_object_list.length"
+                                    :style="{ visibility: metadataSection.collection_id != collectionId || metadataSection.core || metadataSection.metadata_object_list.length ? 'hidden' : 'visible' }"
                                     @click.prevent="removeMetadataSection(metadataSection)">
                                 <span
                                         v-tooltip="{
@@ -575,7 +576,7 @@ export default {
                 if (metadatum != undefined)
                     metadataOrder.push({
                         'id': metadatum.id,
-                        'enabled': true //metadatum.enabled --> not working yet, from inside the section
+                        'enabled': metadatum.enabled
                     });
             
             this.isUpdatingMetadataOrder = true;
