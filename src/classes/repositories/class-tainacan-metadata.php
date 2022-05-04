@@ -230,6 +230,7 @@ class Metadata extends Repository {
 				'title'       => __( 'Metadata section', 'tainacan' ),
 				'type'        => ['integer', 'string', 'array'],
 				'description' => __( 'The metadata section ID', 'tainacan' ),
+				'default'     => null
 			],
 		] );
 	}
@@ -605,6 +606,7 @@ class Metadata extends Repository {
 	 */
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_metadata_order();
+		$section_order = $collection->get_metadata_section_order();
 
 		if ( $order ) {
 			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
@@ -616,11 +618,23 @@ class Metadata extends Repository {
 				foreach ( $result as $item ) {
 					$id    = $item->WP_Post->ID;
 					$index = array_search( $id, array_column( $order, 'id' ) );
+					$metadata_section_ids = get_post_meta( $id, 'metadata_section_id');
+
+					$enabled_metadata_section = true;
+					if(!empty($metadata_section_ids) && $metadata_section_ids !== false && !empty($section_order)) {
+						foreach( $metadata_section_ids as $metadata_section_id) {
+							$section_order_index = array_search( $metadata_section_id, array_column( $section_order, 'id' ) );
+							if ( $section_order_index !== false ) {
+								$enabled_metadata_section = boolval($section_order[$section_order_index]['enabled']);
+								break;
+							}
+						}
+					}
 
 					if ( $index !== false ) {
 
 						// skipping metadata disabled if the arg is set
-						if ( ! $include_disabled && isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] ) {
+						if ( ! $include_disabled && (!$enabled_metadata_section || isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] )) {
 							continue;
 						}
 

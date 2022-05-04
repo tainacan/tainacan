@@ -279,6 +279,15 @@ class Metadata_Sections extends Repository {
 	 */
 	public function insert( $metadata_section ) {
 		$new_metadata_section = parent::insert( $metadata_section );
+		$metadata_list = $new_metadata_section->get_metadata_list();
+		$id = strval($new_metadata_section->get_id());
+		foreach($metadata_list as $metadata_id) {
+			// $metadata_section_ids = get_post_meta( $metadata_id, 'metadata_section_id');
+			// $metadata_section_ids = array_values(array_filter($metadata_section_ids, function($value) { return !is_null($value) && !empty($value); }));
+			// $metadata_section_ids = $metadata_section_ids === false ? [$id] : array_merge($metadata_section_ids, [$id]) ;
+			//add_post_meta($metadata_id, 'metadata_section_id', $id);
+			update_post_meta($metadata_id, 'metadata_section_id', $id);
+		}
 		return $new_metadata_section;
 	}
 
