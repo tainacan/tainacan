@@ -335,7 +335,7 @@ export default {
     },
     mounted() {
         this.cleanMetadata();
-        this.refreshMetadata();
+        this.loadMetadata();
         this.$eventBusMetadataList.$on('addMetadatumViaButton', this.addMetadatumViaButton);
     },
     beforeDestroy() {
@@ -425,7 +425,7 @@ export default {
             this.openedMetadatumId = '';
             this.$router.push({ query: {}});
         },
-        refreshMetadata() {
+        loadMetadata() {
             
             this.isLoadingMetadata = true;
 

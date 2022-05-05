@@ -178,12 +178,17 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         axios.tainacan.delete(endpoint)
             .then(res => {
                 const metadatum = res.data;
-                commit('deleteMetadatum', metadatum);
+                
+                if (metadatum.metadata_section_id)
+                    commit('deleteMetadatumInsideMetadataSection', metadatum)
+                else
+                    commit('deleteMetadatum', metadatum);
+           
                 resolve(res.data);
-            }).catch((error) => {
-            console.log(error);
-            reject(error);
-        });
+            })
+            .catch((error) => {
+                reject(error);
+            });
 
     });
 };
@@ -192,7 +197,7 @@ export const cleanMetadata = ({commit}) => {
     commit('cleanMetadata');
 };
 
-export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder, metadataSectionId}) => {
+export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder, metadataSectionId }) => {
 
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId + '/metadata_section/' + metadataSectionId + '/metadata_order?context=edit', {
@@ -315,7 +320,7 @@ export const sendMetadataSection = ({commit}, { collectionId, name, status, newI
         })
             .then(res => {
                 let metadataSection = res.data;
-                commit('clearPlaceholderMetadataSection');
+                // commit('clearPlaceholderMetadataSection');
                 commit('setSingleMetadataSection', { metadataSection: metadataSection, index: newIndex });
                 
                 resolve(res.data);

@@ -251,6 +251,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_core_title'                               => __( 'Core Title', 'tainacan' ),
 	/* translators: 'Core' as in 'main' - the most important and default description */
 	'label_core_description'                         => __( 'Core Description', 'tainacan' ),
+	/* translators: 'Core' as in 'main' - the most important and default section */
+	'label_core_section'                             => __( 'Core Section', 'tainacan' ),
 	/* translators: noun, not the verb. This comes after options to be sorted by */
 	'label_sorting'                                  => __( 'Sorting', 'tainacan' ),
 	/* translators: noun, not the verb. This comes after options 'ASC' and 'DESC' */
