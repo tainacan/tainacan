@@ -305,27 +305,43 @@
                                             v-for="(metadataSection, sectionIndex) of metadataSections"
                                             :key="sectionIndex">
                                         <div class="metadata-section-header section-label">
-                                            <label>{{ metadataSection.name }}</label>
+                                            <span   
+                                                    class="collapse-handle"
+                                                    @click="toggleMetadataSectionCollapse(sectionIndex)">
+                                                <span 
+                                                        class="icon"
+                                                        @click="toggleMetadataSectionCollapse(sectionIndex)">
+                                                    <i 
+                                                            :class="{
+                                                                'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || errorMessage,
+                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage)
+                                                            }"
+                                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                                </span>
+                                                <label>{{ metadataSection.name }}</label>
+                                            </span>
                                         </div>
-                                        <template v-for="(itemMetadatum, index) of metadatumList" >
-                                            <tainacan-form-item
-                                                    :key="index"
-                                                    v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
-                                                    v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
-                                                    :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
-                                                    :ref="'tainacan-form-item--' + index"
-                                                    :item-metadatum="itemMetadatum"
-                                                    :metadata-name-filter-string="metadataNameFilterString"
-                                                    :is-collapsed="metadataCollapses[index]"
-                                                    :is-mobile-screen="isMobileScreen"
-                                                    :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
-                                                    :is-focused="focusedMetadatum === index"
-                                                    :is-metadata-navigation="isMetadataNavigation"
-                                                    @changeCollapse="onChangeCollapse($event, index)"
-                                                    @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
-                                                    @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
-                                                    @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
-                                        </template>
+                                        <transition name="filter-item">
+                                            <div v-show="metadataSectionCollapses[sectionIndex]">
+                                                <tainacan-form-item
+                                                        v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)"
+                                                        :key="index"
+                                                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
+                                                        :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
+                                                        :ref="'tainacan-form-item--' + index"
+                                                        :item-metadatum="itemMetadatum"
+                                                        :metadata-name-filter-string="metadataNameFilterString"
+                                                        :is-collapsed="metadataCollapses[index]"
+                                                        :is-mobile-screen="isMobileScreen"
+                                                        :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
+                                                        :is-focused="focusedMetadatum === index"
+                                                        :is-metadata-navigation="isMetadataNavigation"
+                                                        @changeCollapse="onChangeCollapse($event, index)"
+                                                        @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
+                                                        @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
+                                                        @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
+                                            </div>
+                                        </transition>
                                     </div>
 
                                     <!-- Hook for extra Form options -->
@@ -1708,10 +1724,17 @@ export default {
 
             for (let i = 0; i < this.metadataCollapses.length; i++)
                 this.metadataCollapses[i] = this.collapseAll;
+            
+            for (let i = 0; i < this.metadataSectionCollapses.length; i++)
+                this.$set(this.metadataSectionCollapses, i, this.collapseAll);
 
         },
         onChangeCollapse(event, index) {
             this.metadataCollapses.splice(index, 1, event);
+        },
+        toggleMetadataSectionCollapse(sectionIndex) {
+            if (!this.isMetadataNavigation) 
+                this.$set(this.metadataSectionCollapses, sectionIndex, (this.errorMessage ? true : !this.metadataSectionCollapses[sectionIndex]));
         },
         onDeletePermanently() {
             this.$buefy.modal.open({
@@ -2172,7 +2195,7 @@ export default {
     }
 
     .metadata-section-header {
-        padding: 0.75em 0.5em;
+        padding: 0.75em 0em;
         border-bottom: 1px solid var(--tainacan-input-border-color);
     }
 

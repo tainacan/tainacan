@@ -195,27 +195,34 @@
 
                                 <!-- Metadata -------------------------------- -->
                                 <div class="metadata-area">
-                                    <div
-                                            v-for="(itemMetadatum, index) of metadatumList"
-                                            :key="index"
-                                            class="field">
-                                        <label class="label">{{ itemMetadatum.metadatum.name }}</label>
+                                    <div 
+                                            v-for="(metadataSection, sectionIndex) of metadataSections"
+                                            :key="sectionIndex">
+                                        <div class="metadata-section-header section-label">
+                                            <label>{{ metadataSection.name }}</label>
+                                        </div>
                                         <div
-                                                :class="{
-                                                    'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
-                                                    'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound',
-                                                    'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
-                                                }"
-                                                class="content">
-                                            <component 
-                                                    :is="
-                                                        itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
-                                                        (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
-                                                        itemMetadatum.metadatum.metadata_type_object.options &&
-                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
-                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
-                                                        ) ? 'div' : 'p'" 
-                                                    v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
+                                                v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)"
+                                                :key="index"
+                                                class="field">
+                                            <label class="label">{{ itemMetadatum.metadatum.name }}</label>
+                                            <div
+                                                    :class="{
+                                                        'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
+                                                        'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound',
+                                                        'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
+                                                    }"
+                                                    class="content">
+                                                <component 
+                                                        :is="
+                                                            itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
+                                                            (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
+                                                            itemMetadatum.metadatum.metadata_type_object.options &&
+                                                            itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
+                                                            itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
+                                                            ) ? 'div' : 'p'" 
+                                                        v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -465,6 +472,7 @@
                 itemId: Number,
                 itemRequestCancel: undefined,
                 isLoading: false,
+                isLoadingMetadataSections: false,
                 open: true,
                 urls_open: false,
                 activeTab: 'metadata'
@@ -473,6 +481,9 @@
         computed: {
             collection() {
                 return this.getCollection();
+            },
+            metadataSections() {
+                return this.getMetadataSections();
             },
             item() {
                 // Fills hook forms with it's real values 
@@ -543,6 +554,21 @@
             })
             .catch(() => this.isLoading = false);
 
+
+            // Loads Metadata Sections
+            this.isLoadingMetadataSections = true;
+            this.fetchMetadataSections({
+                    collectionId: this.collectionId
+                })
+                .then((metadataSections) => {
+                    this.metadataSectionCollapses = Array(metadataSections.length).fill(true)
+                    this.isLoadingMetadataSections = false;
+                })
+                .catch((error) => {
+                    this.isLoadingMetadataSections = false;
+                    this.$console.error('Error loading metadata sections ', error);
+                });
+
         },
         methods: {
             ...mapActions('item', [
@@ -556,6 +582,12 @@
             ]),
             ...mapGetters('collection', [
                 'getCollection'
+            ]),
+            ...mapActions('metadata',[
+                'fetchMetadataSections'
+            ]),
+            ...mapGetters('metadata',[
+                'getMetadataSections'
             ]),
             loadMetadata() {
                 // Obtains Item Metadatum
@@ -743,10 +775,14 @@
     }
 
     .metadata-area {
+        .metadata-section-header {
+            padding: 0.75em 0.5em;
+            border-bottom: 1px dashed var(--tainacan-input-border-color);
+        }
         .field {
             border-bottom: 1px dashed var(--tainacan-gray3);
             padding: 10px var(--tainacan-container-padding) !important;
-            margin-left: 0px !important;
+            margin-left: 1em !important;
 
             .label {
                 font-size: 0.875em;
