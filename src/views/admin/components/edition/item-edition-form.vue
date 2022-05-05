@@ -301,23 +301,32 @@
                                         </b-field>
                                     </div>
 
-                                    <tainacan-form-item
-                                            v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
-                                            v-for="(itemMetadatum, index) of metadatumList"
-                                            :key="index"
-                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
-                                            :ref="'tainacan-form-item--' + index"
-                                            :item-metadatum="itemMetadatum"
-                                            :metadata-name-filter-string="metadataNameFilterString"
-                                            :is-collapsed="metadataCollapses[index]"
-                                            :is-mobile-screen="isMobileScreen"
-                                            :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
-                                            :is-focused="focusedMetadatum === index"
-                                            :is-metadata-navigation="isMetadataNavigation"
-                                            @changeCollapse="onChangeCollapse($event, index)"
-                                            @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
-                                            @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
-                                            @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
+                                    <div 
+                                            v-for="(metadataSection, sectionIndex) of metadataSections"
+                                            :key="sectionIndex">
+                                        <div class="metadata-section-header section-label">
+                                            <label>{{ metadataSection.name }}</label>
+                                        </div>
+                                        <template v-for="(itemMetadatum, index) of metadatumList" >
+                                            <tainacan-form-item
+                                                    :key="index"
+                                                    v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
+                                                    v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
+                                                    :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
+                                                    :ref="'tainacan-form-item--' + index"
+                                                    :item-metadatum="itemMetadatum"
+                                                    :metadata-name-filter-string="metadataNameFilterString"
+                                                    :is-collapsed="metadataCollapses[index]"
+                                                    :is-mobile-screen="isMobileScreen"
+                                                    :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
+                                                    :is-focused="focusedMetadatum === index"
+                                                    :is-metadata-navigation="isMetadataNavigation"
+                                                    @changeCollapse="onChangeCollapse($event, index)"
+                                                    @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
+                                                    @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
+                                                    @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
+                                        </template>
+                                    </div>
 
                                     <!-- Hook for extra Form options -->
                                     <template
@@ -935,7 +944,9 @@ export default {
             isOnSequenceEdit: false,
             sequenceRightDirection: false,
             isLoading: false,
+            isLoadingMetadataSections: false,
             metadataCollapses: [],
+            metadataSectionCollapses: [],
             collapseAll: true,
             visibility: !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private',
             form: {
@@ -978,6 +989,9 @@ export default {
         },
         metadatumList() {
             return JSON.parse(JSON.stringify(this.getItemMetadata()));
+        },
+        metadataSections() {
+            return this.getMetadataSections();
         },
         lastUpdated() {
             return this.getLastUpdated();
@@ -1138,6 +1152,20 @@ export default {
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
 
+        // Loads Metadata Sections
+        this.isLoadingMetadataSections = true;
+        this.fetchMetadataSections({
+                collectionId: this.collectionId
+            })
+            .then((metadataSections) => {
+                this.metadataSectionCollapses = Array(metadataSections.length).fill(true)
+                this.isLoadingMetadataSections = false;
+            })
+            .catch((error) => {
+                this.isLoadingMetadataSections = false;
+                this.$console.error('Error loading metadata sections ', error);
+            });
+
         // Sets feedback variables
         eventBusItemMetadata.$on('isUpdatingValue', (status) => {
             this.isUpdatingValues = status;
@@ -1207,6 +1235,12 @@ export default {
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
             'getGroup'
+        ]),
+        ...mapActions('metadata',[
+            'fetchMetadataSections'
+        ]),
+        ...mapGetters('metadata',[
+            'getMetadataSections'
         ]),
         onSubmit(status, sequenceDirection) {
 
@@ -1364,27 +1398,28 @@ export default {
         },
         loadMetadata() {
             // Obtains Item Metadatum
-            this.fetchItemMetadata(this.itemId).then((metadata) => {
-                this.metadataCollapses = [];
+            this.fetchItemMetadata(this.itemId)
+                .then((metadata) => {
+                    this.metadataCollapses = [];
 
-                if (this.isOnSequenceEdit && this.$route.query.collapses) {
-                    for (let i = 0; i < metadata.length; i++) {
-                        this.metadataCollapses.push(this.$route.query.collapses[i] != undefined ? this.$route.query.collapses[i] : true);
+                    if (this.isOnSequenceEdit && this.$route.query.collapses) {
+                        for (let i = 0; i < metadata.length; i++) {
+                            this.metadataCollapses.push(this.$route.query.collapses[i] != undefined ? this.$route.query.collapses[i] : true);
+                        }
+                    } else if (this.isOnSequenceEdit && !this.$route.query.collapses) {
+                        for (let i = 0; i < metadata.length; i++) {
+                            this.metadataCollapses.push(true);
+                            this.metadataCollapses[i] = false;
+                        }
+                    } else {
+                        for (let i = 0; i < metadata.length; i++) {
+                            this.metadataCollapses.push(false);
+                            this.metadataCollapses[i] = true;
+                        }
                     }
-                } else if (this.isOnSequenceEdit && !this.$route.query.collapses) {
-                    for (let i = 0; i < metadata.length; i++) {
-                        this.metadataCollapses.push(true);
-                        this.metadataCollapses[i] = false;
-                    }
-                } else {
-                    for (let i = 0; i < metadata.length; i++) {
-                        this.metadataCollapses.push(false);
-                        this.metadataCollapses[i] = true;
-                    }
-                }
 
-                this.isLoading = false;
-            });
+                    this.isLoading = false;
+                });
         },
         setDocument(event, documentType) {
             if (documentType === 'attachment')
@@ -1954,6 +1989,7 @@ export default {
 
                 .field {
                     padding: 12px 0px 12px 42px;
+                    margin-left: 8px;
                 }
                 .tab-item>.field:last-child {
                     margin-bottom: 187px;
@@ -2133,6 +2169,11 @@ export default {
         .icon {
             font-size: 1.25em;
         }
+    }
+
+    .metadata-section-header {
+        padding: 0.75em 0.5em;
+        border-bottom: 1px solid var(--tainacan-input-border-color);
     }
 
     .section-status {
@@ -2331,6 +2372,7 @@ export default {
         img {
             height: 125px;
             width: 125px;
+            min-width: 125px;
         }
         .image-placeholder {
             position: absolute;
