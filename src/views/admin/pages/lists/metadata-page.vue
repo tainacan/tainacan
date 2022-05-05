@@ -36,9 +36,11 @@
                 </b-tab-item>
 
                 <!-- Mapping ------------------- -->
-                <!-- <b-tab-item :label="$i18n.get('mapping')">
-                    <metadata-mapping-list :is-repository-level="isRepositoryLevel"/>
-                </b-tab-item> -->
+                <b-tab-item :label="$i18n.get('mapping')">
+                    <metadata-mapping-list 
+                            v-if="activeTab == 1"
+                            :is-repository-level="isRepositoryLevel"/>
+                </b-tab-item>
             </b-tabs>
             
             <section 
@@ -70,7 +72,7 @@ export default {
         RepositoryMetadataList,
         CollectionMetadataList,
         MetadataTypesList,
-        // MetadataMappingList,
+        MetadataMappingList,
     },
     data() {
         return {
@@ -152,6 +154,7 @@ export default {
             min-height: 300px;
             padding-bottom: 0;
             padding-left: 0;
+            padding-right: 0;
         }
 
         .column {
@@ -295,7 +298,7 @@ export default {
                     position: relative;
                 }
                 .metadatum-name {
-                    white-space: normal;
+                    white-space: nowrap;
                     font-weight: bold;
                     margin-left: 0.4em;
                     margin-right: 0.4em;

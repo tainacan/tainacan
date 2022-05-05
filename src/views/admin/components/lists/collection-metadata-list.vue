@@ -225,7 +225,7 @@
                             v-model="metadataSection.metadata_object_list"
                             class="active-metadata-area"
                             @change="handleChange($event, sectionIndex)"
-                            :group="{ name:'metadata', pull: false, put: [ 'metadata' ] }"
+                            :group="{ name:'metadata', pull: [ 'metadata' ], put: [ 'metadata' ] }"
                             :sort="(openedMetadatumId == '' || openedMetadatumId == undefined)"
                             :handle="'.handle'"
                             ghost-class="sortable-ghost"
@@ -301,7 +301,7 @@
                                                 }">
                                             *&nbsp;
                                         </span>
-                                        ({{ metadatum.metadata_type_object.name }}) 
+                                        ({{ metadatum.metadata_type_object.name }} {{ metadatum.metadata_section_id }}) 
                                         <span 
                                                 v-if="metadatum.status === 'private'"
                                                 class="icon"
@@ -336,7 +336,8 @@
                                             class="controls" 
                                             v-if="metadatum.id !== undefined">
                                         <b-switch 
-                                                :disabled="isUpdatingMetadataOrder"
+                                                :style="{ visibility: !metadataSection.enabled ? 'hidden' : 'visible' }"
+                                                :disabled="isUpdatingMetadataOrder || !metadataSection.enabled"
                                                 size="is-small" 
                                                 :value="metadatum.enabled"
                                                 @input="onChangeEnable($event, index, sectionIndex)"/>
@@ -537,13 +538,16 @@ export default {
         // Cancels previous Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
+        
+        this.$eventBusMetadataList.$off('addMetadatumViaButton', this.addMetadatumViaButton);
+        this.$eventBusMetadataList.$off('addMetadataSectionViaButton', this.addMetadataSectionViaButton);
     },
     methods: {
         ...mapActions('metadata', [
             'sendMetadatum',
             'sendMetadataSection',
             'deleteMetadatum',
-            'updateMetadata',
+            'updateMetadatum',
             'updateCollectionMetadataOrder',
             'updateCollectionMetadataSectionsOrder',
             'updateMetadataSections',
@@ -563,10 +567,22 @@ export default {
                 this.updateMetadataSectionsOrder();
         },
         handleChange(event, sectionIndex) {
-            if (event.added)
-                this.addNewMetadatum(event.added.element, event.added.newIndex, sectionIndex);
-            else if (event.removed)
-                this.removeMetadatum(event.removed.element, sectionIndex);
+            if (event.added) {
+                if (!event.added.element.id)
+                    this.addNewMetadatum(event.added.element, event.added.newIndex, sectionIndex);
+                else {
+                    this.updateMetadatum({
+                        collectionId: this.collectionId,
+                        metadatumId: event.added.element.id,
+                        isRepositoryLevel: false,
+                        index: event.added.newIndex,
+                        options: {},
+                        includeOptionsAsHtml: true,
+                        sectionId: this.activeMetadataSectionsList[sectionIndex].id
+                    });
+                    this.updateMetadataSectionsOrder(sectionIndex);
+                }
+            }
             else if (event.moved)
                 this.updateMetadataOrder(sectionIndex);
         },

@@ -1,7 +1,7 @@
 <template>
     <div 
             v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
-            class="column available-metadata-area" >
+            class="column available-metadata-types-area" >
 
         <b-loading :active.sync="isLoadingMetadataTypes"/>
 
@@ -195,8 +195,8 @@ export default {
 </script>
 
 <style lang="scss">
-    .available-metadata-area {
-        padding: 10px 0px 10px 10px;
+    .available-metadata-types-area {
+        padding: 10px 0px 10px 10px !important;
         margin: 0;
         max-width: 500px;
         min-width: 20.8333333%;
@@ -370,7 +370,7 @@ export default {
             }
         }
         .available-metadatum-item:hover,
-        .available-metadata-section-item::hover {
+        .available-metadata-section-item:hover {
             background-color: var(--tainacan-turquoise1);
             border-color: var(--tainacan-turquoise2);
             position: relative;
@@ -389,7 +389,7 @@ export default {
     }
     .inherited-metadatum {
         &.available-metadatum-item:hover,
-        &.available-metadata-section-item::hover {
+        &.available-metadata-section-item:hover {
             background-color: var(--tainacan-blue1) !important;
             border-color: var(--tainacan-blue2) !important;
 

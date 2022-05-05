@@ -197,7 +197,7 @@ export const cleanMetadata = ({commit}) => {
     commit('cleanMetadata');
 };
 
-export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder, metadataSectionId}) => {
+export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder, metadataSectionId }) => {
 
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId + '/metadata_section/' + metadataSectionId + '/metadata_order?context=edit', {
@@ -320,7 +320,7 @@ export const sendMetadataSection = ({commit}, { collectionId, name, status, newI
         })
             .then(res => {
                 let metadataSection = res.data;
-                commit('clearPlaceholderMetadataSection');
+                // commit('clearPlaceholderMetadataSection');
                 commit('setSingleMetadataSection', { metadataSection: metadataSection, index: newIndex });
                 
                 resolve(res.data);
