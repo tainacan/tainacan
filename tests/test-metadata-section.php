@@ -72,9 +72,74 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 	// 	return;
 	// }
 
-	// function test_change_section() {
-	// 	return;
-	// }
+	function test_change_section() {
+		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Metadata_Section = \Tainacan\Repositories\Metadata_Sections::get_instance();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste'
+			),
+			true
+		);
+
+		$metadata_section_a = $this->tainacan_entity_factory->create_entity(
+			'Metadata_Section',
+			array(
+				'name'        => 'Section A',
+				'description' => 'Section Description',
+				'collection' => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$metadata_section_b = $this->tainacan_entity_factory->create_entity(
+			'Metadata_Section',
+			array(
+				'name'        => 'Section B',
+				'description' => 'Section Description',
+				'collection' => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$metadatum = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'metadado',
+				'description' => 'descricao',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'metadata_section_id' => $metadata_section_a->get_id(),
+			),
+			true
+		);
+
+		$test = $Tainacan_Metadata->fetch($metadatum->get_id());
+		
+		$section_a = $Tainacan_Metadata_Section->fetch($metadata_section_a->get_id());
+		$section_b = $Tainacan_Metadata_Section->fetch($metadata_section_b->get_id());
+
+		$metadata_list_a = $section_a->get_metadata_list();
+		$metadata_list_b = $section_b->get_metadata_list();
+		$this->assertContains($test->get_id(), $metadata_list_a);
+		$this->assertNotContains($test->get_id(), $metadata_list_b);
+
+		$test->set_metadata_section_id($metadata_section_b->get_id());
+		$this->assertTrue($test->validate(), json_encode($test->get_errors()));
+		$Tainacan_Metadata->update($test);
+
+		$test = $Tainacan_Metadata->fetch($metadatum->get_id());
+		
+		$metadata_list_a = $section_a->get_metadata_list();
+		$metadata_list_b = $section_b->get_metadata_list();
+		$this->assertNotContains($test->get_id(), $metadata_list_a);
+		$this->assertContains($test->get_id(), $metadata_list_b);
+
+	}
 
 	/**
 	 *

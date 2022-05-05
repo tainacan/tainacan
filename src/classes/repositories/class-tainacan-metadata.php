@@ -667,6 +667,7 @@ class Metadata extends Repository {
 	 */
 	public function insert( $metadatum ) {
 		$this->pre_update_taxonomy_metadatum( $metadatum );
+		$this->pre_update_metadata_section( $metadatum );
 		$new_metadatum = parent::insert( $metadatum );
 
 		$this->update_taxonomy_metadatum( $new_metadatum );
@@ -1737,6 +1738,13 @@ class Metadata extends Repository {
 		return false;
 	}
 
+
+	public function pre_update_metadata_section(Entities\Metadatum $metadatum) {
+		if($metadatum->get_id() && $metadatum->get_collection_id() != 'default') {
+			$meta = $this->fetch($metadatum->get_id(), 'OBJECT');
+			$this->update_metadata_section( $meta, true );
+		}
+	}
 
 	public function update_metadata_section( Entities\Metadatum $metadatum, $remove = false ) {
 		$metadata_section_repository = Metadata_Sections::get_instance();
