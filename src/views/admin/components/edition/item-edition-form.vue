@@ -189,7 +189,8 @@
                                         {{ $i18n.get('metadata') }}&nbsp;
                                         <span 
                                                 v-if="metadatumList.length"
-                                                class="has-text-gray has-text-weight-normal">
+                                                class="has-text-gray has-text-weight-normal"
+                                                style="font-size: 0.875em;">
                                             ({{ metadatumList.length }})
                                         </span>
                                     </label>
@@ -243,11 +244,11 @@
                                                     @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
                                                     class="collapse-all has-text-secondary"
                                                     size="is-small">
-                                                <span>{{ $i18n.get('label_focus_mode') }}</span>
                                                 <span
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-play" />
                                                 </span>
+                                                <span>{{ $i18n.get('label_focus_mode') }}</span>
                                             </b-button>
                                             <b-button 
                                                     v-if="isMetadataNavigation"
@@ -546,7 +547,7 @@
                                         <textarea
                                                 id="tainacan-text-description"
                                                 class="textarea"
-                                                rows="4"
+                                                rows="3"
                                                 v-model="form.thumbnail_alt" />
                                     </b-field>    
                                     <div class="thumbnail-buttons-row">
@@ -598,7 +599,8 @@
                                     {{ $i18n.get('label_attachments') }}&nbsp;
                                     <span 
                                             v-if="totalAttachments"
-                                            class="has-text-gray has-text-weight-normal">
+                                            class="has-text-gray has-text-weight-normal"
+                                            style="font-size: 0.875em;">
                                         ({{ totalAttachments }})
                                     </span>
                                 </label>
@@ -1802,7 +1804,7 @@ export default {
                     this.form.document_options = this.item.document_options;
                     this.form.comment_status = this.item.comment_status;
                     this.form.thumbnail_id = this.item.thumbnail_id;
-                    this.form.thumbnail_alt = this.item.thumbnail_alt;
+                    this.form.thumbnail_alt = this.item.thumbnail_alt ? this.item.thumbnail_alt : '';
 
                     if (this.form.document_type != undefined && this.form.document_type == 'url')
                         this.urlLink = this.form.document;
@@ -2110,9 +2112,10 @@ export default {
         justify-content: space-between;
         align-items: center;
         background-color: var(--tainacan-background-color);
+        margin-top: 8px;
         
         .field {
-            padding: 2px 0px 2px 24px !important;
+            padding: 2px 0px 2px 18px !important;
         }
 
         &.is-metadata-navigation-active {
@@ -2138,8 +2141,7 @@ export default {
         }
 
         .metadata-navigation {
-            margin-left: auto;
-            margin-right: 0.25em;
+            margin-right: auto;
         }
         .metadata-navigation /deep/ .button {
             border-radius: 0 !important;
@@ -2190,7 +2192,7 @@ export default {
         border-color: transparent !important;
 
         .icon {
-            font-size: 1.25em;
+            font-size: 1.35em;
         }
     }
 
@@ -2406,7 +2408,7 @@ export default {
             z-index: 99;
             text-align: center;
             color: var(--tainacan-info-color);
-            top: 45px;
+            top: 34px;
             max-width: 84px;
         }
 

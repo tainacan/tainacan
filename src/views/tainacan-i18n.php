@@ -797,7 +797,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_created_by'                                => __( 'Created by: ', 'tainacan' ),
 	'info_by'                                        => __( 'By: ', 'tainacan' ),
 	'info_date'                                      => __( 'Date: ', 'tainacan' ),
-	'info_modification_date'                                      => __( 'Last modification date: ', 'tainacan' ),
+	'info_modification_date'                         => __( 'Last modification date: ', 'tainacan' ),
 	'info_not_saved'                                 => __( 'Not saved ', 'tainacan' ),
 	'info_warning_item_not_saved'                    => __( 'Are you sure? The item is not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_metadata_not_saved'                => __( 'Are you sure? There are metadata not saved, changes will be lost.', 'tainacan' ),

@@ -87,17 +87,17 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
             parent: parent
         }
 
-        if (sectionId != undefined)
+        if (sectionId != undefined && sectionId != false)
             params['metadata_section_id'] = sectionId;
 
         axios.tainacan.post(endpoint, params)
             .then(res => {
                 let metadatum = res.data;
 
-                commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex, isRepositoryLevel: isRepositoryLevel });
-
                 if (sectionId !== null && sectionId !== undefined)
                     commit('updateMetadatumInsideSectionMetadata', { metadatum: metadatum, index: newIndex, sectionId: sectionId })
+                else
+                    commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex, isRepositoryLevel: isRepositoryLevel });
 
                 resolve(metadatum);
             })
@@ -127,10 +127,11 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         axios.tainacan.put(endpoint, options)
             .then(res => {
                 let metadatum = res.data;
-                commit('setSingleMetadatum', { metadatum: metadatum, index: index, isRepositoryLevel: isRepositoryLevel });
 
                 if (sectionId !== null && sectionId !== undefined)
-                    commit('updateMetadatumInsideSectionMetadata', { metadatum: metadatum, index: index, sectionId: sectionId })
+                    commit('updateMetadatumInsideSectionMetadata', { metadatum: metadatum, index: index, sectionId: sectionId });
+                else
+                    commit('setSingleMetadatum', { metadatum: metadatum, index: index, isRepositoryLevel: isRepositoryLevel });
 
                 resolve(metadatum);
             })
@@ -167,7 +168,7 @@ export const updateMetadata = ({commit}, metadata) => {
     commit('setMetadata', metadata);
 };
 
-export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel}) => {
+export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel }) => {
     let endpoint = '';
     if (!isRepositoryLevel)
         endpoint = '/collection/' + collectionId + '/metadata/' + metadatumId;

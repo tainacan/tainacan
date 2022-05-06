@@ -99,7 +99,6 @@ export const setMetadataSectionMetadata = (state, { metadataSectionId, metadata 
     if (existingIndex >= 0) {
         let metadataSection = state.metadataSections[existingIndex];
         metadataSection['metadata_object_list'] = metadata;
-        metadataSection['metadata_list'] = metadata.map((aMetadatum) => aMetadatum.id);
         Vue.set(state.metadataSections, existingIndex, metadataSection);
     }
 }
@@ -115,7 +114,6 @@ export const setSingleMetadataSection = (state, { metadataSection, index }) => {
         else 
             state.metadataSections.push(metadataSection);
     }
-    
 }
 
 export const updateMetadatumInsideSectionMetadata = (state, { metadatum, index, sectionId }) => {
@@ -123,18 +121,39 @@ export const updateMetadatumInsideSectionMetadata = (state, { metadatum, index, 
     if (existingSectionIndex >= 0) {
         let metadataSection = state.metadataSections[existingSectionIndex];
 
-        const existingMetadatumIndex = metadataSection['metadata_object_list'].findIndex((aMetadatum) => { return !!aMetadatum['id'] && (aMetadatum.id == metadatum.id) });
-        if (existingMetadatumIndex >= 0)
-            metadataSection['metadata_object_list'].splice(existingMetadatumIndex, 1, metadatum);
-        else {
-            // Replaces placeholder (a metadata type object, not a metadatum)
-            if (metadataSection['metadata_object_list'][index] && !metadataSection['metadata_object_list'][index]['id'])
-                metadataSection['metadata_object_list'].splice(index, 1, metadatum);
-            else
-                metadataSection['metadata_object_list'].splice(index, 0, metadatum);
-        }
-        
-        metadataSection['metadata_list'] = metadataSection['metadata_object_list'].map((aMetadatum) => aMetadatum.id);
+        if (metadatum.parent && metadatum.parent >= 0) {
+            const existingParentIndex = metadataSection['metadata_object_list'].findIndex((aMetadatum) => aMetadatum.id == metadatum.parent);
+            if (existingParentIndex >= 0) {
+                let existingParent = JSON.parse(JSON.stringify(metadataSection['metadata_object_list'][existingParentIndex]));
+                let existingParentChildrenObject = existingParent.metadata_type_options.children_objects;
+                const existingIndex = existingParentChildrenObject.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
+                if (index != undefined && index != null) {
+                    if (existingIndex >= 0)
+                        existingParentChildrenObject.splice(index, 1, metadatum);
+                    else
+                        existingParentChildrenObject.splice(index, 0, metadatum);
+                } else {
+                    if (existingIndex >= 0)
+                        existingParentChildrenObject.splice(existingIndex, 1, metadatum);
+                    else
+                        existingParentChildrenObject.push(metadatum);
+                }
+                existingParent.metadata_type_options.children_objects = existingParentChildrenObject;
+
+                metadataSection['metadata_object_list'].splice(existingParentIndex, 1, existingParent); 
+            }    
+        } else {
+            const existingMetadatumIndex = metadataSection['metadata_object_list'].findIndex((aMetadatum) => { return !!aMetadatum['id'] && (aMetadatum.id == metadatum.id) });
+            if (existingMetadatumIndex >= 0)
+                metadataSection['metadata_object_list'].splice(existingMetadatumIndex, 1, metadatum);
+            else {
+                // Replaces placeholder (a metadata type object, not a metadatum)
+                if (metadataSection['metadata_object_list'][index] && !metadataSection['metadata_object_list'][index]['id'])
+                    metadataSection['metadata_object_list'].splice(index, 1, metadatum);
+                else
+                    metadataSection['metadata_object_list'].splice(index, 0, metadatum);
+            }
+        }  
         Vue.set(state.metadataSections, existingSectionIndex, metadataSection);
     }  
 }
@@ -144,11 +163,26 @@ export const deleteMetadatumInsideMetadataSection = (state, metadatum) => {
     if (existingSectionIndex >= 0) {
         let metadataSection = state.metadataSections[existingSectionIndex];
 
-        const existingMetadatumIndex = metadataSection['metadata_object_list'].findIndex((aMetadatum) => { return !!aMetadatum['id'] && (aMetadatum.id == metadatum.id) });
-        if (existingMetadatumIndex >= 0)
-            metadataSection['metadata_object_list'].splice(existingMetadatumIndex, 1);
-        
-        metadataSection['metadata_list'] = metadataSection['metadata_object_list'].map((aMetadatum) => aMetadatum.id);
+        if (metadatum.parent && metadatum.parent >= 0) {
+            const existingParentIndex = metadataSection['metadata_object_list'].findIndex((aMetadatum) => aMetadatum.id == metadatum.parent);
+            if (existingParentIndex >= 0) {
+                let existingParent = JSON.parse(JSON.stringify(metadataSection['metadata_object_list'][existingParentIndex]));
+                let existingParentChildrenObject = existingParent.metadata_type_options.children_objects;
+                
+                const existingIndex = existingParentChildrenObject.findIndex((aMetadatum) => aMetadatum.id == metadatum.id);
+                if (existingIndex >= 0)
+                    existingParentChildrenObject.splice(existingIndex, 1);
+                
+                existingParent.metadata_type_options.children_objects = existingParentChildrenObject;
+                
+                metadataSection['metadata_object_list'].splice(existingParentIndex, 1, existingParent); 
+            }
+            
+        } else {
+            const existingMetadatumIndex = metadataSection['metadata_object_list'].findIndex((aMetadatum) => { return !!aMetadatum['id'] && (aMetadatum.id == metadatum.id) });
+            if (existingMetadatumIndex >= 0)
+                metadataSection['metadata_object_list'].splice(existingMetadatumIndex, 1);   
+        }
         Vue.set(state.metadataSections, existingSectionIndex, metadataSection);
     }
 }

@@ -234,7 +234,8 @@
             collapseAll: {
                 type: Boolean,
                 default: new Boolean()
-            }
+            },
+            sectionId: String
         },
         data() {
             return {
@@ -326,7 +327,8 @@
                     status: 'auto-draft', 
                     isRepositoryLevel: this.isRepositoryLevel, 
                     newIndex: newIndex,
-                    parent: this.parent.id
+                    parent: this.parent.id,
+                    sectionId: this.sectionId ? this.sectionId : false
                 })
                 .then((metadatum) => {
                     this.updateMetadataOrder();

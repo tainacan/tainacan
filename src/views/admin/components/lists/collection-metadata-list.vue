@@ -103,6 +103,7 @@
                                 openedMetadatumId != '' ||
                                 openedMetadataSectionId != '' ||
                                 isUpdatingMetadataOrder ||
+                                isUpdatingMetadatum ||
                                 isUpdatingMetadataSectionsOrder ||
                                 metadataNameFilterString != '' ||
                                 hasSomeMetadataTypeFilterApplied,
@@ -116,7 +117,7 @@
                         <span 
                                 :style="{ opacity: !(metadataSection.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || openedMetadataSectionId != '' || isUpdatingMetadataSectionsOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
                                 v-tooltip="{
-                                    content: metadataSection.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || openedMetadataSectionId != '' || isUpdatingMetadataSectionsOrder ? $i18n.get('info_not_allowed_change_order_metadata_sections') : $i18n.get('instruction_drag_and_drop_metadata_sections_sort'),
+                                    content: metadataSection.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || openedMetadataSectionId != '' || isUpdatingMetadataSectionsOrder || isUpdatingMetadatum ? $i18n.get('info_not_allowed_change_order_metadata_sections') : $i18n.get('instruction_drag_and_drop_metadata_sections_sort'),
                                     autoHide: true,
                                     popperClass: ['tainacan-tooltip', 'tooltip'],
                                     placement: 'auto-start'
@@ -216,6 +217,8 @@
                     </div>
                 </section>
 
+                <b-loading :active.sync="isUpdatingMetadatum"/>
+
                 <!-- The Metadata list, inside each metadata section -->
                 <template v-if="metadataSection.metadata_object_list && Array.isArray(metadataSection.metadata_object_list)">
                     <draggable 
@@ -238,7 +241,7 @@
                                     class="active-metadatum-item"
                                     :class="{
                                         'is-compact-item': !isCollapseOpen(metadatum.id),
-                                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied,
+                                        'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied || isUpdatingMetadatum,
                                         'not-focusable-item': openedMetadatumId == metadatum.id,
                                         'disabled-metadatum': metadatum.enabled == false,
                                         'inherited-metadatum': metadatum.inherited,
@@ -250,7 +253,7 @@
                                     <span 
                                             :style="{ opacity: !(metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
                                             v-tooltip="{
-                                                content: metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
+                                                content: metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || isUpdatingMetadatum ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                                 autoHide: true,
                                                 popperClass: ['tainacan-tooltip', 'tooltip'],
                                                 placement: 'auto-start'
@@ -328,7 +331,7 @@
                                     </span>
                                     <span 
                                             class="loading-spinner" 
-                                            v-if="metadatum.id == undefined"/>
+                                            v-if="metadatum.id == undefined || isUpdatingMetadatum"/>
                                     <span 
                                             class="controls" 
                                             v-if="metadatum.id !== undefined">
@@ -389,7 +392,8 @@
                                     :has-some-metadata-type-filter-applied="hasSomeMetadataTypeFilterApplied"
                                     :is-parent-multiple="metadatum.multiple == 'yes'"
                                     :is-repository-level="false"
-                                    :collapse-all="collapseAll" />
+                                    :collapse-all="collapseAll"
+                                    :section-id="metadataSection.id" />
                             
                             <!-- Metadata edition form, for each metadata -->
                             <b-modal 
@@ -466,6 +470,7 @@ export default {
             collapseAll: false,
             metadataNameFilterString: '',
             isUpdatingMetadataSectionsOrder: false,
+            isUpdatingMetadatum: false,
             metadataSearchCancel: undefined
         }
     },
@@ -653,6 +658,7 @@ export default {
             this.addNewMetadataSection(lastIndex);
         },
         addNewMetadatum(newMetadatum, newIndex, sectionIndex) {
+            this.isUpdatingMetadatum = true;
             this.sendMetadatum({
                 collectionId: this.collectionId, 
                 name: newMetadatum.name, 
@@ -669,13 +675,16 @@ export default {
 
                 this.toggleMetadatumEdition(metadatum)
                 this.hightlightedMetadatum = '';
+                this.isUpdatingMetadatum = false;
                 this.$emit('onUpdatehightlightedMetadatum', this.hightlightedMetadatum);
             })
             .catch((error) => {
+                this.isUpdatingMetadatum = false;
                 this.$console.error(error);
             });
         },
         addNewMetadataSection(newIndex) {
+            this.isUpdatingMetadatum = true;
             this.sendMetadataSection({
                 collectionId: this.collectionId, 
                 name: this.$i18n.get('label_new_metadata_section'), 
@@ -684,10 +693,12 @@ export default {
             })
             .then((metadataSection) => {
                 this.updateMetadataSectionsOrder();
-                this.toggleMetadataSectionEdition(metadataSection)
+                this.toggleMetadataSectionEdition(metadataSection);
+                this.isUpdatingMetadatum = false;
             })
             .catch((error) => {
                 this.$console.error(error);
+                this.isUpdatingMetadatum = false;
             });
         },
         removeMetadatum(removedMetadatum, sectionIndex) {

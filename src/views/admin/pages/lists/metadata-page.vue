@@ -100,7 +100,7 @@ export default {
             const metadataSections  = this.getMetadataSections();
 
             if (Array.isArray(metadataSections) && metadataSections.length) {
-                const totalMetadata = metadataSections.reduce((total, aMetadataSection) => total + parseInt(aMetadataSection.metadata_list.length), 0);
+                const totalMetadata = metadataSections.reduce((total, aMetadataSection) => total + parseInt(aMetadataSection.metadata_object_list.length), 0);
                 label = this.$i18n.getWithVariables('label_metadata_%s_and_sections_%s', [totalMetadata, metadataSections.length]);
             }
             
