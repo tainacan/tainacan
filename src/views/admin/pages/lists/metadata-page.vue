@@ -189,7 +189,7 @@ export default {
                 width: 63%;
             }
 
-            &:not(.available-metadata-area){
+            &:not(.available-metadata-types-area){
                 margin-right: var(--tainacan-one-column);
                 flex-grow: 2;
 
@@ -215,7 +215,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5em 1em 0.5em 2em;
+            padding: 0.5em 1em 0.5em 4em;
 
             .header-item {
                 margin-left: 0.75rem;
@@ -291,7 +291,7 @@ export default {
 
             &.active-metadata-sections-area {
                 font-size: 0.875em;
-                margin-left: -0.8em;
+                margin-left: 1.5em;
                 padding-right: 1em;
                 min-height: 330px;
             }
@@ -373,6 +373,38 @@ export default {
                     }
                 }
 
+                .sorting-buttons {
+                    display: flex;
+                    flex-direction: column;
+                    position: absolute;
+                    overflow: hidden;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-top-left-radius: 3px;
+                    border-bottom-left-radius: 3px;
+                    font-size: 0.875em;
+                    left: 0em; 
+                    top: 0px;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: opacity 0.2s ease, left 0.2s ease;
+
+                    button {
+                        border: none;
+                        background: var(--tainacan-turquoise1);
+                        &:hover {
+                            color: var(--tainacan-secondary);
+                        }
+                    }
+                }
+                &:not(.not-sortable-item):hover {
+                    .sorting-buttons {
+                        opacity: 1.0;
+                        visibility: visible;
+                        left: -2em
+                    }
+                }
+
                 &.is-compact-item .metadatum-name {
                     text-overflow: ellipsis;
                     overflow-x: hidden;
@@ -405,7 +437,7 @@ export default {
                 color: var(--tainacan-gray3) !important;
             }
             .active-metadatum-item:hover:not(.not-sortable-item),
-            .active-metadata-section-item:hover:not(.not-sortable-item) {
+            .active-metadata-sections-item:hover:not(.not-sortable-item) {
                 background-color: var(--tainacan-turquoise1);
                 border-color: var(--tainacan-turquoise1);
 
@@ -439,7 +471,7 @@ export default {
             }
 
             &.active-metadatum-item:hover:not(.not-sortable-item),
-            &.active-metadata-section-item:hover:not(.not-sortable-item) {
+            &.active-metadata-sections-item:hover:not(.not-sortable-item) {
                 background-color: var(--tainacan-blue1);
                 border-color: var(--tainacan-blue1);
                 

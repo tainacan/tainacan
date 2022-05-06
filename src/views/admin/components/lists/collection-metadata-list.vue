@@ -17,7 +17,7 @@
                                 class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
                     </span>
                     <span class="collapse-all__text">
-                        {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                        {{ collapseAll ? $i18n.get('label_show_less_details') : $i18n.get('label_show_more_details') }}
                     </span>
                 </button>
                 <b-field class="header-item">
@@ -114,6 +114,24 @@
                     <div 
                             :ref="'metadata-section-handler-' + metadataSection.id"
                             class="handle">
+                        <span class="sorting-buttons">
+                            <button 
+                                    :disabled="sectionIndex == 0"
+                                    class="link-button"
+                                    @click="moveMetadataSectionUp(sectionIndex)">
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
+                                </span>
+                            </button>
+                            <button 
+                                    :disabled="sectionIndex == activeMetadataSectionsList.length - 1"
+                                    class="link-button"
+                                    @click="moveMetadataSectionDown(sectionIndex)">
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
+                                </span>
+                            </button>
+                        </span>
                         <span 
                                 :style="{ opacity: !(metadataSection.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || openedMetadataSectionId != '' || isUpdatingMetadataSectionsOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
                                 v-tooltip="{
@@ -250,6 +268,24 @@
                                 <div 
                                         :ref="'metadatum-handler-' + metadatum.id"
                                         class="handle">
+                                    <span class="sorting-buttons">
+                                        <button 
+                                                :disabled="index == 0"
+                                                class="link-button"
+                                                @click="moveMetadatumUp(index, sectionIndex)">
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
+                                            </span>
+                                        </button>
+                                        <button 
+                                                :disabled="index == metadataSection.metadata_object_list.filter((meta) => meta != undefined && meta.parent == 0).length - 1"
+                                                class="link-button"
+                                                @click="moveMetadatumDown(index, sectionIndex)">
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
+                                            </span>
+                                        </button>
+                                    </span>
                                     <span 
                                             :style="{ opacity: !(metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
                                             v-tooltip="{
@@ -778,6 +814,22 @@ export default {
         onSectionEditionCanceled() {
             this.openedMetadataSectionId = '';
             this.$router.push({ query: {}});
+        },
+        moveMetadatumUp(index, sectionIndex) {
+            this.activeMetadataSectionsList[sectionIndex].metadata_object_list.splice(index - 1, 0, this.activeMetadataSectionsList[sectionIndex].metadata_object_list.splice(index, 1)[0]);
+            this.updateMetadataOrder(sectionIndex);
+        },
+        moveMetadatumDown(index, sectionIndex) {
+            this.activeMetadataSectionsList[sectionIndex].metadata_object_list.splice(index + 1, 0, this.activeMetadataSectionsList[sectionIndex].metadata_object_list.splice(index, 1)[0]);
+            this.updateMetadataOrder(sectionIndex);
+        },
+        moveMetadataSectionUp(sectionIndex) {
+            this.activeMetadataSectionsList.splice(sectionIndex - 1, 0, this.activeMetadataSectionsList.splice(sectionIndex, 1)[0]);
+            this.updateMetadataSectionsOrder();
+        },
+        moveMetadataSectionDown(sectionIndex) {
+            this.activeMetadataSectionsList.splice(sectionIndex + 1, 0, this.activeMetadataSectionsList.splice(sectionIndex, 1)[0]);
+            this.updateMetadataSectionsOrder();
         },
         filterByMetadatumName(metadatum) {
             if (metadatum.metadata_type_object && 
