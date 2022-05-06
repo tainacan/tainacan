@@ -4,9 +4,22 @@
         <b-loading :active.sync="isLoadingMetadataSections"/>
 
         <div class="tainacan-form sub-header">
-            <h3>{{ $i18n.get('metadata') }}</h3>
-
             <template v-if="activeMetadataSectionsList">
+                <button
+                        aria-controls="filters-items-list"
+                        :aria-expanded="!collapseAll"
+                        v-if="activeMetadataSectionsList.length > 0"
+                        class="link-style collapse-all"
+                        @click="collapseAll = !collapseAll">
+                    <span class="icon">
+                        <i 
+                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
+                    </span>
+                    <span class="collapse-all__text">
+                        {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                    </span>
+                </button>
                 <b-field class="header-item">
                     <b-dropdown
                             :mobile-modal="true"
@@ -51,22 +64,6 @@
                 </b-field>
             </template>
         </div>
-
-        <button
-                aria-controls="filters-items-list"
-                :aria-expanded="!collapseAll"
-                v-if="activeMetadataSectionsList.length > 0"
-                class="link-style collapse-all"
-                @click="collapseAll = !collapseAll">
-            <span class="icon">
-                <i 
-                        :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                        class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
-            </span>
-            <span class="collapse-all__text">
-                {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-            </span>
-        </button>
 
         <section 
                 v-if="activeMetadataSectionsList.length <= 0 && !isLoadingMetadataSections"
@@ -138,7 +135,7 @@
                             </svg>
                         </span>
                         <span class="metadatum-name">
-                                {{ metadataSection.name }}
+                            <h3>{{ metadataSection.name }}</h3>
                         </span>
                         <span   
                                 v-if="metadataSection.id != undefined && metadataSection.core"

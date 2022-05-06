@@ -4,9 +4,24 @@
         <b-loading :active.sync="isLoadingMetadata"/>
 
         <div class="tainacan-form sub-header">
-            <h3>{{ $i18n.get('metadata') }}<span class="has-text-gray">{{ ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</span></h3>
+            <!-- <h3>{{ $i18n.get('metadata') }}<span class="has-text-gray">{{ ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</span></h3> -->
 
             <template v-if="activeMetadatumList && !isLoadingMetadata">
+                <button
+                        aria-controls="filters-items-list"
+                        :aria-expanded="!collapseAll"
+                        v-if="activeMetadatumList.length > 0"
+                        class="link-style collapse-all"
+                        @click="collapseAll = !collapseAll">
+                    <span class="icon">
+                        <i 
+                                :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
+                    </span>
+                    <span class="collapse-all__text">
+                        {{ collapseAll ? $i18n.get('label_show_less_details') : $i18n.get('label_show_more_details') }}
+                    </span>
+                </button>
                 <b-field class="header-item">
                     <b-dropdown
                             :mobile-modal="true"
@@ -51,22 +66,6 @@
                 </b-field>
             </template>
         </div>
-
-        <button
-                aria-controls="filters-items-list"
-                :aria-expanded="!collapseAll"
-                v-if="activeMetadatumList.length > 0"
-                class="link-style collapse-all"
-                @click="collapseAll = !collapseAll">
-            <span class="icon">
-                <i 
-                        :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                        class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
-            </span>
-            <span class="collapse-all__text">
-                {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-            </span>
-        </button>
 
         <section 
                 v-if="activeMetadatumList.length <= 0 && !isLoadingMetadata"

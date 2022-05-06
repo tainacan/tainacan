@@ -14,7 +14,7 @@
             <b-tabs 
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
                     v-model="activeTab">    
-                <b-tab-item :label="$i18n.get('label_metadata_and_sections')">
+                <b-tab-item :label="isRepositoryLevel ? repositoryTabLabel : collectionTabLabel">
                     <div class="columns">
 
                         <!-- Active Metadata and Sections Area -->
@@ -85,6 +85,26 @@ export default {
     computed: {
         collection() {
             return this.getCollection();
+        },
+        repositoryTabLabel() {
+            let label = this.$i18n.get('metadata');
+            const metadata = this.getMetadata();
+
+            if (Array.isArray(metadata) && metadata.length)
+                label += ' (' + metadata.length + ')';
+                
+            return label;
+        },
+        collectionTabLabel() {
+            let label = this.$i18n.get('label_metadata_and_sections');
+            const metadataSections  = this.getMetadataSections();
+
+            if (Array.isArray(metadataSections) && metadataSections.length) {
+                const totalMetadata = metadataSections.reduce((total, aMetadataSection) => total + parseInt(aMetadataSection.metadata_list.length), 0);
+                label = this.$i18n.getWithVariables('label_metadata_%s_and_sections_%s', [totalMetadata, metadataSections.length]);
+            }
+            
+            return label;
         }
     },
     created() {
@@ -99,7 +119,9 @@ export default {
             'getCollection'
         ]),
         ...mapGetters('metadata',[
-            'getMetadatumTypes'
+            'getMetadatumTypes',
+            'getMetadata',
+            'getMetadataSections'
         ]),
         createMetadataTypeFilterOptions() {
             this.metadataTypeFilterOptions = JSON.parse(JSON.stringify(this.getMetadatumTypes()))
@@ -228,7 +250,8 @@ export default {
         .collapse-all {
             display: inline-flex;
             align-items: center;
-            margin-left: 1.5em;
+            margin-left: -0.5em;
+            margin-right: auto;
         }
         .collapse-all__text {
             font-size: 0.75em !important;
@@ -302,17 +325,23 @@ export default {
                     font-weight: bold;
                     margin-left: 0.4em;
                     margin-right: 0.4em;
+                    color: var(--tainacan-gray4);
 
                     &.is-danger {
                         color: var(--tainacan-danger) !important;
                     }
+                    
                 }
                 &.active-metadata-sections-item {
                     border-bottom: 1px solid var(--tainacan-gray3);
 
                     .metadatum-name {
-                        font-size: 1.25em;
-                        color: var(--tainacan-secondary);
+                        h3 {
+                            color: var(--tainacan-gray4) !important;
+                            font-size: 1.25em;
+                            line-height: normal;
+                            font-weight: 600;
+                        }
                     }
                 }
                 .label-details {
