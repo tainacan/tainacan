@@ -393,6 +393,21 @@ export const cleanMetadataSections = ({commit}) => {
     commit('cleanMetadataSections');
 };
 
+export const moveMetadataSectionUp = ({ commit }, index) => {
+    commit('moveMetadataSectionUp', index);
+}
+
+export const moveMetadataSectionDown = ({ commit }, index) => {
+    commit('moveMetadataSectionDown', index);
+}
+
+export const moveMetadatumUp = ({ commit }, { index, sectionIndex }) => {
+    commit('moveMetadatumUp', { index, sectionIndex });
+}
+
+export const moveMetadatumDown = ({ commit }, { index, sectionIndex }) => {
+    commit('moveMetadatumDown', { index, sectionIndex });
+}
 
 // METADATA SECTION METADATA LIST
 export const fetchMetadataSectionMetadata = ({commit}, { collectionId , metadataSectionId }) => {
@@ -408,3 +423,4 @@ export const fetchMetadataSectionMetadata = ({commit}, { collectionId , metadata
             });
     });
 }
+

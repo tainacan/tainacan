@@ -210,3 +210,19 @@ export const deleteMetadataSection = ( state, metadataSection ) => {
 export const cleanMetadataSections = (state) => {
     state.metadataSections = [];
 }
+
+export const moveMetadataSectionUp = (state, index) => {
+    state.metadataSections.splice(index - 1, 0, state.metadataSections.splice(index, 1)[0]);   
+}
+
+export const moveMetadataSectionDown = (state, index) => {
+    state.metadataSections.splice(index + 1, 0, state.metadataSections.splice(index, 1)[0]);
+}
+
+export const moveMetadatumUp = (state, { index, sectionIndex }) => {
+    state.metadataSections[sectionIndex].metadata_object_list.splice(index - 1, 0, state.metadataSections[sectionIndex].metadata_object_list.splice(index, 1)[0]);
+}
+
+export const moveMetadatumDown = (state, { index, sectionIndex }) => {
+    state.metadataSections[sectionIndex].metadata_object_list.splice(index + 1, 0, state.metadataSections[sectionIndex].metadata_object_list.splice(index, 1)[0]);
+}

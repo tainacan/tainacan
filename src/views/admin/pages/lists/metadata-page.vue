@@ -479,6 +479,12 @@ export default {
                     color: var(--tainacan-blue5) !important; 
                 }
             }
+            .sorting-buttons button {
+                background: var(--tainacan-blue1);
+                &:hover {
+                    color: var(--tainacan-blue5);
+                }
+            }
         }
     }
 </style>

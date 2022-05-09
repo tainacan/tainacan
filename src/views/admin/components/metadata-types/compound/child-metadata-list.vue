@@ -42,6 +42,26 @@
                 <div 
                         :ref="'metadatum-handler-' + metadatum.id"
                         class="handle">
+                    <span class="sorting-buttons">
+                        <button 
+                                :disabled="index == 0"
+                                class="link-button"
+                                @click="moveMetadatumUpViaButton(index)"
+                                :aria-label="$i18n.get('label_move_up')">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
+                            </span>
+                        </button>
+                        <button 
+                                :disabled="index == childrenMetadata.length - 1"
+                                class="link-button"
+                                @click="moveMetadatumDownViaButton(index)"
+                                :aria-label="$i18n.get('label_move_down')">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
+                            </span>
+                        </button>
+                    </span>
                     <span 
                             :style="{ opacity: !(metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
                             v-tooltip="{
@@ -388,6 +408,14 @@
             onEditionCanceled() {
                 this.openedMetadatumId = '';
                 this.$router.push({ query: {}});
+            },
+            moveMetadatumUpViaButton(index) {
+                this.childrenMetadata.splice(index - 1, 0, this.childrenMetadata.splice(index, 1)[0]);
+                this.updateMetadataOrder();
+            },
+            moveMetadatumDownViaButton(index) {
+                this.childrenMetadata.splice(index + 1, 0, this.childrenMetadata.splice(index, 1)[0]);
+                this.updateMetadataOrder();
             },
             isAvailableChildMetadata(to, from, item) {
                 return !['tainacan-compound', 'tainacan-taxonomy'].includes(item.id);

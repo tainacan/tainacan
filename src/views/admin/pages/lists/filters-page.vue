@@ -73,6 +73,28 @@
                                 :key="filter.id"
                                 v-show="filterNameFilterString == '' || filter.name.toString().toLowerCase().indexOf(filterNameFilterString.toString().toLowerCase()) >= 0">
                             <div class="handle">
+                                <span
+                                        v-if="!isRepositoryLevel"
+                                        class="sorting-buttons">
+                                    <button 
+                                            :disabled="index == 0"
+                                            class="link-button"
+                                            @click="moveFilterUpViaButton(index)"
+                                            :aria-label="$i18n.get('label_move_up')">
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
+                                        </span>
+                                    </button>
+                                    <button 
+                                            :disabled="index == activeFiltersList.length - 1"
+                                            class="link-button"
+                                            @click="moveFilterDownViaButton(index)"
+                                            :aria-label="$i18n.get('label_move_down')">
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
+                                        </span>
+                                    </button>
+                                </span>
                                 <span 
                                         :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel || filterNameFilterString != '') ? '1.0' : '0.0' }"
                                         v-tooltip="{
@@ -82,7 +104,6 @@
                                             placement: 'auto-start'
                                         }"
                                         class="icon grip-icon">
-                                    <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
                                     <svg 
                                             xmlns="http://www.w3.org/2000/svg" 
                                             height="24px"
@@ -563,10 +584,10 @@ export default {
             'fetchFilters',
             'sendFilter',
             'deleteFilter',
-            // 'addTemporaryFilter',
-            // 'deleteTemporaryFilter',
             'updateFilters',
-            'updateCollectionFiltersOrder'
+            'updateCollectionFiltersOrder',
+            'moveFilterUp',
+            'moveFilterDown'
         ]),
         ...mapGetters('filter',[
             'getFilters',
@@ -792,6 +813,14 @@ export default {
             this.openedFilterId = '';
             this.$router.push({ query: {}});
         },
+        moveFilterUpViaButton(index) {
+            this.moveFilterUp(index)
+            this.updateFiltersOrder();
+        },
+        moveFilterDownViaButton(index) {
+            this.moveFilterDown(index);
+            this.updateFiltersOrder();
+        },
         getProperPreviewMinHeight() {
             for (let filterType of this.allowedFilterTypes) {
                 if (filterType.component == 'tainacan-filter-taginput' || 
@@ -946,7 +975,7 @@ export default {
 
         .active-filters-area {
             font-size: 0.875em;
-            margin-left: -0.8em;
+            margin-left: 1.5em;
             padding-right: 1em;
             padding-top: 1em;
             min-height: 330px;
@@ -989,6 +1018,37 @@ export default {
                     background-color: var(--tainacan-white) !important;
                 }
 
+                .sorting-buttons {
+                    display: flex;
+                    flex-direction: column;
+                    position: absolute;
+                    overflow: hidden;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-top-left-radius: 3px;
+                    border-bottom-left-radius: 3px;
+                    font-size: 0.875em;
+                    left: 0em; 
+                    top: 0px;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: opacity 0.2s ease, left 0.2s ease;
+
+                    button {
+                        border: none;
+                        background: var(--tainacan-turquoise1);
+                        &:hover {
+                            color: var(--tainacan-secondary);
+                        }
+                    }
+                }
+                &:not(.not-sortable-item):hover {
+                    .sorting-buttons {
+                        opacity: 1.0;
+                        visibility: visible;
+                        left: -2em
+                    }
+                }
                 .handle {
                     padding-right: 6em;
                     white-space: nowrap;
@@ -1223,6 +1283,12 @@ export default {
                 
                 .grip-icon { 
                     color: var(--tainacan-blue5) !important; 
+                }
+            }
+            .sorting-buttons button {
+                background: var(--tainacan-blue1);
+                &:hover {
+                    color: var(--tainacan-blue5);
                 }
             }
         }

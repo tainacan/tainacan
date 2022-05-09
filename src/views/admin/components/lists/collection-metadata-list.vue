@@ -118,7 +118,7 @@
                             <button 
                                     :disabled="sectionIndex == 0"
                                     class="link-button"
-                                    @click="moveMetadataSectionUp(sectionIndex)">
+                                    @click="moveMetadataSectionUpViaButon(sectionIndex)">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
                                 </span>
@@ -126,7 +126,7 @@
                             <button 
                                     :disabled="sectionIndex == activeMetadataSectionsList.length - 1"
                                     class="link-button"
-                                    @click="moveMetadataSectionDown(sectionIndex)">
+                                    @click="moveMetadataSectionDownViaButton(sectionIndex)">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
                                 </span>
@@ -272,7 +272,8 @@
                                         <button 
                                                 :disabled="index == 0"
                                                 class="link-button"
-                                                @click="moveMetadatumUp(index, sectionIndex)">
+                                                @click="moveMetadatumUpViaButton(index, sectionIndex)"
+                                                :aria-label="$i18n.get('label_move_up')">
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
                                             </span>
@@ -280,7 +281,8 @@
                                         <button 
                                                 :disabled="index == metadataSection.metadata_object_list.filter((meta) => meta != undefined && meta.parent == 0).length - 1"
                                                 class="link-button"
-                                                @click="moveMetadatumDown(index, sectionIndex)">
+                                                @click="moveMetadatumDownViaButton(index, sectionIndex)"
+                                                :aria-label="$i18n.get('label_move_down')">
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
                                             </span>
@@ -591,7 +593,11 @@ export default {
             'updateMetadataSections',
             'fetchMetadataSections',
             'deleteMetadataSection',
-            'cleanMetadataSections'
+            'cleanMetadataSections',
+            'moveMetadataSectionUp',
+            'moveMetadataSectionDown',
+            'moveMetadatumUp',
+            'moveMetadatumDown'
         ]),
         ...mapGetters('metadata',[
             'getMetadataSections'
@@ -815,20 +821,20 @@ export default {
             this.openedMetadataSectionId = '';
             this.$router.push({ query: {}});
         },
-        moveMetadatumUp(index, sectionIndex) {
-            this.activeMetadataSectionsList[sectionIndex].metadata_object_list.splice(index - 1, 0, this.activeMetadataSectionsList[sectionIndex].metadata_object_list.splice(index, 1)[0]);
+        moveMetadatumUpViaButton(index, sectionIndex) {
+            this.moveMetadatumUp({ index, sectionIndex });
             this.updateMetadataOrder(sectionIndex);
         },
-        moveMetadatumDown(index, sectionIndex) {
-            this.activeMetadataSectionsList[sectionIndex].metadata_object_list.splice(index + 1, 0, this.activeMetadataSectionsList[sectionIndex].metadata_object_list.splice(index, 1)[0]);
+        moveMetadatumDownViaButton(index, sectionIndex) {
+            this.moveMetadatumDown({ index, sectionIndex });
             this.updateMetadataOrder(sectionIndex);
         },
-        moveMetadataSectionUp(sectionIndex) {
-            this.activeMetadataSectionsList.splice(sectionIndex - 1, 0, this.activeMetadataSectionsList.splice(sectionIndex, 1)[0]);
+        moveMetadataSectionUpViaButon(sectionIndex) {
+            this.moveMetadataSectionUp(sectionIndex);
             this.updateMetadataSectionsOrder();
         },
-        moveMetadataSectionDown(sectionIndex) {
-            this.activeMetadataSectionsList.splice(sectionIndex + 1, 0, this.activeMetadataSectionsList.splice(sectionIndex, 1)[0]);
+        moveMetadataSectionDownViaButton(sectionIndex) {
+            this.moveMetadataSectionDown(sectionIndex);
             this.updateMetadataSectionsOrder();
         },
         filterByMetadatumName(metadatum) {

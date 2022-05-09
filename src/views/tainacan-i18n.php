@@ -631,6 +631,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_new_metadata_section'					 => __( 'New metadata section', 'tainacan' ),
 	'label_show_more_details'					 	 => __( 'Show more details', 'tainacan' ),
 	'label_show_less_details'					 	 => __( 'Show less details', 'tainacan' ),
+	'label_move_up'								 	 => __( 'Move up', 'tainacan' ),
+	'label_move_down'							 	 => __( 'Move down', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
