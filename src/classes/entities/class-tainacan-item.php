@@ -539,10 +539,8 @@ class Item extends Entity {
 	 *
 	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
 	 *                                                  Default: true
-	 * 
 	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value.
 	 *                                                  Default: ''
-	 * 
 	 *     @type bool        $display_slug_as_class     Show metadata slug as a class in the div before the metadata block
 	 *                                                  Default: false
 	 *     @type string      $before                    String to be added before each metadata block
@@ -570,42 +568,52 @@ class Item extends Entity {
 		$return = '';
 
 		$defaults = array(
-			'metadata' => null,
-			'metadata__in' => null,
-			'metadata__not_in' => null,
-			'exclude_title' => false,
-			'exclude_description' => false,
-			'exclude_core' => false,
-			'hide_empty' => true,
-			'empty_value_message' => '',
+			'metadata' 				=> null,
+			'metadata__in' 			=> null,
+			'metadata__not_in' 		=> null,
+			'exclude_title' 		=> false,
+			'exclude_description' 	=> false,
+			'exclude_core' 			=> false,
+			'hide_empty' 			=> true,
+			'empty_value_message' 	=> '',
 			'display_slug_as_class' => false,
-			'before' => '<div class="metadata-type-$type $id">',
-			'after' => '</div>',
-			'before_title' => '<h3>',
-			'after_title' => '</h3>',
-			'before_value' => '<p>',
-			'after_value' => '</p>',
+			'before' 				=> '<div class="metadata-type-$type $id">',
+			'after' 				=> '</div>',
+			'before_title' 			=> '<h3>',
+			'after_title' 			=> '</h3>',
+			'before_value' 			=> '<p>',
+			'after_value' 			=> '</p>'
 		);
 		$args = wp_parse_args($args, $defaults);
+		$item_metadata = array();
 		
-		if (!is_null($args['metadata'])) {
+		// If a single metadata is passed, we use it instead of fetching more
+		if ( !is_null($args['metadata']) ) {
 
 			$metadatum = $args['metadata'];
 			$metadatum_object = null;
 
+			// A metadatum object was passed
 			if ( $metadatum instanceof \Tainacan\Entities\Metadatum ) {
 				$metadatum_object = $metadatum;
+
+			// A metadatum ID was passed
 			} elseif ( is_int($metadatum) ) {
 				$metadatum_object = $Tainacan_Metadata->fetch($metadatum);
+			
+			// A metadatum slug was passed
 			} elseif ( is_string($metadatum) ) {
 				$query = $Tainacan_Metadata->fetch(['slug' => $metadatum], 'OBJECT');
 				if ( is_array($query) && sizeof($query) == 1 && isset($metadatum[0])) {
 					$metadatum_object = $metadatum[0];
 				}
 			}
-			
-			if ( $metadatum_object instanceof \Tainacan\Entities\Metadatum ) {
 
+			// Some checks to see if things are really ok
+			if ( !($metadatum instanceof \Tainacan\Entities\Metadatum) ) {
+				return $return;
+			} else {
+				// Makes sure the current Metadatum is desired
 				if ( is_array($args['metadata__not_in'])
 					&& (
 						in_array($metadatum_object->get_slug(), $args['metadata__not_in']) ||
@@ -614,98 +622,184 @@ class Item extends Entity {
 				) {
 					return $return;
 				}
+			}
 
-				$mto = $metadatum_object->get_metadata_type_object();
-				$item_meta = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum_object);
-				if ($item_meta->has_value() || !$args['hide_empty']) {
-					$before = str_replace('$type', $mto->get_slug(), $args['before']);
-					if ($args['display_slug_as_class']) {
-						$before = str_replace('$id', 'metadata-slug-'.$item_meta->get_metadatum()->get_slug() , $before);
+			// Add it to the array which will be looped bellow
+			$item_metadata[] = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum_object);
+
+		// If not single metadatum is passed, we query them
+		} else {
+
+			// Build query args ready to be passed to the API fetch
+			$query_args = [];
+			$post__in = [];
+			$post__not_in = [];
+			$post__name_in = [];
+			if (is_array($args['metadata__in'])) {
+				$post__in[] = -1; // If metadata__in is an empty array, this forces empty result
+				foreach ($args['metadata__in'] as $meta) {
+					if (is_numeric($meta)) {
+						$post__in[] = $meta;
+					} elseif (is_string($meta)) {
+						$post__name_in[] = $meta;
 					}
-					else {
-						$before = str_replace(' $id', '', $before);
+				}
+			}
+			if (is_array($args['metadata__not_in'])) {
+				foreach ($args['metadata__not_in'] as $meta) {
+					if (is_integer($meta)) {
+						$post__not_in[] = $meta;
 					}
-					$return .= $before;
-					$return .= $args['before_title'] . $metadatum_object->get_name() . $args['after_title'];
-					$return .= $args['before_value'] . ( $item_meta->has_value() ? $item_meta->get_value_as_html() : $args['empty_value_message'] ) . $args['after_value'];
-					$return .= $args['after'];
-				}
-
-			}
-
-			return $return;
-
-		}
-
-		$query_args = [];
-		$post__in = [];
-		$post__not_in = [];
-		$post__name_in = [];
-		if (is_array($args['metadata__in'])) {
-			$post__in[] = -1; // If metadata__in is an empty array, this forces empty result
-			foreach ($args['metadata__in'] as $meta) {
-				if (is_numeric($meta)) {
-					$post__in[] = $meta;
-				} elseif (is_string($meta)) {
-					$post__name_in[] = $meta;
 				}
 			}
-		}
-		if (is_array($args['metadata__not_in'])) {
-			foreach ($args['metadata__not_in'] as $meta) {
-				if (is_integer($meta)) {
-					$post__not_in[] = $meta;
-				}
+
+			if (sizeof($post__in) > 0) {
+				$query_args['post__in'] = $post__in;
 			}
+			if (sizeof($post__not_in) > 0) {
+				$query_args['post__not_in'] = $post__not_in;
+			}
+			if (sizeof($post__name_in) > 0) {
+				$query_args['post__name_in'] = $post__name_in;
+			}
+
+			// Get the item metadata objects from the item repository
+			$item_metadata = $this->get_metadata($query_args);
 		}
 
-		if (sizeof($post__in) > 0) {
-			$query_args['post__in'] = $post__in;
-		}
-		if (sizeof($post__not_in) > 0) {
-			$query_args['post__not_in'] = $post__not_in;
-		}
-		if (sizeof($post__name_in) > 0) {
-			$query_args['post__name_in'] = $post__name_in;
-		}
+		// Loop item metadata to print their "values" as html
+		$metadatum_index = 0;
+		foreach ( $item_metadata as $item_metadatum ) {
 
+			// Gets the metadata type object to perform some checks
+			$metadata_type_object = $item_metadatum->get_metadatum()->get_metadata_type_object();
 
-		$metadata = $this->get_metadata($query_args);
-
-		foreach ( $metadata as $item_meta ) {
-
-			$fto = $item_meta->get_metadatum()->get_metadata_type_object();
-
-			if ( $fto->get_core() ) {
+			// Core metadata may not be desired as they may be displayed differently
+			if ( $metadata_type_object->get_core() ) {
 				if ( $args['exclude_core'] ) {
 					continue;
-				} elseif ( $args['exclude_title'] && $fto->get_related_mapped_prop() == 'title' ) {
+				} elseif ( $args['exclude_title'] && $metadata_type_object->get_related_mapped_prop() == 'title' ) {
 					continue;
-				} elseif ( $args['exclude_description'] && $fto->get_related_mapped_prop() == 'description' ) {
+				} elseif ( $args['exclude_description'] && $metadata_type_object->get_related_mapped_prop() == 'description' ) {
 					continue;
 				}
 			}
 
-			if ($item_meta->has_value() || !$args['hide_empty']) {
-				$before = str_replace('$type', $fto->get_slug(), $args['before']);
-				if ($args['display_slug_as_class']) {
-					$before = str_replace('$id', 'metadata-slug-'.$item_meta->get_metadatum()->get_slug() , $before);
-				}
-				else {
-					$before = str_replace(' $id', '', $before);
-				}
-				$return .= $before;
-				$return .= $args['before_title'] . $item_meta->get_metadatum()->get_name() . $args['after_title'];
-				$return .= $args['before_value'] . ( $item_meta->has_value() ? $item_meta->get_value_as_html() : $args['empty_value_message'] ) . $args['after_value'];
-				$return .= $args['after'];
+			// Get the metadatum representation in html, with its label and value
+			$return .= $this->get_item_metadatum_as_html($item_metadatum, $args, $metadatum_index);
 
-			}
+			$metadatum_index++;
 		}
 
+		// Returns the html content created by the function
 		return $return;
 
 	}
 
+	/**
+	 * Return a single item metadata as a HTML string to be used as output.
+	 *
+	 * Each metadata is a label with the metadatum name and the value.
+	 *
+	 * This function expects a $item_metadatum object. For a more generic approach, check the get_metadata_as_html function
+	 *
+	 * @param object 	$item_metadatum					The Item Metadatum object
+	 * @param array|string $args {
+	 *     Optional. Array or string of arguments.
+	 * 
+	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+	 *                                                  Default: true
+	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value.
+	 *                                                  Default: ''
+	 *     @type bool        $display_slug_as_class     Show metadata slug as a class in the div before the metadata block
+	 *                                                  Default: false
+	 *     @type string      $before                    String to be added before each metadata block
+	 *                                                  Default '<div class="metadata-type-$type">' where $type is the metadata type slug
+	 *     @type string      $after		                String to be added after each metadata block
+	 *                                                  Default '</div>'
+	 *     @type string      $before_title              String to be added before each metadata title
+	 *                                                  Default '<h3>'
+	 *     @type string      $after_title               String to be added after each metadata title
+	 *                                                  Default '</h3>'
+	 *     @type string      $before_value              String to be added before each metadata value
+	 *                                                  Default '<p>'
+	 *     @type string      $after_value               String to be added after each metadata value
+	 *                                                  Default '</p>'
+	 * }
+	 * @param int			 $section_index				The Metadatum index, if passed from an array
+	 *
+	 * @return string        The HTML output
+	 */
+	public function get_item_metadatum_as_html($item_metadatum, $args = array(), $metadatum_index = null) {
+
+		$return = '';
+
+		$defaults = array(
+			'hide_empty' 			=> true,
+			'empty_value_message' 	=> '',
+			'display_slug_as_class' => false,
+			'before' 				=> '<div class="metadata-type-$type $id">',
+			'after' 				=> '</div>',
+			'before_title' 			=> '<h3>',
+			'after_title' 			=> '</h3>',
+			'before_value' 			=> '<p>',
+			'after_value' 			=> '</p>'
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		if ($item_metadatum->has_value() || !$args['hide_empty']) {
+
+			// Gets the metadata type object to use it if we need the slug
+			$metadata_type_object = $item_metadatum->get_metadatum()->get_metadata_type_object();
+
+			// Get metadatum wrapper tag. 
+			$before = str_replace('$type', $metadata_type_object->get_slug(), $args['before']);
+
+			// Adds class with slug and adds metadatum id
+			if ($args['display_slug_as_class']) {
+				$before = str_replace('$id', 'metadata-slug-'.$item_metadatum->get_metadatum()->get_slug() , $before);
+			} else {
+				$before = str_replace(' $id', '', $before);
+			}
+
+			// Let theme authors tweak the wrapper opener
+			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before', $before, $item_metadatum );
+			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--type-' . $item_metadatum->get_metadatum()->get_metadata_type(), $before, $item_metadatum );
+			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--id-' . $item_metadatum->get_metadatum()->get_id(), $before, $item_metadatum );
+			if ( is_numeric($metadatum_index) ) {
+				$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--index-' . $metadatum_index, $before, $item_metadatum );
+			}
+
+			// Renders the metadatum opener
+			$return .= $before;
+
+			// Renders metadatum name
+			$return .= $args['before_title'] . $item_metadatum->get_metadatum()->get_name() . $args['after_title'];
+			
+			// Renders the metadatum value
+			$return .= $args['before_value'] . ( $item_metadatum->has_value() ? $item_metadatum->get_value_as_html() : $args['empty_value_message'] ) . $args['after_value'];
+
+			$after = $args['after'];
+
+			// Let theme authors tweak the wrapper closer
+			if ( is_numeric($metadatum_index) ) {
+				$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--index-' . $metadatum_index, $after, $item_metadatum );
+			}
+			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--id-' . $item_metadatum->get_metadatum()->get_id(), $after, $item_metadatum );
+			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--type-' . $item_metadatum->get_metadatum()->get_metadata_type(), $after, $item_metadatum );
+			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after', $after, $item_metadatum );
+			
+			// Closes the wrapper
+			$return .= $after;
+		}
+
+		// Returns the html content created by the function
+		return $return;
+	}
+
+	/**
+	 * Gets the document as a html. May be a text, link, iframe, image, audio...
+	 */
 	public function get_document_as_html($img_size = 'large') {
 
 		$type = $this->get_document_type();
@@ -777,7 +871,7 @@ class Item extends Entity {
 	}
 
 	/**
-	 * Gets the attachment as a html, can be iframe, image, audio...
+	 * Gets the attachment as a html. May be an iframe, image, audio...
 	 */
 	public function get_attachment_as_html($attachment, $img_size = 'large') {
 
@@ -853,5 +947,297 @@ class Item extends Entity {
 		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
 		$related_items = $Tainacan_Items->fetch_related_items($this, $args);
 		return $related_items;
+	}
+
+	/**
+	 * Return the item metadata sections as a HTML string to be used as output.
+	 *
+	 * Each metadata section is a label with the list of its metadata name and value.
+	 *
+	 * If an ID, a slug or a Tainacan\Entities\Metadata_Section object is passed in the 'metadata_section' argument, it returns only one metadata section, otherwise
+	 * it returns all metadata section
+	 *
+	 * @param array|string $args {
+	 *     Optional. Array or string of arguments.
+	 *
+	 * 	   @type mixed		 $metadata_section				Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata_sections
+	 *
+	 *     @type array		 $metadata_sections__in			Array of metadata_sections IDs or Slugs to be retrieved. Default none
+	 *
+	 *     @type array		 $metadata_sections__not_in		Array of metadata_sections IDs (slugs not accepted) to excluded. Default none
+	 * 
+	 *     @type bool		 $hide_name						Do not display the Metadata Section name. Default false
+	 *
+	 *     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
+	 *
+	 *     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	 *                                                  	Default: true
+	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
+	 *                                                  	Default: ''
+	 *     @type bool        $display_slug_as_class     	Show metadata slug as a class in the div before the metadata block
+	 *                                                  	Default: true
+	 *     @type string      $before                    	String to be added before each metadata section block
+	 *                                                  	Default '<section $id>'
+	 *     @type string      $after		                	String to be added after each metadata section block
+	 *                                                  	Default '</section>'
+	 *     @type string      $before_name              		String to be added before each metadata section name
+	 *                                                  	Default '<h2>'
+	 *     @type string      $after_name               		String to be added after each metadata section name
+	 *                                                  	Default '</h2>'
+	 * 	   @type string      $before_description            String to be added before each metadata section description
+	 *                                                  	Default '<p>'
+	 *     @type string      $after_description             String to be added after each metadata section description
+	 *                                                  	Default '</p>'
+	 *     @type string      $before_metadata_list      	String to be added before each metadata section inner metadata list
+	 *                                                  	Default '<div class="metadata-section__metadata-list">'
+	 *     @type string      $after_metadata_list       	String to be added after each metadata section inner metadata list
+	 *                                                  	Default '</div>'
+	 *	   @type array		$metadata_list_args				Arguments to be passed to the get_metadata_as_html function when calling section metadata
+	 * }
+	 *
+	 * @return string        The HTML output
+	 */
+	public function get_metadata_sections_as_html($args = array()) {
+
+		$Tainacan_Metadata_Sections = \Tainacan\Repositories\Metadata_Sections::get_instance();
+
+		$return = '';
+
+		$defaults = array(
+			'metadata_section' 				=> null,
+			'metadata_sections__in' 		=> null,
+			'metadata_sections__not_in' 	=> null,
+			'hide_name' 					=> false,
+			'hide_description' 				=> true,
+			'hide_empty' 					=> true,
+			'empty_metadata_list_message' 	=> '',
+			'display_slug_as_class' 		=> true,
+			'before' 						=> '<section $id>',
+			'after' 						=> '</section>',
+			'before_name' 					=> '<h2>',
+			'after_name' 					=> '</h2>',
+			'before_metadata_list' 			=> '<div class="metadata-section__metadata-list">',
+			'after_metadata_list' 			=> '</div>',
+			'metadata_list_args' 			=> []
+		);
+		$args = wp_parse_args($args, $defaults);
+		$metadata_sections = array();
+
+		// If a single metadata section is passed, we use it instead of fetching more
+		if ( !is_null($args['metadata_section']) ) {
+			
+			$metadata_section = $args['metadata_section'];
+			$metadata_section_object = null;
+
+			// A metadata section object was passed
+			if ( $metadata_section instanceof \Tainacan\Entities\Metadata_Section ) {
+				$metadata_section_object = $metadata_section;
+
+			// A metadata section ID was passed
+			} elseif ( is_int($metadata_section) ) {
+				$metadata_section_object = $Tainacan_Metadata_Sections->fetch($metadata_section);
+
+			// A metadata section slug was passed
+			} elseif ( is_string($metadata_section) ) {
+				$query = $Tainacan_Metadata_Sections->fetch(['slug' => $metadata_section], 'OBJECT');
+				if ( is_array($query) && sizeof($query) == 1 && isset($metadata_section[0]) ) {
+					$metadata_section_object = $metadata_section[0];
+				}
+			}
+
+			// Some checks to see if things are really ok
+			if ( !($metadata_section_object instanceof \Tainacan\Entities\Metadata_Section) ) {
+				return $return;
+			} else {
+				// Makes sure the current Metadata Section is desired
+				if ( is_array($args['metadata_sections__not_in'])
+					&& (
+						in_array($metadata_section_object->get_slug(), $args['metadata_sections__not_in']) ||
+						in_array($metadata_section_object->get_id(), $args['metadata_sections__not_in'])
+					)
+				) {
+					return $return;
+				}
+			}
+
+			// Add it to the array which will be looped bellow
+			$metadata_sections[] = $metadata_section_object;
+
+		// If not single metadata section is passed, we query them
+		} else {
+
+			// Build query args ready to be passed to the API fetch
+			$query_args = [];
+			$post__in = [];
+			$post__not_in = [];
+			$post__name_in = [];
+			if (is_array($args['metadata_section__in'])) {
+				$post__in[] = -1; // If metadata_section__in is an empty array, this forces empty result
+				foreach ($args['metadata_section__in'] as $meta) {
+					if (is_numeric($meta)) {
+						$post__in[] = $meta;
+					} elseif (is_string($meta)) {
+						$post__name_in[] = $meta;
+					}
+				}
+			}
+			if (is_array($args['metadata_section__not_in'])) {
+				foreach ($args['metadata_section__not_in'] as $meta) {
+					if (is_integer($meta)) {
+						$post__not_in[] = $meta;
+					}
+				}
+			}
+
+			if (sizeof($post__in) > 0) {
+				$query_args['post__in'] = $post__in;
+			}
+			if (sizeof($post__not_in) > 0) {
+				$query_args['post__not_in'] = $post__not_in;
+			}
+			if (sizeof($post__name_in) > 0) {
+				$query_args['post__name_in'] = $post__name_in;
+			}
+
+			// Get metadata section objects from the metadata sections repository
+			$metadata_sections = $Tainacan_Metadata_Sections->fetch_by_collection($this->get_collection(), $query_args);
+		}
+
+		// Loop metadata sections to print their "values" as html
+		$section_index = 0;
+		foreach ( $metadata_sections as $metadata_section_object ) {
+			$return .= $this->get_metadata_section_as_html($metadata_section_object, $args, $section_index);
+			$section_index++;
+		}
+
+		// Returns the html content created by the function
+		return $return;
+	}
+
+	/**
+	 * Return a single item metadata section as a HTML string to be used as output.
+	 *
+	 * A metadata section is a label with the list of its metadata name and value.
+	 *
+	 * This function expects a $metadata_section object. For a more generic approach, check the get_metadata_sections_as_html function
+	 *
+	 * @param object 	$metadata_section					The Metadata Section object
+	 * @param array|string $args {
+	 *     Optional. Array or string of arguments.
+	 * 
+	 *     @type bool		 $hide_name						Do not display the Metadata Section name. Default false
+	 *
+	 *     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
+	 *
+	 *     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	 *                                                  	Default: true
+	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
+	 *                                                  	Default: ''
+	 *     @type bool        $display_slug_as_class     	Show metadata slug as a class in the div before the metadata block
+	 *                                                  	Default: true
+	 *     @type string      $before                    	String to be added before each metadata section block
+	 *                                                  	Default '<section $id>'
+	 *     @type string      $after		                	String to be added after each metadata section block
+	 *                                                  	Default '</section>'
+	 *     @type string      $before_name              		String to be added before each metadata section name
+	 *                                                  	Default '<h2>'
+	 *     @type string      $after_name               		String to be added after each metadata section name
+	 *                                                  	Default '</h2>'
+	 * 	   @type string      $before_description            String to be added before each metadata section description
+	 *                                                  	Default '<p>'
+	 *     @type string      $after_description             String to be added after each metadata section description
+	 *                                                  	Default '</p>'
+	 *     @type string      $before_metadata_list      	String to be added before each metadata section inner metadata list
+	 *                                                  	Default '<div class="metadata-section__metadata-list">'
+	 *     @type string      $after_metadata_list       	String to be added after each metadata section inner metadata list
+	 *                                                  	Default '</div>'
+	 * 
+	 *	   @type array		$metadata_list_args				Arguments to be passed to the get_metadata_as_html function when calling section metadata
+	 * }
+	 * @param int			$section_index					The Metadata Section index, if passed from an array
+	 *
+	 * @return string        The HTML output
+	 */
+	public function get_metadata_section_as_html($metadata_section, $args = array(), $section_index = 0) {
+
+		$return = '';
+
+		$defaults = array(
+			'hide_name' 					=> false,
+			'hide_description' 				=> true,
+			'hide_empty' 					=> true,
+			'empty_metadata_list_message' 	=> '',
+			'display_slug_as_class' 		=> true,
+			'before' 						=> '<section $id>',
+			'after' 						=> '</section>',
+			'before_name' 					=> '<h2>',
+			'after_name' 					=> '</h2>',
+			'before_metadata_list' 			=> '<div class="metadata-section__metadata-list">',
+			'after_metadata_list' 			=> '</div>',
+			'metadata_list_args' 			=> []
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		// Gets the metadata section inner metadata list
+		$metadata_section_metadata_list = $metadata_section->get_metadata_list();
+		$has_metadata_list = (is_array($metadata_section_metadata_list) && count($metadata_section_metadata_list) > 0 );
+
+		if ( $has_metadata_list || !$args['hide_empty'] ) {
+
+			// Get section wrapper tag
+			$before = $args['before'];
+			
+			// Adds section ID to the wrapper element
+			if ( strpos($before, 'id="') ) {
+				$before = str_replace('$id', '', $before); // Custom ID passed, no need for this
+			} else {
+				$before = str_replace('$id', ' id="metadata-section-id-' . $metadata_section->get_id() . ' ', $before);
+			}
+
+			// Adds section slug as class to the wrapper element
+			if ($args['display_slug_as_class']) {
+
+				if ( strpos($before, 'class="') ) {
+					$before = str_replace('class="', 'class="metadata-section-slug-' . $metadata_section->get_slug() . ' ', $before);
+				} else {
+					$before = str_replace('>', ' class="metadata-section-slug-' . $metadata_section->get_slug() . '">', $before);
+				}
+			}
+
+			// Let theme authors tweak the wrapper opener
+			$before = apply_filters( 'tainacan-get-metadata-section-as-html-before', $before, $metadata_section );
+			$before = apply_filters( 'tainacan-get-metadata-section-as-html-before--id-' . $metadata_section->get_id(), $before, $metadata_section );
+
+			// Renders the wrapper opener
+			$return .= $before;
+
+			// Adds section label (name)
+			if ( !$args['hide_name'] ) {
+				$return .= $args['before_name'] . $metadata_section->get_name() . $args['after_name'];
+			}
+
+			// Adds section description
+			if ( !$args['hide_description'] ) {
+				$return .= $args['before_description'] . $metadata_section->get_description() . $args['after_description'];
+			}
+
+			// Renders the section metadata list, using Items' get_metadata_as_html
+			$return .= $args['before_metadata_list'];
+			$return .= ( $has_metadata_list ? $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata__in' => $metadata_section_metadata_list]) ) : $args['empty_metadata_list_message'] );
+			$return .= $args['after_metadata_list'];
+
+			// Gets the wrapper closer
+			$after = $args['after'];
+
+			// Let theme authors tweak the wrapper closer
+			$after = apply_filters( 'tainacan-get-metadata-section-as-html-after--id-' . $metadata_section->get_id(), $after, $metadata_section );
+			$after = apply_filters( 'tainacan-get-metadata-section-as-html-after', $after, $metadata_section );
+			
+			// Closes the wrapper
+			$return .= $after;
+		}
+
+		// Returns the html content created by the function
+		return $return;
 	}
 }
