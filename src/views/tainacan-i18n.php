@@ -316,7 +316,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_view_mode'                                => __( 'View mode', 'tainacan' ),
 	'label_default_view_mode'                        => __( 'Default view mode', 'tainacan' ),
 	'label_enabled_view_modes'                       => __( 'Enabled view modes', 'tainacan' ),
-	'label_view_modes_available'                     => __( 'View modes available on theme', 'tainacan' ),
+	'label_view_modes_available'                     => __( 'View modes available', 'tainacan' ),
 	'label_warning'                                  => __( 'Warning', 'tainacan' ),
 	'label_error'                                    => __( 'Error', 'tainacan' ),
 	'label_thumbnails'                               => __( 'Thumbnails', 'tainacan' ),
@@ -633,6 +633,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_show_less_details'					 	 => __( 'Show less details', 'tainacan' ),
 	'label_move_up'								 	 => __( 'Move up', 'tainacan' ),
 	'label_move_down'							 	 => __( 'Move down', 'tainacan' ),
+	'label_view_modes_public_list'				 	 => __( 'Items view modes in the public list', 'tainacan' ),
+	'label_default'							 		 => __( 'Default', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -701,6 +703,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_click_to_see_%s_child_terms'	 	 => __( 'Click to see %s child terms', 'tainacan'),
 	'instruction_click_to_see_%s_child_term'	 	 => __( 'Click to see %s child term', 'tainacan'),
 	'instruction_click_to_load_filter'				 => __( 'Click to load the filter', 'tainacan' ),
+	'instruction_collection_description'			 => __( 'Enter the collection description here...', 'tainacan' ),
+	'instruction_collection_name'					 => __( 'Enter the collection name here...', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
@@ -937,7 +941,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_iframe_dimensions'						 => __( 'The dimension values will be passed to the iframe, but it\'s rendering may change according to the theme display settings. It is still important to keep an approximate aspect ratio to the inner content.', 'tainacan'),
 	'info_metadata_mapper_helper'					 => __(	'Select the corresponding metadata so they can be exposed according to the mapper', 'tainacan'),
 	'info_default_orderby'							 => __( 'These settings only affect the initial state of the items sorting. After changed, the value used will be the latest selected by the user.', 'tainacan' ),
-	
+	'info_collection_thumbnail_and_header'			 => __( 'The thumbnail is a squared image that will represent the collection in listings. The header image is a complementary, decorative image that may or not be displayed by your theme in the items list. Keep in mind that it might be cropped.', 'tainacan'),
+
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),
