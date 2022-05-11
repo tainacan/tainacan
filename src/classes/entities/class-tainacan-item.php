@@ -738,7 +738,7 @@ class Item extends Entity {
 			'hide_empty' 			=> true,
 			'empty_value_message' 	=> '',
 			'display_slug_as_class' => false,
-			'before' 				=> '<div class="metadata-type-$type $id">',
+			'before' 				=> '<div class="metadata-type-$type" $id">',
 			'after' 				=> '</div>',
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
@@ -974,14 +974,12 @@ class Item extends Entity {
 	 *                                                  	Default: true
 	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	 *                                                  	Default: ''
-	 *     @type bool        $display_slug_as_class     	Show metadata slug as a class in the div before the metadata block
-	 *                                                  	Default: true
 	 *     @type string      $before                    	String to be added before each metadata section block
-	 *                                                  	Default '<section $id>'
+	 *                                                  	Default '<section class="metadata-section-slug-$slug" id="$id">'
 	 *     @type string      $after		                	String to be added after each metadata section block
 	 *                                                  	Default '</section>'
 	 *     @type string      $before_name              		String to be added before each metadata section name
-	 *                                                  	Default '<h2>'
+	 *                                                  	Default '<h2 id="metadata-section-$slug">'
 	 *     @type string      $after_name               		String to be added after each metadata section name
 	 *                                                  	Default '</h2>'
 	 * 	   @type string      $before_description            String to be added before each metadata section description
@@ -989,7 +987,7 @@ class Item extends Entity {
 	 *     @type string      $after_description             String to be added after each metadata section description
 	 *                                                  	Default '</p>'
 	 *     @type string      $before_metadata_list      	String to be added before each metadata section inner metadata list
-	 *                                                  	Default '<div class="metadata-section__metadata-list">'
+	 *                                                  	Default '<div class="metadata-section__metadata-list" aria-labelledby="metadata-section-$slug">'
 	 *     @type string      $after_metadata_list       	String to be added after each metadata section inner metadata list
 	 *                                                  	Default '</div>'
 	 *	   @type array		$metadata_list_args				Arguments to be passed to the get_metadata_as_html function when calling section metadata
@@ -1011,12 +1009,11 @@ class Item extends Entity {
 			'hide_description' 				=> true,
 			'hide_empty' 					=> true,
 			'empty_metadata_list_message' 	=> '',
-			'display_slug_as_class' 		=> true,
-			'before' 						=> '<section $id>',
+			'before' 						=> '<section class="metadata-section-slug-$slug" id="$id">',
 			'after' 						=> '</section>',
-			'before_name' 					=> '<h2>',
+			'before_name' 					=> '<h2 id="metadata-section-$slug">',
 			'after_name' 					=> '</h2>',
-			'before_metadata_list' 			=> '<div class="metadata-section__metadata-list">',
+			'before_metadata_list' 			=> '<div class="metadata-section__metadata-list" aria-labelledby="metadata-section-$slug">',
 			'after_metadata_list' 			=> '</div>',
 			'metadata_list_args' 			=> []
 		);
@@ -1133,14 +1130,12 @@ class Item extends Entity {
 	 *                                                  	Default: true
 	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	 *                                                  	Default: ''
-	 *     @type bool        $display_slug_as_class     	Show metadata slug as a class in the div before the metadata block
-	 *                                                  	Default: true
 	 *     @type string      $before                    	String to be added before each metadata section block
-	 *                                                  	Default '<section $id>'
+	 *                                                  	Default '<section class="metadata-section-slug-$slug" id="$id">'
 	 *     @type string      $after		                	String to be added after each metadata section block
 	 *                                                  	Default '</section>'
 	 *     @type string      $before_name              		String to be added before each metadata section name
-	 *                                                  	Default '<h2>'
+	 *                                                  	Default '<h2 id="metadata-section-$slug">'
 	 *     @type string      $after_name               		String to be added after each metadata section name
 	 *                                                  	Default '</h2>'
 	 * 	   @type string      $before_description            String to be added before each metadata section description
@@ -1148,7 +1143,7 @@ class Item extends Entity {
 	 *     @type string      $after_description             String to be added after each metadata section description
 	 *                                                  	Default '</p>'
 	 *     @type string      $before_metadata_list      	String to be added before each metadata section inner metadata list
-	 *                                                  	Default '<div class="metadata-section__metadata-list">'
+	 *                                                  	Default '<div class="metadata-section__metadata-list" aria-labelledby="metadata-section-$slug">'
 	 *     @type string      $after_metadata_list       	String to be added after each metadata section inner metadata list
 	 *                                                  	Default '</div>'
 	 * 
@@ -1158,7 +1153,7 @@ class Item extends Entity {
 	 *
 	 * @return string        The HTML output
 	 */
-	public function get_metadata_section_as_html($metadata_section, $args = array(), $section_index = 0) {
+	public function get_metadata_section_as_html($metadata_section, $args = array(), $section_index = null) {
 
 		$return = '';
 
@@ -1167,12 +1162,11 @@ class Item extends Entity {
 			'hide_description' 				=> true,
 			'hide_empty' 					=> true,
 			'empty_metadata_list_message' 	=> '',
-			'display_slug_as_class' 		=> true,
-			'before' 						=> '<section $id>',
+			'before' 						=> '<section class="metadata-section-slug-$slug" id="$id">',
 			'after' 						=> '</section>',
-			'before_name' 					=> '<h2>',
+			'before_name' 					=> '<h2 id="metadata-section-$slug">',
 			'after_name' 					=> '</h2>',
-			'before_metadata_list' 			=> '<div class="metadata-section__metadata-list">',
+			'before_metadata_list' 			=> '<div class="metadata-section__metadata-list" aria-labelledby="metadata-section-$slug">',
 			'after_metadata_list' 			=> '</div>',
 			'metadata_list_args' 			=> []
 		);
@@ -1184,36 +1178,52 @@ class Item extends Entity {
 
 		if ( $has_metadata_list || !$args['hide_empty'] ) {
 
+			// Slug and ID are used in numerous situations
+			$section_slug = $metadata_section->get_slug();
+			$section_id = $metadata_section->get_id();
+
 			// Get section wrapper tag
 			$before = $args['before'];
-			
-			// Adds section ID to the wrapper element
-			if ( strpos($before, 'id="') ) {
-				$before = str_replace('$id', '', $before); // Custom ID passed, no need for this
-			} else {
-				$before = str_replace('$id', ' id="metadata-section-id-' . $metadata_section->get_id() . ' ', $before);
-			}
-
-			// Adds section slug as class to the wrapper element
-			if ($args['display_slug_as_class']) {
-
-				if ( strpos($before, 'class="') ) {
-					$before = str_replace('class="', 'class="metadata-section-slug-' . $metadata_section->get_slug() . ' ', $before);
-				} else {
-					$before = str_replace('>', ' class="metadata-section-slug-' . $metadata_section->get_slug() . '">', $before);
-				}
-			}
+			$before = str_replace('$id', $section_id, $before);
+			$before = str_replace('$slug', $section_slug, $before);
 
 			// Let theme authors tweak the wrapper opener
 			$before = apply_filters( 'tainacan-get-metadata-section-as-html-before', $before, $metadata_section );
-			$before = apply_filters( 'tainacan-get-metadata-section-as-html-before--id-' . $metadata_section->get_id(), $before, $metadata_section );
+			$before = apply_filters( 'tainacan-get-metadata-section-as-html-before--id-' . $section_id, $before, $metadata_section );
+			if ( is_numeric($section_index) && $section_index >= 0 ) {
+				$before = apply_filters( 'tainacan-get-metadata-section-as-html-before--index-' . $section_index, $before, $metadata_section );	
+			}
 
 			// Renders the wrapper opener
 			$return .= $before;
 
 			// Adds section label (name)
 			if ( !$args['hide_name'] ) {
-				$return .= $args['before_name'] . $metadata_section->get_name() . $args['after_name'];
+
+				// Get section name wrapper
+				$before_name = $args['before_name'];
+				$before_name = str_replace('$id', $section_id, $before_name);
+				$before_name = str_replace('$slug', $section_slug, $before_name);
+
+				// Let theme authors tweak the name wrapper
+				$before_name = apply_filters( 'tainacan-get-metadata-section-as-html-before-name', $before_name, $metadata_section );
+				$before_name = apply_filters( 'tainacan-get-metadata-section-as-html-before-name--id-' . $section_id, $before_name, $metadata_section );
+				if ( is_numeric($section_index) && $section_index >= 0 ) {
+					$before_name = apply_filters( 'tainacan-get-metadata-section-as-html-before-name--index-' . $section_index, $before_name, $metadata_section );	
+				}
+
+				// Get section name closer
+				$after_name = $args['after_name'];
+
+				// Let theme authors tweak the name wrapper
+				$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name', $after_name, $metadata_section );
+				$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name--id-' . $section_id, $after_name, $metadata_section );
+				if ( is_numeric($section_index) && $section_index >= 0 ) {
+					$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name--index-' . $section_index, $after_name, $metadata_section );	
+				}
+
+				// Renders the metadata section name
+				$return .= $before_name . $metadata_section->get_name() . $after_name;
 			}
 
 			// Adds section description
@@ -1221,16 +1231,45 @@ class Item extends Entity {
 				$return .= $args['before_description'] . $metadata_section->get_description() . $args['after_description'];
 			}
 
-			// Renders the section metadata list, using Items' get_metadata_as_html
-			$return .= $args['before_metadata_list'];
+			// Gets the section metadata list wrapper
+			$before_metadata_list = $args['before_metadata_list'];
+			$before_metadata_list = str_replace('$id', $section_id, $before_metadata_list);
+			$before_metadata_list = str_replace('$slug', $section_slug, $before_metadata_list);
+
+			// Let theme authors tweak the metadata list wrapper
+			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_description, $metadata_section );
+			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_description, $metadata_section );
+			if ( is_numeric($section_index) && $section_index >= 0 ) {
+				$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--index-' . $section_index, $before_description, $metadata_section );	
+			}
+
+			// Renders the section metadata list wrapper
+			$return .= $before_metadata_list;
+
+			// Renders the section metadata list, using Items' get_metadata_as_html()
 			$return .= ( $has_metadata_list ? $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata__in' => $metadata_section_metadata_list]) ) : $args['empty_metadata_list_message'] );
-			$return .= $args['after_metadata_list'];
+			
+			// Gets the wrapper closer
+			$after_metadata_list = $args['after_metadata_list'];
+
+			// Let theme authors tweak the metadata list closer
+			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list', $after_description, $metadata_section );
+			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--id-' . $section_id, $after_description, $metadata_section );
+			if ( is_numeric($section_index) && $section_index >= 0 ) {
+				$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--index-' . $section_index, $after_description, $metadata_section );	
+			}
+			
+			// Renders the section metadata list wrapper
+			$return .= $after_metadata_list;
 
 			// Gets the wrapper closer
 			$after = $args['after'];
 
 			// Let theme authors tweak the wrapper closer
-			$after = apply_filters( 'tainacan-get-metadata-section-as-html-after--id-' . $metadata_section->get_id(), $after, $metadata_section );
+			if ( is_numeric($section_index) && $section_index >= 0 ) {
+				$after = apply_filters( 'tainacan-get-metadata-section-as-html-after--index-' . $section_index, $after, $metadata_section );	
+			}
+			$after = apply_filters( 'tainacan-get-metadata-section-as-html-after--id-' . $section_id, $after, $metadata_section );
 			$after = apply_filters( 'tainacan-get-metadata-section-as-html-after', $after, $metadata_section );
 			
 			// Closes the wrapper
