@@ -435,7 +435,7 @@ class TAINACAN_REST_Metadata_Sections_Controller extends TAINACAN_UnitApiTestCas
 		$response = $this->server->dispatch($request);
 		$response_data = $response->get_data();
 
-		$this->assertEquals(2, count($response_data));
+		$this->assertEquals(3, count($response_data));
 
 		$metadata_list_1 = $response_data[0]['metadata_object_list'];
 		$metadata_list_2 = $response_data[1]['metadata_object_list'];
