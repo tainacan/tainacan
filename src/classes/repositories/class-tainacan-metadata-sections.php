@@ -310,6 +310,7 @@ class Metadata_Sections extends Repository {
 		$metadata_section = $this->fetch($metadata_section_id);
 		if ($metadata_section) {
 			$args = array(
+				'parent' => 0,
 				'meta_query' => [
 					[
 						'key'     => 'metadata_section_id',
