@@ -15,8 +15,7 @@ class Metadata_Section extends Entity {
 	protected
 		$name,
 		$slug,
-		$description,
-		$metadata_list;
+		$description;
 
 	/**
 	 * {@inheritDoc}
@@ -63,8 +62,9 @@ class Metadata_Section extends Entity {
 	 *
 	 * @return [int]
 	 */
-	function get_metadata_list() {
-		return $this->get_mapped_property('metadata_list');
+	function get_metadata_object_list() {
+		$tainacan_metadata_sections = \Tainacan\Repositories\Metadata_Sections::get_instance();
+		return $tainacan_metadata_sections->get_metadata_object_list($this->get_id());
 	}
 
 	/**
@@ -105,16 +105,6 @@ class Metadata_Section extends Entity {
 
 
 	/**
-	 * Set metadata list of the section
-	 *
-	 * @param [string|int] $value The array of metadata in this section
-	 * @return void
-	 */
-	function set_metadata_list($value) {
-		$this->set_mapped_property('metadata_list', array_unique($value));
-	}
-
-	/**
 	 * Transient property used to store the status of the metadatum section for a particular collection
 	 *
 	 * Used by the API to tell front end when a metadatum section is disabled
@@ -138,7 +128,6 @@ class Metadata_Section extends Entity {
 	 */
 	public function validate() {
 		$no_errors = true;
-		$metadata_list = $this->get_metadata_list();
 		$name = $this->get_name();
 		$collection = $this->get_collection();
 
@@ -150,14 +139,6 @@ class Metadata_Section extends Entity {
 		if ( !isset($name) ) {
 			$this->add_error($this->get_id(), __("name is required", 'tainacan'));
 			$no_errors = false;
-		}
-		if( !empty($metadata_list) ) {
-			foreach($metadata_list as $metadatum_id) {
-				if(get_post_type($metadatum_id) != \Tainacan\Entities\Metadatum::$post_type ) {
-					$this->add_error($this->get_id(), __("is not a valid metadata", 'tainacan'));
-					$no_errors = false;
-				}
-			}
 		}
 		if($no_errors) {
 			$this->set_as_valid();

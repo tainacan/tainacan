@@ -6,7 +6,8 @@
  */
 $bootstrap_cfg = require('bootstrap-config.php');
 
-$_tests_dir = getenv( 'WP_TESTS_DIR' );
+// $_tests_dir = getenv( 'WP_TESTS_DIR' );
+$_tests_dir = '/tainacan_test/wordpress-tests-lib';
 if ( ! $_tests_dir ) {
     $_tests_dir = $bootstrap_cfg['tests_dir'];
 }

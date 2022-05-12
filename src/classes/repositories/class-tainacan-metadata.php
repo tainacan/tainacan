@@ -49,7 +49,7 @@ class Metadata extends Repository {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
-  protected function _get_map() {
+	protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'name'                  => [
 				'map'         => 'post_title',
@@ -667,13 +667,9 @@ class Metadata extends Repository {
 	 */
 	public function insert( $metadatum ) {
 		$this->pre_update_taxonomy_metadatum( $metadatum );
-		$this->pre_update_metadata_section( $metadatum );
 		$new_metadatum = parent::insert( $metadatum );
-
 		$this->update_taxonomy_metadatum( $new_metadatum );
 		$this->update_metadata_type_index( $new_metadatum );
-		$this->update_metadata_section( $new_metadatum );
-
 		return $new_metadatum;
 	}
 
@@ -773,7 +769,7 @@ class Metadata extends Repository {
 	 */
 	private function get_data_core_metadata( Entities\Collection $collection ) {
 
-		return $data_core_metadata = [
+		$data_core_metadata = [
 			'core_title'       => [
 				'name'            => __('Title', 'tainacan'),
 				'collection_id'   => $collection->get_id(),
@@ -788,6 +784,7 @@ class Metadata extends Repository {
 				'status'          => 'publish',
 			]
 		];
+		return $data_core_metadata;
 
 	}
 
@@ -1607,7 +1604,6 @@ class Metadata extends Repository {
 	 */
 	public function delete( Entities\Entity $entity, $permanent = true ) {
 		$this->delete_taxonomy_metadatum($entity);
-		$this->update_metadata_section($entity, true);
 		return parent::delete($entity, $permanent);
 	}
 
@@ -1736,23 +1732,6 @@ class Metadata extends Repository {
 			}
 		}
 		return false;
-	}
-
-
-	public function pre_update_metadata_section(Entities\Metadatum $metadatum) {
-		if($metadatum->get_id() && $metadatum->get_collection_id() != 'default') {
-			$meta = $this->fetch($metadatum->get_id(), 'OBJECT');
-			$this->update_metadata_section( $meta, true );
-		}
-	}
-
-	public function update_metadata_section( Entities\Metadatum $metadatum, $remove = false ) {
-		$metadata_section_repository = Metadata_Sections::get_instance();
-		if (!$remove) {
-			$metadata_section_repository->add_metadata($metadatum->get_metadata_section_id(), [$metadatum->get_id()]);
-		} else {
-			$metadata_section_repository->delete_metadata($metadatum->get_metadata_section_id(), [$metadatum->get_id()]);
-		}
 	}
 
 }

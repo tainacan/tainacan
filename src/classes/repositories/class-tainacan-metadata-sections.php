@@ -67,16 +67,6 @@ class Metadata_Sections extends Repository {
 				'title'       => __( 'Collection', 'tainacan' ),
 				'type'        => ['integer', 'string'],
 				'description' => __( 'The collection ID', 'tainacan' ),
-			],
-			'metadata_list'         => [
-				'map'         => 'meta',
-				'title'       => __( 'Inner metadata list', 'tainacan' ),
-				'type'        => 'array',
-				'items' => [
-					'type' => 'integer'
-				],
-				'description' => __( 'The list of metadata IDs inside this section.', 'tainacan' ),
-				'default' => []
 			]
 		] );
 	}
@@ -279,15 +269,6 @@ class Metadata_Sections extends Repository {
 	 */
 	public function insert( $metadata_section ) {
 		$new_metadata_section = parent::insert( $metadata_section );
-		$metadata_list = $new_metadata_section->get_metadata_list();
-		$id = strval($new_metadata_section->get_id());
-		foreach($metadata_list as $metadata_id) {
-			// $metadata_section_ids = get_post_meta( $metadata_id, 'metadata_section_id');
-			// $metadata_section_ids = array_values(array_filter($metadata_section_ids, function($value) { return !is_null($value) && !empty($value); }));
-			// $metadata_section_ids = $metadata_section_ids === false ? [$id] : array_merge($metadata_section_ids, [$id]) ;
-			//add_post_meta($metadata_id, 'metadata_section_id', $id);
-			update_post_meta($metadata_id, 'metadata_section_id', $id);
-		}
 		return $new_metadata_section;
 	}
 
@@ -303,40 +284,45 @@ class Metadata_Sections extends Repository {
 	}
 
 	public function add_metadata($metadata_section_id, $metadata_list) {
-		$metadata_section = $this->fetch($metadata_section_id);
+		$metadata_section = $this->fetch($metadata_section_id, 'OBJECT');
 		if ($metadata_section) {
-			$list = $metadata_section->get_metadata_list();
-			$metadata_list = array_merge($list, $metadata_list);
-			$metadata_section->set_metadata_list($metadata_list);
-			if ($metadata_section->validate()) {
-				$metadata_section = $this->update($metadata_section);
-				return $metadata_section;
+			foreach($metadata_list as $metadata_id) {
+				//update_post_meta($metadata_id, 'metadata_section_id', $metadata_section_id);
+				add_post_meta($metadata_id, 'metadata_section_id', $metadata_section_id);
 			}
+			return $metadata_section;
 		}
 		return false;
 	}
 
 	public function delete_metadata($metadata_section_id, $metadata_list) {
-		$metadata_section = $this->fetch($metadata_section_id);
+		$metadata_section = $this->fetch($metadata_section_id, 'OBJECT');
 		if ($metadata_section) {
-			$list = $metadata_section->get_metadata_list();
-			$list = array_diff($list, $metadata_list);
-			$metadata_section->set_metadata_list($list);
-			if ($metadata_section->validate()) {
-				$metadata_section = $this->update($metadata_section);
-				return $metadata_section;
+			foreach($metadata_list as $metadata_id) {
+				delete_post_meta($metadata_id, 'metadata_section_id', $metadata_section_id);
 			}
+			return $metadata_section;
 		}
 		return false;
 	}
 
-	public function get_metadata_list($metadata_section_id) {
+	public function get_metadata_object_list($metadata_section_id) {
 		$metadata_section = $this->fetch($metadata_section_id);
-		$list = $metadata_section->get_metadata_list();
-		$args = array('post__in' => $list);
-		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
-		$metadata_list = $metadata_repository->fetch($args, 'OBJECT');
-		return $metadata_list;
+		if ($metadata_section) {
+			$args = array(
+				'meta_query' => [
+					[
+						'key'     => 'metadata_section_id',
+						'value'   => $metadata_section_id,
+						'compare' => '='
+					]
+				]
+			);
+			$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
+			$metadata_list = $metadata_repository->fetch($args, 'OBJECT');
+			return $metadata_list;
+		}
+		return false;
 	}
 
 	/**

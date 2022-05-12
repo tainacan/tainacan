@@ -21,6 +21,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	public function init_objects() {
 		$this->metadata_sections_repository = Repositories\Metadata_Sections::get_instance();
 		$this->metadata_repository = Repositories\Metadata::get_instance();
+		$this->collection_repository = Repositories\Collections::get_instance();
 	}
 
 	/**
@@ -35,7 +36,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function register_routes() {
-		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadatum_id>[\d]+)',
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_section_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -110,50 +111,6 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	}
 
 	/**
-	 * @param \WP_REST_Request $request
-	 *
-	 * @return \WP_Error|\WP_REST_Response
-	 */
-	public function get_item( $request ) {
-		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : false;
-		$metadatum_id = $request['metadatum_id'];
-
-		$offset = '';
-		$number = '';
-		if($request['offset'] >= 0 && $request['number'] >= 1){
-			$offset = $request['offset'];
-			$number = $request['number'];
-		}
-
-		$result = $this->metadata_sections_repository->fetch($metadatum_id, 'OBJECT');
-
-		if (! $result instanceof Entities\Metadatum) {
-			return new \WP_REST_Response([
-				'error_message' => __('Metadata with this ID was not found', 'tainacan'),
-				'item_id' => $item_id
-			], 400);
-		}
-
-		return new \WP_REST_Response($this->prepare_item_for_response($result, $request), 200);
-	}
-
-	/**
-	 * @param \WP_REST_Request $request
-	 *
-	 * @return bool|\WP_Error
-	 * @throws \Exception
-	 */
-	public function get_item_permissions_check( $request ) {
-		$metadatum = $this->metadata_sections_repository->fetch($request['metadatum_id']);
-
-		if ( $metadatum instanceof Entities\Metadatum ) {
-			return $metadatum->can_read();
-		}
-
-		return false;
-	}
-
-	/**
 	 * @param \WP_REST_Request|string $request
 	 *
 	 * @param $collection_id
@@ -174,6 +131,137 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		$collection = new Entities\Collection( $collection_id );
 		$metadata_section->set_collection( $collection );
 		return $metadata_section;
+	}
+
+		/**
+	 * @param Entities\Metadata_Section $item
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return array|\WP_Error|\WP_REST_Response
+	 */
+	public function prepare_item_for_response( $item, $request ) {
+		if (!empty($item)){
+			$item_arr = $item->_toArray();
+			if ($request['context'] === 'edit') {
+				$item_arr['current_user_can_edit'] = $item->can_edit();
+				$item_arr['current_user_can_delete'] = $item->can_delete();
+				$item_arr['enabled'] = $item->get_enabled_for_collection();
+			}
+
+			$metadata_list = $item->get_metadata_object_list();
+			$item_arr['metadata_object_list'] = [];
+			if($metadata_list != false) {
+				foreach($metadata_list as $metadata) {
+					$meta_arr = $this->prepare_metadata_for_response($metadata, $request);
+					$item_arr['metadata_object_list'][] = $meta_arr;
+				}
+			}
+
+			/**
+			 * Use this filter to add additional post_meta to the api response
+			 * Use the $request object to get the context of the request and other variables
+			 * For example, id context is edit, you may want to add your meta or not.
+			 *
+			 * Also take care to do any permissions verification before exposing the data
+			 */
+			$extra_metadata = apply_filters('tainacan-api-response-metadata-section-meta', [], $request);
+
+			foreach ($extra_metadata as $extra_meta) {
+				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
+			}
+			return $item_arr;
+		}
+		return $item;
+	}
+
+	/**
+	 * @param Entities\Metadata $item
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return array|\WP_Error|\WP_REST_Response
+	 */
+	public function prepare_metadata_for_response( $item, $request ) {
+		if(!empty($item)){
+			$item_arr = $item->_toArray();
+			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
+
+			if ( isset($request['include_options_as_html']) && $request['include_options_as_html'] == 'yes' )
+				$item_arr['options_as_html'] = $item->get_metadata_type_object()->get_options_as_html();
+
+			if ( isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id']) ) {
+				$taxonomy = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $item_arr['metadata_type_options']['taxonomy_id'] );
+				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy;
+			}
+
+			if ($request['context'] === 'edit') {
+				$item_arr['current_user_can_edit'] = $item->can_edit();
+				$item_arr['current_user_can_delete'] = $item->can_delete();
+				ob_start();
+				$item->get_metadata_type_object()->form();
+				$form = ob_get_clean();
+				$item_arr['edit_form'] = $form;
+				$item_arr['enabled'] = $item->get_enabled_for_collection();
+
+				if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['children_objects'])) {
+					foreach ($item_arr['metadata_type_options']['children_objects'] as $index => $children) {
+						$item_arr['metadata_type_options']['children_objects'][$index]['current_user_can_edit'] = $item->can_edit();
+						$item_arr['metadata_type_options']['children_objects'][$index]['current_user_can_delete'] = $item->can_delete();
+					}
+				}
+			}
+
+			/**
+			 * Use this filter to add additional post_meta to the api response
+			 * Use the $request object to get the context of the request and other variables
+			 * For example, id context is edit, you may want to add your meta or not.
+			 *
+			 * Also take care to do any permissions verification before exposing the data
+			 */
+			$extra_metadata = apply_filters('tainacan-api-response-metadatum-meta', [], $request);
+
+			foreach ($extra_metadata as $extra_meta) {
+				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
+			}
+			$item_arr['inherited'] = $item_arr['collection_id'] != $request['collection_id'];
+
+			return $item_arr;
+		}
+
+		return $item;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function get_item( $request ) {
+		$metadata_section_id = $request['metadata_section_id'];
+		$result = $this->metadata_sections_repository->fetch($metadata_section_id, 'OBJECT');
+		if (! $result instanceof Entities\Metadata_Section) {
+			return new \WP_REST_Response([
+				'error_message' => __('Metadata section with this ID was not found', 'tainacan'),
+				'item_id' => $metadata_section_id
+			], 400);
+		}
+
+		return new \WP_REST_Response($this->prepare_item_for_response($result, $request), 200);
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 * @throws \Exception
+	 */
+	public function get_item_permissions_check( $request ) {
+		$metadatum_section = $this->metadata_sections_repository->fetch($request['metadata_section_id']);
+
+		if ( $metadatum_section instanceof Entities\Metadata_Section ) {
+			return $metadatum_section->can_read();
+		}
+
+		return false;
 	}
 
 	/**
@@ -237,104 +325,6 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	}
 
 	/**
-	 * @param mixed $item
-	 * @param \WP_REST_Request $request
-	 *
-	 * @return array|\WP_Error|\WP_REST_Response
-	 */
-	public function prepare_item_for_response( $item, $request ) {
-		if (!empty($item)){
-			$item_arr = $item->_toArray();
-			if ($request['context'] === 'edit') {
-				$item_arr['current_user_can_edit'] = $item->can_edit();
-				$item_arr['current_user_can_delete'] = $item->can_delete();
-				$item_arr['enabled'] = $item->get_enabled_for_collection();
-			}
-
-			$metadata_list = !empty($item_arr['metadata_list']) ? $item_arr['metadata_list'] : [];
-			$item_arr['metadata_object_list'] = [];
-			foreach($metadata_list as $metadatum_id) {
-				$meta = $this->metadata_repository->fetch($metadatum_id, 'OBJECT');
-				$meta_arr = $this->prepare_metadata_for_response($meta, $request);
-				$item_arr['metadata_object_list'][] = $meta_arr;
-			}
-
-			/**
-			 * Use this filter to add additional post_meta to the api response
-			 * Use the $request object to get the context of the request and other variables
-			 * For example, id context is edit, you may want to add your meta or not.
-			 *
-			 * Also take care to do any permissions verification before exposing the data
-			 */
-			$extra_metadata = apply_filters('tainacan-api-response-metadata-section-meta', [], $request);
-
-			foreach ($extra_metadata as $extra_meta) {
-				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
-			}
-			return $item_arr;
-		}
-		return $item;
-	}
-
-	/**
-	 * @param mixed $item
-	 * @param \WP_REST_Request $request
-	 *
-	 * @return array|\WP_Error|\WP_REST_Response
-	 */
-	public function prepare_metadata_for_response( $item, $request ) {
-		if(!empty($item)){
-			$item_arr = $item->_toArray();
-			$item_arr['metadata_type_object'] = $item->get_metadata_type_object()->_toArray();
-
-			if ( isset($request['include_options_as_html']) && $request['include_options_as_html'] == 'yes' )
-				$item_arr['options_as_html'] = $item->get_metadata_type_object()->get_options_as_html();
-
-			if ( isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['taxonomy_id']) ) {
-				$taxonomy = Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $item_arr['metadata_type_options']['taxonomy_id'] );
-				//$taxonomy = new Entities\Taxonomy($item_arr['metadata_type_options']['taxonomy_id']);
-				//$item_arr['metadata_type_options']['taxonomy'] = $taxonomy->get_db_identifier();
-				$item_arr['metadata_type_options']['taxonomy'] = $taxonomy;
-			}
-
-			if ($request['context'] === 'edit') {
-				$item_arr['current_user_can_edit'] = $item->can_edit();
-				$item_arr['current_user_can_delete'] = $item->can_delete();
-				ob_start();
-				$item->get_metadata_type_object()->form();
-				$form = ob_get_clean();
-				$item_arr['edit_form'] = $form;
-				$item_arr['enabled'] = $item->get_enabled_for_collection();
-
-				if(isset($item_arr['metadata_type_options']) && isset($item_arr['metadata_type_options']['children_objects'])) {
-					foreach ($item_arr['metadata_type_options']['children_objects'] as $index => $children) {
-						$item_arr['metadata_type_options']['children_objects'][$index]['current_user_can_edit'] = $item->can_edit();
-						$item_arr['metadata_type_options']['children_objects'][$index]['current_user_can_delete'] = $item->can_delete();
-					}
-				}
-			}
-
-			/**
-			 * Use this filter to add additional post_meta to the api response
-			 * Use the $request object to get the context of the request and other variables
-			 * For example, id context is edit, you may want to add your meta or not.
-			 *
-			 * Also take care to do any permissions verification before exposing the data
-			 */
-			$extra_metadata = apply_filters('tainacan-api-response-metadatum-meta', [], $request);
-
-			foreach ($extra_metadata as $extra_meta) {
-				$item_arr[$extra_meta] = get_post_meta($item_arr['id'], $extra_meta, true);
-			}
-			$item_arr['inherited'] = $item_arr['collection_id'] != $request['collection_id'];
-
-			return $item_arr;
-		}
-
-		return $item;
-	}
-
-	/**
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Response
@@ -361,7 +351,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		}
 
 		return new \WP_REST_Response($prepared_item, 200);
-	} 
+	}
 
 	/**
 	 * @param \WP_REST_Request $request
@@ -370,7 +360,6 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_items_permissions_check( $request ) {
-		return true;
 
 		if(!isset($request['collection_id'])) {
 			return true;
@@ -396,21 +385,17 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function delete_item( $request ) {
-		$metadatum_id = $request['metadatum_id'];
-
-		$metadatum = $this->metadata_sections_repository->fetch($metadatum_id);
-
-		if (! $metadatum instanceof Entities\Metadatum) {
+		$metadata_section_id = $request['metadata_section_id'];
+		$metadatum_section = $this->metadata_sections_repository->fetch($metadata_section_id);
+		if (! $metadatum_section instanceof Entities\Metadatum) {
 			return new \WP_REST_Response([
 				'error_message' => __('Metadata with this ID was not found', 'tainacan'),
-				'item_id' => $item_id
+				'item_id' => $metadata_section_id
 			], 400);
 		}
 
-		$metadatum_trashed = $this->metadata_sections_repository->trash($metadatum);
-
-		$prepared = $this->prepare_item_for_response($metadatum_trashed, $request);
-
+		$metadatum_section_trashed = $this->metadata_sections_repository->trash($metadatum_section);
+		$prepared = $this->prepare_item_for_response($metadatum_section_trashed, $request);
 		return new \WP_REST_Response($prepared, 200);
 	}
 
@@ -421,10 +406,10 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function delete_item_permissions_check( $request ) {
-		$metadatum = $this->metadata_sections_repository->fetch($request['metadatum_id']);
+		$metadata_section = $this->metadata_sections_repository->fetch($request['metadata_section_id']);
 
-		if ($metadatum instanceof Entities\Metadatum) {
-			return $metadatum->can_delete();
+		if ($metadata_section instanceof Entities\Metadata_Section) {
+			return $metadata_section->can_delete();
 		}
 
 		return false;
@@ -441,64 +426,39 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		$body = json_decode($request->get_body(), true);
 
 		if(!empty($body)){
-			$attributes = [];
+			$metadata_section_id = $request['metadata_section_id'];
+			$metadata_section = $this->metadata_sections_repository->fetch($metadata_section_id);
 
-			$metadatum_id = $request['metadatum_id'];
-			$confirm_repository = false;
-			foreach ($body as $att => $value){
-				if ($att === "repository_level" && $value === "yes") {
-					$confirm_repository = true;
-					continue;
-				}
-				$attributes[$att] = $value;
+			if ( $collection_id != $metadata_section->get_collection_id() ) {
+				return new \WP_REST_Response( [
+					'error_message' => __('This metadata section not found in collection', 'tainacan'),
+					'metadata_section_id'  => $metadata_section_id
+				] );
 			}
 
-			$metadatum = $this->metadata_sections_repository->fetch($metadatum_id);
-
-			$error_message = __('Metadata with this ID was not found', 'tainacan');
-
-			if ($metadatum) {
-				// These conditions are for verify if endpoints are used correctly
-				if(!$collection_id && $metadatum->get_collection_id() !== 'default') {
-					$error_message = __('This metadata is not a default metadata', 'tainacan');
-
-					return new \WP_REST_Response( [
-						'error_message' => $error_message,
-						'metadatum_id'  => $metadatum_id
-					] );
-				} elseif ($collection_id && $metadatum->get_collection_id() === 'default'){
-					$error_message = __('This metadata is not a collection metadata', 'tainacan');
-
-					return new \WP_REST_Response( [
-						'error_message' => $error_message,
-						'metadatum_id'  => $metadatum_id
-					] );
+			if ($metadata_section) {
+				$attributes = [];
+				foreach ($body as $att => $value) {
+					$attributes[$att] = $value;
 				}
 
-				if (isset($request['repository_level']) && $confirm_repository) {
-					$attributes['collection_id'] = "default";
-				}
-
-				$prepared_metadata = $this->prepare_item_for_updating($metadatum, $attributes);
-
-				if($prepared_metadata->validate()){
-					$updated_metadata = $this->metadata_sections_repository->update($prepared_metadata);
-
-					$response = $this->prepare_item_for_response($updated_metadata, $request);
-
+				$prepared = $this->prepare_item_for_updating($metadata_section, $attributes);
+				if($prepared->validate()) {
+					$updated_metadata_section = $this->metadata_sections_repository->update($prepared);
+					$response = $this->prepare_item_for_response($updated_metadata_section, $request);
 					return new \WP_REST_Response($response, 200);
 				}
 
 				return new \WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
-					'errors'        => $prepared_metadata->get_errors(),
-					'metadatum'     => $this->prepare_item_for_response($prepared_metadata, $request)
+					'errors'        => $prepared->get_errors(),
+					'metadatum_section' => $this->prepare_item_for_response($prepared, $request)
 				], 400);
 			}
 
 			return new \WP_REST_Response( [
-				'error_message' => $error_message,
-				'metadatum_id'  => $metadatum_id
+				'error_message' => __('Metadata with this ID was not found', 'tainacan'),
+				'metadata_section_id'  => $metadata_section_id
 			] );
 		}
 
@@ -565,7 +525,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 			$metadata_section_id = $request['metadata_section_id'];
 
 			try {
-				$result = $this->metadata_sections_repository->get_metadata_list($metadata_section_id);
+				$result = $this->metadata_sections_repository->get_metadata_object_list($metadata_section_id);
 				$prepared_item = [];
 				foreach ( $result as $item ) {
 					$prepared_item[] = $item->_toArray();
@@ -628,9 +588,9 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		$endpoint_args = [];
 		if($method === \WP_REST_Server::READABLE) {
 			$endpoint_args = array_merge(
-                $endpoint_args,
-                parent::get_wp_query_params()
-            );
+				$endpoint_args,
+				parent::get_wp_query_params()
+			);
 		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
 			$map = $this->metadata_sections_repository->get_map();
 

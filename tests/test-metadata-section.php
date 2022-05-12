@@ -50,6 +50,7 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 				'metadata_section_id' => $metadata_section->get_id(),
 			),
+			true,
 			true
 		);
 
@@ -61,9 +62,9 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		$this->assertEquals($test->get_collection_id(), $collection->get_id());
 		$this->assertEquals($test->get_metadata_section_id(), $metadata_section->get_id());
 
-		$metadata_list = $metadata_section->get_metadata_list();
+		$metadata_list = $metadata_section->get_metadata_object_list();
 		$this->assertEquals(count($metadata_list), 1);
-		$this->assertEquals($test->get_id(), $metadata_list[0]);
+		$this->assertEquals($test->get_id(), $metadata_list[0]->get_id());
 		
 		$this->assertTrue((bool) $test->get_accept_suggestion());
 	}
@@ -112,6 +113,7 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 				'name' => 'metadado',
 				'description' => 'descricao',
 				'collection' => $collection,
+				'status'      => 'publish',
 				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
 				'metadata_section_id' => $metadata_section_a->get_id(),
 			),
@@ -123,10 +125,17 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		$section_a = $Tainacan_Metadata_Section->fetch($metadata_section_a->get_id());
 		$section_b = $Tainacan_Metadata_Section->fetch($metadata_section_b->get_id());
 
-		$metadata_list_a = $section_a->get_metadata_list();
-		$metadata_list_b = $section_b->get_metadata_list();
-		$this->assertContains($test->get_id(), $metadata_list_a);
-		$this->assertNotContains($test->get_id(), $metadata_list_b);
+		$metadata_list_a = $section_a->get_metadata_object_list();
+		$metadata_list_b = $section_b->get_metadata_object_list();
+		$metadata_list_a = array_map(function($e) {
+			return $e->_toArray();
+		}, $metadata_list_a);
+		$metadata_list_b = array_map(function($e) {
+			return $e->_toArray();
+		}, $metadata_list_b);
+
+		$this->assertContains($test->get_id(), array_column($metadata_list_a, 'id'));
+		$this->assertNotContains($test->get_id(), array_column($metadata_list_b, 'id'));
 
 		$test->set_metadata_section_id($metadata_section_b->get_id());
 		$this->assertTrue($test->validate(), json_encode($test->get_errors()));
@@ -134,10 +143,17 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 
 		$test = $Tainacan_Metadata->fetch($metadatum->get_id());
 		
-		$metadata_list_a = $section_a->get_metadata_list();
-		$metadata_list_b = $section_b->get_metadata_list();
-		$this->assertNotContains($test->get_id(), $metadata_list_a);
-		$this->assertContains($test->get_id(), $metadata_list_b);
+		$metadata_list_a = $section_a->get_metadata_object_list();
+		$metadata_list_b = $section_b->get_metadata_object_list();
+		$metadata_list_a = array_map(function($e) {
+			return $e->_toArray();
+		}, $metadata_list_a);
+		$metadata_list_b = array_map(function($e) {
+			return $e->_toArray();
+		}, $metadata_list_b);
+
+		$this->assertNotContains($test->get_id(), array_column($metadata_list_a, 'id'));
+		$this->assertContains($test->get_id(), array_column($metadata_list_b, 'id'));
 
 	}
 
@@ -156,78 +172,6 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 			true
 		);
 
-		$metadatum1 = $this->tainacan_entity_factory->create_entity(
-			'metadatum',
-			array(
-				'name' => 'metadatum1',
-				'description' => 'descricao',
-				'collection' => $collection,
-				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
-				'status' => 'publish'
-			),
-			true
-		);
-
-		$metadatum2 = $this->tainacan_entity_factory->create_entity(
-			'metadatum',
-			array(
-				'name' => 'metadatum2',
-				'description' => 'metadatum2',
-				'collection' => $collection,
-				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
-				'status' => 'publish'
-			),
-			true
-		);
-
-		$metadatum3 = $this->tainacan_entity_factory->create_entity(
-			'metadatum',
-			array(
-				'name' => 'metadatum3',
-				'description' => 'metadatum3',
-				'collection' => $collection,
-				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
-				'status' => 'publish'
-			),
-			true
-		);
-
-		$metadatum_a = $this->tainacan_entity_factory->create_entity(
-			'metadatum',
-			array(
-				'name' => 'metadatum_a',
-				'description' => 'descricao_a',
-				'collection' => $collection,
-				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
-				'status' => 'publish'
-			),
-			true
-		);
-
-		$metadatum_b = $this->tainacan_entity_factory->create_entity(
-			'metadatum',
-			array(
-				'name' => 'metadatum_b',
-				'description' => 'metadatum_b',
-				'collection' => $collection,
-				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
-				'status' => 'publish'
-			),
-			true
-		);
-
-		$metadatum_c = $this->tainacan_entity_factory->create_entity(
-			'metadatum',
-			array(
-				'name' => 'metadatum_c',
-				'description' => 'metadatum_c',
-				'collection' => $collection,
-				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
-				'status' => 'publish'
-			),
-			true
-		);
-
 		$metadata_section_1 = $this->tainacan_entity_factory->create_entity(
 			'Metadata_Section',
 			array(
@@ -235,7 +179,6 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 				'description' => 'Section 1 Description',
 				'collection' => $collection,
 				'status'      => 'publish',
-				'metadata_list' => [$metadatum1->get_id(), $metadatum3->get_id(), $metadatum2->get_id()]
 			),
 			true
 		);
@@ -247,7 +190,84 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 				'description' => 'Section A Description',
 				'collection' => $collection,
 				'status'      => 'publish',
-				'metadata_list' => [$metadatum_a->get_id(), $metadatum_b->get_id(), $metadatum_c->get_id()]
+			),
+			true
+		);
+
+		$metadatum1 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'metadatum1',
+				'description' => 'descricao',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish',
+				'metadata_section_id' => $metadata_section_1->get_id()
+			),
+			true
+		);
+
+		$metadatum2 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'metadatum2',
+				'description' => 'metadatum2',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish',
+				'metadata_section_id' => $metadata_section_1->get_id()
+			),
+			true
+		);
+
+		$metadatum3 = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'metadatum3',
+				'description' => 'metadatum3',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish',
+				'metadata_section_id' => $metadata_section_1->get_id()
+			),
+			true
+		);
+
+		$metadatum_a = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'metadatum_a',
+				'description' => 'descricao_a',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish',
+				'metadata_section_id' => $metadata_section_a->get_id()
+			),
+			true
+		);
+
+		$metadatum_b = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'metadatum_b',
+				'description' => 'metadatum_b',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish',
+				'metadata_section_id' => $metadata_section_a->get_id()
+			),
+			true
+		);
+
+		$metadatum_c = $this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'metadatum_c',
+				'description' => 'metadatum_c',
+				'collection' => $collection,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'status' => 'publish',
+				'metadata_section_id' => $metadata_section_a->get_id()
 			),
 			true
 		);
