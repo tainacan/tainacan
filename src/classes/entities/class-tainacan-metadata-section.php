@@ -31,6 +31,16 @@ class Metadata_Section extends Entity {
 	}
 
 	/**
+	 * Get the entity ID
+	 *
+	 * @return integer
+	 */
+	public function get_id() {
+		$id = $this->get_mapped_property('id');
+		return isset($id) ? $id : 'default_section';
+	}
+
+	/**
 	 * Return the metadata section name
 	 *
 	 * @return string

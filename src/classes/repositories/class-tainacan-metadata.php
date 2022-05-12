@@ -230,7 +230,7 @@ class Metadata extends Repository {
 				'title'       => __( 'Metadata section', 'tainacan' ),
 				'type'        => ['integer', 'string', 'array'],
 				'description' => __( 'The metadata section ID', 'tainacan' ),
-				'default'     => null
+				'default'     => 'default_section'
 			],
 		] );
 	}

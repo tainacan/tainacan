@@ -119,6 +119,22 @@ class Metadata_Sections extends Repository {
 		register_post_type( Entities\Metadata_Section::get_post_type(), $args );
 	}
 
+	public function get_default_section ($collection) {
+		if($collection instanceof Entities\Collection) {
+			$collection_id = $collection->get_id();
+		} else if (is_int($collection)) {
+			$collection_id = $collection;
+		} else {
+			return false;
+		}
+		$defaul_section = new Entities\Metadata_Section();
+		$defaul_section->set_slug('default_section');
+		$defaul_section->set_name(__('Metadata', 'tainacan'));
+		$defaul_section->set_description(__('Metadata section', 'tainacan'));
+		$defaul_section->set_collection_id($collection_id);
+		return $defaul_section;
+	}
+
 	/**
 	 * fetch metadata section based on ID or WP_Query args
 	 *
@@ -326,6 +342,36 @@ class Metadata_Sections extends Repository {
 		return false;
 	}
 
+	public function get_default_section_metadata_object_list (Entities\Collection $collection) {
+		$metadata_sections_ids = $this->fetch_ids();
+		$args = array(
+			'meta_query' => array(
+				array(
+					'relation' => 'OR',
+					array(
+						'key' => 'metadata_section_id',
+						'value' => 'default_section',
+						'compare' => '='
+					),
+					array(
+						array(
+							'key' => 'metadata_section_id',
+							'compare' => 'NOT EXISTS'
+						)
+					),
+					array(
+						'key' => 'metadata_section_id',
+						'value' => $metadata_sections_ids,
+						'compare' => 'NOT IN'
+					),
+				)
+			)
+		);
+		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
+		$metadata_list = $metadata_repository->fetch_by_collection($collection, $args);
+		return $metadata_list;
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -366,12 +412,12 @@ class Metadata_Sections extends Repository {
 
 				ksort( $result_ordinate );
 				$result_ordinate = array_merge( $result_ordinate, $not_ordinate );
-
+				$result_ordinate[] = $this->get_default_section($collection->get_id());
 				return $result_ordinate;
 			}
 
 		}
-
+		$result[] = $this->get_default_section($collection->get_id());
 		return $result;
 	}
 }

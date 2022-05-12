@@ -140,6 +140,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @return array|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
+		
 		if (!empty($item)){
 			$item_arr = $item->_toArray();
 			if ($request['context'] === 'edit') {
@@ -148,7 +149,9 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
-			$metadata_list = $item->get_metadata_object_list();
+			$metadata_list = $item->get_id() == 'default_section'
+				? $this->metadata_sections_repository->get_default_section_metadata_object_list($item->get_collection())
+				: $item->get_metadata_object_list();
 			$item_arr['metadata_object_list'] = [];
 			if($metadata_list != false) {
 				foreach($metadata_list as $metadata) {

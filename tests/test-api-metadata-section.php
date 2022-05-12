@@ -440,9 +440,9 @@ class TAINACAN_REST_Metadata_Sections_Controller extends TAINACAN_UnitApiTestCas
 		$metadata_list_1 = $response_data[0]['metadata_object_list'];
 		$metadata_list_2 = $response_data[1]['metadata_object_list'];
 
-		$this->assertContains($metadatum_1->get_id(), array_column($metadata_list_1, 'id'));
-		$this->assertContains($metadatum_2->get_id(), array_column($metadata_list_1, 'id'));
-		$this->assertContains($metadatum_3->get_id(), array_column($metadata_list_2, 'id'));
-		$this->assertContains($metadatum_4->get_id(), array_column($metadata_list_2, 'id'));
+		$this->assertContains($metadatum_1->get_id(), array_column($metadata_list_1, 'id'), sprintf('Id: %s not found in array: %s', $metadatum_1->get_id(), print_r(array_column($metadata_list_1, 'id'), true)));
+		$this->assertContains($metadatum_2->get_id(), array_column($metadata_list_1, 'id'), sprintf('Id: %s not found in array: %s', $metadatum_2->get_id(), print_r(array_column($metadata_list_1, 'id'), true)));
+		$this->assertContains($metadatum_3->get_id(), array_column($metadata_list_2, 'id'), sprintf('Id: %s not found in array: %s', $metadatum_3->get_id(), print_r(array_column($metadata_list_2, 'id'), true)));
+		$this->assertContains($metadatum_4->get_id(), array_column($metadata_list_2, 'id'), sprintf('Id: %s not found in array: %s', $metadatum_4->get_id(), print_r(array_column($metadata_list_2, 'id'), true)));
 	}
 }
