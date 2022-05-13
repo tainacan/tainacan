@@ -1068,20 +1068,20 @@ class Item extends Entity {
 			$post__in = [];
 			$post__not_in = [];
 			$post__name_in = [];
-			if (is_array($args['metadata_section__in'])) {
-				$post__in[] = -1; // If metadata_section__in is an empty array, this forces empty result
-				foreach ($args['metadata_section__in'] as $meta) {
-					if (is_numeric($meta)) {
-						$post__in[] = $meta;
-					} elseif (is_string($meta)) {
-						$post__name_in[] = $meta;
+			if (is_array($args['metadata_sections__in'])) {
+				$post__in[] = -1; // If metadata_sections__in is an empty array, this forces empty result
+				foreach ($args['metadata_sections__in'] as $metadata_section) {
+					if (is_numeric($metadata_section) || $metadata_section === 'default_section') {
+						$post__in[] = $metadata_section;
+					} elseif (is_string($metadata_section)) {
+						$post__name_in[] = $metadata_section;
 					}
 				}
 			}
-			if (is_array($args['metadata_section__not_in'])) {
-				foreach ($args['metadata_section__not_in'] as $meta) {
-					if (is_integer($meta)) {
-						$post__not_in[] = $meta;
+			if (is_array($args['metadata_sections__not_in'])) {
+				foreach ($args['metadata_sections__not_in'] as $metadata_section) {
+					if (is_integer($metadata_section) || $metadata_section === 'default_section') {
+						$post__not_in[] = $metadata_section;
 					}
 				}
 			}
@@ -1095,7 +1095,7 @@ class Item extends Entity {
 			if (sizeof($post__name_in) > 0) {
 				$query_args['post__name_in'] = $post__name_in;
 			}
-
+			
 			// Get metadata section objects from the metadata sections repository
 			$metadata_sections = $Tainacan_Metadata_Sections->fetch_by_collection($this->get_collection(), $query_args);
 		}
@@ -1247,8 +1247,12 @@ class Item extends Entity {
 			$return .= $before_metadata_list;
 
 			// Renders the section metadata list, using Items' get_metadata_as_html()
-			foreach( $metadata_section_metadata_list as $metadata_object) {
-				$return .= ( $has_metadata_list ? $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object]) ) : $args['empty_metadata_list_message'] );
+			if ($has_metadata_list) {
+				foreach( $metadata_section_metadata_list as $metadata_object) {
+					$return .= $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object ]) );
+				}
+			} else {
+				$return .= $args['empty_metadata_list_message'];
 			}
 			// Gets the wrapper closer
 			$after_metadata_list = $args['after_metadata_list'];
