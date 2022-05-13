@@ -921,7 +921,7 @@ abstract class Importer {
 			}
 			return [$parent_compound, $children_mapping];
 		}
-		$properties =  array_filter( explode('|', $metadata_description) );
+		$properties = array_filter( explode('|', $metadata_description) );
 
 		if( is_array($properties) && count($properties) < 2 ){
 			$properties[1] = 'text';
@@ -974,7 +974,7 @@ abstract class Importer {
 				} else {
 					$newMetadatum->set_metadata_type_options([
 						'taxonomy_id' => $inserted_tax->get_id(),
-						'allow_new_terms' => 'no',
+						'allow_new_terms' => 'yes',
 						'input_type' => 'tainacan-taxonomy-radio'
 					]);
 				}
