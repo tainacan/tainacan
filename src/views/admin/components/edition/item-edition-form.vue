@@ -332,6 +332,11 @@
                                             <div 
                                                     class="metadata-section-metadata-list"
                                                     v-show="metadataSectionCollapses[sectionIndex]">
+                                                <p
+                                                        class="metadatum-description-help-info"
+                                                        v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'">
+                                                    {{ metadataSection.description }}
+                                                </p>
                                                 <tainacan-form-item
                                                         v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)"
                                                         :key="index"
@@ -2438,6 +2443,11 @@ export default {
     .section-thumbnaill {
         padding-right: 0;
     }
+
+    .metadata-section-metadata-list .metadatum-description-help-info {
+        padding: 0.5rem 1rem;
+    }
+
     .related-items-list-heading {
         display: flex;
         align-items: center;

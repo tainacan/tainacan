@@ -235,7 +235,10 @@
                     let formObj = {};
 
                     for (let [key, value] of formData.entries()) {
-                        formObj[key] = value;
+                        if (key === 'description_bellow_name')
+                            formObj[key] = value ? 'yes' : 'no';
+                        else
+                            formObj[key] = value;
                     }
 
                     this.fillExtraFormData(formObj);
