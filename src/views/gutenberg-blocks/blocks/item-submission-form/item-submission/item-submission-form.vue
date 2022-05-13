@@ -373,15 +373,42 @@
                                 class="tainacan-icon tainacan-icon-1-25em"/>
                     </span>
                 </a>
-                <template v-for="(itemMetadatum, index) of metadatumList">
-                    <tainacan-form-item
-                            :key="index"
-                            v-if="enabledMetadata[index] == 'true'"
-                            :item-metadatum="itemMetadatum"
-                            :hide-collapses="hideCollapses"
-                            :is-collapsed="metadataCollapses[index]"
-                            @changeCollapse="onChangeCollapse($event, index)"/>
-                </template>
+
+                <div 
+                        v-for="(metadataSection, sectionIndex) of metadataSections"
+                        :key="sectionIndex">
+                    <div class="metadata-section-header section-label">
+                        <span   
+                                class="collapse-handle"
+                                @click="!hideCollapses ? toggleMetadataSectionCollapse(sectionIndex) : ''">
+                            <span 
+                                    v-if="!hideCollapses"
+                                    class="icon"
+                                    @click="toggleMetadataSectionCollapse(sectionIndex)">
+                                <i 
+                                        :class="{
+                                            'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || formErrorMessage,
+                                            'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage)
+                                        }"
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                            </span>
+                            <label>{{ metadataSection.name }}</label>
+                        </span>
+                    </div>
+                    <transition name="filter-item">
+                        <div v-show="metadataSectionCollapses[sectionIndex]">
+                            <template v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
+                                <tainacan-form-item
+                                        :key="index"
+                                        v-if="enabledMetadata[index] == 'true'"
+                                        :item-metadatum="itemMetadatum"
+                                        :hide-collapses="hideCollapses"
+                                        :is-collapsed="metadataCollapses[index]"
+                                        @changeCollapse="onChangeCollapse($event, index)"/>
+                            </template>
+                        </div>
+                    </transition>
+                </div>
 
                 <!-- Hook for extra Form options -->
                 <template v-if="hasEndRightForm">
@@ -539,9 +566,11 @@ export default {
         return {
             collecionAllowsItemSubmission: true,
             isLoading: false,
+            isLoadingMetadataSections: false,
             isSubmitting: false,
             isUploading: false,
             metadataCollapses: [],
+            metadataSectionCollapses: [],
             collapseAll: true,
             form: {
                 collection_id: Number,
@@ -587,6 +616,9 @@ export default {
                         } )
                     )) : [];
         },
+        metadataSections() {
+            return this.getMetadataSections();
+        },
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
         },
@@ -629,15 +661,33 @@ export default {
                 this.createNewItem();
 
                 eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
-                    if (hasErrors)
+                    if (hasErrors) {
+                        if (Array.isArray(this.formErrors)) {
+                            for (let i = 0; i < this.metadataSectionCollapses.length; i++)
+                                this.$set(this.metadataSectionCollapses, i, true);
+                        }
                         this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
-                    else
+                    } else
                         this.formErrorMessage = '';
                 });
             })
             .catch(() => {
                 this.collecionAllowsItemSubmission = false;
                 this.isLoading = false;
+            });
+
+        // Loads Metadata Sections
+        this.isLoadingMetadataSections = true;
+        this.fetchMetadataSections({
+                collectionId: this.collectionId
+            })
+            .then((metadataSections) => {
+                this.metadataSectionCollapses = Array(metadataSections.length).fill(true)
+                this.isLoadingMetadataSections = false;
+            })
+            .catch((error) => {
+                this.isLoadingMetadataSections = false;
+                this.$console.error('Error loading metadata sections ', error);
             });
     },
     mounted() {
@@ -666,10 +716,12 @@ export default {
             'getItemSubmissionMetadata',
         ]),
         ...mapActions('metadata',[
-            'fetchMetadata'
+            'fetchMetadata',
+            'fetchMetadataSections'
         ]),
         ...mapGetters('metadata',[
-            'getMetadata'
+            'getMetadata',
+            'getMetadataSections'
         ]),
         ...mapActions('collection',[
             'fetchCollectionForItemSubmission'
@@ -801,9 +853,14 @@ export default {
             for (let i = 0; i < this.metadataCollapses.length; i++)
                 this.metadataCollapses[i] = this.collapseAll;
 
+            for (let i = 0; i < this.metadataSectionCollapses.length; i++)
+                this.$set(this.metadataSectionCollapses, i, this.collapseAll);
         },
         onChangeCollapse(event, index) {
             this.metadataCollapses.splice(index, 1, event);
+        },
+        toggleMetadataSectionCollapse(sectionIndex) {
+            this.$set(this.metadataSectionCollapses, sectionIndex, (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]));
         }
     }
 }
@@ -828,6 +885,7 @@ export default {
         }
         .field {
             padding: 12px 0px 12px 34px;
+            margin-left: 24px;
 
         }
          .columns {
@@ -939,6 +997,15 @@ export default {
         /deep/ .control-label {
             white-space: normal !important;
             overflow: visible;
+        }
+    }
+
+    .metadata-section-header {
+        padding-bottom: 7px;
+        border-bottom: 1px solid var(--tainacan-input-border-color);
+
+        .icon {
+            margin-left: -0.5rem;
         }
     }
 
