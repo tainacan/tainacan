@@ -157,9 +157,19 @@
                             <h3>{{ metadataSection.name }}</h3>
                         </span>
                         <span   
-                                v-if="metadataSection.id != undefined && metadataSection.core"
-                                class="label-details">
-                            ({{ $i18n.get('label_core_section') }}) 
+                                v-if="metadataSection.id != undefined"
+                                class="label-details"
+                                :class="{ 'has-text-weight-bold': metadataSection.id === 'default_section' }">
+                            <span 
+                                    v-if="metadataSection.id === 'default_section'"
+                                    v-tooltip="{
+                                        content: $i18n.get('label_required'),
+                                        autoHide: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }">
+                                *&nbsp;({{ $i18n.get('label_default_section') }}) 
+                            </span>
                             <span 
                                     v-if="metadataSection.status === 'private'"
                                     class="icon"
@@ -204,7 +214,7 @@
                             <a 
                                     v-if="metadataSection.current_user_can_delete"
                                     :disabled="metadataSection.metadata_object_list.length"
-                                    :style="{ visibility: metadataSection.collection_id != collectionId || metadataSection.core || metadataSection.metadata_object_list.length ? 'hidden' : 'visible' }"
+                                    :style="{ visibility: metadataSection.collection_id != collectionId || metadataSection.id === 'default_section' || metadataSection.metadata_object_list.length ? 'hidden' : 'visible' }"
                                     @click.prevent="removeMetadataSection(metadataSection)">
                                 <span
                                         v-tooltip="{
@@ -339,7 +349,7 @@
                                                 }">
                                             *&nbsp;
                                         </span>
-                                        ({{ metadatum.metadata_type_object.name }} {{ metadatum.metadata_section_id }}) 
+                                        ({{ metadatum.metadata_type_object.name }}) 
                                         <span 
                                                 v-if="metadatum.status === 'private'"
                                                 class="icon"

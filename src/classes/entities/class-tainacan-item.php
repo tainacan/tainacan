@@ -577,7 +577,7 @@ class Item extends Entity {
 			'hide_empty' 			=> true,
 			'empty_value_message' 	=> '',
 			'display_slug_as_class' => false,
-			'before' 				=> '<div class="metadata-type-$type $id">',
+			'before' 				=> '<div class="metadata-type-$type" $id>',
 			'after' 				=> '</div>',
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
@@ -738,7 +738,7 @@ class Item extends Entity {
 			'hide_empty' 			=> true,
 			'empty_value_message' 	=> '',
 			'display_slug_as_class' => false,
-			'before' 				=> '<div class="metadata-type-$type" $id">',
+			'before' 				=> '<div class="metadata-type-$type" $id>',
 			'after' 				=> '</div>',
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
@@ -1173,7 +1173,7 @@ class Item extends Entity {
 		$args = wp_parse_args($args, $defaults);
 
 		// Gets the metadata section inner metadata list
-		$metadata_section_metadata_list = $metadata_section->get_metadata_list();
+		$metadata_section_metadata_list = $metadata_section->get_metadata_object_list();
 		$has_metadata_list = (is_array($metadata_section_metadata_list) && count($metadata_section_metadata_list) > 0 );
 
 		if ( $has_metadata_list || !$args['hide_empty'] ) {
@@ -1247,8 +1247,9 @@ class Item extends Entity {
 			$return .= $before_metadata_list;
 
 			// Renders the section metadata list, using Items' get_metadata_as_html()
-			$return .= ( $has_metadata_list ? $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata__in' => $metadata_section_metadata_list]) ) : $args['empty_metadata_list_message'] );
-			
+			foreach( $metadata_section_metadata_list as $metadata_object) {
+				$return .= ( $has_metadata_list ? $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object]) ) : $args['empty_metadata_list_message'] );
+			}
 			// Gets the wrapper closer
 			$after_metadata_list = $args['after_metadata_list'];
 
