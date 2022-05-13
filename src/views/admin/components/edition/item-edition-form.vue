@@ -322,6 +322,10 @@
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                                 </span>
                                                 <label>{{ metadataSection.name }}</label>
+                                                <help-button
+                                                        v-if="metadataSection.description" 
+                                                        :title="metadataSection.name"
+                                                        :message="metadataSection.description" />
                                             </span>
                                         </div>
                                         <transition name="filter-item">

@@ -395,12 +395,23 @@
                                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                             </span>
                             <label>{{ metadataSection.name }}</label>
+                            <help-button
+                                    v-if="!hideHelpButtons &&
+                                            !helpInfoBellowLabel &&
+                                            metadataSection.description" 
+                                    :title="metadataSection.name"
+                                    :message="metadataSection.description" />
                         </span>
                     </div>
                     <transition name="filter-item">
                         <div 
                                 class="metadata-section-metadata-list"
                                 v-show="metadataSectionCollapses[sectionIndex]">
+                            <p
+                                    class="metadatum-description-help-info"
+                                    v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
+                                {{ metadataSection.description }}
+                            </p>
                             <template v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
                                 <tainacan-form-item
                                         :key="index"
