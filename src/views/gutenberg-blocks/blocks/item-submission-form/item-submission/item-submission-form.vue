@@ -376,7 +376,9 @@
 
                 <div 
                         v-for="(metadataSection, sectionIndex) of metadataSections"
-                        :key="sectionIndex">
+                        :key="sectionIndex"
+                        :class="'metadata-section-slug-' + metadataSection.slug"
+                        :id="'metadata-section-id-' + metadataSection.id">
                     <div class="metadata-section-header section-label">
                         <span   
                                 class="collapse-handle"
@@ -396,7 +398,9 @@
                         </span>
                     </div>
                     <transition name="filter-item">
-                        <div v-show="metadataSectionCollapses[sectionIndex]">
+                        <div 
+                                class="metadata-section-metadata-list"
+                                v-show="metadataSectionCollapses[sectionIndex]">
                             <template v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
                                 <tainacan-form-item
                                         :key="index"
@@ -885,7 +889,7 @@ export default {
         }
         .field {
             padding: 12px 0px 12px 34px;
-            margin-left: 24px;
+            margin-left: 16px;
 
         }
          .columns {
