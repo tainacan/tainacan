@@ -560,7 +560,7 @@
                                         <textarea
                                                 id="tainacan-text-description"
                                                 class="textarea"
-                                                rows="3"
+                                                rows="4"
                                                 v-model="form.thumbnail_alt" />
                                     </b-field>    
                                     <div class="thumbnail-buttons-row">

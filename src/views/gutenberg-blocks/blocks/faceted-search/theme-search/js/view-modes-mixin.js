@@ -34,6 +34,22 @@ export const viewModesMixin = {
         this.isSlideshowViewModeEnabled = (this.enabledViewModes && Array.isArray(this.enabledViewModes)) ? (this.enabledViewModes.findIndex((viewMode) => viewMode == 'slideshow') >= 0) : false;
     },
     methods: {
+        hasBeforeHook() {
+            if (wp !== undefined)
+                return wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_item_before`);
+        },
+        hasAfterHook() {
+            if (wp !== undefined)
+                return wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_item_after`);
+        },
+        getBeforeHook(item) {
+            if (wp !== undefined)
+                return wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_item_before`, item);
+        },
+        getAfterHook(item) {
+            if (wp !== undefined)
+                return wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_item_after`, item);
+        },
         getItemLink(itemUrl, index) {
             if (this.queries) {
                 // Inserts information necessary for item by item navigation on single pages

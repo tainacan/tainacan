@@ -11,7 +11,7 @@
                     class="tainacan-form"
                     label-width="120px">
 
-                <!-- Hook for extra Form options -->
+                <!-- Hook for extra options -->
                 <template v-if="hasBeginLeftForm">
                     <form
                             id="form-item-begin-left"
@@ -19,11 +19,11 @@
                             v-html="getBeginLeftForm"/>
                 </template>
 
-                <!-- JS-side hook for extra form content -->
+                <!-- JS-side hook for extra content -->
                 <div 
-                        v-if="hooks['document_before']"
+                        v-if="hasBeforeHook('document')"
                         class="item-submission-hook item-submission-hook-document-before"
-                        v-html="hooks['document_before']" />
+                        v-html="getBeforeHook('document')" />
 
                 <!-- Document -------------------------------- -->
                 <template v-if="!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton">
@@ -191,15 +191,17 @@
 
                 </template>
 
-                <!-- JS-side hook for extra form content -->
+                <!-- JS-side hook for extra content -->
                 <div 
-                        v-if="hooks['document_after']"
+                        v-if="hasAfterHook('document')"
                         class="item-submission-hook item-submission-hook-document-after"
-                        v-html="hooks['document_after']" />
+                        v-html="getAfterHook('document')" />
+
+                <!-- JS-side hook for extra content -->
                 <div 
-                        v-if="hooks['thumbnail_before']"
+                        v-if="hasBeforeHook('thumbnail')"
                         class="item-submission-hook item-submission-hook-thumbnail-before"
-                        v-html="hooks['thumbnail_before']" />
+                        v-html="getBeforeHook('thumbnail')" />
 
                 <!-- Thumbnail -------------------------------- -->
                 <template v-if="!hideThumbnailSection">
@@ -269,13 +271,13 @@
                     </div>
                 </template>
 
-                <!-- JS-side hook for extra form content -->
+                <!-- JS-side hook for extra content -->
                 <div 
-                        v-if="hooks['thumbnail_after']"
+                        v-if="hasAfterHook('thumbnail')"
                         class="item-submission-hook item-submission-hook-thumbnail-after"
-                        v-html="hooks['thumbnail_after']" />
+                        v-html="getAfterHook('thumbnail')" />
 
-                <!-- Hook for extra Form options -->
+                <!-- Hook for extra options -->
                 <template v-if="hasEndLeftForm">
                     <form
                         id="form-item-end-left"
@@ -283,11 +285,12 @@
                         v-html="getEndLeftForm"/>
                 </template>
 
-                <!-- JS-side hook for extra form content -->
+
+                <!-- JS-side hook for extra content -->
                 <div 
-                        v-if="hooks['attachments_before']"
+                        v-if="hasBeforeHook('attachments')"
                         class="item-submission-hook item-submission-hook-attachments-before"
-                        v-html="hooks['attachments_before']" />
+                        v-html="getBeforeHook('attachments')" />
 
                 <!-- Attachments ------------------------------------------ -->
                 <template v-if="!hideAttachmentsSection">
@@ -344,13 +347,13 @@
                     </div>
                 </template>
 
-                <!-- JS-side hook for extra form content -->
+                <!-- JS-side hook for extra content -->
                 <div 
-                        v-if="hooks['attachments_after']"
+                        v-if="hasAfterHook('attachments')"
                         class="item-submission-hook item-submission-hook-attachments-after"
-                        v-html="hooks['attachments_after']" />
+                        v-html="getAfterHook('attachments')" />
 
-                <!-- Hook for extra Form options -->
+                <!-- Hook for extra options -->
                 <template v-if="hasBeginRightForm">
                     <form
                         id="form-item-begin-right"
@@ -408,28 +411,17 @@
                     </span>
                 </a>
 
-
-                <!-- JS-side hook for extra form content -->
+                <!-- JS-side hook for extra content -->
                 <div 
-                        v-if="hooks['metadata_before']"
+                        v-if="hasBeforeHook('metadata')"
                         class="item-submission-hook item-submission-hook-metadata-before"
-                        v-html="hooks['metadata_before']" />
+                        v-html="getBeforeHook('metadata')" />
 
                 <div 
                         v-for="(metadataSection, sectionIndex) of metadataSections"
                         :key="sectionIndex"
                         :class="'metadata-section-slug-' + metadataSection.slug"
                         :id="'metadata-section-id-' + metadataSection.id">
-
-                    <!-- JS-side hook for extra form content -->
-                    <div 
-                            v-if="hooks['metadata_section_index_' + sectionIndex + '_before']"
-                            :class="'item-submission-hook item-submission-hook-metadata_section_index_' + sectionIndex + '-before'"
-                            v-html="hooks['metadata_section_index_' + sectionIndex + '_before']" />
-                    <div 
-                            v-if="hooks['metadata_section_id_' + metadataSection.id + '_before']"
-                            :class="'item-submission-hook item-submission-hook-metadata_section_id_' + metadataSection.id + '-before'"
-                            v-html="hooks['metadata_section_id_' + metadataSection.id + '_before']" />
 
                     <div class="metadata-section-header section-label">
                         <span   
@@ -459,12 +451,28 @@
                         <div 
                                 class="metadata-section-metadata-list"
                                 v-show="metadataSectionCollapses[sectionIndex]">
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasBeforeHook('metadata_section')"
+                                    class="item-submission-hook item-submission-hook-metadata-section-before"
+                                    v-html="getBeforeHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
                             <p
                                     class="metadatum-description-help-info"
                                     v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
                                 {{ metadataSection.description }}
                             </p>
+
                             <template v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
+
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        :key="index"
+                                        v-if="hasBeforeHook('metadatum')"
+                                        class="item-submission-hook item-submission-hook-metadatum-before"
+                                        v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
                                 <tainacan-form-item
                                         :key="index"
                                         v-if="enabledMetadata[index] == 'true'"
@@ -472,29 +480,33 @@
                                         :hide-collapses="hideCollapses"
                                         :is-collapsed="metadataCollapses[index]"
                                         @changeCollapse="onChangeCollapse($event, index)"/>
+
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        :key="index"
+                                        v-if="hasAfterHook('metadatum')"
+                                        class="item-submission-hook item-submission-hook-metadatum-after"
+                                        v-html="getAfterHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
                             </template>
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasAfterHook('metadata_section')"
+                                    class="item-submission-hook item-submission-hook-metadata-section-after"
+                                    v-html="getAfterHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
                         </div>
                     </transition>
 
-                    <!-- JS-side hook for extra form content -->
-                    <div 
-                            v-if="hooks['metadata_section_index_' + sectionIndex + '_after']"
-                            :class="'item-submission-hook item-submission-hook-metadata_section_index_' + sectionIndex + '-after'"
-                            v-html="hooks['metadata_section_index_' + sectionIndex + '_after']" />
-                    <div 
-                            v-if="hooks['metadata_section_id_' + metadataSection.id + '_after']"
-                            :class="'item-submission-hook item-submission-hook-metadata_section_id_' + metadataSection.id + '-after'"
-                            v-html="hooks['metadata_section_id_' + metadataSection.id + '_after']" />
-
                 </div>
 
-                <!-- JS-side hook for extra form content -->
+                <!-- JS-side hook for extra content -->
                 <div 
-                        v-if="hooks['metadata_after']"
+                        v-if="hasAfterHook('metadata')"
                         class="item-submission-hook item-submission-hook-metadata-after"
-                        v-html="hooks['metadata_after']" />
+                        v-html="getAfterHook('metadata')" />
 
-                <!-- Hook for extra Form options -->
+                <!-- Hook for extra options -->
                 <template v-if="hasEndRightForm">
                     <form
                         id="form-item-end-right"
@@ -523,13 +535,13 @@
                     </b-field>
                 </div>
 
-                <!-- JS-side hook for extra form content -->
-                <div 
-                        v-if="hooks['footer_before']"
-                        class="item-submission-hook item-submission-hook-footer-before"
-                        v-html="hooks['footer_before']" />
-
                 <footer class="form-submission-footer">
+
+                    <!-- JS-side hook for extra content -->
+                    <div 
+                            v-if="hasBeforeHook('footer')"
+                            class="item-submission-hook item-submission-hook-footer-before"
+                            v-html="getBeforeHook('footer')" />
 
                     <button
                             @click="onDiscard()"
@@ -554,13 +566,13 @@
                             @click="onSubmit()"
                             type="button"
                             class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
-                </footer>
 
-                <!-- JS-side hook for extra form content -->
-                <div 
-                        v-if="hooks['footer_after']"
-                        class="item-submission-hook item-submission-hook-footer-after"
-                        v-html="hooks['footer_after']" />
+                    <!-- JS-side hook for extra content -->
+                    <div 
+                            v-if="hasAfterHook('footer')"
+                            class="item-submission-hook item-submission-hook-footer-after"
+                            v-html="getAfterHook('footer')" />
+                </footer>
 
             </form>
 
@@ -690,8 +702,7 @@ export default {
             useCaptcha: 'no',
             captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key'],
             linkToCreatedItem: '',
-            userHasAgreedToTerms: false,
-            hooks: {}
+            userHasAgreedToTerms: false
         }
     },
     computed: {
@@ -738,10 +749,6 @@ export default {
     },
     created() {
 
-        // Parse static JS hooks
-        if (wp !== undefined)
-            this.parseStaticHooks();
-
         // Puts loading on form
         this.isLoading = true;
 
@@ -786,27 +793,6 @@ export default {
             })
             .then((metadataSections) => {
                 this.metadataSectionCollapses = Array(metadataSections.length).fill(true);
-                
-                // Parse dynamic metadata section hooks
-                if (wp !== undefined) {
-                    for (let sectionIndex = 0; sectionIndex < metadataSections.length; sectionIndex++) {
-                        const metadataSectionByIndexBeforeFilter = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_section_index_${sectionIndex}_before`, '');
-                        if (metadataSectionByIndexBeforeFilter)
-                            this.hooks[`metadata_section_index_${sectionIndex}_before`] = metadataSectionByIndexBeforeFilter;
-                        
-                        const metadataSectionByIdBeforeFilter = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_section_id_${metadataSections[sectionIndex].id}_before`, '');
-                        if (metadataSectionByIdBeforeFilter)
-                            this.hooks[`metadata_section_id_${metadataSections[sectionIndex].id}_before`] = metadataSectionByIdBeforeFilter;
-
-                        const metadataSectionByIdAfterFilter = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_section_id_${metadataSections[sectionIndex].id}_after`, '');
-                        if (metadataSectionByIdAfterFilter)
-                            this.hooks[`metadata_section_id_${metadataSections[sectionIndex].id}_after`] = metadataSectionByIdAfterFilter;
-
-                        const metadataSectionByIndexAfterFilter = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_section_index_${sectionIndex}_after`, '');
-                        if (metadataSectionByIndexAfterFilter)
-                            this.hooks[`metadata_section_index_${sectionIndex}_after`] = metadataSectionByIndexAfterFilter;
-                    }
-                }
                 this.isLoadingMetadataSections = false;
             })
             .catch((error) => {
@@ -850,46 +836,21 @@ export default {
         ...mapActions('collection',[
             'fetchCollectionForItemSubmission'
         ]),
-        parseStaticHooks() {
-            const documentBeforeFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_document_before`, '');
-            if (documentBeforeFilters)
-                this.hooks['document_before'] = documentBeforeFilters;
-
-            const documentAfterFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_document_after`, ''); 
-            if (documentAfterFilters)
-                this.hooks['document_after'] = documentAfterFilters; 
-
-            const thumbnailBeforeFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_thumbnail_before`, '');
-            if (thumbnailBeforeFilters)
-                this.hooks['thumbnail_before'] = thumbnailBeforeFilters;
-
-            const thumbnailAfterFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_thumbnail_after`, ''); 
-            if (thumbnailAfterFilters)
-                this.hooks['thumbnail_after'] = thumbnailAfterFilters; 
-
-            const attachmentsBeforeFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_attachments_before`, '');
-            if (attachmentsBeforeFilters)
-                this.hooks['attachments_before'] = attachmentsBeforeFilters;
-
-            const attachmentsAfterFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_attachments_after`, ''); 
-            if (attachmentsAfterFilters)
-                this.hooks['attachments_after'] = attachmentsAfterFilters;
-
-            const metadataBeforeFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_metadata_before`, '');
-            if (metadataBeforeFilters)
-                this.hooks['metadata_before'] = metadataBeforeFilters;
-
-            const metadataAfterFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_metadata_after`, ''); 
-            if (metadataAfterFilters)
-                this.hooks['metadata_after'] = metadataAfterFilters; 
-
-            const footerBeforeFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_footer_before`, '');
-            if (footerBeforeFilters)
-                this.hooks['footer_before'] = footerBeforeFilters;
-
-            const footerAfterFilters = wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_footer_after`, ''); 
-            if (footerAfterFilters)
-                this.hooks['footer_after'] = footerAfterFilters; 
+        hasBeforeHook(location) {
+            if (wp !== undefined)
+                return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`);
+        },
+        hasAfterHook(location) {
+            if (wp !== undefined)
+                return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`);
+        },
+        getBeforeHook(location, entity = '') {
+            if (wp !== undefined)
+                return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`, entity);
+        },
+        getAfterHook(location, entity = '') {
+            if (wp !== undefined)
+                return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`, entity);
         },
         onSubmit() {
 

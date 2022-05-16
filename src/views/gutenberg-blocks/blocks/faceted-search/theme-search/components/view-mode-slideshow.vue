@@ -143,6 +143,7 @@
                                     class="icon is-large loading-icon">
                                 <div class="is-large control has-icons-right is-loading is-clearfix" />
                             </span>
+
                             <!-- Empty result placeholder -->
                             <section
                                     v-if="!isLoading && !isLoadingItem && items.length <= 0"
@@ -156,6 +157,13 @@
                                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                                 </div>
                             </section>
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasBeforeHook()"
+                                    class="faceted-search-hook faceted-search-hook-item-before"
+                                    v-html="getBeforeHook(item)" />
+
                             <div 
                                     v-if="!isLoadingItem && slideItems.length > 0 && (item.document != undefined && item.document != undefined && item.document != '')"
                                     v-html="item.document_as_html" />  
@@ -167,6 +175,12 @@
                                             :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                                 </div>
                             </div>
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasAfterHook()"
+                                    class="faceted-search-hook faceted-search-hook-item-after"
+                                    v-html="getAfterHook(item)" />
                         </transition>
                     </div>
                     <button 
