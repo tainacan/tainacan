@@ -649,8 +649,10 @@ class Test_Importer extends Importer {
 			$keyword = ( $this->get_option('keyword_images') ) ? $this->get_option('keyword_images') : '';
 
 			$url = "https://loremflickr.com/$horizontal_size/$vertical_size/$keyword";
+			$response = wp_remote_get( $url );
+			$content = wp_remote_retrieve_body( $response );
 			
-			$id = $TainacanMedia->insert_attachment_from_blob(file_get_contents($url), time() . '.jpg', $inserted_item->get_id());
+			$id = $TainacanMedia->insert_attachment_from_blob($content, time() . '.jpg', $inserted_item->get_id());
 
 			if(!$id){
 				$this->add_error_log('Error in imported URL ' . $url);

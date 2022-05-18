@@ -188,7 +188,9 @@ class Flickr_Importer extends Importer {
 
                 $this->add_log('url ' . $api_url);
 
-                $json = json_decode(file_get_contents($api_url));
+                $response = wp_remote_get( $api_url );
+                $body = wp_remote_retrieve_body( $response );
+                $json = json_decode($body);
                 if( $json && isset($json->photoset) ){
                     return $json;
                 }
@@ -203,7 +205,10 @@ class Flickr_Importer extends Importer {
 
                 $this->add_log('url ' . $api_url);
 
-                $json = json_decode(file_get_contents($api_url));
+                $response = wp_remote_get( $api_url );
+                $body = wp_remote_retrieve_body( $response );
+                $json = json_decode($body);
+
                 if( $json && isset($json->photos) ){
                     return $json;
 
@@ -218,7 +223,9 @@ class Flickr_Importer extends Importer {
 
                 $this->add_log('url ' . $api_url);
 
-                $json = json_decode(file_get_contents($api_url));
+                $response = wp_remote_get( $api_url );
+                $body = wp_remote_retrieve_body( $response );
+                $json = json_decode($body);
                 if( $json && isset($json->photo) ){
                     return $json;
 
@@ -428,8 +435,9 @@ class Flickr_Importer extends Importer {
             . $id . $this->format;
 
         $this->add_log('url ' . $api_url);
-
-        $json = json_decode(file_get_contents($api_url));
+        $response = wp_remote_get( $api_url );
+        $body = wp_remote_retrieve_body( $response );
+        $json = json_decode($body);
         if( $json && isset($json->photo) ){
             return $json;
 

@@ -231,7 +231,9 @@ class Youtube_Importer extends Importer {
                 $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&id='
                     . $id . '&key=' . $api_key;
 
-                $json = json_decode(file_get_contents($api_url));
+                $response = wp_remote_get( $api_url );
+                $body = wp_remote_retrieve_body( $response );
+                $json = json_decode($body);
                 if( $json && isset($json->items) ){
                     $item = $json->items[0];
 
@@ -239,7 +241,9 @@ class Youtube_Importer extends Importer {
                         . $pageToken . '&maxResults=1&playlistId='
                         . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
 
-                    $json = json_decode(file_get_contents($api_url));
+                    $response = wp_remote_get( $api_url );
+                    $body = wp_remote_retrieve_body( $response );
+                    $json = json_decode($body);
 
                     if( $json && isset($json->items) ){
                         return $json;
@@ -251,8 +255,10 @@ class Youtube_Importer extends Importer {
             case 'user':
                 $api_url = 'https://www.googleapis.com/youtube/v3/channels?part=statistics,snippet,contentDetails&forUsername='
                     . $id . '&key=' . $api_key;
-
-                $json = json_decode(file_get_contents($api_url));
+                
+                $response = wp_remote_get( $api_url );
+                $body = wp_remote_retrieve_body( $response );
+                $json = json_decode($body);
                 if( $json && isset($json->items) ){
                     $item = $json->items[0];
 
@@ -260,7 +266,9 @@ class Youtube_Importer extends Importer {
                         . $pageToken . '&maxResults=1&playlistId='
                         . $item->contentDetails->relatedPlaylists->uploads . '&key=' . $api_key;
 
-                    $json = json_decode(file_get_contents($api_url));
+                    $response = wp_remote_get( $api_url );
+                    $body = wp_remote_retrieve_body( $response );
+                    $json = json_decode($body);
 
                     if( $json && isset($json->items) ){
                         return $json;
@@ -274,7 +282,9 @@ class Youtube_Importer extends Importer {
                     . $pageToken . '&maxResults=1&playlistId='
                     . $id . '&key=' . $api_key;
 
-                $json = json_decode(file_get_contents($api_url));
+                    $response = wp_remote_get( $api_url );
+                    $body = wp_remote_retrieve_body( $response );
+                    $json = json_decode($body);
                 if( $json && isset($json->items) ){
                     return $json;
 
@@ -285,7 +295,9 @@ class Youtube_Importer extends Importer {
                 $api_url = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails&maxResults=1&id='
                     . $id . '&key=' . $api_key;
 
-                $json = json_decode(file_get_contents($api_url));
+                    $response = wp_remote_get( $api_url );
+                    $body = wp_remote_retrieve_body( $response );
+                    $json = json_decode($body);
                 if( $json && isset($json->items) ){
                     return $json;
 
