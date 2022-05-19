@@ -64,7 +64,7 @@ class ScriptTainacanOld {
         
         define( 'WP_USE_THEMES', false );
         define( 'SHORTINIT', false );
-        require( dirname(__FILE__) . '/../../../../wp-blog-header.php' );
+        // require( dirname(__FILE__) . '/../../../../wp-blog-header.php' );
 
         $old_tainacan = new \Tainacan\Importer\Old_Tainacan();
         $id = $old_tainacan->get_id();
