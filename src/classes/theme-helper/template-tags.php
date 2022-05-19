@@ -464,6 +464,14 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		'media_type' => ''
 	), $args);
 
+	$allowed_html = wp_kses_allowed_html('post');
+	$allowed_html['iframe'] = array(
+		'src'             => true,
+		'height'          => true,
+		'width'           => true,
+		'frameborder'     => true,
+		'allowfullscreen' => true,
+	);
 	ob_start();
 
 ?>
@@ -472,37 +480,37 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 	<div class="swiper-slide-content <?php echo $args['class_slide_content'] ?>">
 
 		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
-			<?php echo wp_kses_post($args['media_content']) ?>
+			<?php echo wp_kses($args['media_content'], $allowed_html) ?>
 		<?php else: ?>
 			<img src="<?php echo tainacan_get_the_mime_type_icon($args['media_type']) ?>" alt="<?php echo ( !empty($args['media_title']) ? $args['media_title'] : __('File', 'tainacan') ) ?>" >
 		<?php endif; ?>
 		
-		<?php echo wp_kses_post($args['before_slide_metadata']); ?>
+		<?php echo wp_kses($args['before_slide_metadata'], $allowed_html); ?>
 
 		<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) : ?>
-			<div class="swiper-slide-metadata  <?php echo wp_kses_post($args['class_slide_metadata']); ?>">
+			<div class="swiper-slide-metadata  <?php echo wp_kses($args['class_slide_metadata'], $allowed_html); ?>">
 				<?php if ( !empty($args['media_caption']) ) :?>
 					<span class="swiper-slide-metadata__caption">
-						<?php echo wp_kses_post($args['media_caption']); ?>
+						<?php echo wp_kses($args['media_caption'], $allowed_html); ?>
 						<br>
 					</span>
 				<?php endif; ?>	
 				<?php if ( !empty($args['media_title']) ) :?>
 					<span class="swiper-slide-metadata__name">
-						<?php echo wp_kses_post($args['media_title']); ?>
+						<?php echo wp_kses($args['media_title'], $allowed_html); ?>
 					</span>
 				<?php endif; ?>
 				<br>
 				<?php if ( !empty($args['media_description']) ) :?>
 					<span class="swiper-slide-metadata__description">
-						<?php echo wp_kses_post($args['media_description']); ?>
+						<?php echo wp_kses($args['media_description'], $allowed_html); ?>
 					</span>
 				<?php endif; ?>
 			</div>
 		<?php endif; ?>
 
 		<?php if ( !empty($args['media_content_full']) ) : ?>
-			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;"><?php echo wp_kses_post($args['media_content_full']) ?></div>
+			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;"><?php echo wp_kses($args['media_content_full'], $allowed_html) ?></div>
 		<?php endif; ?>
 
 		<?php echo $args['after_slide_metadata'] ?>
@@ -869,7 +877,7 @@ function tainacan_the_item_edit_link( $text = null, $before = '', $after = '', $
 		$text = __( 'Edit this item', 'tainacan' );
 	}
 
-	$link = '<a class="' . wp_kses_post( $class ) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
+	$link = '<a class="' . esc_attr($class) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
 
 	echo $before . $link . $after;
 }
