@@ -60,7 +60,7 @@ class Term_Importer extends Importer {
 							</div>
 						</span>
 						<div class="control is-clearfix">
-							<input class="input" type="text" name="delimiter" value="<?php echo $this->get_option('delimiter'); ?>">
+							<input class="input" type="text" name="delimiter" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
 						</div>
 					</div>
 				</div>
@@ -101,7 +101,7 @@ class Term_Importer extends Importer {
 
 							</div>
 
-							<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo $this->get_option('new_taxonomy'); ?>" placeholder="<?php _e('New taxonomy name', 'tainacan'); ?>" >
+							<input class="input new_taxonomy" type="text" name="new_taxonomy" value="<?php echo esc_attr($this->get_option('new_taxonomy')); ?>" placeholder="<?php _e('New taxonomy name', 'tainacan'); ?>" >
 
 						</div>
 					</div>

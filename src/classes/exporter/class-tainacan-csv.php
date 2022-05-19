@@ -312,7 +312,7 @@ class CSV extends Exporter {
 					</div>
 			</span>
 			<div class="control is-clearfix">
-				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php echo $this->get_option('delimiter'); ?>">
+				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php esc_attr($this->get_option('delimiter')); ?>">
 			</div>
 		</div>
 
@@ -334,7 +334,7 @@ class CSV extends Exporter {
 					</div>
 			</span>
 			<div class="control is-clearfix">
-				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo $this->get_option('multivalued_delimiter'); ?>">
+				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo esc_attr($this->get_option('multivalued_delimiter')); ?>">
 			</div>
 		</div>
 

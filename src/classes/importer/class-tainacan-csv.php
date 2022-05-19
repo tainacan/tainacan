@@ -334,7 +334,7 @@ class CSV extends Importer {
 							</div>
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="text" name="multivalued_delimiter" value="<?php echo $this->get_option('multivalued_delimiter'); ?>">
+						<input class="input" type="text" name="multivalued_delimiter" value="<?php echo esc_attr($this->get_option('multivalued_delimiter')); ?>">
 					</div>
 				</div>
 			</div>
@@ -357,7 +357,7 @@ class CSV extends Importer {
 							</div>
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="text" name="enclosure" value="<?php echo $this->get_option('enclosure'); ?>">
+						<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
 					</div>
 				</div>
 			</div>
@@ -410,7 +410,7 @@ class CSV extends Importer {
 						</div>
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="text" name="escape_empty_value" value="<?php echo $this->get_option('escape_empty_value'); ?>">
+						<input class="input" type="text" name="escape_empty_value" value="<?php echo esc_attr($this->get_option('escape_empty_value')); ?>">
 					</div>
 				</div>
 			</div>
@@ -467,7 +467,7 @@ class CSV extends Importer {
 						</div>
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="text" name="server_path" value="<?php echo $this->get_option('server_path'); ?>">
+						<input class="input" type="text" name="server_path" value="<?php echo esc_attr($this->get_option('server_path')); ?>">
 					</div>
 					<p class="help">
 						<strong><?php _e('Importing attachments', 'tainacan'); ?>: </strong><?php echo nl2br(__('Check the documentation to learn how to set up your .csv file correctly for importing files <a href="https://tainacan.github.io/tainacan-wiki/#/importers?id=importador-csv-items">on this link.</a>', 'tainacan')); ?>

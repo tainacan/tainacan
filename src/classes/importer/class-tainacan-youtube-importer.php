@@ -411,7 +411,7 @@ class Youtube_Importer extends Importer {
                     </p>
                     
                     <div class="control is-clearfix">
-                        <input class="input" type="text" name="api_id" value="<?php echo $this->get_option('api_id'); ?>">
+                        <input class="input" type="text" name="api_id" value="<?php echo esc_attr($this->get_option('api_id')); ?>">
                     </div>
                 </div>
             </div>
