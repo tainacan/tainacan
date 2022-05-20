@@ -347,75 +347,75 @@ function tainacan_get_the_media_component(
 				tainacan_plugin = {};
 			}
 			tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
-			tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
+			tainacan_plugin.tainacan_media_components['<?php echo esc_attr($args['media_id']) ?>'] = <?php echo json_encode($args) ?>;
 		</script>	
 
-		<div id="<?php echo $media_id ?>" class="tainacan-media-component" data-module='item-gallery'>
+		<div id="<?php echo esc_attr($media_id) ?>" class="tainacan-media-component" data-module='item-gallery'>
 
 			<?php if ( $args['has_media_main'] ) : ?>
 				
 				<!-- Slider main container -->
-				<?php echo $args['before_main_div'] ?>
-				<div id="<?php echo $args['media_main_id'] ?>" class="tainacan-media-component__swiper-main swiper-container <?php echo $args['class_main_div'] ?>">
+				<?php echo esc_html($args['before_main_div']) ?>
+				<div id="<?php echo esc_attr($args['media_main_id']) ?>" class="tainacan-media-component__swiper-main swiper-container <?php echo esc_attr($args['class_main_div']) ?>">
 					
 					<!-- Additional required wrapper -->
-					<?php echo $args['before_main_ul'] ?>
-					<ul class="swiper-wrapper <?php echo $args['class_main_ul'] ?>">
+					<?php echo esc_html($args['before_main_ul']) ?>
+					<ul class="swiper-wrapper <?php echo esc_attr($args['class_main_ul']) ?>">
 						<?php foreach($media_items_main as $media_item) { ?>
-							<li class="swiper-slide <?php echo $args['class_main_li'] ?>">
-								<?php echo $media_item ?>
+							<li class="swiper-slide <?php echo esc_attr($args['class_main_li']) ?>">
+								<?php echo esc_html($media_item) ?>
 							</li>
 						<?php }; ?>
 					</ul>
-					<?php echo $args['before_main_ul'] ?>
+					<?php echo esc_html($args['before_main_ul']) ?>
 
 					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-pagination swiper-pagination_<?php echo $args['media_main_id'] ?>"></div>
+						<div class="swiper-pagination swiper-pagination_<?php echo esc_attr($args['media_main_id']) ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['navigation']) ) : ?>
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_main_id'] ?>"></div>
-						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_main_id'] ?>"></div>
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_main_id']) ?>"></div>
+						<div class="swiper-button-next swiper-navigation-next_<?php echo esc_attr($args['media_main_id']) ?>"></div>
 					<?php endif; ?>
 				</div>
-				<?php echo $args['after_main_div'] ?>
+				<?php echo esc_html($args['after_main_div']) ?>
 			<?php endif; ?>
 
 			<?php if ( $args['has_media_thumbs'] ) : ?>
 
 				<!-- Slider thumbs container -->
-				<?php echo $args['before_thumbs_div'] ?>
-				<div id="<?php echo $args['media_thumbs_id'] ?>" class="tainacan-media-component__swiper-thumbs swiper-container <?php echo $args['class_thumbs_div'] ?>">
+				<?php echo esc_html($args['before_thumbs_div']) ?>
+				<div id="<?php echo esc_attr($args['media_thumbs_id']) ?>" class="tainacan-media-component__swiper-thumbs swiper-container <?php echo esc_attr($args['class_thumbs_div']) ?>">
 					
 					<!-- Additional required wrapper -->
-					<?php echo $args['before_thumbs_ul'] ?>
-					<ul class="swiper-wrapper <?php echo $args['class_thumbs_ul'] ?>">
+					<?php echo esc_html($args['before_thumbs_ul']) ?>
+					<ul class="swiper-wrapper <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 						<?php foreach($media_items_thumbs as $media_item) { ?>
-							<li class="swiper-slide <?php echo $args['class_thumbs_li'] ?>">
-								<?php echo $media_item ?>
+							<li class="swiper-slide <?php echo esc_attr($args['class_thumbs_li']) ?>">
+								<?php echo esc_html($media_item) ?>
 							</li>
 						<?php }; ?>
 					</ul>
-					<?php echo $args['before_thumbs_ul'] ?>
+					<?php echo esc_html($args['before_thumbs_ul']) ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-paginations swiper-pagination_<?php echo $args['media_thumbs_id'] ?>"></div>
+						<div class="swiper-paginations swiper-pagination_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_thumbs_id'] ?>"></div>
-						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_thumbs_id'] ?>"></div>
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
+						<div class="swiper-button-next swiper-navigation-next_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
 					<?php endif; ?>
 
 					<!-- These elements will create a gradient on the side of the carousel -->
 					<div class="swiper-start-border"></div>
 					<div class="swiper-end-border"></div>
 				</div>
-				<?php echo $args['after_thumbs_div'] ?>
+				<?php echo esc_html($args['after_thumbs_div']) ?>
 			<?php endif; ?>
 
 		</div>
@@ -475,14 +475,14 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 	ob_start();
 
 ?>
-	<?php echo $args['before_slide_content'] ?>
+	<?php echo esc_html($args['before_slide_content']) ?>
 
-	<div class="swiper-slide-content <?php echo $args['class_slide_content'] ?>">
+	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>">
 
 		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
 			<?php echo wp_kses($args['media_content'], $allowed_html) ?>
 		<?php else: ?>
-			<img src="<?php echo tainacan_get_the_mime_type_icon($args['media_type']) ?>" alt="<?php echo ( !empty($args['media_title']) ? $args['media_title'] : __('File', 'tainacan') ) ?>" >
+			<img src="<?php echo esc_url(tainacan_get_the_mime_type_icon($args['media_type'])) ?>" alt="<?php echo ( !empty($args['media_title']) ? esc_attr($args['media_title']) : __('File', 'tainacan') ) ?>" >
 		<?php endif; ?>
 		
 		<?php echo wp_kses($args['before_slide_metadata'], $allowed_html); ?>
@@ -510,14 +510,16 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		<?php endif; ?>
 
 		<?php if ( !empty($args['media_content_full']) ) : ?>
-			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;"><?php echo wp_kses($args['media_content_full'], $allowed_html) ?></div>
+			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;">
+				<?php echo wp_kses($args['media_content_full'], $allowed_html) ?>
+			</div>
 		<?php endif; ?>
 
-		<?php echo $args['after_slide_metadata'] ?>
+		<?php echo esc_html($args['after_slide_metadata']) ?>
 
 	</div>
 
-	<?php echo $args['after_slide_content'] ?>
+	<?php echo esc_html($args['after_slide_content']) ?>
 
 <?php
 
@@ -879,7 +881,7 @@ function tainacan_the_item_edit_link( $text = null, $before = '', $after = '', $
 
 	$link = '<a class="' . esc_attr($class) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
 
-	echo $before . $link . $after;
+	echo esc_html($before . $link . $after);
 }
 
 /**
