@@ -680,7 +680,7 @@ class Theme_Helper {
 
 			$logo = get_template_directory_uri() . '/assets/images/social-logo.png';
 			$excerpt = get_bloginfo( 'description' );
-			$url_src = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+			$url_src = esc_url((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 			global $wp;
 				
 			if ( is_post_type_archive() ) {
@@ -749,13 +749,13 @@ class Theme_Helper {
 
 			?>
 			<meta property="og:type" content="article"/>
-			<meta property="og:title" content="<?php echo $title; ?>"/>
-			<meta property="og:site_name" content="<?php echo get_bloginfo(); ?>"/>
-			<meta property="og:description" content="<?php echo $excerpt; ?>"/>
-			<meta property="og:url" content="<?php echo $url_src; ?>"/>
-			<meta property="og:image" content="<?php echo $image['url']; ?>"/>
-			<meta property="og:image:width" content="<?php echo $image['width']; ?>"/>
-			<meta property="og:image:height" content="<?php echo $image['height']; ?>"/>
+			<meta property="og:title" content="<?php echo esc_attr($title); ?>"/>
+			<meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo()); ?>"/>
+			<meta property="og:description" content="<?php echo esc_html($excerpt); ?>"/>
+			<meta property="og:url" content="<?php echo esc_url($url_src); ?>"/>
+			<meta property="og:image" content="<?php echo esc_url($image['url']); ?>"/>
+			<meta property="og:image:width" content="<?php echo esc_attr($image['width']); ?>"/>
+			<meta property="og:image:height" content="<?php echo esc_attr($image['height']); ?>"/>
 
 
 		<?php } else { return; } // End if().
