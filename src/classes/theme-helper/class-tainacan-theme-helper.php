@@ -489,7 +489,7 @@ class Theme_Helper {
 			}
 		}
 
-		return "<div data-module='faceted-search' id='tainacan-items-page' $props ></div>";
+		return wp_kses_post("<div data-module='faceted-search' id='tainacan-items-page' $props ></div>");
 	}
 	
 	function get_items_list_slug() {
@@ -902,7 +902,7 @@ class Theme_Helper {
 			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
 		}
 		
-		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>";
+		return wp_kses_post( "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>" );
 	} 
 
 	/**
@@ -1092,7 +1092,7 @@ class Theme_Helper {
 		
 		$output .= '</div>';
 		
-		return $output;
+		return wp_kses_post( $output );
 	}
 
 	/**

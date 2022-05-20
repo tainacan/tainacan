@@ -633,7 +633,7 @@ class Item extends Entity {
 
 			}
 
-			return $return;
+			return wp_kses_post($return);
 
 		}
 
@@ -702,7 +702,7 @@ class Item extends Entity {
 			}
 		}
 
-		return $return;
+		return wp_kses_post($return);
 
 	}
 
@@ -772,7 +772,7 @@ class Item extends Entity {
 
 		}
 
-		return apply_filters("tainacan-item-get-document-as-html", $output, $img_size, $this);
+		return apply_filters("tainacan-item-get-document-as-html", wp_kses_post($output), $img_size, $this);
 
 	}
 
@@ -807,7 +807,7 @@ class Item extends Entity {
 			}
 		}
 	
-		return $output;
+		return wp_kses_post($output);
 
 	}
 
@@ -841,7 +841,7 @@ class Item extends Entity {
 			}
 		}
 
-		return $link;
+		return esc_url($link);
 	}
 
 	/**

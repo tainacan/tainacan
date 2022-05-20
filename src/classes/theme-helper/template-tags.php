@@ -126,7 +126,7 @@ function tainacan_the_item_document_download_link($item_id = 0) {
 	if (!$link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url')
 		return;
 
-	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';
+	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '">' . __('Download', 'tainacan') . '</a>';
 }
 
 
@@ -137,7 +137,7 @@ function tainacan_the_item_attachment_download_link($attachment_id) {
 
 	$link = wp_get_attachment_url($attachment_id);
 
-	return '<a name="' . __('Download the item attachment', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';
+	return '<a name="' . __('Download the item attachment', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '">' . __('Download', 'tainacan') . '</a>';
 }
 
 function tainacan_the_document() {
@@ -212,7 +212,7 @@ function tainacan_get_the_collection_name() {
 	if ( $collection ) {
 		$name = $collection->get_name();
 	}
-	return apply_filters('tainacan-get-collection-name', $name, $collection);
+	return apply_filters('tainacan-get-collection-name', esc_html($name), $collection);
 }					
 
 /**
@@ -234,7 +234,7 @@ function tainacan_get_adjacent_items() {
  * @return void
  */
 function tainacan_the_collection_name() {
-	echo tainacan_get_the_collection_name();
+	echo esc_html(tainacan_get_the_collection_name());
 }
 
 /**
@@ -248,7 +248,7 @@ function tainacan_get_the_collection_description() {
 	if ( $collection ) {
 		$description = $collection->get_description();
 	}
-	return apply_filters('tainacan-get-collection-description', $description, $collection);
+	return apply_filters('tainacan-get-collection-description', esc_html($description), $collection);
 }
 
 /**
@@ -257,7 +257,7 @@ function tainacan_get_the_collection_description() {
  * @return void
  */
 function tainacan_the_collection_description() {
-	echo tainacan_get_the_collection_description();
+	echo esc_html(tainacan_get_the_collection_description());
 }
 
 /**
@@ -355,19 +355,19 @@ function tainacan_get_the_media_component(
 			<?php if ( $args['has_media_main'] ) : ?>
 				
 				<!-- Slider main container -->
-				<?php echo esc_html($args['before_main_div']) ?>
+				<?php echo wp_kses_post($args['before_main_div']) ?>
 				<div id="<?php echo esc_attr($args['media_main_id']) ?>" class="tainacan-media-component__swiper-main swiper-container <?php echo esc_attr($args['class_main_div']) ?>">
 					
 					<!-- Additional required wrapper -->
-					<?php echo esc_html($args['before_main_ul']) ?>
+					<?php echo wp_kses_post($args['before_main_ul']) ?>
 					<ul class="swiper-wrapper <?php echo esc_attr($args['class_main_ul']) ?>">
 						<?php foreach($media_items_main as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_main_li']) ?>">
-								<?php echo esc_html($media_item) ?>
+								<?php echo wp_kses_post($media_item) ?>
 							</li>
 						<?php }; ?>
 					</ul>
-					<?php echo esc_html($args['before_main_ul']) ?>
+					<?php echo wp_kses_post($args['before_main_ul']) ?>
 
 					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
@@ -380,25 +380,25 @@ function tainacan_get_the_media_component(
 						<div class="swiper-button-next swiper-navigation-next_<?php echo esc_attr($args['media_main_id']) ?>"></div>
 					<?php endif; ?>
 				</div>
-				<?php echo esc_html($args['after_main_div']) ?>
+				<?php echo wp_kses_post($args['after_main_div']) ?>
 			<?php endif; ?>
 
 			<?php if ( $args['has_media_thumbs'] ) : ?>
 
 				<!-- Slider thumbs container -->
-				<?php echo esc_html($args['before_thumbs_div']) ?>
+				<?php echo wp_kses_post($args['before_thumbs_div']) ?>
 				<div id="<?php echo esc_attr($args['media_thumbs_id']) ?>" class="tainacan-media-component__swiper-thumbs swiper-container <?php echo esc_attr($args['class_thumbs_div']) ?>">
 					
 					<!-- Additional required wrapper -->
-					<?php echo esc_html($args['before_thumbs_ul']) ?>
+					<?php echo wp_kses_post($args['before_thumbs_ul']) ?>
 					<ul class="swiper-wrapper <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 						<?php foreach($media_items_thumbs as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_thumbs_li']) ?>">
-								<?php echo esc_html($media_item) ?>
+								<?php echo wp_kses_post($media_item) ?>
 							</li>
 						<?php }; ?>
 					</ul>
-					<?php echo esc_html($args['before_thumbs_ul']) ?>
+					<?php echo wp_kses_post($args['before_thumbs_ul']) ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
@@ -415,7 +415,7 @@ function tainacan_get_the_media_component(
 					<div class="swiper-start-border"></div>
 					<div class="swiper-end-border"></div>
 				</div>
-				<?php echo esc_html($args['after_thumbs_div']) ?>
+				<?php echo wp_kses_post($args['after_thumbs_div']) ?>
 			<?php endif; ?>
 
 		</div>
@@ -475,7 +475,7 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 	ob_start();
 
 ?>
-	<?php echo esc_html($args['before_slide_content']) ?>
+	<?php echo wp_kses_post($args['before_slide_content']) ?>
 
 	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>">
 
@@ -515,11 +515,11 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 			</div>
 		<?php endif; ?>
 
-		<?php echo esc_html($args['after_slide_metadata']) ?>
+		<?php echo wp_kses_post($args['after_slide_metadata']) ?>
 
 	</div>
 
-	<?php echo esc_html($args['after_slide_content']) ?>
+	<?php echo wp_kses_post($args['after_slide_content']) ?>
 
 <?php
 
@@ -610,7 +610,7 @@ function tainacan_get_the_collection_url() {
 	if ( $collection ) {
 		$url = $collection->get_url();
 	}
-	return apply_filters('tainacan-get-collection-url', $url, $collection);
+	return apply_filters('tainacan-get-collection-url', esc_url($url), $collection);
 }					
 
 
@@ -620,7 +620,7 @@ function tainacan_get_the_collection_url() {
  * @return void
  */
 function tainacan_the_collection_url() {
-	echo tainacan_get_the_collection_url();
+	echo esc_url(tainacan_get_the_collection_url());
 }
 
 
@@ -744,7 +744,7 @@ function tainacan_get_the_term_name() {
 	if ( $term ) {
 		$name = $term->name;
 	}
-	return apply_filters('tainacan-get-term-name', $name, $term);
+	return apply_filters('tainacan-get-term-name', esc_html($name), $term);
 }
 
 /**
@@ -753,7 +753,7 @@ function tainacan_get_the_term_name() {
  * @return void
  */
 function tainacan_the_term_name() {
-	echo tainacan_get_the_term_name();
+	echo esc_html(tainacan_get_the_term_name());
 }
 
 /**
@@ -767,7 +767,7 @@ function tainacan_get_the_term_description() {
 	if ( $term ) {
 		$description = $term->description;
 	}
-	return apply_filters('tainacan-get-term-description', $description, $term);
+	return apply_filters('tainacan-get-term-description', esc_html($description), $term);
 }
 
 /**
@@ -776,7 +776,7 @@ function tainacan_get_the_term_description() {
  * @return void
  */
 function tainacan_the_term_description() {
-	echo tainacan_get_the_term_description();
+	echo esc_html(tainacan_get_the_term_description());
 }
 
 /**
@@ -881,7 +881,7 @@ function tainacan_the_item_edit_link( $text = null, $before = '', $after = '', $
 
 	$link = '<a class="' . esc_attr($class) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
 
-	echo esc_html($before . $link . $after);
+	echo wp_kses_post($before . $link . $after);
 }
 
 /**

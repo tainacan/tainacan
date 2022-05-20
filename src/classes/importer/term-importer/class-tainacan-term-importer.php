@@ -93,7 +93,7 @@ class Term_Importer extends Importer {
 									$taxonomies  = $Tainacan_Taxonomies->fetch( ['nopaging' => true], 'OBJECT' );
 									foreach( $taxonomies as $taxonomie) {
 										?>
-										<option value="<?php echo $taxonomie->get_db_identifier();?>"><?php echo $taxonomie->get_name() ?> </option>
+										<option value="<?php echo esc_attr($taxonomie->get_db_identifier());?>"><?php echo esc_attr($taxonomie->get_name()) ?> </option>
 										<?php
 									}
 								?>
