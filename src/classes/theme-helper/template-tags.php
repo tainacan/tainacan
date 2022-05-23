@@ -3,6 +3,13 @@
 use \Tainacan\Entities;
 use \Tainacan\Repositories;
 
+function tainacan_get_default_allowed_styles ( $styles ) {
+	$styles[] = 'display';
+	$styles[] = 'position';
+	$styles[] = 'visibility';
+	return $styles;
+}
+
 /**
  * To be used inside The Loop
  *
@@ -332,7 +339,9 @@ function tainacan_get_the_media_component(
 	$args['media_main_id'] = $media_id . '-main';
 	$args['media_thumbs_id'] = $media_id . '-thumbs';
 	$args['media_id'] = $media_id;
-	
+	$allowed_html = wp_kses_allowed_html('tainacan_post');
+	add_filter( 'safe_style_css', 'tainacan_get_default_allowed_styles');
+
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
 		// Modal lightbox layer for rendering photoswipe
 		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
@@ -363,7 +372,9 @@ function tainacan_get_the_media_component(
 					<ul class="swiper-wrapper <?php echo esc_attr($args['class_main_ul']) ?>">
 						<?php foreach($media_items_main as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_main_li']) ?>">
-								<?php echo wp_kses_post($media_item) ?>
+								<?php 
+									echo wp_kses($media_item, $allowed_html);
+								 ?>
 							</li>
 						<?php }; ?>
 					</ul>
@@ -394,7 +405,7 @@ function tainacan_get_the_media_component(
 					<ul class="swiper-wrapper <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 						<?php foreach($media_items_thumbs as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_thumbs_li']) ?>">
-								<?php echo wp_kses_post($media_item) ?>
+								<?php echo wp_kses($media_item, $allowed_html); ?>
 							</li>
 						<?php }; ?>
 					</ul>
@@ -420,8 +431,10 @@ function tainacan_get_the_media_component(
 
 		</div>
 
-	<?php endif; ?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
-	
+	<?php
+	endif;
+	remove_filter( 'safe_style_css', 'tainacan_get_default_allowed_styles');
+	?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
 <?php
 }
 
@@ -464,14 +477,7 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		'media_type' => ''
 	), $args);
 
-	$allowed_html = wp_kses_allowed_html('post');
-	$allowed_html['iframe'] = array(
-		'src'             => true,
-		'height'          => true,
-		'width'           => true,
-		'frameborder'     => true,
-		'allowfullscreen' => true,
-	);
+	$allowed_html =  wp_kses_allowed_html('tainacan_post');
 	ob_start();
 
 ?>
