@@ -960,7 +960,7 @@ class Theme_Helper {
 		$allowed_html = [
 			'div' => [
 				'data-module' => true,
-				"id" => true
+				'id' => true
 			]
 		];
 		foreach ($args as $key => $value) {
@@ -1106,17 +1106,16 @@ class Theme_Helper {
 		foreach($related_items as $collection_id => $related_group) {
 			
 			if ( isset($related_group['items']) && isset($related_group['total_items']) && $related_group['total_items'] ) {
-				$allowed_html = wp_kses_allowed_html( 'data' );
 				// Adds a heading with the collection name
 				$collection_heading = '';
 				if ( isset($related_group['collection_name']) ) {
-					$collection_heading = wp_kses('<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>', $allowed_html);
+					$collection_heading = wp_kses_post('<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>');
 				}
 				
 				// Adds a paragraph with the metadata name
 				$metadata_label = '';
 				if ( isset($related_group['metadata_name']) ) {
-					$metadata_label = wp_kses('<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>', $allowed_html);
+					$metadata_label = wp_kses_post('<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>');
 				}
 				
 				// Sets the carousel, from the items carousel template tag.

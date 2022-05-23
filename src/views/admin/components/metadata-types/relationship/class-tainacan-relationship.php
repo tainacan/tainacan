@@ -309,7 +309,13 @@ class Relationship extends Metadata_Type {
 					<div class="tainacan-relationship-metadatum-header">
 						<?php echo ($should_display_thumbnail ? $this->get_item_thumbnail($thumbnail_id, $item) : ''); ?>
 						<h4 class="label">
-							<?php echo esc_html($value_link); ?>
+							<?php
+							/**
+							 * Note to code reviewers: This lines doesn't need to be escaped.
+							 * The variable $value_link is escaped.
+							 */
+							echo $value_link;
+							?>
 						</h4>
 					</div>
 				<?php
