@@ -362,8 +362,6 @@ class Theme_Helper {
 	}
 
 	public function item_submission_shortcode($args) {
-		global $TAINACAN_BASE_URL;
-
 		$props = ' ';
 
 		// Passes arguments to custom props
@@ -377,7 +375,37 @@ class Theme_Helper {
 
 		wp_enqueue_media();
 
-		return "<div data-module='item-submission-form' id='tainacan-item-submission-form' $props ></div>";
+		// $allowed_html = wp_kses_allowed_html('post');
+		$allowed_html = [
+			'div' => [
+				'id' => true,
+				'data-module' => true,
+				'collection-id' => true,
+				'hide-file-modal-button' => true,
+				'hide-text-modal-button' => true,
+				'hide-link-modal-button' => true,
+				'hide-thumbnail-section' => true,
+				'hide-attachments-section' => true,
+				'show-allow-comments-section' => true,
+				'hide-collapses' => true,
+				'hide-help-buttons' => true,
+				'hide-metadata-types' => true,
+				'help-info-bellow-label' => true,
+				'document-section-label' => true,
+				'thumbnail-section-label' => true,
+				'attachments-section-label' => true,
+				'metadata-section-label' => true,
+				'sent-form-heading' => true,
+				'sent-form-message' => true,
+				'item-link-button-label' => true,
+				'show-item-link-button' => true,
+				'show-terms-agreement-checkbox' => true,
+				'terms-agreement-message' => true,
+				'enabled-metadata' => true,
+			]
+		];
+
+		return wp_kses("<div data-module='item-submission-form' id='tainacan-item-submission-form' $props ></div>", $allowed_html);
 	}
 
 	/**
@@ -489,7 +517,41 @@ class Theme_Helper {
 			}
 		}
 
-		return wp_kses_post("<div data-module='faceted-search' id='tainacan-items-page' $props ></div>");
+		// $allowed_html = wp_kses_allowed_html('post');
+		$allowed_html = [
+			'div' => [
+				'id' => true,
+				'data-module' => true,
+				'collection-id' => true,
+				'term-id' => true,
+				'taxonomy' => true,
+				'default-view-mode' => true,
+				'is-forced-view-mode' => true,
+				'enabled-view-modes' => true,
+				'default-order' => true,
+				'default-orderby' => true,
+				'hide-filters' => true,
+				'hide-hide-filters-button' => true,
+				'hide-search' => true,
+				'hide-advanced-search' => true,
+				'hide-displayed-metadata-button' => true,
+				'hide-sorting-area' => true,
+				'hide-items-thumbnail' => true,
+				'hide-sort-by-button' => true,
+				'hide-exposers-button' => true,
+				'hide-items-per-page-button' => true,
+				'hide-go-to-page-button' => true,
+				'hide-pagination-area' => true,
+				'default-items-per-page' => true,
+				'show-filters-button-inside-search-control' => true,
+				'start-with-filters-hidden' => true,
+				'filters-as-modal' => true,
+				'show-inline-view-mode-options' => true,
+				'show-fullscreen-with-view-modes' => true
+			]
+		];
+
+		return wp_kses("<div data-module='faceted-search' id='tainacan-items-page' $props ></div>", $allowed_html);
 	}
 	
 	function get_items_list_slug() {
@@ -895,14 +957,22 @@ class Theme_Helper {
 		unset($args['class_name']);
 		
 		// Builds parameters to the html div rendered by Vue
+		$allowed_html = [
+			'div' => [
+				'data-module' => true,
+				"id" => true
+			]
+		];
 		foreach ($args as $key => $value) {
 			if (is_bool($value))
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
-			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
+			$key_attr = str_replace('_', '-', $key);
+			$props .= "$key_attr='$value' ";
+			$allowed_html['div'][$key_attr] = true;
 		}
 		
-		return wp_kses_post( "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>" );
+		return wp_kses( "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>", $allowed_html);
 	} 
 
 	/**
@@ -971,14 +1041,23 @@ class Theme_Helper {
 		unset($args['class_name']);
 		
 		// Builds parameters to the html div rendered by Vue
+		$allowed_html = [
+			'div' => [
+				'data-module' => true,
+				"id" => true
+			]
+		];
+		// Builds parameters to the html div rendered by Vue
 		foreach ($args as $key => $value) {
 			if (is_bool($value))
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
-			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
+			$key_attr = str_replace('_', '-', $key);
+			$props .=  "$key_attr='$value' ";
+			$allowed_html['div'][$key_attr] = true;
 		}
 		
-		return "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>";
+		return wp_kses("<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>", $allowed_html);
 	} 
 
 	/**
@@ -1000,9 +1079,6 @@ class Theme_Helper {
 		 * @return string  The HTML div to be used for rendering the related items vue component
 	 */
 	public function get_tainacan_related_items_list($args = []) {
-		global $TAINACAN_BASE_URL;
-		global $TAINACAN_VERSION;
-		
 		$defaults = array(
 			'class_name' => '',
 			'collection_heading_class_name' => '',
@@ -1025,22 +1101,22 @@ class Theme_Helper {
 			return;
 
 		// Always pass the default class. We force passing the wp-block-tainacan-carousel-related-items because themes might have used it to style before the other layouts exist;
-		$output = '<div data-module="related-items-list" class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items wp-block-tainacan-related-items' . '">';
+		$output = '<div data-module="related-items-list" class="' .  esc_attr($args['class_name']) . ' wp-block-tainacan-carousel-related-items wp-block-tainacan-related-items' . '">';
 		
 		foreach($related_items as $collection_id => $related_group) {
 			
 			if ( isset($related_group['items']) && isset($related_group['total_items']) && $related_group['total_items'] ) {
-
+				$allowed_html = wp_kses_allowed_html( 'data' );
 				// Adds a heading with the collection name
 				$collection_heading = '';
 				if ( isset($related_group['collection_name']) ) {
-					$collection_heading = '<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>';
+					$collection_heading = wp_kses('<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>', $allowed_html);
 				}
 				
 				// Adds a paragraph with the metadata name
 				$metadata_label = '';
 				if ( isset($related_group['metadata_name']) ) {
-					$metadata_label = '<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>';
+					$metadata_label = wp_kses('<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>', $allowed_html);
 				}
 				
 				// Sets the carousel, from the items carousel template tag.
@@ -1069,6 +1145,10 @@ class Theme_Helper {
 				
 				$output .= '<div class="wp-block-group">
 					<div class="wp-block-group__inner-container">' .
+						/**
+						 * Note to code reviewers: This lines doesn't need to be escaped.
+						 * Functions get_tainacan_items_carousel() and get_tainacan_dynamic_items_list used here escape the return value.
+						 */
 						$collection_heading .
 						$metadata_label .
 						$items_list_div .
@@ -1076,7 +1156,7 @@ class Theme_Helper {
 							$related_group['total_items'] > 1 ?
 								'<div class="wp-block-buttons">
 									<div class="wp-block-button">
-										<a class="wp-block-button__link" href="/' . $related_group['collection_slug'] . '?metaquery[0][key]=' . $related_group['metadata_id'] . '&metaquery[0][value][0]=' . $item->get_ID() . '&metaquery[0][compare]=IN">
+										<a class="wp-block-button__link" href="/' . esc_url($related_group['collection_slug']) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
 											' . sprintf( __('View all %s related items', 'tainacan'), $related_group['total_items'] ) . '
 										</a>
 									</div>
@@ -1092,7 +1172,7 @@ class Theme_Helper {
 		
 		$output .= '</div>';
 		
-		return wp_kses_post( $output );
+		return $output;
 	}
 
 	/**
