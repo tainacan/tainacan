@@ -456,6 +456,7 @@
 
                 <filters-tags-list
                         class="filter-tags-list"
+                        :is-inside-modal="filtersAsModal"
                         />
 
                 <!-- JS-side hook for extra form content -->

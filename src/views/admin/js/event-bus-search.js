@@ -84,7 +84,7 @@ export default {
                             if (orderBy && orderBy != 'name') {
                                 
                                 // Previously was stored as a metadata object, now it is a orderby object
-                                if (orderBy.slug)
+                                if (orderBy.slug || typeof orderBy == 'string')
                                     orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
 
                                 if (orderBy.orderby)
