@@ -2,7 +2,7 @@
 Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah, eduardohumberto, ravipassos, jessicafpx, marinagiolo, omarceloavila, vnmedeiros, tainacan, r-guimaraes, suelanesilva, ccaio, alanargomes, ateneagarcia123, rodrigo0freire, clarandreozzi
 Tags: museums, libraries, archives, GLAM, collections, repository
 Requires at least: 5.0
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 5.6
 Stable tag: 0.18.10
 License: GPLv2 or later
