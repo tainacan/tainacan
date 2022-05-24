@@ -4,17 +4,17 @@ Plugin Name: Tainacan
 Plugin URI: https://tainacan.org/
 Description: Open source, powerful and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform.
 Author: Tainacan.org
-Version: 0.18.8
+Version: 0.18.10
 Requires at least: 5.0
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 5.6
-Stable tag: 0.18.8
+Stable tag: 0.18.10
 Text Domain: tainacan
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-const TAINACAN_VERSION = '0.18.8';
+const TAINACAN_VERSION = '0.18.10';
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);
@@ -123,3 +123,27 @@ function tainacan_add_admin_bar_items ( WP_Admin_Bar $admin_bar ) {
 	}
 }
 add_action( 'admin_bar_menu', 'tainacan_add_admin_bar_items', 500 );
+
+function wp_kses_tainacan($content, $context='tainacan_content') {
+	$allowed_html = wp_kses_allowed_html($context);
+	return wp_kses($content, $allowed_html);
+}
+
+add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
+	switch ( $context ) {
+		case 'tainacan_content':
+			$post_allowed_html = wp_kses_allowed_html('post');
+			return  array_merge(
+				$post_allowed_html, 
+				['iframe' => array(
+					'src'             => true,
+					'height'          => true,
+					'width'           => true,
+					'frameborder'     => true,
+					'allowfullscreen' => true,
+				)]
+			);
+		default:
+			return $allowedposttags;
+	}
+}, 10, 2);

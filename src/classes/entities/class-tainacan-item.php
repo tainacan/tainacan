@@ -562,7 +562,6 @@ class Item extends Entity {
 	 */
 	public function get_metadata_as_html($args = array()) {
 
-		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
 		$return = '';
@@ -650,6 +649,26 @@ class Item extends Entity {
 					if (is_integer($meta)) {
 						$post__not_in[] = $meta;
 					}
+					$return .= $before;
+					$return .= $args['before_title'] . $metadatum_object->get_name() . $args['after_title'];
+					$return .= $args['before_value'] . ( $item_meta->has_value() ? $item_meta->get_value_as_html() : $args['empty_value_message'] ) . $args['after_value'];
+					$return .= $args['after'];
+				}
+
+			}
+		}
+
+		$query_args = [];
+		$post__in = [];
+		$post__not_in = [];
+		$post__name_in = [];
+		if (is_array($args['metadata__in'])) {
+			$post__in[] = -1; // If metadata__in is an empty array, this forces empty result
+			foreach ($args['metadata__in'] as $meta) {
+				if (is_numeric($meta)) {
+					$post__in[] = $meta;
+				} elseif (is_string($meta)) {
+					$post__name_in[] = $meta;
 				}
 			}
 
@@ -692,8 +711,7 @@ class Item extends Entity {
 		}
 
 		// Returns the html content created by the function
-		return $return;
-
+		return wp_kses_tainacan($return);
 	}
 
 	/**
@@ -866,8 +884,7 @@ class Item extends Entity {
 
 		}
 
-		return apply_filters("tainacan-item-get-document-as-html", $output, $img_size, $this);
-
+		return apply_filters("tainacan-item-get-document-as-html", wp_kses_tainacan($output), $img_size, $this);
 	}
 
 	/**
@@ -900,8 +917,7 @@ class Item extends Entity {
 				$output .= $embed;
 			}
 		}
-	
-		return $output;
+		return wp_kses_tainacan($output);
 
 	}
 
@@ -935,7 +951,7 @@ class Item extends Entity {
 			}
 		}
 
-		return $link;
+		return esc_url($link);
 	}
 
 	/**
