@@ -3,12 +3,6 @@
 use \Tainacan\Entities;
 use \Tainacan\Repositories;
 
-function tainacan_get_default_allowed_styles ( $styles ) {
-	$styles[] = 'display';
-	$styles[] = 'position';
-	$styles[] = 'visibility';
-	return $styles;
-}
 
 /**
  * To be used inside The Loop
@@ -339,7 +333,15 @@ function tainacan_get_the_media_component(
 	$args['media_main_id'] = $media_id . '-main';
 	$args['media_thumbs_id'] = $media_id . '-thumbs';
 	$args['media_id'] = $media_id;
-	$allowed_html = wp_kses_allowed_html('tainacan_post');
+
+	if (!function_exists('tainacan_get_default_allowed_styles')) {
+		function tainacan_get_default_allowed_styles ( $styles ) {
+			$styles[] = 'display';
+			$styles[] = 'position';
+			$styles[] = 'visibility';
+			return $styles;
+		}
+	}
 	add_filter( 'safe_style_css', 'tainacan_get_default_allowed_styles');
 
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
@@ -373,7 +375,7 @@ function tainacan_get_the_media_component(
 						<?php foreach($media_items_main as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_main_li']) ?>">
 								<?php 
-									echo wp_kses($media_item, $allowed_html);
+									echo wp_kses_tainacan($media_item);
 								 ?>
 							</li>
 						<?php }; ?>
@@ -405,7 +407,7 @@ function tainacan_get_the_media_component(
 					<ul class="swiper-wrapper <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 						<?php foreach($media_items_thumbs as $media_item) { ?>
 							<li class="swiper-slide <?php echo esc_attr($args['class_thumbs_li']) ?>">
-								<?php echo wp_kses($media_item, $allowed_html); ?>
+								<?php echo wp_kses_tainacan($media_item); ?>
 							</li>
 						<?php }; ?>
 					</ul>
@@ -477,7 +479,6 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 		'media_type' => ''
 	), $args);
 
-	$allowed_html =  wp_kses_allowed_html('tainacan_post');
 	ob_start();
 
 ?>
@@ -486,30 +487,30 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>">
 
 		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
-			<?php echo wp_kses($args['media_content'], $allowed_html) ?>
+			<?php echo wp_kses_tainacan($args['media_content']) ?>
 		<?php else: ?>
 			<img src="<?php echo esc_url(tainacan_get_the_mime_type_icon($args['media_type'])) ?>" alt="<?php echo ( !empty($args['media_title']) ? esc_attr($args['media_title']) : __('File', 'tainacan') ) ?>" >
 		<?php endif; ?>
 		
-		<?php echo wp_kses($args['before_slide_metadata'], $allowed_html); ?>
+		<?php echo wp_kses_post($args['before_slide_metadata']); ?>
 
 		<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) : ?>
-			<div class="swiper-slide-metadata  <?php echo wp_kses($args['class_slide_metadata'], $allowed_html); ?>">
+			<div class="swiper-slide-metadata  <?php echo wp_kses_post($args['class_slide_metadata']); ?>">
 				<?php if ( !empty($args['media_caption']) ) :?>
 					<span class="swiper-slide-metadata__caption">
-						<?php echo wp_kses($args['media_caption'], $allowed_html); ?>
+						<?php echo wp_kses_post($args['media_caption']); ?>
 						<br>
 					</span>
 				<?php endif; ?>	
 				<?php if ( !empty($args['media_title']) ) :?>
 					<span class="swiper-slide-metadata__name">
-						<?php echo wp_kses($args['media_title'], $allowed_html); ?>
+						<?php echo wp_kses_post($args['media_title']); ?>
 					</span>
 				<?php endif; ?>
 				<br>
 				<?php if ( !empty($args['media_description']) ) :?>
 					<span class="swiper-slide-metadata__description">
-						<?php echo wp_kses($args['media_description'], $allowed_html); ?>
+						<?php echo wp_kses_post($args['media_description']); ?>
 					</span>
 				<?php endif; ?>
 			</div>
@@ -517,7 +518,7 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 
 		<?php if ( !empty($args['media_content_full']) ) : ?>
 			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;">
-				<?php echo wp_kses($args['media_content_full'], $allowed_html) ?>
+				<?php echo wp_kses_tainacan($args['media_content_full']) ?>
 			</div>
 		<?php endif; ?>
 

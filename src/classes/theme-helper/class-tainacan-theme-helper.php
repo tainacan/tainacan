@@ -375,7 +375,6 @@ class Theme_Helper {
 
 		wp_enqueue_media();
 
-		// $allowed_html = wp_kses_allowed_html('post');
 		$allowed_html = [
 			'div' => [
 				'id' => true,
@@ -517,7 +516,6 @@ class Theme_Helper {
 			}
 		}
 
-		// $allowed_html = wp_kses_allowed_html('post');
 		$allowed_html = [
 			'div' => [
 				'id' => true,

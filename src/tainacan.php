@@ -124,20 +124,26 @@ function tainacan_add_admin_bar_items ( WP_Admin_Bar $admin_bar ) {
 }
 add_action( 'admin_bar_menu', 'tainacan_add_admin_bar_items', 500 );
 
+function wp_kses_tainacan($content, $context='tainacan_content') {
+	$allowed_html = wp_kses_allowed_html($context);
+	return wp_kses($content, $allowed_html);
+}
 
 add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
-	if($context == 'tainacan_post') {
-		$post_allowed_html = wp_kses_allowed_html('post');
-		return  array_merge(
-			$post_allowed_html, 
-			['iframe' => array(
-				'src'             => true,
-				'height'          => true,
-				'width'           => true,
-				'frameborder'     => true,
-				'allowfullscreen' => true,
-			)]
-		);
+	switch ( $context ) {
+		case 'tainacan_content':
+			$post_allowed_html = wp_kses_allowed_html('post');
+			return  array_merge(
+				$post_allowed_html, 
+				['iframe' => array(
+					'src'             => true,
+					'height'          => true,
+					'width'           => true,
+					'frameborder'     => true,
+					'allowfullscreen' => true,
+				)]
+			);
+		default:
+			return $allowedposttags;
 	}
-	return $allowedposttags;
 }, 10, 2);

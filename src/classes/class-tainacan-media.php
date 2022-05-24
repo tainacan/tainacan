@@ -338,7 +338,7 @@ class Media {
 
 		}
 
-		echo wp_kses_post($output);
+		echo $output;
 
 		exit();
 
