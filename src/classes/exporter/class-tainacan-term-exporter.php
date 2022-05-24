@@ -98,7 +98,7 @@ class Term_Exporter extends Exporter {
 					</div>
 				</span>
             <div class="control is-clearfix">
-                <input class="input" type="text" name="delimiter" value="<?php echo $this->get_option('delimiter'); ?>">
+                <input class="input" type="text" name="delimiter" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
             </div>
         </div>
 
@@ -127,7 +127,7 @@ class Term_Exporter extends Exporter {
                         $taxonomies  = $Tainacan_Taxonomies->fetch( ['nopaging' => true], 'OBJECT' );
                         foreach( $taxonomies as $taxonomie) {
                             ?>
-                            <option value="<?php echo $taxonomie->get_db_identifier();?>"><?php echo $taxonomie->get_name() ?> </option>
+                            <option value="<?php echo esc_attr($taxonomie->get_db_identifier());?>"><?php echo esc_attr($taxonomie->get_name()); ?> </option>
                             <?php
                         }
                         ?>

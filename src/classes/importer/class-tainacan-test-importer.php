@@ -125,7 +125,7 @@ class Test_Importer extends Importer {
 							</div> 
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="number" name="items_col_1" value="<?php echo $this->get_option('items_col_1'); ?>">
+						<input class="input" type="number" name="items_col_1" value="<?php echo esc_attr($this->get_option('items_col_1')); ?>">
 					</div>
 				</div>
 			</div>
@@ -149,7 +149,7 @@ class Test_Importer extends Importer {
 							</div> 
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="number" name="additonal_metadata" value="<?php echo $this->get_option('additonal_metadata'); ?>">
+						<input class="input" type="number" name="additonal_metadata" value="<?php echo esc_attr($this->get_option('additonal_metadata')); ?>">
 					</div>
 				</div>
 			</div>
@@ -204,7 +204,7 @@ class Test_Importer extends Importer {
 							</div> 
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="number" name="items_col_2" value="<?php echo $this->get_option('items_col_2'); ?>">
+						<input class="input" type="number" name="items_col_2" value="<?php echo esc_attr($this->get_option('items_col_2')); ?>">
 					</div>
 				</div>
 			</div>
@@ -266,7 +266,7 @@ class Test_Importer extends Importer {
 							</div> 
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="text" name="keyword_images" value="<?php echo $this->get_option('keyword_images'); ?>">
+						<input class="input" type="text" name="keyword_images" value="<?php echo esc_attr($this->get_option('keyword_images')); ?>">
 					</div>
 				</div>
 			</div>
@@ -290,7 +290,7 @@ class Test_Importer extends Importer {
 							</div> 
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="number" name="horizontal_image_size" value="<?php echo $this->get_option('horizontal_image_size'); ?>">
+						<input class="input" type="number" name="horizontal_image_size" value="<?php echo esc_attr($this->get_option('horizontal_image_size')); ?>">
 					</div>
 				</div>
 
@@ -312,7 +312,7 @@ class Test_Importer extends Importer {
 							</div> 
 					</span>
 					<div class="control is-clearfix">
-						<input class="input" type="number" name="vertical_image_size" value="<?php echo $this->get_option('vertical_image_size'); ?>">
+						<input class="input" type="number" name="vertical_image_size" value="<?php echo esc_attr($this->get_option('vertical_image_size')); ?>">
 					</div>
 				</div>
 			</div>
@@ -649,8 +649,10 @@ class Test_Importer extends Importer {
 			$keyword = ( $this->get_option('keyword_images') ) ? $this->get_option('keyword_images') : '';
 
 			$url = "https://loremflickr.com/$horizontal_size/$vertical_size/$keyword";
+			$response = wp_remote_get( $url );
+			$content = wp_remote_retrieve_body( $response );
 			
-			$id = $TainacanMedia->insert_attachment_from_blob(file_get_contents($url), time() . '.jpg', $inserted_item->get_id());
+			$id = $TainacanMedia->insert_attachment_from_blob($content, time() . '.jpg', $inserted_item->get_id());
 
 			if(!$id){
 				$this->add_error_log('Error in imported URL ' . $url);

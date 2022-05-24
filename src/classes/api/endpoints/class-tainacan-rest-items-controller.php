@@ -1383,7 +1383,12 @@ class REST_Items_Controller extends REST_Controller {
 				], 400);
 			}
 			$secret_key = get_option("tnc_option_recaptch_secret_key");
-			$response = json_decode(file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=".$captcha_data."&remoteip=".$_SERVER['REMOTE_ADDR']));
+			$api_url = "https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=".$captcha_data."&remoteip=".$_SERVER['REMOTE_ADDR'];
+
+			$response = wp_remote_get( $api_url );
+			$body = wp_remote_retrieve_body( $response );
+			$response = json_decode($body);
+
 			if ($response->success) {
 				return true;
 			} else {
