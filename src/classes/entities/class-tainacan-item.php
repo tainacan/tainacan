@@ -564,7 +564,6 @@ class Item extends Entity {
 	 */
 	public function get_metadata_as_html($args = array()) {
 
-		$Tainacan_Item_Metadata = \Tainacan\Repositories\Item_Metadata::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 
 		$return = '';
@@ -633,7 +632,7 @@ class Item extends Entity {
 
 			}
 
-			return $return;
+			return wp_kses_tainacan($return);
 
 		}
 
@@ -702,7 +701,7 @@ class Item extends Entity {
 			}
 		}
 
-		return $return;
+		return wp_kses_tainacan($return);
 
 	}
 
@@ -772,8 +771,7 @@ class Item extends Entity {
 
 		}
 
-		return apply_filters("tainacan-item-get-document-as-html", $output, $img_size, $this);
-
+		return apply_filters("tainacan-item-get-document-as-html", wp_kses_tainacan($output), $img_size, $this);
 	}
 
 	/**
@@ -806,8 +804,7 @@ class Item extends Entity {
 				$output .= $embed;
 			}
 		}
-	
-		return $output;
+		return wp_kses_tainacan($output);
 
 	}
 
@@ -841,7 +838,7 @@ class Item extends Entity {
 			}
 		}
 
-		return $link;
+		return esc_url($link);
 	}
 
 	/**

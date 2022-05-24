@@ -117,12 +117,12 @@ class Private_Files {
 
 		// regular ajax uploads via Admin Panel will send post_id
 		if ( isset($_REQUEST['post_id']) && $_REQUEST['post_id'] ) {
-			$post_id = $_REQUEST['post_id'];
+			$post_id = sanitize_text_field($_REQUEST['post_id']);
 		}
 
 		// API requests to media endpoint will send post
 		if ( false === $post_id && isset($_REQUEST['post']) && is_numeric($_REQUEST['post']) ) {
-			$post_id = $_REQUEST['post'];
+			$post_id = sanitize_text_field($_REQUEST['post']);
 		}
 
 		// tainacan internals, scripts and tests, will set this global
@@ -191,7 +191,7 @@ class Private_Files {
 			$upload_dir = wp_get_upload_dir();
 			$base_upload_url = preg_replace('/^https?:\/\//', '', $upload_dir['baseurl']);
 
-			$requested_uri = $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+			$requested_uri = sanitize_text_field($_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
 
 			if ( strpos($requested_uri, $base_upload_url) === false ) {
 				// Not uploads

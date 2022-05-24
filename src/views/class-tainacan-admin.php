@@ -403,9 +403,9 @@ class Admin {
 
 	function ajax_sample_permalink(){
 
-		$id = $_POST['post_id'];
-		$title = $_POST['new_title'];
-		$name = $_POST['new_slug'];
+		$id = sanitize_text_field($_POST['post_id']);
+		$title = sanitize_text_field($_POST['new_title']);
+		$name = sanitize_text_field($_POST['new_slug']);
 
 		$post = get_post( $id );
 		if ( ! $post )
