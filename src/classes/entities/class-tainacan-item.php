@@ -1263,6 +1263,7 @@ class Item extends Entity {
 			$return .= $before_metadata_list;
 
 			// Renders the section metadata list, using Items' get_metadata_as_html()
+			// Note that this is already escaped in the calling function
 			if ($has_metadata_list) {
 				foreach( $metadata_section_metadata_list as $metadata_object) {
 					$return .= $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object ]) );
