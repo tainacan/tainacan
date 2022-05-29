@@ -649,29 +649,10 @@ class Item extends Entity {
 					if (is_integer($meta)) {
 						$post__not_in[] = $meta;
 					}
-					$return .= $before;
-					$return .= $args['before_title'] . $metadatum_object->get_name() . $args['after_title'];
-					$return .= $args['before_value'] . ( $item_meta->has_value() ? $item_meta->get_value_as_html() : $args['empty_value_message'] ) . $args['after_value'];
-					$return .= $args['after'];
 				}
 
 			}
-		}
-
-		$query_args = [];
-		$post__in = [];
-		$post__not_in = [];
-		$post__name_in = [];
-		if (is_array($args['metadata__in'])) {
-			$post__in[] = -1; // If metadata__in is an empty array, this forces empty result
-			foreach ($args['metadata__in'] as $meta) {
-				if (is_numeric($meta)) {
-					$post__in[] = $meta;
-				} elseif (is_string($meta)) {
-					$post__name_in[] = $meta;
-				}
-			}
-
+			
 			if (sizeof($post__in) > 0) {
 				$query_args['post__in'] = $post__in;
 			}
@@ -681,6 +662,7 @@ class Item extends Entity {
 			if (sizeof($post__name_in) > 0) {
 				$query_args['post__name_in'] = $post__name_in;
 			}
+	
 
 			// Get the item metadata objects from the item repository
 			$item_metadata = $this->get_metadata($query_args);
