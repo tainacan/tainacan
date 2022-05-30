@@ -773,11 +773,19 @@ class Item extends Entity {
 			// Renders the metadatum opener
 			$return .= $before;
 
-			// Renders metadatum name
-			$return .= $args['before_title'] . $item_metadatum->get_metadatum()->get_name() . $args['after_title'];
+			// Renders the metadatum name
+			$metadatum_title_before = $args['before_title'];
+			$metadatum_title_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-title', $metadatum_title_before, $item_metadatum );
+			$metadatum_title_after = $args['after_title'];
+			$metadatum_title_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-title', $metadatum_title_after, $item_metadatum );
+			$return .= $metadatum_title_before . $item_metadatum->get_metadatum()->get_name() . $metadatum_title_after;
 			
 			// Renders the metadatum value
-			$return .= $args['before_value'] . ( $item_metadatum->has_value() ? $item_metadatum->get_value_as_html() : $args['empty_value_message'] ) . $args['after_value'];
+			$metadatum_value_before = $args['before_value'];
+			$metadatum_value_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-value', $metadatum_value_before, $item_metadatum );
+			$metadatum_value_after = $args['after_value'];
+			$metadatum_value_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-value', $metadatum_value_after, $item_metadatum );
+			$return .= $metadatum_value_before . ( $item_metadatum->has_value() ? $item_metadatum->get_value_as_html() : $args['empty_value_message'] ) . $metadatum_value_after;
 
 			$after = $args['after'];
 
