@@ -37,6 +37,16 @@ add_action( 'after_setup_theme', function() {
 	add_image_size( 'tainacan-medium-full', 205, 1500 );
 } );
 
+add_filter( 'image_size_names_choose', function ( $sizes ) {
+    return array_merge( $sizes, array(
+        'tainacan-small' 		=> __( 'Tainacan small (40x40 - cropped)', 'tainacan' ),
+		'tainacan-medium' 		=> __( 'Tainacan medium (275x275 - cropped)', 'tainacan' ),
+		'tainacan-medium-full'	=> __( 'Tainacan medium full (205x1500 - not cropped)', 'tainacan' )
+    ) );
+} );
+ 
+
+
 add_action('init', ['Tainacan\Migrations', 'run_migrations']);
 
 //https://core.trac.wordpress.org/ticket/23022
