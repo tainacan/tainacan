@@ -8,6 +8,9 @@ export default [
                 attributes.imageSize = 'tainacan-medium';
             else
                 attributes.imageSize = 'tainacan-medium-full';
+
+            if ( isNaN(attributes.maxItemsNumber) )
+                attributes.maxItemsNumber = 12;
                 
             return attributes;
         },

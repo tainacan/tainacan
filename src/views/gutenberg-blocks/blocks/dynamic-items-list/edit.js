@@ -281,7 +281,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 if (maxItemsNumber != undefined && maxItemsNumber > 0)
                     queryObject.perpage = maxItemsNumber;
                 else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                    setAttributes({ maxItemsNumber: queryObject.perpage });
+                    setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
                 else {
                     queryObject.perpage = 12;
                     setAttributes({ maxItemsNumber: 12 });
