@@ -62,6 +62,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxColumnsCount = 5;
         setAttributes({ maxColumnsCount: maxColumnsCount });
     }
+    if (maxItemsNumber === undefined) {
+        maxItemsNumber = 12;
+        setAttributes({ maxItemsNumber: maxItemsNumber });
+    }
     if (loadStrategy === undefined) {
         loadStrategy = 'search';
         setAttributes({ loadStrategy: loadStrategy });
