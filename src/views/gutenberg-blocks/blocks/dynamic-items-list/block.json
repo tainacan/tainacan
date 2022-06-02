@@ -56,31 +56,31 @@
         },
         "maxItemsNumber": {
             "type": "number",
-            "value": 12
+            "default": 12
         },
         "isLoading": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "isLoadingCollection": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "showSearchBar": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "showCollectionHeader": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "showCollectionLabel": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "collection": {
             "type": "object",
-            "value": {}
+            "default": {}
         },
         "searchString": {
             "type": "string",
@@ -92,7 +92,7 @@
         },
         "loadStrategy": {
             "type": "string",
-            "value": "search"
+            "default": "search"
         },
         "order": {
             "type": "string",
@@ -112,15 +112,15 @@
         },
         "mosaicHeight": {
             "type": "number",
-            "value": 280
+            "default": 280
         },
         "mosaicGridColumns": {
             "type": "number",
-            "value": 3
+            "default": 3
         },
         "mosaicGridRows": {
             "type": "number",
-            "value": 3
+            "default": 3
         },
         "sampleBackgroundImage": {
             "type": "string",
@@ -143,7 +143,7 @@
         },
         "imageSize": {
             "type": "string",
-            "value": "tainacan-medium"
+            "default": "tainacan-medium"
         }
     },
     "supports": {

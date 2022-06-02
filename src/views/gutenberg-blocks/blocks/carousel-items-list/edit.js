@@ -389,7 +389,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             help={ maxItemsPerScreen <= 4 ? __('Warning: with such a small number of items per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }
                                             value={ maxItemsPerScreen ? maxItemsPerScreen : 7 }
                                             onChange={ ( aMaxItemsPerScreen ) => {
-                                                maxItemsPerScreen = aMaxItemsPerScreen;
+                                                maxItemsPerScreen = Number(aMaxItemsPerScreen);
                                                 setAttributes( { maxItemsPerScreen: aMaxItemsPerScreen } );
                                                 setContent(); 
                                             }}
@@ -412,7 +412,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     label={ __('Space between each item', 'tainacan') }
                                     value={ !isNaN(spaceBetweenItems) ? spaceBetweenItems : 32 }
                                     onChange={ ( aSpaceBetweenItems ) => {
-                                        spaceBetweenItems = aSpaceBetweenItems;
+                                        spaceBetweenItems = Number(aSpaceBetweenItems);
                                         setAttributes( { spaceBetweenItems: aSpaceBetweenItems } );
                                     }}
                                     min={ 0 }
@@ -501,7 +501,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     label={ __('Space around the carousel', 'tainacan') }
                                     value={ !isNaN(spaceAroundCarousel) ? spaceAroundCarousel : 50 }
                                     onChange={ ( aSpaceAroundCarousel ) => {
-                                        spaceAroundCarousel = aSpaceAroundCarousel;
+                                        spaceAroundCarousel = Number(aSpaceAroundCarousel);
                                         setAttributes( { spaceAroundCarousel: aSpaceAroundCarousel } );
                                     }}
                                     min={ 0 }
@@ -520,7 +520,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     label={__('Maximum number of items to load', 'tainacan')}
                                     value={ maxItemsNumber }
                                     onChange={ ( aMaxItemsNumber ) => {
-                                        maxItemsNumber = aMaxItemsNumber;
+                                        maxItemsNumber = Number(aMaxItemsNumber);
                                         setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
                                         setContent();
                                     }}

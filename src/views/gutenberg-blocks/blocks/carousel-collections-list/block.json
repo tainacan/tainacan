@@ -50,63 +50,63 @@
         },
         "maxCollectionsNumber": {
             "type": "number",
-            "value": false
+            "default": false
         },
         "maxCollectionsPerScreen": {
             "type": "number",
-            "value": 6
+            "default": 6
         },
         "spaceBetweenCollections": {
             "type": "number",
-            "value": 32
+            "default": 32
         },
         "spaceAroundCarousel": {
             "type": "number",
-            "value": 50
+            "default": 50
         },
         "isLoading": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "isLoadingCollection": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "arrowsPosition": {
             "type": "string",
-            "value": "around"
+            "default": "around"
         },
         "largeArrows": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "arrowsStyle": {
             "type": "string",
-            "value": "type-1"
+            "default": "type-1"
         },
         "autoPlay": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "autoPlaySpeed": {
             "type": "number",
-            "value": 3
+            "default": 3
         },
         "loopSlides": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "hideName": {
             "type": "boolean",
-            "value": true
+            "default": true
         },
         "showCollectionThumbnail": {
             "type": "boolean",
-            "value": false
+            "default": false
         },
         "imageSize": {
             "type": "string",
-            "value": "tainacan-medium"
+            "default": "tainacan-medium"
         },
         "blockId": {
             "type": "string",

@@ -260,7 +260,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     help={ (showCollectionThumbnail && maxCollectionsPerScreen <= 4) ? __('Warning: with such a small number of collections per slide, the slide item is larger, thus you must also set a larger image size.', 'tainacan') : null }
                                     value={ maxCollectionsPerScreen ? maxCollectionsPerScreen : 6 }
                                     onChange={ ( aMaxCollectionsPerScreen ) => {
-                                        maxCollectionsPerScreen = aMaxCollectionsPerScreen;
+                                        maxCollectionsPerScreen = Number(aMaxCollectionsPerScreen);
                                         setAttributes( { maxCollectionsPerScreen: aMaxCollectionsPerScreen } );
                                         setContent();
                                     }}
@@ -281,7 +281,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     label={ __('Space between each collection', 'tainacan') }
                                     value={ !isNaN(spaceBetweenCollections) ? spaceBetweenCollections : 32 }
                                     onChange={ ( aSpaceBetweenCollections ) => {
-                                        spaceBetweenCollections = aSpaceBetweenCollections;
+                                        spaceBetweenCollections = Number(aSpaceBetweenCollections);
                                         setAttributes( { spaceBetweenCollections: aSpaceBetweenCollections } );
                                     }}
                                     min={ 0 }
@@ -324,7 +324,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         label={__('Seconds before transitioning to next', 'tainacan')}
                                         value={ autoPlaySpeed ? autoPlaySpeed : 3 }
                                         onChange={ ( aAutoPlaySpeed ) => {
-                                            autoPlaySpeed = aAutoPlaySpeed;
+                                            autoPlaySpeed = Number(aAutoPlaySpeed);
                                             setAttributes( { autoPlaySpeed: aAutoPlaySpeed } )
                                         }}
                                         min={ 1 }
@@ -369,7 +369,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     label={ __('Space around the carousel', 'tainacan') }
                                     value={ !isNaN(spaceAroundCarousel) ? spaceAroundCarousel : 50 }
                                     onChange={ ( aSpaceAroundCarousel ) => {
-                                        spaceAroundCarousel = aSpaceAroundCarousel;
+                                        spaceAroundCarousel = Number(aSpaceAroundCarousel);
                                         setAttributes( { spaceAroundCarousel: aSpaceAroundCarousel } );
                                     }}
                                     min={ 0 }
