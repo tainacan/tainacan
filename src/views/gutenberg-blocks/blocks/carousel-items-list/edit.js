@@ -2,8 +2,11 @@ const { __ } = wp.i18n;
 
 const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
+const { useSelect } = wp.data;
+
+import { map, pick } from 'lodash';
 import CarouselItemsModal from './dynamic-and-carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
@@ -38,7 +41,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         autoPlaySpeed,
         loopSlides,
         hideTitle,
-        cropImagesToSquare,
+        imageSize,
         showCollectionHeader,
         showCollectionLabel,
         isLoadingCollection,
@@ -59,16 +62,37 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxItemsPerScreen = 7;
         setAttributes({ maxItemsPerScreen: maxItemsPerScreen });
     }
-    if (cropImagesToSquare === undefined) {  
-        cropImagesToSquare = true;    
-        setAttributes({ cropImagesToSquare: cropImagesToSquare });
+    if (maxItemsNumber === undefined) {
+        maxItemsNumber = 12;
+        setAttributes({ maxItemsNumber: maxItemsNumber });
     }
+    if (imageSize === undefined) {
+        imageSize = 'tainacan-medium';
+        setAttributes({ imageSize: imageSize });
+    }
+
+    // Get available image sizes
+    const {	imageSizes } = useSelect(
+		( select ) => {
+			const {	getSettings	} = select( store );
+
+			const settings = pick( getSettings(), [
+                'imageSizes'
+			] );
+            return settings
+        },
+		[ clientId ]
+	);
+    const imageSizeOptions = map(
+		imageSizes,
+		( { name, slug } ) => ( { value: slug, label: name } )
+	);
 
     function prepareItem(item) {
         return (
             <li 
                 key={ item.id }
-                className={ 'swiper-slide item-list-item ' + (maxItemsPerScreen ? ' max-itens-per-screen-' + maxItemsPerScreen : '') + (cropImagesToSquare ? ' is-forced-square' : '') }>   
+                className={ 'swiper-slide item-list-item ' + (maxItemsPerScreen ? ' max-itens-per-screen-' + maxItemsPerScreen : '') + (['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 ? ' is-forced-square' : '') }>   
                 { loadStrategy == 'selection' ?
                     ( tainacan_blocks.wp_version < '5.4' ?
                         <IconButton
@@ -88,8 +112,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     href={ item.url }>
                     <div class="items-list-item--image-wrap">
                         <img
-                            src={ thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
-                            srcSet={ thumbHelper.getSrcSet(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
+                            src={ thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype']) }
+                            srcSet={ thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype']) }
                             alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
                     </div>
                     { !hideTitle ? <span>{ item.title ? item.title : '' }</span> : null }
@@ -155,7 +179,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             if (maxItemsNumber != undefined && maxItemsNumber > 0)
                 queryObject.perpage = maxItemsNumber;
             else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                setAttributes({ maxItemsNumber: queryObject.perpage });
+                setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
             else {
                 queryObject.perpage = 12;
                 setAttributes({ maxItemsNumber: 12 });
@@ -374,16 +398,15 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                         />
                                 : null
                             }
-                            <ToggleControl
-                                    label={__('Crop Images', 'tainacan')}
-                                    help={ cropImagesToSquare ? __('Do not use square cropeed version of the item thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the item thumbnail.', 'tainacan') }
-                                    checked={ cropImagesToSquare }
-                                    onChange={ ( isChecked ) => {
-                                            cropImagesToSquare = isChecked;
-                                            setAttributes({ cropImagesToSquare: cropImagesToSquare });
-                                            setContent();
-                                        } 
-                                    }
+                            <SelectControl
+                                    label={__('Image size', 'tainacan')}
+                                    value={ imageSize }
+                                    options={ imageSizeOptions }
+                                    onChange={ ( anImageSize ) => { 
+                                        imageSize = anImageSize;
+                                        setAttributes({ imageSize: imageSize });
+                                        setContent();
+                                    }}
                                 />
                             <RangeControl
                                     label={ __('Space between each item', 'tainacan') }

@@ -2,8 +2,11 @@ const { __ } = wp.i18n;
 
 const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
+const { useSelect } = wp.data;
+
+import { map, pick } from 'lodash';
 import DynamicItemsModal from '../carousel-items-list/dynamic-and-carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
@@ -44,7 +47,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         sampleBackgroundImage,
         mosaicDensity,
         maxColumnsCount,
-        cropImagesToSquare
+        imageSize
     } = attributes;
 
     // Gets blocks props from hook
@@ -59,15 +62,56 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxColumnsCount = 5;
         setAttributes({ maxColumnsCount: maxColumnsCount });
     }
-    if (cropImagesToSquare === undefined) {  
-        cropImagesToSquare = true;    
-        setAttributes({ cropImagesToSquare: cropImagesToSquare });
+    if (maxItemsNumber === undefined) {
+        maxItemsNumber = 12;
+        setAttributes({ maxItemsNumber: maxItemsNumber });
     }
     if (loadStrategy === undefined) {
         loadStrategy = 'search';
         setAttributes({ loadStrategy: loadStrategy });
     }
-    
+    if (imageSize === undefined) {
+        imageSize = 'tainacan-medium';
+        setAttributes({ imageSize: imageSize });
+    }
+
+    const layoutControls = [
+        {
+            icon: 'grid-view',
+            title: __( 'Grid View', 'tainacan' ),
+            onClick: () => updateLayout('grid'),
+            isActive: layout === 'grid',
+        },
+        {
+            icon: 'list-view',
+            title: __( 'List View', 'tainacan' ),
+            onClick: () => updateLayout('list'),
+            isActive: layout === 'list',
+        },
+        {
+            icon: 'layout',
+            title: __( 'Mosaic View', 'tainacan' ),
+            onClick: () => updateLayout('mosaic'),
+            isActive: layout === 'mosaic',
+        }
+    ];
+
+    // Get available image sizes
+    const {	imageSizes } = useSelect(
+		( select ) => {
+			const {	getSettings	} = select( store );
+
+			const settings = pick( getSettings(), [
+                'imageSizes'
+			] );
+            return settings
+        },
+		[ clientId ]
+	);
+    const imageSizeOptions = map(
+		imageSizes,
+		( { name, slug } ) => ( { value: slug, label: name } )
+	);
     function prepareItem(item) {
         return (
             <li 
@@ -98,8 +142,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     onClick={ (event) => event.preventDefault() }
                     className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                     <img
-                        src={ thumbHelper.getSrc(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
-                        srcSet={ thumbHelper.getSrcSet(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
+                        src={ thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype']) }
+                        srcSet={ thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype']) }
                         alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
                     { item.title ?
                         <span>{ item.title }</span>
@@ -246,7 +290,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 if (maxItemsNumber != undefined && maxItemsNumber > 0)
                     queryObject.perpage = maxItemsNumber;
                 else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                    setAttributes({ maxItemsNumber: queryObject.perpage });
+                    setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
                 else {
                     queryObject.perpage = 12;
                     setAttributes({ maxItemsNumber: 12 });
@@ -468,27 +512,6 @@ export default function({ attributes, setAttributes, className, isSelected, clie
     // Executed only on the first load of page
     if(content && content.length && content[0].type)
         setContent();
-
-    const layoutControls = [
-        {
-            icon: 'grid-view',
-            title: __( 'Grid View', 'tainacan' ),
-            onClick: () => updateLayout('grid'),
-            isActive: layout === 'grid',
-        },
-        {
-            icon: 'list-view',
-            title: __( 'List View', 'tainacan' ),
-            onClick: () => updateLayout('list'),
-            isActive: layout === 'list',
-        },
-        {
-            icon: 'layout',
-            title: __( 'Mosaic View', 'tainacan' ),
-            onClick: () => updateLayout('mosaic'),
-            isActive: layout === 'mosaic',
-        }
-    ];
     
     return content == 'preview' ? 
         <div className={className}>
@@ -701,19 +724,18 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             min={ 1 }
                                             max={ 7 }
                                         />
-                                    <ToggleControl
-                                            label={__('Crop Images', 'tainacan')}
-                                            help={ cropImagesToSquare ? __('Do not use square cropeed version of the item thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the item thumbnail.', 'tainacan') }
-                                            checked={ cropImagesToSquare }
-                                            onChange={ ( isChecked ) => {
-                                                    cropImagesToSquare = isChecked;
-                                                    setAttributes({ cropImagesToSquare: cropImagesToSquare });
-                                                    setContent();
-                                                } 
-                                            }
-                                        />
                                 </div>
                             : null }
+                            <SelectControl
+                                    label={__('Image size', 'tainacan')}
+                                    value={ imageSize }
+                                    options={ imageSizeOptions }
+                                    onChange={ ( anImageSize ) => { 
+                                        imageSize = anImageSize;
+                                        setAttributes({ imageSize: imageSize });
+                                        setContent();
+                                    }}
+                                />
                         </div>
                     </PanelBody>
                     { layout == 'mosaic' ?
