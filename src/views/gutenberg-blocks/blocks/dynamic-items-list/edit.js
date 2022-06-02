@@ -67,6 +67,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         loadStrategy = 'search';
         setAttributes({ loadStrategy: loadStrategy });
     }
+    if (mosaicGridRows === undefined) {
+        mosaicGridRows = 3;
+        setAttributes({ mosaicGridRows: mosaicGridRows });
+    }
     
     function prepareItem(item) {
         return (
