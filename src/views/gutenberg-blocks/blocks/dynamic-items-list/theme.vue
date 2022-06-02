@@ -14,13 +14,13 @@
                 <div
                         :style="{
                             backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
-                            paddingRight: collection && collection.thumbnail && (collection.thumbnail[imageSize] || collection.thumbnail['medium']) ? '' : '20px',
-                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail[imageSize] && !collection.thumbnail['medium'])) ? '1em' : '',
+                            paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
+                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1em' : '',
                             width: collection && collection.header_image ? '' : '100%'
                         }"
                         :class="
                             'collection-name ' + 
-                            ((!collection || !collection.thumbnail || (!collection.thumbnail[imageSize] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
+                            ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                         ">
                     <h3 :style="{ color: collectionTextColor ? collectionTextColor : '' }">
                         <span
@@ -33,17 +33,17 @@
                     </h3>
                 </div>
                 <div
-                    v-if="collection && collection.thumbnail && (collection.thumbnail[imageSize] || collection.thumbnail['medium'])"   
+                    v-if="collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])"   
                     class="collection-thumbnail"
                     :style="{ 
-                        backgroundImage: 'url(' + (collection.thumbnail[imageSize] != undefined ? (collection.thumbnail[imageSize][0]) : (collection.thumbnail['medium'][0])) + ')',
+                        backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
                     }"/>
                 <div
                         class="collection-header-image"
                         :style="{
                             backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
                             minHeight: collection && collection.header_image ? '' : '80px',
-                            display: !(collection && collection.thumbnail && (collection.thumbnail[imageSize] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
+                            display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
                         }"/>
             </a>   
         </div>

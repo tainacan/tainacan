@@ -41,7 +41,7 @@ export default (element) => {
                         autoPlaySpeed: 3,
                         loopSlides: false,
                         hideTitle: true,
-                        cropImagesToSquare: true,
+                        imageSize: 'tainacan-medium',
                         showCollectionHeader: false,
                         showCollectionLabel: false,
                         collectionBackgroundColor: '#454647',
@@ -70,7 +70,7 @@ export default (element) => {
                                 autoPlaySpeed: this.autoPlaySpeed,
                                 loopSlides: this.loopSlides,
                                 hideTitle: this.hideTitle,
-                                cropImagesToSquare: this.cropImagesToSquare,
+                                imageSize: this.imageSize,
                                 showCollectionHeader: this.showCollectionHeader,
                                 showCollectionLabel: this.showCollectionLabel,
                                 collectionBackgroundColor: this.collectionBackgroundColor,
@@ -99,7 +99,7 @@ export default (element) => {
                         this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
                         this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
                         this.hideTitle = this.$el.attributes['hide-title'] != undefined ? this.$el.attributes['hide-title'].value == 'true' : false;
-                        this.cropImagesToSquare = this.$el.attributes['crop-images-to-square'] != undefined ? this.$el.attributes['crop-images-to-square'].value == 'true' : true;
+                        this.imageSize = this.$el.attributes['image-size'] != undefined ? this.$el.attributes['image-size'].value : 'tainacan-medium';
                         this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
                         this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;
                         this.collectionBackgroundColor = this.$el.attributes['collection-background-color'] != undefined ? this.$el.attributes['collection-background-color'].value : undefined;

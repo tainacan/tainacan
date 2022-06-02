@@ -6,7 +6,7 @@ const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blo
 
 const { useSelect } = wp.data;
 
-import { get, filter, map, pick } from 'lodash';
+import { map, pick } from 'lodash';
 import DynamicItemsModal from '../carousel-items-list/dynamic-and-carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
@@ -92,6 +92,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         }
     ];
 
+    // Get available image sizes
     const {	imageSizes } = useSelect(
 		( select ) => {
 			const {	getSettings	} = select( store );
