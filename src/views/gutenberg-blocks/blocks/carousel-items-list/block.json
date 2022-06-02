@@ -19,111 +19,111 @@
             "selector": "div"
         },
         "collectionId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "items": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "isModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "searchURL": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "selectedItems": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "itemsRequestSource": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "maxItemsNumber": {
-            "type": "Number",
+            "type": "number",
             "value": 12
         },
         "maxItemsPerScreen": {
-            "type": "Number",
+            "type": "number",
             "value": 7
         },
         "spaceBetweenItems": {
-            "type": "Number",
+            "type": "number",
             "value": 32
         },
         "spaceAroundCarousel": {
-            "type": "Number",
+            "type": "number",
             "value": 50
         },
         "isLoading": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "isLoadingCollection": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "loadStrategy": {
-            "type": "String",
+            "type": "string",
             "value": "search"
         },
         "arrowsPosition": {
-            "type": "String",
+            "type": "string",
             "value": "around"
         },
         "largeArrows": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "arrowsStyle": {
-            "type": "String",
+            "type": "string",
             "value": "type-1"
         },
         "autoPlay": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "autoPlaySpeed": {
-            "type": "Number",
+            "type": "number",
             "value": 3
         },
         "loopSlides": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "hideTitle": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": true
         },
         "showCollectionHeader": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "showCollectionLabel": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
-        "cropImagesToSquare": {
-            "type": "Boolean",
-            "value": true
+        "imageSize": {
+            "type": "string",
+            "value": "tainacan-medium"
         },
         "collection": {
-            "type": "Object",
+            "type": "object",
             "value": {}
         },
         "blockId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "collectionBackgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#454647"
         },
         "collectionTextColor": {
-            "type": "String",
+            "type": "string",
             "default": "#ffffff"
         }
     },

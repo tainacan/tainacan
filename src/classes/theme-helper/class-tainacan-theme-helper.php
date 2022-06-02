@@ -914,7 +914,7 @@ class Theme_Helper {
          *     @type integer $auto_play_speed				The time in s to translate to the next slide automatically 
          *     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
          *     @type bool    $hide_title					Should the title of the items be displayed?
-         *     @type bool    $crop_images_to_square			Should it use the `tainacan-medium-size` instead of the `tainacan-medium-large-size`?
+         *     @type string  $image_size					Item image size. Defaults to 'tainacan-medium'
          *     @type bool    $show_collection_header		Should it display a small version of the collection header?
          *     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
          *     @type string  $collection_background_color	Color of the collection header background
@@ -937,7 +937,7 @@ class Theme_Helper {
 			'auto_play_speed' => 3,
 			'loop_slides' => false,
 			'hide_title' => false,
-			'crop_images_to_square' => true,
+			'image_size' => 'tainacan-medium',
 			'show_collection_header' => false,
 			'show_collection_label' => false,
 			'collection_background_color' => '#454647',
@@ -947,6 +947,11 @@ class Theme_Helper {
 			'class_name' => ''
 		);
 		$args = wp_parse_args($args, $defaults);
+
+		/* Compatibility with previous version */
+		if ( isset($args['crop_images_to_square	']) && !$args['crop_images_to_square'] ) {
+			$args['image_size'] = 'tainacan-medium-full';
+		}
 
 		$props = ' ';
 
@@ -988,7 +993,7 @@ class Theme_Helper {
          *     @type string  $show_name						Show the item title
          *     @type string  $show_image					Show the item thumbnail
          *     @type string  $layout						Either 'grid', 'list' or 'mosaic'
-         *     @type string  $crop_images_to_square			Force images shape to be squared
+         *     @type string  $image_size					Item image size. Defaults to 'tainacan-medium'
          *     @type bool    $show_collection_header		Should it display a small version of the collection header?
          *     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
          *     @type string  $collection_background_color	Color of the collection header background
@@ -1015,7 +1020,7 @@ class Theme_Helper {
 			'show_name' => true,
 			'show_image' => true,
 			'layout' => 'grid',
-			'crop_images_to_square' => true,
+			'image_size' => 'tainacan-medium',
 			'show_collection_header' => false,
 			'show_collection_label' => false,
 			'collection_background_color' => '#454647',
@@ -1031,6 +1036,11 @@ class Theme_Helper {
 			'mosaic_item_focal_point_y' => 0.5
 		);
 		$args = wp_parse_args($args, $defaults);
+
+		/* Compatibility with previous version */
+		if ( isset($args['crop_images_to_square	']) && !$args['crop_images_to_square'] ) {
+			$args['image_size'] = 'tainacan-medium-full';
+		}
 
 		$props = ' ';
 

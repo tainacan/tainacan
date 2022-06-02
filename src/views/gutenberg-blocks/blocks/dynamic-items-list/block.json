@@ -14,136 +14,136 @@
     },
     "attributes": {
         "content": {
-            "type": "Array",
+            "type": "array",
             "source": "children",
             "selector": "div"
         },
         "collectionId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "items": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "showImage": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": true
         },
         "showName": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": true
         },
         "layout": {
-            "type": "String",
+            "type": "string",
             "default": "grid"
         },
         "isModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "gridMargin": {
-            "type": "Number",
+            "type": "number",
             "default": 0
         },
         "searchURL": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "itemsRequestSource": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "maxItemsNumber": {
-            "type": "Number",
+            "type": "number",
             "value": 12
         },
         "isLoading": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "isLoadingCollection": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "showSearchBar": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "showCollectionHeader": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "showCollectionLabel": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "collection": {
-            "type": "Object",
+            "type": "object",
             "value": {}
         },
         "searchString": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "selectedItems": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "loadStrategy": {
-            "type": "String",
+            "type": "string",
             "value": "search"
         },
         "order": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "blockId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "collectionBackgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#454647"
         },
         "collectionTextColor": {
-            "type": "String",
+            "type": "string",
             "default": "#ffffff"
         },
         "mosaicHeight": {
-            "type": "Number",
+            "type": "number",
             "value": 280
         },
         "mosaicGridColumns": {
-            "type": "Number",
+            "type": "number",
             "value": 3
         },
         "mosaicGridRows": {
-            "type": "Number",
+            "type": "number",
             "value": 3
         },
         "sampleBackgroundImage": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "mosaicItemFocalPoint": {
-            "type": "Object",
+            "type": "object",
             "default": {
                 "x": 0.5,
                 "y": 0.5
             }
         },
         "mosaicDensity": {
-            "type": "Number",
+            "type": "number",
             "default": 5
         },
         "maxColumnsCount": {
-            "type": "Number",
+            "type": "number",
             "default": 4
         },
-        "cropImagesToSquare": {
-            "type": "Boolean",
-            "value": true
+        "imageSize": {
+            "type": "string",
+            "value": "tainacan-medium"
         }
     },
     "supports": {

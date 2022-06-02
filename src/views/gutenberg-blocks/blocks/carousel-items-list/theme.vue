@@ -84,16 +84,16 @@
                             :key="index"
                             v-for="(item, index) of items"
                             class="swiper-slide item-list-item"
-                            :class="{ 'is-forced-square': cropImagesToSquare }">
+                            :class="{ 'is-forced-square': ['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1  }">
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                                 :href="item.url">
                             <blur-hash-image
-                                    :height="$thumbHelper.getHeight(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
-                                    :width="$thumbHelper.getWidth(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype'])"
-                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype'])"
-                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                             <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
@@ -178,7 +178,7 @@ export default {
         autoPlaySpeed: Number,
         loopSlides: Boolean,
         hideTitle: Boolean,
-        cropImagesToSquare: Boolean,
+        imageSize: String,
         showCollectionHeader: Boolean,
         showCollectionLabel: Boolean,
         collectionBackgroundColor: String,
