@@ -70,6 +70,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         loadStrategy = 'search';
         setAttributes({ loadStrategy: loadStrategy });
     }
+    if (imageSize === undefined) {
+        imageSize = 'tainacan-medium';
+        setAttributes({ imageSize: imageSize });
+    }
 
     const layoutControls = [
         {

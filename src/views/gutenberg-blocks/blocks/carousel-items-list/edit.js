@@ -66,6 +66,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxItemsNumber = 12;
         setAttributes({ maxItemsNumber: maxItemsNumber });
     }
+    if (imageSize === undefined) {
+        imageSize = 'tainacan-medium';
+        setAttributes({ imageSize: imageSize });
+    }
 
     // Get available image sizes
     const {	imageSizes } = useSelect(

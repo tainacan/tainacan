@@ -8,7 +8,7 @@ export default function ({ attributes, className }) {
         arrowsPosition,
         largeArrows,
         arrowsStyle,
-        cropImagesToSquare,
+        imageSize,
         maxCollectionsPerScreen,
         maxCollectionsNumber,
         spaceBetweenCollections,
@@ -33,7 +33,7 @@ export default function ({ attributes, className }) {
                 hide-name={ '' + hideName }
                 large-arrows={ '' + largeArrows }
                 arrows-style={ arrowsStyle }
-                crop-images-to-square={ '' + cropImagesToSquare }
+                image-size={ imageSize }
                 max-collections-number={ maxCollectionsNumber }
                 max-collections-per-screen={ maxCollectionsPerScreen }
                 space-between-collections={ spaceBetweenCollections }
