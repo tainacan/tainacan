@@ -64,7 +64,7 @@
             <!-- Text simple search -->
             <div 
                     v-if="!hideSearch"
-                    class="search-control-item">
+                    class="search-control-item search-control-item--search">
                 <div 
                         role="search" 
                         class="search-area">
@@ -96,7 +96,7 @@
             <!-- Another option of the Button for hiding filters -->
             <div 
                     v-if="showFiltersButtonInsideSearchControl && !hideHideFiltersButton && !hideFilters && !openAdvancedSearch"
-                    :class="'search-control-item' + (isFiltersModalActive ? ' is-filters-modal-active' : '')"
+                    :class="'search-control-item search-control-item--filters-button' + (isFiltersModalActive ? ' is-filters-modal-active' : '')"
                     id="tainacanFiltersButton">
                 <button 
                         class="button is-white"
@@ -114,7 +114,7 @@
             <!-- Displayed Metadata Dropdown -->
             <div    
                     v-if="!hideDisplayedMetadataButton && (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
-                    class="search-control-item">
+                    class="search-control-item search-control-item--displayed-metadata-dropdown">
                 <b-dropdown
                         v-tooltip="{
                             delay: {
@@ -170,7 +170,7 @@
             <!-- Change OrderBy Select and Order Button-->
             <div 
                     v-show="!hideSortingArea"
-                    class="search-control-item sorting-area">
+                    class="search-control-item search-control-item--sorting-area sorting-area">
                 <b-field>
                     <label class="label">{{ $i18n.get('label_sort') }}</label>
                     <b-dropdown
@@ -254,7 +254,7 @@
             <!-- View Modes Dropdown -->
             <div 
                     v-if="enabledViewModes.length > 1"
-                    class="search-control-item"
+                    class="search-control-item search-control-item--view-modes-dropdown"
                     id="tainacanViewModesSection">
                 <b-field>
                     <label 
@@ -323,7 +323,7 @@
             <!-- Theme Full Screen mode, it's just a special view mode -->
             <div 
                     id="tainacanFullScreenViewMode"
-                    class="search-control-item">
+                    class="search-control-item search-control-item--full-screen-view-mode">
                 <button 
                         class="button is-white"
                         :aria-label="$i18n.get('label_slides')"
@@ -343,7 +343,7 @@
             <div 
                     id="tainacanExposersButton"
                     v-if="!hideExposersButton"
-                    class="search-control-item">
+                    class="search-control-item search-control-item--exposers-button">
                 <button 
                         class="button is-white"
                         :aria-label="$i18n.get('label_view_as')"
