@@ -84,7 +84,7 @@
                             :key="index"
                             v-for="(item, index) of items"
                             class="swiper-slide item-list-item"
-                            :class="{ 'is-forced-square': ['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1  }">
+                            :class="{ 'is-forced-square': ['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 }">
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                                 :href="item.url">
