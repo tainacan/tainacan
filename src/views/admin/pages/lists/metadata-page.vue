@@ -342,7 +342,9 @@
 
                 <!-- Mapping --------------- -->
                 <b-tab-item :label="$i18n.get('mapping')">
-                    <metadata-mapping-list :is-repository-level="isRepositoryLevel"/>
+                    <metadata-mapping-list
+                            v-if="activeTab == 1"
+                            :is-repository-level="isRepositoryLevel"/>
                 </b-tab-item>
             </b-tabs>
             <section 
