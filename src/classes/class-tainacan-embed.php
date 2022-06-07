@@ -77,7 +77,7 @@ class Embed {
 	
 	public function pdf_embed_handler($matches, $attr, $url, $rawattr) {
 		global $TAINACAN_BASE_URL;
-		$viewer_url = $TAINACAN_BASE_URL . '/views/libs/pdf-viewer/pdf-viewer.html?file=' . $url;
+		$viewer_url = $TAINACAN_BASE_URL . '/views/libs/pdf-viewer/pdfjs-dist/web/viewer.html?file=' . $url;
 		//$viewer_url = $TAINACAN_BASE_URL . '/assets/pdfjs-dist/web/viewer.html?file=' . $url;
 		
 		$defaults = array(

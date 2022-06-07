@@ -93,7 +93,7 @@ mkdir $wp_plugin_dir
 rsync -axz --exclude='vendor/bin/phpc*' --exclude='vendor/squizlabs' --exclude='vendor/wimg' \
  --exclude='vendor/respect/validation/.git' --exclude='vendor/symfony/polyfill-mbstring/.git' \
  --exclude='vendor/respect/validation/docs' --exclude='vendor/respect/validation/tests' \
- --exclude='pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
+ --exclude='views/libs/pdf-viewer/pdfjs-dist/web/compressed.tracemonkey-pldi-09.pdf' \
  --exclude='vendor/tecnickcom/tcpdf/fonts' \
  --exclude='vendor/smalot/pdfparser/src/Smalot/PdfParser/Tests/' \
  --exclude='vendor/tecnickcom/tcpdf/examples' \
