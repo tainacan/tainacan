@@ -6,7 +6,8 @@ const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blo
 
 const { useSelect } = wp.data;
 
-import { map, pick } from 'lodash';
+import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
+import pick from 'lodash/pick';
 import CarouselItemsModal from './dynamic-and-carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
