@@ -12,7 +12,7 @@ export const ThumbnailHelperFunctions = () => {
         },
         getSrcSet(thumbnail, tainacanSize, documentType) {
             const defaultSrc = this.getSrc(thumbnail, tainacanSize, documentType);
-            const retinaSrc = (thumbnail && thumbnail['full']) ? thumbnail['full'][0] : this.getEmptyThumbnailPlaceholder(documentType, 'full');
+            const retinaSrc = this.getSrc(thumbnail, this.getRelativeRetinaSize(tainacanSize), documentType);
             return defaultSrc + ' 1x, ' + retinaSrc + ' 2x';
         },
         getWidth(thumbnail, tainacanSize, fallbackSizeValue) {
@@ -92,13 +92,24 @@ export const ThumbnailHelperFunctions = () => {
         getWordpressFallbackSize(tainacanSize) {
             switch(tainacanSize) {
                 case 'tainacan-medium-full':
-                return 'medium_large';
+                    return 'medium_large';
                 case 'tainacan-medium':
                     return 'medium';
                 case 'tainacan-small':
                     return 'thumbnail';
                 default:
                     return 'thumbnail';
+            }
+        },
+        getRelativeRetinaSize(tainacanSize) {
+            switch(tainacanSize) {
+                case 'tainacan-medium-full':
+                case 'tainacan-medium':
+                    return 'large';
+                case 'tainacan-small':
+                    return 'tainacan-medium';
+                default:
+                    return 'full';
             }
         }
     }
