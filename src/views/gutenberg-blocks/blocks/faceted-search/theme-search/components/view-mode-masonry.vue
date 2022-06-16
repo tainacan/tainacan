@@ -19,7 +19,7 @@
             </section>
 
             <!-- SKELETON LOADING -->
-            <masonry
+            <!-- <masonry
                     v-if="isLoading"
                     :cols="masonryCols"
                     :gutter="25"                    
@@ -29,22 +29,19 @@
                         v-for="item in 12"
                         :style="{'min-height': randomHeightForMasonryItem() + 'px' }"
                         class="skeleton tainacan-masonry-item" />
-            </masonry>
+            </masonry> -->
 
             <!-- MASONRY VIEW MODE -->
-            <masonry
-                    role="list"
-                    v-if="!isLoading && items.length > 0" 
-                    :cols="masonryCols"
-                    :gutter="25"
+            <ul 
+                    v-if="!isLoading"
                     class="tainacan-masonry-container">
-                <div
-                        role="listitem"
+                <li
                         :data-tainacan-item-id="item.id"
                         :aria-setsize="totalItems"
                         :aria-posinset="getPosInSet(index)"
                         :key="index"
-                        v-for="(item, index) of items">
+                        v-for="(item, index) of items"
+                        :class="{ 'tainacan-masonry-grid-sizer': index == 0 }">
                     <a 
                             
                             class="tainacan-masonry-item" 
@@ -74,8 +71,8 @@
                         <blur-hash-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
-                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
-                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 360)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 360)"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
@@ -83,14 +80,15 @@
                                 :transition-duration="500"
                             />
                     </a>
-                </div>
-            </masonry>
+                </li>
+            </ul>
         </div> 
     </div>
 </template>
 
 <script>
 import { viewModesMixin } from '../js/view-modes-mixin.js';
+import Masonry from 'masonry-layout';
 
 export default {
     name: 'ViewModeMasonry',
@@ -100,7 +98,8 @@ export default {
     data () {
         return {
             containerWidthDiscount: Number,
-            masonryCols: {default: 6, 1919: 5, 1407: 4, 1215: 3, 1023: 3, 767: 2, 343: 1}
+            masonryCols: { default: 5, 2559: 5, 1919: 4, 1407: 4, 1215: 3, 1023: 3, 767: 2, 343: 1 },
+            masonry: false
         }
     },
     watch: {
@@ -116,14 +115,34 @@ export default {
         },
         containerWidthDiscount() {
             let obj = {};
-            obj['default'] = 6;
-            obj[1980 - this.containerWidthDiscount] = 5;
+            obj['default'] = 5;
+            obj[2560 - this.containerWidthDiscount] = 5;
+            obj[1980 - this.containerWidthDiscount] = 4;
             obj[1460 - this.containerWidthDiscount] = 4;
             obj[1275 - this.containerWidthDiscount] = 3;
             obj[1080 - this.containerWidthDiscount] = 3;
             obj[828 - this.containerWidthDiscount] = 2;
             obj[400] = 1;
             this.masonryCols = obj;
+        },
+        isLoading: { 
+            handler() {
+                if (this.items && this.items.length > 0) {
+                    this.$nextTick(() => {
+                        console.log(this.items[0]['thumbnail']) // update based on existence of large-medium
+                        console.log(this.masonry)
+                        if (this.masonry !== false)
+                            this.masonry.destroy();
+                        
+                        this.masonry = new Masonry( '.tainacan-masonry-container', {
+                            itemSelector: 'li',
+                            columnWidth: 400,
+                            gutter: 25
+                        });
+                    });
+                }
+            },
+            immediate: true
         }
     },
     methods: {
@@ -133,6 +152,10 @@ export default {
 
             return Math.floor(Math.random()*(max-min+1)+min);
         }
+    },
+    beforeDestroy() {
+        if (this.masonry !== false)
+            this.masonry.destroy();
     }
 }
 </script>
