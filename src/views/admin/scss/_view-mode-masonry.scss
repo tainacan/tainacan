@@ -1,5 +1,6 @@
 .tainacan-masonry-container {
     min-height: 50vh;
+    margin-left: 25px;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
@@ -8,7 +9,27 @@
     justify-content: space-evenly;
     animation-name: appear;   
     animation-duration: 0.5s;
+    
+    &>li,
+    .tainacan-masonry-grid-sizer {
+        width: calc(14.285% - 25px);
 
+        @media screen and (max-width: 1920px) {
+            width: calc(16.666% - 25px);
+        }
+        @media screen and (max-width: 1360px) {
+            width: calc(20% - 25px);
+        }
+        @media screen and (max-width: 1024px) {
+            width: calc(25% - 25px);
+        }
+        @media screen and (max-width: 768px) {
+            width: calc(33.333% - 25px);
+        }
+        @media screen and (max-width: 480px) {
+            width: calc(50% - 25px);
+        }
+    }
     .tainacan-masonry-item {
         display: block;
         width: 100%;
@@ -140,5 +161,35 @@
         }
     }
 }
+.tainacan-masonry-container--skeleton {
+    display: block;
+    min-height: 50vh;
+    padding-left: 25px;
+    padding-right: 25px;
+    column-gap: 25px;
+    height: auto !important;
+    column-count: 7;
 
+    .skeleton {
+        width: 100%;
+        margin-bottom: 25px;
+        break-inside: avoid;
+    }
+
+    @media screen and (max-width: 1920px) {
+        column-count: 6;
+    }
+    @media screen and (max-width: 1360px) {
+        column-count: 5;
+    }
+    @media screen and (max-width: 1024px) {
+        column-count: 4;
+    }
+    @media screen and (max-width: 768px) {
+        column-count: 3;
+    }
+    @media screen and (max-width: 480px) {
+        column-count: 2;
+    }
+}
 

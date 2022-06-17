@@ -1,8 +1,6 @@
 <template>
     <div class="table-container">
-        <div 
-                ref="masonryWrapper"
-                class="table-wrapper">
+        <div class="table-wrapper">
 
             <!-- Empty result placeholder -->
             <section
@@ -19,17 +17,15 @@
             </section>
 
             <!-- SKELETON LOADING -->
-            <!-- <masonry
+            <div 
                     v-if="isLoading"
-                    :cols="masonryCols"
-                    :gutter="25"                    
-                    class="tainacan-masonry-container">
+                    class="tainacan-masonry-container--skeleton">
                 <div 
                         :key="item"
                         v-for="item in 12"
                         :style="{'min-height': randomHeightForMasonryItem() + 'px' }"
-                        class="skeleton tainacan-masonry-item" />
-            </masonry> -->
+                        class="skeleton" />
+            </div>
 
             <!-- MASONRY VIEW MODE -->
             <ul 
@@ -68,6 +64,7 @@
                         </div>
 
                         <!-- Thumbnail -->
+
                         <blur-hash-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
@@ -79,6 +76,7 @@
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                 :transition-duration="500"
                             />
+
                     </a>
                 </li>
             </ul>
@@ -97,53 +95,32 @@ export default {
     ],
     data () {
         return {
-            containerWidthDiscount: Number,
-            masonryCols: { default: 5, 2559: 5, 1919: 4, 1407: 4, 1215: 3, 1023: 3, 767: 2, 343: 1 },
             masonry: false
         }
     },
     watch: {
-        isFiltersMenuCompressed() {
-            if (this.$refs.masonryWrapper != undefined && 
-                this.$refs.masonryWrapper.children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                if ((window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth))
-                    this.containerWidthDiscount = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - this.$refs.masonryWrapper.clientWidth;
-            }
-            this.$forceUpdate();
-        },
-        containerWidthDiscount() {
-            let obj = {};
-            obj['default'] = 5;
-            obj[2560 - this.containerWidthDiscount] = 5;
-            obj[1980 - this.containerWidthDiscount] = 4;
-            obj[1460 - this.containerWidthDiscount] = 4;
-            obj[1275 - this.containerWidthDiscount] = 3;
-            obj[1080 - this.containerWidthDiscount] = 3;
-            obj[828 - this.containerWidthDiscount] = 2;
-            obj[400] = 1;
-            this.masonryCols = obj;
-        },
         isLoading: { 
             handler() {
                 if (this.items && this.items.length > 0) {
                     this.$nextTick(() => {
-                        console.log(this.items[0]['thumbnail']) // update based on existence of large-medium
-                        console.log(this.masonry)
                         if (this.masonry !== false)
                             this.masonry.destroy();
                         
                         this.masonry = new Masonry( '.tainacan-masonry-container', {
                             itemSelector: 'li',
-                            columnWidth: 400,
-                            gutter: 25
+                            columnWidth: '.tainacan-masonry-grid-sizer',
+                            gutter: 25,
+                            percentPosition: true
                         });
                     });
                 }
             },
             immediate: true
         }
+    },
+    beforeDestroy() {
+        if (this.masonry !== false)
+            this.masonry.destroy();
     },
     methods: {
         randomHeightForMasonryItem() {
@@ -152,10 +129,6 @@ export default {
 
             return Math.floor(Math.random()*(max-min+1)+min);
         }
-    },
-    beforeDestroy() {
-        if (this.masonry !== false)
-            this.masonry.destroy();
     }
 }
 </script>
