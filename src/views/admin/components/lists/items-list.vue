@@ -1445,12 +1445,14 @@ export default {
                         if (this.masonry !== false)
                             this.masonry.destroy();
                         
-                        this.masonry = new Masonry( '.tainacan-' + this.viewMode + '-container', {
-                            itemSelector: 'li',
-                            columnWidth: '.tainacan-' + this.viewMode + '-grid-sizer',
-                            gutter: this.viewMode == 'masonry' ? 25 : 30,
-                            percentPosition: true
-                        });
+                        if (this.viewMode == 'masonry' || this.viewMode == 'records') {
+                            this.masonry = new Masonry( '.tainacan-' + this.viewMode + '-container', {
+                                itemSelector: 'li',
+                                columnWidth: '.tainacan-' + this.viewMode + '-grid-sizer',
+                                gutter: this.viewMode == 'masonry' ? 25 : 30,
+                                percentPosition: true
+                            });
+                        }
                     });
                 }
             },

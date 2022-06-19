@@ -23,7 +23,6 @@ import {
     Numberinput
 } from 'buefy';
 import VTooltip from 'floating-vue';
-import VueMasonry from 'vue-masonry-css';
 import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';
 import VueBlurHash from 'vue-blurhash';
@@ -120,7 +119,6 @@ export default (element) => {
                     }
                 }
             });
-            Vue.use(VueMasonry);
             Vue.use(VueBlurHash);
             Vue.use(I18NPlugin);
             Vue.use(UserPrefsPlugin);
