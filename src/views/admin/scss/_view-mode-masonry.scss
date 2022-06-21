@@ -14,20 +14,23 @@
     .tainacan-masonry-grid-sizer {
         width: calc(14.285% - 25px);
 
-        @media screen and (max-width: 1920px) {
+        @media screen and (max-width: 2560px) {
             width: calc(16.666% - 25px);
         }
-        @media screen and (max-width: 1360px) {
+        @media screen and (max-width: 1920px) {
             width: calc(20% - 25px);
         }
-        @media screen and (max-width: 1024px) {
+        @media screen and (max-width: 1740px) {
             width: calc(25% - 25px);
         }
-        @media screen and (max-width: 768px) {
+        @media screen and (max-width: 1440px) {
             width: calc(33.333% - 25px);
         }
-        @media screen and (max-width: 480px) {
+        @media screen and (max-width: 1024px) {
             width: calc(50% - 25px);
+        }
+        @media screen and (max-width: 620px) {
+            width: calc(100% - 25px);
         }
     }
     .tainacan-masonry-item {
@@ -176,20 +179,23 @@
         break-inside: avoid;
     }
 
-    @media screen and (max-width: 1920px) {
+    @media screen and (max-width: 2560px) {
         column-count: 6;
     }
-    @media screen and (max-width: 1360px) {
+    @media screen and (max-width: 1920px) {
         column-count: 5;
     }
-    @media screen and (max-width: 1024px) {
+    @media screen and (max-width: 1740px) {
         column-count: 4;
     }
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 1440px) {
         column-count: 3;
     }
-    @media screen and (max-width: 480px) {
+    @media screen and (max-width: 1024px) {
         column-count: 2;
+    }
+    @media screen and (max-width: 620px) {
+        column-count: 1;
     }
 }
 
