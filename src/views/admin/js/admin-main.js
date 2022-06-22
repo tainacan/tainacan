@@ -30,7 +30,6 @@ import {
     Numberinput
 } from 'buefy';
 import VTooltip from 'floating-vue';
-import VueMasonry from 'vue-masonry-css';
 import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 import cssVars from 'css-vars-ponyfill';
@@ -182,7 +181,6 @@ export default (element) => {
                     }
                 }
             });
-            Vue.use(VueMasonry);
             Vue.use(VueBlurHash);
             Vue.use(I18NPlugin);
             Vue.use(UserPrefsPlugin);

@@ -1039,7 +1039,7 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
  	*     @type integer $auto_play_speed				The time in s to translate to the next slide automatically 
  	*     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
  	*     @type bool    $hide_title						Should the title of the items be displayed?
- 	*     @type bool    $crop_images_to_square			Should it use the `tainacan-medium-size` instead of the `tainacan-medium-large-size`?
+ 	*     @type string  $image_size					Item image size. Defaults to 'tainacan-medium'
  	*     @type bool    $show_collection_header			Should it display a small version of the collection header?
  	*     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
  	*     @type string  $collection_background_color	Color of the collection header background

@@ -25,7 +25,7 @@ export default function({ attributes, className }) {
         mosaicItemFocalPoint,
         mosaicDensity,
         maxColumnsCount,
-        cropImagesToSquare
+        imageSize
     } = attributes;
     
     // Gets attributes such as style, that are automatically added by the editor hook
@@ -41,7 +41,7 @@ export default function({ attributes, className }) {
                 show-search-bar={ '' + showSearchBar }
                 show-collection-header={ '' + showCollectionHeader }
                 show-collection-label={ '' + showCollectionLabel }
-                crop-images-to-square={ '' + cropImagesToSquare }
+                image-size={ imageSize }
                 layout={ layout }
                 load-strategy={ loadStrategy }
                 mosaic-height={ mosaicHeight }

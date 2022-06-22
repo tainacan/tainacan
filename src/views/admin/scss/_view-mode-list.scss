@@ -1,6 +1,7 @@
 .tainacan-list-container {
     min-height: 50vh;
     padding: 0;
+    height: auto !important;
     display: flex;
     flex-wrap: wrap;
     flex-grow: 1;

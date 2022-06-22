@@ -19,32 +19,28 @@
             </section>
 
             <!-- SKELETON LOADING -->
-            <masonry
+            <div 
                     v-if="isLoading"
-                    :cols="masonryCols"
-                    :gutter="30"                    
-                    class="tainacan-records-container">
+                    class="tainacan-records-container--skeleton">
                 <div 
                         :key="item"
                         v-for="item in 12"
                         :style="{'min-height': randomHeightForRecordsItem() + 'px' }"
-                        class="skeleton tainacan-record" />
-            </masonry>
+                        class="skeleton" />
+            </div>
             
             <!-- RECORDS VIEW MODE -->
-            <masonry 
-                    role="list"
-                    v-if="!isLoading && items.length > 0"
-                    :cols="masonryCols"
-                    :gutter="30"
+            <ul
+                    v-if="!isLoading"
                     class="tainacan-records-container">
-                <div
+                <li
                         role="listitem"
                         :aria-setsize="totalItems"
                         :aria-posinset="getPosInSet(index)"
                         :data-tainacan-item-id="item.id"
                         :key="index"
-                        v-for="(item, index) of items">
+                        v-for="(item, index) of items"
+                        :class="{ 'tainacan-records-grid-sizer': index == 0 }">
                     <a 
                             :href="getItemLink(item.url, index)"
                             class="tainacan-record">
@@ -134,14 +130,15 @@
                                 class="faceted-search-hook faceted-search-hook-item-after"
                                 v-html="getAfterHook(item)" />
                     </a>
-                </div>
-            </masonry>
+                </li>
+            </ul>
         </div> 
     </div>
 </template>
 
 <script>
 import { viewModesMixin } from '../js/view-modes-mixin.js';
+import Masonry from 'masonry-layout';
 
 export default {
     name: 'ViewModeRecords',
@@ -150,7 +147,7 @@ export default {
     ],
     data () {
         return {
-            masonryCols: {default: 4, 1919: 3, 1407: 2, 1215: 2, 1023: 1, 767: 1, 343: 1}
+            masonry: false
         }
     },
     computed: {
@@ -159,42 +156,28 @@ export default {
         }
     },
     watch: {
-        isFiltersMenuCompressed() {
-            if (this.$refs.masonryWrapper != undefined && 
-                this.$refs.masonryWrapper.children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                this.containerWidthDiscount = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - this.$refs.masonryWrapper.clientWidth;
-            }
-            this.$forceUpdate();
-        },
-        containerWidthDiscount() {
-            let obj = {};
-            obj['default'] = 4;
-            obj[1980 - this.containerWidthDiscount] = 3;
-            obj[1460 - this.containerWidthDiscount] = 2;
-            obj[1275 - this.containerWidthDiscount] = 2;
-            obj[1080 - this.containerWidthDiscount] = 1;
-            obj[828 - this.containerWidthDiscount] = 1;
-            obj[400] = 1;
-            this.masonryCols = obj;
+        isLoading: { 
+            handler() {
+                if (this.items && this.items.length > 0) {
+                    this.$nextTick(() => {
+                        if (this.masonry !== false)
+                            this.masonry.destroy();
+                        
+                        this.masonry = new Masonry( '.tainacan-records-container', {
+                            itemSelector: 'li',
+                            columnWidth: '.tainacan-records-grid-sizer',
+                            gutter: 30,
+                            percentPosition: true
+                        });
+                    });
+                }
+            },
+            immediate: true
         }
     },
-    mounted() {
-        if (this.$refs.masonryWrapper != undefined && 
-            this.$refs.masonryWrapper.children[0] != undefined && 
-            this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-            this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                this.itemColumnWidth = this.$refs.masonryWrapper.children[0].children[0].clientWidth;
-                this.recalculateContainerWidth();
-            } else
-                this.itemColumnWidth = 202;
-    },
-    created() {
-        window.addEventListener('resize', this.recalculateContainerWidth);  
-    },
     beforeDestroy() {
-        window.removeEventListener('resize', this.recalculateContainerWidth);
+        if (this.masonry !== false)
+            this.masonry.destroy();
     },
     methods: {
         randomHeightForRecordsItem() {
@@ -205,17 +188,7 @@ export default {
         getItemImageHeight(imageWidth, imageHeight) {  
             let itemWidth = 120;
             return (imageHeight*itemWidth)/imageWidth;
-        },
-        recalculateContainerWidth: _.debounce( function() {
-            if (this.$refs.masonryWrapper != undefined && 
-                this.$refs.masonryWrapper.children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0] != undefined && 
-                this.$refs.masonryWrapper.children[0].children[0].clientWidth != undefined) {
-                if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
-                    this.containerWidthDiscount = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) - this.$refs.masonryWrapper.clientWidth;
-            }
-            this.$forceUpdate();
-        }, 500)
+        }
     }
 }
 </script>

@@ -145,6 +145,7 @@
                 <div class="control">
                     <button
                             @click.prevent="onUpdateMetadataMapperMetadataClick"
+                            :class="{ 'is-loading': isMapperMetadataLoading }"
                             class="button is-success">{{ $i18n.get('save') }}</button>
                 </div>
             </div>
@@ -281,7 +282,7 @@ export default {
                 .then(() => {
                     this.isLoadingMetadatumMappers = false;
 
-                    if (this.metadatumMappers.length == 1)
+                    if (this.metadatumMappers.length >= 1)
                         this.onSelectMetadataMapper(this.metadatumMappers[0])
                 })
                 .catch(() => {
@@ -293,7 +294,7 @@ export default {
             this.isMapperMetadataLoading = true;
             this.mapper = metadatumMapper; //TODO try to use v-model again
             this.mapperMetadata = [];
-            
+
             if (metadatumMapper != '') {
                 for (var k in metadatumMapper.metadata) {
                     var item = metadatumMapper.metadata[k];
