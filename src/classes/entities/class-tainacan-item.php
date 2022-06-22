@@ -711,16 +711,16 @@ class Item extends Entity {
 		$document_options = $this->get_document_options();
 
 		$output = '';
-
+		
 		if ( $type == 'url' ) {
 			global $wp_embed;
 			$_embed = $wp_embed->autoembed($this->get_document());
 			$url = $this->get_document();
 
-			if ( $_embed == $url ) {
+			if ( esc_url($_embed) == esc_url($url) ) {
 
 				if ( $document_options && isset($document_options['forced_iframe']) && $document_options['forced_iframe'] === true ) {
-
+			
 					// URL points to an image file
 					if (isset($document_options['is_image']) && $document_options['is_image'] === true) {
 						$_embed = sprintf('<a href="%s" target="blank"><img src="%s" /></a>', $url, $url);
