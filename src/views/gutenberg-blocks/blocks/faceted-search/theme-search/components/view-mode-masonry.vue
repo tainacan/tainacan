@@ -19,6 +19,9 @@
             <!-- SKELETON LOADING -->
             <div 
                     v-if="isLoading"
+                    :class="{
+                        'tainacan-masonry-container--legacy': shouldUseLegacyMasonyCols
+                    }"
                     class="tainacan-masonry-container--skeleton">
                 <div 
                         :key="item"
@@ -30,6 +33,9 @@
             <!-- MASONRY VIEW MODE -->
             <ul 
                     v-if="!isLoading"
+                    :class="{
+                        'tainacan-masonry-container--legacy': shouldUseLegacyMasonyCols
+                    }"
                     class="tainacan-masonry-container">
                 <li
                         :data-tainacan-item-id="item.id"
@@ -64,15 +70,14 @@
                         </div>
 
                         <!-- Thumbnail -->
-
                         <blur-hash-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
-                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-large-full', 280)"
-                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-large-full', 280)"
-                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-large-full')"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
-                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 280)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 280)"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full')"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                 :transition-duration="500"
                             />
@@ -95,7 +100,8 @@ export default {
     ],
     data () {
         return {
-            masonry: false
+            masonry: false,
+            shouldUseLegacyMasonyCols: false
         }
     },
     watch: {
@@ -117,6 +123,9 @@ export default {
             },
             immediate: true
         }
+    },
+    created() {
+        this.shouldUseLegacyMasonyCols = wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
     },
     beforeDestroy() {
         if (this.masonry !== false)

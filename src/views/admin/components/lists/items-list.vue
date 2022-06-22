@@ -311,14 +311,17 @@
             <!-- MASONRY VIEW MODE -->
             <ul
                     v-if="viewMode == 'masonry'"
-                    :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
+                    :class="{
+                        'hide-items-selection': $adminOptions.hideItemsListSelection,
+                        'tainacan-masonry-container--legacy': shouldUseLegacyMasonyCols
+                    }"
                     class="tainacan-masonry-container">
                 <li
                         :key="index"
                         :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
                         :class="{
-                            'tainacan-masonry-grid-sizer': index == 0 
+                            'tainacan-masonry-grid-sizer': index == 0
                         }">
                     <div
                         :class="{
@@ -384,11 +387,11 @@
                                 @click.right="onRightClickItem($event, item)"
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
-                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-large-full', 280)"
-                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-large-full', 280)"
-                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-large-full')"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
-                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-large-full', item.document_mimetype)"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 280)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 280)"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full')"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                 :transition-duration="500"
                             />
@@ -1372,7 +1375,8 @@ export default {
             cursorPosY: -1,
             contextMenuItem: null,
             singleItemSelection: false,
-            masonry: false
+            masonry: false,
+            shouldUseLegacyMasonyCols: false
         }
     },
     computed: {
@@ -1462,6 +1466,9 @@ export default {
     mounted() {
         if (this.highlightsItem)
             setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
+    },
+    created() {
+        this.shouldUseLegacyMasonyCols = wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
     },
     methods: {
         ...mapActions('collection', [
