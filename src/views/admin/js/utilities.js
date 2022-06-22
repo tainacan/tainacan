@@ -76,6 +76,7 @@ export const ThumbnailHelperFunctions = () => {
         },
         getEmptyThumbnailPlaceholderBySize(imageSrc, tainacanSize) {
             switch(tainacanSize) {
+                case 'tainacan-large-full':
                 case 'tainacan-medium-full':
                 case 'tainacan-medium':
                 case 'medium_large':
@@ -91,6 +92,7 @@ export const ThumbnailHelperFunctions = () => {
         },
         getWordpressFallbackSize(tainacanSize) {
             switch(tainacanSize) {
+                case 'tainacan-large-full':
                 case 'tainacan-medium-full':
                     return 'medium_large';
                 case 'tainacan-medium':

@@ -28,6 +28,7 @@ module.exports = {
         'vue/require-default-prop': 'off'
     },
     globals: {
+        'wp': true,
         'tainacan_plugin': true,
         'tainacan_blocks': true,
         '_': true,

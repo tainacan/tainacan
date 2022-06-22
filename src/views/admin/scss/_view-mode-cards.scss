@@ -1,6 +1,7 @@
 .tainacan-cards-container {
     min-height: 50vh;
     padding: 0;
+    height: auto !important;
     @include display-grid;
     -ms-grid-columns: 455px 455px;
     grid-template-columns: repeat(auto-fill, 455px);
