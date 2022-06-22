@@ -738,8 +738,15 @@ class REST_Reports_Controller extends REST_Controller {
 		return new \WP_REST_Response($response, 200);
 	}
 
-	private function get_activities_general($collection_id = false, $interval) {
+	private function get_activities_general($collection_id = false, $interval = false) {
 		global $wpdb;
+		if($interval == false) {
+			$end = (new \DateTime())->add(new \DateInterval('P1D'))->setTime(0,0,0);
+			$interval = [
+				'end' => $end->format('Y-m-d H:i:s'),
+				'start' => $end->sub(new \DateInterval('P1Y1D'))->format('Y-m-d H:i:s')
+			];
+		}
 		$collection_from = "";
 		$start = $interval['start'];
 		$end = $interval['end'];
@@ -756,8 +763,15 @@ class REST_Reports_Controller extends REST_Controller {
 		return $wpdb->get_results($sql_statement);
 	}
 
-	private function get_activities_general_by_user($collection_id = false, $interval) {
+	private function get_activities_general_by_user($collection_id = false, $interval = false) {
 		global $wpdb;
+		if($interval == false) {
+			$end = (new \DateTime())->add(new \DateInterval('P1D'))->setTime(0,0,0);
+			$interval = [
+				'end' => $end->format('Y-m-d H:i:s'),
+				'start' => $end->sub(new \DateInterval('P1Y1D'))->format('Y-m-d H:i:s')
+			];
+		}
 		$collection_from = "";
 		$start = $interval['start'];
 		$end = $interval['end'];
