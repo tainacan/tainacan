@@ -358,7 +358,7 @@ class Item_Metadata extends Repository {
 
 			global $wpdb;
 			$rows = $wpdb->get_results(
-				$wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() ),
+				$wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s ORDER BY meta_id DESC", $item_metadata->get_item()->get_id(), $item_metadata->get_metadatum()->get_id() ),
 				ARRAY_A );
 
 			$return_value = [];
