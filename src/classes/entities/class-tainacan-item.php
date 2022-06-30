@@ -863,7 +863,7 @@ class Item extends Entity {
 
 				$embed = $wp_embed->autoembed($url);
 
-				if ( $embed == $url ) {
+				if ( esc_url($embed) == esc_url($url) ) {
 					$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 				} else {
 					$tainacan_embed = \Tainacan\Embed::get_instance();
@@ -899,7 +899,7 @@ class Item extends Entity {
 
 			$embed = $wp_embed->autoembed($url);
 
-			if ( $embed == $url ) {
+			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 			} else {
 				$tainacan_embed = \Tainacan\Embed::get_instance();

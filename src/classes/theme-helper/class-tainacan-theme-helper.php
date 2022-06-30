@@ -1163,7 +1163,7 @@ class Theme_Helper {
 							$related_group['total_items'] > 1 ?
 								'<div class="wp-block-buttons">
 									<div class="wp-block-button">
-										<a class="wp-block-button__link" href="/' . esc_url($related_group['collection_slug']) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
+										<a class="wp-block-button__link" href="' . esc_url('/' . $related_group['collection_slug']) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
 											' . sprintf( __('View all %s related items', 'tainacan'), $related_group['total_items'] ) . '
 										</a>
 									</div>

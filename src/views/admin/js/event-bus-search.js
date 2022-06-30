@@ -157,15 +157,18 @@ export default {
 
                         const oldMetaQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
                         const newMetaQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
-                        const oldTaxQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
-                        const newTaxQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
-                        const oldStatusArray = oldQueryArray.filter(queryItem => queryItem.startsWith('status'));
-                        const newStatusArray = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
-                        
+                        const oldTaxQueryArray  = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                        const newTaxQueryArray  = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                        const oldStatusArray    = oldQueryArray.filter(queryItem => queryItem.startsWith('status'));
+                        const newStatusArray    = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
+                        const oldSearchQuery    = oldQueryArray.filter(queryItem => queryItem.startsWith('search'));
+                        const newSearchQuery    = newQueryArray.filter(queryItem => queryItem.startsWith('search'));
+
                         if (
                             JSON.stringify(oldMetaQueryArray) != JSON.stringify(newMetaQueryArray) ||
-                            JSON.stringify(oldTaxQueryArray) != JSON.stringify(newTaxQueryArray) ||
-                            JSON.stringify(oldStatusArray) != JSON.stringify(newStatusArray)
+                            JSON.stringify(oldTaxQueryArray)  != JSON.stringify(newTaxQueryArray) ||
+                            JSON.stringify(oldStatusArray)    != JSON.stringify(newStatusArray) ||
+                            JSON.stringify(oldSearchQuery)    != JSON.stringify(newSearchQuery)
                         ) {
                             this.$emit('has-to-reload-facets', true);
                         }

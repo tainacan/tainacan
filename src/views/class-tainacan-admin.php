@@ -76,6 +76,15 @@ class Admin {
 			array( &$this, 'item_submission' )
 		);
 
+		add_submenu_page(
+			null, // Mobile app page is not listed in the menu
+			__('Mobile App', 'tainacan'),
+			__('Mobile App', 'tainacan'),
+			'manage_tainacan',
+			'tainacan_mobile_app',
+			array( &$this, 'mobile_app' )
+		);
+
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
 		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_roles_page' ) );
 		add_action( 'load-' . $reports_page_suffix, array( &$this, 'load_reports_page' ) );
@@ -481,6 +490,12 @@ class Admin {
 		require_once('item-submission/class-tainacan-item-submission.php');
 		$submission = new Item_Submission();
 		$submission->admin_page();
+	}
+
+	public function mobile_app() {
+		require_once('mobile-app/class-tainacan-mobile-app.php');
+		$Mobile_app = new Mobile_App();
+		$Mobile_app->admin_page();
 	}
 
 }

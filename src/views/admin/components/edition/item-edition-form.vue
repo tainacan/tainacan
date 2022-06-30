@@ -1313,7 +1313,7 @@ export default {
                 
                 this.isLoading = false;
 
-                if (!this.$adminOptions.itemEditionMode) {
+                if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode) {
 
                     if (!this.isOnSequenceEdit) {
                         if (this.form.status != 'trash') {
@@ -1338,6 +1338,15 @@ export default {
                     item: this.$adminOptions.itemEditionMode ? this.item : null
                 },
                 tainacan_plugin.admin_url);
+
+                // In Mobile app, we send a message to inform updates
+                if (
+                    this.$adminOptions.mobileAppMode &&
+                    webkit &&
+                    webkit.messageHandlers &&
+                    webkit.messageHandlers.cordova_iab
+                )
+                    webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'item_updated', 'item': this.item }));
             })
             .catch((errors) => {
                 
@@ -1359,14 +1368,14 @@ export default {
             });
         },
         onDiscard() {
-            if (!this.$adminOptions.itemEditionMode)
+            if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode)
                 this.$router.go(-1);
             
             parent.postMessage({ 
                     type: 'itemEditionMessage',
                     item: this.$adminOptions.itemEditionMode ? false : null
                 },
-                tainacan_plugin.admin_url);
+            tainacan_plugin.admin_url);
 
         },
         createNewItem() {
