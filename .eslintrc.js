@@ -36,6 +36,7 @@ module.exports = {
         'jQuery': true,
         'tainacan_extra_components': true,
         'tainacan_extra_plugins': true,
-        'grecaptcha': true
+        'grecaptcha': true,
+        'webkit': true
     }
 }
