@@ -76,7 +76,7 @@ class Admin {
 			array( &$this, 'item_submission' )
 		);
 
-		add_submenu_page(
+		$mobile_app_page_suffix = add_submenu_page(
 			null, // Mobile app page is not listed in the menu
 			__('Mobile App', 'tainacan'),
 			__('Mobile App', 'tainacan'),
@@ -84,10 +84,11 @@ class Admin {
 			'tainacan_mobile_app',
 			array( &$this, 'mobile_app' )
 		);
-
+		
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
 		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_roles_page' ) );
 		add_action( 'load-' . $reports_page_suffix, array( &$this, 'load_reports_page' ) );
+		add_action( 'load-' . $mobile_app_page_suffix, array( &$this, 'load_mobile_app_page' ) );
 	}
 
 	function load_admin_page() {
@@ -104,6 +105,10 @@ class Admin {
 	function load_reports_page() {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_reports_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_reports_js' ), 90 );
+	}
+
+	function load_mobile_app_page() {
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_mobile_app_css' ), 90 );
 	}
 
 	function login_styles_reset( $style ) {
@@ -130,6 +135,12 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_style( 'tainacan-roles-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-roles.css', [], TAINACAN_VERSION );
+	}
+
+	function add_mobile_app_css() {
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_style( 'tainacan-mobile-app-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-mobile-app.css', [], TAINACAN_VERSION );
 	}
 
 	function add_roles_js() {

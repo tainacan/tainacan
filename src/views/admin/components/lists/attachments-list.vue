@@ -194,8 +194,12 @@
 
     @media screen and (max-width: 769px) {
         .table-container {
-            padding-left: 0;
-            padding-right: 0;
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+        .pagination-area {
+            margin-left: 0;
+            margin-right: 0;
         }
     }
     .uploaded-files {

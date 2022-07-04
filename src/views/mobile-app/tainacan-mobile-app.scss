@@ -1,0 +1,47 @@
+// Clears wordpress content
+html {
+    overflow-y: hidden;
+}
+body.admin_page_tainacan_mobile_app {
+    background-color: white;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+
+    #adminmenumain,
+    #wpadminbar,
+    #wpfooter {
+        display: none;
+    }
+    #wp-auth-check-wrap {
+        z-index: 9999999;
+    }
+
+    #wpcontent,
+    #wpbody,
+    #wpbody-content {
+        padding: 0px;
+        margin: 0;
+    }
+    h1 {
+        display: none;
+    }
+    .wrap {
+        margin: 0px !important;
+        padding: 1em 2em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: calc(100vh - 2em);
+        width: calc(100vw - 4em);
+        text-align: center;
+        background-image: url('../../assets/images/tainacan_loading.gif');
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+}

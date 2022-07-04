@@ -600,7 +600,7 @@
                                             v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
                                             :show-name="false"
                                             :modal-on-click="false"
-                                            :size="125"
+                                            :size="120"
                                             :file="{
                                                 media_type: 'image',
                                                 thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
@@ -757,7 +757,9 @@
                     class="sequence-progress"/>
 
             <!-- Last Updated Info -->
-            <div class="update-info-section">
+            <div 
+                    v-if="!$adminOptions.mobileAppMode"
+                    class="update-info-section">
                 <p
                         class="has-text-gray5"
                         v-if="isOnSequenceEdit">
@@ -2148,7 +2150,6 @@ export default {
 
                     .sub-header {
                         padding-right: 0.5em;
-                        padding-left: 0.5em;
                     }
 
                     .field {
@@ -2159,14 +2160,19 @@ export default {
                             margin-left: 0;
                             margin-right: 22px;
                             width: 100%;
-                            display: block;
+                            display: flex;
+                            position: relative;
+                            justify-content: space-between;
+                            align-items: center;
 
                             .label {
                                 margin-left: 2px;
+                                margin-right: 0.5em;
                             }
                             .icon {
-                                float: right;
-                                width: 3em;
+                                margin-left: auto;
+                                order: 3;
+                                width: 2em;
                                 justify-content: flex-end;
                             }
                         }
@@ -2207,7 +2213,7 @@ export default {
         }
     }
     .section-box+.section-label {
-        border-top: 1px dashed var(--tainacan-gray3);
+        border-top: 1px solid var(--tainacan-gray1);
         padding-top: 6px;
     }
 
@@ -2274,7 +2280,7 @@ export default {
             .metadata-name-search {
                 position: absolute;
                 right: 0.5em;
-                top: 0.35em;
+                top: 0.75em;
                 z-index: 9999;
                 padding-left: 0 !important;
             }
@@ -2499,9 +2505,9 @@ export default {
             font-size: 0.8em;
         }
         img {
-            height: 125px;
-            width: 125px;
-            min-width: 125px;
+            height: 120px;
+            width: 120px;
+            min-width: 120px;
         }
         .image-placeholder {
             position: absolute;
@@ -2648,7 +2654,7 @@ export default {
         }
 
         @media screen and (max-width: 769px) {
-            padding: 16px 0.5em;
+            padding: 13px 0.5em;
             width: 100%;
             flex-wrap: wrap;
             height: auto;
