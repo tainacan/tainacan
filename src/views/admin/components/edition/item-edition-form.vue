@@ -23,6 +23,74 @@
                 <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
             </h1>
         </tainacan-title>
+
+        <div 
+                v-if="$adminOptions.mobileAppMode"
+                class="tainacan-mobile-app-header">
+            <button
+                    @click="exitToMobileApp">
+                <span class="icon">
+                    <i class="tainacan-icon">
+                        <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                width="24">
+                            <path
+                                    d="M0 0h24v24H0z"
+                                    fill="none"/>
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                    </i>
+                </span>
+            </button>
+            <h1 v-if="isCreatingNewItem">
+                {{ $i18n.get('title_create_item_collection') + ' ' }}
+                <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
+            </h1>
+            <h1 v-else>
+                {{ $i18n.get('title_edit_item') + ' ' }}
+                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+            </h1>
+            <button 
+                    v-if="!formErrors.length || isUpdatingValues"
+                    @click="isMobileSubheaderOpen = !isMobileSubheaderOpen">
+                <span 
+                        v-if="isUpdatingValues"
+                        class="icon">
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating"/>
+                </span>
+                <span 
+                        v-else
+                        class="icon">
+                    <i class="tainacan-icon">
+                        <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                width="24">
+                            <path
+                                    d="M0 0h24v24H0z"
+                                    fill="none"/>
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                        </svg>
+                    </i>
+                </span>
+            </button>
+            <item-metadatum-errors-tooltip 
+                    v-else
+                    :form-errors="formErrors" />
+            <div 
+                    :class="{'is-open': isMobileSubheaderOpen}"
+                    class="header-message">
+                <span v-if="!formErrors.length">{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
+                <span 
+                        v-else
+                        class="help is-danger">
+                    {{ formErrorMessage }}
+                </span>
+            </div>
+        </div>
         
         <transition
                 mode="out-in"
@@ -152,7 +220,7 @@
                                     <svg
                                             width="24"
                                             height="24"
-                                            viewBox="0 0 24 24">
+                                            viewBox="0 0 32 32">
                                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                                         <path
                                                 d="M0 0h24v24H0z"
@@ -1001,7 +1069,7 @@ export default {
             activeTab: 'metadata',
             shouldLoadAttachments: false,
             metadataNameFilterString: '',
-            
+            isMobileSubheaderOpen: false,
             urlForcedIframe: false,
             urlIframeWidth: 600,
             urlIframeHeight: 450,
@@ -1961,6 +2029,16 @@ export default {
                     }
                 }
             }
+        },
+        exitToMobileApp() {
+            // In Mobile app, we send a message to inform updates
+            if (
+                this.$adminOptions.mobileAppMode &&
+                webkit &&
+                webkit.messageHandlers &&
+                webkit.messageHandlers.cordova_iab
+            )
+                webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'exited_from_navigation', 'item': this.item }));
         }
     }
 }
@@ -2113,6 +2191,10 @@ export default {
                 }
             }
         }
+    }
+
+    .tainacan-admin-collection-mobile-app-mode .page-container {
+        padding-top: 0px;
     }
 
     .section-label {
@@ -2594,6 +2676,56 @@ export default {
                 .button.is-success {
                     margin-left: auto;
                 }
+            }
+        }
+    }
+
+    .tainacan-mobile-app-header {
+        padding: 0 1rem;
+        background: var(--tainacan-gray1);
+        color: var(--tainacan-gray5);
+        font-weight: bold;
+        font-size: 1.25rem;
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h1 {
+            padding: 0.5em 1em;
+        }
+        button {
+            padding: 0px;
+            margin: 0px;
+            border: none;
+            background: none;
+        }
+        svg {
+            display: flex;
+        }
+
+        .header-message {
+            padding: 1rem;
+            background: var(--tainacan-gray1);
+            font-size: 0.875rem;
+            font-weight: normal;
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            margin-top: 0px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: -1rem;
+            z-index: -1;
+            opacity: 0.0;
+            transition: margin-top 0.2s ease, opacity 0.2s ease;
+
+            &.is-open {
+                opacity: 1.0;
+                margin-top: 65px;
+                z-index: 0;
             }
         }
     }
