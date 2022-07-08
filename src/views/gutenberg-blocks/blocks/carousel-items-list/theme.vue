@@ -333,6 +333,7 @@ export default {
         mountCarousel() {
             const self = this;
             const spaceBetween = Number(self.spaceBetweenItems);
+            const slidesPerView = Number(self.maxItemsPerScreen);
             this.swiper = new Swiper('#' + self.blockId + '-carousel', {
                 watchOverflow: true,
                 mousewheel: {
@@ -351,11 +352,11 @@ export default {
                     prevEl: '#' + self.blockId + '-prev',
                 }, 
                 breakpoints: (!isNaN(self.maxItemsPerScreen) && self.maxItemsPerScreen != 6) ? {
-                    498:  { slidesPerView: self.maxItemsPerScreen - 4 > 0 ? self.maxItemsPerScreen - 4 : 1, spaceBetween: spaceBetween }, 
-                    768:  { slidesPerView: self.maxItemsPerScreen - 3 > 0 ? self.maxItemsPerScreen - 3 : 1, spaceBetween: spaceBetween },
-                    1024: { slidesPerView: self.maxItemsPerScreen - 2 > 0 ? self.maxItemsPerScreen - 2 : 1, spaceBetween: spaceBetween },
-                    1366: { slidesPerView: self.maxItemsPerScreen - 1 > 0 ? self.maxItemsPerScreen - 1 : 1, spaceBetween: spaceBetween },
-                    1600: { slidesPerView: self.maxItemsPerScreen > 0 ? self.maxItemsPerScreen : 1, spaceBetween: spaceBetween },
+                    498:  { slidesPerView: slidesPerView - 4 > 0 ? slidesPerView - 4 : 1, spaceBetween: spaceBetween }, 
+                    768:  { slidesPerView: slidesPerView - 3 > 0 ? slidesPerView - 3 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: slidesPerView - 2 > 0 ? slidesPerView - 2 : 1, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: slidesPerView - 1 > 0 ? slidesPerView - 1 : 1, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: slidesPerView > 0 ? slidesPerView : 1, spaceBetween: spaceBetween },
                 } : {
                     498:  { slidesPerView: 2, spaceBetween: spaceBetween }, 
                     768:  { slidesPerView: 3, spaceBetween: spaceBetween },

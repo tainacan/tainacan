@@ -248,6 +248,7 @@ export default {
         mountCarousel() {
             const self = this;
             const spaceBetween = Number(self.spaceBetweenCollections);
+            const slidesPerView = Number(self.maxCollectionsPerScreen);
             this.swiper = new Swiper('#' + self.blockId + '-carousel', {
                 mousewheel: {
                     forceToAxis: true
@@ -271,11 +272,11 @@ export default {
                     1366: { slidesPerView: self.showCollectionThumbnail ? 4 : 3, spaceBetween: spaceBetween },
                     1600: { slidesPerView: self.showCollectionThumbnail ? 5 : 4, spaceBetween: spaceBetween },
                 } : {
-                    498:  { slidesPerView: self.maxCollectionsPerScreen - 4 > 0 ? self.maxCollectionsPerScreen - 4 : 1, spaceBetween: spaceBetween }, 
-                    768:  { slidesPerView: self.maxCollectionsPerScreen - 3 > 0 ? self.maxCollectionsPerScreen - 3 : 1, spaceBetween: spaceBetween },
-                    1024: { slidesPerView: self.maxCollectionsPerScreen - 2 > 0 ? self.maxCollectionsPerScreen - 2 : 1, spaceBetween: spaceBetween },
-                    1366: { slidesPerView: self.maxCollectionsPerScreen - 1 > 0 ? self.maxCollectionsPerScreen - 1 : 1, spaceBetween: spaceBetween },
-                    1600: { slidesPerView: self.maxCollectionsPerScreen > 0 ? self.maxCollectionsPerScreen : 1, spaceBetween: spaceBetween },
+                    498:  { slidesPerView: slidesPerView - 4 > 0 ? slidesPerView - 4 : 1, spaceBetween: spaceBetween }, 
+                    768:  { slidesPerView: slidesPerView - 3 > 0 ? slidesPerView - 3 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: slidesPerView - 2 > 0 ? slidesPerView - 2 : 1, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: slidesPerView - 1 > 0 ? slidesPerView - 1 : 1, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: slidesPerView > 0 ? slidesPerView : 1, spaceBetween: spaceBetween },
                 },
                 autoplay: (self.autoPlay && !self.isLoading) ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides && !self.isLoading,
