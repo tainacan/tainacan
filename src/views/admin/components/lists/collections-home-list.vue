@@ -74,9 +74,8 @@
             </li>
         </ul>   
         <ul v-if="collections.length > 0 && !isLoading">
-            <li>
+            <li v-if="$userCaps.hasCapability('tnc_rep_edit_collections')">
                 <router-link
-                        v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
                         tag="a" 
                         :to="$routerHelper.getNewCollectionPath()"
                         class="tainacan-card new-card">
