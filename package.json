@@ -18,7 +18,7 @@
     "css-vars-ponyfill": "^2.4.7",
     "floating-vue": "^1.0.0-beta.17",
     "masonry-layout": "^4.2.2",
-    "moment": "^2.29.3",
+    "moment": "^2.29.4",
     "node-sass": "^7.0.1",
     "photoswipe": "^5.2.8",
     "qs": "^6.10.5",
