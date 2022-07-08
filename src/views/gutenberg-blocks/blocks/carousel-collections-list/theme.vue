@@ -247,6 +247,7 @@ export default {
         },
         mountCarousel() {
             const self = this;
+            const spaceBetween = Number(self.spaceBetweenCollections);
             this.swiper = new Swiper('#' + self.blockId + '-carousel', {
                 mousewheel: {
                     forceToAxis: true
@@ -257,24 +258,24 @@ export default {
                 allowTouchMove: true, 
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: self.spaceBetweenCollections,
+                spaceBetween: spaceBetween,
                 slideToClickedSlide: true,
                 navigation: {
                     nextEl: '#' + self.blockId + '-next',
                     prevEl: '#' + self.blockId + '-prev',
                 },
                 breakpoints: !isNaN(self.maxCollectionsPerScreen) ? {
-                    498:  { slidesPerView: self.showCollectionThumbnail ? 1 : 1, spaceBetween: self.spaceBetweenCollections },
-                    768:  { slidesPerView: self.showCollectionThumbnail ? 2 : 1, spaceBetween: self.spaceBetweenCollections },
-                    1024: { slidesPerView: self.showCollectionThumbnail ? 3 : 2, spaceBetween: self.spaceBetweenCollections },
-                    1366: { slidesPerView: self.showCollectionThumbnail ? 4 : 3, spaceBetween: self.spaceBetweenCollections },
-                    1600: { slidesPerView: self.showCollectionThumbnail ? 5 : 4, spaceBetween: self.spaceBetweenCollections },
+                    498:  { slidesPerView: self.showCollectionThumbnail ? 1 : 1, spaceBetween: spaceBetween },
+                    768:  { slidesPerView: self.showCollectionThumbnail ? 2 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: self.showCollectionThumbnail ? 3 : 2, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: self.showCollectionThumbnail ? 4 : 3, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: self.showCollectionThumbnail ? 5 : 4, spaceBetween: spaceBetween },
                 } : {
-                    498:  { slidesPerView: self.maxCollectionsPerScreen - 4 > 0 ? self.maxCollectionsPerScreen - 4 : 1, spaceBetween: self.spaceBetweenCollections }, 
-                    768:  { slidesPerView: self.maxCollectionsPerScreen - 3 > 0 ? self.maxCollectionsPerScreen - 3 : 1, spaceBetween: self.spaceBetweenCollections },
-                    1024: { slidesPerView: self.maxCollectionsPerScreen - 2 > 0 ? self.maxCollectionsPerScreen - 2 : 1, spaceBetween: self.spaceBetweenCollections },
-                    1366: { slidesPerView: self.maxCollectionsPerScreen - 1 > 0 ? self.maxCollectionsPerScreen - 1 : 1, spaceBetween: self.spaceBetweenCollections },
-                    1600: { slidesPerView: self.maxCollectionsPerScreen > 0 ? self.maxCollectionsPerScreen : 1, spaceBetween: self.spaceBetweenCollections },
+                    498:  { slidesPerView: self.maxCollectionsPerScreen - 4 > 0 ? self.maxCollectionsPerScreen - 4 : 1, spaceBetween: spaceBetween }, 
+                    768:  { slidesPerView: self.maxCollectionsPerScreen - 3 > 0 ? self.maxCollectionsPerScreen - 3 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: self.maxCollectionsPerScreen - 2 > 0 ? self.maxCollectionsPerScreen - 2 : 1, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: self.maxCollectionsPerScreen - 1 > 0 ? self.maxCollectionsPerScreen - 1 : 1, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: self.maxCollectionsPerScreen > 0 ? self.maxCollectionsPerScreen : 1, spaceBetween: spaceBetween },
                 },
                 autoplay: (self.autoPlay && !self.isLoading) ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides && !self.isLoading,

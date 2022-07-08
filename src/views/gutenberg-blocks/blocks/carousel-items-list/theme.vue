@@ -332,6 +332,7 @@ export default {
         },
         mountCarousel() {
             const self = this;
+            const spaceBetween = Number(self.spaceBetweenItems);
             this.swiper = new Swiper('#' + self.blockId + '-carousel', {
                 watchOverflow: true,
                 mousewheel: {
@@ -343,24 +344,24 @@ export default {
                 allowTouchMove: true, 
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: self.spaceBetweenItems,
+                spaceBetween: spaceBetween,
                 slideToClickedSlide: true,
                 navigation: {
                     nextEl: '#' + self.blockId + '-next',
                     prevEl: '#' + self.blockId + '-prev',
                 }, 
                 breakpoints: (!isNaN(self.maxItemsPerScreen) && self.maxItemsPerScreen != 6) ? {
-                    498:  { slidesPerView: self.maxItemsPerScreen - 4 > 0 ? self.maxItemsPerScreen - 4 : 1, spaceBetween: self.spaceBetweenItems }, 
-                    768:  { slidesPerView: self.maxItemsPerScreen - 3 > 0 ? self.maxItemsPerScreen - 3 : 1, spaceBetween: self.spaceBetweenItems },
-                    1024: { slidesPerView: self.maxItemsPerScreen - 2 > 0 ? self.maxItemsPerScreen - 2 : 1, spaceBetween: self.spaceBetweenItems },
-                    1366: { slidesPerView: self.maxItemsPerScreen - 1 > 0 ? self.maxItemsPerScreen - 1 : 1, spaceBetween: self.spaceBetweenItems },
-                    1600: { slidesPerView: self.maxItemsPerScreen > 0 ? self.maxItemsPerScreen : 1, spaceBetween: self.spaceBetweenItems },
+                    498:  { slidesPerView: self.maxItemsPerScreen - 4 > 0 ? self.maxItemsPerScreen - 4 : 1, spaceBetween: spaceBetween }, 
+                    768:  { slidesPerView: self.maxItemsPerScreen - 3 > 0 ? self.maxItemsPerScreen - 3 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: self.maxItemsPerScreen - 2 > 0 ? self.maxItemsPerScreen - 2 : 1, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: self.maxItemsPerScreen - 1 > 0 ? self.maxItemsPerScreen - 1 : 1, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: self.maxItemsPerScreen > 0 ? self.maxItemsPerScreen : 1, spaceBetween: spaceBetween },
                 } : {
-                    498:  { slidesPerView: 2, spaceBetween: self.spaceBetweenItems }, 
-                    768:  { slidesPerView: 3, spaceBetween: self.spaceBetweenItems },
-                    1024: { slidesPerView: 4, spaceBetween: self.spaceBetweenItems },
-                    1366: { slidesPerView: 5, spaceBetween: self.spaceBetweenItems },
-                    1600: { slidesPerView: 6, spaceBetween: self.spaceBetweenItems }
+                    498:  { slidesPerView: 2, spaceBetween: spaceBetween }, 
+                    768:  { slidesPerView: 3, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: 4, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: 5, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: 6, spaceBetween: spaceBetween }
                 },
                 autoplay: self.autoPlay ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides ? self.loopSlides : false,
