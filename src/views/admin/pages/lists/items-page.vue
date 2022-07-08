@@ -645,7 +645,8 @@
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,
                 metadataSearchCancel: undefined,
-                isMobileScreen: false
+                isMobileScreen: false,
+                windowWidth: null
             }
         },
         computed: {
@@ -1218,12 +1219,18 @@
             },
             hideFiltersOnMobile: _.debounce( function() {
                 this.$nextTick(() => {
- 
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
-                        const previousIsMobile = this.isMobileScreen;
-                        this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
-                        
-                        if ((!previousIsMobile && this.isMobileScreen) || this.openAdvancedSearch) {
+                        const previousMobileScreen = this.isMobileScreen;
+                        const previousWindowWidth = this.windowWidth;
+
+                        this.windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+                        this.isMobileScreen = this.windowWidth <= 768;
+
+                        if (                                                    // We DO NOT want to open the filters due to this resize event IF:
+                            (!previousMobileScreen && this.isMobileScreen) ||   // We're coming from a non-mobile screen to a mobile screen, or
+                            (previousWindowWidth == this.windowWidth) ||        // The window size didn't changed (the resize event is triggered by scrolls on mobile), or
+                            this.openAdvancedSearch                             // Advanced search is opened
+                        ) {
                             this.isFiltersModalActive = false;
                         } else {
                             this.isFiltersModalActive = true;
