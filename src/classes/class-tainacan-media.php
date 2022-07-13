@@ -74,6 +74,7 @@ class Media {
 
 			return $this->insert_attachment_from_blob($file, basename($url), $post_id);
 		} catch (\Exception $e) {
+			error_log($e);
 			return false;
 		}
 
