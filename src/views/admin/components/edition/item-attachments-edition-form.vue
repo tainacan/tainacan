@@ -23,7 +23,7 @@
                     style="float: right; font-size: 0.875em; margin: 2px 5px;"
                     type="button"
                     class="link-style"
-                    @click.prevent="$emit('openAttachmentsMediaFrame')"
+                    @click.prevent="($event) => $emit('openAttachmentsMediaFrame', $event)"
                     :disabled="isLoading">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-edit"/>

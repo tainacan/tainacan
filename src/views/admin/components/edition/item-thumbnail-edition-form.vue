@@ -59,7 +59,7 @@
                             class="button is-rounded is-secondary"
                             id="button-edit-thumbnail"
                             :aria-label="$i18n.get('label_button_edit_thumb')"
-                            @click.prevent="$emit('openThumbnailMediaFrame')">
+                            @click.prevent="($event) => $emit('openThumbnailMediaFrame', $event)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
@@ -121,7 +121,7 @@ export default {
         display: flex;
 
         .field {
-            margin-top: -1em;
+            margin-left: 1em;
             width: 100%;
         }
         .content {

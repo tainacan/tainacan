@@ -530,7 +530,9 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             hideItemsListPageTitle: true,
             hideItemEditionPageTitle: true,
             hideBulkEditionPageTitle: true,
-            hideItemSingleCollectionName: true
+            hideItemSingleCollectionName: true,
+            itemEditionDocumentInsideTabs: true,
+            itemEditionAttachmentsInsideTabs: true,
         }
     }
     for (let adminSpecialMode in adminSpecialModes) {
@@ -623,6 +625,8 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         * hideItemEditionThumbnail
         * hideItemEditionAttachments
         * allowItemEditionModalInsideModal // Not recommended!
+        * itemEditionDocumentInsideTabs
+        * itemEditionAttachmentInsideTabs
         
         * hideBulkEditionPageTitle
         

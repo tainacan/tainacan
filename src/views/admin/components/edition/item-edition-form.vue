@@ -148,7 +148,9 @@
 
                     <div
                             class="column main-column"
-                            :class="!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail ? 'is-7' : 'is-12'">
+                            :class="
+                                (( (!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
+                                (!$adminOptions.hideItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginRightForm">
@@ -290,7 +292,7 @@
                         
                             <section 
                                     :style="tabs.length < 2 ? 'border-top: none; padding-top: 0;' : ''"
-                                    class="tab-content">
+                                    class="tab-content item-edition-tab-content">
 
                                 <div 
                                         v-if="tabs.length < 2"
@@ -508,7 +510,7 @@
 
                                 <!-- Document and thumbnail on mobile modal -->
                                 <div    
-                                        v-if="activeTab === 'document'"
+                                        v-if="activeTab === 'document' && $adminOptions.itemEditionDocumentInsideTabs"
                                         class="tab-item"
                                         role="tabpanel"
                                         aria-labelledby="document-tab-label"
@@ -532,7 +534,7 @@
 
                                 <!-- Attachments on mobile modal -->
                                 <div    
-                                        v-if="activeTab === 'attachments'"
+                                        v-if="activeTab === 'attachments' && $adminOptions.itemEditionAttachmentsInsideTabs"
                                         class="tab-item"
                                         role="tabpanel"
                                         aria-labelledby="attachments-tab-label"
@@ -543,7 +545,7 @@
                                             :is-loading="isLoading"
                                             :total-attachments="totalAttachments"
                                             :should-load-attachments="shouldLoadAttachments"
-                                            @openAttachmentsMediaFrame="attachmentMediaFrame.openFrame($event)"
+                                            @openAttachmentsMediaFrame="($event) => attachmentsMediaFrame.openFrame($event)"
                                             @onDeleteAttachment="deleteAttachment($event)" />
                                 </div>
 
@@ -552,7 +554,8 @@
                     </div>
 
                     <div 
-                            v-if="!$adminOptions.mobileAppMode && (!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail)"
+                            v-if="( (!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
+                                (!$adminOptions.hideItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)"
                             class="column is-5">
                 
                         <div 
@@ -593,7 +596,7 @@
                                     :is-loading="isLoading"
                                     :total-attachments="totalAttachments"
                                     :should-load-attachments="shouldLoadAttachments"
-                                    @openAttachmentsMediaFrame="attachmentMediaFrame.openFrame($event)"
+                                    @openAttachmentsMediaFrame="($event) => attachmentsMediaFrame.openFrame($event)"
                                     @onDeleteAttachment="deleteAttachment($event)" />
 
                             <!-- Hook for extra Form options -->
@@ -952,7 +955,7 @@ export default {
             thumbnail: {},
             formErrorMessage: '',
             thumbnailMediaFrame: undefined,
-            attachmentMediaFrame: undefined,
+            attachmentsMediaFrame: undefined,
             fileMediaFrame: undefined,
             urlLink: '',
             textLink: '',
@@ -1012,24 +1015,22 @@ export default {
                 name: this.$i18n.get('metadata'),
                 total: this.metadatumList.length
             }];
-            if (this.$adminOptions.mobileAppMode) {
-                if (!this.$adminOptions.hideItemEditionDocument || !this.$adminOptions.hideItemEditionThumbnail) {
-                    pageTabs.push({
-                        slug: 'document',
-                        icon: 'item',
-                        name: this.$i18n.get('label_document')
-                    });
-                }
-                if (!this.$adminOptions.hideItemEditionAttachments) {
-                    pageTabs.push({
-                        slug: 'attachments',
-                        icon: 'attachments',
-                        name: this.$i18n.get('label_attachments'),
-                        total: this.totalAttachments
-                    });
-                }
+            if ( this.$adminOptions.itemEditionDocumentInsideTabs && (!this.$adminOptions.hideItemEditionDocument || !this.$adminOptions.hideItemEditionThumbnail) ) {
+                pageTabs.push({
+                    slug: 'document',
+                    icon: 'item',
+                    name: this.$i18n.get('label_document')
+                });
             }
-            if (this.totalRelatedItems) {
+            if ( this.$adminOptions.itemEditionAttachmentsInsideTabs && !this.$adminOptions.hideItemEditionAttachments ) {
+                pageTabs.push({
+                    slug: 'attachments',
+                    icon: 'attachments',
+                    name: this.$i18n.get('label_attachments'),
+                    total: this.totalAttachments
+                });
+            }
+            if ( this.totalRelatedItems ) {
                 pageTabs.push({
                     slug: 'related',
                     icon: 'processes tainacan-icon-rotate-270',
@@ -1693,7 +1694,7 @@ export default {
                     }
                 }
             );
-            this.attachmentMediaFrame = new wpMediaFrames.attachmentControl(
+            this.attachmentsMediaFrame = new wpMediaFrames.attachmentControl(
                 'my-attachment-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
@@ -2025,11 +2026,13 @@ export default {
                     }
                 }
 
-                .field {
-                    padding: 12px 0px 12px 42px;
-                    margin-left: 8px;
+                .metadata-section-metadata-list {
+                    .field {
+                        padding: 12px 0px 12px 42px;
+                        margin-left: 8px;
+                    }
                 }
-                .tab-item>.field:last-child {
+                .item-edition-tab-content .tab-item>.field:last-child {
                     margin-bottom: 187px;
                 }
 
@@ -2059,45 +2062,51 @@ export default {
                     max-width: 100%;
                     width: 100%;
 
-                    .sub-header {
-                        padding-right: 0.5em;
-                    }
+                    .metadata-section-metadata-list {
 
-                    .field {
-                        padding: 1em 0.75em;
-                        
-                        /deep/ .collapse-handle {
-                            font-size: 1em;
-                            margin-left: 0;
-                            margin-right: 22px;
-                            width: 100%;
-                            display: flex;
-                            position: relative;
-                            justify-content: space-between;
-                            align-items: center;
+                        .sub-header {
+                            padding-right: 0.5em;
+                        }
 
-                            .label {
-                                margin-left: 2px;
-                                margin-right: 0.5em;
-                            }
-                            .icon {
-                                margin-left: auto;
-                                order: 3;
-                                width: 2em;
-                                justify-content: flex-end;
+                        .field {
+                            padding: 1em 0.75em;
+                            
+                            /deep/ .collapse-handle {
+                                font-size: 1em;
+                                margin-left: 0;
+                                margin-right: 22px;
+                                width: 100%;
+                                display: flex;
+                                position: relative;
+                                justify-content: space-between;
+                                align-items: center;
+
+                                .label {
+                                    margin-left: 2px;
+                                    margin-right: 0.5em;
+                                }
+                                .icon {
+                                    margin-left: auto;
+                                    order: 3;
+                                    width: 2em;
+                                    justify-content: flex-end;
+                                }
                             }
                         }
                     }
-                    .tab-content {
+                    .item-edition-tab-content {
                         padding-left: 0;
                         padding-right: 0;
 
                     }
-                    .tab-item>.field:last-child {
+                    .item-edition-tab-content .tab-item>.field:last-child {
                         margin-bottom: 24px;
                     }
                     &>.columns {
                         display: flex;
+                    }
+                    .section-label {
+                        padding: 0.5em 1em 0.5em 0em;
                     }
                 }
                 &>.column:not(.main-column) {
@@ -2105,6 +2114,11 @@ export default {
                     width: 100%;
                     padding-left: 0;
                     padding-right: 0;
+
+                    .section-box {
+                        padding: 0 1em 0 1.875em;
+                        margin-top: 10px;
+                    }
                 }
             }
         }
@@ -2237,7 +2251,7 @@ export default {
             }
         }
 
-        .tab-content {
+        .item-edition-tab-content {
             border-top: 1px solid var(--tainacan-input-border-color);
         }
         .swiper {
@@ -2290,10 +2304,9 @@ export default {
         }   
 
         .section-box {
-            padding: 0 1em 0 1.875em;
-            margin-top: 10px;
-            margin-bottom: 16px;
             position: relative;
+            padding: 0 1.75em 0 1.75em;
+            margin-bottom: 16px;
         }
 
         #button-edit-thumbnail,
@@ -2320,7 +2333,7 @@ export default {
         }
 
         .metadata-section-metadata-list .metadatum-description-help-info {
-            padding: 0.5rem 1rem;
+            padding: 0.125rem 1rem 0.5rem 0.125rem;
         }
 
         .related-items-list-heading {

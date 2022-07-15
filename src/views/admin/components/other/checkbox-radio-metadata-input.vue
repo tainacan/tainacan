@@ -912,7 +912,8 @@
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        padding: 2px 0;
+        margin-left: 0px !important;
+        padding: 2px 0 !important;
         -webkit-break-inside: avoid;
         break-inside: avoid;
 
@@ -1127,7 +1128,8 @@
     }
 
     .tainacan-checkbox-search-section {
-        margin-bottom: 0;
+        margin: 0px !important;
+        padding: 0px !important;
 
         .control {
             margin: 0;

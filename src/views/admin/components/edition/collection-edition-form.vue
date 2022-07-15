@@ -1421,14 +1421,13 @@ export default {
         .label {
             font-weight: normal;
             margin-bottom: 0;
-
-            .help {
-                opacity: 0.7;
-            }
         }
         .control.is-expanded {
             width: 100%;
         }
+    }
+    .sorting-options+.help {
+        opacity: 0.7;
     }
     .status-radios {
         display: flex;
