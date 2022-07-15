@@ -531,6 +531,8 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             hideItemEditionPageTitle: true,
             hideBulkEditionPageTitle: true,
             hideItemSingleCollectionName: true,
+            hideItemEditionCollapses: true,
+            hideItemEditionMetadataTypes: true,
             itemEditionDocumentInsideTabs: true,
             itemEditionAttachmentsInsideTabs: true,
         }
@@ -624,6 +626,8 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideItemEditionDocumentUrlInput
         * hideItemEditionThumbnail
         * hideItemEditionAttachments
+        * hideItemEditionCollapses
+        * hideItemEditionMetadataTypes
         * allowItemEditionModalInsideModal // Not recommended!
         * itemEditionDocumentInsideTabs
         * itemEditionAttachmentInsideTabs

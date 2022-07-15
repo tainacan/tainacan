@@ -293,23 +293,6 @@
                             <section 
                                     :style="tabs.length < 2 ? 'border-top: none; padding-top: 0;' : ''"
                                     class="tab-content item-edition-tab-content">
-
-                                <div 
-                                        v-if="tabs.length < 2"
-                                        class="section-label">
-                                    <label>
-                                        <span class="icon has-text-gray4">
-                                            <i class="tainacan-icon tainacan-icon-metadata"/>
-                                        </span>
-                                        {{ $i18n.get('metadata') }}&nbsp;
-                                        <span 
-                                                v-if="metadatumList.length"
-                                                class="has-text-gray has-text-weight-normal"
-                                                style="font-size: 0.875em;">
-                                            ({{ metadatumList.length }})
-                                        </span>
-                                    </label>
-                                </div>
                                 
                                 <!-- Metadata from Collection-------------------------------- -->
                                 <div    
@@ -333,6 +316,7 @@
                                                 class="sequence-progress" />
 
                                         <a
+                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionCollapses"
                                                 class="collapse-all"
                                                 @click="toggleCollapseAll()">
                                             <span class="icon">
@@ -344,7 +328,7 @@
                                         </a>
 
                                         <span 
-                                                v-if="isUpdatingValues && isMetadataNavigation"
+                                                v-if="isUpdatingValues && isMetadataNavigation && !$adminOptions.mobileAppMode"
                                                 class="update-warning">
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating"/>
@@ -353,7 +337,8 @@
 
                                         <b-field 
                                                 v-if="metadatumList && metadatumList.length > 3"
-                                                class="header-item metadata-navigation">
+                                                class="header-item metadata-navigation"
+                                                :style="$adminOptions.hideItemEditionCollapses ? 'padding-left: 0.35em !important;' : ''">
                                             <b-button
                                                     v-if="!isMetadataNavigation" 
                                                     @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
@@ -425,8 +410,9 @@
                                         <div class="metadata-section-header section-label">
                                             <span   
                                                     class="collapse-handle"
-                                                    @click="toggleMetadataSectionCollapse(sectionIndex)">
+                                                    @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses) ? null : toggleMetadataSectionCollapse(sectionIndex)">
                                                 <span 
+                                                        v-if="!$adminOptions.hideItemEditionCollapses && !isMetadataNavigation"
                                                         class="icon"
                                                         @click="toggleMetadataSectionCollapse(sectionIndex)">
                                                     <i 
@@ -436,7 +422,18 @@
                                                             }"
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                                 </span>
-                                                <label>{{ metadataSection.name }}</label>
+                                                <label>
+                                                    <span class="icon has-text-gray4">
+                                                        <i class="tainacan-icon tainacan-icon-metadata"/>
+                                                    </span>
+                                                    {{ metadataSection.name }}&nbsp;
+                                                    <span 
+                                                            v-if="metadataSection.metadata_object_list && metadataSection.metadata_object_list.length"
+                                                            class="has-text-gray has-text-weight-normal"
+                                                            style="font-size: 0.875em;">
+                                                        ({{ metadataSection.metadata_object_list.length }})
+                                                    </span>
+                                                </label>
                                                 <help-button
                                                         v-if="metadataSection.description" 
                                                         :title="metadataSection.name"
@@ -461,6 +458,7 @@
                                                         :item-metadatum="itemMetadatum"
                                                         :metadata-name-filter-string="metadataNameFilterString"
                                                         :is-collapsed="metadataCollapses[index]"
+                                                        :hide-collapses="$adminOptions.hideItemEditionCollapses || isMetadataNavigation"
                                                         :is-mobile-screen="isMobileScreen"
                                                         :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
                                                         :is-focused="focusedMetadatum === index"
@@ -572,6 +570,7 @@
 
                             <!-- Document -------------------------------- -->
                             <item-document-edition-form 
+                                    v-if="!$adminOptions.itemEditionDocumentInsideTabs"
                                     :item="item"
                                     :form="form"
                                     @onSetDocument="setDocument"
@@ -579,9 +578,11 @@
                                     @onSetFileDocument="setFileDocument"
                                     @onSetTextDocument="setTextDocument"
                                     @onSetURLDocument="setURLDocument" />
+                            <hr>
 
                             <!-- Thumbnail -------------------------------- -->
                             <item-thumbnail-edition-form 
+                                    v-if="!$adminOptions.itemEditionDocumentInsideTabs"
                                     :item="item"
                                     :form="form"
                                     :is-loading="isLoading"
@@ -589,8 +590,11 @@
                                     @onUpdateThumbnailAlt="($event) => form.thumbnail_alt = $event.target.value"
                                     @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
 
+                            <hr v-if="!$adminOptions.itemEditionAttachmentsInsideTabs || hasEndLeftForm">
+
                             <!-- Attachments -->
                             <item-attachments-edition-form
+                                    v-if="!$adminOptions.itemEditionAttachmentsInsideTabs"
                                     :item="item"
                                     :form="form"
                                     :is-loading="isLoading"
@@ -598,6 +602,8 @@
                                     :should-load-attachments="shouldLoadAttachments"
                                     @openAttachmentsMediaFrame="($event) => attachmentsMediaFrame.openFrame($event)"
                                     @onDeleteAttachment="deleteAttachment($event)" />
+
+                            <hr v-if="hasEndLeftForm">
 
                             <!-- Hook for extra Form options -->
                             <template v-if="hasEndLeftForm">
@@ -672,6 +678,7 @@
                     </span>
                 </p>
             </div>
+
             <div
                     class="form-submission-footer"
                     v-if="isEditingItemMetadataInsideIframe">
@@ -974,7 +981,8 @@ export default {
             focusedMetadatum: false,
             isMetadataNavigation: false,
             isOnFirstMetadatumOfCompoundNavigation: false,
-            isOnLastMetadatumOfCompoundNavigation: false
+            isOnLastMetadatumOfCompoundNavigation: false,
+            hideMetadataTypes: this.$adminOptions.hideItemEditionMetadataTypes
         }
     },
     computed: {
@@ -1956,11 +1964,13 @@ export default {
 
 <style lang="scss">
 
-    .tainacan-admin-collection-mobile-app-mode .page-container.item-edition-container {
+    .tainacan-admin-collection-mobile-app-mode .page-container.item-edition-container,
+    .tainacan-admin-collection-mobile-app-mode .page-container.item-creation-container {
         padding-top: 0px;
     }
 
-    .page-container.item-edition-container {
+    .page-container.item-edition-container,
+    .page-container.item-creation-container {
         padding: var(--tainacan-container-padding) 0px 0px 0px;
 
         &>.tainacan-form {
@@ -1968,6 +1978,12 @@ export default {
 
             .field:not(:last-child) {
                 margin-bottom: 0em;
+            }
+
+            hr {
+                height: 1px;
+                margin: 1.25em 0 0.75em;
+                background: var(--tainacan-gray0);
             }
         }
 
@@ -1990,7 +2006,6 @@ export default {
                 padding: 0 0.5em;
             }
         }
-
         .tainacan-form > .columns {
             margin-left: var(--tainacan-one-column);
             margin-right: var(--tainacan-one-column);
@@ -2022,14 +2037,14 @@ export default {
                     justify-content: space-between;
 
                     .column {
-                        padding: 1em 12px 0 12px;
+                        padding: 0.75em 12px 0 12px;
                     }
                 }
 
                 .metadata-section-metadata-list {
                     .field {
                         padding: 12px 0px 12px 42px;
-                        margin-left: 8px;
+                        margin-left: 12px;
                     }
                 }
                 .item-edition-tab-content .tab-item>.field:last-child {
@@ -2039,6 +2054,15 @@ export default {
                 @media screen and (max-width: 769px) {
                     padding-right: var(--tainacan-one-column);
                     max-width: 100%;
+
+                    .metadata-section-metadata-list {
+                        .field {
+                            margin-left: 0px;
+                        }
+                    }
+                    #tainacanTabsSwiper.tabs a {
+                        padding: 0.75em 1.45em;
+                    }
                 }
             }
 
@@ -2067,46 +2091,30 @@ export default {
                         .sub-header {
                             padding-right: 0.5em;
                         }
-
                         .field {
                             padding: 1em 0.75em;
-                            
-                            /deep/ .collapse-handle {
-                                font-size: 1em;
-                                margin-left: 0;
-                                margin-right: 22px;
-                                width: 100%;
-                                display: flex;
-                                position: relative;
-                                justify-content: space-between;
-                                align-items: center;
+                        }
+                        .field.has-collapses-hidden {
+                            padding: 1em 0.75em !important;
+                        }
+                    }
+                    .metadata-section-header {
+                        padding-left: 0.75em;
+                        padding-right: 0.75em;
 
-                                .label {
-                                    margin-left: 2px;
-                                    margin-right: 0.5em;
-                                }
-                                .icon {
-                                    margin-left: auto;
-                                    order: 3;
-                                    width: 2em;
-                                    justify-content: flex-end;
-                                }
-                            }
+                        .collapse-handle>.icon {
+                            float: right;
                         }
                     }
                     .item-edition-tab-content {
                         padding-left: 0;
                         padding-right: 0;
-
                     }
                     .item-edition-tab-content .tab-item>.field:last-child {
                         margin-bottom: 24px;
                     }
                     &>.columns {
                         display: flex;
-                    }
-                    .section-label {
-                        padding: 0.5em 1em 0.5em 0em;
                     }
                 }
                 &>.column:not(.main-column) {
@@ -2125,6 +2133,7 @@ export default {
 
         .section-label {
             position: relative;
+            padding: 0.5em 0.75em 0.5em 0em;
             label {
                 font-size: 1em !important;
                 font-weight: 500 !important;
@@ -2142,7 +2151,6 @@ export default {
             justify-content: space-between;
             align-items: center;
             background-color: var(--tainacan-background-color);
-            margin-top: 8px;
             
             .field {
                 padding: 2px 0px 2px 18px !important;
@@ -2161,7 +2169,7 @@ export default {
                 background-color: var(--tainacan-gray1);
 
                 .metadata-name-search {
-                    top: 0.25em;
+                    top: 0.5em;
                     max-width: 220px;
                 }
 
@@ -2200,7 +2208,6 @@ export default {
                 .metadata-name-search {
                     position: absolute;
                     right: 0.5em;
-                    top: 1.125em;
                     z-index: 9999;
                     padding-left: 0 !important;
                 }
@@ -2237,8 +2244,6 @@ export default {
             font-size: 0.875em;
 
             .field {
-                padding: 10px 0 0px 0px !important;
-
                 .b-radio {
                     width: auto;
                     margin-right: 24px;
@@ -2333,7 +2338,7 @@ export default {
         }
 
         .metadata-section-metadata-list .metadatum-description-help-info {
-            padding: 0.125rem 1rem 0.5rem 0.125rem;
+            padding: 0rem 1rem 0.5rem 0.125rem;
         }
 
         .related-items-list-heading {

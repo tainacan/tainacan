@@ -374,12 +374,13 @@
             border-bottom: none;
             padding: 10px !important;
 
-            .collapse-handle {
-                margin-left: -15px;
-            }
-
             .child-metadata-inputs {
                 margin-left: 0.25em;
+            }
+            @media screen and (min-width: 770px) {
+                .collapse-handle {
+                    margin-left: -15px;
+                }
             }
         }
 
@@ -406,12 +407,40 @@
             cursor: pointer;
             margin-left: -42px;
             line-height: 1.5em;
+
+            .tainacan-help-tooltip-trigger {
+                margin-right: auto;
+            }
         }
         .collapse-handle+div {
             margin-top: 0.5em;
         }
         .add-link {
             font-size: 0.75em;
+        }
+
+        @media screen and (max-width: 769px) {
+            .collapse-handle {
+                font-size: 1em;
+                margin-left: 0;
+                margin-right: 22px;
+                width: 100%;
+                display: flex;
+                position: relative;
+                justify-content: space-between;
+                align-items: center;
+
+                .label {
+                    margin-left: 2px;
+                    margin-right: 0.5em;
+                }
+                .icon {
+                    margin-left: auto;
+                    order: 3;
+                    width: 2em;
+                    justify-content: flex-end;
+                }
+            }
         }
     }
 </style>
