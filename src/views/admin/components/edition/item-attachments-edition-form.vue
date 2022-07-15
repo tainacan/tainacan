@@ -63,7 +63,7 @@ export default {
 
 <style lang="scss" scoped>
     .section-attachments {
-        padding-left: 0;
-        padding-right: 0;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 </style>

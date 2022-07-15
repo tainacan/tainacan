@@ -200,7 +200,11 @@
         .pagination-area {
             margin-left: 0;
             margin-right: 0;
+            justify-content: center;
         }
+    }
+    .table-container {
+        width: 100%;
     }
     .uploaded-files {
         display: block;
