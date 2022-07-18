@@ -277,6 +277,7 @@ class Metadata_Sections extends Repository {
 			$args['meta_query'][] = $meta_query;
 			$results = $this->fetch( $args, 'OBJECT' );
 		}
+		$results[] = $this->get_default_section($collection->get_id());
 
 		return $this->order_result(
 			$results,
@@ -400,7 +401,7 @@ class Metadata_Sections extends Repository {
 				$not_ordinate    = [];
 
 				foreach ( $result as $item ) {
-					$id    = $item->WP_Post->ID;
+					$id = $item->get_id();
 					$index = array_search( $id, array_column( $order, 'id' ) );
 
 					if ( $index !== false ) {
@@ -421,12 +422,10 @@ class Metadata_Sections extends Repository {
 
 				ksort( $result_ordinate );
 				$result_ordinate = array_merge( $result_ordinate, $not_ordinate );
-				$result_ordinate[] = $this->get_default_section($collection->get_id());
 				return $result_ordinate;
 			}
 
 		}
-		$result[] = $this->get_default_section($collection->get_id());
 		return $result;
 	}
 }

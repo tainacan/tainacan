@@ -96,6 +96,21 @@ class REST_Collections_Controller extends REST_Controller {
 			),
 			'schema'                => [$this, 'get_schema'],
 		));
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/metadata_section/default_section/metadata_order', array(
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'update_metadata_order'),
+				'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
+				'args'                => [
+					'metadata_order' => [
+						'description' => __( 'The order of the metadata in the section, an array of objects with integer ID and bool enabled.', 'tainacan' ),
+						'required' => true,
+						'validate_callback' => [$this, 'validate_filters_metadata_order']
+					]
+				],
+			),
+			'schema'                => [$this, 'get_schema'],
+		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/metadata_section/(?P<metadata_section_id>[\d]+)/metadata_order', array(
 			array(
 				'methods'             => \WP_REST_Server::EDITABLE,
@@ -607,7 +622,7 @@ class REST_Collections_Controller extends REST_Controller {
 				if ( !is_array($val) ) {
 					return false;
 				}
-				if ( !isset($val['id']) || !is_numeric($val['id'])) {
+				if ( !isset($val['id']) || (!is_numeric($val['id']) && $val['id'] != 'default_section' ) ) {
 					return false;
 				}
 				if ( !isset($val['enabled']) || !is_bool($val['enabled']) ) {
@@ -631,7 +646,7 @@ class REST_Collections_Controller extends REST_Controller {
 	 */
 	public function update_metadata_order( $request ) {
 		$collection_id = $request['collection_id'];
-		$metadata_section_id = $request['metadata_section_id'];
+		$metadata_section_id = isset($request['metadata_section_id']) ? $request['metadata_section_id'] : 'default_section';
 
 		$body = json_decode($request->get_body(), true);
 
