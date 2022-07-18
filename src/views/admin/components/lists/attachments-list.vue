@@ -192,18 +192,12 @@
         
 <style lang="scss" scoped>
 
-    @media screen and (max-width: 769px) {
-        .table-container {
-            padding-left: 1em;
-            padding-right: 1em;
-        }
-        .pagination-area {
-            margin-left: 0;
-            margin-right: 0;
-        }
+    .table-container {
+        width: 100%;
     }
     .uploaded-files {
-        display: block;
+        display: flex;
+        flex-wrap: wrap;
 
         .file-item-container {
             display: inline-block;
@@ -232,6 +226,25 @@
                 .icon {
                     cursor: pointer;
                 }
+            }
+        }
+    }
+
+    @media screen and (max-width: 769px) {
+        .table-container {
+            padding-left: 1em;
+            padding-right: 1em;
+        }
+        .pagination-area {
+            margin-left: 0;
+            margin-right: 0;
+            justify-content: center;
+        }
+        .uploaded-files {
+            justify-content: center;
+            
+            .file-item-container {
+                margin: 5px 7px;
             }
         }
     }

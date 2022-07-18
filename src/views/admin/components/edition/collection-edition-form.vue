@@ -430,63 +430,61 @@
                         </div>
 
                         <!-- Thumbnail -------------------------------- --> 
-                        <b-field :addons="false">
-                            <div class="thumbnail-field">
-                                <file-item
-                                        v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
-                                        :show-name="false"
-                                        :modal-on-click="true"
-                                        :size="146"
-                                        :file="{ 
-                                            media_type: 'image', 
-                                            thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium') ] },
-                                            title: $i18n.get('label_thumbnail'),
-                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(collection['thumbnail'], 'full') + `'/>` 
-                                        }"/>
-                            <figure 
-                                        v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
-                                        class="image">
-                                    <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
-                                    <img  
-                                            :alt="$i18n.get('label_thumbnail')" 
-                                            :src="$thumbHelper.getEmptyThumbnailPlaceholder()">
-                                </figure>
-                                <div class="thumbnail-buttons-row">
-                                    <a 
-                                            class="button is-rounded is-secondary"
-                                            id="button-edit-thumbnail" 
-                                            :aria-label="$i18n.get('label_button_edit_thumb')"
-                                            @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                        <span 
-                                                v-tooltip="{
-                                                    content: $i18n.get('edit'),
-                                                    autoHide: true,
-                                                    placement: 'bottom',
-                                                    popperClass: ['tainacan-tooltip', 'tooltip']  
-                                                }"
-                                                class="icon">
-                                            <i class="tainacan-icon tainacan-icon-edit"/>
-                                        </span>
-                                    </a>
-                                    <a 
-                                            class="button is-rounded is-secondary"
-                                            id="button-delete-header-image" 
-                                            :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                            @click="deleteThumbnail()">
-                                        <span 
-                                                v-tooltip="{
-                                                    content: $i18n.get('delete'),
-                                                    autoHide: true,
-                                                    placement: 'bottom',
-                                                    popperClass: ['tainacan-tooltip', 'tooltip']  
-                                                }"
-                                                class="icon">
-                                            <i class="tainacan-icon tainacan-icon-delete"/>
-                                        </span>
-                                    </a>
-                                </div>
+                        <div class="thumbnail-field">
+                            <file-item
+                                    v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
+                                    :show-name="false"
+                                    :modal-on-click="true"
+                                    :size="146"
+                                    :file="{ 
+                                        media_type: 'image', 
+                                        thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium') ] },
+                                        title: $i18n.get('label_thumbnail'),
+                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(collection['thumbnail'], 'full') + `'/>` 
+                                    }"/>
+                        <figure 
+                                    v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
+                                    class="image">
+                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                <img  
+                                        :alt="$i18n.get('label_thumbnail')" 
+                                        :src="$thumbHelper.getEmptyThumbnailPlaceholder()">
+                            </figure>
+                            <div class="thumbnail-buttons-row">
+                                <a 
+                                        class="button is-rounded is-secondary"
+                                        id="button-edit-thumbnail" 
+                                        :aria-label="$i18n.get('label_button_edit_thumb')"
+                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']  
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                    </span>
+                                </a>
+                                <a 
+                                        class="button is-rounded is-secondary"
+                                        id="button-delete-header-image" 
+                                        :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                        @click="deleteThumbnail()">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']  
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                    </span>
+                                </a>
                             </div>
-                        </b-field>
+                        </div>
                     </b-field>
 
                     <!-- Cover Page -------------------------------- --> 
@@ -1345,16 +1343,17 @@ export default {
             position: relative;
         }
 
-        &+.field {
+        &+.thumbnail-field {
             opacity: 1.0;
             transition: opacity 0.2s ease;
         }
-        &:hover+.field {
-            opacity: 0.4;
+        &:hover+.thumbnail-field {
+            opacity: 0.3;
         }
     }
 
-    .thumbnail-field {  
+    .thumbnail-field {
+        display: inline-block;  
         padding: 1rem;
         margin-top: -120px;
         margin-bottom: -30px;
@@ -1422,14 +1421,13 @@ export default {
         .label {
             font-weight: normal;
             margin-bottom: 0;
-
-            .help {
-                opacity: 0.7;
-            }
         }
         .control.is-expanded {
             width: 100%;
         }
+    }
+    .sorting-options+.help {
+        opacity: 0.7;
     }
     .status-radios {
         display: flex;

@@ -635,6 +635,13 @@ return apply_filters( 'tainacan-i18n', [
 	'label_move_down'							 	 => __( 'Move down', 'tainacan' ),
 	'label_view_modes_public_list'				 	 => __( 'Items view modes in the public list', 'tainacan' ),
 	'label_default'							 		 => __( 'Default', 'tainacan' ),
+	'label_tainacan_mobile_panel'			 		 => __( 'Tainacan Mobile Panel', 'tainacan' ),
+	'label_close_panel'						 		 => __( 'Close panel', 'tainacan' ),
+	'label_shortcuts'						 		 => __( 'Shortcuts', 'tainacan' ),
+	'label_all_metadata'					 		 => __( 'All metadata', 'tainacan' ),
+	'label_document_and_thumbnail'			 		 => __( 'Document and thumbnail', 'tainacan' ),
+	'label_all_attachments'					 		 => __( 'All attachments', 'tainacan' ),
+	'label_only_required_metadata'			 		 => __( 'Only required metadata', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -705,6 +712,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_click_to_load_filter'				 => __( 'Click to load the filter', 'tainacan' ),
 	'instruction_collection_description'			 => __( 'Enter the collection description here...', 'tainacan' ),
 	'instruction_collection_name'					 => __( 'Enter the collection name here...', 'tainacan' ),
+	'instruction_click_to_easily_see'				 => __( 'Click to easily see', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
