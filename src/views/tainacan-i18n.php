@@ -642,6 +642,12 @@ return apply_filters( 'tainacan-i18n', [
 	'label_document_and_thumbnail'			 		 => __( 'Document and thumbnail', 'tainacan' ),
 	'label_all_attachments'					 		 => __( 'All attachments', 'tainacan' ),
 	'label_only_required_metadata'			 		 => __( 'Only required metadata', 'tainacan' ),
+	'label_update_as_public'						 => __( 'Update as public', 'tainacan' ),
+	'label_update_as_private'						 => __( 'Update as private', 'tainacan' ),
+	'label_change_to_private'						 => __( 'Change to private', 'tainacan' ),
+	'label_change_to_draft'							 => __( 'Change to draft', 'tainacan' ),
+	'label_create_item'								 => __( 'Create item', 'tainacan' ),
+	'label_ready_to_create_item'					 => __( 'Ready to create this item?', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -713,6 +719,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_collection_description'			 => __( 'Enter the collection description here...', 'tainacan' ),
 	'instruction_collection_name'					 => __( 'Enter the collection name here...', 'tainacan' ),
 	'instruction_click_to_easily_see'				 => __( 'Click to easily see', 'tainacan' ),
+	'instruction_create_item_select_status'		 	 => __( 'Select a status for the item visiblity on the site. Remember, whichever you select will still be restricted by the collection status as well.', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),

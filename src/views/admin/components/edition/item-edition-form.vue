@@ -11,16 +11,33 @@
            <h1 v-if="isCreatingNewItem">
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
+                        class="status-tag"
+                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                    {{ $i18n.get('status_' + item.status) }}
+                </span>
                 {{ $i18n.get('title_create_item_collection') + ' ' }}
                 <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
             </h1>
             <h1 v-else>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
+                        class="status-tag"
+                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                    {{ $i18n.get('status_' + item.status) }}
+                </span>
                 {{ $i18n.get('title_edit_item') + ' ' }}
-                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                <span style="font-weight: 600;">
+                    {{ (item != null && item != undefined) ? item.title : '' }}
+                </span>
+                <span
+                        v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
+                        class="icon has-text-gray4"
+                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                    <i 
+                            class="tainacan-icon tainacan-icon-1em"
+                            :class="$statusHelper.getIcon(item.status)"
+                            />
+                </span>
             </h1>
         </tainacan-title>
 
@@ -639,13 +656,14 @@
                     </span>
                 </p>
             </div>
-
+            
             <item-form-footer-buttons
                     :status="form.status"
                     :collection-id="form.collectionId"
                     :is-on-sequence-edit="isOnSequenceEdit"
-                    :group="group"
-                    :item-position="itemPosition"
+                    :is-current-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                    :has-next-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count < itemPosition)"
+                    :has-previous-item-on-sequence-edit="itemPosition > 1"
                     :is-mobile-screen="isMobileScreen"
                     :has-some-error="formErrorMessage != undefined && formErrorMessage != ''"
                     :current-user-can-delete="item && item.current_user_can_delete"
@@ -654,7 +672,6 @@
                     :visibility="visibility"
                     @onSubmit="onSubmit"
                     @onDiscard="onDiscard"
-                    @onDeletePermanently="onDeletePermanently"
                     @onPrevInSequence="onPrevInSequence"
                     @onNextInSequence="onNextInSequence" />
 
@@ -2181,13 +2198,6 @@ export default {
             align-items: center;
             transition: bottom 0.5s ease, width 0.2s linear;
 
-            .form-submission-footer {
-                .button {
-                    margin-left: 16px;
-                    margin-right: 6px;
-                }
-            }
-
             @keyframes blink {
                 from { color: var(--tainacan-blue5); }
                 to { color: var(--tainacan-info-color); }
@@ -2245,25 +2255,6 @@ export default {
                 .update-info-section {
                     margin-left: auto;margin-bottom: 0.75em;
                     margin-top: -0.25em;
-                }
-                .form-submission-footer {
-                    display: flex;
-                    justify-content: space-between;
-                    width: 100%;
-
-                    .button {
-                        margin-left: 6px;
-                        margin-right: 6px;
-                    }
-                    .button:first-of-type {
-                        margin-left: 0px;
-                    }
-                    .button:last-of-type {
-                        margin-right: 0px;
-                    }
-                    .button.is-success {
-                        margin-left: auto;
-                    }
                 }
             }
         }
