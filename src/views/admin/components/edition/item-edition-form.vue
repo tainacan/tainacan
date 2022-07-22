@@ -1778,6 +1778,7 @@ export default {
                 --tainacan-background-color: var(--tainacan-gray1);
                 position: sticky;
                 top: 56px;
+                margin-top: 0px;
             }
         }
         .footer {
@@ -1799,10 +1800,6 @@ export default {
         padding: 0px 0px 60px 0px;
         height: calc(100% + 42px);
 
-        .tainacan-page-title {
-            margin-top: var(--tainacan-container-padding);
-        }
-
         &>.tainacan-form {
             margin-bottom: 60px;
 
@@ -1819,6 +1816,7 @@ export default {
 
         .tainacan-page-title {
             padding: 0 var(--tainacan-one-column);
+            margin-top: var(--tainacan-container-padding);
         
             .status-tag {
                 color: var(--tainacan-white);
@@ -1834,6 +1832,7 @@ export default {
 
             @media screen and (max-width: 769px) {
                 padding: 0 0.5em;
+                margin-bottom: 1.25rem !important;
             }
         }
         .tainacan-form > .columns {
@@ -1851,7 +1850,7 @@ export default {
                         position: sticky;
                         top: 0px;
                         margin: 0;
-                        max-height: calc(100vh - 202px);
+                        max-height: calc(100vh - 184px);
                         overflow-y: auto;
                         overflow-x: hidden;
                     }
@@ -2069,23 +2068,6 @@ export default {
             border-bottom: 1px solid var(--tainacan-input-border-color);
         }
 
-        .section-status {
-            padding-bottom: 16px;
-            font-size: 0.875em;
-
-            .field {
-                .b-radio {
-                    width: auto;
-                    margin-right: 24px;
-                    margin-left: 0;
-                }
-                .icon  {
-                    font-size: 1.125em !important;
-                    color: var(--tainacan-info-color);
-                }
-            }
-        }
-
         .item-edition-tab-content {
             border-top: 1px solid var(--tainacan-input-border-color);
         }
@@ -2095,6 +2077,7 @@ export default {
             margin: 0;
             --swiper-navigation-size: 2em;
             --swiper-navigation-color: var(--tainacan-secondary);
+            margin-top: 8px;
             
             .swiper-wrapper {
                 border: none !important;
