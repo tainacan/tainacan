@@ -29,19 +29,23 @@
             <!-- Item is an autodraft (item creation) -->
             <template v-if="(status == 'auto-draft' || status == undefined)">
                 <button
+                        v-if="!$adminOptions.mobileAppMode"
                         @click="$emit('onDiscard')"
                         type="button"
                         class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
                 <button
                         @click="openItemCreationStatusDialog"
                         type="button"
-                        class="button is-secondary">{{ $i18n.get('label_create_item') }}</button>
+                        class="button is-secondary"
+                        :style="{ marginLeft: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }">{{ $i18n.get('label_create_item') }}</button>
             </template>
 
             <!-- Item is public, draft or private -->
             <template v-else>
+
+                <!-- Send items to Trash -->
                 <button 
-                        v-if="!isOnSequenceEdit && currentUserCanDelete"
+                        v-if="!isOnSequenceEdit && currentUserCanDelete && !$adminOptions.mobileAppMode"
                         @click="$emit('onSubmit', 'trash')"
                         type="button"
                         class="button is-outlined">
@@ -49,18 +53,21 @@
                     <span v-else>{{ $i18n.get('status_trash') }}</span>
                 </button>
 
+                <!-- Update dropdown with -->
                 <b-dropdown
+                        v-if="!$adminOptions.hideItemEditionStatusOption"
                         ref="item-edition-footer-dropdown"
                         :triggers="['contextmenu']"
                         aria-role="list"
                         animation="item-appear"
                         :mobile-modal="false"
                         position="is-top-left"
-                        class="item-edition-footer-dropdown">
+                        class="item-edition-footer-dropdown"
+                        :style="{ marginLeft: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }">
                     <template #trigger>
                         <button 
                                 :disabled="hasSomeError && (status == 'publish' || status == 'private')"
-                                @click="!$adminOptions.mobileAppMode ? $emit(
+                                @click="!$adminOptions.mobileAppMode && !isMobileScreen ? $emit(
                                     'onSubmit',
                                     ( currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
                                     ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
@@ -128,6 +135,20 @@
                         {{ status == 'publish' ? $i18n.get('label_update_as_public') : $i18n.get('label_verb_publish') }}
                     </b-dropdown-item>
                 </b-dropdown>
+                
+                <!-- In case we do not want to show status, just an update button -->
+                <button 
+                        v-else
+                        :disabled="hasSomeError && (status == 'publish' || status == 'private')"
+                        @click="$emit('onSubmit', status)"
+                        type="button"
+                        class="button"
+                        :class="{ 
+                            'is-success': status == 'publish' || status == 'private',
+                            'is-secondary': status == 'draft'
+                        }">
+                    {{ $i18n.get('label_update') }}
+                </button>
 
             </template>
 
@@ -176,8 +197,7 @@ export default {
         hasSomeError: Boolean,
         currentUserCanDelete: Boolean,
         currentUserCanPublish: Boolean,
-        isEditingItemMetadataInsideIframe: Boolean,
-        visibility: String
+        isEditingItemMetadataInsideIframe: Boolean
     },
     mounted() {
         this.$parent.$on('toggleItemEditionFooterDropdown', () => {
@@ -197,6 +217,7 @@ export default {
                 canCancel: false,
                 props: {
                     icon: 'item',
+                    currentUserCanPublish: this.currentUserCanPublish,
                     onConfirm: (selectedStatus) => {
                         this.$emit('onSubmit', selectedStatus);
                     }

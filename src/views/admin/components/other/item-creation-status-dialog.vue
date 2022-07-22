@@ -36,7 +36,7 @@
                 <div class="status-radios">
                     <b-radio
                             v-model="selectedStatus"
-                            v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash')"
+                            v-for="(statusOption, index) of availableStatus"
                             :key="index"
                             :native-value="statusOption.slug">
                         <span class="icon has-text-gray">
@@ -72,6 +72,7 @@
         name: 'ItemCreationStatusDialog',
         props: {
             icon: String,
+            currentUserCanPublish: Boolean,
             onConfirm: {
                 type: Function,
                 default: () => {}
@@ -79,7 +80,20 @@
         },
         data() {
             return {
-                selectedStatus: 'publish'
+                selectedStatus: !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private'
+            }
+        },
+        computed: {
+            availableStatus() {
+                return this.$statusHelper.getStatuses().filter((status) => {
+                    if (    
+                        status.slug != 'trash' &&
+                        ( ( this.currentUserCanPublish && !this.$adminOptions.hideItemEditionStatusPublishOption ) || status.slug != 'publish' )
+                    )
+                        return true;
+
+                    return false;
+                });
             }
         },
         mounted() {
@@ -118,6 +132,31 @@
     }
     .modal-card-foot {
         margin-top: 12px;
+    }
+
+    @media screen and (max-width: 768px) {
+        .modal-card {
+            padding: 2rem 0.875rem 0.875rem;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .modal-custom-icon {
+            display: none !important;
+        }
+        .modal-card-body {
+            padding: 0 1.25rem !important;
+        } 
+        .status-radios {
+            flex-wrap: wrap;
+        }  
+        .status-radios .b-radio {
+            margin-bottom: 0.5rem !important;
+            font-size: 1.125rem;
+            padding-bottom: 0.5rem;
+        }
+        .status-radios .b-radio::not(:last-child) {
+            border-bottom: 1px solid var(--tainacan-gray2);
+        }
     }
 
 </style>

@@ -177,41 +177,6 @@
                                 v-html="getBeginRightForm"/>
                         </template>
 
-                        <div class="columns">
-
-                            <!-- Comment Status ------------------------ -->
-                            <div
-                                    class="column is-narrow"
-                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
-                                <div class="section-label">
-                                    <label>
-                                        <span class="icon has-text-gray4">
-                                            <i class="tainacan-icon tainacan-icon-comment"/>
-                                        </span>
-                                        {{ $i18n.get('label_comments') }}
-                                    </label>
-                                    <help-button
-                                            :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                            :message="$i18n.getHelperMessage('items', 'comment_status')"/>
-                                </div>
-                                <div 
-                                        style="margin-left: 2em;"
-                                        class="section-status">
-                                    <div class="field has-addons">
-                                        <b-switch
-                                                id="tainacan-checkbox-comment-status"
-                                                size="is-small"
-                                                true-value="open"
-                                                false-value="closed"
-                                                v-model="form.comment_status">
-                                            {{ $i18n.get('label_allow_comments') }}
-                                        </b-switch>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
                         <div class="b-tabs">
                             <nav 
                                     v-if="tabs.length >= 2"
@@ -527,6 +492,44 @@
 
                             </section>
                         </div>
+
+                        <div 
+                                v-if="!$adminOptions.mobileAppMode"
+                                style="margin: 0.75rem 0 2rem;"
+                                class="columns">
+
+                            <!-- Comment Status ------------------------ -->
+                            <div
+                                    class="column is-narrow"
+                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
+                                <div class="section-label">
+                                    <label>
+                                        <span class="icon has-text-gray4">
+                                            <i class="tainacan-icon tainacan-icon-comment"/>
+                                        </span>
+                                        {{ $i18n.get('label_comments') }}
+                                    </label>
+                                    <help-button
+                                            :title="$i18n.getHelperTitle('items', 'comment_status')"
+                                            :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                                </div>
+                                <div 
+                                        style="margin-left: 2em;"
+                                        class="section-status">
+                                    <div class="field has-addons">
+                                        <b-switch
+                                                id="tainacan-checkbox-comment-status"
+                                                size="is-small"
+                                                true-value="open"
+                                                false-value="closed"
+                                                v-model="form.comment_status">
+                                            {{ $i18n.get('label_allow_comments') }}
+                                        </b-switch>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
 
                     <div 
@@ -669,7 +672,6 @@
                     :current-user-can-delete="item && item.current_user_can_delete"
                     :current-user-can-publish="collection && collection.current_user_can_publish_items"
                     :is-editing-item-metadata-inside-iframe="isEditingItemMetadataInsideIframe"
-                    :visibility="visibility"
                     @onSubmit="onSubmit"
                     @onDiscard="onDiscard"
                     @onPrevInSequence="onPrevInSequence"
@@ -752,7 +754,6 @@ export default {
             metadataCollapses: [],
             metadataSectionCollapses: [],
             collapseAll: true,
-            visibility: !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private',
             form: {
                 collectionId: Number,
                 status: '',
@@ -1198,7 +1199,6 @@ export default {
                 this.initializeMediaFrames();
 
                 // Pre-fill status with publish to incentivate it
-                this.visibility = !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private';
                 this.form.status = 'auto-draft'
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
@@ -1631,9 +1631,6 @@ export default {
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
                         this.urlIframeHeight = this.form.document_options['forced_iframe_height'];
 
-                    if (this.item.status == 'publish' || this.item.status == 'private')
-                        this.visibility = this.item.status;
-
                     this.loadMetadata();
                     this.setLastUpdated(this.item.modification_date);
 
@@ -1767,14 +1764,44 @@ export default {
 
 <style lang="scss">
 
-    .tainacan-admin-collection-mobile-app-mode .page-container.item-edition-container,
-    .tainacan-admin-collection-mobile-app-mode .page-container.item-creation-container {
-        padding-top: 0px;
+    .tainacan-admin-collection-mobile-app-mode {
+        .page-container.item-edition-container,
+        .page-container.item-creation-container {
+            padding-top: 0px;
+        }
+        .column.main-column {
+            padding-top: 0.75em !important;
+        }
+        .b-tabs {
+            #tainacanTabsSwiper {
+                background-color: var(--tainacan-gray1);
+                --tainacan-background-color: var(--tainacan-gray1);
+                position: sticky;
+                top: 56px;
+            }
+        }
+        .footer {
+            background-color: transparent !important;
+            pointer-events: none;
+
+            .item-edition-footer-dropdown {
+                pointer-events: all;
+            }
+            .button {
+                pointer-events: all;
+                box-shadow: 2px 2px 12px -8px var(--tainacan-gray5) !important;
+            }
+        }
     }
 
     .page-container.item-edition-container,
     .page-container.item-creation-container {
-        padding: var(--tainacan-container-padding) 0px 0px 0px;
+        padding: 0px 0px 60px 0px;
+        height: calc(100% + 42px);
+
+        .tainacan-page-title {
+            margin-top: var(--tainacan-container-padding);
+        }
 
         &>.tainacan-form {
             margin-bottom: 60px;

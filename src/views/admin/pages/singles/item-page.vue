@@ -14,7 +14,16 @@
                     {{ $i18n.get('status_' + item.status) }}
                 </span>
                     {{ $i18n.get('title_item_page') + ' ' }}
-                    <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                    <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}    
+                </span>
+                <span
+                        v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
+                        class="icon has-text-gray4">
+                    <i 
+                            class="tainacan-icon tainacan-icon-1em"
+                            :class="$statusHelper.getIcon(item.status)"
+                            />
+                </span>
             </h1>
         </tainacan-title>
 
