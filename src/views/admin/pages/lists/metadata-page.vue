@@ -215,7 +215,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.5em 1em 0.5em 4em;
+            padding: 0.5em 1em 0.5em 2em;
 
             .header-item {
                 margin-left: 0.75rem;
@@ -277,10 +277,6 @@ export default {
                 margin: 0; 
                 padding-right: 0em;
             }
-            @media screen and (max-width: 1216px) {
-                padding-right: 1em;
-            }
-
             &.metadata-area-receive {
                 border: 1px dashed var(--tainacan-gray4);
             }
@@ -294,6 +290,10 @@ export default {
                 margin-left: 1.5em;
                 padding-right: 1em;
                 min-height: 330px;
+
+                .active-metadata-area {
+                    margin-left: 0.5rem;
+                }
             }
 
             .active-metadatum-item,
@@ -333,6 +333,8 @@ export default {
                     
                 }
                 &.active-metadata-sections-item {
+                    padding-left: 0;
+                    margin-top: 1rem;
                     border-bottom: 1px solid var(--tainacan-gray3);
 
                     .metadatum-name {
@@ -427,6 +429,10 @@ export default {
                 &.disabled-metadatum:not(.not-sortable-item),
                 &.disabled-metadatum:not(.not-sortable-item):hover {
                     color: var(--tainacan-gray3);
+
+                    .metadatum-name {
+                        opacity: 0.7;
+                    }
                     .label-details, .not-saved {
                         color: var(--tainacan-gray3) !important;
                     }
@@ -485,6 +491,16 @@ export default {
                     color: var(--tainacan-blue5);
                 }
             }
+        }
+    }
+
+    .repository-level-page {
+        .tainacan-form.sub-header {
+            padding-left: 2.75em !important;
+        }
+        .active-metadata-sections-area,
+        .active-metadata-area {
+            margin-left: 0px !important;
         }
     }
 </style>

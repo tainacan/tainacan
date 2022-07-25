@@ -270,14 +270,6 @@
                                             {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
                                         </a>
 
-                                        <span 
-                                                v-if="isUpdatingValues && isMetadataNavigation && !$adminOptions.mobileAppMode"
-                                                class="update-warning">
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating"/>
-                                            </span>
-                                        </span>
-
                                         <b-field 
                                                 v-if="metadatumList && metadatumList.length > 3"
                                                 class="header-item metadata-navigation"
@@ -324,6 +316,14 @@
                                             </b-button>
                                         </b-field>
 
+                                        <span 
+                                                v-if="isUpdatingValues && isMetadataNavigation && !$adminOptions.mobileAppMode"
+                                                class="update-warning">
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating"/>
+                                            </span>
+                                        </span>
+
                                         <b-field 
                                                 v-if="metadatumList && metadatumList.length > 5"
                                                 class="header-item metadata-name-search">
@@ -356,8 +356,7 @@
                                                     @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses) ? null : toggleMetadataSectionCollapse(sectionIndex)">
                                                 <span 
                                                         v-if="!$adminOptions.hideItemEditionCollapses && !isMetadataNavigation"
-                                                        class="icon"
-                                                        @click="toggleMetadataSectionCollapse(sectionIndex)">
+                                                        class="icon">
                                                     <i 
                                                             :class="{
                                                                 'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || errorMessage,
@@ -392,24 +391,28 @@
                                                         v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'">
                                                     {{ metadataSection.description }}
                                                 </p>
-                                                <tainacan-form-item
-                                                        v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)"
-                                                        :key="index"
-                                                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
-                                                        :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
-                                                        :ref="'tainacan-form-item--' + index"
-                                                        :item-metadatum="itemMetadatum"
-                                                        :metadata-name-filter-string="metadataNameFilterString"
-                                                        :is-collapsed="metadataCollapses[index]"
-                                                        :hide-collapses="$adminOptions.hideItemEditionCollapses || isMetadataNavigation"
-                                                        :is-mobile-screen="isMobileScreen"
-                                                        :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
-                                                        :is-focused="focusedMetadatum === index"
-                                                        :is-metadata-navigation="isMetadataNavigation"
-                                                        @changeCollapse="onChangeCollapse($event, index)"
-                                                        @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
-                                                        @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
-                                                        @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
+
+                                                <template v-for="(itemMetadatum, index) of metadatumList">
+                                                    <tainacan-form-item
+                                                            v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
+                                                            :key="index"
+                                                            :id="'metadatum-index--' + index"
+                                                            v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
+                                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
+                                                            :ref="'tainacan-form-item--' + index"
+                                                            :item-metadatum="itemMetadatum"
+                                                            :metadata-name-filter-string="metadataNameFilterString"
+                                                            :is-collapsed="metadataCollapses[index]"
+                                                            :hide-collapses="$adminOptions.hideItemEditionCollapses || isMetadataNavigation"
+                                                            :is-mobile-screen="isMobileScreen"
+                                                            :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
+                                                            :is-focused="focusedMetadatum === index"
+                                                            :is-metadata-navigation="isMetadataNavigation"
+                                                            @changeCollapse="onChangeCollapse($event, index)"
+                                                            @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
+                                                            @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
+                                                            @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
+                                                </template>
                                             </div>
                                         </transition>
                                     </div>
@@ -1697,7 +1700,7 @@ export default {
             
             if (isPreviouslyFocusedOnCompoundMetadatum || this.isCurrentlyFocusedOnCompoundMetadatum)
                 eventBusItemMetadata.$emit('focusPreviousChildMetadatum');
-
+            console.log(this.isOnFirstMetadatumOfCompoundNavigation, this.isOnLastMetadatumOfCompoundNavigation)
             if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnFirstMetadatumOfCompoundNavigation) )
                 this.setMetadatumFocus({ index: this.focusedMetadatum - 1, scrollIntoView: true });
         },
@@ -1709,7 +1712,7 @@ export default {
                 this.setMetadatumFocus({ index: this.focusedMetadatum + 1, scrollIntoView: true });  
         },
         setMetadatumFocus({ index = 0, scrollIntoView = false }) {
- 
+
             const previousIndex = this.focusedMetadatum;
             this.focusedMetadatum = index;
 

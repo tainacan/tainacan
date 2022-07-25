@@ -271,7 +271,7 @@
                                         'is-compact-item': !isCollapseOpen(metadatum.id),
                                         'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied || isUpdatingMetadatum,
                                         'not-focusable-item': openedMetadatumId == metadatum.id,
-                                        'disabled-metadatum': metadatum.enabled == false,
+                                        'disabled-metadatum': metadataSection.enabled == false || metadatum.enabled == false,
                                         'inherited-metadatum': metadatum.inherited,
                                         'child-metadatum': metadatum.parent > 0
                                     }">
@@ -575,7 +575,7 @@ export default {
 
         this.collectionId = this.$route.params.collectionId;
         this.isLoadingMetadataSections = true;
-        this.fetchMetadataSections({ collectionId: this.collectionId, isContextEdit: true })
+        this.fetchMetadataSections({ collectionId: this.collectionId, isContextEdit: true, includeDisabled: true })
             .then(() => {
                 this.isLoadingMetadataSections = false;
             })

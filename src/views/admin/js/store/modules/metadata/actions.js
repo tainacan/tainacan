@@ -198,14 +198,14 @@ export const cleanMetadata = ({commit}) => {
     commit('cleanMetadata');
 };
 
-export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder, metadataSectionId }) => {
+export const updateCollectionMetadataOrder = ({ commit }, { collectionId, metadataOrder, metadataSectionId }) => {
 
     return new Promise((resolve, reject) => {
         axios.tainacan.patch('/collections/' + collectionId + '/metadata_section/' + metadataSectionId + '/metadata_order?context=edit', {
             metadata_order: metadataOrder
         }).then(res => {
             commit('collection/setCollection', res.data, { root: true });
-            commit('updateMetadataOrderFromCollection', res.data.metadata_order);
+            commit('updateCollectionMetadataOrder', { metadataOrder: res.data.metadata_order, metadataSectionId: metadataSectionId });
             resolve(res.data);
         }).catch(error => {
             reject(error.response);
@@ -294,10 +294,18 @@ export const updateMetadatumMappers = ({commit}, metadatumMappers) => {
 };
 
 // METADATA SECTIONS
-export const fetchMetadataSections = ({commit}, { collectionId, isContextEdit }) => {
+export const fetchMetadataSections = ({commit}, { collectionId, isContextEdit, includeDisabled }) => {
+
+    let endpoint = '/collection/' + collectionId + '/metadata-sections?';
+
+    if (isContextEdit)
+        endpoint += 'context=edit&'
+
+    if (includeDisabled)
+        endpoint += 'include_disabled=true'
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/collection/' + collectionId + '/metadata-sections' + (isContextEdit ? '?context=edit' : ''))
+        axios.tainacan.get(endpoint)
             .then((res) => {
                 let metadataSections = res.data;
                 commit('setMetadataSections', metadataSections);
@@ -381,7 +389,7 @@ export const updateCollectionMetadataSectionsOrder = ({ commit }, {collectionId,
             metadata_section_order: metadataSectionsOrder
         }).then(res => {
             commit('collection/setCollection', res.data, { root: true });
-            commit('updateMetadataSectionsOrderFromCollection', res.data.metadata_sections_order);
+            commit('updateMetadataSectionsOrderFromCollection', res.data.metadata_section_order);
             resolve(res.data);
         }).catch(error => {
             reject(error.response);

@@ -377,6 +377,12 @@
                     else if ((this.focusedChildMetadatum - 1) >= 0)
                         this.setMetadatumChildFocus({ groupIndex: this.focusedGroupMetadatum, childIndex: this.focusedChildMetadatum - 1, scrollIntoView: true })
                 }
+
+                // This keeps the navigation going on when no child input exists
+                if (this.childItemMetadataGroups.length === 0) {
+                    eventBusItemMetadata.$emit('isOnFirstMetadatumOfCompoundNavigation', true);
+                    eventBusItemMetadata.$emit('isOnLastMetadatumOfCompoundNavigation', true);
+                }
             },
             focusNextChildMetadatum() {
 

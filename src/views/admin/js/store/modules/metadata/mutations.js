@@ -69,11 +69,22 @@ export const setMetadata = (state, metadata) => {
     state.metadata = metadata;
 }
 
-export const updateMetadataOrderFromCollection = (state, metadataOrder) => {
-    for (let i = 0; i < state.metadata.length; i++) {
-        let updatedMetadatumIndex = metadataOrder.findIndex(aMetadatum => aMetadatum.id == state.metadata[i].id);
+export const updateCollectionMetadataOrder = (state, { metadataOrder, metadataSectionId }) => {
+
+    for (let i = 0; i < metadataOrder.length; i++) {
+
+        // First updates state.metadata
+        let updatedMetadatumIndex = state.metadata.findIndex((aMetadatum) => aMetadatum.id == metadataOrder[i]['id']);
         if (updatedMetadatumIndex >= 0)
-            state.metadata[i].enabled = metadataOrder[updatedMetadatumIndex].enabled;  
+            state.metadata[i].enabled = metadataOrder[updateCollectionMetadataOrder].enabled;
+    
+        // Then updates state.metadataSections[x].metadata_object_list
+        const existingSectionIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == metadataSectionId);
+        if (existingSectionIndex >= 0) {   
+            const updatedMetadatumIndexInsideSection = state.metadataSections[existingSectionIndex]['metadata_object_list'].findIndex((aMetadatum) => { return !!aMetadatum['id'] && (aMetadatum.id == metadataOrder[i]['id']) });
+            if (updatedMetadatumIndexInsideSection >= 0)
+                state.metadataSections[existingSectionIndex]['metadata_object_list'][updatedMetadatumIndexInsideSection].enabled = metadataOrder[i].enabled;
+        }
     }
 }
 
