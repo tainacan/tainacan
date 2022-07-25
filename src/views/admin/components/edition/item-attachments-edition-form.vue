@@ -32,7 +32,7 @@
             </button>
         </div>
         <div 
-                v-if="item != undefined && item.id != undefined && !isLoading && !$adminOptions.hideItemEditionAttachments"
+                v-if="item != undefined && item.id != undefined && !$adminOptions.hideItemEditionAttachments"
                 class="section-box section-attachments">
 
             <attachments-list

@@ -1033,7 +1033,6 @@ export default {
             'fetchItem',
             'cleanItemMetadata',
             'sendAttachments',
-            'fetchAttachments',
             'deletePermanentlyAttachment',
             'updateThumbnail',
             'cleanLastUpdated',
@@ -1637,13 +1636,7 @@ export default {
                     this.loadMetadata();
                     this.setLastUpdated(this.item.modification_date);
 
-                    // Fetch current existing attachments now that item.document
-                    this.fetchAttachments({
-                        page: 1,
-                        attachmentsPerPage: 24,
-                        itemId: this.itemId,
-                        documentId: this.form.document,
-                        thumbnailId: this.form.thumbnail_id });
+                    this.shouldLoadAttachments = true;
 
                     // Initializes Media Frames now that itemId and item.document exists
                     this.initializeMediaFrames();

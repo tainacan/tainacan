@@ -13,7 +13,13 @@
                     <div
                             v-for="(attachment, index) in attachments"
                             :key="index"
-                            class="file-item-container">
+                            class="file-item-container"
+                            :class="{ 'is-file-document': item.document == attachment.id, 'is-file-thumbnail': item.thumbnail_id == attachment.id }">
+                        <span 
+                                v-if="item.document == attachment.id"
+                                class="file-attachment-document-tag">
+                            {{ $i18n.get('label_document') }}
+                        </span>
                         <file-item
                                 :show-name="true"
                                 :modal-on-click="true"
@@ -171,8 +177,8 @@
                     page: this.attachmentsPage,
                     attachmentsPerPage: this.attachmentsPerPage,
                     itemId: this.item.id,
-                    documentId: this.item.document,
-                    thumbnailId: this.item.thumbnail_id
+                    // excludeDocumentId: this.item.document,
+                    // excludeThumbnailId: this.item.thumbnail_id
                 })
                     .then((response) => {
                         this.isLoading = false;
@@ -208,6 +214,26 @@
                 display: block;
                 visibility: visible;
                 opacity: 1;
+            }
+
+            .file-attachment-document-tag {
+                background-color: var(--tainacan-primary);
+                color: var(--tainacan-secondary);
+                display: block;
+                position: absolute;
+                z-index: 9;
+                padding: 0.25em 0.5em;
+                font-size: 0.6875em;
+                border-radius: 3px;
+                top: -8px;
+                left: -8px;
+                font-weight: 500;
+                border: 1px solid var(--tainacan-secondary);
+                opacity: 1.0;
+                transition: opacity 0.2s ease;
+            }
+            &:hover .file-attachment-document-tag {
+                opacity: 0.0;
             }
 
             .file-item-control {

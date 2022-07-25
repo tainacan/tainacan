@@ -219,8 +219,25 @@
     .tainacan-item-attachments-modal {
         .tainacan-document-attachment,
         .tainacan-thumbnail-attachment {
-            display: none;
-            visibility: hidden;
+            &::before {
+                background-color: var(--tainacan-primary);
+                color: var(--tainacan-secondary);
+                display: block;
+                position: absolute;
+                z-index: 9;
+                padding: 0.25rem 0.5rem;
+                border-radius: 3px;
+                top: -1px;
+                left: -1px;
+                font-weight: 500;
+                border: 1px solid var(--tainacan-secondary);
+            }
+        }
+        .tainacan-thumbnail-attachment::before {
+            content: 'Thumbnail';
+        }
+        .tainacan-document-attachment::before {
+            content: 'Document';
         }
         .media-toolbar button.button:not(.is-small):not(.is-medium):not(.is-large){
             margin-top: 1em !important;
