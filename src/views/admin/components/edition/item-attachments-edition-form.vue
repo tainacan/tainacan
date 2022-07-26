@@ -37,6 +37,7 @@
 
             <attachments-list
                     :item="item"
+                    :form="form"
                     :is-editable="true"
                     :should-load-attachments="shouldLoadAttachments"
                     @onDeleteAttachment="($event) => $emit('onDeleteAttachment', $event)"/>

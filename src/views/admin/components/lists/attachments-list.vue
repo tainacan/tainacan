@@ -14,9 +14,9 @@
                             v-for="(attachment, index) in attachments"
                             :key="index"
                             class="file-item-container"
-                            :class="{ 'is-file-document': item.document == attachment.id, 'is-file-thumbnail': item.thumbnail_id == attachment.id }">
+                            :class="{ 'is-file-document': form.document == attachment.id, 'is-file-thumbnail': item.thumbnail_id == attachment.id }">
                         <span 
-                                v-if="item.document == attachment.id"
+                                v-if="form.document == attachment.id"
                                 class="file-attachment-document-tag">
                             {{ $i18n.get('label_document') }}
                         </span>
@@ -25,7 +25,7 @@
                                 :modal-on-click="true"
                                 :file="attachment"/>
                         <span
-                                v-if="isEditable && item.document != attachment.id"
+                                v-if="isEditable && form.document != attachment.id"
                                 class="file-item-control">
                             <a 
                                     @click="onDeleteAttachment(attachment)"
@@ -113,6 +113,7 @@
         },
         props: {
             item: Object,
+            form: Object,
             shouldLoadAttachments: Boolean,
             isEditable: Boolean,
         },
@@ -177,7 +178,7 @@
                     page: this.attachmentsPage,
                     attachmentsPerPage: this.attachmentsPerPage,
                     itemId: this.item.id,
-                    // excludeDocumentId: this.item.document,
+                    // excludeDocumentId: this.form.document,
                     // excludeThumbnailId: this.item.thumbnail_id
                 })
                     .then((response) => {

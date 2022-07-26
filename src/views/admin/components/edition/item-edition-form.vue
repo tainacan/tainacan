@@ -1472,6 +1472,8 @@ export default {
                             if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail )
                                 this.item.thumbnail = item.thumbnail;
 
+                            this.shouldLoadAttachments = !this.shouldLoadAttachments;
+
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
