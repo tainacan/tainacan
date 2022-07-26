@@ -25,7 +25,7 @@
                                 :modal-on-click="true"
                                 :file="attachment"/>
                         <span
-                                v-if="isEditable"
+                                v-if="isEditable && item.document != attachment.id"
                                 class="file-item-control">
                             <a 
                                     @click="onDeleteAttachment(attachment)"
@@ -225,15 +225,15 @@
                 padding: 0.25em 0.5em;
                 font-size: 0.6875em;
                 border-radius: 3px;
-                top: -8px;
-                left: -8px;
+                bottom: 10px;
+                left: 4px;
                 font-weight: 500;
                 border: 1px solid var(--tainacan-secondary);
-                opacity: 1.0;
+                opacity: 0.25;
                 transition: opacity 0.2s ease;
             }
             &:hover .file-attachment-document-tag {
-                opacity: 0.0;
+                opacity: 1.0;
             }
 
             .file-item-control {
