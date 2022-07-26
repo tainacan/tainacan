@@ -121,6 +121,7 @@
                                                         v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
                                             </div>
                                         </div>
+                                        <br>
                                     </div>
                                 </div>
 
