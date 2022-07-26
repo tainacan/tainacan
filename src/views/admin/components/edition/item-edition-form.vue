@@ -1869,6 +1869,8 @@ export default {
                 }
 
                 .metadata-section-metadata-list {
+                    margin-bottom: 2rem;
+                    
                     .field {
                         padding: 12px 0px 12px 42px;
                         margin-left: 12px;
