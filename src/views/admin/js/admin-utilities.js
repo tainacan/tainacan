@@ -627,6 +627,8 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         * hideItemEditionThumbnail
         * hideItemEditionAttachments
         * hideItemEditionCollapses
+        * hideItemEditionFocusMode
+        * hideItemEditionRequiredOnlySwitch
         * hideItemEditionMetadataTypes
         * allowItemEditionModalInsideModal // Not recommended!
         * itemEditionDocumentInsideTabs

@@ -136,15 +136,21 @@
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" /></span>
                             <span>{{ $i18n.get('label_all_metadata') }}</span>
                         </button>
-                        <button @click="activeTab = 'document'; isMobileSubheaderOpen = false;">
+                        <button 
+                                v-if="!$adminOptions.hideItemEditionDocument"
+                                @click="activeTab = 'document'; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-item" /></span>
                             <span>{{ $i18n.get('label_document_and_thumbnail') }}</span>
                         </button>
-                        <button @click="activeTab = 'attachments'; isMobileSubheaderOpen = false;">
+                        <button 
+                                v-if="!$adminOptions.hideItemEditionAttachments"
+                                @click="activeTab = 'attachments'; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-attachments" /></span>
                             <span>{{ $i18n.get('label_all_attachments') }}</span>
                         </button>
-                        <button @click="showOnlyRequiredMetadata = true; isMobileSubheaderOpen = false;">
+                        <button 
+                                v-if="!$adminOptions.hideItemEditionRequiredOnlySwitch"
+                                @click="showOnlyRequiredMetadata = true; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" /></span>
                             <span>{{ $i18n.get('label_only_required_metadata') }}</span>
                         </button>
@@ -276,7 +282,7 @@
                                                 class="header-item metadata-navigation"
                                                 :style="$adminOptions.hideItemEditionCollapses ? 'padding-left: 0.35em !important;' : ''">
                                             <b-button
-                                                    v-if="!isMetadataNavigation" 
+                                                    v-if="!$adminOptions.hideItemEditionFocusMode && !isMetadataNavigation" 
                                                     @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
                                                     class="collapse-all has-text-secondary"
                                                     size="is-small">
@@ -326,7 +332,7 @@
                                         </span>
 
                                         <b-switch
-                                                v-if="metadatumList && metadatumList.length > 3"
+                                                v-if="!$adminOptions.hideItemEditionRequiredOnlySwitch && metadatumList && metadatumList.length > 3"
                                                 id="tainacan-switch-required-metadata"
                                                 :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
                                                 size="is-small"
@@ -1710,7 +1716,7 @@ export default {
             
             if (isPreviouslyFocusedOnCompoundMetadatum || this.isCurrentlyFocusedOnCompoundMetadatum)
                 eventBusItemMetadata.$emit('focusPreviousChildMetadatum');
-            console.log(this.isOnFirstMetadatumOfCompoundNavigation, this.isOnLastMetadatumOfCompoundNavigation)
+                
             if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnFirstMetadatumOfCompoundNavigation) )
                 this.setMetadatumFocus({ index: this.focusedMetadatum - 1, scrollIntoView: true });
         },
