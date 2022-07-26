@@ -286,6 +286,10 @@ return apply_filters( 'tainacan-i18n', [
 	'label_expand_all'                               => __( 'Expand all', 'tainacan' ),
 	/* translators: Label for collapsible, accordeon-like elements */
 	'label_collapse_all'                             => __( 'Collapse all', 'tainacan' ),
+	/* translators: Label for collapsible, accordeon-like elements */
+	'label_expand'		                             => __( 'Expand', 'tainacan' ),
+	/* translators: Label for collapsible, accordeon-like elements */
+	'label_collapse'     	                         => __( 'Collapse', 'tainacan' ),
 	'label_view_term'                                => __( 'View Term', 'tainacan' ),
 	/* translators: 'Published' here refers to the sum of public and private items, not including draft or trashed ones. The are visible to those with permission */
 	'label_all_items'                      			 => __( 'All items', 'tainacan' ),
@@ -616,7 +620,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_limit_max_values'						 => __( 'Limit the amount of multiple values', 'tainacan'),
 	'label_items_selection'							 => __( 'Items selection', 'tainacan'),
 	'label_default_orderby' 						 => __(	'Initial default sorting', 'tainacan' ),
-	'label_focus_mode'		 						 => __(	'Start focus mode', 'tainacan' ),
+	'label_focus_mode'		 						 => __(	'Focus mode', 'tainacan' ),
+	'label_start_focus_mode'		 				 => __(	'Start focus mode', 'tainacan' ),
 	'label_close_search' 					 		 => __(	'Close search', 'tainacan' ),
 	'label_remove_all_criteria' 					 => __(	'Remove all criteria', 'tainacan' ),
 	'label_string_to_search_for'                     => __( 'String to search for', 'tainacan' ),
@@ -648,7 +653,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_change_to_draft'							 => __( 'Change to draft', 'tainacan' ),
 	'label_create_item'								 => __( 'Create item', 'tainacan' ),
 	'label_ready_to_create_item'					 => __( 'Ready to create this item?', 'tainacan' ),
-
+	'label_only_required'					 		 => __( 'Only required', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),

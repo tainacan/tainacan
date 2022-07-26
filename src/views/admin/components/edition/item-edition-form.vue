@@ -132,7 +132,7 @@
                     <h2>{{ $i18n.get('label_shortcuts') }}</h2>
                     <p>{{ $i18n.get('instruction_click_to_easily_see') }}:</p>
                     <div class="tainacan-mobile-app-header_panel-shortcuts">
-                        <button @click="activeTab = 'metadata'; isMobileSubheaderOpen = false;">
+                        <button @click="showOnlyRequiredMetadata = false; activeTab = 'metadata'; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" /></span>
                             <span>{{ $i18n.get('label_all_metadata') }}</span>
                         </button>
@@ -144,7 +144,7 @@
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-attachments" /></span>
                             <span>{{ $i18n.get('label_all_attachments') }}</span>
                         </button>
-                        <button>
+                        <button @click="showOnlyRequiredMetadata = true; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" /></span>
                             <span>{{ $i18n.get('label_only_required_metadata') }}</span>
                         </button>
@@ -267,7 +267,8 @@
                                                         :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
                                                         class="tainacan-icon tainacan-icon-1-25em"/>
                                             </span>
-                                            {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+                                            <template v-if="isMobileScreen">{{ collapseAll ? $i18n.get('label_collapse') : $i18n.get('label_expand') }}</template>
+                                            <template v-else>{{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}</template>
                                         </a>
 
                                         <b-field 
@@ -283,7 +284,7 @@
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-play" />
                                                 </span>
-                                                <span>{{ $i18n.get('label_focus_mode') }}</span>
+                                                <span>{{ isMobileScreen ? $i18n.get('label_focus_mode') : $i18n.get('label_start_focus_mode') }}</span>
                                             </b-button>
                                             <b-button 
                                                     v-if="isMetadataNavigation"
@@ -323,6 +324,15 @@
                                                 <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating"/>
                                             </span>
                                         </span>
+
+                                        <b-switch
+                                                v-if="metadatumList && metadatumList.length > 3"
+                                                id="tainacan-switch-required-metadata"
+                                                :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
+                                                size="is-small"
+                                                v-model="showOnlyRequiredMetadata">
+                                            {{ isMobileScreen ? $i18n.get('label_required') : $i18n.get('label_only_required') }} *
+                                        </b-switch>
 
                                         <b-field 
                                                 v-if="metadatumList && metadatumList.length > 5"
@@ -397,7 +407,7 @@
                                                             v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
                                                             :key="index"
                                                             :id="'metadatum-index--' + index"
-                                                            v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
+                                                            v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
                                                             :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
                                                             :ref="'tainacan-form-item--' + index"
                                                             :item-metadatum="itemMetadatum"
@@ -789,7 +799,8 @@ export default {
             isMetadataNavigation: false,
             isOnFirstMetadatumOfCompoundNavigation: false,
             isOnLastMetadatumOfCompoundNavigation: false,
-            hideMetadataTypes: this.$adminOptions.hideItemEditionMetadataTypes
+            hideMetadataTypes: this.$adminOptions.hideItemEditionMetadataTypes,
+            showOnlyRequiredMetadata: false
         }
     },
     computed: {
@@ -1013,6 +1024,10 @@ export default {
         // Listens to window resize event to update responsiveness variable
         this.handleWindowResize();
         window.addEventListener('resize', this.handleWindowResize);
+
+        // If we're in the mobile app, show panel
+        if (this.$adminOptions.mobileAppMode)
+            this.isMobileSubheaderOpen = true;
     },
     beforeDestroy () {
         eventBusItemMetadata.$off('isUpdatingValue');
@@ -1736,7 +1751,7 @@ export default {
                                 setTimeout(() => {
                                     fieldElement.scrollIntoView({
                                         behavior: 'smooth',
-                                        block: this.isMobileScreen ? 'start' : 'center'
+                                        block: 'center'
                                     });
                                 }, 300);
                             }
@@ -1766,9 +1781,16 @@ export default {
         .page-container.item-edition-container,
         .page-container.item-creation-container {
             padding-top: 0px;
+
+            .tainacan-form > .columns {
+                margin-left: 0px;
+                margin-right: 0px;
+            }
         }
         .column.main-column {
             padding-top: 0.75em !important;
+            padding-right: 0px !important;
+            padding-left: 0px !important;
         }
         .b-tabs {
             #tainacanTabsSwiper {
@@ -2031,9 +2053,6 @@ export default {
             }
 
             @media screen and (max-width: 769px) {
-                .metadata-navigation {
-                    margin-right: 1.75em !important;
-                }
                 .metadata-name-search {
                     position: absolute;
                     right: 0.5em;
