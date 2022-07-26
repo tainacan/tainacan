@@ -122,7 +122,8 @@
     display: flex;
     align-items: center;
     border-bottom: 1px solid var(--tainacan-block-gray3, #cbcbcb);
-    padding: 1.00em 0.5em 0.75em 0.5em; }
+    padding: 1.00em 0.5em 0.75em 0.5em;
+    box-sizing: border-box; }
     @media only screen and (max-width: 768px) {
       .wp-block-tainacan-facets-list .facets-search-bar {
         flex-wrap: wrap; }

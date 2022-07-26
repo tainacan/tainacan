@@ -28,6 +28,7 @@ class Collection extends Entity {
 		$default_view_mode,
 		$enabled_view_modes,
 		$metadata_order,
+		$metadata_section_order,
 		$filters_order,
 		$enable_cover_page,
 		$cover_page_id,
@@ -405,10 +406,19 @@ class Collection extends Entity {
 	/**
 	 * Get collection metadata ordination
 	 *
-	 * @return string
+	 * @return Object | string
 	 */
 	function get_metadata_order() {
 		return $this->get_mapped_property( 'metadata_order' );
+	}
+
+	/**
+	 * Get collection metadata section ordination
+	 *
+	 * @return Array | Object | string
+	 */
+	function get_metadata_section_order() {
+		return $this->get_mapped_property( 'metadata_section_order' );
 	}
 
 	/**
@@ -722,6 +732,24 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Set collection metadata section ordination
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_metadata_section_order( $value ) {
+		if( !empty($value) ) {
+			$metadata_order = array( );
+			foreach($value as $section) {
+				$metadata_order =  array_merge($metadata_order, $section['metadata_order']);
+			}
+			$this->set_metadata_order($metadata_order);
+		}
+		$this->set_mapped_property( 'metadata_section_order', $value );
+	}
+
+	/**
 	 * Set collection filters ordination
 	 *
 	 * @param [string] $value
@@ -855,6 +883,20 @@ class Collection extends Entity {
 		if( $this->is_cover_page_enabled() && !is_numeric( $this->get_cover_page_id() ) ) {
 			$this->add_error('cover_page_id', __('cover page is enabled, please specify the page', 'tainacan'));
 			return false;
+		}
+
+		$metadata_section_order = $this->get_metadata_section_order();
+		if ( isset($metadata_section_order['metadata_section_order']) ) {
+			$section_order =  $metadata_section_order['metadata_section_order'];
+			$metadata_order = $this->get_metadata_order();
+			$order_general = array();
+			foreach($section_order as $section) {
+				$order_general = array_merge($order_general, $section['metadata_order']);
+			}
+
+			if( count($order_general) != count($metadata_order) ) {
+				return false;
+			}
 		}
 
 		return parent::validate();

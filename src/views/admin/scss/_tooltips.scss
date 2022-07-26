@@ -106,73 +106,80 @@
             border-color: var(--tainacan-yellow1);
         }
     }
-    .metadata-type-preview {
-        background: var(--tainacan-primary);
-        padding: 0px 8px;
-        border-radius: 3px;
-        width: 200px;
-        min-height: 100px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        pointer-events: none;
-        cursor: none;
-        flex-wrap: wrap;
-        font-size: 1.25em;
-
-        .metadata-type-label {
-            font-weight: 600;
-            color: var(--tainacan-turquoise4);
-            width: 100%;
-            font-size: 1em;
-            margin-bottom: 6px;
-            margin-left: -18px;
+    &.metadata-type-preview-tooltip {
+        .v-popper__inner {
+            background: var(--tainacan-gray0);
+            box-shadow: 0 0 8px -4px rgba(0, 0, 0, 0.3);
         }
 
-        input, select, textarea, 
-        .input, .tags, .tag  {
+        .metadata-type-preview {
+            background: var(--tainacan-gray0);
+            padding: 0px 8px;
+            border-radius: 3px;
+            width: 230px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             pointer-events: none;
             cursor: none;
-            background-color: rgba(255,255,255,0.60) !important;
-        }
-        .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
-            background-color: #f7fcfd !important;
-        }
-        .taginput {
-            margin-bottom: 100px;
-        }
-        input[type="checkbox"]:checked + .check  {
-            background: rgba(255,255,255,0.60) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important
-        }
-        textarea {
-            min-height: 70px;
-        }
-        .field {
-            width: 100%;
-            .label { 
-                color: var(--tainacan-info-color);
-                font-size: 0.875em;
-                line-height: 1.875em;
-            }
-        }
-        .add-new-term,
-        .collapse-all {
-            font-size: 0.75em;
-            text-decoration: underline;
-            margin: 0.875em 1.5em;
-        }
-        .selected-tags {
-            font-size: 0.75em;
-        }
-        .child-metadata-inputs {
-            margin-left: 5px;
-            padding-left: 16px;
-            padding-top: 2px;
-            border-left: 1px solid var(--tainacan-gray3);
+            flex-wrap: wrap;
+            font-size: 1.25em;
 
-            .is-last-input {
-                margin-top: -14px;
-                margin-bottom: 10px;
+            .metadata-type-label {
+                font-weight: 600;
+                color: var(--tainacan-turquoise4);
+                width: 100%;
+                font-size: 1em;
+                margin-bottom: 6px;
+                margin-left: -18px;
+            }
+
+            input, select, textarea, 
+            .input, .tags, .tag  {
+                pointer-events: none;
+                cursor: none;
+                background-color: rgba(255,255,255,0.60) !important;
+            }
+            .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
+                background-color: #f7fcfd !important;
+            }
+            .taginput {
+                margin-bottom: 100px;
+            }
+            input[type="checkbox"]:checked + .check  {
+                background: rgba(255,255,255,0.60) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3Cpath style='fill:rgb(69,70,71)' d='M 0.04038059,0.6267767 0.14644661,0.52071068 0.42928932,0.80355339 0.3232233,0.90961941 z M 0.21715729,0.80355339 0.85355339,0.16715729 0.95961941,0.2732233 0.3232233,0.90961941 z'%3E%3C/path%3E%3C/svg%3E") no-repeat center center !important
+            }
+            textarea {
+                min-height: 70px;
+            }
+            .field {
+                width: 100%;
+                .label { 
+                    color: var(--tainacan-info-color);
+                    font-size: 0.875em;
+                    line-height: 1.875em;
+                }
+            }
+            .add-new-term,
+            .collapse-all {
+                font-size: 0.75em;
+                text-decoration: underline;
+                margin: 0.875em 1.5em;
+            }
+            .selected-tags {
+                font-size: 0.75em;
+            }
+            .child-metadata-inputs {
+                margin-left: 5px;
+                padding-left: 16px;
+                padding-top: 2px;
+                border-left: 1px solid var(--tainacan-gray3);
+
+                .is-last-input {
+                    margin-top: -14px;
+                    margin-bottom: 10px;
+                }
             }
         }
     }

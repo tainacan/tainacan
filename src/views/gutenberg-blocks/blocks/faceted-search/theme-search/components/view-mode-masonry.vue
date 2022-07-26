@@ -49,6 +49,12 @@
                             class="tainacan-masonry-item" 
                             :href="getItemLink(item.url, index)">
 
+                        <!-- JS-side hook for extra content -->
+                        <div 
+                                v-if="hasBeforeHook()"
+                                class="faceted-search-hook faceted-search-hook-item-before"
+                                v-html="getBeforeHook(item)" />
+
                         <!-- Title -->
                         <div class="metadata-title">
                             <p v-html="item.title != undefined ? item.title : ''" />
@@ -82,6 +88,11 @@
                                 :transition-duration="500"
                             />
 
+                        <!-- JS-side hook for extra content -->
+                        <div 
+                                v-if="hasAfterHook()"
+                                class="faceted-search-hook faceted-search-hook-item-after"
+                                v-html="getAfterHook(item)" />
                     </a>
                 </li>
             </ul>

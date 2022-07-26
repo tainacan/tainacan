@@ -231,7 +231,6 @@ export default {
         h1 {
             font-size: 1.125em;
             color: var(--tainacan-white);
-            line-height: 1.4em;
             max-width: 100%;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -298,7 +297,7 @@ export default {
         }
 
         @media screen and (max-width: 769px) {
-            top: 102px;
+            top: 96px;
             padding-left: var(--tainacan-one-column) !important;
         }
     }

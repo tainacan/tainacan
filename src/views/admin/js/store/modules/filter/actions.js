@@ -279,3 +279,11 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, { taxonomyId, collect
             });
     });
 };
+
+export const moveFilterUp = ({ commit }, index) => {
+    commit('moveFilterUp', index);
+}
+
+export const moveFilterDown = ({ commit }, index) => {
+    commit('moveFilterDown', index);
+}

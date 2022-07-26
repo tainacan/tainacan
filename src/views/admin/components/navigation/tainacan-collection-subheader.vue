@@ -321,7 +321,7 @@ export default {
                 .level-item {
                     margin-bottom: 0;
                     a { 
-                        padding: 0.5em 0.7em !important; 
+                        padding: 0.45em 0.7em !important; 
                         text-align: center;
                     }
                     .menu-text {

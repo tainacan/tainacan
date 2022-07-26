@@ -158,6 +158,7 @@
         border-bottom: 1px solid var(--tainacan-block-gray3, $gray3);
         padding: 1.00em 0.5em 0.75em 0.5em;
         position: relative;
+        box-sizing: border-box;
 
         @media only screen and (max-width: 768px) {
             flex-wrap: wrap;

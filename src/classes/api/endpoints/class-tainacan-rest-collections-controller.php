@@ -81,14 +81,44 @@ class REST_Collections_Controller extends REST_Controller {
 			),
 			'schema'                => [$this, 'get_schema'],
 		));
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/metadata_order', array(
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/metadata_section_order', array(
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'update_metadata_section_order'),
+				'permission_callback' => array($this, 'update_metadata_section_order_permissions_check'),
+				'args'                => [
+					'metadata_section_order' => [
+						'description' => __( 'The order of the metadata section in the collection, an array of objects with integer ID and bool enabled.', 'tainacan' ),
+						'required' => true,
+						'validate_callback' => [$this, 'validate_metadata_section_order']
+					]
+				],
+			),
+			'schema'                => [$this, 'get_schema'],
+		));
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/metadata_section/default_section/metadata_order', array(
 			array(
 				'methods'             => \WP_REST_Server::EDITABLE,
 				'callback'            => array($this, 'update_metadata_order'),
 				'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
 				'args'                => [
 					'metadata_order' => [
-						'description' => __( 'The order of the metadata in the collection, an array of objects with integer ID and bool enabled.', 'tainacan' ),
+						'description' => __( 'The order of the metadata in the section, an array of objects with integer ID and bool enabled.', 'tainacan' ),
+						'required' => true,
+						'validate_callback' => [$this, 'validate_filters_metadata_order']
+					]
+				],
+			),
+			'schema'                => [$this, 'get_schema'],
+		));
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)/metadata_section/(?P<metadata_section_id>[\d]+)/metadata_order', array(
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'update_metadata_order'),
+				'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
+				'args'                => [
+					'metadata_order' => [
+						'description' => __( 'The order of the metadata in the section, an array of objects with integer ID and bool enabled.', 'tainacan' ),
 						'required' => true,
 						'validate_callback' => [$this, 'validate_filters_metadata_order']
 					]
@@ -367,7 +397,7 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 * @throws \Exception
 	 */
-	public function  get_item_permissions_check($request){
+	public function get_item_permissions_check($request){
 		$collection = $this->collections_repository->fetch($request['collection_id']);
 
 		if(($collection instanceof Entities\Collection)) {
@@ -586,6 +616,27 @@ class REST_Collections_Controller extends REST_Controller {
 
 	}
 
+	public function validate_metadata_section_order($value, $request, $param) {
+		if ( is_array($value) ) {
+			foreach ($value as $val) {
+				if ( !is_array($val) ) {
+					return false;
+				}
+				if ( !isset($val['id']) || (!is_numeric($val['id']) && $val['id'] != 'default_section' ) ) {
+					return false;
+				}
+				if ( !isset($val['enabled']) || !is_bool($val['enabled']) ) {
+					return false;
+				}
+				if ( !isset($val['metadata_order']) || !is_array($val['metadata_order']) ) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Update a collection metadata order
 	 *
@@ -595,6 +646,7 @@ class REST_Collections_Controller extends REST_Controller {
 	 */
 	public function update_metadata_order( $request ) {
 		$collection_id = $request['collection_id'];
+		$metadata_section_id = isset($request['metadata_section_id']) ? $request['metadata_section_id'] : 'default_section';
 
 		$body = json_decode($request->get_body(), true);
 
@@ -603,7 +655,66 @@ class REST_Collections_Controller extends REST_Controller {
 			$collection = $this->collections_repository->fetch($collection_id);
 
 			if( $collection instanceof Entities\Collection) {
-				$collection->set_metadata_order( $body['metadata_order'] );
+				$metadata_section_order = $collection->get_metadata_section_order();
+				if( !isset( $metadata_section_order ) || !is_array($metadata_section_order) ) {
+					$metadata_section_order = array();
+				}
+
+				$section_order_index = array_search( $metadata_section_id, array_column( $metadata_section_order, 'id' ) );
+				if ( $section_order_index !== false ) {
+					$metadata_section_order[$section_order_index]['metadata_order'] = $body['metadata_order'];
+				} else {
+					$metadata_section_order[] = array(
+						'id' => $metadata_section_id,
+						'metadata_order' => $body['metadata_order'],
+						'enabled' => true
+					);
+				}
+				$collection->set_metadata_section_order( $metadata_section_order );
+
+				if ( $collection->validate() ) {
+					$updated_collection = $this->collections_repository->update( $collection );
+					$response = $this->prepare_item_for_response($updated_collection, $request);
+					return new \WP_REST_Response( $response, 200 );
+				}
+
+				return new \WP_REST_Response([
+					'error_message' => __('One or more values are invalid.', 'tainacan'),
+					'errors'        => $collection->get_errors(),
+					'collection'    => $this->prepare_item_for_response($collection, $request)
+				], 400);
+			}
+
+			return new \WP_REST_Response([
+				'error_message' => __('Collection with this ID was not found', 'tainacan' ),
+				'collection_id' => $collection_id
+			], 400);
+		}
+
+		return new \WP_REST_Response([
+			'error_message' => __('The body could not be empty', 'tainacan'),
+			'body'          => $body
+		], 400);
+	}
+
+	/**
+	 * Update a collection metadata section order
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return string|\WP_Error|\WP_REST_Response
+	 */
+	public function update_metadata_section_order( $request ) {
+		$collection_id = $request['collection_id'];
+
+		$body = json_decode($request->get_body(), true);
+
+		if( !empty($body) && isset($body['metadata_section_order']) ) {
+
+			$collection = $this->collections_repository->fetch($collection_id);
+
+			if( $collection instanceof Entities\Collection) {
+				$collection->set_metadata_section_order( $body['metadata_section_order'] );
 
 				if ( $collection->validate() ) {
 					$updated_collection = $this->collections_repository->update( $collection );
@@ -650,6 +761,25 @@ class REST_Collections_Controller extends REST_Controller {
 
 		return false;
 	}
+
+	/**
+	 * Verify if current user has permission to update metadata section order
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 * @throws \Exception
+	 */
+	public function update_metadata_section_order_permissions_check( $request ) {
+		$collection = $this->collections_repository->fetch($request['collection_id']);
+
+		if($collection instanceof Entities\Collection) {
+			return $collection->user_can( 'edit_metadata' ); // && $collection->user_can( 'edit_metadata_section' );
+		}
+
+		return false;
+	}
+	
 
 	/**
 	 * Update a collection metadata order

@@ -31,7 +31,7 @@ class Admin_Hooks {
 	}
 
 	public function get_available_contexts() {
-		return apply_filters('tainacan-admin-hooks-contexts', ['collection', 'metadatum', 'item', 'taxonomy', 'term', 'filter', 'role']);
+		return apply_filters('tainacan-admin-hooks-contexts', ['collection', 'metadatum', 'item', 'taxonomy', 'term', 'filter', 'role', 'metadataSection']);
 	}
 	
 	public function get_registered_hooks() {
@@ -49,7 +49,7 @@ class Admin_Hooks {
 		
 		$contexts = $this->get_available_contexts();
 		$positions = $this->get_available_positions();
-		
+
 		if ( !in_array($context, $contexts) || !in_array($position, $positions) ) {
 			return false;
 		}

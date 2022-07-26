@@ -100,6 +100,12 @@
                             :key="index"
                             v-for="(item, index) of items">
                         
+                        <!-- JS-side hook for extra content -->
+                        <td 
+                                v-if="hasBeforeHook()"
+                                class="faceted-search-hook faceted-search-hook-item-before"
+                                v-html="getBeforeHook(item)" />
+                                
                         <!-- Item Displayed Metadata -->
                         <td 
                                 :key="metadatumIndex"    
@@ -208,6 +214,12 @@
                                 </span> 
                             </div>
                         </td>
+                
+                        <!-- JS-side hook for extra content -->
+                        <td 
+                                v-if="hasAfterHook()"
+                                class="faceted-search-hook faceted-search-hook-item-after"
+                                v-html="getAfterHook(item)" />
                     </tr>
                 </tbody>
             </table>

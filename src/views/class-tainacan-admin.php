@@ -76,7 +76,7 @@ class Admin {
 			array( &$this, 'item_submission' )
 		);
 
-		add_submenu_page(
+		$mobile_app_page_suffix = add_submenu_page(
 			null, // Mobile app page is not listed in the menu
 			__('Mobile App', 'tainacan'),
 			__('Mobile App', 'tainacan'),
@@ -84,10 +84,11 @@ class Admin {
 			'tainacan_mobile_app',
 			array( &$this, 'mobile_app' )
 		);
-
+		
 		add_action( 'load-' . $page_suffix, array( &$this, 'load_admin_page' ) );
 		add_action( 'load-' . $roles_page_suffix, array( &$this, 'load_roles_page' ) );
 		add_action( 'load-' . $reports_page_suffix, array( &$this, 'load_reports_page' ) );
+		add_action( 'load-' . $mobile_app_page_suffix, array( &$this, 'load_mobile_app_page' ) );
 	}
 
 	function load_admin_page() {
@@ -104,6 +105,10 @@ class Admin {
 	function load_reports_page() {
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_reports_css' ), 90 );
 		add_action( 'admin_enqueue_scripts', array( &$this, 'add_reports_js' ), 90 );
+	}
+
+	function load_mobile_app_page() {
+		add_action( 'admin_enqueue_scripts', array( &$this, 'add_mobile_app_css' ), 90 );
 	}
 
 	function login_styles_reset( $style ) {
@@ -130,6 +135,12 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_style( 'tainacan-roles-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-roles.css', [], TAINACAN_VERSION );
+	}
+
+	function add_mobile_app_css() {
+		global $TAINACAN_BASE_URL;
+
+		wp_enqueue_style( 'tainacan-mobile-app-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-mobile-app.css', [], TAINACAN_VERSION );
 	}
 
 	function add_roles_js() {
@@ -263,20 +274,22 @@ class Admin {
 	function get_admin_js_localization_params() {
 		global $TAINACAN_BASE_URL, $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 
-		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-		$Tainacan_Metadata    = \Tainacan\Repositories\Metadata::get_instance();
-		$Tainacan_Filters     = \Tainacan\Repositories\Filters::get_instance();
-		$Tainacan_Items       = \Tainacan\Repositories\Items::get_instance();
-		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
+		$Tainacan_Collections 		= \Tainacan\Repositories\Collections::get_instance();
+		$Tainacan_Metadata    		= \Tainacan\Repositories\Metadata::get_instance();
+		$Tainacan_Metadata_Sections = \Tainacan\Repositories\Metadata_Sections::get_instance();
+		$Tainacan_Filters     		= \Tainacan\Repositories\Filters::get_instance();
+		$Tainacan_Items       		= \Tainacan\Repositories\Items::get_instance();
+		$Tainacan_Taxonomies  		= \Tainacan\Repositories\Taxonomies::get_instance();
 
 		$tainacan_admin_i18n = require( 'tainacan-i18n.php' );
 
 		$entities_labels = [
-			'collections' => $Tainacan_Collections->get_cpt_labels(),
-			'metadata'      => $Tainacan_Metadata->get_cpt_labels(),
-			'filters'     => $Tainacan_Filters->get_cpt_labels(),
-			'items'       => $Tainacan_Items->get_cpt_labels(),
-			'taxonomies'  => $Tainacan_Taxonomies->get_cpt_labels(),
+			'collections' 		=> $Tainacan_Collections->get_cpt_labels(),
+			'metadata'      	=> $Tainacan_Metadata->get_cpt_labels(),
+			'metadata-sections' => $Tainacan_Metadata_Sections->get_cpt_labels(),
+			'filters'     		=> $Tainacan_Filters->get_cpt_labels(),
+			'items'       		=> $Tainacan_Items->get_cpt_labels(),
+			'taxonomies'  		=> $Tainacan_Taxonomies->get_cpt_labels(),
 		];
 
 		$tainacan_admin_i18n['entities_labels'] = $entities_labels;
@@ -321,11 +334,12 @@ class Admin {
 		];
 		
 		$maps = [
-			'collections' => $Tainacan_Collections->get_map(),
-			'metadata'    => $Tainacan_Metadata->get_map(),
-			'filters'     => $Tainacan_Filters->get_map(),
-			'items'       => $Tainacan_Items->get_map(),
-			'taxonomies'  => $Tainacan_Taxonomies->get_map(),
+			'collections' 		=> $Tainacan_Collections->get_map(),
+			'metadata'    		=> $Tainacan_Metadata->get_map(),
+			'metadata-sections' => $Tainacan_Metadata_Sections->get_map(),
+			'filters'     		=> $Tainacan_Filters->get_map(),
+			'items'       		=> $Tainacan_Items->get_map(),
+			'taxonomies'  		=> $Tainacan_Taxonomies->get_map(),
 		];
 
 		$metadata_types = $Tainacan_Metadata->fetch_metadata_types();

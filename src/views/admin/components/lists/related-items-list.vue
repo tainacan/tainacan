@@ -250,7 +250,7 @@
         .related-item-group {
             
             &:not(:last-child) {
-                border-bottom: 1px dashed var(--tainacan-info-color);
+                border-bottom: 1px dashed var(--tainacan-gray3);
                 margin-bottom: 2rem;
             }
             

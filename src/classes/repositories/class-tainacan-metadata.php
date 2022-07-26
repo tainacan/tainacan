@@ -49,7 +49,7 @@ class Metadata extends Repository {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
-  protected function _get_map() {
+	protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'name'                  => [
 				'map'         => 'post_title',
@@ -224,6 +224,13 @@ class Metadata extends Repository {
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
 				// yes or no. It cant be multiple if its collection_key
 				'default'     => 'no'
+			],
+			'metadata_section_id' => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadata section', 'tainacan' ),
+				'type'        => ['integer', 'string', 'array'],
+				'description' => __( 'The metadata section ID', 'tainacan' ),
+				'default'     => 'default_section'
 			],
 		] );
 	}
@@ -599,6 +606,7 @@ class Metadata extends Repository {
 	 */
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_metadata_order();
+		$section_order = $collection->get_metadata_section_order();
 
 		if ( $order ) {
 			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
@@ -610,11 +618,23 @@ class Metadata extends Repository {
 				foreach ( $result as $item ) {
 					$id    = $item->WP_Post->ID;
 					$index = array_search( $id, array_column( $order, 'id' ) );
+					$metadata_section_ids = get_post_meta( $id, 'metadata_section_id');
+
+					$enabled_metadata_section = true;
+					if(!empty($metadata_section_ids) && $metadata_section_ids !== false && !empty($section_order)) {
+						foreach( $metadata_section_ids as $metadata_section_id) {
+							$section_order_index = array_search( $metadata_section_id, array_column( $section_order, 'id' ) );
+							if ( $section_order_index !== false ) {
+								$enabled_metadata_section = boolval($section_order[$section_order_index]['enabled']);
+								break;
+							}
+						}
+					}
 
 					if ( $index !== false ) {
 
 						// skipping metadata disabled if the arg is set
-						if ( ! $include_disabled && isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] ) {
+						if ( ! $include_disabled && (!$enabled_metadata_section || isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] )) {
 							continue;
 						}
 
@@ -648,10 +668,8 @@ class Metadata extends Repository {
 	public function insert( $metadatum ) {
 		$this->pre_update_taxonomy_metadatum( $metadatum );
 		$new_metadatum = parent::insert( $metadatum );
-
 		$this->update_taxonomy_metadatum( $new_metadatum );
 		$this->update_metadata_type_index( $new_metadatum );
-
 		return $new_metadatum;
 	}
 
@@ -751,7 +769,7 @@ class Metadata extends Repository {
 	 */
 	private function get_data_core_metadata( Entities\Collection $collection ) {
 
-		return $data_core_metadata = [
+		$data_core_metadata = [
 			'core_title'       => [
 				'name'            => __('Title', 'tainacan'),
 				'collection_id'   => $collection->get_id(),
@@ -766,6 +784,7 @@ class Metadata extends Repository {
 				'status'          => 'publish',
 			]
 		];
+		return $data_core_metadata;
 
 	}
 

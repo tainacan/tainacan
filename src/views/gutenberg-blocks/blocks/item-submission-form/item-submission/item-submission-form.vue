@@ -11,13 +11,19 @@
                     class="tainacan-form"
                     label-width="120px">
 
-                <!-- Hook for extra Form options -->
+                <!-- Hook for extra options -->
                 <template v-if="hasBeginLeftForm">
                     <form
                             id="form-item-begin-left"
                             class="form-hook-region"
                             v-html="getBeginLeftForm"/>
                 </template>
+
+                <!-- JS-side hook for extra content -->
+                <div 
+                        v-if="hasBeforeHook('document')"
+                        class="item-submission-hook item-submission-hook-document-before"
+                        v-html="getBeforeHook('document')" />
 
                 <!-- Document -------------------------------- -->
                 <template v-if="!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton">
@@ -185,6 +191,18 @@
 
                 </template>
 
+                <!-- JS-side hook for extra content -->
+                <div 
+                        v-if="hasAfterHook('document')"
+                        class="item-submission-hook item-submission-hook-document-after"
+                        v-html="getAfterHook('document')" />
+
+                <!-- JS-side hook for extra content -->
+                <div 
+                        v-if="hasBeforeHook('thumbnail')"
+                        class="item-submission-hook item-submission-hook-thumbnail-before"
+                        v-html="getBeforeHook('thumbnail')" />
+
                 <!-- Thumbnail -------------------------------- -->
                 <template v-if="!hideThumbnailSection">
                     <div
@@ -253,13 +271,26 @@
                     </div>
                 </template>
 
-                <!-- Hook for extra Form options -->
+                <!-- JS-side hook for extra content -->
+                <div 
+                        v-if="hasAfterHook('thumbnail')"
+                        class="item-submission-hook item-submission-hook-thumbnail-after"
+                        v-html="getAfterHook('thumbnail')" />
+
+                <!-- Hook for extra options -->
                 <template v-if="hasEndLeftForm">
                     <form
                         id="form-item-end-left"
                         class="form-hook-region"
                         v-html="getEndLeftForm"/>
                 </template>
+
+
+                <!-- JS-side hook for extra content -->
+                <div 
+                        v-if="hasBeforeHook('attachments')"
+                        class="item-submission-hook item-submission-hook-attachments-before"
+                        v-html="getBeforeHook('attachments')" />
 
                 <!-- Attachments ------------------------------------------ -->
                 <template v-if="!hideAttachmentsSection">
@@ -316,7 +347,13 @@
                     </div>
                 </template>
 
-                <!-- Hook for extra Form options -->
+                <!-- JS-side hook for extra content -->
+                <div 
+                        v-if="hasAfterHook('attachments')"
+                        class="item-submission-hook item-submission-hook-attachments-after"
+                        v-html="getAfterHook('attachments')" />
+
+                <!-- Hook for extra options -->
                 <template v-if="hasBeginRightForm">
                     <form
                         id="form-item-begin-right"
@@ -373,17 +410,103 @@
                                 class="tainacan-icon tainacan-icon-1-25em"/>
                     </span>
                 </a>
-                <template v-for="(itemMetadatum, index) of metadatumList">
-                    <tainacan-form-item
-                            :key="index"
-                            v-if="enabledMetadata[index] == 'true'"
-                            :item-metadatum="itemMetadatum"
-                            :hide-collapses="hideCollapses"
-                            :is-collapsed="metadataCollapses[index]"
-                            @changeCollapse="onChangeCollapse($event, index)"/>
-                </template>
 
-                <!-- Hook for extra Form options -->
+                <!-- JS-side hook for extra content -->
+                <div 
+                        v-if="hasBeforeHook('metadata')"
+                        class="item-submission-hook item-submission-hook-metadata-before"
+                        v-html="getBeforeHook('metadata')" />
+
+                <div 
+                        v-for="(metadataSection, sectionIndex) of metadataSections"
+                        :key="sectionIndex"
+                        :class="'metadata-section-slug-' + metadataSection.slug"
+                        :id="'metadata-section-id-' + metadataSection.id">
+
+                    <div class="metadata-section-header section-label">
+                        <span   
+                                class="collapse-handle"
+                                @click="!hideCollapses ? toggleMetadataSectionCollapse(sectionIndex) : ''">
+                            <span 
+                                    v-if="!hideCollapses"
+                                    class="icon"
+                                    @click="toggleMetadataSectionCollapse(sectionIndex)">
+                                <i 
+                                        :class="{
+                                            'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || formErrorMessage,
+                                            'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage)
+                                        }"
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                            </span>
+                            <label>{{ metadataSection.name }}</label>
+                            <help-button
+                                    v-if="!hideHelpButtons &&
+                                            !helpInfoBellowLabel &&
+                                            metadataSection.description" 
+                                    :title="metadataSection.name"
+                                    :message="metadataSection.description" />
+                        </span>
+                    </div>
+                    <transition name="filter-item">
+                        <div 
+                                class="metadata-section-metadata-list"
+                                v-show="metadataSectionCollapses[sectionIndex]">
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasBeforeHook('metadata_section')"
+                                    class="item-submission-hook item-submission-hook-metadata-section-before"
+                                    v-html="getBeforeHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
+                            <p
+                                    class="metadatum-description-help-info"
+                                    v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
+                                {{ metadataSection.description }}
+                            </p>
+
+                            <template v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
+
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        :key="index"
+                                        v-if="hasBeforeHook('metadatum')"
+                                        class="item-submission-hook item-submission-hook-metadatum-before"
+                                        v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
+                                <tainacan-form-item
+                                        :key="index"
+                                        v-if="enabledMetadata[index] == 'true'"
+                                        :item-metadatum="itemMetadatum"
+                                        :hide-collapses="hideCollapses"
+                                        :is-collapsed="metadataCollapses[index]"
+                                        @changeCollapse="onChangeCollapse($event, index)"/>
+
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        :key="index"
+                                        v-if="hasAfterHook('metadatum')"
+                                        class="item-submission-hook item-submission-hook-metadatum-after"
+                                        v-html="getAfterHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+                            </template>
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasAfterHook('metadata_section')"
+                                    class="item-submission-hook item-submission-hook-metadata-section-after"
+                                    v-html="getAfterHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
+                        </div>
+                    </transition>
+
+                </div>
+
+                <!-- JS-side hook for extra content -->
+                <div 
+                        v-if="hasAfterHook('metadata')"
+                        class="item-submission-hook item-submission-hook-metadata-after"
+                        v-html="getAfterHook('metadata')" />
+
+                <!-- Hook for extra options -->
                 <template v-if="hasEndRightForm">
                     <form
                         id="form-item-end-right"
@@ -414,6 +537,12 @@
 
                 <footer class="form-submission-footer">
 
+                    <!-- JS-side hook for extra content -->
+                    <div 
+                            v-if="hasBeforeHook('footer')"
+                            class="item-submission-hook item-submission-hook-footer-before"
+                            v-html="getBeforeHook('footer')" />
+
                     <button
                             @click="onDiscard()"
                             type="button"
@@ -437,7 +566,14 @@
                             @click="onSubmit()"
                             type="button"
                             class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
+
+                    <!-- JS-side hook for extra content -->
+                    <div 
+                            v-if="hasAfterHook('footer')"
+                            class="item-submission-hook item-submission-hook-footer-after"
+                            v-html="getAfterHook('footer')" />
                 </footer>
+
             </form>
 
             <!-- Message displayed when the form is being submitted -->
@@ -539,9 +675,11 @@ export default {
         return {
             collecionAllowsItemSubmission: true,
             isLoading: false,
+            isLoadingMetadataSections: false,
             isSubmitting: false,
             isUploading: false,
             metadataCollapses: [],
+            metadataSectionCollapses: [],
             collapseAll: true,
             form: {
                 collection_id: Number,
@@ -587,6 +725,9 @@ export default {
                         } )
                     )) : [];
         },
+        metadataSections() {
+            return this.getMetadataSections();
+        },
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
         },
@@ -607,6 +748,7 @@ export default {
         }
     },
     created() {
+
         // Puts loading on form
         this.isLoading = true;
 
@@ -629,15 +771,33 @@ export default {
                 this.createNewItem();
 
                 eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
-                    if (hasErrors)
+                    if (hasErrors) {
+                        if (Array.isArray(this.formErrors)) {
+                            for (let i = 0; i < this.metadataSectionCollapses.length; i++)
+                                this.$set(this.metadataSectionCollapses, i, true);
+                        }
                         this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
-                    else
+                    } else
                         this.formErrorMessage = '';
                 });
             })
             .catch(() => {
                 this.collecionAllowsItemSubmission = false;
                 this.isLoading = false;
+            });
+
+        // Loads Metadata Sections
+        this.isLoadingMetadataSections = true;
+        this.fetchMetadataSections({
+                collectionId: this.collectionId
+            })
+            .then((metadataSections) => {
+                this.metadataSectionCollapses = Array(metadataSections.length).fill(true);
+                this.isLoadingMetadataSections = false;
+            })
+            .catch((error) => {
+                this.isLoadingMetadataSections = false;
+                this.$console.error('Error loading metadata sections ', error);
             });
     },
     mounted() {
@@ -666,14 +826,32 @@ export default {
             'getItemSubmissionMetadata',
         ]),
         ...mapActions('metadata',[
-            'fetchMetadata'
+            'fetchMetadata',
+            'fetchMetadataSections'
         ]),
         ...mapGetters('metadata',[
-            'getMetadata'
+            'getMetadata',
+            'getMetadataSections'
         ]),
         ...mapActions('collection',[
             'fetchCollectionForItemSubmission'
         ]),
+        hasBeforeHook(location) {
+            if (wp !== undefined)
+                return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`);
+        },
+        hasAfterHook(location) {
+            if (wp !== undefined)
+                return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`);
+        },
+        getBeforeHook(location, entity = '') {
+            if (wp !== undefined)
+                return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`, entity);
+        },
+        getAfterHook(location, entity = '') {
+            if (wp !== undefined)
+                return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`, entity);
+        },
         onSubmit() {
 
             // Puts loading on Item edit
@@ -801,9 +979,14 @@ export default {
             for (let i = 0; i < this.metadataCollapses.length; i++)
                 this.metadataCollapses[i] = this.collapseAll;
 
+            for (let i = 0; i < this.metadataSectionCollapses.length; i++)
+                this.$set(this.metadataSectionCollapses, i, this.collapseAll);
         },
         onChangeCollapse(event, index) {
             this.metadataCollapses.splice(index, 1, event);
+        },
+        toggleMetadataSectionCollapse(sectionIndex) {
+            this.$set(this.metadataSectionCollapses, sectionIndex, (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]));
         }
     }
 }
@@ -828,6 +1011,7 @@ export default {
         }
         .field {
             padding: 12px 0px 12px 34px;
+            margin-left: 16px;
 
         }
          .columns {
@@ -939,6 +1123,15 @@ export default {
         /deep/ .control-label {
             white-space: normal !important;
             overflow: visible;
+        }
+    }
+
+    .metadata-section-header {
+        padding-bottom: 7px;
+        border-bottom: 1px solid var(--tainacan-input-border-color);
+
+        .icon {
+            margin-left: -0.5rem;
         }
     }
 

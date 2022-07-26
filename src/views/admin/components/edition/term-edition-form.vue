@@ -523,7 +523,7 @@
         }
 
         .tainacan-page-title {
-            margin-bottom: 30px;
+            margin-bottom: 28px;
             display: flex;
             flex-wrap: wrap;
             align-items: baseline;
