@@ -306,7 +306,8 @@
                                 v-if="item != undefined && item.id != undefined && !isLoading && !$adminOptions.hideItemSingleAttachments"
                                 class="section-box section-attachments">
                             <attachments-list
-                                    :item="item" />
+                                    :item="item"
+                                    :form="item" />
                         </div>   
 
                         <!-- Hook for extra Form options -->
