@@ -165,7 +165,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('label_required'),
                                         autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        popperClass: ['tainacan-tooltip', 'tooltip'],
                                         placement: 'auto-start'
                                     }">
                                 *&nbsp;({{ $i18n.get('label_default_section') }}) 
@@ -370,6 +370,14 @@
                                                 }"
                                                 class="icon icon-level-identifier">
                                             <i 
+                                                v-if="metadatum.collection_id == 'default'"
+                                                :class="{
+                                                    'has-text-blue5': metadatum.enabled,
+                                                    'has-text-gray3': !metadatum.enabled
+                                                }"
+                                                class="tainacan-icon tainacan-icon-repository" />
+                                            <i 
+                                                v-else
                                                 :class="{ 
                                                     'has-text-turquoise5': metadatum.enabled, 
                                                     'has-text-gray3': !metadatum.enabled
