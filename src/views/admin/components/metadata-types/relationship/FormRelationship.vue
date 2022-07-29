@@ -48,7 +48,7 @@
                         v-model="modelSearch"
                         expanded>
                     <option
-                            v-for="(option, index) in metadata"
+                            v-for="(option, index) in metadata.filter(metadatum => metadatum.metadata_type_object.component !== 'tainacan-compound')"
                             :key="index"
                             :value="option.id"
                             class="field">
@@ -224,7 +224,7 @@
                             this.metadata = [];
 
                             for (let metadatum of metadata) {
-                               if ( (metadatum.metadata_type_object.component !== 'tainacan-relationship' || this.isMetaqueryRelationshipEnabled) && metadatum.metadata_type_object.component !== 'tainacan-compound' ) {
+                               if ( (metadatum.metadata_type_object.component !== 'tainacan-relationship' || this.isMetaqueryRelationshipEnabled) ) {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
                                    this.checkMetadata();
@@ -260,7 +260,7 @@
 
             },
             checkMetadata(){
-                if( this.value && this.value.search ){
+                if ( this.value && this.value.search ) {
                     this.modelSearch = this.value.search;
                 } else {
                     try {

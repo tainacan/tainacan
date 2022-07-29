@@ -160,30 +160,6 @@ a:hover {
 
 // Inside one of the view modes
 .metadata-value {
-    .tainacan-compound-group {
-        margin-left: 2px;
-        padding-left: 0.875em;
-        border-left: 1px solid var(--tainacan-gray2);
-
-        .tainacan-compound-metadatum .label {
-            margin-bottom: 0.25em;
-            font-size: 1em;
-            color: var(--tainacan-info-color);
-        }
-        .tainacan-compound-metadatum p {
-            margin-bottom: 0.75em;
-            font-size: 1em;
-        }
-        .multivalue-separator {
-            display: block;
-            max-height: 1px;
-            width: 80px;
-            background: var(--tainacan-gray2);
-            content: none;
-            color: transparent;
-            margin: 1em auto 1em -0.875em;
-        }
-    }
     .tainacan-relationship-group {
         .tainacan-relationship-metadatum {
             .tainacan-relationship-metadatum-header {
@@ -205,6 +181,48 @@ a:hover {
         }
     }
 }
+.metadata-value,
+.tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-metadatum {
+    .tainacan-compound-group {
+        margin-left: 2px;
+        padding-left: 0.875em;
+        border-left: 1px solid var(--tainacan-gray2);
+
+        .tainacan-compound-metadatum .label {
+            margin-bottom: 0.25em;
+            font-size: 1em;
+            color: var(--tainacan-info-color);
+        }
+        .tainacan-compound-metadatum p {
+            margin-bottom: 0.75em;
+            font-size: 1em;
+        }
+        .tainacan-metadatum .label {
+            font-size: 1em;
+        }
+        .multivalue-separator {
+            display: block;
+            max-height: 1px;
+            width: 80px;
+            background: var(--tainacan-gray2);
+            content: none;
+            color: transparent;
+            margin: 1em auto 1em -0.875em;
+        }
+    }
+}
+.tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-metadatum .tainacan-compound-group {
+    font-size: 0.75em;
+
+    .tainacan-metadatum {
+        margin-left: 20px;
+
+        .label {
+            font-size: 1em !important;
+        }
+    }
+}
+
 // Inside the admin item page
 .metadata-type-textarea,
 .metadata-type-compound {
@@ -220,7 +238,7 @@ a:hover {
 }
 .metadata-type-compound {
     padding-left: 15px;
-    margin-left: 15px;
+    margin-left: 0px;
     border-left: 1px solid var(--tainacan-gray2);
 
     .tainacan-metadatum {

@@ -277,6 +277,9 @@ export default {
                     margin-bottom: 0.75em;
                     font-size: 1em;
                 }
+                .tainacan-metadatum .label {
+                    font-size: 1em;
+                }
                 .multivalue-separator {
                     display: block;
                     max-height: 1px;
