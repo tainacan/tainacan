@@ -770,6 +770,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_metadatum_delete'),
                     onConfirm: () => { 
+                        this.isUpdatingMetadataOrder = true;
                         this.deleteMetadatum({
                                 collectionId: this.collectionId,
                                 metadatumId: removedMetadatum.id,
@@ -779,6 +780,7 @@ export default {
                                 this.updateMetadataOrder(sectionIndex);
                             })
                             .catch(() => {
+                                this.isUpdatingMetadataOrder = false;
                                 this.$console.log("Error deleting metadatum.")
                             });
                     }
@@ -797,11 +799,13 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_metadata_section_delete'),
                     onConfirm: () => { 
+                        this.isUpdatingMetadataSectionsOrder = true;
                         this.deleteMetadataSection({ collectionId: this.collectionId, metadataSectionId: removedMetadataSection.id })
                             .then(() => {
                                 this.updateMetadataSectionsOrder();
                             })
                             .catch(() => {
+                                this.isUpdatingMetadataSectionsOrder = false;
                                 this.$console.log("Error deleting metadata section.")
                             });
                     }

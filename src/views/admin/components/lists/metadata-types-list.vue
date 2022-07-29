@@ -200,6 +200,9 @@ export default {
         margin: 0;
         max-width: 380px;
         min-width: 20.8333333%;
+        max-height: calc(100vh - 7.75em);
+        top: -28px;
+        position: sticky;
         font-size: 0.875em;
 
         @media screen and (max-width: 769px) {

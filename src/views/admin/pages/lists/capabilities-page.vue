@@ -195,6 +195,10 @@
     @import '../../scss/_variables.scss';
 
     .sub-header {
+        position: sticky;
+        top: calc(-1 * var(--tainacan-container-padding));
+        z-index: 2;
+        background: var(--tainacan-background-color);
         min-height: $header-height;
         height: auto;
         padding-left: 0;

@@ -120,7 +120,6 @@ export default {
             handler() {
                 if (this.items && this.items.length > 0 && !this.isLoading) {
                     this.$nextTick(() => {
-                        console.log(this.items.length)
                         if (this.masonry !== false)
                             this.masonry.destroy();
                         
