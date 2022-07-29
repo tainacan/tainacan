@@ -390,14 +390,14 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	public function delete_item( $request ) {
 		$metadata_section_id = $request['metadata_section_id'];
 		$metadatum_section = $this->metadata_sections_repository->fetch($metadata_section_id);
-		if (! $metadatum_section instanceof Entities\Metadatum) {
+		if (! $metadatum_section instanceof Entities\Metadata_Section) {
 			return new \WP_REST_Response([
-				'error_message' => __('Metadata with this ID was not found', 'tainacan'),
+				'error_message' => __('Metadata section with this ID was not found', 'tainacan'),
 				'item_id' => $metadata_section_id
 			], 400);
 		}
 
-		$metadatum_section_trashed = $this->metadata_sections_repository->trash($metadatum_section);
+		$metadatum_section_trashed = $this->metadata_sections_repository->delete($metadatum_section);
 		$prepared = $this->prepare_item_for_response($metadatum_section_trashed, $request);
 		return new \WP_REST_Response($prepared, 200);
 	}
