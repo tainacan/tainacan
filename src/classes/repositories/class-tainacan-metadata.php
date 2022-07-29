@@ -42,6 +42,7 @@ class Metadata extends Repository {
 
 		add_action('tainacan-insert-tainacan-taxonomy', [$this, 'hook_taxonomies_saved_as_private']);
 		add_action('tainacan-insert-tainacan-taxonomy', [$this, 'hook_taxonomies_saved_not_allow_insert_new_terms']);
+		add_action('tainacan-insert-tainacan-metadatum', [$this, 'hook_metadata_update_order']);
 
 	}
 
@@ -1732,6 +1733,40 @@ class Metadata extends Repository {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * When a metadata is saved, if the metadata section changes, the ordering needs to be updated
+	 *
+	 * @param \Tainacan\Entities\Metadatum $metadata
+	 * @return void
+	 */
+	public function hook_metadata_update_order($metadata) {
+		$tainacan_metadata_sections_repository = \tainacan_metadata_sections();
+		$tainacan_collections_repository = \tainacan_collections();
+		$metadata_section_id = $metadata->get_metadata_section_id();
+		$metadata_section = $tainacan_metadata_sections_repository->fetch($metadata_section_id);
+		if ( $metadata_section instanceof \Tainacan\Entities\Metadata_Section ) {
+			$collection = $metadata_section->get_collection();
+			$metadata_sections_order = $collection->get_metadata_section_order();
+			if( empty($metadata_sections_order) ) {
+				return;
+			}
+			foreach( $metadata_sections_order as &$metadata_section_order ) {
+				$pos = array_search($metadata->get_id(), array_column($metadata_section_order['metadata_order'], 'id'));
+				if($pos !== false) {
+					if( $metadata_section_id != $metadata_section_order['id']) {
+						array_splice($metadata_section_order['metadata_order'], $pos, 1);
+					}
+				} else if($metadata_section_id == $metadata_section_order['id']) {
+					$metadata_section_order['metadata_order'][] = ["id" => $metadata->get_id(), "enabled" => $metadata->get_enabled_for_collection()];
+				}
+			}
+			$collection->set_metadata_section_order($metadata_sections_order);
+			if($collection->validate()) {
+				$tainacan_collections_repository->update($collection);
+			}
+		}
 	}
 
 }

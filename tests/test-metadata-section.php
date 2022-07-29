@@ -319,6 +319,22 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		$this->assertFalse($metadata_ordinate_enabled[1]->get_enabled_for_collection());
 		$this->assertTrue($metadata_ordinate_enabled[2]->get_enabled_for_collection());
 
+		//changing the metadata section of the metadata without changing the ordering
+		$metadatum2->set_metadata_section_id($metadata_section_a->get_id());
+		$this->assertTrue($metadatum2->validate(), json_encode($metadatum2->get_errors()));
+		$Tainacan_Metadata->update($metadatum2);
+
+		$metadatum_c->set_metadata_section_id($metadata_section_1->get_id());
+		$this->assertTrue($metadatum_c->validate(), json_encode($metadatum_c->get_errors()));
+		$Tainacan_Metadata->update($metadatum_c);
+
+		$metadata_ordinate_enabled = $Tainacan_Metadata->fetch_by_collection( $update_collection, [ 'include_disabled' => true ] );
+		$this->assertEquals( 8, count($metadata_ordinate_enabled) );
+		$this->assertEquals( 'metadatum3', $metadata_ordinate_enabled[0]->get_name() );
+		$this->assertEquals( 'metadatum_b', $metadata_ordinate_enabled[3]->get_name() );
+		$this->assertEquals( 'metadatum2', $metadata_ordinate_enabled[5]->get_name() );
+		$this->assertEquals( 'metadatum_c', $metadata_ordinate_enabled[2]->get_name() );
+
 	}
 
 }
