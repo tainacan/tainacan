@@ -71,3 +71,12 @@ function tainacan_terms() {
 function tainacan_roles() {
 	return \Tainacan\Roles::get_instance();
 }
+
+
+/**
+ * Retrieve the singleton Metadata Repository instance
+ * @return \Tainacan\Repositories\Metadata The Tainacan Metadata Repository
+ */
+function tainacan_metadata_sections() {
+	return \Tainacan\Repositories\Metadata_Sections::get_instance();
+}
