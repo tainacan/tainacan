@@ -158,7 +158,7 @@ export default {
     watch: {
         isLoading: { 
             handler() {
-                if (this.items && this.items.length > 0) {
+                if (this.items && this.items.length > 0 && !this.isLoading) {
                     this.$nextTick(() => {
                         if (this.masonry !== false)
                             this.masonry.destroy();
