@@ -186,21 +186,21 @@ class Collections extends Repository {
 				'title'       => __( 'Thumbnail', 'tainacan' ),
 				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
 			],
-		    'comment_status'  => [
-	            'map'         => 'comment_status',
-	            'title'       => __( 'Comment Status', 'tainacan' ),
-	            'type'        => 'string',
-	            'description' => __( 'Collection comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
-		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
-		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
-		    ],
-		    'allow_comments'  => [
-		        'map'         => 'meta',
+			'comment_status'  => [
+				'map'         => 'comment_status',
+				'title'       => __( 'Comment Status', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Collection comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
+				'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
+				'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
+			],
+			'allow_comments'  => [
+				'map'         => 'meta',
 				'title'       => __( 'Allow enabling comments on items', 'tainacan' ),
-	            'type'        => 'string',
-	            'description' => __( 'If this option is enabled, items of this collection can be set to enable a comments section on their page. "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
-		        'default'     => 'closed',
-		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
+				'type'        => 'string',
+				'description' => __( 'If this option is enabled, items of this collection can be set to enable a comments section on their page. "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
+				'default'     => 'closed',
+				'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
 			'submission_anonymous_user'  => [
 				'map'                    => 'meta',
@@ -311,7 +311,7 @@ class Collections extends Repository {
 	 * @see \Tainacan\Repositories\Repository::insert()
 	 */
 	public function insert( $collection ) {
-		$this->pre_process( $collection );		
+		$this->pre_process( $collection );
 		$this->handle_parent_order_clone( $collection );
 
 		$new_collection = parent::insert( $collection );
