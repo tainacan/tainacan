@@ -5,8 +5,14 @@
                 :class="{'shows-modal-on-click' : modalOnClick}"
                 @click="modalOnClick? openPreviewModal() : null">
             <figcaption 
-                    :style="{ 'max-width': size != undefined ? size + 'px' : '94px' }"
-                    v-if="showName && file.title != undefined">{{ file.title }}</figcaption>
+                    v-if="showName && file.title != undefined"
+                    v-tooltip="{
+                        content: file.title,
+                        popperClass: [ 'tainacan-tooltip', 'tooltip']
+                    }"
+                    :style="{ 'max-width': size != undefined ? size + 'px' : '94px' }">
+                {{ file.title }}
+            </figcaption>
             <div 
                     :style="{ 'width': size != undefined ? size + 'px' : '94px', 'height': size != undefined ? size + 'px' : '94px' }"
                     class="image-wrapper">
