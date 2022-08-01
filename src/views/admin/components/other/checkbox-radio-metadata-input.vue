@@ -1151,6 +1151,10 @@
                 color: var(--tainacan-secondary)
             }
         } 
+        /deep/ .field-body>.field {
+            padding: 0px !important;
+            margin-left: 0px !important;
+        }
     }
 
     .tainacan-checkbox-list-container {
