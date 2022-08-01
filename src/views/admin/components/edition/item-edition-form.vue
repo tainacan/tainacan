@@ -283,7 +283,7 @@
                                                 :style="$adminOptions.hideItemEditionCollapses ? 'padding-left: 0.35em !important;' : ''">
                                             <b-button
                                                     v-if="!$adminOptions.hideItemEditionFocusMode && !isMetadataNavigation && !showOnlyRequiredMetadata && !metadataNameFilterString" 
-                                                    @click="isMetadataNavigation = true;  setMetadatumFocus({ index: 0, scrollIntoView: true });"
+                                                    @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
                                                     class="collapse-all has-text-secondary"
                                                     size="is-small">
                                                 <span
@@ -1827,7 +1827,8 @@ export default {
     .page-container.item-edition-container,
     .page-container.item-creation-container {
         padding: 0px 0px 60px 0px;
-        height: calc(100% + 42px);
+        height: calc(100% - 5.4em);
+        transition: none;
 
         &>.tainacan-form {
             margin-bottom: 60px;
