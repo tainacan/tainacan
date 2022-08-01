@@ -282,8 +282,8 @@
                                                 class="header-item metadata-navigation"
                                                 :style="$adminOptions.hideItemEditionCollapses ? 'padding-left: 0.35em !important;' : ''">
                                             <b-button
-                                                    v-if="!$adminOptions.hideItemEditionFocusMode && !isMetadataNavigation" 
-                                                    @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
+                                                    v-if="!$adminOptions.hideItemEditionFocusMode && !isMetadataNavigation && !showOnlyRequiredMetadata && !metadataNameFilterString" 
+                                                    @click="isMetadataNavigation = true;  setMetadatumFocus({ index: 0, scrollIntoView: true });"
                                                     class="collapse-all has-text-secondary"
                                                     size="is-small">
                                                 <span
@@ -301,6 +301,7 @@
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore tainacan-icon-rotate-180" />
                                                 </span>
+                                                <span>{{ $i18n.get('previous') }}</span>
                                             </b-button>
                                             <b-button 
                                                     v-if="isMetadataNavigation"
@@ -311,6 +312,7 @@
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                                                 </span>
+                                                <span>{{ $i18n.get('next') }}</span>
                                             </b-button>
                                             <b-button
                                                     v-if="isMetadataNavigation" 
@@ -320,6 +322,7 @@
                                                         class="icon has-success-color">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-finish" />
                                                 </span>
+                                                <span>{{ $i18n.get('finish') }}</span>
                                             </b-button>
                                         </b-field>
 
@@ -332,7 +335,7 @@
                                         </span>
 
                                         <b-switch
-                                                v-if="!$adminOptions.hideItemEditionRequiredOnlySwitch && metadatumList && metadatumList.length > 3"
+                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && metadatumList && metadatumList.length > 3"
                                                 id="tainacan-switch-required-metadata"
                                                 :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
                                                 size="is-small"
@@ -341,7 +344,7 @@
                                         </b-switch>
 
                                         <b-field 
-                                                v-if="metadatumList && metadatumList.length > 5"
+                                                v-if="!isMetadataNavigation && metadatumList && metadatumList.length > 5"
                                                 class="header-item metadata-name-search">
                                             <b-input
                                                     v-if="!isMobileScreen || openMetadataNameFilter"
@@ -401,7 +404,7 @@
                                         <transition name="filter-item">
                                             <div 
                                                     class="metadata-section-metadata-list"
-                                                    v-show="metadataSectionCollapses[sectionIndex]">
+                                                    v-show="metadataSectionCollapses[sectionIndex] || isMetadataNavigation">
                                                 <p
                                                         class="metadatum-description-help-info"
                                                         v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'">
@@ -2010,7 +2013,7 @@ export default {
             background-color: var(--tainacan-background-color);
             
             .field {
-                padding: 2px 0px 2px 18px !important;
+                padding: 2px 0px 2px 16px !important;
             }
 
             &.is-metadata-navigation-active {
@@ -2073,6 +2076,9 @@ export default {
                     border-top-right-radius: 0px;
                     border-top-left-radius: 0px;
                     overflow: visible;
+                }
+                .field {
+                    padding: 2px 0px 2px 3px !important;
                 }
             }
         }
