@@ -127,7 +127,7 @@ function tainacan_the_item_document_download_link($item_id = 0) {
 	if (!$link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url')
 		return;
 
-	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '">' . __('Download', 'tainacan') . '</a>';
+	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '" target="_blank">' . __('Download', 'tainacan') . '</a>';
 }
 
 
