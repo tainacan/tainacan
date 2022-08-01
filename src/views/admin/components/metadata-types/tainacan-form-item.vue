@@ -314,7 +314,8 @@
                 this.changeValue();
             },
             onMobileSpecialFocus() {
-                this.$emit('mobileSpecialFocus');
+                if (this.isMobileScreen)
+                    this.$emit('mobileSpecialFocus');
             }
         }
     }

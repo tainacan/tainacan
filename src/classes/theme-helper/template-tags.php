@@ -388,7 +388,7 @@ function tainacan_get_the_media_component(
 			tainacan_plugin.tainacan_media_components['<?php echo esc_attr($args['media_id']) ?>'] = <?php echo json_encode($args) ?>;
 		</script>	
 
-		<div id="<?php echo esc_attr($media_id) ?>" <?php echo esc_attr($args['wrapper_attributes']); ?> data-module='item-gallery'>
+		<div id="<?php echo esc_attr($media_id) ?>" data-module="item-gallery" <?php echo wp_kses_post($args['wrapper_attributes']); ?>>
 			<?php if ( $args['has_media_main'] ) : ?>
 				
 				<!-- Slider main container -->

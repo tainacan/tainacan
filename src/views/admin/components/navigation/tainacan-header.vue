@@ -169,6 +169,7 @@
         max-height: $header-height;
         width: 100%;
         padding: 12px;
+        margin-bottom: 0px;
         vertical-align: middle;
         left: 0;
         right: 0;

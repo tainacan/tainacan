@@ -81,7 +81,10 @@
         pointer-events: none; }
       .tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid='']) li.swiper-slide .swiper-slide-content a {
         cursor: zoom-in !important; }
+      .tainacan-media-component__swiper-main ul.swiper-wrapper[data-pswp-uid]:not([data-pswp-uid='']) li.swiper-slide .swiper-slide-content .tainacan-item-file-download a {
+        cursor: pointer !important; }
   .tainacan-media-component__swiper-main li.swiper-slide {
+    box-sizing: border-box;
     height: 100%;
     max-width: 100%;
     padding: 0 var(--swiper-navigation-size, 44px);
