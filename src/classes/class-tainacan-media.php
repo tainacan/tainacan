@@ -97,19 +97,22 @@ class Media {
 
 	}
 
-		/**
-		 * Avoid memory overflow problems with large files (Exceeded maximum memory limit of PHP)
-		 *
-		 * @param $url
-		 * @return string the file path
-		 */
-		public function save_remote_file($url) {
-			$filename = download_url($url, 900);
-			if( is_wp_error($filename) ) {
-				throw new \Exception( "[save_remote_file]:" . implode("\n", $filename->get_error_messages()));
-			}
-			return $filename;
+	/**
+	 * Avoid memory overflow problems with large files (Exceeded maximum memory limit of PHP)
+	 *
+	 * @param $url
+	 * @return string the file path
+	 */
+	public function save_remote_file($url) {
+		// Include file.php
+		require_once( ABSPATH . 'wp-admin/includes/file.php' );
+
+		$filename = \download_url($url, 900);
+		if( is_wp_error($filename) ) {
+			throw new \Exception( "[save_remote_file]:" . implode("\n", $filename->get_error_messages()));
 		}
+		return $filename;
+	}
 
 
 		/**
