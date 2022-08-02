@@ -491,7 +491,7 @@
                                             :form="form"
                                             :is-loading="isLoading"
                                             @onDeleteThumbnail="deleteThumbnail"
-                                            @onUpdateThumbnailAlt="($event) => form.thumbnail_alt = $event.target.value"
+                                            @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
                                             @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
                                 </div>
 
@@ -590,7 +590,7 @@
                                     :form="form"
                                     :is-loading="isLoading"
                                     @onDeleteThumbnail="deleteThumbnail"
-                                    @onUpdateThumbnailAlt="($event) => form.thumbnail_alt = $event.target.value"
+                                    @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
                                     @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
 
                             <hr v-if="!$adminOptions.itemEditionAttachmentsInsideTabs || hasEndLeftForm">
@@ -1395,8 +1395,10 @@ export default {
                     this.isLoading = false;
 
                     let oldThumbnail = this.item.thumbnail;
-                    if (item.document_type == 'url' && oldThumbnail != item.thumbnail )
+                    if (item.document_type == 'url' && oldThumbnail != item.thumbnail ) {
                         this.item.thumbnail = item.thumbnail;
+                        this.item.thumbnail_id = item.thumbnail_id;
+                    }
                 })
                 .catch((errors) => {
                     for (let error of errors.errors) {
@@ -1493,8 +1495,10 @@ export default {
                             this.item.document_mimetype = item.document_mimetype;
 
                             let oldThumbnail = this.item.thumbnail;
-                            if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail )
+                            if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
                                 this.item.thumbnail = item.thumbnail;
+                                this.item.thumbnail_id = item.thumbnail_id;
+                            }
 
                             this.shouldLoadAttachments = !this.shouldLoadAttachments;
 
@@ -1552,11 +1556,12 @@ export default {
 
         },
         onUpdateThumbnailAlt(updatedThumbnailAlt) {
+            this.isUpdatingValues = true;
 
             this.updateThumbnailAlt({ thumbnailId: this.item.thumbnail_id, thumbnailAlt: updatedThumbnailAlt })
                 .then((res) => {
-                    this.form.thumbnail_id = res.thumbnail_id;
-                    this.form.thumbnail_alt = res.thumbnail_alt;
+                    this.form.thumbnail_alt = res.alt_text;
+                    this.isUpdatingValues = false;
                 })
                 .catch(error => this.$console.error(error));
         },

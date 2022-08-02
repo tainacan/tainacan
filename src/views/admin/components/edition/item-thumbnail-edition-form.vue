@@ -42,6 +42,7 @@
                             :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                 </figure>
                 <b-field
+                        v-if="item.thumbnail_id"
                         :addons="false" 
                         :label="$i18n.get('label_thumbnail_alt')">
                     <help-button 
@@ -51,8 +52,8 @@
                             id="tainacan-text-description"
                             class="textarea"
                             rows="4"
-                            :value="form.thumbnail_alt"
-                            @input="$emit('onUpdateThumbnailAlt')" />
+                            :value="form.thumbnail_alt && form.thumbnail_alt != 'false' ? form.thumbnail_alt : ''"
+                            @input="updateThumbnailAlt" />
                 </b-field>    
                 <div class="thumbnail-buttons-row">
                     <a
@@ -104,6 +105,11 @@ export default {
     props: {
         item: Object,
         form: Object
+    },
+    methods: {
+        updateThumbnailAlt: _.debounce(function($event) {
+            this.$emit('onUpdateThumbnailAlt', $event.target.value);
+        }, 750)
     }
 }
 </script>
