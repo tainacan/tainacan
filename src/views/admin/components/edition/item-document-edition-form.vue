@@ -20,7 +20,8 @@
                     v-if="form.document != undefined && form.document != null &&
                             form.document_type != undefined && form.document_type != null &&
                             form.document != '' && form.document_type != 'empty'"
-                    class="document-field-content">
+                    class="document-field-content"
+                    :class="'document-field-content--' + form.document_type">
                 <div v-html="item.document_as_html" />
                 <div class="document-buttons-row">
                     <a
@@ -113,6 +114,10 @@ export default {
         .document-field-content {
             max-height: 32vh;
 
+            &.document-field-content--text {
+                padding-bottom: 2rem;
+            }
+
             /deep/ img,
             /deep/ video,
             /deep/ figure {
@@ -133,6 +138,9 @@ export default {
                 width: 100%;
                 margin: 0;
                 min-height: 150px;
+            }
+            /deep/ audio {
+                min-height: 80px;
             }
 
             @media screen and (max-height: 760px) {

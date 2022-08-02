@@ -791,7 +791,7 @@ export default {
             attachmentsMediaFrame: undefined,
             fileMediaFrame: undefined,
             urlLink: '',
-            textLink: '',
+            textContent: '',
             isUpdatingValues: false,
             entityName: 'item',
             activeTab: 'metadata',
@@ -1382,6 +1382,9 @@ export default {
 
                     if (item.document_type != undefined && item.document_type == 'url')
                         this.urlLink = item.document;
+
+                    if (item.document_type != undefined && item.document_type == 'text')
+                        this.textContent = item.document;
                         
                     if (item.document_options !== undefined && item.document_options['forced_iframe'] !== undefined)
                         this.urlForcedIframe = item.document_options['forced_iframe'];
