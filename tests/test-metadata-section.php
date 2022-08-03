@@ -128,6 +128,7 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		$this->assertTrue(empty($section_empty));
 
 		$this->setExpectedException(\Exception::class);
+		$this->expectExceptionMessage('The metadata section must not contain metadata before deleted');
 		$section = $Tainacan_Metadata_Section->fetch($metadata_section_no_delete->get_id());
 		$Tainacan_Metadata_Section->delete($section);
 
