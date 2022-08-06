@@ -757,10 +757,12 @@ class Item extends Entity {
 
 			// Adds class with slug and adds metadatum id
 			if ($args['display_slug_as_class']) {
-				$before = str_replace('$id', 'metadata-slug-'.$item_metadatum->get_metadatum()->get_slug() , $before);
-			} else {
-				$before = str_replace(' $id', '', $before);
+				if ( !strpos($before, 'class="') ) {
+					$before = str_replace('>', ' class="metadata-slug-'. $item_metadatum->get_metadatum()->get_slug() . '">', $before);
+				} else
+					$before = str_replace('class="', 'class="metadata-slug-'. $item_metadatum->get_metadatum()->get_slug() . ' ', $before);
 			}
+			$before = str_replace('$id', ' id="metadata-id-' . $item_metadatum->get_metadatum()->get_id() . '"', $before);
 
 			// Let theme authors tweak the wrapper opener
 			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before', $before, $item_metadatum );
@@ -1181,7 +1183,7 @@ class Item extends Entity {
 		// Gets the metadata section inner metadata list
 		$metadata_section_metadata_list = $metadata_section->get_metadata_object_list();
 		$has_metadata_list = (is_array($metadata_section_metadata_list) && count($metadata_section_metadata_list) > 0 );
-
+		
 		if ( $has_metadata_list || !$args['hide_empty'] ) {
 
 			// Slug and ID are used in numerous situations
