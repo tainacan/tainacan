@@ -9,15 +9,15 @@ use Tainacan\Metadata_Types;
  */
 
 /**
- * Metadatum test case.
+ * MetadataSection test case.
  * @group metadata
  */
 class MetadataSection extends TAINACAN_UnitTestCase {
 
 	/**
-	 * Test insert a regular metadatum with type
+	 * Test create a metadata section
 	 */
-	function test_add() {
+	function test_create() {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$Tainacan_Metadata_Section = \Tainacan\Repositories\Metadata_Sections::get_instance();
 
@@ -55,7 +55,7 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		);
 
 		$test = $Tainacan_Metadata->fetch($metadatum->get_id());
-		$section = $Tainacan_Metadata_Section->fetch($metadata_section->get_id());
+		$Tainacan_Metadata_Section->fetch($metadata_section->get_id());
 
 		$this->assertEquals($test->get_name(), 'metadado');
 		$this->assertEquals($test->get_description(), 'descricao');
@@ -69,9 +69,70 @@ class MetadataSection extends TAINACAN_UnitTestCase {
 		$this->assertTrue((bool) $test->get_accept_suggestion());
 	}
 
-	// function test_remove() {
-	// 	return;
-	// }
+	/**
+	 * Test remove a metadata section
+	 */
+	function test_remove() {
+		$Tainacan_Metadata_Section = \Tainacan\Repositories\Metadata_Sections::get_instance();
+
+		$collection = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name' => 'teste'
+			),
+			true
+		);
+
+		$metadata_section_to_delete = $this->tainacan_entity_factory->create_entity(
+			'Metadata_Section',
+			array(
+				'name'        => 'Section',
+				'description' => 'Section Description',
+				'collection' => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$metadata_section_no_delete = $this->tainacan_entity_factory->create_entity(
+			'Metadata_Section',
+			array(
+				'name'        => 'Section',
+				'description' => 'Section Description',
+				'collection' => $collection,
+				'status'      => 'publish'
+			),
+			true
+		);
+
+		$this->tainacan_entity_factory->create_entity(
+			'metadatum',
+			array(
+				'name' => 'metadado',
+				'description' => 'descricao',
+				'collection' => $collection,
+				'accept_suggestion' => true,
+				'metadata_type'  => 'Tainacan\Metadata_Types\Text',
+				'metadata_section_id' => $metadata_section_no_delete->get_id(),
+			),
+			true,
+			true
+		);
+
+		// $Tainacan_Metadata->fetch($metadatum->get_id());
+		$section_id = $metadata_section_to_delete->get_id();
+		$section = $Tainacan_Metadata_Section->fetch($section_id);
+		$section = $Tainacan_Metadata_Section->delete($section);
+		$section_empty = $Tainacan_Metadata_Section->fetch($section_id);
+		$this->assertEquals($section_id, $section->get_id() );
+		$this->assertTrue(empty($section_empty));
+
+		$this->setExpectedException(\Exception::class);
+		$this->expectExceptionMessage('The metadata section must not contain metadata before deleted');
+		$section = $Tainacan_Metadata_Section->fetch($metadata_section_no_delete->get_id());
+		$Tainacan_Metadata_Section->delete($section);
+
+	}
 
 	function test_change_section() {
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();

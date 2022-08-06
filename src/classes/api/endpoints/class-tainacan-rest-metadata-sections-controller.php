@@ -90,7 +90,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_metadata_list'),
-					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'permission_callback' => array($this, 'get_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
 				array(
@@ -258,10 +258,14 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_item_permissions_check( $request ) {
-		$metadatum_section = $this->metadata_sections_repository->fetch($request['metadata_section_id']);
+		if(!isset($request['collection_id']) || !isset($request['metadata_section_id'])) {
+			return false;
+		}
 
-		if ( $metadatum_section instanceof Entities\Metadata_Section ) {
-			return $metadatum_section->can_read();
+		$collection = $this->collection_repository->fetch($request['collection_id']);
+		if($collection instanceof Entities\Collection && $collection->can_read()){
+			$metadatum_section = $this->metadata_sections_repository->fetch($request['metadata_section_id']);
+			return $metadatum_section instanceof Entities\Metadata_Section && $metadatum_section->can_read();
 		}
 
 		return false;

@@ -387,6 +387,9 @@ class Metadata_Sections extends Repository {
 	 */
 	public function delete( Entities\Entity $entity, $permanent = true ) {
 		//test if not exist a metadata using this section
+		if (  !empty( $this->get_metadata_object_list($entity->get_id() ) )  ) {
+			throw new \Exception( 'The metadata section must not contain metadata before deleted' );
+		}
 		return parent::delete($entity, $permanent);
 	}
 
