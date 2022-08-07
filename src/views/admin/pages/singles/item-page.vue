@@ -846,6 +846,9 @@
                 width: auto;
                 margin: 0;
             }
+            /deep/ img {
+                width: auto !important;
+            }
             /deep/ a {
                 min-height: 60px;
                 display: block;
@@ -858,6 +861,9 @@
                 width: 100%;
                 margin: 0;
                 min-height: 150px;
+            }
+            /deep/ audio {
+                min-height: 80px;
             }
 
             @media screen and (max-height: 760px) {

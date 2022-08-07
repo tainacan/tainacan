@@ -123,7 +123,7 @@ export default {
             /deep/ figure {
                 max-width: 100%;
                 max-height: 32vh;
-                width: auto;
+                width: auto !important;
                 margin: 0;
             }
             /deep/ a {
