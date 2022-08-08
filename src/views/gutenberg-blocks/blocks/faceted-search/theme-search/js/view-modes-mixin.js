@@ -36,19 +36,19 @@ export const viewModesMixin = {
     methods: {
         hasBeforeHook() {
             if (wp !== undefined)
-                return wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_item_before`);
+                return wp.hooks.hasFilter(`tainacan_faceted_search_item_before`) || wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_item_before`);
         },
         hasAfterHook() {
             if (wp !== undefined)
-                return wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_item_after`);
+                return wp.hooks.hasFilter(`tainacan_faceted_search_collection_item_after`) || wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_item_after`);
         },
         getBeforeHook(item) {
             if (wp !== undefined)
-                return wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_item_before`, item);
+                return wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_item_before`, wp.hooks.applyFilters(`tainacan_faceted_search_item_before`, '', item), item);
         },
         getAfterHook(item) {
             if (wp !== undefined)
-                return wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_item_after`, item);
+                return wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_item_after`, wp.hooks.applyFilters(`tainacan_faceted_search_item_after`, '', item), item);
         },
         getItemLink(itemUrl, index) {
             if (this.queries) {
