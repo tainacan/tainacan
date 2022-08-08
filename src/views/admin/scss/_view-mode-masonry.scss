@@ -7,12 +7,14 @@
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: space-evenly;
+    list-style: none;
     animation-name: appear;   
     animation-duration: 0.5s;
     
     &:not(.tainacan-masonry-container--legacy){
         &>li,
         &>.tainacan-masonry-grid-sizer {
+            list-style-type: none;
             width: calc(14.285% - 25px);
 
             @media screen and (max-width: 2560px) {
@@ -38,6 +40,7 @@
     &.tainacan-masonry-container--legacy {
         &>li,
         &>.tainacan-masonry-grid-sizer {
+            list-style-type: none;
             width: calc(14.285% - 25px);
     
             @media screen and (max-width: 1920px) {

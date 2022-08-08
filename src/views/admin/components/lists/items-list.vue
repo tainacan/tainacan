@@ -327,7 +327,9 @@
                         :class="{
                             'selected-masonry-item': getSelectedItemChecked(item.id) == true
                         }"
-                        class="tainacan-masonry-item">
+                        class="tainacan-masonry-item"
+                        @click.left="onClickItem($event, item)"
+                        @click.right="onRightClickItem($event, item)">
                         <!-- Checkbox -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <div
@@ -359,8 +361,6 @@
                                 :style="{
                                     'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '0 !important' : (isOnAllItemsTabs ? '0.5em' : '1em')
                                 }"
-                                @click.left="onClickItem($event, item)"
-                                @click.right="onRightClickItem($event, item)"
                                 class="metadata-title">
                             <p>
                                 <span 
@@ -383,8 +383,6 @@
 
                         <!-- Thumbnail -->
                         <blur-hash-image
-                                @click.left="onClickItem($event, item)"
-                                @click.right="onRightClickItem($event, item)"
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
                                 :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 280)"
@@ -1727,6 +1725,10 @@ export default {
             this.clearContextMenu();
         },
         onClickItem($event, item) {
+
+            if ($event && $event.target && ($event.target.className == 'check' || $event.target.tagName == 'INPUT') )
+                return;
+            
             if ($event.ctrlKey) {
                 this.setSelectedItemChecked(item.id);
             } else if ($event.shiftKey) {
