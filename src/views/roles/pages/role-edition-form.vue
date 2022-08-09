@@ -477,6 +477,8 @@
                     return this.$i18n.get('Collection')
                 else if (capabilitySlug.match('metadata') || capabilitySlug.match('metadatum'))
                     return this.$i18n.get('Metadata')
+                else if (capabilitySlug.match('metasection'))
+                    return this.$i18n.get('Metadata Sections')
                 else if (capabilitySlug.match('filter'))
                     return this.$i18n.get('Filters')
                 else if (capabilitySlug.match('log'))

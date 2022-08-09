@@ -74,8 +74,8 @@ function tainacan_roles() {
 
 
 /**
- * Retrieve the singleton Metadata Repository instance
- * @return \Tainacan\Repositories\Metadata The Tainacan Metadata Repository
+ * Retrieve the singleton Metadata Sections Repository instance
+ * @return \Tainacan\Repositories\Metadata_Sections The Tainacan Metadata Repository
  */
 function tainacan_metadata_sections() {
 	return \Tainacan\Repositories\Metadata_Sections::get_instance();

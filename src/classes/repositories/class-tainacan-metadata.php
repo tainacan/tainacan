@@ -464,6 +464,26 @@ class Metadata extends Repository {
 				$args['meta_query'] = $original_meta_q;
 				$args['meta_query'][] = $meta_query;
 
+				if ($this->get_default_metadata_attribute() != $parent_id) {
+					$read_private_metasection_cap = "tnc_col_{$parent_id}_read_private_metasection";
+					if ( !current_user_can($read_private_metasection_cap) ) {
+						$private_metadata_sections_ids = \tainacan_metadata_sections()->fetch_ids(
+						array(
+							'post_status' => get_post_stati( array( 'private' => true ) ),
+							'meta_query' => array(
+								'key'     => 'collection_id',
+								'value'   => $parent_id,
+							)
+						));
+
+						$args['meta_query'][] = array(
+							'key'     => 'metadata_section_id',
+							'value'   => $private_metadata_sections_ids,
+							'compare' => 'NOT IN'
+						);
+					}
+				}
+
 				$results = array_merge($results, $this->fetch( $args, 'OBJECT' ));
 			}
 

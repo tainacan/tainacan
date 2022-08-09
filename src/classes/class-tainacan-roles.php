@@ -25,6 +25,7 @@ class Roles {
 	private function __construct() {
 
 		$this->meta_caps = (new \Tainacan\Entities\Metadatum())->get_capabilities();
+		$this->meta_section_caps = (new \Tainacan\Entities\Metadata_Section())->get_capabilities();
 		$this->filters_caps = (new \Tainacan\Entities\Filter())->get_capabilities();
 
 		$this->capabilities = [
@@ -177,6 +178,7 @@ class Roles {
 				'scope' => 'collection',
 				'dependencies' => [
 					$this->meta_caps->read_private_posts,
+					$this->meta_section_caps->read_private_posts,
 					$this->filters_caps->read_private_posts
 				],
 				'supercaps' => [
@@ -217,6 +219,17 @@ class Roles {
 					'tnc_col_all_edit_metadata',
 				]
 			],
+			'tnc_col_%d_edit_metasection' => [
+				'display_name' => __('Manage metadata sections', 'tainacan'),
+				'description' => __('Create/edit metadata section in this collection', 'tainacan'),
+				'scope' => 'collection',
+				'supercaps' => [
+					'manage_tainacan',
+					'manage_tainacan_collection_all',
+					'manage_tainacan_collection_%d',
+					'tnc_col_all_edit_metasection',
+				]
+			],
 			'tnc_col_%d_edit_filters' => [
 				'display_name' => __('Manage filters', 'tainacan'),
 				'description' => __('Create/edit filters in this collection', 'tainacan'),
@@ -237,6 +250,17 @@ class Roles {
 					'manage_tainacan_collection_all',
 					'manage_tainacan_collection_%d',
 					'tnc_col_all_delete_metadata',
+				]
+			],
+			'tnc_col_%d_delete_metasection' => [
+				'display_name' => __('Delete metadata sections', 'tainacan'),
+				'description' => __('Delete metadata section in this collection', 'tainacan'),
+				'scope' => 'collection',
+				'supercaps' => [
+					'manage_tainacan',
+					'manage_tainacan_collection_all',
+					'manage_tainacan_collection_%d',
+					'tnc_col_all_delete_metasection',
 				]
 			],
 			'tnc_col_%d_delete_filters' => [
@@ -262,6 +286,21 @@ class Roles {
 					'manage_tainacan_collection_all',
 					'manage_tainacan_collection_%d',
 					'tnc_col_all_read_private_metadata',
+				]
+			],
+			'tnc_col_%d_read_private_metasection' => [
+				'display_name' => __('View private metadata sections', 'tainacan'),
+				'description' => __('Access private metadata section in this collection', 'tainacan'),
+				'scope' => 'collection',
+				'dependencies' => [
+					$this->meta_caps->read_private_posts, // e.g.: 'read_private_tainacan-metasection'
+					$this->meta_section_caps->read_private_posts,
+				],
+				'supercaps' => [
+					'manage_tainacan',
+					'manage_tainacan_collection_all',
+					'manage_tainacan_collection_%d',
+					'tnc_col_all_read_private_metasection',
 				]
 			],
 			'tnc_col_%d_read_private_filters' => [
@@ -552,6 +591,7 @@ class Roles {
 
 			if( in_array($requested_cap, [
 					$this->meta_caps->read_private_posts,
+					$this->meta_section_caps->read_private_posts,
 					$this->filters_caps->read_private_posts]
 				) && (
 					$user->has_cap('manage_tainacan') ||
@@ -662,6 +702,9 @@ class Roles {
 		$meta_caps = new \Tainacan\Entities\Metadatum();
 		$meta_caps = $meta_caps->get_capabilities();
 
+		$meta_section_caps = new \Tainacan\Entities\Metadata_Section();
+		$meta_section_caps = $meta_section_caps->get_capabilities();
+
 		$filters_caps = new \Tainacan\Entities\Filter();
 		$filters_caps = $filters_caps->get_capabilities();
 
@@ -699,6 +742,23 @@ class Roles {
 			$filters_caps->read_private_posts
 		];
 
+		$edit_meta_section = [
+			$meta_section_caps->edit_posts,
+			$meta_section_caps->edit_others_posts,
+			$meta_section_caps->publish_posts,
+			$meta_section_caps->delete_posts,
+			$meta_section_caps->delete_private_posts,
+			$meta_section_caps->delete_published_posts,
+			$meta_section_caps->delete_others_posts,
+			$meta_section_caps->edit_private_posts,
+			$meta_section_caps->edit_published_posts,
+			$meta_section_caps->create_posts,
+		];
+
+		$read_private_meta_section = [
+			$meta_section_caps->read_private_posts
+		];
+
 		if ( !is_array( $args ) || !array_key_exists( 0, $args ) ) {
 			return $caps;
 		}
@@ -712,6 +772,19 @@ class Roles {
 				$action = \str_replace('_post', '', $cap);
 
 				foreach ($caps as $i => $c) {
+
+					// Handle edit metadata section
+					if ( in_array($c, $edit_meta_section) ) {
+						if (is_numeric($object)) {
+							$object = tainacan_metadata_sections()->fetch ( (int) $object );
+						}
+						if ( $object instanceof \Tainacan\Entities\Metadata_Section ) {
+							if ( is_numeric($object->get_collection_id()) ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_' . $action. '_metasection';
+							}
+						}
+					}
 
 					// Handle edit metadata
 					if ( in_array($c, $edit_meta) ) {
@@ -754,6 +827,19 @@ class Roles {
 			case 'read_post':
 
 				foreach ($caps as $i => $c) {
+
+					// Handle read private metadata section
+					if ( in_array($c, $read_private_meta_section) ) {
+						if (is_numeric($object)) {
+							$object = tainacan_metadata_sections()->fetch ( (int) $object );
+						}
+						if ( $object instanceof \Tainacan\Entities\Metadata_Section ) {
+							if ( is_numeric($object->get_collection_id()) ) {
+								unset($caps[$i]);
+								$caps[] = 'tnc_col_' . $object->get_collection_id() . '_read_private_metasection';
+							}
+						}
+					}
 
 					// Handle read private metadata
 					if ( in_array($c, $read_private_meta) ) {
