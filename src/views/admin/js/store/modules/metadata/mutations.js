@@ -213,9 +213,9 @@ export const clearPlaceholderMetadataSection = (state) => {
 }
 
 export const deleteMetadataSection = ( state, metadataSection ) => {
-    let index = state.metadataSection.findIndex(deletedMetadataSection => deletedMetadataSection.id == metadataSection.id);
+    let index = state.metadataSections.findIndex(deletedMetadataSection => deletedMetadataSection.id == metadataSection.id);
     if (index >= 0)
-        state.metadataSection.splice(index, 1);
+        state.metadataSections.splice(index, 1);
 }
 
 export const cleanMetadataSections = (state) => {
