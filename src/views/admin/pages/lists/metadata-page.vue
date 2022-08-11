@@ -187,6 +187,8 @@ export default {
             section.field.is-grouped-centered.section {
                 position: absolute;
                 width: 63%;
+                background: var(--tainacan-background-color);
+                padding-top: 5em;
             }
 
             &:not(.available-metadata-types-area){
@@ -271,6 +273,11 @@ export default {
         .active-metadata-area,
         .active-metadata-sections-area {
             min-height: 3em;
+            transition: min-height 0.2s ease;
+
+            &:empty {
+                min-height: 220px;
+            }
 
             @media screen and (max-width: 769px) {
                 min-height: 45px;
