@@ -576,7 +576,6 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideTainacanHeaderSearchInput
             * hideTainacanHeaderAdvancedSearch
             * hideTainacanHeaderProcessesPopup
-        * hidePrimaryMenuCompressButton
         * hidePrimaryMenu
             * hidePrimaryMenuCompressButton
             * hidePrimaryMenuRepositoryButton
