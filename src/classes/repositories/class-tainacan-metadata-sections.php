@@ -335,18 +335,8 @@ class Metadata_Sections extends Repository {
 	public function get_metadata_object_list($metadata_section_id) {
 		$metadata_section = $this->fetch($metadata_section_id);
 		if ($metadata_section) {
-			$args = array(
-				'parent' => 0,
-				'meta_query' => [
-					[
-						'key'     => 'metadata_section_id',
-						'value'   => $metadata_section_id,
-						'compare' => '='
-					]
-				]
-			);
 			$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
-			$metadata_list = $metadata_repository->fetch($args, 'OBJECT');
+			$metadata_list = $metadata_repository->fetch_by_metadata_section($metadata_section);
 			return $metadata_list;
 		}
 		return false;

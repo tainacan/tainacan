@@ -615,6 +615,40 @@ class Metadata extends Repository {
 	}
 
 	/**
+	 * fetch metadatum by metadata section, considering order
+	 *
+	 * @param Entities\Metadata_Section $collection
+	 * @param array $args WP_Query args plus disabled_metadata
+	 *
+	 * @return array Entities\Metadatum
+	 * @throws \Exception
+	 */
+	public function fetch_by_metadata_section( Entities\Metadata_Section $metadata_section, $args = [] ) {
+		$results = [];
+		if ($metadata_section && $metadata_section->can_read()) {
+			$metadata_section_id = $metadata_section->get_id();
+			$collection = $metadata_section->get_collection();
+			$args = array_merge($args, array(
+				'parent' => 0,
+				'meta_query' => [
+					[
+						'key'     => 'metadata_section_id',
+						'value'   => $metadata_section_id,
+						'compare' => '='
+					]
+				]
+			));
+			$results = $this->fetch($args, 'OBJECT');
+			return $this->order_result(
+				$results,
+				$collection,
+				isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
+			);
+		}
+		return $results;
+	}
+
+	/**
 	 * Ordinate the result from fetch response if $collection has an ordination,
 	 * metadata not ordinated appear on the end of the list
 	 *
