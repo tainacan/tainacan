@@ -101,7 +101,7 @@
                         <span 
                                 v-tooltip="{
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '', 'metadata-type-preview-tooltip'],
-                                    content: '',//getPreviewTemplateContent(metadatum),
+                                    content: $i18n.get('info_create_section'),
                                     html: true,
                                     delay: {
                                         shown: 0,
