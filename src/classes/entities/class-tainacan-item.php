@@ -1079,7 +1079,7 @@ class Item extends Entity {
 			if (is_array($args['metadata_sections__in'])) {
 				$post__in[] = -1; // If metadata_sections__in is an empty array, this forces empty result
 				foreach ($args['metadata_sections__in'] as $metadata_section) {
-					if (is_numeric($metadata_section) || $metadata_section === 'default_section') {
+					if (is_numeric($metadata_section) || $metadata_section === \Tainacan\Entities\Metadata_Section::$default_section_slug) {
 						$post__in[] = $metadata_section;
 					} elseif (is_string($metadata_section)) {
 						$post__name_in[] = $metadata_section;
@@ -1088,7 +1088,7 @@ class Item extends Entity {
 			}
 			if (is_array($args['metadata_sections__not_in'])) {
 				foreach ($args['metadata_sections__not_in'] as $metadata_section) {
-					if (is_integer($metadata_section) || $metadata_section === 'default_section') {
+					if (is_integer($metadata_section) || $metadata_section === \Tainacan\Entities\Metadata_Section::$default_section_slug) {
 						$post__not_in[] = $metadata_section;
 					}
 				}

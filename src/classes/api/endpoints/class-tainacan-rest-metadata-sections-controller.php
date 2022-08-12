@@ -36,7 +36,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function register_routes() {
-		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_section_id>[\d]+)',
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_section_id>[\d|default_section]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -85,7 +85,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 				'schema'                  => [$this, 'get_schema']
 			)
 		);
-		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_section_id>[\d]+)/metadata',
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_section_id>[\d|default_section]+)/metadata',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -149,7 +149,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
-			$metadata_list = $item->get_id() == 'default_section'
+			$metadata_list = $item->get_id() == \Tainacan\Entities\Metadata_Section::$default_section_slug
 				? $this->metadata_sections_repository->get_default_section_metadata_object_list($item->get_collection())
 				: $item->get_metadata_object_list();
 			$item_arr['metadata_object_list'] = [];
@@ -434,13 +434,16 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 
 		if(!empty($body)){
 			$metadata_section_id = $request['metadata_section_id'];
-			$metadata_section = $this->metadata_sections_repository->fetch($metadata_section_id);
-
-			if ( $collection_id != $metadata_section->get_collection_id() ) {
-				return new \WP_REST_Response( [
-					'error_message' => __('This metadata section not found in collection', 'tainacan'),
-					'metadata_section_id'  => $metadata_section_id
-				] );
+			if($metadata_section_id == \Tainacan\Entities\Metadata_Section::$default_section_slug) {
+				$metadata_section = $this->metadata_sections_repository->get_default_section($collection_id);
+			} else {
+				$metadata_section = $this->metadata_sections_repository->fetch($metadata_section_id);
+				if ( $collection_id != $metadata_section->get_collection_id() ) {
+					return new \WP_REST_Response( [
+						'error_message' => __('This metadata section not found in collection', 'tainacan'),
+						'metadata_section_id'  => $metadata_section_id
+					] );
+				}
 			}
 
 			if ($metadata_section) {

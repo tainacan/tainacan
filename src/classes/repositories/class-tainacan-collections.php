@@ -245,7 +245,13 @@ class Collections extends Repository {
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			],
-			
+			'default_metadata_section_properties'              => [
+				'map'         => 'meta',
+				'title'       => __( 'Default metadata section properties', 'tainacan' ),
+				'type'        => 'object',
+				'items'       => [ 'name' => 'string', 'description' => 'string', 'description_bellow_name' => 'string' ],
+				'description' => __( 'The default metadata section properties', 'tainacan' ),
+			],
 		] );
 	}
 

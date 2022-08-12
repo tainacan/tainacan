@@ -12,6 +12,8 @@ class Metadata_Section extends Entity {
 	use \Tainacan\Traits\Entity_Collection_Relation;
 
 	static $post_type = 'tainacan-metasection';
+	static $default_section_slug = 'default_section';
+
 	protected
 		$name,
 		$slug,
@@ -38,7 +40,7 @@ class Metadata_Section extends Entity {
 	 */
 	public function get_id() {
 		$id = $this->get_mapped_property('id');
-		return isset($id) ? $id : 'default_section';
+		return isset($id) ? $id : static::$default_section_slug;
 	}
 
 	/**
@@ -86,7 +88,7 @@ class Metadata_Section extends Entity {
 		$tainacan_metadata_sections = \Tainacan\Repositories\Metadata_Sections::get_instance();
 		$metadata_section_id = $this->get_id();
 
-		if ($metadata_section_id == 'default_section')
+		if ($metadata_section_id == static::$default_section_slug)
 			return $tainacan_metadata_sections->get_default_section_metadata_object_list($this->get_collection());
 		
 		return $tainacan_metadata_sections->get_metadata_object_list($this->get_id());

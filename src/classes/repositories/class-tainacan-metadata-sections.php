@@ -128,18 +128,36 @@ class Metadata_Sections extends Repository {
 		register_post_type( Entities\Metadata_Section::get_post_type(), $args );
 	}
 
+	/**
+	 * Get the default metadata section of the collection
+	 * 
+	 * @param \Tainacan\Entities\Collection|int the collection of the metadata section
+	 *
+	 * @return \Tainacan\Entities\Metadata_Section|false return de the default metadata section or false otherwise.
+	 */
 	public function get_default_section ($collection) {
 		if($collection instanceof Entities\Collection) {
 			$collection_id = $collection->get_id();
 		} else if (is_int($collection)) {
 			$collection_id = $collection;
+			$collection = \tainacan_collections()->fetch($collection, 'OBJECT');
 		} else {
 			return false;
 		}
+		$name = __('Metadata', 'tainacan');
+		$description = __('Metadata section', 'tainacan');
+		$description_bellow_name = 'no';
+		$default_metadata_section_properties = $collection->get_default_metadata_section_properties();
+		if( !empty($default_metadata_section_properties) ) {
+			$name =  isset($default_metadata_section_properties['name']) ? $default_metadata_section_properties['name'] : $name;
+			$description = isset($default_metadata_section_properties['description']) ? $default_metadata_section_properties['description'] : $description;
+			$description_bellow_name = isset($default_metadata_section_properties['description_bellow_name']) ? $default_metadata_section_properties['description_bellow_name'] : $description_bellow_name;
+		}
 		$defaul_section = new Entities\Metadata_Section();
-		$defaul_section->set_slug('default_section');
-		$defaul_section->set_name(__('Metadata', 'tainacan'));
-		$defaul_section->set_description(__('Metadata section', 'tainacan'));
+		$defaul_section->set_slug(\Tainacan\Entities\Metadata_Section::$default_section_slug);
+		$defaul_section->set_name($name);
+		$defaul_section->set_description($description);
+		$defaul_section->set_description_bellow_name($description_bellow_name);
 		$defaul_section->set_collection_id($collection_id);
 		return $defaul_section;
 	}
@@ -306,6 +324,22 @@ class Metadata_Sections extends Repository {
 	 * @throws \Exception
 	 */
 	public function update( $object, $new_values = null ) {
+		if($object->get_id() == \Tainacan\Entities\Metadata_Section::$default_section_slug) {
+			$collection = $object->get_collection();
+			if($collection instanceof \Tainacan\Entities\Collection) {
+				$properties = array(
+					'name' => $object->get_name(),
+					'description' => $object->get_description(),
+					'description_bellow_name' => $object->get_description_bellow_name()
+				);
+				$collection->set_default_metadata_section_properties($properties);
+				if($collection->validate()) {
+					\tainacan_collections()->update($collection);
+					return $object;
+				}
+			}
+			return false;
+		}
 		return $this->insert( $object );
 	}
 
@@ -350,7 +384,7 @@ class Metadata_Sections extends Repository {
 					'relation' => 'OR',
 					array(
 						'key' => 'metadata_section_id',
-						'value' => 'default_section',
+						'value' => \Tainacan\Entities\Metadata_Section::$default_section_slug,
 						'compare' => '='
 					),
 					array(

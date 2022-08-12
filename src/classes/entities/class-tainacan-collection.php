@@ -605,6 +605,17 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Get the default metadata section properties.
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function get_default_metadata_section_properties( ) {
+		return $this->get_mapped_property( 'default_metadata_section_properties' );
+	}
+
+	/**
 	 * Set the collection name
 	 *
 	 * @param [string] $value
@@ -864,6 +875,17 @@ class Collection extends Entity {
 	 */
 	function set_submission_use_recaptcha( $value ) {
 		return $this->set_mapped_property( 'submission_use_recaptcha', $value);
+	}
+
+	/**
+	 * Set the default metadata section properties.
+	 *
+	 * @param [string] $value
+	 *
+	 * @return void
+	 */
+	function set_default_metadata_section_properties( $value ) {
+		return $this->set_mapped_property( 'default_metadata_section_properties', $value);
 	}
 
 	/**

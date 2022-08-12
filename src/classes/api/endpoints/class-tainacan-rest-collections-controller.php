@@ -622,7 +622,7 @@ class REST_Collections_Controller extends REST_Controller {
 				if ( !is_array($val) ) {
 					return false;
 				}
-				if ( !isset($val['id']) || (!is_numeric($val['id']) && $val['id'] != 'default_section' ) ) {
+				if ( !isset($val['id']) || (!is_numeric($val['id']) && $val['id'] !=  \Tainacan\Entities\Metadata_Section::$default_section_slug ) ) {
 					return false;
 				}
 				if ( !isset($val['enabled']) || !is_bool($val['enabled']) ) {
@@ -646,7 +646,7 @@ class REST_Collections_Controller extends REST_Controller {
 	 */
 	public function update_metadata_order( $request ) {
 		$collection_id = $request['collection_id'];
-		$metadata_section_id = isset($request['metadata_section_id']) ? $request['metadata_section_id'] : 'default_section';
+		$metadata_section_id = isset($request['metadata_section_id']) ? $request['metadata_section_id'] : \Tainacan\Entities\Metadata_Section::$default_section_slug;
 
 		$body = json_decode($request->get_body(), true);
 
