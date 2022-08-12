@@ -849,6 +849,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_repository_filters_inheritance'            => __( 'Repository Filters will be inherited by all collections.', 'tainacan' ),
 	'info_create_filters'                            => __( 'Click or Drag and Drop Metadata here for creating a new Filter.', 'tainacan' ),
 	'info_create_metadata'                           => __( 'Click or Drag and Drop Metadata Types here for creating a new Metadata.', 'tainacan' ),
+	'info_create_section'							 => __( 'Click or Drag and Drop to create a new section for organizing your metadata list.', 'tainacan' ),
 	'info_create_child_metadata'                     => __( 'Drag and Drop Metadata Types here for creating a child Metadata.', 'tainacan' ),
 	'info_choose_your_metadata'                      => __( 'Choose your metadata.', 'tainacan' ),
 	'info_target_collection_helper'                  => __( 'The collection where imported item will be added. Only those that you have permission are listed.', 'tainacan' ),
