@@ -477,9 +477,16 @@ class Metadata extends Repository {
 						));
 
 						$args['meta_query'][] = array(
-							'key'     => 'metadata_section_id',
-							'value'   => $private_metadata_sections_ids,
-							'compare' => 'NOT IN'
+							'relation' => 'OR',
+							array(
+								'key'     => 'metadata_section_id',
+								'value'   => $private_metadata_sections_ids,
+								'compare' => 'NOT IN'
+							),
+							array( //note: using the comparete 'NOT EXISTS' to cases where metadata section id is not present in mapped property (meta) of metadatum  
+								'key'     => 'metadata_section_id',
+								'compare' => 'NOT EXISTS'
+							)
 						);
 					}
 				}
