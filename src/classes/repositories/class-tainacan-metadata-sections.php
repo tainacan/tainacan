@@ -455,4 +455,28 @@ class Metadata_Sections extends Repository {
 		}
 		return $result;
 	}
+
+	/**
+	 * Check if $user can read the entity
+	 *
+	 * @param Entities\Metadata_Section|Entities\Entity $entity
+	 * @param int|\WP_User|null $user default is null for the current user
+	 *
+	 * @return boolean
+	 * @throws \Exception
+	 */
+	public function can_read( Entities\Entity $entity, $user = null ) {
+		if ( is_null($entity) )
+			return false;
+
+		if ($entity instanceof Entities\Metadata_Section && $entity->get_id() == Entities\Metadata_Section::$default_section_slug ) {
+			$collection = $entity->get_collection();
+			if($collection instanceof Entities\Collection) {
+				return $collection->can_read();
+			}
+			return false;
+		}
+
+		return parent::can_read($entity, $user);
+	}
 }

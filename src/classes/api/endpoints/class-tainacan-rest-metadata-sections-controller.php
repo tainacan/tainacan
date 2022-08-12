@@ -240,7 +240,13 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 */
 	public function get_item( $request ) {
 		$metadata_section_id = $request['metadata_section_id'];
-		$result = $this->metadata_sections_repository->fetch($metadata_section_id, 'OBJECT');
+		if($metadata_section_id == \Tainacan\Entities\Metadata_Section::$default_section_slug) {
+			$collection_id = is_numeric($request['collection_id']) ? (int)$request['collection_id'] : null;
+			$result = $this->metadata_sections_repository->get_default_section($collection_id);
+		} else {
+			$result = $this->metadata_sections_repository->fetch($metadata_section_id, 'OBJECT');
+		}
+		
 		if (! $result instanceof Entities\Metadata_Section) {
 			return new \WP_REST_Response([
 				'error_message' => __('Metadata section with this ID was not found', 'tainacan'),
@@ -263,8 +269,14 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		}
 
 		$collection = $this->collection_repository->fetch($request['collection_id']);
-		if($collection instanceof Entities\Collection && $collection->can_read()){
-			$metadatum_section = $this->metadata_sections_repository->fetch($request['metadata_section_id']);
+		if($collection instanceof Entities\Collection && $collection->can_read()) {
+			$metadata_section_id = $request['metadata_section_id'];
+			if($metadata_section_id == \Tainacan\Entities\Metadata_Section::$default_section_slug) {
+				$metadatum_section = $this->metadata_sections_repository->get_default_section($collection);
+			} else {
+				$metadatum_section = $this->metadata_sections_repository->fetch($metadata_section_id);
+			}
+			
 			return $metadatum_section instanceof Entities\Metadata_Section && $metadatum_section->can_read();
 		}
 
