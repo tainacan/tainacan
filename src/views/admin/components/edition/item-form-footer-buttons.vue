@@ -242,6 +242,10 @@ export default {
         }
 
         /deep/ .item-edition-footer-dropdown {
+            .dropdown-trigger .button>.icon {
+                border-left: 1px solid rgba(255,255,255,0.6);
+                margin-left: 0.5em;
+            }
             .dropdown-menu>.dropdown-content {
                 display: flex;
                 flex-direction: column;

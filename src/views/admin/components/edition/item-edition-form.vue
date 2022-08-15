@@ -32,12 +32,17 @@
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
                         class="icon has-text-gray4"
+                        style="margin-left: 0.5em;"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(item.status)"
                             />
+                    <help-button
+                            :title="$i18n.get('status_' + item.status)"
+                            :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
                 </span>
+                
             </h1>
         </tainacan-title>
 
