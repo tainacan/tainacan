@@ -93,8 +93,8 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
         axios.tainacan.post(endpoint, params)
             .then(res => {
                 let metadatum = res.data;
-
-                if (sectionId !== null && sectionId !== undefined)
+                
+                if (sectionId != undefined && sectionId != false)
                     commit('updateMetadatumInsideSectionMetadata', { metadatum: metadatum, index: newIndex, sectionId: sectionId })
                 else
                     commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex, isRepositoryLevel: isRepositoryLevel });
