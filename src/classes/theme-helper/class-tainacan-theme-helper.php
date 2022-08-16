@@ -1393,9 +1393,10 @@ class Theme_Helper {
 
 			if ( $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
 				$is_document_type_attachment = tainacan_get_the_document_type($item_id) === 'attachment';
+				
 				$media_items_thumbnails[] =
 					tainacan_get_the_media_component_slide(array(
-						'media_content' => get_the_post_thumbnail(null, 'tainacan-medium'),
+						'media_content' => get_the_post_thumbnail($item_id, 'tainacan-medium'),
 						'media_content_full' => $open_lightbox_on_click ? ($is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',
