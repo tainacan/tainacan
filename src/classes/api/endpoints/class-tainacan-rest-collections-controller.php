@@ -492,7 +492,7 @@ class REST_Collections_Controller extends REST_Controller {
 		if(! $collection instanceof Entities\Collection) {
 			return new \WP_REST_Response([
 				'error_message' => __('Collection with this ID was not found', 'tainacan' ),
-				'collection_id' => $collection_id
+				'collection_id' => $request['collection_id']
 			], 400);
 		}
 
@@ -810,8 +810,8 @@ class REST_Collections_Controller extends REST_Controller {
 
 				return new \WP_REST_Response([
 					'error_message' => __('One or more values are invalid.', 'tainacan'),
-					'errors'        => $prepared_collection->get_errors(),
-					'collection'    => $this->prepare_item_for_response($prepared_collection, $request)
+					'errors'        => $collection->get_errors(),
+					'collection'    => $this->prepare_item_for_response($collection, $request)
 				], 400);
 			}
 
