@@ -705,6 +705,14 @@ class Metadata extends Repository {
 
 						$result_ordinate[ $index ] = $item;
 					} else {
+						// skipping if metadata coumpound is disabled if the arg is set
+						if ($item->get_parent() > 0) {
+							$parent_metadatum = new \Tainacan\Entities\Metadatum($item->get_parent());
+							$parent_index = array_search( $parent_metadatum->get_id(), array_column( $order, 'id' ) );
+							if ( ! $include_disabled && (!$enabled_metadata_section || isset( $order[ $parent_index ]['enabled'] ) && ! $order[ $parent_index ]['enabled'] )) {
+								continue;
+							}
+						}
 						$not_ordinate[] = $item;
 					}
 				}
