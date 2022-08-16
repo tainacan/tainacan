@@ -520,43 +520,6 @@
                             </section>
                         </div>
 
-                        <div 
-                                v-if="!$adminOptions.mobileAppMode"
-                                style="margin: 0.75rem 0 2rem;"
-                                class="columns">
-
-                            <!-- Comment Status ------------------------ -->
-                            <div
-                                    class="column is-narrow"
-                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
-                                <div class="section-label">
-                                    <label>
-                                        <span class="icon has-text-gray4">
-                                            <i class="tainacan-icon tainacan-icon-comment"/>
-                                        </span>
-                                        {{ $i18n.get('label_comments') }}
-                                    </label>
-                                    <help-button
-                                            :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                            :message="$i18n.getHelperMessage('items', 'comment_status')"/>
-                                </div>
-                                <div 
-                                        style="margin-left: 2em;"
-                                        class="section-status">
-                                    <div class="field has-addons">
-                                        <b-switch
-                                                id="tainacan-checkbox-comment-status"
-                                                size="is-small"
-                                                true-value="open"
-                                                false-value="closed"
-                                                v-model="form.comment_status">
-                                            {{ $i18n.get('label_allow_comments') }}
-                                        </b-switch>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
                     </div>
 
                     <div 
@@ -685,6 +648,29 @@
                                 :form-errors="formErrors" />
                     </span>
                 </p>
+
+                <!-- Comment Status ------------------------ -->
+                <div 
+                        style="margin-left: 2em;"
+                        class="section-status"
+                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
+                    <div class="field has-addons">
+                        <b-switch
+                                id="tainacan-checkbox-comment-status"
+                                size="is-small"
+                                true-value="open"
+                                false-value="closed"
+                                v-model="form.comment_status">
+                            <span class="icon has-text-gray4">
+                                <i class="tainacan-icon tainacan-icon-comment"/>
+                            </span>
+                            {{ $i18n.get('label_allow_comments') }}
+                            <help-button
+                                    :title="$i18n.getHelperTitle('items', 'comment_status')"
+                                    :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                        </b-switch>
+                    </div>
+                </div>
             </div>
             
             <item-form-footer-buttons
@@ -1803,6 +1789,7 @@ export default {
         .page-container.item-edition-container,
         .page-container.item-creation-container {
             padding-top: 0px;
+            height: 100%;
 
             .tainacan-form > .columns {
                 margin-left: 0px;
@@ -2266,6 +2253,8 @@ export default {
             .update-info-section {
                 color: var(--tainacan-info-color);
                 margin-right: auto;
+                display: flex;
+                flex-wrap: nowrap;
             }
 
             .help {

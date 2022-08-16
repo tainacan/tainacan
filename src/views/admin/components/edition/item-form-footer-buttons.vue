@@ -233,6 +233,9 @@ export default {
 
 <style lang="scss" scoped>
     .form-submission-footer {
+        display: flex;
+        flex-wrap: nowrap;
+        
         .button {
             margin-left: 16px;
             margin-right: 6px;
