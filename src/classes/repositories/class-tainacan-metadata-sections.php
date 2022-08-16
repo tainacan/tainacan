@@ -366,38 +366,41 @@ class Metadata_Sections extends Repository {
 		return false;
 	}
 
-	public function get_metadata_object_list($metadata_section_id) {
+	public function get_metadata_object_list($metadata_section_id, $args = []) {
 		$metadata_section = $this->fetch($metadata_section_id);
 		if ($metadata_section) {
 			$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
-			$metadata_list = $metadata_repository->fetch_by_metadata_section($metadata_section);
+			$metadata_list = $metadata_repository->fetch_by_metadata_section($metadata_section, $args);
 			return $metadata_list;
 		}
 		return false;
 	}
 
-	public function get_default_section_metadata_object_list (Entities\Collection $collection) {
+	public function get_default_section_metadata_object_list (Entities\Collection $collection, $args = []) {
 		$metadata_sections_ids = $this->fetch_ids();
-		$args = array(
-			'meta_query' => array(
-				array(
-					'relation' => 'OR',
+		$args = array_merge(
+			$args,
+			array(
+				'meta_query' => array(
 					array(
-						'key' => 'metadata_section_id',
-						'value' => \Tainacan\Entities\Metadata_Section::$default_section_slug,
-						'compare' => '='
-					),
-					array(
+						'relation' => 'OR',
 						array(
 							'key' => 'metadata_section_id',
-							'compare' => 'NOT EXISTS'
-						)
-					),
-					array(
-						'key' => 'metadata_section_id',
-						'value' => $metadata_sections_ids,
-						'compare' => 'NOT IN'
-					),
+							'value' => \Tainacan\Entities\Metadata_Section::$default_section_slug,
+							'compare' => '='
+						),
+						array(
+							array(
+								'key' => 'metadata_section_id',
+								'compare' => 'NOT EXISTS'
+							)
+						),
+						array(
+							'key' => 'metadata_section_id',
+							'value' => $metadata_sections_ids,
+							'compare' => 'NOT IN'
+						),
+					)
 				)
 			)
 		);
