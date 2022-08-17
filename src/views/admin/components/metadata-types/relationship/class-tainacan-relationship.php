@@ -337,7 +337,7 @@ class Relationship extends Metadata_Type {
 							<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 						</h5>
 						<p>
-							<?php echo wp_kses_post(($value_link === false ? $meta->get_value_as_html() : $value_link)); ?> 
+							<?php echo wp_kses_tainacan(($value_link === false ? $meta->get_value_as_html() : $value_link)); ?> 
 						</p>
 					</div>
 				<?php
