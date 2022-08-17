@@ -996,16 +996,32 @@ class REST_Items_Controller extends REST_Controller {
 					$errors = [];
 
 					foreach ($metadata as $item_metadatum) {
-
-						$new_item_metadatum = new Entities\Item_Metadata_Entity( $new_item, $item_metadatum->get_metadatum() );
-						$new_item_metadatum->set_value( $item_metadatum->get_value() );
-
-						if ( $new_item_metadatum->validate() ) {
-							Repositories\Item_Metadata::get_instance()->insert( $new_item_metadatum );
+						if ( $item_metadatum->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
+							$multiple_values = $item_metadatum->is_multiple() ? $item_metadatum->get_value() : [$item_metadatum->get_value()] ;
+							foreach ($multiple_values as $value) {
+								$parent_meta_id = null;
+								foreach ( $value as $meta_id => $meta ) {
+									if ( $meta instanceof Entities\Item_Metadata_Entity) {
+										$item_metadata = new Entities\Item_Metadata_Entity($new_item, $meta->get_metadatum(), null, $parent_meta_id);
+										$item_metadata->set_value( $meta->get_value() );
+										if ( $item_metadata->validate() ) {
+											$item_metadata = Repositories\Item_Metadata::get_instance()->insert( $item_metadata );
+											$parent_meta_id = $item_metadata->get_parent_meta_id();
+										} else {
+											$errors[] = $item_metadata->get_errors();
+										}
+									}
+								}
+							}
 						} else {
-							$errors[] = $new_item_metadatum->get_errors();
+							$new_item_metadatum = new Entities\Item_Metadata_Entity( $new_item, $item_metadatum->get_metadatum() );
+							$new_item_metadatum->set_value( $item_metadatum->get_value() );
+							if ( $new_item_metadatum->validate() ) {
+								Repositories\Item_Metadata::get_instance()->insert( $new_item_metadatum );
+							} else {
+								$errors[] = $new_item_metadatum->get_errors();
+							}
 						}
-
 					}
 
 					if ($args['status'] != 'draft') {
