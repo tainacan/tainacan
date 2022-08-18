@@ -145,7 +145,7 @@
         <p class="help is-danger">{{ formErrorMessage }}</p>
         <div class="control">
             <b-button
-                    :loading="isLoading"
+                    :loading="isUpdating"
                     class="button is-success"
                     native-type="submit">
                 {{ $i18n.get('save') }}
