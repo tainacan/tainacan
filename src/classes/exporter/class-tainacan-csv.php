@@ -162,7 +162,7 @@ class CSV extends Exporter {
 		$last_id = get_post_meta( $item_id, '_user_edit_lastr', true );
 		if ( $last_id ) {
 			$last_user = get_userdata( $last_id );
- 			return apply_filters( 'the_modified_author', $last_user->display_name );
+ 			return apply_filters( 'tainacan-the-modified-author', $last_user->display_name );
 		}
 		return "";
 	}

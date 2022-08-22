@@ -214,7 +214,7 @@ class Logs extends Repository {
 
 			$args['post_type'] = Entities\Log::get_post_type();
 
-			$args = apply_filters( 'tainacan_fetch_args', $args, 'logs' );
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'logs' );
 
 			$wp_query = new \WP_Query( $args );
 
