@@ -13,7 +13,10 @@
                     id="collection-page-container"
                     :collection-id="collectionId" 
                     class="page-container"
-                    :class="{ 'page-container-small': !$adminOptions.hideRepositorySubheader && !$adminOptions.hideCollectionSubheader }"/>
+                    :class="{
+                        'page-container-small': !$adminOptions.hideRepositorySubheader && !$adminOptions.hideCollectionSubheader,
+                        'is-loading-collection-basics': isLoadingCollectionBasics
+                    }"/>
         </section>
     </div>
 </template>
@@ -29,7 +32,8 @@ export default {
     },
     data() {
         return {
-            collectionId: Number
+            collectionId: Number,
+            isLoadingCollectionBasics: Boolean
         }
     },
     watch: {
@@ -40,9 +44,16 @@ export default {
                 (to.path != from.path) &&
                 (this.collectionId != this.$route.params.collectionId)
             ) {
+                this.isLoadingCollectionBasics = true;
                 this.collectionId = this.$route.params.collectionId;
                 this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
-                    .catch((error) => this.$console.error(error));
+                    .then(() => {
+                        this.isLoadingCollectionBasics = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isLoadingCollectionBasics = false;
+                    });
             }
         }
     },
@@ -53,7 +64,13 @@ export default {
 
         // Loads to store basic collection info such as name, url, current_user_can_edit... etc.
         this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
-            .catch((error) => this.$console.error(error));
+            .then(() => {
+                this.isLoadingCollectionBasics = false;
+            })
+            .catch((error) => {
+                this.$console.error(error);
+                this.isLoadingCollectionBasics = false;
+            });
     },
     methods: {
         ...mapActions('collection', [
@@ -62,5 +79,13 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+    #collection-page-container.is-loading-collection-basics {
+        .section {
+            display: none; // Prevents info as "No permissions to see this" to appear before we finished loading.
+        }
+    }
+</style>
 
 
