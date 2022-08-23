@@ -379,7 +379,7 @@ class Collections extends Repository {
 
 			// TODO: Pegar coleções registradas via código
 
-			$args = apply_filters( 'tainacan_fetch_args', $args, 'collections' );
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'collections' );
 
 			$wp_query = new \WP_Query( $args );
 

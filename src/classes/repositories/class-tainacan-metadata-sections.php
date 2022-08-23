@@ -199,7 +199,7 @@ class Metadata_Sections extends Repository {
 
 			$args = $this->parse_fetch_args( $args );
 			$args['post_type'] = Entities\Metadata_Section::get_post_type();
-			$args = apply_filters( 'tainacan_fetch_args', $args, 'metadata-section' );
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'metadata-section' );
 			
 			$wp_query = new \WP_Query( $args );
 

@@ -242,7 +242,7 @@ class Filters extends Repository {
 
 			$args['post_type'] = Entities\Filter::get_post_type();
 
-			$args = apply_filters( 'tainacan_fetch_args', $args, 'filters' );
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'filters' );
 
 			$wp_query = new \WP_Query( $args );
 

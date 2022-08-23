@@ -376,7 +376,7 @@ class Metadata extends Repository {
 
 			$args['post_type'] = Entities\Metadatum::get_post_type();
 
-			$args = apply_filters( 'tainacan_fetch_args', $args, 'metadata' );
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'metadata' );
 
 
 			$wp_query = new \WP_Query( $args );

@@ -8,15 +8,15 @@
     "build-prod": "cross-env NODE_ENV=production webpack --config webpack.prod.js --progress --mode production"
   },
   "dependencies": {
-    "apexcharts": "^3.35.4",
+    "apexcharts": "^3.35.5",
     "axios": "^0.27.2",
     "blurhash": "^1.1.5",
     "buefy": "^0.9.21",
     "bulma": "^0.9.4",
     "conditioner-core": "^2.3.3",
     "countup.js": "^2.3.2",
-    "css-vars-ponyfill": "^2.4.7",
-    "floating-vue": "^1.0.0-beta.17",
+    "css-vars-ponyfill": "^2.4.8",
+    "floating-vue": "^1.0.0-beta.18",
     "masonry-layout": "^4.2.2",
     "moment": "^2.29.4",
     "node-sass": "^7.0.1",
@@ -58,7 +58,7 @@
     "vue-loader": "^15.9.8",
     "vue-template-compiler": "^2.6.14",
     "webpack": "^5.73.0",
-    "webpack-bundle-analyzer": "^4.5.0",
+    "webpack-bundle-analyzer": "^4.6.1",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.9.2",
     "webpack-merge": "^5.8.0"

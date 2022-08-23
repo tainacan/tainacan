@@ -294,8 +294,6 @@ class Admin {
 
 		$tainacan_admin_i18n['entities_labels'] = $entities_labels;
 
-		$components = ( has_filter( 'tainacan_register_web_components' ) ) ? apply_filters( 'tainacan_register_web_components' ) : [];
-
 		$cur_user  = wp_get_current_user();
 		$user_caps = array();
 		$prefs     = array();
@@ -312,7 +310,6 @@ class Admin {
 			'wp_api_url'            	=> esc_url_raw( rest_url() ) . 'wp/v2/',
 			'wp_ajax_url'            	=> admin_url( 'admin-ajax.php' ),
 			'nonce'                  	=> is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
-			'components'             	=> $components,
 			'classes'                	=> array(),
 			'i18n'                   	=> $tainacan_admin_i18n,
 			'user_caps'              	=> $user_caps,
@@ -392,7 +389,10 @@ class Admin {
 
 	function admin_page() {
 		global $TAINACAN_BASE_URL;
+		
+		// @deprecated: use tainacan-admin-ui-options instead
 		$admin_options = apply_filters('set_tainacan_admin_options', $_GET);
+		$admin_options = apply_filters('tainacan-admin-ui-options', $_GET);
 		$admin_options = json_encode($admin_options);
 		// TODO move it to a separate file and start the Vue project
 		echo "<div id='tainacan-admin-app' data-module='admin' data-options='$admin_options'></div>";
