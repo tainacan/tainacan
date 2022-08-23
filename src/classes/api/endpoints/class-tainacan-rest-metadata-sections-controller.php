@@ -149,9 +149,12 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 				$item_arr['enabled'] = $item->get_enabled_for_collection();
 			}
 
-			$metadata_list = $item->get_id() == \Tainacan\Entities\Metadata_Section::$default_section_slug
-				? $this->metadata_sections_repository->get_default_section_metadata_object_list($item->get_collection())
-				: $item->get_metadata_object_list();
+			$args = [];
+			if ($request['include_disabled'] === 'true') {
+				$args['include_disabled'] = true;
+			}
+
+			$metadata_list = $item->get_metadata_object_list($args);
 			$item_arr['metadata_object_list'] = [];
 			if($metadata_list != false) {
 				foreach($metadata_list as $metadata) {

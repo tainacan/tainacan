@@ -32,12 +32,17 @@
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
                         class="icon has-text-gray4"
+                        style="margin-left: 0.5em;"
                         @mouseenter="$emit('toggleItemEditionFooterDropdown')">
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(item.status)"
                             />
+                    <help-button
+                            :title="$i18n.get('status_' + item.status)"
+                            :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
                 </span>
+                
             </h1>
         </tainacan-title>
 
@@ -515,43 +520,6 @@
                             </section>
                         </div>
 
-                        <div 
-                                v-if="!$adminOptions.mobileAppMode"
-                                style="margin: 0.75rem 0 2rem;"
-                                class="columns">
-
-                            <!-- Comment Status ------------------------ -->
-                            <div
-                                    class="column is-narrow"
-                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
-                                <div class="section-label">
-                                    <label>
-                                        <span class="icon has-text-gray4">
-                                            <i class="tainacan-icon tainacan-icon-comment"/>
-                                        </span>
-                                        {{ $i18n.get('label_comments') }}
-                                    </label>
-                                    <help-button
-                                            :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                            :message="$i18n.getHelperMessage('items', 'comment_status')"/>
-                                </div>
-                                <div 
-                                        style="margin-left: 2em;"
-                                        class="section-status">
-                                    <div class="field has-addons">
-                                        <b-switch
-                                                id="tainacan-checkbox-comment-status"
-                                                size="is-small"
-                                                true-value="open"
-                                                false-value="closed"
-                                                v-model="form.comment_status">
-                                            {{ $i18n.get('label_allow_comments') }}
-                                        </b-switch>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
                     </div>
 
                     <div 
@@ -658,9 +626,9 @@
                     v-if="!$adminOptions.mobileAppMode"
                     class="update-info-section">
                 <p
-                        class="has-text-gray5"
+                        class="footer-message"
                         v-if="isOnSequenceEdit">
-                    {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}
+                    {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}&nbsp;
                 </p>
                 <p class="footer-message">
                     <span 
@@ -680,6 +648,29 @@
                                 :form-errors="formErrors" />
                     </span>
                 </p>
+
+                <!-- Comment Status ------------------------ -->
+                <div 
+                        style="margin-left: 2em;"
+                        class="section-status"
+                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
+                    <div class="field has-addons">
+                        <b-switch
+                                id="tainacan-checkbox-comment-status"
+                                size="is-small"
+                                true-value="open"
+                                false-value="closed"
+                                v-model="form.comment_status">
+                            <span class="icon has-text-gray4">
+                                <i class="tainacan-icon tainacan-icon-comment"/>
+                            </span>
+                            {{ $i18n.get('label_allow_comments') }}
+                            <help-button
+                                    :title="$i18n.getHelperTitle('items', 'comment_status')"
+                                    :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                        </b-switch>
+                    </div>
+                </div>
             </div>
             
             <item-form-footer-buttons
@@ -1798,6 +1789,7 @@ export default {
         .page-container.item-edition-container,
         .page-container.item-creation-container {
             padding-top: 0px;
+            height: 100%;
 
             .tainacan-form > .columns {
                 margin-left: 0px;
@@ -1835,7 +1827,7 @@ export default {
     .page-container.item-edition-container,
     .page-container.item-creation-container {
         padding: 0px 0px 60px 0px;
-        height: calc(100% - 5.4em);
+        height: calc(100% - 2.35em);
         transition: none;
 
         &>.tainacan-form {
@@ -2261,6 +2253,8 @@ export default {
             .update-info-section {
                 color: var(--tainacan-info-color);
                 margin-right: auto;
+                display: flex;
+                flex-wrap: nowrap;
             }
 
             .help {

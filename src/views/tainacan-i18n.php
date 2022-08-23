@@ -398,6 +398,7 @@ return apply_filters( 'tainacan-i18n', [
 	'loading_processes'				 				 => __( 'Loading processes', 'tainacan' ),
 	'label_semantic_uri'                             => __( 'Semantic Uri', 'tainacan' ),
 	'label_view_collection_on_website'               => __( 'View collection on website', 'tainacan' ),
+	'label_view_collections_on_website'               => __( 'View collections on website', 'tainacan' ),
 	'label_view_more'                                => __( 'View more', 'tainacan' ),
 	'label_log_file'                                 => __( 'Log file', 'tainacan' ),
 	'label_error_log_file'                           => __( 'Error Log file', 'tainacan' ),
@@ -413,7 +414,6 @@ return apply_filters( 'tainacan-i18n', [
 	'label_save_goto_metadata'                       => __( 'Save and Go to Metadata', 'tainacan' ),
 	'label_save_goto_filter'                         => __( 'Save and Go to Filters', 'tainacan' ),
 	'label_view_all_collections'                     => __( 'View all Collections', 'tainacan' ),
-	'label_view_repository'                     	 => __( 'View Repository', 'tainacan' ),
 	'label_view_on_theme'                            => __( 'View on Theme', 'tainacan' ),
 	'label_view_items_on_theme'                      => __( 'View all Items on Theme', 'tainacan' ),
 	'label_view_collections_on_theme'                => __( 'View all Collections on Theme', 'tainacan' ),
@@ -726,6 +726,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_collection_name'					 => __( 'Enter the collection name here...', 'tainacan' ),
 	'instruction_click_to_easily_see'				 => __( 'Click to easily see', 'tainacan' ),
 	'instruction_create_item_select_status'		 	 => __( 'Select a status for the item visiblity on the site. Remember, whichever you select will still be restricted by the collection status as well.', 'tainacan' ),
+	'instruction_edit_item_status'				 	 => __( 'To alter the item status, select a different update strategy in the footer below.', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
@@ -766,6 +767,11 @@ return apply_filters( 'tainacan-i18n', [
 	'info_no_taxonomies_private'			         => __( 'No private taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_draft'			             => __( 'No draft taxonomies found.', 'tainacan' ),
 	'info_no_taxonomies_trash'			             => __( 'No taxonomies found on trash.', 'tainacan' ),
+
+	'info_item_publish'			         			=> __( 'This item is published as public and will be visible to any visitor on the website, as long as its collection is also public.', 'tainacan' ),
+	'info_item_private'			         			=> __( 'This item is published as private and will be visible only for editors with the required capabilities.', 'tainacan' ),
+	'info_item_draft'			             		=> __( 'This item is a draft and will be visible only for editors with the required capabilities. Also, in this state, no validation for required metadata is performed.', 'tainacan' ),
+	'info_item_trash'			             		=> __( 'This item is on trash and will not be visible outside of the admin panel.', 'tainacan' ),
 
 	'info_no_taxonomy_created'                       => __( 'No taxonomy was created in this repository.', 'tainacan' ),
 	'info_no_terms_created_on_taxonomy'              => __( 'No term was created for this taxonomy.', 'tainacan' ),

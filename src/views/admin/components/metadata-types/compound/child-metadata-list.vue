@@ -315,13 +315,12 @@
                 'updateChildMetadataOrder'
             ]),
             handleChange(event) {     
-                if (event.added) {
+                if (event.added)
                     this.addNewMetadatum(event.added.element, event.added.newIndex);
-                } else if (event.removed) {
+                else if (event.removed)
                     this.removeMetadatum(event.removed.element);
-                } else if (event.moved) {
+                else if (event.moved)
                     this.updateMetadataOrder();
-                }
             },
             updateMetadataOrder() {
                 let metadataOrder = [];

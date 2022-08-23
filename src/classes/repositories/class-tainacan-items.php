@@ -356,7 +356,7 @@ class Items extends Repository {
 			$args = $this->parse_relationship_metaquery($args);
 		}
 
-		$args = apply_filters( 'tainacan_fetch_args', $args, 'items' );
+		$args = apply_filters( 'tainacan-fetch-args', $args, 'items' );
 
 		$should_filter = is_user_logged_in() && sizeof($cpt) > 1;
 

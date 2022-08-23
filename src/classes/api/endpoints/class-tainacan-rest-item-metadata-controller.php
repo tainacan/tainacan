@@ -43,6 +43,11 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/' . $this->rest_base . '/(?P<metadatum_id>[\d]+)',
 			array(
 				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item_metadatum_value'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+				),
+				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
@@ -55,22 +60,13 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				),
 			)
 		);
-		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base,
+		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/' . $this->rest_base,
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
-				)
-			)
-		);
-		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/'. $this->rest_base. '/(?P<metadatum_id>[\d]+)',
-			array(
-				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_item_metadatum_value'),
-					'permission_callback' => array($this, 'get_items_permissions_check'),
 				)
 			)
 		);

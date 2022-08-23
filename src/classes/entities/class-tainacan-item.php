@@ -1245,6 +1245,7 @@ class Item extends Entity {
 			$before_metadata_list = str_replace('$slug', $section_slug, $before_metadata_list);
 
 			// Let theme authors tweak the metadata list wrapper
+			$before_description = isset($args['before_description']) ? $args['before_description'] : '';
 			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_description, $metadata_section );
 			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_description, $metadata_section );
 			if ( is_numeric($section_index) && $section_index >= 0 ) {
@@ -1267,6 +1268,7 @@ class Item extends Entity {
 			$after_metadata_list = $args['after_metadata_list'];
 
 			// Let theme authors tweak the metadata list closer
+			$after_description = isset($args['after_description']) ? $args['after_description'] : '';
 			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list', $after_description, $metadata_section );
 			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--id-' . $section_id, $after_description, $metadata_section );
 			if ( is_numeric($section_index) && $section_index >= 0 ) {

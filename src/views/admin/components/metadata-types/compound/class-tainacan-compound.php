@@ -238,7 +238,7 @@ class Compound extends Metadata_Type {
 						<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 					</h4>
 					<p>
-						<?php echo wp_kses_post($meta->get_value_as_html()); ?>
+						<?php echo wp_kses_tainacan($meta->get_value_as_html()); ?>
 					</p>
 				</div>
 			<?php

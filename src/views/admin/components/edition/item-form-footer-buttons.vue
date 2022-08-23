@@ -233,6 +233,9 @@ export default {
 
 <style lang="scss" scoped>
     .form-submission-footer {
+        display: flex;
+        flex-wrap: nowrap;
+        
         .button {
             margin-left: 16px;
             margin-right: 6px;
@@ -242,6 +245,10 @@ export default {
         }
 
         /deep/ .item-edition-footer-dropdown {
+            .dropdown-trigger .button>.icon.is-small {
+                border-left: 1px solid rgba(255,255,255,0.6);
+                margin-left: 0.5em;
+            }
             .dropdown-menu>.dropdown-content {
                 display: flex;
                 flex-direction: column;

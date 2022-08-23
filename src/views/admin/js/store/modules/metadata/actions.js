@@ -93,8 +93,8 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
         axios.tainacan.post(endpoint, params)
             .then(res => {
                 let metadatum = res.data;
-
-                if (sectionId !== null && sectionId !== undefined)
+                
+                if (sectionId != undefined && sectionId != false)
                     commit('updateMetadatumInsideSectionMetadata', { metadatum: metadatum, index: newIndex, sectionId: sectionId })
                 else
                     commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex, isRepositoryLevel: isRepositoryLevel });
@@ -179,8 +179,7 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         axios.tainacan.delete(endpoint)
             .then(res => {
                 const metadatum = res.data;
-                
-                if (metadatum.metadata_section_id)
+                if (metadatum.metadata_section_id && !isRepositoryLevel)
                     commit('deleteMetadatumInsideMetadataSection', metadatum)
                 else
                     commit('deleteMetadatum', metadatum);

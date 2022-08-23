@@ -84,14 +84,14 @@ class Metadata_Section extends Entity {
 	 *
 	 * @return [int]
 	 */
-	function get_metadata_object_list() {
+	function get_metadata_object_list($args = []) {
 		$tainacan_metadata_sections = \Tainacan\Repositories\Metadata_Sections::get_instance();
 		$metadata_section_id = $this->get_id();
 
 		if ($metadata_section_id == static::$default_section_slug)
-			return $tainacan_metadata_sections->get_default_section_metadata_object_list($this->get_collection());
+			return $tainacan_metadata_sections->get_default_section_metadata_object_list($this->get_collection(), $args);
 		
-		return $tainacan_metadata_sections->get_metadata_object_list($this->get_id());
+		return $tainacan_metadata_sections->get_metadata_object_list($this->get_id(), $args);
 	}
 
 	/**

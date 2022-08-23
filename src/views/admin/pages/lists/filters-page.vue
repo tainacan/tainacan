@@ -67,7 +67,7 @@
                                     'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || filterNameFilterString != ''),
                                     'not-focusable-item': openedFilterId == filter.id, 
                                     'disabled-filter': filter.enabled == false,
-                                    'inherited-filter': filter.inherited || isRepositoryLevel
+                                    'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
                                 }" 
                                 v-for="(filter, index) in activeFiltersList" 
                                 :key="filter.id"
@@ -684,9 +684,10 @@ export default {
             const availableMetadataNames = {};
             let lastParentName = '';
 
-            for (let availableMetadatum of availableMetadata) {
+            for (let availableMetadatum of availableMetadata)
                 availableMetadataNames['' + availableMetadatum.id] = availableMetadatum.name;
-                
+            
+            for (let availableMetadatum of availableMetadata) {
                 if (availableMetadatum.parent > 0 && availableMetadataNames[availableMetadatum.parent]) {
                     availableMetadatum.parent_name = availableMetadataNames[availableMetadatum.parent];
                     

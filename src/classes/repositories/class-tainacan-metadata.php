@@ -376,7 +376,7 @@ class Metadata extends Repository {
 
 			$args['post_type'] = Entities\Metadatum::get_post_type();
 
-			$args = apply_filters( 'tainacan_fetch_args', $args, 'metadata' );
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'metadata' );
 
 
 			$wp_query = new \WP_Query( $args );
@@ -477,9 +477,16 @@ class Metadata extends Repository {
 						));
 
 						$args['meta_query'][] = array(
-							'key'     => 'metadata_section_id',
-							'value'   => $private_metadata_sections_ids,
-							'compare' => 'NOT IN'
+							'relation' => 'OR',
+							array(
+								'key'     => 'metadata_section_id',
+								'value'   => $private_metadata_sections_ids,
+								'compare' => 'NOT IN'
+							),
+							array( //note: using the comparete 'NOT EXISTS' to cases where metadata section id is not present in mapped property (meta) of metadatum  
+								'key'     => 'metadata_section_id',
+								'compare' => 'NOT EXISTS'
+							)
 						);
 					}
 				}
@@ -698,6 +705,14 @@ class Metadata extends Repository {
 
 						$result_ordinate[ $index ] = $item;
 					} else {
+						// skipping if metadata coumpound is disabled if the arg is set
+						if ($item->get_parent() > 0) {
+							$parent_metadatum = new \Tainacan\Entities\Metadatum($item->get_parent());
+							$parent_index = array_search( $parent_metadatum->get_id(), array_column( $order, 'id' ) );
+							if ( ! $include_disabled && (!$enabled_metadata_section || isset( $order[ $parent_index ]['enabled'] ) && ! $order[ $parent_index ]['enabled'] )) {
+								continue;
+							}
+						}
 						$not_ordinate[] = $item;
 					}
 				}

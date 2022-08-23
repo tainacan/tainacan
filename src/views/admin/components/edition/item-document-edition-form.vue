@@ -190,7 +190,7 @@ export default {
         }
     }
     .document-buttons-row {
-        bottom: -6px;
+        bottom: -12px;
         left: 0.875em;
         position: absolute;
     }

@@ -134,11 +134,18 @@ a:hover {
         font-size: 0.8125em;
     }
 }
+html.is-clipped .page-container:not(.is-filters-menu-open) {
+    overflow-y: hidden;
+}
+
 // Used for pages with collection subheader
 .page-container-small {
     height: calc(100% - 38px);
     overflow-y: auto;
     transition: height 0.6s;
+}
+html.is-clipped .page-container-small:not(.is-filters-menu-open) {
+    overflow-y: hidden;
 }
 // Used for pages with subheader in mobile
 .page-container-narrow {

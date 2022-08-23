@@ -245,13 +245,13 @@
                 this.performValueChange();
             }, 800),
             performValueChange() {
-                
+
                 // Compound metadata do not emit values, only their children.
                 if (this.metadatumComponent == 'tainacan-compound')
                     return;
 
                 if (this.itemMetadatum.value !== null && this.itemMetadatum.value !== false) {
-                    
+
                     // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {
                         // Multivalored Metadata requires checking the whole array
@@ -291,7 +291,7 @@
 
                         // Any single metadatum value that is not a term
                         default:
-                            if (this.values.length && this.values[0] == this.itemMetadatum.value)
+                            if (!this.errorMessage && this.values.length && this.values[0] == this.itemMetadatum.value)
                                 return;
                     }
                 }

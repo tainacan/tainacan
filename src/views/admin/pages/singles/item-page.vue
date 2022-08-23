@@ -18,11 +18,15 @@
                 </span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
-                        class="icon has-text-gray4">
+                        class="icon has-text-gray4"
+                        style="margin-left: 0.5em;">
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(item.status)"
                             />
+                    <help-button
+                            :title="$i18n.get('status_' + item.status)"
+                            :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
                 </span>
             </h1>
         </tainacan-title>
@@ -158,40 +162,6 @@
 
                         </section>
                     </div>
-
-                    <div
-                            style="flex-wrap: wrap"
-                            class="columns">
-
-                        <!-- Comment Status ------------------------ -->
-                        <div
-                                v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemSingleCommentsOpen"
-                                class="column is-narrow">
-                            <div class="section-label">
-                                <span class="icon has-text-gray4">
-                                    <i class="tainacan-icon tainacan-icon-comment"/>
-                                </span>
-                                <label>{{ $i18n.get('label_comments') }}</label>
-                            </div>
-                            <div class="section-status">
-                                <div class="field has-addons">
-                                    <span>
-                                        <span
-                                                v-if="item.comment_status != 'open'"
-                                                class="icon">
-                                            <i class="tainacan-icon tainacan-icon-close"/>
-                                        </span>
-                                        <span
-                                                v-if="item.comment_status == 'open'"
-                                                class="icon">
-                                            <i class="tainacan-icon tainacan-icon-approved"/>
-                                        </span>
-                                        {{ item.comment_status == 'open' ? $i18n.get('label_allowed') : $i18n.get('label_not_allowed') }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <div 
@@ -324,6 +294,7 @@
                 
             </div>
             <footer class="footer">
+
                 <!-- Visibility -->
                 <div 
                         v-if="!$adminOptions.hideItemSingleCurrentVisibility"
@@ -372,6 +343,36 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Comment Status ------------------------ -->
+                <div
+                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemSingleCommentsOpen"
+                        class="column is-narrow">
+                    <div class="section-label">
+                        <span class="icon has-text-gray4">
+                            <i class="tainacan-icon tainacan-icon-comment"/>
+                        </span>
+                        <label>{{ $i18n.get('label_comments') }}</label>
+                    </div>
+                    <div class="section-status">
+                        <div class="field has-addons">
+                            <span>
+                                <span
+                                        v-if="item.comment_status != 'open'"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-close"/>
+                                </span>
+                                <span
+                                        v-if="item.comment_status == 'open'"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-approved"/>
+                                </span>
+                                {{ item.comment_status == 'open' ? $i18n.get('label_allowed') : $i18n.get('label_not_allowed') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                    
                 <div class="form-submission-footer">
                     <router-link
                             v-if="item.current_user_can_edit && $route.query.recent == true"
