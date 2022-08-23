@@ -626,9 +626,9 @@
                     v-if="!$adminOptions.mobileAppMode"
                     class="update-info-section">
                 <p
-                        class="has-text-gray5"
+                        class="footer-message"
                         v-if="isOnSequenceEdit">
-                    {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}
+                    {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}&nbsp;
                 </p>
                 <p class="footer-message">
                     <span 
@@ -1827,7 +1827,7 @@ export default {
     .page-container.item-edition-container,
     .page-container.item-creation-container {
         padding: 0px 0px 60px 0px;
-        height: calc(100% - 5.4em);
+        height: calc(100% - 2.35em);
         transition: none;
 
         &>.tainacan-form {

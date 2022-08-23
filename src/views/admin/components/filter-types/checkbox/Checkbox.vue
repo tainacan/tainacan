@@ -1,6 +1,6 @@
 <template>
     <div 
-            :style="{ 'height': isLoadingOptions && !filtersAsModal ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :style="{ 'height': isLoadingOptions && !filtersAsModal ? (Number(filter.max_options)*1.375) + 'rem' : 'auto' }"
             :class="{ 'skeleton': isLoadingOptions && !filtersAsModal }"
             class="block">
         <template v-if="!filtersAsModal">
