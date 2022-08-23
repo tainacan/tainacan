@@ -1,14 +1,22 @@
 <template>
     <div 
             class="columns is-fullheight"
-            :class="{ 'tainacan-admin-collection-mobile-mode': isMobileMode }">
-        <section class="column is-secondary-content">
-            <tainacan-collection-subheader v-if="!isIframeMode && !isMobileMode" />
-
+            :class="{
+                'tainacan-admin-collection-item-edition-mode': $adminOptions.itemEditionMode,
+                'tainacan-admin-collection-mobile-app-mode': $adminOptions.mobileAppMode
+            }">
+        <section 
+                class="column is-secondary-content"
+                :style="$adminOptions.hideRepositorySubheader ? 'margin-top: 0; height: 100%;' : ''">
+            <tainacan-collection-subheader v-if="!$adminOptions.hideCollectionSubheader" />
             <router-view
                     id="collection-page-container"
                     :collection-id="collectionId" 
-                    class="page-container page-container-small"/>
+                    class="page-container"
+                    :class="{
+                        'page-container-small': !$adminOptions.hideRepositorySubheader && !$adminOptions.hideCollectionSubheader,
+                        'is-loading-collection-basics': isLoadingCollectionBasics
+                    }"/>
         </section>
     </div>
 </template>
@@ -22,36 +30,47 @@ export default {
     components: {
         TainacanCollectionSubheader
     },
-    data(){
+    data() {
         return {
-            collectionId: Number
-        }
-    },
-    computed: {
-        isIframeMode() {
-            return this.$route && this.$route.query && this.$route.query.iframemode;
-        },
-        isMobileMode() {
-            return this.$route && this.$route.query && this.$route.query.mobilemode;
+            collectionId: Number,
+            isLoadingCollectionBasics: Boolean
         }
     },
     watch: {
         '$route' (to, from) {
-            if (!this.isRepositoryLevel && from.path != undefined && to.path != from.path && this.collectionId != this.$route.params.collectionId) {
+            if (!this.isRepositoryLevel &&
+                (from != undefined) &&
+                (from.path != undefined) &&
+                (to.path != from.path) &&
+                (this.collectionId != this.$route.params.collectionId)
+            ) {
+                this.isLoadingCollectionBasics = true;
                 this.collectionId = this.$route.params.collectionId;
                 this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
-                    .catch((error) => this.$console.error(error));
+                    .then(() => {
+                        this.isLoadingCollectionBasics = false;
+                    })
+                    .catch((error) => {
+                        this.$console.error(error);
+                        this.isLoadingCollectionBasics = false;
+                    });
             }
         }
     },
-    created(){
+    created() {
         this.collectionId = this.$route.params.collectionId;
         
         this.$eventBusSearch.setCollectionId(this.collectionId);
 
         // Loads to store basic collection info such as name, url, current_user_can_edit... etc.
         this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
-            .catch((error) => this.$console.error(error));
+            .then(() => {
+                this.isLoadingCollectionBasics = false;
+            })
+            .catch((error) => {
+                this.$console.error(error);
+                this.isLoadingCollectionBasics = false;
+            });
     },
     methods: {
         ...mapActions('collection', [
@@ -60,5 +79,13 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+    #collection-page-container.is-loading-collection-basics {
+        .section {
+            display: none; // Prevents info as "No permissions to see this" to appear before we finished loading.
+        }
+    }
+</style>
 
 

@@ -1,6 +1,6 @@
 <template>
     <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
-        <tainacan-title :bread-crumb-items="[{ path: '', label: this.$i18n.get('filters') }]"/>
+        <tainacan-title :bread-crumb-items="[{ path: '', label: $i18n.get('filters') }]"/>
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_filters_inheritance') }}</p>
@@ -67,22 +67,54 @@
                                     'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || filterNameFilterString != ''),
                                     'not-focusable-item': openedFilterId == filter.id, 
                                     'disabled-filter': filter.enabled == false,
-                                    'inherited-filter': filter.inherited || isRepositoryLevel
+                                    'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
                                 }" 
                                 v-for="(filter, index) in activeFiltersList" 
                                 :key="filter.id"
                                 v-show="filterNameFilterString == '' || filter.name.toString().toLowerCase().indexOf(filterNameFilterString.toString().toLowerCase()) >= 0">
                             <div class="handle">
+                                <span
+                                        v-if="!isRepositoryLevel"
+                                        class="sorting-buttons">
+                                    <button 
+                                            :disabled="index == 0"
+                                            class="link-button"
+                                            @click="moveFilterUpViaButton(index)"
+                                            :aria-label="$i18n.get('label_move_up')">
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
+                                        </span>
+                                    </button>
+                                    <button 
+                                            :disabled="index == activeFiltersList.length - 1"
+                                            class="link-button"
+                                            @click="moveFilterDownViaButton(index)"
+                                            :aria-label="$i18n.get('label_move_down')">
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
+                                        </span>
+                                    </button>
+                                </span>
                                 <span 
                                         :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel || filterNameFilterString != '') ? '1.0' : '0.0' }"
                                         v-tooltip="{
                                             content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
                                             autoHide: true,
-                                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
                                         class="icon grip-icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
+                                    <svg 
+                                            xmlns="http://www.w3.org/2000/svg" 
+                                            height="24px"
+                                            viewBox="0 0 24 24"
+                                            width="24px"
+                                            fill="currentColor">
+                                        <path
+                                                d="M0 0h24v24H0V0z"
+                                                fill="transparent"/>
+                                        <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                    </svg>
                                 </span>
                                 <span 
                                         class="filter-name"
@@ -93,7 +125,7 @@
                                         v-if="filter.filter_type_object != undefined"
                                         class="label-details">  
                                     ({{ filter.filter_type_object.name }}) 
-                                    <em v-if="filter.inherited">{{ $i18n.get('label_inherited') }}</em> 
+                                    <!-- <em v-if="filter.inherited">{{ $i18n.get('label_inherited') }}</em>  -->
                                     <span 
                                             class="not-saved" 
                                             v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
@@ -105,7 +137,7 @@
                                             v-tooltip="{
                                                 content: $i18n.get('status_private'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }">
                                         <i class="tainacan-icon tainacan-icon-private"/>
@@ -114,13 +146,13 @@
                                             v-tooltip="{
                                                 content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="icon icon-level-identifier">
                                         <i 
                                             :class="{ 
-                                                'tainacan-icon-collections': filter.collection_id == collectionId, 
+                                                'tainacan-icon-collection': filter.collection_id == collectionId, 
                                                 'tainacan-icon-repository': filter.collection_id != collectionId,
                                                 'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
                                                 'has-text-blue5': filter.enabled && filter.collection_id == 'default',
@@ -149,7 +181,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('edit'),
                                                     autoHide: true,
-                                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'bottom'
                                                 }"
                                                 class="icon">
@@ -164,7 +196,7 @@
                                                 v-tooltip="{
                                                     content: $i18n.get('delete'),
                                                     autoHide: true,
-                                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'bottom'
                                                 }"
                                                 class="icon">
@@ -179,6 +211,7 @@
                                             @onEditionFinished="onEditionFinished()"
                                             @onEditionCanceled="onEditionCanceled()"
                                             @onErrorFound="formWithErrors = filter.id"
+                                            @onUpdateSavedState="(state) => editForms[filter.id].saved = state"
                                             :index="index"
                                             :original-filter="filter"
                                             :edited-filter="editForms[openedFilterId]"/>
@@ -233,17 +266,28 @@
                                             v-tooltip="{
                                                 content: $i18n.get('instruction_click_or_drag_filter_create'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }" 
                                             class="icon grip-icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/>
+                                        <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
+                                        <svg 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                height="24px"
+                                                viewBox="0 0 24 24"
+                                                width="24px"
+                                                fill="currentColor">
+                                            <path
+                                                    d="M0 0h24v24H0V0z"
+                                                    fill="transparent"/>
+                                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                        </svg>
                                     </span> 
                                     <span 
                                             v-tooltip="{
                                                 content: metadatum.name + (metadatum.parent_name ? (' (' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')') : ''),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="metadatum-name">
@@ -259,13 +303,13 @@
                                             v-tooltip="{
                                                 content: isRepositoryLevel || metadatum.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
                                                 autoHide: true,
-                                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
                                             class="icon icon-level-identifier">
                                         <i 
                                             :class="{   
-                                                'tainacan-icon-collections has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
+                                                'tainacan-icon-collection has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
                                                 'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
                                             }"
                                             class="tainacan-icon" />
@@ -327,7 +371,7 @@
                         class="tainacan-modal-content" 
                         style="width: auto">
                     <header class="tainacan-modal-title">
-                        <h2>{{ this.$i18n.get('label_available_filter_types') }}</h2>
+                        <h2>{{ $i18n.get('label_available_filter_types') }}</h2>
                         <hr>
                     </header>
                     <section class="tainacan-form">
@@ -404,6 +448,33 @@ export default {
     components: {
         FilterEditionForm
     },
+    beforeRouteLeave ( to, from, next ) {
+        let hasUnsavedForms = false;
+        for (let editForm in this.editForms) {
+            if (!this.editForms[editForm].saved) 
+                hasUnsavedForms = true;
+        }
+        if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
+            this.$buefy.modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_filters_not_saved'),
+                    onConfirm: () => {
+                        this.onEditionCanceled();
+                        next();
+                    },
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        } else {
+            next()
+        }  
+    },
     data(){
         return {
             isRepositoryLevel: false,
@@ -456,33 +527,6 @@ export default {
             },
             immediate: true
         }
-    },
-    beforeRouteLeave ( to, from, next ) {
-        let hasUnsavedForms = false;
-        for (let editForm in this.editForms) {
-            if (!this.editForms[editForm].saved) 
-                hasUnsavedForms = true;
-        }
-        if ((this.openedFilterId != '' && this.openedFilterId != undefined) || hasUnsavedForms ) {
-            this.$buefy.modal.open({
-                parent: this,
-                component: CustomDialog,
-                props: {
-                    icon: 'alert',
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_filters_not_saved'),
-                    onConfirm: () => {
-                        this.onEditionCanceled();
-                        next();
-                    },
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });  
-        } else {
-            next()
-        }  
     },
     created() {
         this.isRepositoryLevel = (this.$route.params.collectionId === undefined);
@@ -540,10 +584,10 @@ export default {
             'fetchFilters',
             'sendFilter',
             'deleteFilter',
-            // 'addTemporaryFilter',
-            // 'deleteTemporaryFilter',
             'updateFilters',
-            'updateCollectionFiltersOrder'
+            'updateCollectionFiltersOrder',
+            'moveFilterUp',
+            'moveFilterDown'
         ]),
         ...mapGetters('filter',[
             'getFilters',
@@ -640,9 +684,10 @@ export default {
             const availableMetadataNames = {};
             let lastParentName = '';
 
-            for (let availableMetadatum of availableMetadata) {
+            for (let availableMetadatum of availableMetadata)
                 availableMetadataNames['' + availableMetadatum.id] = availableMetadatum.name;
-                
+            
+            for (let availableMetadatum of availableMetadata) {
                 if (availableMetadatum.parent > 0 && availableMetadataNames[availableMetadatum.parent]) {
                     availableMetadatum.parent_name = availableMetadataNames[availableMetadatum.parent];
                     
@@ -707,12 +752,15 @@ export default {
         },
         removeFilter(removedFilter) {
 
+            if (this.editForms[removedFilter.id])
+                delete this.editForms[removedFilter.id];
+
             this.deleteFilter(removedFilter.id)
-            .then(() => {
-                // Reload Available Metadatum Types List
-                this.updateListOfMetadata();
-            })
-            .catch((error) => { this.$console.log(error)});
+                .then(() => {
+                    // Reload Available Metadatum Types List
+                    this.updateListOfMetadata();
+                })
+                .catch((error) => { this.$console.log(error)});
         
             if (!this.isRepositoryLevel)
                 this.updateFiltersOrder(); 
@@ -758,15 +806,21 @@ export default {
         },
         onEditionFinished() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
             this.$router.push({ query: {}});
         },
         onEditionCanceled() {
             this.formWithErrors = '';
-            delete this.editForms[this.openedFilterId];
             this.openedFilterId = '';
             this.$router.push({ query: {}});
+        },
+        moveFilterUpViaButton(index) {
+            this.moveFilterUp(index)
+            this.updateFiltersOrder();
+        },
+        moveFilterDownViaButton(index) {
+            this.moveFilterDown(index);
+            this.updateFiltersOrder();
         },
         getProperPreviewMinHeight() {
             for (let filterType of this.allowedFilterTypes) {
@@ -842,7 +896,7 @@ export default {
         padding-bottom: 0;
 
         .tainacan-page-title {
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
@@ -922,7 +976,7 @@ export default {
 
         .active-filters-area {
             font-size: 0.875em;
-            margin-left: -0.8em;
+            margin-left: 1.5em;
             padding-right: 1em;
             padding-top: 1em;
             min-height: 330px;
@@ -965,6 +1019,37 @@ export default {
                     background-color: var(--tainacan-white) !important;
                 }
 
+                .sorting-buttons {
+                    display: flex;
+                    flex-direction: column;
+                    position: absolute;
+                    overflow: hidden;
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    border-top-left-radius: 3px;
+                    border-bottom-left-radius: 3px;
+                    font-size: 0.875em;
+                    left: 0em; 
+                    top: 0px;
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: opacity 0.2s ease, left 0.2s ease;
+
+                    button {
+                        border: none;
+                        background: var(--tainacan-turquoise1);
+                        &:hover {
+                            color: var(--tainacan-secondary);
+                        }
+                    }
+                }
+                &:not(.not-sortable-item):hover {
+                    .sorting-buttons {
+                        opacity: 1.0;
+                        visibility: visible;
+                        left: -2em
+                    }
+                }
                 .handle {
                     padding-right: 6em;
                     white-space: nowrap;
@@ -989,6 +1074,9 @@ export default {
                 .label-details {
                     font-weight: normal;
                     color: var(--tainacan-gray3);
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
                 .not-saved {
                     font-style: italic;
@@ -1107,11 +1195,9 @@ export default {
                 
                 .grip-icon { 
                     color: var(--tainacan-gray3);
-                    top: -6px;
                     position: relative;
-                    display: inline-block;
                 }
-                .icon {
+                .icon-level-identifier {
                     position: relative;
                     bottom: 6px;
                 }
@@ -1153,6 +1239,9 @@ export default {
                 .label-details {
                     font-weight: normal;
                     color: var(--tainacan-gray3);
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
                 }
             }
             .sortable-drag {
@@ -1195,6 +1284,12 @@ export default {
                 
                 .grip-icon { 
                     color: var(--tainacan-blue5) !important; 
+                }
+            }
+            .sorting-buttons button {
+                background: var(--tainacan-blue1);
+                &:hover {
+                    color: var(--tainacan-blue5);
                 }
             }
         }

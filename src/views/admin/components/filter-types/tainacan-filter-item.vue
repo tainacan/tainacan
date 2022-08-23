@@ -1,24 +1,29 @@
 <template>
     <b-field
             class="filter-item-forms"
+            :ref="isMobileScreen ? ('filter-field-id-' + filter.id) : null"
+            @touchstart.native="setFilterFocus(filter.id)"
+            @mousedown.native="setFilterFocus(filter.id)"
             :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}">
         <b-collapse
+                v-if="displayFilter"
                 class="show" 
-                :open.sync="open"
+                :open.sync="singleCollapseOpen"
                 animation="filter-item">
             <button
                     :for="'filter-input-id-' + filter.id"
                     :aria-controls="'filter-input-id-' + filter.id"
-                    :aria-expanded="open"
+                    :aria-expanded="singleCollapseOpen"
                     v-tooltip="{
                         delay: {
-                            show: 500,
+                            shown: 500,
                             hide: 300,
                         },
                         content: filter.name,
                         html: false,
                         autoHide: false,
-                        placement: 'top-start'
+                        placement: 'top-start',
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }"
                     :id="'filter-label-id-' + filter.id"
                     :aria-label="filter.name"
@@ -27,7 +32,10 @@
                     slot-scope="props">
                 <span class="icon">
                     <i 
-                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open }"
+                            :class="{
+                                'tainacan-icon-arrowdown' : props.open,
+                                'tainacan-icon-arrowright' : !props.open
+                            }"
                             class="tainacan-icon tainacan-icon-1-25em"/>
                 </span>
                 <span class="collapse-label">{{ filter.name }}</span>
@@ -39,13 +47,41 @@
                         :query="query"
                         :is-using-elastic-search="isUsingElasticSearch"
                         :is-repository-level="isRepositoryLevel"
-                        :is-loading-items.sync="isLoadingItems"
+                        :is-loading-items="isLoadingItems"
                         :current-collection-id="$eventBusSearch.collectionId"
                         @input="onInput"
                         @updateParentCollapse="onFilterUpdateParentCollapse" 
-                        :filters-as-modal="filtersAsModal"/>
+                        :filters-as-modal="filtersAsModal" />
             </div>
         </b-collapse>
+        <div 
+                v-if="beginWithFilterCollapsed && !displayFilter"
+                class="collapse show disabled-filter">
+            <div class="collapse-trigger">
+                <button
+                        
+                        :for="'filter-input-id-' + filter.id"
+                        :aria-controls="'filter-input-id-' + filter.id"
+                        v-tooltip="{
+                            delay: {
+                                shown: 500,
+                                hide: 300,
+                            },
+                            content: $i18n.get('instruction_click_to_load_filter'),
+                            html: false,
+                            autoHide: false,
+                            placement: 'top-start',
+                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                        }"
+                        @click="displayFilter = true"
+                        class="label">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em"/>
+                    </span>
+                    <span class="collapse-label">{{ filter.name }}</span>
+                </button>
+            </div>
+        </div>
     </b-field>
 </template>
 
@@ -56,13 +92,35 @@
             filter: Object,
             query: Object,
             isRepositoryLevel: Boolean,
-            open: true,
+            expandAll: true,
             isLoadingItems: true,
-            filtersAsModal: Boolean
+            filtersAsModal: Boolean,
+            isMobileScreen: false
         },
         data() {
             return {
-                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false
+                isUsingElasticSearch: tainacan_plugin.wp_elasticpress == "1" ? true : false,
+                displayFilter: false,
+                singleCollapseOpen: this.expandAll,
+                focusedElement: false
+            }
+        },
+        computed: {
+            beginWithFilterCollapsed() {
+                return this.filter && this.filter.begin_with_filter_collapsed && this.filter.begin_with_filter_collapsed === 'yes';
+            }
+        },
+        watch: {
+            expandAll() {
+                this.singleCollapseOpen = this.expandAll;
+                if (this.expandAll)
+                    this.displayFilter = true;
+            },
+            beginWithFilterCollapsed: {
+                handler() {
+                    this.displayFilter = !this.beginWithFilterCollapsed;
+                },
+                immediate: true
             }
         },
         methods: {
@@ -72,7 +130,19 @@
             onFilterUpdateParentCollapse(open) {
                 const componentsThatShouldCollapseIfEmpty = ['tainacan-filter-taxonomy-checkbox', 'tainacan-filter-selectbox', 'tainacan-filter-checkbox'];
                 if (componentsThatShouldCollapseIfEmpty.includes(this.filter.filter_type_object.component))
-                    this.open = open;
+                    this.singleCollapseOpen = open;
+            },
+            setFilterFocus(filterId) {
+                if (this.isMobileScreen) {
+                    let fieldElement = this.$refs['filter-field-id-' + filterId] && this.$refs['filter-field-id-' + filterId]['$el'];
+                    if (this.focusedElement !== filterId && fieldElement && (typeof fieldElement.scrollIntoView == 'function')) {
+                        this.focusedElement = filterId;
+                        fieldElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        })
+                    }
+                }
             }
         }
     }
@@ -89,7 +159,7 @@
         }
 
         .collapse-trigger {
-            margin-left: -7px;
+            margin-left: -8px;
             button {
                 background-color: inherit !important;
                 color: inherit !important;
@@ -104,6 +174,9 @@
                 text-overflow: ellipsis;
                 line-height: 1.4em;
             }
+        }
+        .disabled-filter {
+            opacity: 0.75;
         }
         .collapse-content {
             margin-top: 12px;
@@ -197,6 +270,15 @@
             font-weight: normal;
             font-size: 1em !important;
             margin-right: 2px;
+
+            @media screen and (max-width: 768px) {
+                font-size: 1.125em !important;
+
+                .control-label {
+                    padding-top: 0.55em;
+                    padding-bottom: 0.55em;
+                }
+            }
         }
 
         .datepicker {

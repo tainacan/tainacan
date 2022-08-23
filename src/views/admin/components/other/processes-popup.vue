@@ -41,7 +41,7 @@
                 </li>
                 <li     
                         :key="index"
-                        v-for="(bgProcess, index) of getAllProcesses">
+                        v-for="(bgProcess, index) of bgProcesses">
                     <div class="process-item">
                         <div 
                                 @click="toggleDetails(index)"
@@ -166,21 +166,16 @@ export default {
             dateFormat: ''
         }
     },
-    computed: {
-        getAllProcesses(){
+    watch: {
+        updatedProcesses() {
             if (this.updatedProcesses.length !== 0) {
                 for (let updatedProcess of this.updatedProcesses) {
                     let updatedProcessIndex = this.bgProcesses.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
-                    if (updatedProcessIndex >= 0) {
+                    if (updatedProcessIndex >= 0)
                         this.$set(this.bgProcesses, updatedProcessIndex, updatedProcess);
-                    }
                 }
             }
-
-            return this.bgProcesses;
-        }
-    },
-    watch: {
+        },
         bgProcesses(newBG) {
             this.hasAnyProcessExecuting = newBG.some((element) => element.done <= 0);
         }
@@ -292,10 +287,11 @@ export default {
         position: absolute;
         top: 48px;
         right: 40px;
-        border-radius: 5px;
+        border-radius: 4px;
         animation-name: appear-from-top-tooltip;
         animation-duration: 0.3s;
         font-size: 0.75em;
+        box-shadow: 0 0 8px -6px rgba(0, 0, 0, 0.25);
 
         .popup-header, .popup-footer {
             display: flex;

@@ -48,7 +48,7 @@
                         v-model="modelSearch"
                         expanded>
                     <option
-                            v-for="(option, index) in metadata"
+                            v-for="(option, index) in metadata.filter(metadatum => metadatum.metadata_type_object.component !== 'tainacan-compound')"
                             :key="index"
                             :value="option.id"
                             class="field">
@@ -104,6 +104,21 @@
                     :message="$i18n.getHelperMessage('tainacan-relationship', 'display_in_related_items')"/>
         </b-field>
 
+        <b-field
+                :addons="false"
+                :label="$i18n.getHelperTitle('tainacan-relationship', 'accept_draft_items')">
+                &nbsp;
+            <b-switch
+                    size="is-small" 
+                    v-model="modelAcceptDraftItems"
+                    @input="emitValues()"
+                    true-value="yes"
+                    false-value="no" />
+            <help-button
+                    :title="$i18n.getHelperTitle('tainacan-relationship', 'accept_draft_items')"
+                    :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_draft_items')"/>
+        </b-field>
+
     </section>
 </template>
 
@@ -132,6 +147,7 @@
                 collectionType: '',
                 collectionMessage: '',
                 displayRelatedItemMetadata: [],
+                modelAcceptDraftItems: 'no',
                 isMetaqueryRelationshipEnabled: tainacan_plugin && tainacan_plugin.tainacan_enable_relationship_metaquery == true ? tainacan_plugin.tainacan_enable_relationship_metaquery : false
             }
         },
@@ -155,6 +171,7 @@
                     this.hasMetadata = false;
                     this.modelSearch = '';
                     this.modelDisplayInRelatedItems = 'no';
+                    this.modelAcceptDraftItems = 'no';
                     this.emitValues();
                 }
             },
@@ -175,6 +192,7 @@
 
             this.displayRelatedItemMetadata = this.value && this.value.display_related_item_metadata && Array.isArray(this.value.display_related_item_metadata) ? this.value.display_related_item_metadata : [];
             this.modelDisplayInRelatedItems = this.value && this.value.display_in_related_items ? this.value.display_in_related_items : 'no';
+            this.modelAcceptDraftItems = this.value && this.value.accept_draft_items ? this.value.accept_draft_items : 'no';
         },
         methods: {
             setErrorsAttributes( type, message ){
@@ -206,10 +224,10 @@
                             this.metadata = [];
 
                             for (let metadatum of metadata) {
-                               if ( (metadatum.metadata_type_object.component !== 'tainacan-relationship' || this.isMetaqueryRelationshipEnabled) && metadatum.metadata_type_object.component !== 'tainacan-compound' ) {
+                               if ( (metadatum.metadata_type_object.component !== 'tainacan-relationship' || this.isMetaqueryRelationshipEnabled) ) {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
-                                   this.checkMetadata();
+                                   this.checkSearchMetadatum();
                                }
                             }
                     
@@ -241,15 +259,17 @@
                     });
 
             },
-            checkMetadata(){
-                if( this.value && this.value.search ){
+            checkSearchMetadatum() {
+                if ( this.value && this.value.search ) {
                     this.modelSearch = this.value.search;
                 } else {
-                    try {
-                        const json = JSON.parse( this.search );
-                        this.modelSearch = json;
-                    } catch(e){
-                        this.modelSearch = '';
+                    const titleMetadatumIndex = this.metadata.findIndex(metadatum => metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title');
+                    if (titleMetadatumIndex >= 0)
+                        this.modelSearch = this.metadata[titleMetadatumIndex].id;
+                    else {
+                        const nonCompountMetadatumIndex = this.metadata.findIndex(metadatum => metadatum.metadata_type_object.component !== 'tainacan-compound');
+                        if (nonCompountMetadatumIndex >= 0) 
+                            this.modelSearch = this.metadata[nonCompountMetadatumIndex].id;
                     }
                 }
             },
@@ -262,7 +282,8 @@
                     collection_id: this.collection,
                     search: this.modelSearch,
                     display_in_related_items: this.modelDisplayInRelatedItems,
-                    display_related_item_metadata: this.displayRelatedItemMetadata
+                    display_related_item_metadata: this.displayRelatedItemMetadata,
+                    accept_draft_items: this.modelAcceptDraftItems
                 });
             }
         }
@@ -270,7 +291,7 @@
 </script>
 
 <style scoped>
-    .help-wrapper {
+    .tainacan-help-tooltip-trigger {
         font-size: 1em;
     }
     .switch.is-small {

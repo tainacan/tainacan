@@ -1,16 +1,23 @@
 const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 const { __ } = wp.i18n;
 
+const { useSelect } = wp.data;
+
+import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
+import pick from 'lodash/pick';
 import CarouselCollectionsModal from './carousel-collections-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
-import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
-import 'swiper/css/swiper.min.css';
+import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
+import 'swiper/css';
+import 'swiper/css/a11y';
+import 'swiper/css/autoplay';
+import 'swiper/css/navigation';
 
 export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
     let {
@@ -21,7 +28,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         selectedCollections,
         largeArrows,
         arrowsStyle,
-        cropImagesToSquare,
+        imageSize,
         maxCollectionsPerScreen,
         spaceBetweenCollections,
         spaceAroundCarousel,
@@ -45,18 +52,35 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         maxCollectionsPerScreen = 6;
         setAttributes({ maxCollectionsPerScreen: maxCollectionsPerScreen });
     }
-    if (cropImagesToSquare === undefined) {
-        cropImagesToSquare = true;
-        setAttributes({ cropImagesToSquare: cropImagesToSquare });
+    if (imageSize === undefined) {
+        imageSize = 'tainacan-medium';
+        setAttributes({ imageSize: imageSize });
     }
 
     const thumbHelper = ThumbnailHelperFunctions();
+
+    // Get available image sizes
+    const {	imageSizes } = useSelect(
+		( select ) => {
+			const {	getSettings	} = select( store );
+
+			const settings = pick( getSettings(), [
+                'imageSizes'
+			] );
+            return settings
+        },
+		[ clientId ]
+	);
+    const imageSizeOptions = map(
+		imageSizes,
+		( { name, slug } ) => ( { value: slug, label: name } )
+	);
 
     function prepareItem(collection, collectionItems) {
         return (
             <li
                 key={ collection.id }
-                className={ 'collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>
+                className={ 'swiper-slide collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>
                 { tainacan_blocks.wp_version < '5.4' ?
                     <IconButton
                         onClick={ () => removeItemOfId(collection.id) }
@@ -74,24 +98,24 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                     { ( !showCollectionThumbnail && Array.isArray(collectionItems) ) ?
                         <div class="collection-items-grid">
                             <img
-                                src={ collectionItems[0] ? thumbHelper.getSrc(collectionItems[0]['thumbnail'], 'tainacan-medium', collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
-                                srcSet={ collectionItems[0] ? thumbHelper.getSrcSet(collectionItems[0]['thumbnail'], 'tainacan-medium', collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
+                                src={ collectionItems[0] ? thumbHelper.getSrc(collectionItems[0]['thumbnail'], imageSize, collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
+                                srcSet={ collectionItems[0] ? thumbHelper.getSrcSet(collectionItems[0]['thumbnail'], imageSize, collectionItems[0]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                 alt={ collectionItems[0] && collectionItems[0].thumbnail_alt ? collectionItems[0].thumbnail_alt : (collectionItems[0] && collectionItems[0].name ? collectionItems[0].name : __( 'Thumbnail', 'tainacan' )) } />
                             <img
-                                    src={ collectionItems[1] ? thumbHelper.getSrc(collectionItems[1]['thumbnail'], 'tainacan-medium', collectionItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
-                                    srcSet={ collectionItems[1] ? thumbHelper.getSrcSet(collectionItems[1]['thumbnail'], 'tainacan-medium', collectionItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
+                                    src={ collectionItems[1] ? thumbHelper.getSrc(collectionItems[1]['thumbnail'], imageSize, collectionItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
+                                    srcSet={ collectionItems[1] ? thumbHelper.getSrcSet(collectionItems[1]['thumbnail'], imageSize, collectionItems[1]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     alt={ collectionItems[1] && collectionItems[1].thumbnail_alt ? collectionItems[1].thumbnail_alt : (collectionItems[1] && collectionItems[1].name ? collectionItems[1].name : __( 'Thumbnail', 'tainacan' )) } />
                             <img
-                                    src={ collectionItems[2] ? thumbHelper.getSrc(collectionItems[2]['thumbnail'], 'tainacan-medium', collectionItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
-                                    srcSet={ collectionItems[2] ? thumbHelper.getSrcSet(collectionItems[2]['thumbnail'], 'tainacan-medium', collectionItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
+                                    src={ collectionItems[2] ? thumbHelper.getSrc(collectionItems[2]['thumbnail'], imageSize, collectionItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
+                                    srcSet={ collectionItems[2] ? thumbHelper.getSrcSet(collectionItems[2]['thumbnail'], imageSize, collectionItems[2]['document_mimetype']) :`${tainacan_blocks.base_url}/assets/images/placeholder_square.png` }
                                     alt={ collectionItems[2] && collectionItems[2].thumbnail_alt ? collectionItems[2].thumbnail_alt : (collectionItems[2] && collectionItems[2].name ? collectionItems[2].name : __( 'Thumbnail', 'tainacan' )) } />
                         </div>
                         :
                         <img
                             src={
-                                collection.thumbnail && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0]
+                                collection.thumbnail && collection.thumbnail[imageSize] && collection.thumbnail[imageSize][0]
                                     ?
-                                collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0]
+                                collection.thumbnail[imageSize][0]
                                     :
                                 (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
                                     ?
@@ -234,34 +258,31 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                             </BaseControl>
                             <RangeControl
                                     label={ __('Maximum collections per slide on a wide screen', 'tainacan') }
-                                    help={ (showCollectionThumbnail && maxCollectionsPerScreen <= 4) ? __('Warning: with such a small number of collections per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }
+                                    help={ (showCollectionThumbnail && maxCollectionsPerScreen <= 4) ? __('Warning: with such a small number of collections per slide, the slide item is larger, thus you must also set a larger image size.', 'tainacan') : null }
                                     value={ maxCollectionsPerScreen ? maxCollectionsPerScreen : 6 }
                                     onChange={ ( aMaxCollectionsPerScreen ) => {
-                                        maxCollectionsPerScreen = aMaxCollectionsPerScreen;
+                                        maxCollectionsPerScreen = Number(aMaxCollectionsPerScreen);
                                         setAttributes( { maxCollectionsPerScreen: aMaxCollectionsPerScreen } );
                                         setContent();
                                     }}
                                     min={ 1 }
                                     max={ 9 }
                                 />
-                            { showCollectionThumbnail ?
-                                <ToggleControl
-                                        label={__('Crop Images', 'tainacan')}
-                                        help={ cropImagesToSquare && maxCollectionsPerScreen > 4 ? __('Do not use square cropeed version of the collection thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the collection thumbnail.', 'tainacan') }
-                                        checked={ cropImagesToSquare && maxCollectionsPerScreen > 4 }
-                                        onChange={ ( isChecked ) => {
-                                                cropImagesToSquare = isChecked;
-                                                setAttributes({ cropImagesToSquare: cropImagesToSquare });
-                                                setContent();
-                                            }
-                                        }
-                                    />
-                            : null }
+                            <SelectControl
+                                label={__('Image size', 'tainacan')}
+                                value={ imageSize }
+                                options={ imageSizeOptions }
+                                onChange={ ( anImageSize ) => { 
+                                    imageSize = anImageSize;
+                                    setAttributes({ imageSize: imageSize });
+                                    setContent();
+                                }}
+                            />
                             <RangeControl
                                     label={ __('Space between each collection', 'tainacan') }
                                     value={ !isNaN(spaceBetweenCollections) ? spaceBetweenCollections : 32 }
                                     onChange={ ( aSpaceBetweenCollections ) => {
-                                        spaceBetweenCollections = aSpaceBetweenCollections;
+                                        spaceBetweenCollections = Number(aSpaceBetweenCollections);
                                         setAttributes( { spaceBetweenCollections: aSpaceBetweenCollections } );
                                     }}
                                     min={ 0 }
@@ -304,7 +325,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                         label={__('Seconds before transitioning to next', 'tainacan')}
                                         value={ autoPlaySpeed ? autoPlaySpeed : 3 }
                                         onChange={ ( aAutoPlaySpeed ) => {
-                                            autoPlaySpeed = aAutoPlaySpeed;
+                                            autoPlaySpeed = Number(aAutoPlaySpeed);
                                             setAttributes( { autoPlaySpeed: aAutoPlaySpeed } )
                                         }}
                                         min={ 1 }
@@ -349,7 +370,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     label={ __('Space around the carousel', 'tainacan') }
                                     value={ !isNaN(spaceAroundCarousel) ? spaceAroundCarousel : 50 }
                                     onChange={ ( aSpaceAroundCarousel ) => {
-                                        spaceAroundCarousel = aSpaceAroundCarousel;
+                                        spaceAroundCarousel = Number(aSpaceAroundCarousel);
                                         setAttributes( { spaceAroundCarousel: aSpaceAroundCarousel } );
                                     }}
                                     min={ 0 }
@@ -426,6 +447,11 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                     '--spaceBetweenCollections': !isNaN(spaceBetweenCollections) ? (spaceBetweenCollections + 'px') : '32px',
                                     '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
                                 }}>
+                            <div className={'swiper'}>
+                                <ul className={'swiper-wrapper collections-list-edit'}>
+                                    { collections }
+                                </ul>
+                            </div>
                             <button
                                     class="swiper-button-prev"
                                     slot="button-prev"
@@ -445,9 +471,6 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                                             fill="none"/>
                                 </svg>
                             </button>
-                            <ul className={'collections-list-edit'}>
-                                { collections }
-                            </ul>
                             <button
                                     class="swiper-button-next"
                                     slot="button-next"

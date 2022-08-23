@@ -135,15 +135,17 @@ $size-small: 0.875em; // 0.75em on Bulma.
 $dropdown-mobile-breakpoint: $tablet;
 
 // Tainacan Header, Filters and Page 
-$header-height: 3.25em;
-$subheader-height: 2.625em;
+$header-height: 3.0em;
+$sidebar-width: 3.0em;
+$subheader-height: 2.35em;
 $filter-menu-width: 16.666666667%;
 $filter-menu-width-theme: 20%;
-$page-height: calc(100vh - 5.875em);
+$page-height: calc(100vh - 5.35em);
 
 // Overall Pages padding:
 $one-column: 4.166666667%;
 $container-padding: 25px;
+$container-narrow-padding: 18px;
 
 // Links
 $link: $secondary;
@@ -171,6 +173,12 @@ $modal-z: 9999999;
 // Bulma sizing variabled
 $spacing-values: ('0': 0rem, '1': 0.25rem, '2': 0.5rem, '3': 1rem, '4': 1.5rem, '5': 3rem, 'auto': auto);
 
+// Buefy variables
+$radio-active-background-color: $black;
+$radio-size: 0.9375em;
+$checkbox-size: 0.875em;
+$checkbox-border-width: 1px;
+
 // Grid mixin for display: grid compatibility
 @mixin display-grid {
     flex-wrap: wrap;
@@ -179,6 +187,10 @@ $spacing-values: ('0': 0rem, '1': 0.25rem, '2': 0.5rem, '3': 1rem, '4': 1.5rem, 
     display: grid;
 }
 @mixin logs-container {
+    position: sticky;
+    top: calc(-1 * var(--tainacan-container-padding));
+    z-index: 2;
+    background: var(--tainacan-background-color);
     min-height: $header-height;
     height: auto;
     padding-left: 0;

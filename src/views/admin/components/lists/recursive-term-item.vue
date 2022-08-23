@@ -19,7 +19,7 @@
                 v-tooltip="{
                     content: $i18n.get('label_show_children_terms'),
                     autoHide: true,
-                    classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                     placement: 'bottom'
                 }"
                 class="children-dropdown icon">
@@ -58,7 +58,7 @@
                         v-tooltip="{
                             content: $i18n.get('label_new_child'),
                             autoHide: true,
-                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon">
@@ -71,7 +71,7 @@
                         v-tooltip="{
                             content: $i18n.get('edit'),
                             autoHide: true,
-                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon">
@@ -83,7 +83,7 @@
                         v-tooltip="{
                             content: $i18n.get('delete'),
                             autoHide: true,
-                            classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip'],
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                             placement: 'bottom'
                         }"
                         class="icon">
@@ -113,7 +113,8 @@
                     :index="childIndex"
                     :taxonomy-id="taxonomyId"
                     :order="order"
-                    :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
+                    :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
+                    @onUpdateTermOpenedState="(state) => childTerm.opened = state"/>
         </div>
     </transition-group>
     <a 
@@ -128,14 +129,10 @@
 
 <script>
 import { mapActions } from 'vuex';
-import RecursiveTermItem from './recursive-term-item.vue';
 import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
     name: 'RecursiveTermItem',
-    components: {
-        RecursiveTermItem,
-    },
     props: {
         term: Object,
         index: Number,
@@ -217,7 +214,7 @@ export default {
         },
         editTerm() {
                     
-            this.term.opened = !this.term.opened;
+            this.$emit('onUpdateTermOpenedState', !this.term.opened);
             
             this.$eventBusTermsList.onEditTerm(this.term);
         
@@ -316,11 +313,11 @@ export default {
             }
 
             this.isEditingTerm = false;
-            this.term.opened = false;
+            this.$emit('onUpdateTermOpenedState', false);
         },
         eventOnTermEditionCanceled() {
             this.isEditingTerm = false;
-            this.term.opened = false;
+            this.$emit('onUpdateTermOpenedState', false);
         }
     }
 }

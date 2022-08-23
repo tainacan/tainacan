@@ -10,7 +10,7 @@
                 @input="onInput"
                 @blur="onBlur"
                 :data="options"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 autocomplete
                 attached
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_search_users')"
@@ -23,6 +23,7 @@
                 :class="{'has-selected': selected != undefined && selected != []}"
                 field="name"
                 @typing="search"
+                @focus="onMobileSpecialFocus"
                 check-infinite-scroll
                 @infinite-scroll="searchMore"
                 :has-counter="false">
@@ -173,6 +174,9 @@ export default {
         searchMore: _.debounce(function () {
             this.search(this.usersSearchQuery)
         }, 250),
+        onMobileSpecialFocus() {
+            this.$emit('mobileSpecialFocus');
+        }
     }
 }
 </script>

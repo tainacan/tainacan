@@ -4,24 +4,30 @@
             class="secondary-page">
            
         <div class="back-button is-hidden-mobile">
-            <button     
-                    @click="$router.go(-1)"
-                    class="button is-turquoise4">
+            <router-link
+                    v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
+                    :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
+                    class="button is-turquoise4"
+                    tag="button"
+                    :aria-label="$i18n.get('back')">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-previous"/>
                 </span>
-            </button>
+            </router-link>
         </div>
         <div class="level">      
             <div class="level-left">
                 <div class="back-button is-hidden-tablet level-item">
-                    <button     
-                            @click="$router.go(-1)"
-                            class="button is-turquoise4">
+                    <router-link
+                            v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
+                            class="button is-turquoise4"
+                            tag="button"
+                            :aria-label="$i18n.get('back')">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-previous"/>
                         </span>
-                    </button>
+                    </router-link>
                 </div>
             </div>
     
@@ -99,7 +105,7 @@
                 <li 
                         v-if="collection && collection.current_user_can_edit_users"
                         :class="activeRoute == 'CollectionCapabilitiesPage' ? 'is-active':''"
-                        class="level-item">
+                        class="level-item is-hidden-mobile">
                     <router-link 
                             tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionCapabilitiesPath(collection.id) : '' }"
@@ -315,7 +321,7 @@ export default {
                 .level-item {
                     margin-bottom: 0;
                     a { 
-                        padding: 0.5em 0.7em !important; 
+                        padding: 0.45em 0.7em !important; 
                         text-align: center;
                     }
                     .menu-text {
@@ -324,18 +330,6 @@ export default {
                 }
             }
         }
-
-        .tainacan-tooltip.is-primary {
-            z-index: 99;
-        }
-        .tainacan-tooltip.is-primary::after {
-            background-color: var(--tainacan-turquoise1);
-            color: var(--tainacan-turquoise5);
-        }
-        .tainacan-tooltip.is-primary::before {
-            border-bottom-color: var(--tainacan-turquoise1);
-        }
-
     }
 </style>
 

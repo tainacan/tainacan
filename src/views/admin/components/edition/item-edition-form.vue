@@ -5,32 +5,166 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
 
-        <div 
-                v-if="!isMobileMode || (isMobileMode && isEditingMetadataIframeMode)"
-                class="tainacan-page-title">
-            <h1 v-if="isCreatingNewItem">
+        <tainacan-title 
+                v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)"
+                :bread-crumb-items="[{ path: '', label: $i18n.get('item') }]">
+           <h1 v-if="isCreatingNewItem">
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
+                        class="status-tag"
+                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                    {{ $i18n.get('status_' + item.status) }}
+                </span>
                 {{ $i18n.get('title_create_item_collection') + ' ' }}
                 <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
             </h1>
             <h1 v-else>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
-                        class="status-tag">{{ $i18n.get('status_' + item.status) }}</span>
+                        class="status-tag"
+                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                    {{ $i18n.get('status_' + item.status) }}
+                </span>
                 {{ $i18n.get('title_edit_item') + ' ' }}
-                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                <span style="font-weight: 600;">
+                    {{ (item != null && item != undefined) ? item.title : '' }}
+                </span>
+                <span
+                        v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
+                        class="icon has-text-gray4"
+                        style="margin-left: 0.5em;"
+                        @mouseenter="$emit('toggleItemEditionFooterDropdown')">
+                    <i 
+                            class="tainacan-icon tainacan-icon-1em"
+                            :class="$statusHelper.getIcon(item.status)"
+                            />
+                    <help-button
+                            :title="$i18n.get('status_' + item.status)"
+                            :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
+                </span>
+                
             </h1>
-            <a
-                    v-if="!isIframeMode"
-                    @click="$router.go(-1)"
-                    class="back-link has-text-secondary">
-                {{ $i18n.get('back') }}
-            </a>
-            <hr>
+        </tainacan-title>
+
+        <div 
+                v-if="$adminOptions.mobileAppMode"
+                class="tainacan-mobile-app-header">
+            <button
+                    @click="exitToMobileApp">
+                <span class="icon">
+                    <i class="tainacan-icon">
+                        <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                width="24">
+                            <path
+                                    d="M0 0h24v24H0z"
+                                    fill="none"/>
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                    </i>
+                </span>
+            </button>
+            <transition name="item-appear">
+                <h1 v-if="isMobileSubheaderOpen">
+                    {{ $i18n.get('label_tainacan_mobile_panel') }}
+                </h1>
+                <h1 v-else-if="isCreatingNewItem && !isMobileSubheaderOpen">
+                    {{ $i18n.get('title_create_item_collection') + ' ' }}
+                    <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
+                </h1>
+                <h1 v-else>
+                    {{ $i18n.get('title_edit_item') + ' ' }}
+                    <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                </h1>
+            </transition>
+            <button 
+                    v-if="!formErrors.length || isUpdatingValues"
+                    @click="isMobileSubheaderOpen = !isMobileSubheaderOpen">
+                <span 
+                        v-if="isUpdatingValues"
+                        class="icon">
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-spin"/>
+                </span>
+                <span 
+                        v-else
+                        class="icon">
+                    <i class="tainacan-icon">
+                        <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                width="24">
+                            <path
+                                    d="M0 0h24v24H0z"
+                                    fill="none"/>
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                        </svg>
+                    </i>
+                </span>
+            </button>
+            <item-metadatum-errors-tooltip 
+                    v-else
+                    :form-errors="formErrors" />
         </div>
-        
+
+        <transition name="item-appear">
+            <div 
+                    v-if="isMobileSubheaderOpen"
+                    @click="isMobileSubheaderOpen = false;"
+                    class="tainacan-mobile-app-header_panel-backdrop" />
+        </transition>
+        <transition name="panel-from-top">
+            <div 
+                    v-if="$adminOptions.mobileAppMode && isMobileSubheaderOpen"
+                    class="tainacan-mobile-app-header_panel">
+                <h1 v-if="isCreatingNewItem">
+                    {{ $i18n.get('title_create_item_collection') + ' ' }}
+                    <span style="font-weight: 600;">{{ collection && collection.name ? collection.name : '' }}</span>
+                </h1>
+                <h1 v-else>
+                    {{ $i18n.get('title_edit_item') + ' ' }}
+                    <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
+                </h1>
+                <span v-if="!formErrors.length">{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
+                <span 
+                        v-else
+                        class="help is-danger">
+                    {{ formErrorMessage }}
+                </span>
+                <div class="tainacan-mobile-app-header_panel-shortcuts-area">
+                    <h2>{{ $i18n.get('label_shortcuts') }}</h2>
+                    <p>{{ $i18n.get('instruction_click_to_easily_see') }}:</p>
+                    <div class="tainacan-mobile-app-header_panel-shortcuts">
+                        <button @click="showOnlyRequiredMetadata = false; activeTab = 'metadata'; isMobileSubheaderOpen = false;">
+                            <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" /></span>
+                            <span>{{ $i18n.get('label_all_metadata') }}</span>
+                        </button>
+                        <button 
+                                v-if="!$adminOptions.hideItemEditionDocument"
+                                @click="activeTab = 'document'; isMobileSubheaderOpen = false;">
+                            <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-item" /></span>
+                            <span>{{ $i18n.get('label_document_and_thumbnail') }}</span>
+                        </button>
+                        <button 
+                                v-if="!$adminOptions.hideItemEditionAttachments"
+                                @click="activeTab = 'attachments'; isMobileSubheaderOpen = false;">
+                            <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-attachments" /></span>
+                            <span>{{ $i18n.get('label_all_attachments') }}</span>
+                        </button>
+                        <button 
+                                v-if="!$adminOptions.hideItemEditionRequiredOnlySwitch"
+                                @click="showOnlyRequiredMetadata = true; isMobileSubheaderOpen = false;">
+                            <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" /></span>
+                            <span>{{ $i18n.get('label_only_required_metadata') }}</span>
+                        </button>
+                    </div>
+                </div>
+                <a @click="isMobileSubheaderOpen = false">{{ $i18n.get('label_close_panel') }}</a>
+            </div>
+        </transition>
+
         <transition
                 mode="out-in"
                 :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
@@ -40,687 +174,418 @@
                     label-width="120px">
                 <div class="columns">
 
-                    <div class="column is-7">
+                    <div
+                            class="column main-column"
+                            :class="
+                                (( (!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
+                                (!$adminOptions.hideItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
-                        <template
-                                v-if="formHooks != undefined &&
-                                    formHooks['item'] != undefined &&
-                                    formHooks['item']['begin-right'] != undefined">
+                        <template v-if="hasBeginRightForm">
                             <form
                                 id="form-item-begin-right"
                                 class="form-hook-region"
-                                v-html="formHooks['item']['begin-right'].join('')"/>
+                                v-html="getBeginRightForm"/>
                         </template>
 
-                        <div class="columns">
-
-                            <!-- Collection -------------------------------- -->
-                            <div 
-                                    v-if="!isMobileMode"
-                                    class="column is-narrow">
-                                <div class="section-label">
-                                    <label>{{ $i18n.get('collection') }}</label>
-                                </div>
-                                <div class="section-status">
-                                    <div class="field has-addons">
-                                        <span>
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-collection"/>
+                        <div class="b-tabs">
+                            <nav 
+                                    v-if="tabs.length >= 2"
+                                    id="tainacanTabsSwiper"       
+                                    class="swiper tabs">
+                                <ul class="swiper-wrapper">
+                                    <li 
+                                            v-for="(tab, tabIndex) of tabs"
+                                            :key="tabIndex"
+                                            :class="{ 'is-active': activeTab === tab.slug }"
+                                            @click="activeTab = tab.slug"
+                                            class="swiper-slide"
+                                            :id="tab.slug + '-tab-label'">
+                                        <a>
+                                            <span class="icon has-text-gray4">
+                                                <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
                                             </span>
-                                            {{ collection && collection.name ? collection.name : '' }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Visibility (status public or private) -------------------------------- -->
-                            <div
-                                    style="flex-wrap: wrap"
-                                    class="column is-narrow">
-                                <div class="section-label">
-                                    <label>{{ $i18n.get('label_status') }}</label>
-                                    <span class="required-metadatum-asterisk">*</span>
-                                    <help-button
-                                            :title="$i18n.getHelperTitle('items', 'status')"
-                                            :message="$i18n.getHelperMessage('items', 'status')"/>
-                                </div>
-                                <div class="section-status">
-                                    <div
-                                            style="display: flex; flex-direction: column; font-size: 1rem;"
-                                            class="field has-addons">
-                                        <b-radio
-                                                v-model="visibility"
-                                                value="publish"
-                                                native-value="publish">
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-public"/>
+                                            <span>{{ tab.name }}</span>
+                                            <span 
+                                                    v-if="tab.total"
+                                                    class="has-text-gray">
+                                                &nbsp;({{ tab.total }})
                                             </span>
-                                            {{ $i18n.get('status_public') }}
-                                        </b-radio>
-                                        <b-radio
-                                                v-model="visibility"
-                                                value="private"
-                                                native-value="private">
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-private"/>
-                                            </span>
-                                            {{ $i18n.get('status_private') }}
-                                        </b-radio>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Comment Status ------------------------ -->
-                            <div
-                                    class="column is-narrow"
-                                    v-if="collection && collection.allow_comments && collection.allow_comments == 'open'">
-                                <div class="section-label">
-                                    <label>{{ $i18n.get('label_comments') }}</label>
-                                    <help-button
-                                                :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                                :message="$i18n.getHelperMessage('items', 'comment_status')"/>
-                                </div>
-                                <div class="section-status">
-                                    <div class="field has-addons">
-                                        <b-switch
-                                                id="tainacan-checkbox-comment-status"
-                                                size="is-small"
-                                                true-value="open"
-                                                false-value="closed"
-                                                v-model="form.comment_status">
-                                            {{ $i18n.get('label_allow_comments') }}
-                                        </b-switch>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <b-tabs v-model="activeTab">
-
-                            <!-- Metadata from Collection-------------------------------- -->
-                            <b-tab-item>
-                                <template slot="header">
-                                    <span class="icon has-text-gray4">
-                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
-                                    </span>
-                                    <span>{{ $i18n.get('metadata') }}</span>
-                                    <span 
-                                            v-if="metadatumList && metadatumList.length"
-                                            class="has-text-gray">
-                                        &nbsp;({{ metadatumList.length }})
-                                    </span>
-                                </template>
-
-                                <div class="sub-header">
-                                    <a
-                                            class="collapse-all"
-                                            @click="toggleCollapseAll()">
-                                        {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-                                        <span class="icon">
-                                            <i
-                                                    :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                                    class="tainacan-icon tainacan-icon-1-25em"/>
-                                        </span>
-                                    </a>
-
-                                    <b-field 
-                                            v-if="metadatumList && metadatumList.length > 5"
-                                            class="header-item">
-                                        <b-input 
-                                                :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
-                                                v-model="metadataNameFilterString"
-                                                icon="magnify"
-                                                size="is-small"
-                                                icon-right="close-circle"
-                                                icon-right-clickable
-                                                @icon-right-click="metadataNameFilterString = ''" />
-                                    </b-field>
-                                </div>
-
-                                <tainacan-form-item
-                                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
-                                        v-for="(itemMetadatum, index) of metadatumList"
-                                        :key="index"
-                                        :item-metadatum="itemMetadatum"
-                                        :metadata-name-filter-string="metadataNameFilterString"
-                                        :is-collapsed="metadataCollapses[index]"
-                                        :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
-                                        @changeCollapse="onChangeCollapse($event, index)"/>
-
-                                <!-- Hook for extra Form options -->
-                                <template
-                                        v-if="formHooks != undefined &&
-                                            formHooks['item'] != undefined &&
-                                            formHooks['item']['end-right'] != undefined">
-                                    <form
-                                        id="form-item-end-right"
-                                        class="form-hook-region"
-                                        v-html="formHooks['item']['end-right'].join('')"/>
-                                </template>
-                            </b-tab-item>
-
-
-                            <!-- Related items -->
-                            <b-tab-item v-if="totalRelatedItems">
-                                <template slot="header">
-                                    <span class="icon has-text-gray4">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes tainacan-icon-rotate-270"/>
-                                    </span>
-                                    <span>
-                                        {{ $i18n.get('label_related_items') }}
-                                        <span class="has-text-gray">
-                                            ({{ totalRelatedItems }})
-                                        </span>
-                                    </span>
-                                </template>
-
-                                <div class="attachments-list-heading">
-                                    <p>
-                                        {{ $i18n.get("info_related_items") }}
-                                    </p>
-                                </div>
-
-                                <related-items-list
-                                        :item-id="itemId"
-                                        :collection-id="collectionId"
-                                        :related-items="item.related_items"
-                                        :is-editable="!isIframeMode"
-                                        :is-loading.sync="isLoading" />
+                                        </a>
+                                    </li>
+                                </ul>
+                                <button 
+                                        class="swiper-button-prev" 
+                                        id="tainacan-tabs-prev" 
+                                        slot="button-prev">
+                                    <svg
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 32 32">
+                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                        <path
+                                                d="M0 0h24v24H0z"
+                                                fill="none"/>
+                                    </svg>
+                                </button>
+                                <button 
+                                        class="swiper-button-next" 
+                                        id="tainacan-tabs-next" 
+                                        slot="button-next">
+                                    <svg
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24">
+                                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                        <path
+                                                d="M0 0h24v24H0z"
+                                                fill="none"/>
+                                    </svg>
+                                </button>
+                            </nav>
+                        
+                            <section 
+                                    :style="tabs.length < 2 ? 'border-top: none; padding-top: 0;' : ''"
+                                    class="tab-content item-edition-tab-content">
                                 
-                            </b-tab-item>
+                                <!-- Metadata from Collection-------------------------------- -->
+                                <div    
+                                        v-if="activeTab === 'metadata'"
+                                        class="tab-item"
+                                        role="tabpanel"
+                                        aria-labelledby="metadata-tab-label"
+                                        tabindex="0"> 
 
+                                    <div 
+                                            class="sub-header"
+                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }">
 
-                            <!-- Attachments ------------------------------------------ -->
-                            <b-tab-item>
-                                <template slot="header">
-                                    <span class="icon has-text-gray4">
-                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
-                                    </span>
-                                    <span>
-                                        {{ $i18n.get('label_attachments') }}
-                                        <span
-                                                v-if="totalAttachments != null && totalAttachments != undefined"
-                                                class="has-text-gray">
-                                            ({{ totalAttachments }})
+                                        <!-- Metadata navigation Progress -->
+                                        <div
+                                                v-if="isMetadataNavigation && metadatumList && metadatumList.length > 3"
+                                                class="sequence-progress-background" />
+                                        <div
+                                                v-if="isMetadataNavigation && focusedMetadatum !== false && metadatumList && metadatumList.length > 3"
+                                                :style="{ width: ((focusedMetadatum + 1)/metadatumList.length)*100 + '%' }"
+                                                class="sequence-progress" />
+
+                                        <a
+                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionCollapses"
+                                                class="collapse-all"
+                                                @click="toggleCollapseAll()">
+                                            <span class="icon">
+                                                <i
+                                                        :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
+                                                        class="tainacan-icon tainacan-icon-1-25em"/>
+                                            </span>
+                                            <template v-if="isMobileScreen">{{ collapseAll ? $i18n.get('label_collapse') : $i18n.get('label_expand') }}</template>
+                                            <template v-else>{{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}</template>
+                                        </a>
+
+                                        <b-field 
+                                                v-if="metadatumList && metadatumList.length > 3"
+                                                class="header-item metadata-navigation"
+                                                :style="$adminOptions.hideItemEditionCollapses ? 'padding-left: 0.35em !important;' : ''">
+                                            <b-button
+                                                    v-if="!$adminOptions.hideItemEditionFocusMode && !isMetadataNavigation && !showOnlyRequiredMetadata && !metadataNameFilterString" 
+                                                    @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
+                                                    class="collapse-all has-text-secondary"
+                                                    size="is-small">
+                                                <span
+                                                        class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-play" />
+                                                </span>
+                                                <span>{{ isMobileScreen ? $i18n.get('label_focus_mode') : $i18n.get('label_start_focus_mode') }}</span>
+                                            </b-button>
+                                            <b-button 
+                                                    v-if="isMetadataNavigation"
+                                                    :disabled="focusedMetadatum === 0"
+                                                    @click="focusPreviousMetadatum" 
+                                                    outlined>
+                                                <span
+                                                        class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore tainacan-icon-rotate-180" />
+                                                </span>
+                                                <span>{{ $i18n.get('previous') }}</span>
+                                            </b-button>
+                                            <b-button 
+                                                    v-if="isMetadataNavigation"
+                                                    :disabled="(focusedMetadatum === metadatumList.length - 1) && (!isCurrentlyFocusedOnCompoundMetadatum || isOnLastMetadatumOfCompoundNavigation)"
+                                                    @click="focusNextMetadatum"
+                                                    outlined>
+                                                <span
+                                                        class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
+                                                </span>
+                                                <span>{{ $i18n.get('next') }}</span>
+                                            </b-button>
+                                            <b-button
+                                                    v-if="isMetadataNavigation" 
+                                                    @click="setMetadatumFocus({ index: 0, scrollIntoView: true }); isMetadataNavigation = false;"
+                                                    outlined>
+                                                <span
+                                                        class="icon has-success-color">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-finish" />
+                                                </span>
+                                                <span>{{ $i18n.get('finish') }}</span>
+                                            </b-button>
+                                        </b-field>
+
+                                        <span 
+                                                v-if="isUpdatingValues && isMetadataNavigation && !$adminOptions.mobileAppMode"
+                                                class="update-warning">
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating"/>
+                                            </span>
                                         </span>
-                                    </span>
-                                </template>
 
-                                <div v-if="item != undefined && item.id != undefined">
-                                    <div class="attachments-list-heading">
-                                        <button
-                                                style="margin-left: calc(var(--tainacan-one-column) + 12px)"
-                                                type="button"
-                                                class="button is-secondary"
-                                                @click.prevent="attachmentMediaFrame.openFrame($event)"
-                                                :disabled="isLoadingAttachments">
-                                            {{ $i18n.get("label_edit_attachments") }}
-                                        </button>
+                                        <b-switch
+                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && metadatumList && metadatumList.length > 3"
+                                                id="tainacan-switch-required-metadata"
+                                                :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
+                                                size="is-small"
+                                                v-model="showOnlyRequiredMetadata">
+                                            {{ isMobileScreen ? $i18n.get('label_required') : $i18n.get('label_only_required') }} *
+                                        </b-switch>
+
+                                        <b-field 
+                                                v-if="!isMetadataNavigation && metadatumList && metadatumList.length > 5"
+                                                class="header-item metadata-name-search">
+                                            <b-input
+                                                    v-if="!isMobileScreen || openMetadataNameFilter"
+                                                    :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
+                                                    v-model="metadataNameFilterString"
+                                                    icon="magnify"
+                                                    size="is-small"
+                                                    icon-right="close-circle"
+                                                    icon-right-clickable
+                                                    @icon-right-click="openMetadataNameFilterClose" />
+                                            <span
+                                                    @click="openMetadataNameFilter = true"
+                                                    v-else 
+                                                    class="icon is-small metadata-name-search-icon">
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
+                                            </span>
+                                        </b-field>
+                                    </div>
+
+                                    <div 
+                                            v-for="(metadataSection, sectionIndex) of metadataSections"
+                                            :key="sectionIndex"
+                                            :class="'metadata-section-slug-' + metadataSection.slug"
+                                            :id="'metadata-section-id-' + metadataSection.id">
+                                        <div class="metadata-section-header section-label">
+                                            <span   
+                                                    class="collapse-handle"
+                                                    @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses) ? null : toggleMetadataSectionCollapse(sectionIndex)">
+                                                <span 
+                                                        v-if="!$adminOptions.hideItemEditionCollapses && !isMetadataNavigation"
+                                                        class="icon">
+                                                    <i 
+                                                            :class="{
+                                                                'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || errorMessage,
+                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage)
+                                                            }"
+                                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                                </span>
+                                                <label>
+                                                    <span class="icon has-text-gray4">
+                                                        <i class="tainacan-icon tainacan-icon-metadata"/>
+                                                    </span>
+                                                    {{ metadataSection.name }}&nbsp;
+                                                    <span 
+                                                            v-if="metadataSection.metadata_object_list && metadataSection.metadata_object_list.length"
+                                                            class="has-text-gray has-text-weight-normal"
+                                                            style="font-size: 0.875em;">
+                                                        ({{ metadataSection.metadata_object_list.length }})
+                                                    </span>
+                                                </label>
+                                                <help-button
+                                                        v-if="metadataSection.description" 
+                                                        :title="metadataSection.name"
+                                                        :message="metadataSection.description" />
+                                            </span>
+                                        </div>
+                                        <transition name="filter-item">
+                                            <div 
+                                                    class="metadata-section-metadata-list"
+                                                    v-show="metadataSectionCollapses[sectionIndex] || isMetadataNavigation">
+                                                <p
+                                                        class="metadatum-description-help-info"
+                                                        v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'">
+                                                    {{ metadataSection.description }}
+                                                </p>
+
+                                                <template v-for="(itemMetadatum, index) of metadatumList">
+                                                    <tainacan-form-item
+                                                            v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
+                                                            :key="index"
+                                                            :id="'metadatum-index--' + index"
+                                                            v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
+                                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
+                                                            :ref="'tainacan-form-item--' + index"
+                                                            :item-metadatum="itemMetadatum"
+                                                            :metadata-name-filter-string="metadataNameFilterString"
+                                                            :is-collapsed="metadataCollapses[index]"
+                                                            :hide-collapses="$adminOptions.hideItemEditionCollapses || isMetadataNavigation"
+                                                            :is-mobile-screen="isMobileScreen"
+                                                            :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
+                                                            :is-focused="focusedMetadatum === index"
+                                                            :is-metadata-navigation="isMetadataNavigation"
+                                                            @changeCollapse="onChangeCollapse($event, index)"
+                                                            @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
+                                                            @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
+                                                            @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
+                                                </template>
+                                            </div>
+                                        </transition>
+                                    </div>
+
+                                    <!-- Hook for extra Form options -->
+                                    <template
+                                            v-if="formHooks != undefined &&
+                                                formHooks['item'] != undefined &&
+                                                formHooks['item']['end-right'] != undefined">
+                                        <form
+                                            id="form-item-end-right"
+                                            class="form-hook-region"
+                                            v-html="formHooks['item']['end-right'].join('')"/>
+                                    </template>
+                                </div>
+
+                                <!-- Related items -->
+                                <div    
+                                        v-if="totalRelatedItems && activeTab === 'related'"
+                                        class="tab-item"
+                                        role="tabpanel"
+                                        aria-labelledby="related-tab-label"
+                                        tabindex="0"> 
+
+                                    <div class="related-items-list-heading">
                                         <p>
-                                            {{ $i18n.get("info_edit_attachments") }}
+                                            {{ $i18n.get("info_related_items") }}
                                         </p>
                                     </div>
 
-                                    <attachments-list
-                                            v-if="item != undefined && item.id != undefined"
-                                            :item="item"
-                                            :is-editable="true"
-                                            :is-loading.sync="isLoadingAttachments"
-                                            @isLoadingAttachments="(isLoading) => isLoadingAttachments = isLoading"
-                                            @onDeleteAttachment="deleteAttachment($event)"/>
+                                    <related-items-list
+                                            :item-id="itemId"
+                                            :collection-id="collectionId"
+                                            :related-items="item.related_items"
+                                            :is-editable="!$adminOptions.itemEditionMode"
+                                            :is-loading.sync="isLoading" />
+                                    
                                 </div>
-                            </b-tab-item>
 
-                        </b-tabs>
+                                <!-- Document and thumbnail on mobile modal -->
+                                <div    
+                                        v-if="activeTab === 'document' && $adminOptions.itemEditionDocumentInsideTabs"
+                                        class="tab-item"
+                                        role="tabpanel"
+                                        aria-labelledby="document-tab-label"
+                                        tabindex="0"> 
+                                    <item-document-edition-form 
+                                            :item="item"
+                                            :form="form"
+                                            @onSetDocument="setDocument"
+                                            @onRemoveDocument="removeDocument"
+                                            @onSetFileDocument="setFileDocument"
+                                            @onSetTextDocument="setTextDocument"
+                                            @onSetURLDocument="setURLDocument" />
+                                    <item-thumbnail-edition-form 
+                                            :item="item"
+                                            :form="form"
+                                            :is-loading="isLoading"
+                                            @onDeleteThumbnail="deleteThumbnail"
+                                            @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
+                                            @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
+                                </div>
+
+                                <!-- Attachments on mobile modal -->
+                                <div    
+                                        v-if="activeTab === 'attachments' && $adminOptions.itemEditionAttachmentsInsideTabs"
+                                        class="tab-item"
+                                        role="tabpanel"
+                                        aria-labelledby="attachments-tab-label"
+                                        tabindex="0"> 
+                                    <item-attachments-edition-form
+                                            :item="item"
+                                            :form="form"
+                                            :is-loading="isLoading"
+                                            :total-attachments="totalAttachments"
+                                            :should-load-attachments="shouldLoadAttachments"
+                                            @openAttachmentsMediaFrame="($event) => attachmentsMediaFrame.openFrame($event)"
+                                            @onDeleteAttachment="deleteAttachment($event)" />
+                                </div>
+
+                            </section>
+                        </div>
+
                     </div>
 
-                    <div class="column is-5">
+                    <div 
+                            v-if="( (!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
+                                (!$adminOptions.hideItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)"
+                            class="column is-5">
                 
-                        <div class="sticky-container">
+                        <div 
+                                :style="isMetadataNavigation && !isMobileScreen ? 'max-height: calc(100vh - 142px);' : ''"
+                                class="sticky-container">
 
                             <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                        formHooks['item'] != undefined &&
-                                        formHooks['item']['begin-left'] != undefined">
+                            <template v-if="hasBeginLeftForm">
                                 <form
-                                    id="form-item-begin-left"
-                                    class="form-hook-region"
-                                    v-html="formHooks['item']['begin-left'].join('')"/>
+                                        id="form-item-begin-left"
+                                        class="form-hook-region"
+                                        v-html="getBeginLeftForm"/>
                             </template>
 
                             <!-- Document -------------------------------- -->
-                            <div class="section-label">
-                                <label>{{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}</label>
-                                <help-button
-                                        :title="$i18n.getHelperTitle('items', 'document')"
-                                        :message="$i18n.getHelperMessage('items', 'document')"/>
-                            </div>
-                            <div class="section-box document-field">
-                                <div
-                                        v-if="form.document != undefined && form.document != null &&
-                                                form.document_type != undefined && form.document_type != null &&
-                                                form.document != '' && form.document_type != 'empty'">
-                                    <div v-if="form.document_type == 'attachment'">
-                                        <!-- <div v-html="item.document_as_html" /> -->
-                                        <document-item :document-html="item.document_as_html"/>
-
-                                        <div class="document-buttons-row">
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    id="button-edit-document"
-                                                    :aria-label="$i18n.get('label_button_edit_document')"
-                                                    @click.prevent="setFileDocument($event)">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('edit'),
-                                                            autoHide: true,
-                                                            placement: 'bottom'
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-edit"/>
-                                                </span>
-                                            </a>
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    id="button-delete-document"
-                                                    :aria-label="$i18n.get('label_button_delete_document')"
-                                                    @click.prevent="removeDocument()">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('delete'),
-                                                            autoHide: true,
-                                                            placement: 'bottom'
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-delete"/>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div v-if="form.document_type == 'text'">
-                                        <div v-html="item.document_as_html" />
-                                        <div class="document-buttons-row">
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    :aria-label="$i18n.get('label_button_edit_document')"
-                                                    id="button-edit-document"
-                                                    @click.prevent="setTextDocument()">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('edit'),
-                                                            autoHide: true,
-                                                            placement: 'bottom'
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-edit"/>
-                                                </span>
-                                            </a>
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    :aria-label="$i18n.get('label_button_delete_document')"
-                                                    id="button-delete-document"
-                                                    @click.prevent="removeDocument()">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('delete'),
-                                                            autoHide: true,
-                                                            placement: 'bottom'
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-delete"/>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div v-if="form.document_type == 'url'">
-                                        <div v-html="item.document_as_html" />
-                                        <div class="document-buttons-row">
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    :aria-label="$i18n.get('label_button_edit_document')"
-                                                    id="button-edit-document"
-                                                    @click.prevent="setURLDocument()">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('edit'),
-                                                            autoHide: true,
-                                                            placement: 'bottom'
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-edit"/>
-                                                </span>
-                                            </a>
-                                            <a
-                                                    class="button is-rounded is-secondary"
-                                                    size="is-small"
-                                                    :aria-label="$i18n.get('label_button_delete_document')"
-                                                    id="button-delete-document"
-                                                    @click.prevent="removeDocument()">
-                                                <span
-                                                        v-tooltip="{
-                                                            content: $i18n.get('delete'),
-                                                            autoHide: true,
-                                                            placement: 'bottom'
-                                                        }"
-                                                        class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-delete"/>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <ul v-else>
-                                    <li>
-                                        <button
-                                                type="button"
-                                                @click.prevent="setFileDocument($event)">
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload"/>
-                                            </span>
-                                        </button>
-                                        <p>{{ $i18n.get('label_file') }}</p>
-                                    </li>
-                                    <li>
-                                        <button
-                                                type="button"
-                                                @click.prevent="setTextDocument()">
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text"/>
-                                            </span>
-                                        </button>
-                                        <p>{{ $i18n.get('label_text') }}</p>
-                                    </li>
-                                    <li>
-                                        <button
-                                                type="button"
-                                                @click.prevent="setURLDocument()">
-                                            <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
-                                            </span>
-                                        </button>
-                                        <p>{{ $i18n.get('label_url') }}</p>
-                                    </li>
-                                </ul>
-                            </div>
+                            <item-document-edition-form 
+                                    v-if="!$adminOptions.itemEditionDocumentInsideTabs"
+                                    :item="item"
+                                    :form="form"
+                                    @onSetDocument="setDocument"
+                                    @onRemoveDocument="removeDocument"
+                                    @onSetFileDocument="setFileDocument"
+                                    @onSetTextDocument="setTextDocument"
+                                    @onSetURLDocument="setURLDocument" />
+                            <hr>
 
                             <!-- Thumbnail -------------------------------- -->
-                            <div class="section-label">
-                                <label>{{ $i18n.get('label_thumbnail') }}</label>
-                                <help-button
-                                        :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
-                                        :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
+                            <item-thumbnail-edition-form 
+                                    v-if="!$adminOptions.itemEditionDocumentInsideTabs"
+                                    :item="item"
+                                    :form="form"
+                                    :is-loading="isLoading"
+                                    @onDeleteThumbnail="deleteThumbnail"
+                                    @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
+                                    @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
 
-                            </div>
-                            <div 
-                                    v-if="!isLoading"
-                                    class="section-box section-thumbnail">
-                                <div class="thumbnail-field">
-                                    <file-item
-                                            v-if="item.thumbnail != undefined && ((item.thumbnail['tainacan-medium'] != undefined && item.thumbnail['tainacan-medium'] != false) || (item.thumbnail.medium != undefined && item.thumbnail.medium != false))"
-                                            :show-name="false"
-                                            :modal-on-click="false"
-                                            :size="148"
-                                            :file="{
-                                                media_type: 'image',
-                                                thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
-                                                title: $i18n.get('label_thumbnail'),
-                                                description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
-                                            }"/>
-                                    <figure
-                                            v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
-                                            class="image">
-                                        <span 
-                                                class="image-placeholder"
-                                                v-if="item.document_type == 'empty' && item.document_mimetype == 'empty'">
-                                            {{ $i18n.get('label_empty_thumbnail') }}
-                                        </span>
-                                        <img
-                                                :alt="$i18n.get('label_thumbnail')"
-                                                :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
-                                    </figure>
-                                    <div class="thumbnail-buttons-row">
-                                        <a
-                                                class="button is-rounded is-secondary"
-                                                id="button-edit-thumbnail"
-                                                :aria-label="$i18n.get('label_button_edit_thumb')"
-                                                @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                            <span
-                                                    v-tooltip="{
-                                                        content: $i18n.get('edit'),
-                                                        autoHide: true,
-                                                        placement: 'bottom'
-                                                    }"
-                                                    class="icon">
-                                                <i class="tainacan-icon tainacan-icon-edit"/>
-                                            </span>
-                                        </a>
-                                        <a
-                                                v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
-                                                id="button-alt-text-thumbnail"
-                                                class="button is-rounded is-secondary"
-                                                :aria-label="$i18n.get('label_button_delete_thumb')"
-                                                @click="isThumbnailAltTextModalActive = true">
-                                            <span
-                                                    v-tooltip="{
-                                                        content: $i18n.get('label_thumbnail_alt'),
-                                                        autoHide: true,
-                                                        placement: 'bottom'
-                                                    }"
-                                                    class="icon">
-                                                <i class="tainacan-icon tainacan-icon-text"/>
-                                            </span>
-                                        </a>
-                                        <a
-                                                v-if="item.thumbnail && item.thumbnail.thumbnail != undefined && item.thumbnail.thumbnail != false"
-                                                id="button-delete-thumbnail"
-                                                class="button is-rounded is-secondary"
-                                                :aria-label="$i18n.get('label_button_delete_thumb')"
-                                                @click="deleteThumbnail()">
-                                            <span
-                                                    v-tooltip="{
-                                                        content: $i18n.get('delete'),
-                                                        autoHide: true,
-                                                        placement: 'bottom'
-                                                    }"
-                                                    class="icon">
-                                                <i class="tainacan-icon tainacan-icon-delete"/>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            <hr v-if="!$adminOptions.itemEditionAttachmentsInsideTabs || hasEndLeftForm">
+
+                            <!-- Attachments -->
+                            <item-attachments-edition-form
+                                    v-if="!$adminOptions.itemEditionAttachmentsInsideTabs"
+                                    :item="item"
+                                    :form="form"
+                                    :is-loading="isLoading"
+                                    :total-attachments="totalAttachments"
+                                    :should-load-attachments="shouldLoadAttachments"
+                                    @openAttachmentsMediaFrame="($event) => attachmentsMediaFrame.openFrame($event)"
+                                    @onDeleteAttachment="deleteAttachment($event)" />
+
+                            <hr v-if="hasEndLeftForm">
 
                             <!-- Hook for extra Form options -->
-                            <template
-                                    v-if="formHooks != undefined &&
-                                        formHooks['item'] != undefined &&
-                                        formHooks['item']['end-left'] != undefined">
+                            <template v-if="hasEndLeftForm">
                                 <form
                                     id="form-item-end-left"
                                     class="form-hook-region"
-                                    v-html="formHooks['item']['end-left'].join('')"/>
+                                    v-html="getEndLeftForm"/>
                             </template>
 
                         </div>
-
-                        <!-- Thumbnail Alternative Text Modal ----------------- -->
-                        <b-modal
-                                :can-cancel="false"
-                                :active.sync="isThumbnailAltTextModalActive"
-                                :width="640"
-                                scroll="keep"
-                                trap-focus
-                                aria-modal
-                                aria-role="dialog"
-                                custom-class="tainacan-modal"
-                                :close-button-aria-label="$i18n.get('close')">
-                            <div class="tainacan-modal-content">
-                                <div class="tainacan-modal-title">
-                                    <h2>{{ $i18n.get('label_thumbnail_alt') }}</h2>
-                                    <hr>
-                                </div>
-                                <b-input
-                                        type="textarea"
-                                        lazy
-                                        :placeholder="$i18n.get('instruction_thumbnail_alt')"
-                                        :value="form.thumbnail_alt ? form.thumbnail_alt : ''"
-                                        @input="onUpdateThumbnailAlt" />
-                                <p>{{ $i18n.get('info_thumbnail_alt') }}</p>
-
-                                <div class="field is-grouped form-submit">
-                                    <div 
-                                            style="margin-left: auto;"
-                                            class="control">
-                                        <button
-                                                id="button-submit-text-content-writing"
-                                                type="submit"
-                                                @click.prevent="isThumbnailAltTextModalActive = false"
-                                                class="button is-success">
-                                            {{ $i18n.get('finish') }}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </b-modal>
-
-                        <!-- Text Insert Modal ----------------- -->
-                        <b-modal
-                                :can-cancel="false"
-                                :active.sync="isTextModalActive"
-                                :width="640"
-                                scroll="keep"
-                                trap-focus
-                                aria-modal
-                                aria-role="dialog"
-                                custom-class="tainacan-modal"
-                                :close-button-aria-label="$i18n.get('close')">
-                            <div class="tainacan-modal-content">
-                                <div class="tainacan-modal-title">
-                                    <h2>{{ $i18n.get('instruction_write_text') }}</h2>
-                                    <hr>
-                                </div>
-                                <b-input
-                                        type="textarea"
-                                        v-model="textContent"/>
-
-                                <div class="field is-grouped form-submit">
-                                    <div class="control">
-                                        <button
-                                                id="button-cancel-text-content-writing"
-                                                class="button is-outlined"
-                                                type="button"
-                                                @click="cancelTextWriting()">
-                                            {{ $i18n.get('cancel') }}</button>
-                                    </div>
-                                    <div class="control">
-                                        <button
-                                                id="button-submit-text-content-writing"
-                                                type="submit"
-                                                @click.prevent="confirmTextWriting()"
-                                                class="button is-success">
-                                            {{ $i18n.get('save') }}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </b-modal>
-
-                        <!-- URL Insert Modal ----------------- -->
-                        <b-modal
-                                :can-cancel="false"
-                                :active.sync="isURLModalActive"
-                                :width="860"
-                                scroll="keep"
-                                trap-focus
-                                role="dialog"
-                                tabindex="-1"
-                                aria-modal
-                                aria-role="dialog"
-                                custom-class="tainacan-modal"
-                                :close-button-aria-label="$i18n.get('close')">
-                            <div class="tainacan-modal-content">
-                                <div class="tainacan-modal-title">
-                                    <h2>{{ $i18n.get('instruction_insert_url') }}</h2>
-                                    <hr>
-                                </div>
-                                <b-input 
-                                        type="url"
-                                        v-model="urlLink" />
-                                <br>
-                                <b-field
-                                        :addons="false"
-                                        :label="$i18n.get('label_document_option_forced_iframe')">
-                                        &nbsp;
-                                    <b-switch
-                                            size="is-small" 
-                                            v-model="urlForcedIframe" />
-                                    <help-button
-                                            :title="$i18n.get('label_document_option_forced_iframe')"
-                                            :message="$i18n.get('info_document_option_forced_iframe')" />
-                                </b-field>
-                                <b-field 
-                                        v-if="urlForcedIframe"
-                                        grouped>
-                                    <b-field :label="$i18n.get('label_document_option_iframe_width')">
-                                        <b-numberinput
-                                                :aria-minus-label="$i18n.get('label_decrease')"
-                                                :aria-plus-label="$i18n.get('label_increase')"
-                                                min="1" 
-                                                v-model="urlIframeWidth"
-                                                step="1" />
-                                    </b-field>
-                                    <b-field :label="$i18n.get('label_document_option_iframe_height')">
-                                        <b-numberinput
-                                                :aria-minus-label="$i18n.get('label_decrease')"
-                                                :aria-plus-label="$i18n.get('label_increase')"
-                                                min="1" 
-                                                v-model="urlIframeHeight"
-                                                step="1" />
-                                    </b-field>
-                                </b-field>
-                                <p 
-                                        v-if="urlForcedIframe"
-                                        class="help">
-                                    {{ $i18n.get('info_iframe_dimensions') }}
-                                </p>
-                                <br>
-                                <b-field
-                                        v-if="urlForcedIframe"
-                                        :addons="false"
-                                        :label="$i18n.get('label_document_option_is_image')">
-                                        &nbsp;
-                                    <b-switch
-                                            size="is-small" 
-                                            v-model="urlIsImage" />
-                                    <help-button
-                                            :title="$i18n.get('label_document_option_is_image')"
-                                            :message="$i18n.get('info_document_option_is_image')" />
-                                </b-field>
-
-                                <div class="field is-grouped form-submit">
-                                    <div class="control">
-                                        <button
-                                                id="button-cancel-url-link-selection"
-                                                class="button is-outlined"
-                                                type="button"
-                                                @click="cancelURLSelection()">
-                                            {{ $i18n.get('cancel') }}</button>
-                                    </div>
-                                    <div class="control">
-                                        <button
-                                                id="button-submit-url-link-selection"
-                                                @click.prevent="confirmURLSelection()"
-                                                class="button is-success">
-                                            {{ $i18n.get('save') }}</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </b-modal>
+                       
                     </div>
                     
                 </div>
@@ -742,7 +607,11 @@
             </template>
 
         </transition>
-        <footer class="footer">
+
+        <footer 
+                class="footer"
+                :class="{ 'has-some-metadatum-focused': isMetadataNavigation && activeTab === 'metadata' && focusedMetadatum !== false }">
+                
             <!-- Sequence Progress -->
             <div
                     v-if="isOnSequenceEdit"
@@ -753,11 +622,13 @@
                     class="sequence-progress"/>
 
             <!-- Last Updated Info -->
-            <div class="update-info-section">
+            <div 
+                    v-if="!$adminOptions.mobileAppMode"
+                    class="update-info-section">
                 <p
-                        class="has-text-gray5"
+                        class="footer-message"
                         v-if="isOnSequenceEdit">
-                    {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}
+                    {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}&nbsp;
                 </p>
                 <p class="footer-message">
                     <span 
@@ -777,217 +648,110 @@
                                 :form-errors="formErrors" />
                     </span>
                 </p>
+
+                <!-- Comment Status ------------------------ -->
+                <div 
+                        style="margin-left: 2em;"
+                        class="section-status"
+                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
+                    <div class="field has-addons">
+                        <b-switch
+                                id="tainacan-checkbox-comment-status"
+                                size="is-small"
+                                true-value="open"
+                                false-value="closed"
+                                v-model="form.comment_status">
+                            <span class="icon has-text-gray4">
+                                <i class="tainacan-icon tainacan-icon-comment"/>
+                            </span>
+                            {{ $i18n.get('label_allow_comments') }}
+                            <help-button
+                                    :title="$i18n.getHelperTitle('items', 'comment_status')"
+                                    :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                        </b-switch>
+                    </div>
+                </div>
             </div>
-            <div
-                    class="form-submission-footer"
-                    v-if="isEditingMetadataIframeMode">
-                <button
-                        @click="onSubmit()"
-                        type="button"
-                        class="button is-secondary">
-                    {{ $i18n.get('label_back_to_related_item') }}
-                </button>
-            </div>
-            <div
-                    class="form-submission-footer"
-                    v-if="form.status == 'trash' && !isEditingMetadataIframeMode">
-                <button 
-                        v-if="item && item.current_user_can_delete"
-                        @click="onDeletePermanently()"
-                        type="button"
-                        class="button is-outlined">{{ $i18n.get('label_delete_permanently') }}</button>
-                <button
-                        @click="onSubmit('draft')"
-                        type="button"
-                        class="button is-secondary">{{ $i18n.get('label_save_as_draft') }}</button>
-                <button 
-                        v-if="collection && collection.current_user_can_publish_items"
-                        @click="onSubmit(visibility)"
-                        type="button"
-                        class="button is-success">{{ $i18n.get('label_verb_publish') }}</button>
-            </div>
-            <div
-                    class="form-submission-footer"
-                    v-if="(form.status == 'auto-draft' || form.status == 'draft' || form.status == undefined) && !isEditingMetadataIframeMode">
-                <button
-                        v-if="isOnSequenceEdit && itemPosition > 1"
-                        @click="onPrevInSequence()"
-                        type="button"
-                        class="button sequence-button">
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
-                    </span>
-                    <span>{{ $i18n.get('previous') }}</span>
-                </button>
-                <button 
-                        v-if="form.status == 'draft' && !isOnSequenceEdit && item && item.current_user_can_delete"
-                        @click="onSubmit('trash')"
-                        type="button"
-                        class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
-                <button
-                        v-if="form.status == 'auto-draft'"
-                        @click="onDiscard()"
-                        type="button"
-                        class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
-                <button
-                        v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                        @click="onSubmit('draft')"
-                        type="button"
-                        class="button is-secondary">{{ form.status == 'draft' ? $i18n.get('label_update') : $i18n.get('label_save_as_draft') }}</button>
-                <button
-                        v-else
-                        @click="onSubmit('draft'); onNextInSequence();"
-                        type="button"
-                        class="button is-secondary">
-                    <span>{{ $i18n.get('label_update_draft') }}</span>
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
-                    </span>
-                </button>
-                <template v-if="collection && collection.current_user_can_publish_items">
-                    <button 
-                            v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                            @click="onSubmit(visibility)"
-                            type="button"
-                            class="button is-success">{{ $i18n.get('label_verb_publish') }}</button>
-                    <button 
-                            v-else
-                            @click="onSubmit(visibility, 'next')"
-                            type="button"
-                            class="button is-success">
-                        <span>{{ $i18n.get('label_verb_publish') }}</span>
-                        <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
-                        </span>
-                    </button>
-                </template>
-                <template v-else>
-                    <button 
-                            v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count < itemPosition)"
-                            @click="onNextInSequence()"
-                            type="button"
-                            class="button is-success">
-                        <span>{{ $i18n.get('label_next') }}</span>
-                        <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
-                        </span>
-                    </button>
-                </template>
-                <button 
-                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                        @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"
-                        type="button"
-                        class="button sequence-button">
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved"/>
-                    </span>
-                    <span>{{ $i18n.get('finish') }}</span>
-                </button>
-            </div>
-            <div
-                    class="form-submission-footer"
-                    v-if="(form.status == 'publish' || form.status == 'private') && !isEditingMetadataIframeMode">
-                <button
-                        v-if="isOnSequenceEdit && itemPosition > 1"
-                        @click="onPrevInSequence()"
-                        type="button"
-                        class="button sequence-button">
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
-                    </span>
-                    <span>{{ $i18n.get('previous') }}</span>
-                </button>
-                <button 
-                        v-if="!isOnSequenceEdit && item && item.current_user_can_delete"
-                        @click="onSubmit('trash')"
-                        type="button"
-                        class="button is-outlined">{{ $i18n.get('label_send_to_trash') }}</button>
-                <button
-                        v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                        @click="onSubmit('draft')"
-                        type="button"
-                        class="button is-secondary">{{ isOnSequenceEdit ? $i18n.get('label_save_as_draft') : $i18n.get('label_return_to_draft') }}</button>
-                <button
-                        v-else
-                        @click="onSubmit('draft', 'next')"
-                        type="button"
-                        class="button is-secondary">
-                    <span>{{ $i18n.get('label_save_as_draft') }}</span>
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
-                    </span>
-                </button>
-                <template v-if="collection && collection.current_user_can_publish_items">
-                    <button 
-                            v-if="!isOnSequenceEdit || (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
-                            @click="onSubmit(visibility)"
-                            type="button"
-                            class="button is-success">{{ $i18n.get('label_update') }}</button>
-                    <button 
-                            v-else
-                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
-                            @click="onSubmit(visibility, 'next')"
-                            type="button"
-                            class="button is-success">
-                        <span>{{ $i18n.get('label_update') }}</span>
-                        <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
-                        </span>
-                    </button>
-                </template>
-                <template v-else>
-                    <button 
-                            v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count < itemPosition)"
-                            :disabled="formErrorMessage != undefined && formErrorMessage != ''"
-                            @click="onNextInSequence()"
-                            type="button"
-                            class="button is-success">
-                        <span>{{ $i18n.get('label_next') }}</span>
-                        <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
-                        </span>
-                    </button>
-                </template>
-                <button 
-                        v-if="isOnSequenceEdit && (group != null && group.items_count != undefined && group.items_count == itemPosition)"
-                        @click="$router.push($routerHelper.getCollectionPath(form.collectionId))"
-                        type="button"
-                        class="button sequence-button">
-                    <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved"/>
-                    </span>
-                    <span>{{ $i18n.get('finish') }}</span>
-                </button>
-            </div>
+            
+            <item-form-footer-buttons
+                    :status="form.status"
+                    :collection-id="form.collectionId"
+                    :is-on-sequence-edit="isOnSequenceEdit"
+                    :is-current-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count == itemPosition)"
+                    :has-next-item-on-sequence-edit="(group != null && group.items_count != undefined && group.items_count < itemPosition)"
+                    :has-previous-item-on-sequence-edit="itemPosition > 1"
+                    :is-mobile-screen="isMobileScreen"
+                    :has-some-error="formErrorMessage != undefined && formErrorMessage != ''"
+                    :current-user-can-delete="item && item.current_user_can_delete"
+                    :current-user-can-publish="collection && collection.current_user_can_publish_items"
+                    :is-editing-item-metadata-inside-iframe="isEditingItemMetadataInsideIframe"
+                    @onSubmit="onSubmit"
+                    @onDiscard="onDiscard"
+                    @onPrevInSequence="onPrevInSequence"
+                    @onNextInSequence="onNextInSequence" />
+
         </footer>
     </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+
 import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
 import wpMediaFrames from '../../js/wp-media-frames';
-import FileItem from '../other/file-item.vue';
-import DocumentItem from '../other/document-item.vue';
+import { formHooks } from '../../js/mixins';
+
 import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
-import AttachmentsList from '../lists/attachments-list.vue';
-import { formHooks } from '../../js/mixins';
 import ItemMetadatumErrorsTooltip from '../other/item-metadatum-errors-tooltip.vue';
+import ItemDocumentTextModal from '../modals/item-document-text-modal.vue';
+import ItemDocumentURLModal from '../modals/item-document-url-modal.vue';
+import ItemDocumentEditionForm from '../edition/item-document-edition-form.vue';
+import ItemThumbnailEditionForm from '../edition/item-thumbnail-edition-form.vue';
+import ItemAttachmentsEditionForm from '../edition/item-attachments-edition-form.vue';
+import ItemFormFooterButtons from './item-form-footer-buttons.vue';
+
+import 'swiper/css';
+import 'swiper/css/mousewheel';
+import 'swiper/css/navigation';
+import Swiper, { Mousewheel, Navigation } from 'swiper';
 
 export default {
     name: 'ItemEditionForm',
     components: {
-        FileItem,
-        DocumentItem,
-        AttachmentsList,
         RelatedItemsList,
-        ItemMetadatumErrorsTooltip
+        ItemMetadatumErrorsTooltip,
+        ItemThumbnailEditionForm,
+        ItemDocumentEditionForm,
+        ItemAttachmentsEditionForm,
+        ItemFormFooterButtons
     },
     mixins: [ formHooks ],
+    beforeRouteLeave ( to, from, next ) {
+        if (this.item.status == 'auto-draft') {
+            this.$buefy.modal.open({
+                parent: this,
+                component: CustomDialog,
+                props: {
+                    icon: 'alert',
+                    title: this.$i18n.get('label_warning'),
+                    message: this.$i18n.get('info_warning_item_not_saved'),
+                    onConfirm: () => {
+                        next();
+                    },
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });
+        } else {
+            next()
+        }
+    },
     data(){
         return {
+            swiper: {},
+            selected: 'Home',
             pageTitle: '',
             itemId: Number,
             item: {},
@@ -999,9 +763,10 @@ export default {
             isOnSequenceEdit: false,
             sequenceRightDirection: false,
             isLoading: false,
+            isLoadingMetadataSections: false,
             metadataCollapses: [],
+            metadataSectionCollapses: [],
             collapseAll: true,
-            visibility: 'publish',
             form: {
                 collectionId: Number,
                 status: '',
@@ -1014,22 +779,28 @@ export default {
             thumbnail: {},
             formErrorMessage: '',
             thumbnailMediaFrame: undefined,
-            attachmentMediaFrame: undefined,
+            attachmentsMediaFrame: undefined,
             fileMediaFrame: undefined,
-            isURLModalActive: false,
             urlLink: '',
-            isTextModalActive: false,
-            textLink: '',
+            textContent: '',
             isUpdatingValues: false,
             entityName: 'item',
-            activeTab: 0,
-            isLoadingAttachments: false,
+            activeTab: 'metadata',
+            shouldLoadAttachments: false,
             metadataNameFilterString: '',
-            isThumbnailAltTextModalActive: false,
+            isMobileSubheaderOpen: false,
             urlForcedIframe: false,
             urlIframeWidth: 600,
             urlIframeHeight: 450,
-            urlIsImage: false
+            urlIsImage: false,
+            isMobileScreen: false,
+            openMetadataNameFilter: false,
+            focusedMetadatum: false,
+            isMetadataNavigation: false,
+            isOnFirstMetadatumOfCompoundNavigation: false,
+            isOnLastMetadatumOfCompoundNavigation: false,
+            hideMetadataTypes: this.$adminOptions.hideItemEditionMetadataTypes,
+            showOnlyRequiredMetadata: false
         }
     },
     computed: {
@@ -1038,6 +809,9 @@ export default {
         },
         metadatumList() {
             return JSON.parse(JSON.stringify(this.getItemMetadata()));
+        },
+        metadataSections() {
+            return this.getMetadataSections();
         },
         lastUpdated() {
             return this.getLastUpdated();
@@ -1057,14 +831,45 @@ export default {
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
         },
-        isIframeMode() {
-            return this.$route.query && this.$route.query.iframemode;
-        },
-        isEditingMetadataIframeMode() {
+        isEditingItemMetadataInsideIframe() {
             return this.$route.query && this.$route.query.editingmetadata;
         },
-        isMobileMode() {
-            return this.$route.query && this.$route.query.mobilemode;
+        tabs() {
+            let pageTabs = [{
+                slug: 'metadata',
+                icon: 'metadata',
+                name: this.$i18n.get('metadata'),
+                total: this.metadatumList.length
+            }];
+            if ( this.$adminOptions.itemEditionDocumentInsideTabs && (!this.$adminOptions.hideItemEditionDocument || !this.$adminOptions.hideItemEditionThumbnail) ) {
+                pageTabs.push({
+                    slug: 'document',
+                    icon: 'item',
+                    name: this.$i18n.get('label_document')
+                });
+            }
+            if ( this.$adminOptions.itemEditionAttachmentsInsideTabs && !this.$adminOptions.hideItemEditionAttachments ) {
+                pageTabs.push({
+                    slug: 'attachments',
+                    icon: 'attachments',
+                    name: this.$i18n.get('label_attachments'),
+                    total: this.totalAttachments
+                });
+            }
+            if ( this.totalRelatedItems ) {
+                pageTabs.push({
+                    slug: 'related',
+                    icon: 'processes tainacan-icon-rotate-270',
+                    name: this.$i18n.get('label_related_items'),
+                    total: this.totalRelatedItems
+                });
+            }
+            return pageTabs;
+        },
+        isCurrentlyFocusedOnCompoundMetadatum() {
+            if (!this.isMetadataNavigation || !this.metadatumList[this.focusedMetadatum])
+                return false;
+            return this.metadatumList[this.focusedMetadatum].metadatum && this.metadatumList[this.focusedMetadatum].metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
         }
     },
     watch: {
@@ -1100,6 +905,34 @@ export default {
 
             // Obtains current Sequence Group Info
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
+        },
+        tabs:{
+            handler() {
+                if (this.tabs.length >= 2) {
+                    if (typeof this.swiper.update == 'function')
+                        this.swiper.update();
+                    else {
+                        this.$nextTick(() => {
+                            this.swiper = new Swiper('#tainacanTabsSwiper', {
+                                watchOverflow: true,
+                                mousewheel: true,
+                                observer: true,
+                                preventInteractionOnTransition: true,
+                                allowClick: true,
+                                allowTouchMove: true,
+                                slideToClickedSlide: true,
+                                slidesPerView: 'auto',
+                                navigation: {
+                                    nextEl: '#tainacan-tabs-next',
+                                    prevEl: '#tainacan-tabs-prev',
+                                },
+                                modules: [Mousewheel, Navigation]
+                            });
+                        });
+                    }
+                }
+            },
+            immediate: true
         }
     },
     created() {
@@ -1154,6 +987,20 @@ export default {
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         }
 
+        // Loads Metadata Sections
+        this.isLoadingMetadataSections = true;
+        this.fetchMetadataSections({
+                collectionId: this.collectionId
+            })
+            .then((metadataSections) => {
+                this.metadataSectionCollapses = Array(metadataSections.length).fill(true)
+                this.isLoadingMetadataSections = false;
+            })
+            .catch((error) => {
+                this.isLoadingMetadataSections = false;
+                this.$console.error('Error loading metadata sections ', error);
+            });
+
         // Sets feedback variables
         eventBusItemMetadata.$on('isUpdatingValue', (status) => {
             this.isUpdatingValues = status;
@@ -1165,31 +1012,31 @@ export default {
                 this.formErrorMessage = '';
         });
         this.cleanLastUpdated();
+
+        // Updates variables for metadata navigation from compound childs
+        eventBusItemMetadata.$on('isOnFirstMetadatumOfCompoundNavigation', (isOnFirstMetadatumOfCompoundNavigation) => {
+            this.isOnFirstMetadatumOfCompoundNavigation = isOnFirstMetadatumOfCompoundNavigation
+        });
+        eventBusItemMetadata.$on('isOnLastMetadatumOfCompoundNavigation', (isOnLastMetadatumOfCompoundNavigation) => {
+            this.isOnLastMetadatumOfCompoundNavigation = isOnLastMetadatumOfCompoundNavigation
+        });
+
+        // Listens to window resize event to update responsiveness variable
+        this.handleWindowResize();
+        window.addEventListener('resize', this.handleWindowResize);
+
+        // If we're in the mobile app, show panel
+        if (this.$adminOptions.mobileAppMode)
+            this.isMobileSubheaderOpen = true;
     },
     beforeDestroy () {
         eventBusItemMetadata.$off('isUpdatingValue');
         eventBusItemMetadata.$off('hasErrorsOnForm');
-    },
-    beforeRouteLeave ( to, from, next ) {
-        if (this.item.status == 'auto-draft') {
-            this.$buefy.modal.open({
-                parent: this,
-                component: CustomDialog,
-                props: {
-                    icon: 'alert',
-                    title: this.$i18n.get('label_warning'),
-                    message: this.$i18n.get('info_warning_item_not_saved'),
-                    onConfirm: () => {
-                        next();
-                    },
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });
-        } else {
-            next()
-        }
+        eventBusItemMetadata.$off('isOnFirstMetadatumOfCompoundNavigation');
+        eventBusItemMetadata.$off('isOnLastMetadatumOfCompoundNavigation');
+        window.removeEventListener('resize', this.handleWindowResize);
+        if (typeof this.swiper.destroy == 'function')
+            this.swiper.destroy();
     },
     methods: {
         ...mapActions('item', [
@@ -1201,7 +1048,6 @@ export default {
             'fetchItem',
             'cleanItemMetadata',
             'sendAttachments',
-            'fetchAttachments',
             'deletePermanentlyAttachment',
             'updateThumbnail',
             'cleanLastUpdated',
@@ -1227,6 +1073,12 @@ export default {
         ...mapGetters('bulkedition', [
             'getItemIdInSequence',
             'getGroup'
+        ]),
+        ...mapActions('metadata',[
+            'fetchMetadataSections'
+        ]),
+        ...mapGetters('metadata',[
+            'getMetadataSections'
         ]),
         onSubmit(status, sequenceDirection) {
 
@@ -1268,7 +1120,7 @@ export default {
                 
                 this.isLoading = false;
 
-                if (!this.isIframeMode) {
+                if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode) {
 
                     if (!this.isOnSequenceEdit) {
                         if (this.form.status != 'trash') {
@@ -1285,13 +1137,23 @@ export default {
                             this.onPrevInSequence();
                     }
 
-                } else {
-                    parent.postMessage({ 
-                        type: 'itemEditionMessage',
-                        item: this.item
-                    },
-                    tainacan_plugin.admin_url);
                 }
+
+                // Sends info to iframe containing item edition form and other use cases
+                parent.postMessage({ 
+                    type: 'itemEditionMessage',
+                    item: this.$adminOptions.itemEditionMode ? this.item : null
+                },
+                tainacan_plugin.admin_url);
+
+                // In Mobile app, we send a message to inform updates
+                if (
+                    this.$adminOptions.mobileAppMode &&
+                    webkit &&
+                    webkit.messageHandlers &&
+                    webkit.messageHandlers.cordova_iab
+                )
+                    webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'item_updated', 'item': this.item }));
             })
             .catch((errors) => {
                 
@@ -1313,14 +1175,14 @@ export default {
             });
         },
         onDiscard() {
-            if (!this.isIframeMode)
+            if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode)
                 this.$router.go(-1);
-            else
-                parent.postMessage({ 
-                        type: 'itemEditionMessage',
-                        item: null
-                    },
-                    tainacan_plugin.admin_url);
+            
+            parent.postMessage({ 
+                    type: 'itemEditionMessage',
+                    item: this.$adminOptions.itemEditionMode ? false : null
+                },
+            tainacan_plugin.admin_url);
 
         },
         createNewItem() {
@@ -1354,7 +1216,6 @@ export default {
                 this.initializeMediaFrames();
 
                 // Pre-fill status with publish to incentivate it
-                this.visibility = 'publish';
                 this.form.status = 'auto-draft'
                 this.form.document = this.item.document;
                 this.form.document_type = this.item.document_type;
@@ -1374,10 +1235,6 @@ export default {
 
                 // Loads metadata and attachments
                 this.loadMetadata();
-                this.isLoadingAttachments = true;
-                this.fetchAttachments({ page: 1, attachmentsPerPage: 24, itemId: this.itemId })
-                    .then(() => this.isLoadingAttachments = false)
-                    .catch(() => this.isLoadingAttachments = false);
 
             })
             .catch((error) => {
@@ -1387,91 +1244,72 @@ export default {
         },
         loadMetadata() {
             // Obtains Item Metadatum
-            this.fetchItemMetadata(this.itemId).then((metadata) => {
-                this.metadataCollapses = [];
+            this.fetchItemMetadata(this.itemId)
+                .then((metadata) => {
+                    this.metadataCollapses = [];
 
-                if (this.isOnSequenceEdit && this.$route.query.collapses) {
-                    for (let i = 0; i < metadata.length; i++) {
-                        this.metadataCollapses.push(this.$route.query.collapses[i] != undefined ? this.$route.query.collapses[i] : true);
+                    if (this.isOnSequenceEdit && this.$route.query.collapses) {
+                        for (let i = 0; i < metadata.length; i++) {
+                            this.metadataCollapses.push(this.$route.query.collapses[i] != undefined ? this.$route.query.collapses[i] : true);
+                        }
+                    } else if (this.isOnSequenceEdit && !this.$route.query.collapses) {
+                        for (let i = 0; i < metadata.length; i++) {
+                            this.metadataCollapses.push(true);
+                            this.metadataCollapses[i] = false;
+                        }
+                    } else {
+                        for (let i = 0; i < metadata.length; i++) {
+                            this.metadataCollapses.push(false);
+                            this.metadataCollapses[i] = true;
+                        }
                     }
-                } else if (this.isOnSequenceEdit && !this.$route.query.collapses) {
-                    for (let i = 0; i < metadata.length; i++) {
-                        this.metadataCollapses.push(true);
-                        this.metadataCollapses[i] = false;
-                    }
-                } else {
-                    for (let i = 0; i < metadata.length; i++) {
-                        this.metadataCollapses.push(false);
-                        this.metadataCollapses[i] = true;
-                    }
-                }
 
-                this.isLoading = false;
-            });
+                    this.isLoading = false;
+                });
+        },
+        setDocument(event, documentType) {
+            if (documentType === 'attachment')
+                this.setFileDocument(event);
+            else if (documentType === 'text')
+                this.setTextDocument();
+            else if (documentType === 'url')
+                this.setURLDocument();
         },
         setFileDocument(event) {
             this.fileMediaFrame.openFrame(event);
         },
         setTextDocument() {
-            this.isTextModalActive = true;
-        },
-        confirmTextWriting() {
-            this.isLoading = true;
-            this.isTextModalActive = false;
-            this.form.document_type = 'text';
-            this.form.document = this.textContent;
-            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
-            .then(item => {
-                this.item.document_as_html = item.document_as_html;
-                this.item.document_mimetype = item.document_mimetype;
-                this.isLoading = false;
-            })
-            .catch((errors) => {
-                for (let error of errors.errors) {
-                    for (let metadatum of Object.keys(error)){
-                        eventBusItemMetadata.errors.push({ 
-                            metadatum_id: metadatum, 
-                            errors: error[metadatum]
-                        });
-                    }
+            this.$buefy.modal.open({
+                parent: this,
+                component: ItemDocumentTextModal,
+                canCancel: false,
+                width: 640,
+                scroll: 'keep',
+                trapFocus: true,
+                autoFocus: false,
+                ariaModal: true,
+                ariaRole: 'dialog',
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close'),
+                props: {
+                    textContent: this.textContent
+                },
+                events: {
+                    confirmTextWriting: this.confirmTextWriting
                 }
-                this.formErrorMessage = errors.error_message;
-
-                this.isLoading = false;
             });
         },
-        cancelTextWriting() {
-            this.isTextModalActive = false;
-            this.textContent = '';
-        },
-        setURLDocument() {
-            this.isURLModalActive = true;
-        },
-        confirmURLSelection() {
+        confirmTextWriting(newTextContent) {
             this.isLoading = true;
-            this.isURLModalActive = false;
-            this.form.document_type = 'url';
-            this.form.document = this.urlLink;
-            this.form.document_options = {
-                forced_iframe: this.urlForcedIframe,
-                forced_iframe_width: this.urlIframeWidth,
-                forced_iframe_height: this.urlIframeHeight,
-                is_image: this.urlIsImage
-            }
-            this.updateItemDocument({
-                    item_id: this.itemId,
-                    document: this.form.document,
-                    document_type: this.form.document_type,
-                    document_options: this.form.document_options
-                })
+            this.form.document_type = 'text';
+            this.form.document = newTextContent;
+            this.updateItemDocument({ item_id: this.itemId, document: this.form.document, document_type: this.form.document_type })
                 .then(item => {
                     this.item.document_as_html = item.document_as_html;
                     this.item.document_mimetype = item.document_mimetype;
+                    if (item.document_type != undefined && item.document_type == 'text')
+                        this.textContent = item.document;
                     this.isLoading = false;
-
-                    let oldThumbnail = this.item.thumbnail;
-                    if (item.document_type == 'url' && oldThumbnail != item.thumbnail )
-                        this.item.thumbnail = item.thumbnail;
                 })
                 .catch((errors) => {
                     for (let error of errors.errors) {
@@ -1487,13 +1325,88 @@ export default {
                     this.isLoading = false;
                 });
         },
-        cancelURLSelection() {
+        setURLDocument() {
+            this.$buefy.modal.open({
+                parent: this,
+                component: ItemDocumentURLModal,
+                canCancel: false,
+                width: 860,
+                scroll: 'keep',
+                trapFocus: true,
+                autoFocus: false,
+                ariaModal: true,
+                ariaRole: 'dialog',
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close'),
+                props: {
+                    urlLink: this.urlLink,
+                    urlForcedIframe: this.urlForcedIframe,
+                    urlIframeWidth: this.urlIframeWidth,
+                    urlIframeHeight: this.urlIframeHeight,
+                    urlIsImage: this.urlIsImage
+                },
+                events: {
+                    confirmURLSelection: this.confirmURLSelection
+                }
+            });
+        },
+        confirmURLSelection(updatedValues) {
+            this.isLoading = true;
             this.isURLModalActive = false;
-            this.urlLink = '';
-            this.urlForcedIframe = this.form.document_options && this.form.document_options['forced_iframe'] !== undefined ? this.form.document_options['forced_iframe'] : false;
-            this.urlIsImage = this.form.document_options && this.form.document_options['is_image'] !== undefined ? this.form.document_options['is_image'] : false;
-            this.urlIframeWidth = this.form.document_options && this.form.document_options['forced_iframe_width'] !== undefined ? this.form.document_options['forced_iframe_width'] : 600;
-            this.urlIframeHeight = this.form.document_options && this.form.document_options['forced_iframe_height'] !== undefined ? this.form.document_options['forced_iframe_height'] : 450;
+            this.form.document_type = 'url';
+            this.form.document = updatedValues.urlLink;
+            this.form.document_options = {
+                forced_iframe: updatedValues.urlForcedIframe,
+                forced_iframe_width: updatedValues.urlIframeWidth,
+                forced_iframe_height: updatedValues.urlIframeHeight,
+                is_image: updatedValues.urlIsImage
+            }
+            this.updateItemDocument({
+                    item_id: this.itemId,
+                    document: this.form.document,
+                    document_type: this.form.document_type,
+                    document_options: this.form.document_options
+                })
+                .then(item => {
+                    this.item.document_as_html = item.document_as_html;
+                    this.item.document_mimetype = item.document_mimetype;
+
+                    if (item.document_type != undefined && item.document_type == 'url')
+                        this.urlLink = item.document;
+
+                    if (item.document_type != undefined && item.document_type == 'text')
+                        this.textContent = item.document;
+                        
+                    if (item.document_options !== undefined && item.document_options['forced_iframe'] !== undefined)
+                        this.urlForcedIframe = item.document_options['forced_iframe'];
+                    if (item.document_options !== undefined && item.document_options['is_image'] !== undefined)
+                        this.urlIsImage = item.document_options['is_image'];
+                    if (item.document_options !== undefined && item.document_options['forced_iframe_width'] !== undefined)
+                        this.urlIframeWidth = item.document_options['forced_iframe_width'];
+                    if (item.document_options !== undefined && item.document_options['forced_iframe_height'] !== undefined)
+                        this.urlIframeHeight = item.document_options['forced_iframe_height'];
+
+                    this.isLoading = false;
+
+                    let oldThumbnail = this.item.thumbnail;
+                    if (item.document_type == 'url' && oldThumbnail != item.thumbnail ) {
+                        this.item.thumbnail = item.thumbnail;
+                        this.item.thumbnail_id = item.thumbnail_id;
+                    }
+                })
+                .catch((errors) => {
+                    for (let error of errors.errors) {
+                        for (let metadatum of Object.keys(error)){
+                            eventBusItemMetadata.errors.push({ 
+                                metadatum_id: metadatum, 
+                                errors: error[metadatum]
+                            });
+                        }
+                    }
+                    this.formErrorMessage = errors.error_message;
+
+                    this.isLoading = false;
+                });
         },
         removeDocument() {
             this.textContent = '';
@@ -1507,16 +1420,7 @@ export default {
             })
             .then(() => {
                 this.item.document_mimetype = 'empty';
-                this.isLoadingAttachments = true;
-                this.fetchAttachments({
-                    page: 1,
-                    attachmentsPerPage: 24,
-                    itemId: this.itemId,
-                    documentId: this.form.document,
-                    thumbnailId: this.form.thumbnail_id
-                })
-                    .then(() => this.isLoadingAttachments = false)
-                    .catch(() => this.isLoadingAttachments = false);
+                this.shouldLoadAttachments = !this.shouldLoadAttachments;
             })
             .catch((errors) => {
                 for (let error of errors.errors) {
@@ -1551,17 +1455,7 @@ export default {
                     onConfirm: () => {
                         this.deletePermanentlyAttachment(attachment.id)
                             .then(() => {
-                                this.isLoadingAttachments = true;
-
-                                this.fetchAttachments({ 
-                                        page: 1,
-                                        attachmentsPerPage: 24,
-                                        itemId: this.itemId,
-                                        documentId: this.form.document,
-                                        thumbnailId: this.form.thumbnail_id
-                                    })
-                                    .then(() => this.isLoadingAttachments = false)
-                                    .catch(() => this.isLoadingAttachments = false);
+                                this.shouldLoadAttachments = !this.shouldLoadAttachments;
                             })
                             .catch((error) => {
                                 this.$console.error(error);
@@ -1595,8 +1489,12 @@ export default {
                             this.item.document_mimetype = item.document_mimetype;
 
                             let oldThumbnail = this.item.thumbnail;
-                            if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail )
+                            if (item.document_type == 'attachment' && oldThumbnail != item.thumbnail ) {
                                 this.item.thumbnail = item.thumbnail;
+                                this.item.thumbnail_id = item.thumbnail_id;
+                            }
+
+                            this.shouldLoadAttachments = !this.shouldLoadAttachments;
 
                         })
                         .catch((errors) => {
@@ -1633,7 +1531,7 @@ export default {
                     }
                 }
             );
-            this.attachmentMediaFrame = new wpMediaFrames.attachmentControl(
+            this.attachmentsMediaFrame = new wpMediaFrames.attachmentControl(
                 'my-attachment-media-frame', {
                     button_labels: {
                         frame_title: this.$i18n.get('instruction_select_files_to_attach_to_item'),
@@ -1645,27 +1543,19 @@ export default {
                     thumbnailId: this.form.thumbnail_id ? this.form.thumbnail_id : null, 
                     onSave: () => {
                         // Fetch current existing attachments
-                        this.isLoadingAttachments = true;
-                        this.fetchAttachments({ 
-                            page: 1,
-                            attachmentsPerPage: 24,
-                            itemId: this.itemId,
-                            documentId: this.form.document,
-                            thumbnailId: this.form.thumbnail_id
-                        })
-                            .then(() => this.isLoadingAttachments = false)
-                            .catch(() => this.isLoadingAttachments = false);
+                        this.shouldLoadAttachments = !this.shouldLoadAttachments;
                     }
                 }
             );
 
         },
         onUpdateThumbnailAlt(updatedThumbnailAlt) {
+            this.isUpdatingValues = true;
 
             this.updateThumbnailAlt({ thumbnailId: this.item.thumbnail_id, thumbnailAlt: updatedThumbnailAlt })
                 .then((res) => {
-                    this.form.thumbnail_id = res.thumbnail_id;
-                    this.form.thumbnail_alt = res.thumbnail_alt;
+                    this.form.thumbnail_alt = res.alt_text;
+                    this.isUpdatingValues = false;
                 })
                 .catch(error => this.$console.error(error));
         },
@@ -1674,10 +1564,17 @@ export default {
 
             for (let i = 0; i < this.metadataCollapses.length; i++)
                 this.metadataCollapses[i] = this.collapseAll;
+            
+            for (let i = 0; i < this.metadataSectionCollapses.length; i++)
+                this.$set(this.metadataSectionCollapses, i, this.collapseAll);
 
         },
         onChangeCollapse(event, index) {
             this.metadataCollapses.splice(index, 1, event);
+        },
+        toggleMetadataSectionCollapse(sectionIndex) {
+            if (!this.isMetadataNavigation) 
+                this.$set(this.metadataSectionCollapses, sectionIndex, (this.errorMessage ? true : !this.metadataSectionCollapses[sectionIndex]));
         },
         onDeletePermanently() {
             this.$buefy.modal.open({
@@ -1745,7 +1642,7 @@ export default {
                     this.form.document_options = this.item.document_options;
                     this.form.comment_status = this.item.comment_status;
                     this.form.thumbnail_id = this.item.thumbnail_id;
-                    this.form.thumbnail_alt = this.item.thumbnail_alt;
+                    this.form.thumbnail_alt = this.item.thumbnail_alt ? this.item.thumbnail_alt : '';
 
                     if (this.form.document_type != undefined && this.form.document_type == 'url')
                         this.urlLink = this.form.document;
@@ -1761,19 +1658,10 @@ export default {
                     if (this.form.document_options !== undefined && this.form.document_options['forced_iframe_height'] !== undefined)
                         this.urlIframeHeight = this.form.document_options['forced_iframe_height'];
 
-                    if (this.item.status == 'publish' || this.item.status == 'private')
-                        this.visibility = this.item.status;
-
                     this.loadMetadata();
                     this.setLastUpdated(this.item.modification_date);
 
-                    // Fetch current existing attachments now that item.document
-                    this.fetchAttachments({
-                        page: 1,
-                        attachmentsPerPage: 24,
-                        itemId: this.itemId,
-                        documentId: this.form.document,
-                        thumbnailId: this.form.thumbnail_id });
+                    this.shouldLoadAttachments = true;
 
                     // Initializes Media Frames now that itemId and item.document exists
                     this.initializeMediaFrames();
@@ -1812,45 +1700,154 @@ export default {
             }
             else 
                 return itemMetadatum.metadatum.name.toString().toLowerCase().indexOf(this.metadataNameFilterString.toString().toLowerCase()) >= 0;
+        },
+        openMetadataNameFilterClose() {
+            this.metadataNameFilterString = '';
+            if (this.isMobileScreen)
+                this.openMetadataNameFilter = false;
+        },
+        handleWindowResize: _.debounce( function() {
+            this.$nextTick(() => {
+                if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
+                    this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
+            });
+        }, 500),
+        focusPreviousMetadatum() {
+            const previouslyFocusedMetadatum = this.metadatumList[this.focusedMetadatum - 1];
+            const isPreviouslyFocusedOnCompoundMetadatum = previouslyFocusedMetadatum.metadatum && previouslyFocusedMetadatum.metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
+            
+            if (isPreviouslyFocusedOnCompoundMetadatum || this.isCurrentlyFocusedOnCompoundMetadatum)
+                eventBusItemMetadata.$emit('focusPreviousChildMetadatum');
+                
+            if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnFirstMetadatumOfCompoundNavigation) )
+                this.setMetadatumFocus({ index: this.focusedMetadatum - 1, scrollIntoView: true });
+        },
+        focusNextMetadatum() {
+            if (this.isCurrentlyFocusedOnCompoundMetadatum && !this.isOnLastMetadatumOfCompoundNavigation)
+                eventBusItemMetadata.$emit('focusNextChildMetadatum');
+
+            if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnLastMetadatumOfCompoundNavigation) )
+                this.setMetadatumFocus({ index: this.focusedMetadatum + 1, scrollIntoView: true });  
+        },
+        setMetadatumFocus({ index = 0, scrollIntoView = false }) {
+
+            const previousIndex = this.focusedMetadatum;
+            this.focusedMetadatum = index;
+
+            if (previousIndex === index && !scrollIntoView)
+                return;
+
+            let fieldElement = this.$refs['tainacan-form-item--' + index] && this.$refs['tainacan-form-item--' + index][0] && this.$refs['tainacan-form-item--' + index][0]['$el'];
+            if (fieldElement) {
+                
+                const isInsideCompound = fieldElement.classList.contains('tainacan-metadatum-component--tainacan-compound');
+                if (!isInsideCompound) {
+
+                    const inputElement = (fieldElement.getElementsByTagName('input')[0] || fieldElement.getElementsByTagName('select')[0] || fieldElement.getElementsByTagName('textarea')[0]);
+                    if (inputElement) {
+
+                        setTimeout(() => {
+                            
+                            if (previousIndex !== index && inputElement !== document.activeElement) {
+                                inputElement.focus();
+                                
+                                if (inputElement.type !== 'checkbox' && inputElement.type !== 'radio' && !inputElement.classList.contains('is-special-hidden-for-mobile'))
+                                    inputElement.click();
+                            }
+                            
+                            if (scrollIntoView) {
+                                setTimeout(() => {
+                                    fieldElement.scrollIntoView({
+                                        behavior: 'smooth',
+                                        block: 'center'
+                                    });
+                                }, 300);
+                            }
+
+                        }, 100);
+                    }
+                }
+            }
+        },
+        exitToMobileApp() {
+            // In Mobile app, we send a message to inform updates
+            if (
+                this.$adminOptions.mobileAppMode &&
+                webkit &&
+                webkit.messageHandlers &&
+                webkit.messageHandlers.cordova_iab
+            )
+                webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'exited_from_navigation', 'item': this.item }));
         }
     }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
-    .page-container {
-        padding: var(--tainacan-container-padding) 0px;
+    .tainacan-admin-collection-mobile-app-mode {
+        .page-container.item-edition-container,
+        .page-container.item-creation-container {
+            padding-top: 0px;
+            height: 100%;
+
+            .tainacan-form > .columns {
+                margin-left: 0px;
+                margin-right: 0px;
+            }
+        }
+        .column.main-column {
+            padding-top: 0.75em !important;
+            padding-right: 0px !important;
+            padding-left: 0px !important;
+        }
+        .b-tabs {
+            #tainacanTabsSwiper {
+                background-color: var(--tainacan-gray1);
+                --tainacan-background-color: var(--tainacan-gray1);
+                position: sticky;
+                top: 56px;
+                margin-top: 0px;
+            }
+        }
+        .footer {
+            background-color: transparent !important;
+            pointer-events: none;
+
+            .item-edition-footer-dropdown {
+                pointer-events: all;
+            }
+            .button {
+                pointer-events: all;
+                box-shadow: 2px 2px 12px -8px var(--tainacan-gray5) !important;
+            }
+        }
+    }
+
+    .page-container.item-edition-container,
+    .page-container.item-creation-container {
+        padding: 0px 0px 60px 0px;
+        height: calc(100% - 2.35em);
+        transition: none;
 
         &>.tainacan-form {
-            margin-bottom: 64px;
+            margin-bottom: 60px;
 
             .field:not(:last-child) {
                 margin-bottom: 0em;
+            }
+
+            hr {
+                height: 1px;
+                margin: 1.25em 0 0.75em;
+                background: var(--tainacan-gray0);
             }
         }
 
         .tainacan-page-title {
             padding: 0 var(--tainacan-one-column);
-            margin-bottom: 32px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: space-between;
-
-            h1, h2 {
-                font-size: 1.25em;
-                font-weight: 500;
-                color: var(--tainacan-heading-color);
-                display: inline-block;
-                width: 80%;
-                flex-shrink: 1;
-                flex-grow: 1;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                max-width: 80%;
-            }
+            margin-top: var(--tainacan-container-padding);
+        
             .status-tag {
                 color: var(--tainacan-white);
                 background: var(--tainacan-secondary);
@@ -1860,29 +1857,20 @@ export default {
                 font-weight: 600;
                 position: relative;
                 top: -2px;
-            }
-            a.back-link {
-                font-weight: 500;
-                float: right;
-                margin-top: 5px;
-            }
-            hr {
-                margin: 3px 0px 4px 0px;
-                height: 1px;
-                background-color: var(--tainacan-secondary);
-                width: 100%;
+                border-radius: 2px;
             }
 
             @media screen and (max-width: 769px) {
                 padding: 0 0.5em;
+                margin-bottom: 1.25rem !important;
             }
         }
-
         .tainacan-form > .columns {
             margin-left: var(--tainacan-one-column);
             margin-right: var(--tainacan-one-column);
 
             .column.is-5 {
+                padding-top: 0;
                 padding-left: var(--tainacan-one-column);
                 padding-right: var(--tainacan-one-column);
 
@@ -1890,15 +1878,16 @@ export default {
                     .sticky-container {
                         position: relative;
                         position: sticky;
-                        top: -25px;
-                        margin: 3px 0;
-                        max-height: calc(100vh - 202px);
+                        top: 0px;
+                        margin: 0;
+                        max-height: calc(100vh - 184px);
                         overflow-y: auto;
                         overflow-x: hidden;
                     }
                 }
             }
-            .column.is-7 {
+            .column.main-column {
+                padding-top: 0;
                 padding-left: var(--tainacan-one-column);
                 padding-right: 0;
 
@@ -1907,273 +1896,309 @@ export default {
                     justify-content: space-between;
 
                     .column {
-                        padding: 1em 12px 0 12px;
+                        padding: 0.75em 12px 0 12px;
                     }
                 }
 
-                .field {
-                    padding: 12px 0px 12px 60px;
+                .metadata-section-metadata-list {
+                    margin-bottom: 2rem;
+                    
+                    .field {
+                        padding: 12px 0px 12px 42px;
+                        margin-left: 12px;
+                    }
                 }
-                .tab-item>.field:last-child {
+                .item-edition-tab-content .tab-item>.field:last-child {
                     margin-bottom: 187px;
                 }
 
                 @media screen and (max-width: 769px) {
                     padding-right: var(--tainacan-one-column);
                     max-width: 100%;
+
+                    .metadata-section-metadata-list {
+                        .field {
+                            margin-left: 0px;
+                        }
+                    }
+                    #tainacanTabsSwiper.tabs a {
+                        padding: 0.75em 1.45em;
+                    }
+                }
+            }
+
+            @media screen and (max-width: 1440px) {
+                &>.column.main-column {
+                    padding-left: 0.75em;
+                }
+                &>.column:not(.main-column) {
+                    padding-right: 0.75em;
                 }
             }
 
             @media screen and (max-width: 769px) {
                 margin-left: 0;
                 margin-right: 0;
-                display: flex;
-                flex-direction: column-reverse;
 
-                &>.column.is-7 {
+                &>.column.main-column {
                     padding-left: 0;
                     padding-right: 0;
+                    padding-top: 1.75em;
                     max-width: 100%;
-                    widows: 100%;
+                    width: 100%;
 
-                    .field {
-                        padding-left: 18px;
-                        
-                        /deep/ .label {
-                            margin-left: 0;
+                    .metadata-section-metadata-list {
+
+                        .sub-header {
+                            padding-right: 0.5em;
                         }
-                        /deep/ .collapse-handle {
-                            margin-left: -24px;
+                        .field {
+                            padding: 1em 0.75em;
+                        }
+                        .field.has-collapses-hidden {
+                            padding: 1em 0.75em !important;
                         }
                     }
-                    .tab-item>.field:last-child {
+                    .metadata-section-header {
+                        padding-left: 0.75em;
+                        padding-right: 0.75em;
+
+                        .collapse-handle>.icon {
+                            float: right;
+                        }
+                    }
+                    .item-edition-tab-content {
+                        padding-left: 0;
+                        padding-right: 0;
+                    }
+                    .item-edition-tab-content .tab-item>.field:last-child {
                         margin-bottom: 24px;
                     }
                     &>.columns {
                         display: flex;
                     }
                 }
-                &>.column.is-5 {
+                &>.column:not(.main-column) {
                     max-width: 100%;
-                    widows: 100%;
-                    padding-left: 0.5em;
-                    padding-right: 0.5em;
-                }
-            }
-        }
+                    width: 100%;
+                    padding-left: 0;
+                    padding-right: 0;
 
-        // .b-tabs {
-        //     overflow: hidden !important;
-        // }
-    }
-
-    .section-label {
-        position: relative;
-        label {
-            font-size: 1em !important;
-            font-weight: 500 !important;
-            color: var(--tainacan-label-color) !important;
-            line-height: 1.2em;
-        }
-    }
-
-    .sub-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        
-        .field {
-            padding: 2px 0px 2px 24px !important;
-        }
-    }
-
-    .collapse-all {
-        font-size: 0.75em;
-        white-space: nowrap;
-        .icon {
-            vertical-align: bottom;
-        }
-    }
-
-    .section-box {
-        padding: 0 var(--tainacan-one-column) 0 0;
-        margin-top: 12px;
-        margin-bottom: 16px;
-
-        ul {
-            display: flex;
-            justify-content: space-evenly;
-            li {
-                text-align: center;
-                button {
-                    border-radius: 50px;
-                    height: 72px;
-                    width: 72px;
-                    border: none;
-                    background-color: var(--tainacan-gray2);
-                    color: var(--tainacan-secondary);
-                    margin-bottom: 6px;
-                    &:hover {
-                        background-color: var(--tainacan-primary);
-                        cursor: pointer;
+                    .section-box {
+                        padding: 0 1em 0 1.875em;
+                        margin-top: 10px;
                     }
                 }
-                p { 
-                    color: var(--tainacan-secondary); 
-                    font-size: 0.8125em;
+            }
+        }
+
+        .section-label {
+            position: relative;
+            padding: 0.5em 0.75em 0.5em 0em;
+            label {
+                font-size: 1em !important;
+                font-weight: 500 !important;
+                color: var(--tainacan-label-color) !important;
+                line-height: 1.2em;
+            }
+        }
+        .section-box+.section-label {
+            border-top: 1px solid var(--tainacan-gray1);
+            padding-top: 6px;
+        }
+
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--tainacan-background-color);
+            
+            .field {
+                padding: 2px 0px 2px 16px !important;
+            }
+
+            &.is-metadata-navigation-active {
+                width: calc(58.33333337% - (2 * var(--tainacan-one-column)) - var(--tainacan-sidebar-width, 3.25em));
+                position: fixed;
+                z-index: 99999;
+                bottom: 0;
+                padding: 0.5em 0.5em 0.25em 0.5em;
+                border-top-right-radius: 3px;
+                border-top-left-radius: 3px;
+                overflow: hidden;
+                transition: top 0.3s ease, bottom 0.3s ease, background-color 0.3s ease;
+                background-color: var(--tainacan-gray1);
+
+                .metadata-name-search {
+                    top: 0.5em;
+                    max-width: 220px;
+                }
+
+                @media screen and (max-width: 1440px) {
+                    width: calc(58.33333337% - var(--tainacan-sidebar-width, 3.25em) - var(--tainacan-one-column));
+                }
+            }
+
+            .metadata-navigation {
+                margin-right: auto;
+            }
+            .metadata-navigation /deep/ .button {
+                border-radius: 0 !important;
+                margin-left: 0;
+                min-height: 2.25em;
+                background-color: var(--tainacan-background-color) !important;
+
+                &>span {
+                    display: flex;
+                    align-items: center;
+                }
+
+                &:last-of-type {
+                    margin-left: 0;
+                }
+            }
+            .metadata-name-search-icon {
+                padding: 1.25em 0.75em;
+                color: var(--tainacan-blue5);
+            }
+
+            @media screen and (max-width: 769px) {
+                .metadata-name-search {
+                    position: absolute;
+                    right: 0.5em;
+                    z-index: 9999;
+                    padding-left: 0 !important;
+                }
+                &.is-metadata-navigation-active {
+                    width: 100%;
+                    left: 0;
+                    right: 0;
+                    background-color: var(--tainacan-gray1);
+                    border-top-right-radius: 0px;
+                    border-top-left-radius: 0px;
+                    overflow: visible;
+                }
+                .field {
+                    padding: 2px 0px 2px 3px !important;
                 }
             }
         }
-    }
-    .section-status {
-        padding-bottom: 16px;
-        font-size: 0.875em;
 
-        .field {
-            padding: 10px 0 14px 0px !important;
+        .collapse-all {
+            font-size: 0.75em;
+            white-space: nowrap;
+            background: transparent;
+            border-color: transparent !important;
 
-            .b-radio {
-                margin-right: 24px;
-                margin-left: 0;
-            }
-            .icon  {
-                font-size: 1.125em !important;
-                color: var(--tainacan-info-color);
+            .icon {
+                font-size: 1.35em;
             }
         }
-    }
 
-    .document-field {
-        /deep/ iframe {
-            max-width: 100%;
-            max-height: 100%;
+        .metadata-section-header {
+            padding: 0.75em 0em;
+            border-bottom: 1px solid var(--tainacan-input-border-color);
         }
-        .document-buttons-row {
-            text-align: right;
-            top: -21px;
+
+        .item-edition-tab-content {
+            border-top: 1px solid var(--tainacan-input-border-color);
+        }
+        .swiper {
+            width: 100%;
             position: relative;
-        }
-    }
-
-    #button-edit-thumbnail,
-    #button-edit-document,
-    #button-delete-thumbnail,
-    #button-alt-text-thumbnail,
-    #button-delete-document {
-        border-radius: 100px !important;
-        max-height: 2.125em !important;
-        max-width: 2.125em !important;
-        min-height: 2.125em !important;
-        min-width: 2.125em !important;
-        padding: 0 !important;
-        z-index: 99;
-        margin-left: 6px !important;
-
-        .icon {
-            display: inherit;
-            padding: 0;
             margin: 0;
-            margin-top: -2px;
-            font-size: 1.125em;
-        }
-    }
+            --swiper-navigation-size: 2em;
+            --swiper-navigation-color: var(--tainacan-secondary);
+            margin-top: 8px;
+            
+            .swiper-wrapper {
+                border: none !important;
+            }
+            .swiper-slide {
+                width: auto;
+            }
+            .swiper-button-next,
+            .swiper-button-prev {
+                padding: 34px 26px;
+                border: none;
+                background-color: transparent;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+            }
+            .swiper-button-prev::after,
+            .swiper-rtl .swiper-button-next::after {
+                content: 'previous';
+            }
+            .swiper-button-next,
+            .swiper-rtl .swiper-button-prev {
+                right: 0;
+                background-image: linear-gradient(90deg, rgba(255,255,255,0) 0%, var(--tainacan-background-color) 40%);
+            }
+            .swiper-button-prev,
+            .swiper-rtl .swiper-button-next {
+                left: 0;
+                background-image: linear-gradient(90deg, var(--tainacan-background-color) 0%, rgba(255,255,255,0) 60%);
+            }
+            .swiper-button-next.swiper-button-disabled,
+            .swiper-button-prev.swiper-button-disabled {
+                display: none;
+                visibility: hidden;
+            }
+            .swiper-button-next::after,
+            .swiper-button-prev::after {
+                font-family: "TainacanIcons";
+                opacity: 0.7;
+                transition: opacity ease 0.2s;
+            }
+        }   
 
-    .thumbnail-field {
-
-        .content {
-            padding: 10px;
-            font-size: 0.8em;
-        }
-        img {
-            height: 148px;
-            width: 148px;
-        }
-        .image-placeholder {
-            position: absolute;
-            margin-left: 32px;
-            margin-right: 32px;
-            font-size: 0.8em;
-            font-weight: bold;
-            z-index: 99;
-            text-align: center;
-            color: var(--tainacan-info-color);
-            top: 60px;
-            max-width: 84px;
-        }
-
-        .thumbnail-buttons-row {
+        .section-box {
             position: relative;
-            left: 33px;
-            bottom: 1.25em;
+            padding: 0 1.75em 0 1.75em;
+            margin-bottom: 16px;
         }
 
-        .thumbnail-alt-input {
-            .label {
-                font-size: 0.875em;
-                font-weight: 500;
-                margin-left: 15px;
-                margin-bottom: 0;
-                margin-top: 0.15em;
-            }
-        }
-    }
+        #button-edit-thumbnail,
+        #button-edit-document,
+        #button-delete-thumbnail,
+        #button-alt-text-thumbnail,
+        #button-delete-document {
+            border-radius: 100px !important;
+            max-height: 2.125em !important;
+            max-width: 2.125em !important;
+            min-height: 2.125em !important;
+            min-width: 2.125em !important;
+            padding: 0 !important;
+            z-index: 99;
+            margin-right: 6px !important;
 
-    .attachments-list-heading {
-        display: flex;
-        align-items: center;
-        margin-top: 12px;
-        margin-bottom: 24px;
-
-        button {
-            margin-right: 12px;
-        }
-    }
-
-    .footer {
-        padding: 18px var(--tainacan-one-column);
-        position: absolute;
-        bottom: 0;
-        z-index: 999999;
-        background-color: var(--tainacan-gray1);
-        width: 100%;
-        height: 65px;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-
-        .form-submission-footer {
-            .button {
-                margin-left: 16px;
-                margin-right: 6px;
+            .icon {
+                display: inherit;
+                padding: 0;
+                margin: 0;
+                margin-top: -2px;
+                font-size: 1.125em;
             }
         }
 
-        @keyframes blink {
-            from { color: var(--tainacan-blue5); }
-            to { color: var(--tainacan-info-color); }
+        .metadata-section-metadata-list .metadatum-description-help-info {
+            padding: 0rem 1rem 0.5rem 0.125rem;
         }
 
-        .footer-message {
+        .related-items-list-heading {
             display: flex;
             align-items: center;
-        }
-        .update-warning {
-            color: var(--tainacan-blue5);
-            animation-name: blink;
-            animation-duration: 0.5s;
-            animation-delay: 0.5s;
-        }
-
-        .update-info-section {
-            color: var(--tainacan-info-color);
-            margin-right: auto;
-        }
-
-        .help {
-            display: inline-block;
-            font-size: 1.0em;
-            margin-top: 0;
-            margin-left: 24px;
+            justify-content: space-between;
+            margin-left: 1.5em;
+            margin-top: 10px;
+            margin-bottom: var(--tainacan-container-padding);
+            p {
+                color: var(--tainacan-info-color);
+            }
+            @media screen and (max-width: 768px) {
+                flex-wrap: wrap;
+            }
         }
 
         .sequence-progress {
@@ -2194,42 +2219,191 @@ export default {
             left: 0;
         }
 
-        .sequence-button {
-            background-color: transparent;
-            color: var(--tainacan-secondary);
-            border: none;
+        .update-warning {
+            color: var(--tainacan-blue5);
+            animation-name: blink;
+            animation-duration: 0.5s;
+            animation-delay: 0.5s;
+        }
 
-            .icon {
-                margin-right: 5px !important;
+        .footer {
+            padding: 14px var(--tainacan-one-column);
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            z-index: 9999;
+            background-color: var(--tainacan-gray1);
+            width: calc(100% - var(--tainacan-sidebar-width, 3.25em));
+            height: 60px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            transition: bottom 0.5s ease, width 0.2s linear;
+
+            @keyframes blink {
+                from { color: var(--tainacan-blue5); }
+                to { color: var(--tainacan-info-color); }
             }
 
-            &:hover,
-            &:focus,
-            &:active {
-                background-color: transparent !important;
-                color: var(--tainacan-secondary) !important;
+            .footer-message {
+                display: flex;
+                align-items: center;
+            }
+
+            .update-info-section {
+                color: var(--tainacan-info-color);
+                margin-right: auto;
+                display: flex;
+                flex-wrap: nowrap;
+            }
+
+            .help {
+                display: inline-flex;
+                font-size: 1.0em;
+                margin-top: 0;
+                margin-left: 24px;
+
+                .tainacan-help-tooltip-trigger {
+                    margin-left: 0.25em;
+                }
+            }
+
+            .sequence-button {
+                background-color: transparent;
+                color: var(--tainacan-secondary);
+                border: none;
+
+                .icon {
+                    margin-right: 5px !important;
+                }
+
+                &:hover,
+                &:focus,
+                &:active {
+                    background-color: transparent !important;
+                    color: var(--tainacan-secondary) !important;
+                }
+            }
+
+            &.has-some-metadatum-focused {
+                bottom: -300px;
+            }
+
+            @media screen and (max-width: 769px) {
+                padding: 13px 0.5em;
+                width: 100%;
+                flex-wrap: wrap;
+                height: auto;
+                position: fixed;
+
+                .update-info-section {
+                    margin-left: auto;margin-bottom: 0.75em;
+                    margin-top: -0.25em;
+                }
             }
         }
 
-        @media screen and (max-width: 769px) {
-            padding: 16px 0.5em;
-            flex-wrap: wrap;
-            height: auto;
+        .tainacan-mobile-app-header {
+            padding: 0 1rem;
+            background: var(--tainacan-gray1);
+            color: var(--tainacan-gray5);
+            font-weight: bold;
+            font-size: 1.125rem;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0px;
+            z-index: 99999;
 
-            .update-info-section {
-                margin-left: auto;
-                margin-bottom: 0.5em;
+            h1 {
+                padding: 0.5em 1em;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
             }
-            .form-submission-footer {
+            button {
+                padding: 0px;
+                margin: 0px;
+                border: none;
+                background: none;
+            }
+            svg {
                 display: flex;
-                justify-content: space-between;
-                width: 100%;
+            }
+        }
 
-                .button {
-                    margin-left: 2px;
-                    margin-right: 2px;
+        .tainacan-mobile-app-header_panel {
+            padding: 0 1rem 1rem 1rem;
+            background: var(--tainacan-gray1);
+            font-size: 0.875rem;
+            font-weight: normal;
+            position: absolute;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 99998;
+
+            h1 {
+                font-size: 1.45em;
+                padding: 0.5em 0em 0.25em 0em;
+                text-overflow: initial;
+                overflow: visible;
+                white-space: normal;
+                text-align: start;
+            }
+
+            a {
+                margin: 0 auto;
+            }
+
+            .tainacan-mobile-app-header_panel-shortcuts-area {
+                margin-top: 1.25em;
+                text-align: left;
+                
+                h2 {
+                    font-size: 1.125em;
+                    padding: 0.5em 0em;
+                    display: inline;
                 }
             }
+
+            .tainacan-mobile-app-header_panel-shortcuts {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                width: 100%;
+                gap: 1em;
+                margin: 0.75em auto 1.875em auto;
+                
+                &>button {
+                    border: 1px solid var(--tainacan-background-color); 
+                    background: var(--tainacan-background-color);
+                    padding: 1em;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-evenly;
+                    flex-direction: column;
+                    border-radius: 1px;
+
+                    &:hover,
+                    &:focus,
+                    &:active {
+                        border-color: var(--tainacan-secondary);
+                    }
+                }
+            }
+        }
+        .tainacan-mobile-app-header_panel-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(50,50,50,0.5);
+            z-index: 99998;
         }
     }
 

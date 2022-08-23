@@ -274,18 +274,15 @@ export const deletePermanentlyAttachment = ( { commit }, attachmentId) => {
     });
 };
 
-export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId, documentId, thumbnailId }) => {
-    commit('cleanAttachments');
-    commit('setTotalAttachments', null);
-
+export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId, excludeDocumentId, excludeThumbnailId }) => {
     let endpoint = '/items/' + itemId + '/attachments?order=ASC&orderby=menu_order&perpage=' + attachmentsPerPage + '&paged=' + page;
 
-    if (documentId && !isNaN(documentId) && thumbnailId && !isNaN(thumbnailId))
-        endpoint += '&exclude=' + documentId + ',' + thumbnailId;
-    else if (documentId && !isNaN(documentId))
-        endpoint += '&exclude=' + documentId;
-    else if (thumbnailId && !isNaN(thumbnailId))
-        endpoint += '&exclude=' + thumbnailId;
+    if (excludeDocumentId && !isNaN(excludeDocumentId) && excludeThumbnailId && !isNaN(excludeThumbnailId))
+        endpoint += '&exclude=' + excludeDocumentId + ',' + excludeThumbnailId;
+    else if (excludeDocumentId && !isNaN(excludeDocumentId))
+        endpoint += '&exclude=' + excludeDocumentId;
+    else if (excludeThumbnailId && !isNaN(excludeThumbnailId))
+        endpoint += '&exclude=' + excludeThumbnailId;
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(endpoint)

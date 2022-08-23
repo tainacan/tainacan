@@ -442,7 +442,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 				'https://www.codeproject.com/KB/GDI-plus/ImageProcessing2/img.jpg||https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/58f72418-b5ee-4765-8e80-e463623a921d/01-httparchive-opt-small.png', 
 				'file:https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg'),
 			array('Data 41', '459', 'Data 43||limbbo', 'photos/SamplePNGImage_100kbmb.png||audios/SampleAudio_0.4mb.mp3', 'url:http://www.pdf995.com/samples/pdf.pdf'),
-			array('Data 51', '500', 'Data 53', 'http://techslides.com/demos/samples/sample.mp4', '')
+			array('Data 51', '500', 'Data 53', 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Space_station_Penyulap.ogv', '')
 		);
 
 		// save each row of the data

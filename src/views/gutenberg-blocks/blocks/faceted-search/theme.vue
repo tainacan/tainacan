@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import "floating-vue/dist/style.css";
 export default {
     name: "ThemeSearch",
     created() {
@@ -49,6 +50,7 @@ export default {
 
     // Buefy imports
     @import "../../../../../node_modules/buefy/src/scss/utils/_all.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_form.scss";
     @import "../../../../../node_modules/buefy/src/scss/components/_datepicker.scss";
     @import "../../../../../node_modules/buefy/src/scss/components/_checkbox.scss";
     @import "../../../../../node_modules/buefy/src/scss/components/_radio.scss";
@@ -273,6 +275,9 @@ export default {
                 }
                 .tainacan-compound-metadatum p {
                     margin-bottom: 0.75em;
+                    font-size: 1em;
+                }
+                .tainacan-metadatum .label {
                     font-size: 1em;
                 }
                 .multivalue-separator {

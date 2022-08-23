@@ -9,7 +9,8 @@ const i18nGet = function (key) {
     return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";
 };
 
-const tainacanErrorHandler = function(error){
+const tainacanErrorHandler = function(error) {
+    console.log(error)
     if (error.response && error.response.status) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx

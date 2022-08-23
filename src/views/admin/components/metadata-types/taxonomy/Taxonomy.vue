@@ -4,7 +4,7 @@
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
                 :disabled="disabled"
                 :is="getComponent"
-                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 v-model="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNewFromOptions"
@@ -31,6 +31,8 @@
                 :amount-selected="Array.isArray(valueComponent) ? valueComponent.length : (valueComponent ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 @input="(selected) => valueComponent = selected"
+                :is-mobile-screen="isMobileScreen"
+                @mobileSpecialFocus="onMobileSpecialFocus"
             />
         <div
                 v-if="displayCreateNewTerm && !isTermCreationPanelOpen && (maxMultipleValues !== undefined ? (maxMultipleValues > valueComponent.length) : true)"
@@ -49,6 +51,7 @@
         <!-- Term creation modal, used on admin for a complete term creation -->
         <b-modal
                 v-model="isTermCreationModalOpen"
+                :width="768"
                 trap-focus
                 aria-role="dialog"
                 aria-modal
@@ -57,7 +60,7 @@
                 :close-button-aria-label="$i18n.get('close')">
             <term-edition-form
                     :taxonomy-id="taxonomyId"
-                    :edit-form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                     :is-modal="true"
                     @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
                     @onEditionCanceled="() => $console.log('Editing canceled')"
@@ -69,7 +72,7 @@
             <term-creation-panel
                     v-if="isTermCreationPanelOpen"
                     :taxonomy-id="taxonomyId"
-                    :edit-form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                     @onEditionFinished="($event) => addTermToBeCreated($event)"
                     @onEditionCanceled="() => isTermCreationPanelOpen = false"
                     @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
@@ -95,6 +98,7 @@
             maxtags: '',
             allowNew: false,
             allowSelectToCreate: false,
+            isMobileScreen: false,
         },
         data(){
             return {
@@ -207,6 +211,9 @@
                     this.isTermCreationPanelOpen = true;
                 else
                     this.isTermCreationModalOpen = true;
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }

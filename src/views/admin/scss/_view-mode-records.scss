@@ -9,6 +9,23 @@
     animation-name: appear;
     animation-duration: 0.5s;
 
+    &>li,
+    .tainacan-records-grid-sizer {
+        width: calc(20% - 30px);
+
+        @media screen and (max-width: 2560px) {
+            width: calc(25% - 30px);
+        }
+        @media screen and (max-width: 1920px) {
+            width: calc(33.333% - 30px);
+        }
+        @media screen and (max-width: 1360px) {
+            width: calc(50% - 30px);
+        }
+        @media screen and (max-width: 1024px) {
+            width: 100%;
+        }
+    }
     .tainacan-record {
         background-color: rgba(126, 126, 126, 0.05);
         padding: 0px;
@@ -176,9 +193,44 @@
                 }
             }
         }
-    
-    
+    }
+
+    &.hide-items-selection {
+        .tainacan-record {
+            &:hover .media { background-color: var(--tainacan-gray0) !important; cursor: default; }
+            .metadata-title { padding-left: 1.5em !important; margin-bottom: -0.75em; }
+            &:hover .metadata-title { background-color: var(--tainacan-gray0) !important; cursor: default; }
+        }
     }
 }
+.tainacan-records-container--skeleton {
+    display: block;
+    min-height: 50vh;
+    padding-left: 30px;
+    padding-right: 30px;
+    column-gap: 30px;
+    height: auto !important;
+    column-count: 5;
+
+    .skeleton {
+        width: 100%;
+        margin-bottom: 30px;
+        break-inside: avoid;
+    }
+
+    @media screen and (max-width: 2560px) {
+        column-count: 4;
+    }
+    @media screen and (max-width: 1920px) {
+        column-count: 3;
+    }
+    @media screen and (max-width: 1360px) {
+        column-count: 2;
+    }
+    @media screen and (max-width: 1024px) {
+        column-count: 1;
+    }
+}
+
 
 

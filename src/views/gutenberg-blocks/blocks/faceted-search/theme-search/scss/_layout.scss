@@ -108,7 +108,10 @@
 		}
 
 		#filters-items-list {
-			padding: var(--tainacan-container-padding);
+			padding: 0 var(--tainacan-container-padding) 0 0;
+		}
+		.modal-close {
+			top: 16px;
 		}
 	}
 	@media screen and (min-width: 769px) {

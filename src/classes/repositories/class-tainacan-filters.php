@@ -68,6 +68,15 @@ class Filters extends Repository {
 				'description' => __( 'The filter type class name, such as filter_type: Tainacan\Filter_Types\Checkbox', 'tainacan' ),
 				'validation'  => ''
 			],
+			'begin_with_filter_collapsed' => [
+				'map'         => 'meta',
+				'title'       => __( 'Begin with filter collapsed', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'With this option enabled, the filter will appear as a button with an add icon, that should be pressed prior to loading any facet information.', 'tainacan' ),
+				'on_error'    => __( 'Please set the "Begin with filter collapsed" value as "yes" or "no"', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'default'     => 'no'
+			],
 			'collection_id'       => [
 				'map'         => 'meta',
 				'title'       => __( 'Collection', 'tainacan' ),
@@ -233,7 +242,7 @@ class Filters extends Repository {
 
 			$args['post_type'] = Entities\Filter::get_post_type();
 
-			$args = apply_filters( 'tainacan_fetch_args', $args, 'filters' );
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'filters' );
 
 			$wp_query = new \WP_Query( $args );
 

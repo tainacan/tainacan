@@ -2,7 +2,7 @@
     <div>
         <div class="repository-level-page page-container">
             <tainacan-title 
-                    :bread-crumb-items="[{ path: '', label: this.$i18n.get('taxonomies') }]"/>
+                    :bread-crumb-items="[{ path: '', label: $i18n.get('taxonomies') }]"/>
             <div class="sub-header">
 
                 <!-- New Taxonomy Button ----  -->
@@ -117,6 +117,7 @@
                                     content: $i18n.get('info_taxonomies_tab_all'),
                                     autoHide: true,
                                     placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                                 }">
                             <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                                 {{ `${$i18n.get('label_all_taxonomies')}` }}
@@ -134,6 +135,7 @@
                                     content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('taxonomies')]),
                                     autoHide: true,
                                     placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                                 }">
                             <a>
                                 <span 

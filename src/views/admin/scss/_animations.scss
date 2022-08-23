@@ -121,6 +121,17 @@
         transform: translate(0, 0px);
     }
 }
+.item-appear-enter-active {
+    animation-name: item-appear;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;   
+}
+.item-appear-leave-active {
+    animation-name: item-appear;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-in;   
+    animation-direction: reverse;
+}
 
 // Filter Item Collapse 
 @keyframes filter-item-in {
@@ -342,6 +353,49 @@
     animation-name: filters-menu-out;
     animation-duration: 0.2s;
     animation-timing-function: ease;   
+}
+
+
+// Mobile panel
+@keyframes panel-from-top-in {
+    from {
+        opacity: 0.8;
+        -ms-transform: translate(0%, -75%); /* IE 9 */
+        -webkit-transform: translate(0%, -75%); /* Safari */
+        transform: translate(0%, -75%);
+    }
+    to {
+        opacity: 1;        
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+}
+
+@keyframes panel-from-top-out {
+    from {
+        opacity: 1;
+        -ms-transform: translate(0, 0); /* IE 9 */
+        -webkit-transform: translate(0, 0); /* Safari */
+        transform: translate(0, 0);
+    }
+    to {
+        opacity: 0.8;
+        -ms-transform: translate(0%, -80%); /* IE 9 */
+        -webkit-transform: translate(0%, -80%); /* Safari */
+        transform: translate(0%, -80%);
+    }
+}
+
+.panel-from-top-enter-active {
+    animation-name: panel-from-top-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in;   
+}
+.panel-from-top-leave-active {
+    animation-name: panel-from-top-out;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;   
 }
 
 // Slide

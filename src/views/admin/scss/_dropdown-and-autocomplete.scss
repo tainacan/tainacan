@@ -49,17 +49,18 @@
                 text-decoration: none;
                 padding: 0.57em 1em;
                 font-size: 0.825em;
-                background-color: var(--tainacan-background-color);
                 color: var(--tainacan-input-color) !important;
                 border: none;
                 transition: background-color 0.3s ease;
 
-                label { margin-bottom: 0; }
-                &.control { font-size: 0.8125em !important; }
-                .b-checkbox { width: 100% };
-                &:hover { background-color: var(--tainacan-input-border-color); }
-                .is-small { color: var(--tainacan-info-color); }
                 &.is-active { background-color: var(--tainacan-primary); }
+                &.control { font-size: 0.8125em !important; }
+                &.dropdown-header { color: var(--tainacan-info-color) !important; }
+                &:not(.dropdown-header):hover { background-color: var(--tainacan-input-border-color); }
+                
+                .b-checkbox { width: 100% };
+                label { margin-bottom: 0; }
+                .is-small { color: var(--tainacan-info-color); }
                 svg {
                     overflow: hidden;
                     vertical-align: middle;
@@ -90,6 +91,7 @@
     &.is-mobile-modal {
         @media screen and (max-width: 768px) {
             .dropdown-content {
+                font-size: 1.125em;
                 max-height: 100vh;
             }
             .dropdown-menu {

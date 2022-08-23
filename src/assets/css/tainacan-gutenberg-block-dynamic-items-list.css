@@ -129,7 +129,8 @@
     align-items: center;
     border-bottom: 1px solid var(--tainacan-block-gray3, #cbcbcb);
     padding: 1.00em 0.5em 0.75em 0.5em;
-    position: relative; }
+    position: relative;
+    box-sizing: border-box; }
     @media only screen and (max-width: 768px) {
       .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar {
         flex-wrap: wrap; }

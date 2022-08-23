@@ -1,6 +1,7 @@
 .tainacan-list-container {
     min-height: 50vh;
     padding: 0;
+    height: auto !important;
     display: flex;
     flex-wrap: wrap;
     flex-grow: 1;
@@ -22,6 +23,9 @@
 
         &:hover {
             background-color: var(--tainacan-item-hover-background-color) !important;
+            a {
+                text-decoration: none;
+            }
         }
         &.selected-list-item {
             background-color: var(--tainacan-turquoise1);
@@ -224,8 +228,13 @@
                 }
             }
         }
-    
-    
+    }
+    &.hide-items-selection {
+        .tainacan-list {
+            &:hover { background-color: rgba(126, 126, 126, 0.05) !important; cursor: default; }
+            .metadata-title { padding-left: 1.5em !important; }
+            &:hover .metadata-title { background-color: var(--tainacan-gray0) !important; cursor: default; }
+        }
     }
 }
 

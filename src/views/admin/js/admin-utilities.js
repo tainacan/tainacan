@@ -436,3 +436,214 @@ CommentsStatusHelperPlugin.install = function (Vue, options = {}) {
     }
 
 };
+
+// ADMIN OPTIONS HELPER PLUGIN - Stores options passed to the data-options in the admin div.
+export const AdminOptionsHelperPlugin = {};
+AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
+
+    // Passes options to global variable
+    try {
+
+        let objectOptions = JSON.parse(options);
+        for (let key in objectOptions) {
+            if (objectOptions.hasOwnProperty(key)) {
+                if (objectOptions[key] === 'true')
+                    objectOptions[key] = true;
+                if (objectOptions[key] === 'false' || objectOptions[key] == undefined || !objectOptions[key])
+                    objectOptions[key] = false;
+            }
+        }
+        Vue.prototype.$adminOptions = objectOptions;
+
+    } catch(e) {
+        Vue.prototype.$adminOptions = {};
+    }
+
+    // Declares common 'modes', which group certain admin options
+    // Order matters here, as the latest overrides previous ones
+    const adminSpecialModes = {
+        itemsSingleSelectionMode: {
+            hideTainacanHeader: true,
+            hidePrimaryMenu: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true,
+            hideItemsListMultipleSelection: true,
+            hideItemsListBulkActionsButton: true,
+            hideItemsListContextMenuOpenItemOption: true,
+            hideItemsListContextMenuOpenItemOnNewTabOption: true,
+            hideItemsListContextMenuEditItemOption: true,
+            hideItemsListContextMenuCopyItemOption: true,
+            hideItemsListContextMenuDeleteItemOption: true,
+            hideItemsListActionAreas: true,
+            hideItemsListPageTitle: true,
+            hideItemsListCreationDropdown: true,
+            hideItemsListExposersButton: true,
+            hideItemsListStatusTabs: true,
+            hideItemsListFilterCreationButton: true
+        },
+        itemsMultipleSelectionMode: {
+            hideTainacanHeader: true,
+            hidePrimaryMenu: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true,
+            hideItemsListMultipleSelection: true,
+            hideItemsListBulkActionsButton: true,
+            hideItemsListContextMenuOpenItemOption: true,
+            hideItemsListContextMenuOpenItemOnNewTabOption: true,
+            hideItemsListContextMenuEditItemOption: true,
+            hideItemsListContextMenuCopyItemOption: true,
+            hideItemsListContextMenuDeleteItemOption: true,
+            hideItemsListActionAreas: true,
+            hideItemsListPageTitle: true,
+            hideItemsListCreationDropdown: true,
+            hideItemsListExposersButton: true,
+            hideItemsListStatusTabs: true,
+            hideItemsListFilterCreationButton: true
+        },
+        itemsSearchSelectionMode: {
+            hideTainacanHeader: true,
+            hidePrimaryMenu: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true,
+            hideItemsListMultipleSelection: true,
+            hideItemsListBulkActionsButton: true,
+            hideItemsListActionAreas: true,
+            hideItemsListPageTitle: true,
+            hideItemsListCreationDropdown: true,
+            hideItemsListExposersButton: true,
+            hideItemsListContextMenu: true,
+            hideItemsListSelection: true,
+            hideItemsListStatusTabs: true,
+            hideItemsListFilterCreationButton: true
+        },
+        itemEditionMode: {
+            hideTainacanHeader: true,
+            hidePrimaryMenu: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true
+        },
+        mobileAppMode: {
+            hideTainacanHeader: true,
+            hidePrimaryMenu: true,
+            hideRepositorySubheader: true,
+            hideCollectionSubheader: true,
+            hideItemsListPageTitle: true,
+            hideItemEditionPageTitle: true,
+            hideBulkEditionPageTitle: true,
+            hideItemSingleCollectionName: true,
+            hideItemEditionCollapses: true,
+            hideItemEditionMetadataTypes: true,
+            itemEditionDocumentInsideTabs: true,
+            itemEditionAttachmentsInsideTabs: true,
+        }
+    }
+    for (let adminSpecialMode in adminSpecialModes) {
+
+        if (Vue.prototype.$adminOptions[adminSpecialMode]) {
+
+            console.log('Tainacan Admin loaded in ' + adminSpecialMode);
+
+            for (let option in adminSpecialModes[adminSpecialMode])
+                Vue.prototype.$adminOptions[option] = adminSpecialModes[adminSpecialMode][option];
+        }
+    }
+    
+    /*
+        Possible Values for Admin Options. Identation marks options that affects others:
+        * hideHomeRepositorySection
+            * hideHomeThemeCollectionsButton
+            * hideHomeThemeItemsButton
+            * hideHomeTaxonomiesButton
+            * hideHomeMetadataButton
+            * hideHomeFiltersButton
+            * hideHomeImportersButton
+            * hideHomeExportersButton
+            * hideHomeActivitiesButton
+        * hideHomeCollectionsSection
+            * hideHomeCollectionsButton
+            * hideHomeCollectionItemsButton
+            * hideHomeCollectionSettingsButton
+            * hideHomeCollectionMetadataButton
+            * hideHomeCollectionFiltersButton
+            * hideHomeCollectionActivitiesButton
+            * hideHomeCollectionThemeCollectionButton
+            * showHomeCollectionCreateItemButton // Default is false
+            * homeCollectionsPerPage // Default is 9
+            * homeCollectionsOrderBy // Default is 'modified'
+            * homeCollectionsOrder // Default is 'desc'
+        * hideTainacanHeader
+            * hideTainacanHeaderHomeButton
+            * hideTainacanHeaderSearchInput
+            * hideTainacanHeaderAdvancedSearch
+            * hideTainacanHeaderProcessesPopup
+        * hidePrimaryMenu
+            * hidePrimaryMenuCompressButton
+            * hidePrimaryMenuRepositoryButton
+            * hidePrimaryMenuCollectionsButton
+            * hidePrimaryMenuItemsButton
+            * hidePrimaryMenuTaxonomiesButton
+            * hidePrimaryMenuMetadataButton
+            * hidePrimaryMenuFiltersButton
+            * hidePrimaryMenuImportersButton
+            * hidePrimaryMenuExportersButton
+            * hidePrimaryMenuActivitiesButton
+            * hidePrimaryMenuCapabilitiesButton
+        * hideRepositorySubheader
+            * hideRepositorySubheaderViewCollectionButton
+            * hideRepositorySubheaderViewCollectionsButton
+            * hideRepositorySubheaderExportButton
+        * hideCollectionSubheader
+
+        * hideItemsListPageTitle
+        * hideItemsListMultipleSelection
+        * hideItemsListSelection
+        * hideItemsListBulkActionsButton
+        * hideItemsListCreationDropdown
+            * hideItemsListCreationDropdownBulkAdd
+            * hideItemsListCreationDropdownImport
+        * hideItemsListAdvancedSearch
+        * hideItemsListExposersButton
+        * hideItemsListStatusTabs
+            * hideItemsListStatusTabsTotalItems
+        * hideItemsListContextMenu
+            * hideItemsListContextMenuOpenItemOption
+            * hideItemsListContextMenuOpenItemOnNewTabOption
+            * hideItemsListContextMenuEditItemOption
+            * hideItemsListContextMenuCopyItemOption
+            * hideItemsListContextMenuDeleteItemOption
+        * hideItemsListActionAreas
+        * hideItemsListFilterCreationButton
+
+        * hideItemEditionPageTitle
+        * hideItemEditionCollectionName
+        * hideItemEditionStatusOptions
+            * hideItemEditionStatusPublishOption
+        * hideItemEditionCommentsToggle
+        * hideItemEditionDocument
+            * hideItemEditionDocumentFileInput
+            * hideItemEditionDocumentTextInput
+            * hideItemEditionDocumentUrlInput
+        * hideItemEditionThumbnail
+        * hideItemEditionAttachments
+        * hideItemEditionCollapses
+        * hideItemEditionFocusMode
+        * hideItemEditionRequiredOnlySwitch
+        * hideItemEditionMetadataTypes
+        * allowItemEditionModalInsideModal // Not recommended!
+        * itemEditionDocumentInsideTabs
+        * itemEditionAttachmentInsideTabs
+        
+        * hideBulkEditionPageTitle
+        
+        * hideItemSinglePageTitle
+        * hideItemSingleCollectionName
+        * hideItemSingleCurrentStatus
+        * hideItemSingleCurrentVisibility
+        * hideItemSingleCommentsOpen
+        * hideItemSingleDocument
+        * hideItemSingleThumbnail
+        * hideItemSingleAttachments
+        * hideItemSingleActivities
+        * hideItemSingleExposers
+    */
+};

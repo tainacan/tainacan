@@ -8,93 +8,50 @@
                 'is-fullscreen': registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen
             }"
             aria-live="polite">
-        
-        <!-- ADVANCED SEARCH -->
-        <div 
-                id="advanced-search-container"
-                role="search"
-                v-if="openAdvancedSearch && !hideAdvancedSearch">
-
-            <div class="tnc-advanced-search-close"> 
-                <div class="advanced-search-criteria-title">
-                    <div class="is-flex">
-                        <h1>{{ $i18n.get('info_search_criteria') }}</h1>
-                        <div
-                                :style="{'margin-bottom': 'auto'}"
-                                class="field is-grouped">
-                            <a
-                                    class="back-link"
-                                    @click="openAdvancedSearch = false">
-                                {{ $i18n.get('back') }}
-                            </a>
-                        </div>
-                    </div>
-                    <hr>
-                </div>
-            </div>
-
-            <advanced-search
-                    :is-repository-level="isRepositoryLevel"
-                    :collection-id="collectionId"
-                    :advanced-search-results="advancedSearchResults"
-                    :open-form-advanced-search="openFormAdvancedSearch"
-                    :is-doing-search="isDoingSearch"/>
-
-            <div class="advanced-search-form-submit">
-                <p
-                        v-if="advancedSearchResults"
-                        class="control">
-                    <button
-                            aria-controls="items-list-results"
-                            @click="advancedSearchResults = !advancedSearchResults"
-                            class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
-                </p>
-                <p
-                        v-if="advancedSearchResults"
-                        class="control">
-                    <button
-                            aria-controls="items-list-results"
-                            @click="isDoingSearch = !isDoingSearch"
-                            class="button is-success">{{ $i18n.get('search') }}</button>
-                </p>
-            </div>
-        </div>
+        <h2 
+                id="items-list-container-landmark"
+                class="sr-only">
+            {{ $i18n.get('label_items_list') }}
+        </h2>
 
         <!-- SEARCH CONTROL ------------------------- -->
-        <h3 
-                id="search-control-landmark"
-                class="sr-only">
-            {{ $i18n.get('label_sort_visualization') }}
-        </h3>
         <div
                 :aria-label="$i18n.get('label_sort_visualization')"
                 role="region"
                 ref="search-control"
-                v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen) && ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 class="search-control">
+            
+            <h3 
+                    id="search-control-landmark"
+                    class="sr-only">
+                {{ $i18n.get('label_sort_visualization') }}
+            </h3>
 
-            <!-- <b-loading
-                    :is-full-page="false"
-                    :active.sync="isLoadingMetadata"/> --> 
+            <!-- JS-side hook for extra form content -->
+            <div 
+                    v-if="hooks['search_control_before']"
+                    class="faceted-search-hook faceted-search-hook-search-control-before"
+                    v-html="hooks['search_control_before']" />
 
             <!-- Button for hiding filters -->
             <button 
                     aria-controls="filters-modal"
                     :aria-expanded="isFiltersModalActive"
                     :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
-                    v-if="!showFiltersButtonInsideSearchControl && !hideFilters && !openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    v-if="!showFiltersButtonInsideSearchControl && !hideFilters && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                     id="filter-menu-compress-button"
                     :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                     @click="isFiltersModalActive = !isFiltersModalActive"
                     v-tooltip="{
                         delay: {
-                            show: 500,
+                            shown: 500,
                             hide: 300,
                         },
                         content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                         autoHide: false,
                         placement: 'auto-start',
-                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }">
                 <span class="icon">
                     <i 
@@ -106,8 +63,8 @@
 
             <!-- Text simple search -->
             <div 
-                    v-if="!hideSearch && !openAdvancedSearch"
-                    class="search-control-item">
+                    v-if="!hideSearch"
+                    class="search-control-item search-control-item--search">
                 <div 
                         role="search" 
                         class="search-area">
@@ -121,13 +78,17 @@
                         @keyup.enter.native="updateSearch()"
                         icon-right="magnify"
                         icon-right-clickable
-                        @icon-right-click="updateSearch()" />
+                        @icon-right-click="updateSearch()"
+                        :disabled="openAdvancedSearch" />
                     <a
                             v-if="!hideAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
-                            style="font-size: 0.75em;"
-                            class="has-text-secondary is-pulled-right">
+                            class="advanced-search-toggle has-text-secondary is-pulled-right"
+                            :class="openAdvancedSearch ? 'is-open' : 'is-closed'">
                         {{ $i18n.get('advanced_search') }}
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-search" />
+                        </span>
                     </a>
                 </div>
             </div>
@@ -135,7 +96,7 @@
             <!-- Another option of the Button for hiding filters -->
             <div 
                     v-if="showFiltersButtonInsideSearchControl && !hideHideFiltersButton && !hideFilters && !openAdvancedSearch"
-                    :class="'search-control-item' + (isFiltersModalActive ? ' is-filters-modal-active' : '')"
+                    :class="'search-control-item search-control-item--filters-button' + (isFiltersModalActive ? ' is-filters-modal-active' : '')"
                     id="tainacanFiltersButton">
                 <button 
                         class="button is-white"
@@ -153,17 +114,17 @@
             <!-- Displayed Metadata Dropdown -->
             <div    
                     v-if="!hideDisplayedMetadataButton && (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
-                    class="search-control-item">
+                    class="search-control-item search-control-item--displayed-metadata-dropdown">
                 <b-dropdown
                         v-tooltip="{
                             delay: {
-                                show: 500,
+                                shown: 500,
                                 hide: 300,
                             },
                             content: totalItems <= 0 ? $i18n.get('info_cant_select_metadata_without_items') : '',
                             autoHide: false,
                             placement: 'auto-start',
-                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }" 
                         ref="displayedMetadataDropdown"
                         :mobile-modal="true"
@@ -209,7 +170,7 @@
             <!-- Change OrderBy Select and Order Button-->
             <div 
                     v-show="!hideSortingArea"
-                    class="search-control-item sorting-area">
+                    class="search-control-item search-control-item--sorting-area sorting-area">
                 <b-field>
                     <label class="label">{{ $i18n.get('label_sort') }}</label>
                     <b-dropdown
@@ -293,7 +254,7 @@
             <!-- View Modes Dropdown -->
             <div 
                     v-if="enabledViewModes.length > 1"
-                    class="search-control-item"
+                    class="search-control-item search-control-item--view-modes-dropdown"
                     id="tainacanViewModesSection">
                 <b-field>
                     <label 
@@ -311,12 +272,11 @@
                             :inline="showInlineViewModeOptions"
                             :mobile-modal="true"
                             position="is-bottom-left"
-                            :aria-label="$i18n.get('label_view_mode')"
                             aria-role="list"
                             trap-focus>
                         <button 
                                 class="button is-white" 
-                                :aria-label="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization')"
+                                :aria-label="$i18n.get('label_view_mode') + (registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : '')"
                                 slot="trigger">
                             <span 
                                     class="gray-icon view-mode-icon"
@@ -344,13 +304,13 @@
                                     v-else 
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: registeredViewModes[viewModeOption].label,
                                         autoHide: false,
                                         placement: 'auto-start',
-                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="gray-icon"
                                     v-html="registeredViewModes[viewModeOption].icon"/>
@@ -363,7 +323,7 @@
             <!-- Theme Full Screen mode, it's just a special view mode -->
             <div 
                     id="tainacanFullScreenViewMode"
-                    class="search-control-item">
+                    class="search-control-item search-control-item--full-screen-view-mode">
                 <button 
                         class="button is-white"
                         :aria-label="$i18n.get('label_slides')"
@@ -383,7 +343,7 @@
             <div 
                     id="tainacanExposersButton"
                     v-if="!hideExposersButton"
-                    class="search-control-item">
+                    class="search-control-item search-control-item--exposers-button">
                 <button 
                         class="button is-white"
                         :aria-label="$i18n.get('label_view_as')"
@@ -395,37 +355,59 @@
                     <span class="is-hidden-tablet-only is-hidden-desktop-only ">{{ $i18n.get('label_view_as') }}</span>
                 </button>
             </div>
+
+            <!-- JS-side hook for extra form content -->
+            <div 
+                    v-if="hooks['search_control_after']"
+                    class="faceted-search-hook faceted-search-hook-search-control-after"
+                    v-html="hooks['search_control_after']" />
+                    
         </div>
 
         <!-- SIDEBAR WITH FILTERS -->
-        <b-modal
-                v-if="!hideFilters"
-                role="region"
-                aria-labelledby="filters-label-landmark"
-                id="filters-modal"     
-                ref="filters-modal"       
-                :active.sync="isFiltersModalActive"
-                :width="736"
-                animation="slide-menu"
-                :auto-focus="filtersAsModal"
-                :trap-focus="filtersAsModal"
-                full-screen
-                :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
-                :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
-                :close-button-aria-label="$i18n.get('close')">
-            <filters-items-list
-                    :is-loading-items="isLoadingItems"
-                    :autofocus="filtersAsModal"
-                    :tabindex="filtersAsModal ? -1 : 0"
-                    :aria-modal="filtersAsModal"
-                    :role="filtersAsModal ? 'dialog' : ''"
-                    id="filters-items-list"
-                    :taxonomy="taxonomy"
-                    :collection-id="collectionId"
-                    :is-repository-level="isRepositoryLevel"
-                    :filters-as-modal="filtersAsModal"
-                    :has-filtered="hasFiltered" />
-        </b-modal>
+        <template v-if="!hideFilters">
+            <b-modal
+                    role="region"
+                    id="filters-modal"     
+                    ref="filters-modal"       
+                    :active.sync="isFiltersModalActive"
+                    :width="736"
+                    :auto-focus="filtersAsModal"
+                    :trap-focus="filtersAsModal"
+                    full-screen
+                    :custom-class="'tainacan-modal tainacan-form filters-menu' + (filtersAsModal ? ' filters-menu-modal' : '')"
+                    :can-cancel="hideHideFiltersButton || !filtersAsModal ? ['x', 'outside'] : ['x', 'escape', 'outside']"
+                    :close-button-aria-label="$i18n.get('close')">
+
+                <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['filters_before']"
+                        class="faceted-search-hook faceted-search-hook-filters-before"
+                        v-html="hooks['filters_before']" />
+
+                <filters-items-list
+                        :is-loading-items="isLoadingItems"
+                        @updateIsLoadingItemsState="(state) => isLoadingItems = state"
+                        :autofocus="filtersAsModal"
+                        :tabindex="filtersAsModal ? -1 : 0"
+                        :aria-modal="filtersAsModal"
+                        :role="filtersAsModal ? 'dialog' : ''"
+                        id="filters-items-list"
+                        :taxonomy="taxonomy"
+                        :collection-id="collectionId"
+                        :is-repository-level="isRepositoryLevel"
+                        :filters-as-modal="filtersAsModal"
+                        :has-filtered="hasFiltered"
+                        :is-mobile-screen="isMobileScreen" />
+
+                <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['filters_after']"
+                        class="faceted-search-hook faceted-search-hook-filters-after"
+                        v-html="hooks['filters_after']" />
+
+            </b-modal>
+        </template>
 
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
         <div 
@@ -433,14 +415,58 @@
                 ref="items-list-area"
                 class="items-list-area">
 
+            <!-- ADVANCED SEARCH -->
+            <transition name="filter-item">
+                <div 
+                        id="advanced-search-container"
+                        role="search"
+                        v-if="openAdvancedSearch && !hideAdvancedSearch">
+
+                    <!-- JS-side hook for extra form content -->
+                    <div 
+                            v-if="hooks['advanced_search_before']"
+                            class="faceted-search-hook faceted-search-hook-advanced-search-before"
+                            v-html="hooks['advanced_search_before']" />
+
+                    <advanced-search
+                            :is-repository-level="isRepositoryLevel"
+                            :collection-id="collectionId"
+                            @close="openAdvancedSearch = false" />
+
+                    <!-- JS-side hook for extra form content -->
+                    <div 
+                            v-if="hooks['advanced_search_after']"
+                            class="faceted-search-hook faceted-search-hook-advanced-search-after"
+                            v-html="hooks['advanced_search_after']" />
+                </div>
+            </transition>
+
             <!-- FILTERS TAG LIST-->
-            <filters-tags-list
-                    class="filter-tags-list"
-                    v-if="!filtersAsModal &&
-                        !hideFilters &&
-                        hasFiltered && 
-                        !openAdvancedSearch &&
-                        !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)" />
+            <template
+                v-if="!filtersAsModal &&
+                    !hideFilters &&
+                    hasFiltered && 
+                    !openAdvancedSearch &&
+                    !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)">
+
+                <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['filter_tags_before']"
+                        class="faceted-search-hook faceted-search-hook-filter-tags-before"
+                        v-html="hooks['filter_tags_before']" />
+
+                <filters-tags-list
+                        class="filter-tags-list"
+                        :is-inside-modal="filtersAsModal"
+                        />
+
+                <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['filter_tags_after']"
+                        class="faceted-search-hook faceted-search-hook-filter-tags-after"
+                        v-html="hooks['filter_tags_after']" />
+
+            </template>
 
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div 
@@ -453,7 +479,7 @@
                 <h3 
                         id="items-list-landmark"
                         class="sr-only">
-                    {{ $i18n.get('label_items_list') }}
+                    {{ $i18n.get('label_items_list_results') }}
                 </h3>
                 
                 <!-- This is used by intersection observers to set filters menu as fixed -->
@@ -483,8 +509,7 @@
                 <div 
                         v-if="hasAnOpenAlert &&
                             isSortingByCustomMetadata &&
-                            !showLoading &&
-                            ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                            !showLoading"
                         class="metadata-alert">
                     <p class="text">
                         {{ 
@@ -506,19 +531,23 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['items_list_before']"
+                        class="faceted-search-hook faceted-search-hook-items-list-before"
+                        v-html="hooks['items_list_before']" />
                        
                 <!-- Theme View Modes -->
                 <div 
-                        v-if="((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch) &&
-                              !showLoading &&
+                        v-if="!showLoading &&
                               registeredViewModes[viewMode] != undefined &&
                               registeredViewModes[viewMode].type == 'template'"
                         v-html="itemsListTemplate"/>
 
                 <component
                         v-if="registeredViewModes[viewMode] != undefined &&
-                              registeredViewModes[viewMode].type == 'component' &&
-                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                              registeredViewModes[viewMode].type == 'component'"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata" 
                         :items="items"
@@ -527,17 +556,37 @@
                         :is-loading="showLoading"
                         :enabled-view-modes="enabledViewModes"
                         :initial-item-position="initialItemPosition"
-                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>     
-        
-                <!-- Pagination -->
-                <pagination
-                        v-show="!hidePaginationArea"
-                        :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
+                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>   
+
+                <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['items_list_after']"
+                        class="faceted-search-hook faceted-search-hook-items-list-after"
+                        v-html="hooks['items_list_after']" /> 
+
+                <template
                         v-if="totalItems > 0 &&
-                            ((registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination)) &&
-                            (advancedSearchResults || !openAdvancedSearch)"
-                        :hide-items-per-page-button="hideItemsPerPageButton"
-                        :hide-go-to-page-button="hideGoToPageButton"/>
+                            ((registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].show_pagination))">
+
+                    <!-- JS-side hook for extra form content -->
+                    <div 
+                            v-if="hooks['pagination_before']"
+                            class="faceted-search-hook faceted-search-hook-pagination-before"
+                            v-html="hooks['pagination_before']" /> 
+            
+                    <!-- Pagination -->
+                    <pagination
+                            v-show="!hidePaginationArea"
+                            :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
+                            :hide-items-per-page-button="hideItemsPerPageButton"
+                            :hide-go-to-page-button="hideGoToPageButton"/>
+
+                    <!-- JS-side hook for extra form content -->
+                    <div 
+                            v-if="hooks['pagination_after']"
+                            class="faceted-search-hook faceted-search-hook-pagination-after"
+                            v-html="hooks['pagination_after']" />
+                </template>
 
                 <!-- This is used by intersection observers to set filters menu as fixed on the bottom -->
                 <div 
@@ -613,16 +662,14 @@
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
-                openFormAdvancedSearch: false,
-                advancedSearchResults: false,
-                isDoingSearch: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,                
                 metadataSearchCancel: undefined,
                 latestNonFullscreenViewMode: '',
-                isMobile: false,
+                isMobileScreen: false,
+                windowWidth: null,
                 initialItemPosition: null,
                 isFiltersListFixedAtTop: false,
                 isFiltersListFixedAtBottom: false,
@@ -630,6 +677,7 @@
                 itemsListBottomIntersectionObserver: null,
                 latestPerPageAfterViewModeWithoutPagination: 12,
                 latestPageAfterViewModeWithoutPagination: 1,
+                hooks: {}
             }
         },
         computed: {
@@ -681,7 +729,6 @@
             openAdvancedSearch(newValue){
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
-                    this.advancedSearchResults = false;
                     this.isFiltersModalActive = !this.startWithFiltersHidden;
                 } else {
                     this.isFiltersModalActive = false;
@@ -697,7 +744,7 @@
                         if (this.filtersAsModal && this.$refs['filters-modal'] && this.$refs['filters-modal'].focus)
                             this.$refs['filters-modal'].focus();
                             
-                        if (!this.filtersAsModal && !this.isMobile && document.documentElement && (this.registeredViewModes[this.viewMode] == undefined || !this.registeredViewModes[this.viewMode].full_screen))
+                        if (!this.filtersAsModal && !this.isMobileScreen && document.documentElement && (this.registeredViewModes[this.viewMode] == undefined || !this.registeredViewModes[this.viewMode].full_screen))
                             document.documentElement.classList.remove('is-clipped');
                     }, 800);
                     
@@ -739,9 +786,6 @@
             });
             
             if (!this.hideAdvancedSearch) {
-                this.$eventBusSearch.$on('advancedSearchResults', advancedSearchResults => {
-                    this.advancedSearchResults = advancedSearchResults;
-                });
 
                 if (this.$route.query && this.$route.query.advancedSearch) {
                     this.openAdvancedSearch = this.$route.query.advancedSearch;
@@ -765,6 +809,9 @@
                 this.onChangeViewMode('slideshow');
                 this.initialItemPosition = index;
             });
+
+            // Parse js-side hooks
+            this.parseHooks();
         },
         mounted() {
 
@@ -875,6 +922,67 @@
                 'getPage',
                 'getItemsPerPage'
             ]),
+            parseHooks() {
+                const searchControlBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_search_control_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_search_control_before`, '');
+                const searchControlBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_search_control_before`) || searchControlBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_search_control_before`, searchControlBeforeFilters);
+                if (searchControlBeforeFiltersCollection)
+                    this.hooks['search_control_before'] = searchControlBeforeFiltersCollection;
+
+                const searchControlAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_search_control_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_search_control_after`, ''); 
+                const searchControlAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_search_control_after`) || searchControlAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_search_control_after`, searchControlAfterFilters); 
+                if (searchControlAfterFiltersCollection)
+                    this.hooks['search_control_after'] = searchControlAfterFiltersCollection; 
+
+                const advancedSearchBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_advanced_search_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_advanced_search_before`, '');
+                const advancedSearchBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_before`) || advancedSearchBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_before`, advancedSearchBeforeFilters);
+                if (advancedSearchBeforeFiltersCollection)
+                    this.hooks['advanced_search_before'] = advancedSearchBeforeFiltersCollection;
+
+                const advancedSearchAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_advanced_search_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_advanced_search_after`, ''); 
+                const advancedSearchAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_after`) || advancedSearchAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_after`, advancedSearchAfterFilters); 
+                if (advancedSearchAfterFiltersCollection)
+                    this.hooks['advanced_search_after'] = advancedSearchAfterFiltersCollection; 
+
+                const filtersBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filters_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_filters_before`, '');
+                const filtersBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filters_before`) || filtersBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filters_before`, filtersBeforeFilters);
+                if (filtersBeforeFiltersCollection)
+                    this.hooks['filters_before'] = filtersBeforeFiltersCollection;
+
+                const filtersAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filters_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_filters_after`, ''); 
+                const filtersAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filters_after`) || filtersAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filters_after`, filtersAfterFilters); 
+                if (filtersAfterFiltersCollection)
+                    this.hooks['filters_after'] = filtersAfterFiltersCollection; 
+
+                const filterTagsBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filter_tags_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_filter_tags_before`, '');
+                const filterTagsBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_before`) || filterTagsBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_before`, filterTagsBeforeFilters);
+                if (filterTagsBeforeFiltersCollection)
+                    this.hooks['filte_tags_before'] = filterTagsBeforeFiltersCollection;
+
+                const filterTagsAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filter_tags_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_filter_tags_after`, ''); 
+                const filterTagsAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_after`) || filterTagsAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_after`, filterTagsAfterFilters); 
+                if (filterTagsAfterFiltersCollection)
+                    this.hooks['filter_tags_after'] = filterTagsAfterFiltersCollection;
+
+                const itemsListBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_before`, '');
+                const itemsListBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`) || itemsListBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`, itemsListBeforeFilters);
+                if (itemsListBeforeFiltersCollection)
+                    this.hooks['items_list_before'] = itemsListBeforeFiltersCollection;
+
+                const itemsListAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_after`, ''); 
+                const itemsListAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_after`) || itemsListAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_after`, itemsListAfterFilters); 
+                if (itemsListAfterFiltersCollection)
+                    this.hooks['items_list_after'] = itemsListAfterFiltersCollection; 
+
+                const paginationBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_pagination_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_pagination_before`, '');
+                const paginationBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_pagination_before`) || paginationBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_pagination_before`, paginationBeforeFilters);
+                if (paginationBeforeFiltersCollection)
+                    this.hooks['pagination_before'] = paginationBeforeFiltersCollection;
+
+                const paginationAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_pagination_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_pagination_after`, ''); 
+                const paginationAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`) || paginationAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`, paginationAfterFilters); 
+                if (paginationAfterFiltersCollection)
+                    this.hooks['pagination_after'] = paginationAfterFiltersCollection; 
+            },
             openExposersModal() {
                 this.$buefy.modal.open({
                     parent: this,
@@ -1185,11 +1293,19 @@
             },
             hideFiltersOnMobile: _.debounce( function() {
                 this.$nextTick(() => {
- 
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
-                        this.isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
-                        
-                        if (this.isMobile || this.startWithFiltersHidden || this.openAdvancedSearch)
+                        const previousMobileScreen = this.isMobileScreen;
+                        const previousWindowWidth = this.windowWidth;
+
+                        this.windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+                        this.isMobileScreen = this.windowWidth <= 768;
+
+                        if (                                                    // We DO NOT want to open the filters due to this resize event IF:
+                            (!previousMobileScreen && this.isMobileScreen) ||   // We're coming from a non-mobile screen to a mobile screen, or
+                            (previousWindowWidth == this.windowWidth) ||        // The window size didn't changed (the resize event is triggered by scrolls on mobile), or
+                            this.startWithFiltersHidden ||                      // Filters should begin disabled, or
+                            this.openAdvancedSearch                             // Advanced search is opened
+                        )
                             this.isFiltersModalActive = false;
                         else
                             this.isFiltersModalActive = true;
@@ -1208,8 +1324,6 @@
                 // $eventBusSearch
                 this.$eventBusSearch.$off('isLoadingItems');
                 this.$eventBusSearch.$off('hasFiltered');
-                if (!this.hideAdvancedSearch)
-                    this.$eventBusSearch.$off('advancedSearchResults');
                 this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
 
             },
@@ -1253,58 +1367,6 @@
         }
     }
 
-    .advanced-search-criteria-title {
-       margin-bottom: 40px;
-
-        h1, h2 {
-            font-size: 1.25em !important;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 2px;
-            background-color: var(--tainacan-secondary);
-            border: none;
-        }
-    }
-
-    .advanced-search-results-title {
-        margin-bottom: 40px;
-        margin: 0 var(--tainacan-one-column) 42px var(--tainacan-one-column);
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-        }
-    }
-
     .advanced-search-form-submit {
         display: flex;
         justify-content: flex-end;
@@ -1313,16 +1375,6 @@
         margin-bottom: 1em;
 
         p { margin-left: 0.75em; }
-    }
-
-    .tnc-advanced-search-close {
-        padding-top: 47px;
-        padding-right: var(--tainacan-one-column);
-        padding-left: var(--tainacan-one-column);
-
-        .column {
-            padding: 0 0.3em 0.3em !important;
-        }
     }
 
     .page-container {
@@ -1517,15 +1569,27 @@
                     width: 100%;
                     margin: -2px 0 5px 0;
                 }
-                .is-pulled-right {
-                    position: absolute;
-                    right: 0;
-                    top: 100%;
-                }
-                a {
+                a.advanced-search-toggle {
                     margin-left: 12px;
                     white-space: nowrap; 
-                } 
+                    position: absolute;
+                    font-size: 0.75em;
+                    right: 15px;
+                    left: unset;
+                    top: 100%;
+                    transition: font-size 0.2s ease, right 0.3s ease, left 0.3s ease, top 0.4s ease;
+                    
+                    .icon {
+                        display: 0;
+                        opacity: 0.0;
+                        max-width: 0;
+                        transition: opacity 0.2s ease, max-width 0.2s ease;                            
+                    }
+
+                    &.is-open {
+                        font-size: 0;
+                    }
+                }
             }
 
             &#tainacanFiltersButton.is-filters-modal-active .gray-icon i::before {

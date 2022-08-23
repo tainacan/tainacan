@@ -40,7 +40,7 @@ class Elastic_Press {
 		//activates the inclusion of the complete hierarchy of terms.
 		add_filter('ep_sync_terms_allow_hierarchy', '__return_true');
 
-		add_filter('tainacan_fetch_args', [$this, 'filter_args'], 10, 2);
+		add_filter('tainacan-fetch-args', [$this, 'filter_args'], 10, 2);
 		add_filter('tainacan-api-items-filters-response', function($filters) { return $this->last_aggregations; });
 		
 		add_filter('tainacan-fetch-all-metadatum-values', [$this, 'fetch_all_metadatum_values'], 10, 3);
@@ -478,7 +478,7 @@ class Elastic_Press {
 			$custom_filter = $default_filters;
 			$temp = [];
 			foreach ($custom_filter['bool']['must'] as $item) {
-				if ( isset($item['bool'])) {
+				if ( isset($item['bool']) && isset($item['bool']["must"]) ) {
 					foreach ($item['bool']["must"] as $item_filter) {
 						if ( !isset( $item_filter["terms"][$filter['key']] ) ) { //do use array_filter ?
 						 	$temp[] = $item;

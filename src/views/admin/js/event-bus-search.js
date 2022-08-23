@@ -26,12 +26,12 @@ export default {
                 this.$root.$on('closeAdvancedSearch', () => {
                     this.$store.dispatch('search/setPage', 1);
                     
-                    this.searchAdvanced({});
+                    this.performAdvancedSearch({});
                 });
 
-                this.$root.$on('searchAdvanced', advancedSearchQuery => {
+                this.$root.$on('performAdvancedSearch', advancedSearchQuery => {
                     this.$store.dispatch('search/setPage', 1);
-                    this.searchAdvanced(advancedSearchQuery);
+                    this.performAdvancedSearch(advancedSearchQuery);
 
                     this.updateURLQueries();
                 });
@@ -84,7 +84,7 @@ export default {
                             if (orderBy && orderBy != 'name') {
                                 
                                 // Previously was stored as a metadata object, now it is a orderby object
-                                if (orderBy.slug)
+                                if (orderBy.slug || typeof orderBy == 'string')
                                     orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
 
                                 if (orderBy.orderby)
@@ -157,15 +157,18 @@ export default {
 
                         const oldMetaQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
                         const newMetaQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
-                        const oldTaxQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
-                        const newTaxQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
-                        const oldStatusArray = oldQueryArray.filter(queryItem => queryItem.startsWith('status'));
-                        const newStatusArray = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
-                        
+                        const oldTaxQueryArray  = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                        const newTaxQueryArray  = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                        const oldStatusArray    = oldQueryArray.filter(queryItem => queryItem.startsWith('status'));
+                        const newStatusArray    = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
+                        const oldSearchQuery    = oldQueryArray.filter(queryItem => queryItem.startsWith('search'));
+                        const newSearchQuery    = newQueryArray.filter(queryItem => queryItem.startsWith('search'));
+
                         if (
                             JSON.stringify(oldMetaQueryArray) != JSON.stringify(newMetaQueryArray) ||
-                            JSON.stringify(oldTaxQueryArray) != JSON.stringify(newTaxQueryArray) ||
-                            JSON.stringify(oldStatusArray) != JSON.stringify(newStatusArray)
+                            JSON.stringify(oldTaxQueryArray)  != JSON.stringify(newTaxQueryArray) ||
+                            JSON.stringify(oldStatusArray)    != JSON.stringify(newStatusArray) ||
+                            JSON.stringify(oldSearchQuery)    != JSON.stringify(newSearchQuery)
                         ) {
                             this.$emit('has-to-reload-facets', true);
                         }
@@ -177,7 +180,7 @@ export default {
                 }
             },
             methods: {
-                searchAdvanced(data) {
+                performAdvancedSearch(data) {
                     this.$store.dispatch('search/set_advanced_query', data);
                     this.updateURLQueries();
                 },
@@ -384,10 +387,6 @@ export default {
                             resp.request.then((res) => {
                                 this.$emit( 'isLoadingItems', false);
                                 this.$emit( 'hasFiltered', res.hasFiltered);
-
-                                if (res.advancedSearchResults){
-                                    this.$emit('advancedSearchResults', res.advancedSearchResults);
-                                }
                             })
                             .catch(() => {
                                 this.$emit( 'isLoadingItems', false);

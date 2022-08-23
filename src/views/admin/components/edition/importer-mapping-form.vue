@@ -803,7 +803,7 @@ export default {
 <style lang="scss" scoped>
 
     .tainacan-page-title {
-        margin-bottom: 40px;
+        margin-bottom: 38px;
 
         h1, h2 {
             font-size: 1.25em;

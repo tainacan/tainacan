@@ -4,9 +4,32 @@
 
 // Main imports
 import Vue from 'vue';
-import Buefy from 'buefy';
-import VTooltip from 'v-tooltip';
-import VueMasonry from 'vue-masonry-css';
+import {
+    Field,
+    Input,
+    Collapse,
+    Autocomplete,
+    Taginput,
+    Tabs,
+    Select,
+    Switch,
+    Upload,
+    Icon,
+    Button,
+    Datepicker,
+    Checkbox,
+    Radio,
+    Tag,
+    Loading,
+    Pagination,
+    Dropdown,
+    Modal,
+    Dialog,
+    Snackbar,
+    Toast,
+    Numberinput
+} from 'buefy';
+import VTooltip from 'floating-vue';
 import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 import cssVars from 'css-vars-ponyfill';
@@ -45,6 +68,9 @@ import FilterTaxonomyTaginput from '../components/filter-types/taxonomy/Taginput
 // Term edition form must be imported here so that it is not necessary on item-submission bundle
 import TermEditionForm from '../components/edition/term-edition-form.vue';
 
+// Term Recursive item component needs to be imported here, otherwise would cause ciruclar dependency
+import RecursiveTermItem from '../components/lists/recursive-term-item.vue';
+
 import FormFilterNumeric from '../components/filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../components/filter-types/numeric-interval/FormNumericInterval.vue';
 import FormFilterNumericListInterval from '../components/filter-types/numeric-list-interval/FormNumericListInterval.vue';
@@ -61,6 +87,7 @@ import store from './store/store'
 import router from './router'
 import eventBusSearch from './event-bus-search';
 import eventBusTermsList from './event-bus-terms-list.js';
+import eventBusMetadataList from './event-bus-metadata-list.js';
 import { 
     I18NPlugin,
     UserPrefsPlugin,
@@ -68,7 +95,8 @@ import {
     ConsolePlugin,
     UserCapabilitiesPlugin,
     StatusHelperPlugin,
-    CommentsStatusHelperPlugin 
+    CommentsStatusHelperPlugin,
+    AdminOptionsHelperPlugin 
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -78,7 +106,7 @@ import {
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanAdminPage() {
 
@@ -95,13 +123,64 @@ export default (element) => {
             }
 
             // Configure and Register Plugins
-            Vue.use(Buefy, {
-                defaultTooltipAnimated: true
-            });
+            Vue.use(Field);
+            Vue.use(Input);
+            Vue.use(Autocomplete);
+            Vue.use(Taginput);
+            Vue.use(Collapse);
+            Vue.use(Button); 
+            Vue.use(Datepicker);
+            Vue.use(Select);
+            Vue.use(Switch);
+            Vue.use(Upload);
+            Vue.use(Icon);
+            Vue.use(Pagination);
+            Vue.use(Checkbox);
+            Vue.use(Radio);
+            Vue.use(Tag);
+            Vue.use(Tabs);
+            Vue.use(Loading);
+            Vue.use(Dropdown);
+            Vue.use(Modal);
+            Vue.use(Dialog);
+            Vue.use(Snackbar);
+            Vue.use(Toast);
+            Vue.use(Numberinput);
             Vue.use(VTooltip, {
-                defaultClass: 'tainacan-tooltip tooltip'
+                popperTriggers: ['hover', 'touch'],
+                themes: {
+                    'taianacan-tooltip': {
+                        '$extend': 'tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true
+                    },
+                    'tainacan-repository-tooltip': {
+                        '$extend': 'tainacan-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-repository-tooltip': {
+                        '$extend': 'tainacan-header-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-repository-tooltip': {
+                        '$extend': 'tainacan-repository-header-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-helper-tooltip': {
+                        '$extend': 'tainacan-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
+                }
             });
-            Vue.use(VueMasonry);
             Vue.use(VueBlurHash);
             Vue.use(I18NPlugin);
             Vue.use(UserPrefsPlugin);
@@ -113,6 +192,7 @@ export default (element) => {
             Vue.use(ConsolePlugin, {visual: false});
             Vue.use(VueTheMask);
             Vue.use(CommentsStatusHelperPlugin);
+            Vue.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
 
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
@@ -166,11 +246,14 @@ export default (element) => {
             Vue.component('tainacan-filter-item', TainacanFiltersList);
 
             /* Others */
+            Vue.component('recursive-term-item', RecursiveTermItem);
             Vue.component('help-button', HelpButton);
             Vue.component('draggable', draggable);
             Vue.component('tainacan-title', TainacanTitle);
 
+            // Event bus are needed to facilate comunication between child-parent-child components
             Vue.use(eventBusTermsList, {});
+            Vue.use(eventBusMetadataList, {});
             Vue.use(eventBusSearch, { store: store, router: router});
 
             // Changing title of pages

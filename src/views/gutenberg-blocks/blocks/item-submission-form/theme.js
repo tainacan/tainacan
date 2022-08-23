@@ -1,7 +1,26 @@
 // Main imports
 import Vue from 'vue';
-import Buefy from 'buefy';
-import VTooltip from 'v-tooltip';
+import {
+    Field,
+    Numberinput,
+    Switch,
+    Tabs,
+    Tag,
+    Checkbox,
+    Collapse,
+    Radio,
+    Button,
+    Upload,
+    Autocomplete,
+    Datepicker,
+    Dropdown,
+    Loading,
+    Input,
+    Select,
+    Taginput,
+    Snackbar
+} from 'buefy';
+import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueTheMask from 'vue-the-mask';
 
@@ -25,14 +44,14 @@ import TainacanFormItem from '../../../admin/components/metadata-types/tainacan-
 import TermCreationPanel from './item-submission/components/term-creation-panel.vue';
 import HelpButton from '../../../admin/components/other/help-button.vue';
 import store from '../../../admin/js/store/store';
-import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin } from '../../../admin/js/admin-utilities';
+import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin, AdminOptionsHelperPlugin } from '../../../admin/js/admin-utilities';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities';
 
 export default (element) => {
     function renderItemSubmissionForm() {
 
         // Vue Dev Tools!
-        Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+        Vue.config.devtools = TAINACAN_ENV === 'development';
 
         // Gets the div with the content of the block
         let blockElement = element ? element : document.getElementById('tainacan-item-submission-form');
@@ -47,11 +66,40 @@ export default (element) => {
             }
 
             // Configure and Register Plugins
-            Vue.use(Buefy, {
-                defaultTooltipAnimated: true
-            });
+            Vue.use(Field);
+            Vue.use(Numberinput);
+            Vue.use(Switch);
+            Vue.use(Tabs);
+            Vue.use(Tag);
+            Vue.use(Checkbox);
+            Vue.use(Radio);
+            Vue.use(Button);
+            Vue.use(Select);
+            Vue.use(Loading);
+            Vue.use(Dropdown);
+            Vue.use(Datepicker);
+            Vue.use(Upload);
+            Vue.use(Taginput);
+            Vue.use(Autocomplete);
+            Vue.use(Collapse);
+            Vue.use(Snackbar);
+            Vue.use(Input);
             Vue.use(VTooltip, {
-                defaultClass: 'tainacan-tooltip tooltip'
+                popperTriggers: ['hover'],
+                themes: {
+                    'taianacan-tooltip': {
+                        '$extend': 'tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-helper-tooltip': {
+                        '$extend': 'tainacan-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
+                }
             });
             Vue.use(I18NPlugin);
             Vue.use(UserPrefsPlugin);
@@ -61,6 +109,7 @@ export default (element) => {
             Vue.use(VueTheMask);
             Vue.use(CommentsStatusHelperPlugin);
             Vue.use(ThumbnailHelperPlugin);
+            Vue.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {

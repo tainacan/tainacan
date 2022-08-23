@@ -29,7 +29,8 @@
                         v-tooltip="{
                             content: $i18n.get('edit'),
                             autoHide: true,
-                            placement: 'auto'
+                            placement: 'auto',
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                         }"
                         class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
@@ -40,7 +41,8 @@
                         v-tooltip="{
                             content: $i18n.get('delete'),
                             autoHide: true,
-                            placement: 'auto'
+                            placement: 'auto',
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                         }"
                         class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
@@ -56,7 +58,7 @@ import { mapActions } from 'vuex';
 import CustomDialog from '../other/custom-dialog.vue';
 
 export default {
-    name: 'RecursiveTermItem',
+    name: 'BasicTermItem',
     props: {
         term: Object,
         index: Number,
@@ -86,8 +88,7 @@ export default {
             'deleteTerm'
         ]),
         editTerm() {        
-            this.term.opened = !this.term.opened;
-            
+            this.$emit('onUpdateTermOpenedState', !this.term.opened);
             this.$eventBusTermsList.onEditTerm(this.term);
         },
         tryToRemoveTerm() {
@@ -136,11 +137,11 @@ export default {
         },
         eventOnTermEditionSaved() {
             this.isEditingTerm = false;
-            this.term.opened = false;
+            this.$emit('onUpdateTermOpenedState', false);
         },
         eventOnTermEditionCanceled() {
             this.isEditingTerm = false;
-            this.term.opened = false;
+            this.$emit('onUpdateTermOpenedState', false);
         }
     }
 }

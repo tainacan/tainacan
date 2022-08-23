@@ -6,7 +6,8 @@
             :value="value"
             @input="onInput($event)"
             @blur="onBlur"
-            type="textarea" />
+            type="textarea"
+            @focus="onMobileSpecialFocus" />
 </template>
 
 <script>
@@ -22,6 +23,9 @@
             },
             onBlur() {
                 this.$emit('blur');
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }

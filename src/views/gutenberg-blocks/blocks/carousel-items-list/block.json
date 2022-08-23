@@ -1,4 +1,5 @@
 {
+    "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/carousel-items-list",
     "title": "Tainacan Collection's Items Carousel",
     "apiVersion": 2,
@@ -18,111 +19,111 @@
             "selector": "div"
         },
         "collectionId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "items": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "isModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "searchURL": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "selectedItems": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "itemsRequestSource": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "maxItemsNumber": {
-            "type": "Number",
-            "value": 12
+            "type": "number",
+            "default": 12
         },
         "maxItemsPerScreen": {
-            "type": "Number",
-            "value": 7
+            "type": "number",
+            "default": 7
         },
         "spaceBetweenItems": {
-            "type": "Number",
-            "value": 32
+            "type": "number",
+            "default": 32
         },
         "spaceAroundCarousel": {
-            "type": "Number",
-            "value": 50
+            "type": "number",
+            "default": 50
         },
         "isLoading": {
-            "type": "Boolean",
-            "value": false
+            "type": "boolean",
+            "default": false
         },
         "isLoadingCollection": {
-            "type": "Boolean",
-            "value": false
+            "type": "boolean",
+            "default": false
         },
         "loadStrategy": {
-            "type": "String",
-            "value": "search"
+            "type": "string",
+            "default": "search"
         },
         "arrowsPosition": {
-            "type": "String",
-            "value": "around"
+            "type": "string",
+            "default": "around"
         },
         "largeArrows": {
-            "type": "Boolean",
-            "value": false
+            "type": "boolean",
+            "default": false
         },
         "arrowsStyle": {
-            "type": "String",
-            "value": "type-1"
+            "type": "string",
+            "default": "type-1"
         },
         "autoPlay": {
-            "type": "Boolean",
-            "value": false
+            "type": "boolean",
+            "default": false
         },
         "autoPlaySpeed": {
-            "type": "Number",
-            "value": 3
+            "type": "number",
+            "default": 3
         },
         "loopSlides": {
-            "type": "Boolean",
-            "value": false
+            "type": "boolean",
+            "default": false
         },
         "hideTitle": {
-            "type": "Boolean",
-            "value": true
+            "type": "boolean",
+            "default": true
         },
         "showCollectionHeader": {
-            "type": "Boolean",
-            "value": false
+            "type": "boolean",
+            "default": false
         },
         "showCollectionLabel": {
-            "type": "Boolean",
-            "value": false
+            "type": "boolean",
+            "default": false
         },
-        "cropImagesToSquare": {
-            "type": "Boolean",
-            "value": true
+        "imageSize": {
+            "type": "string",
+            "default": "tainacan-medium"
         },
         "collection": {
-            "type": "Object",
-            "value": {}
+            "type": "object",
+            "default": {}
         },
         "blockId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "collectionBackgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#454647"
         },
         "collectionTextColor": {
-            "type": "String",
+            "type": "string",
             "default": "#ffffff"
         }
     },

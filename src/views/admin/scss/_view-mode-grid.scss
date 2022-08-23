@@ -1,5 +1,6 @@
 .tainacan-grid-container {
     min-height: 50vh;
+    height: auto !important;
     padding: 0;
     @include display-grid;
     grid-template-columns: repeat(auto-fill, 285px);
@@ -114,7 +115,14 @@
                 margin-top: -1px;
             }
         } 
-    
+    }
+
+    &.hide-items-selection {
+        .tainacan-grid-item {
+            &:hover, &:hover .metadata-title { background-color: transparent; cursor: default; }
+            a { cursor: default; }
+            .metadata-title { margin-left: 6px !important; padding-left: 6px !important; }
+        }
     }
 }
 

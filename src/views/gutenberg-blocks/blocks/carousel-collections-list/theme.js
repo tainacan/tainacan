@@ -6,7 +6,7 @@ import VueBlurHash from 'vue-blurhash';
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanCollectionsCarouselBlocks() {
 
@@ -36,7 +36,7 @@ export default (element) => {
                         maxCollectionsPerScreen: 6,
                         spaceBetweenCollections: 32,
                         spaceAroundCarousel: 50,
-                        cropImagesToSquare: true,
+                        imageSize: 'tainacan-medium',
                         loopSlides: false,
                         hideName: true,
                         showCollectionThumbnail: false,
@@ -57,7 +57,7 @@ export default (element) => {
                                 loopSlides: this.loopSlides,
                                 largeArrows: this.largeArrows,
                                 arrowsStyle: this.arrowsStyle,
-                                cropImagesToSquare: this.cropImagesToSquare,
+                                imageSize: this.imageSize,
                                 maxCollectionsPerScreen: this.maxCollectionsPerScreen,
                                 spaceBetweenCollections: this.spaceBetweenCollections,
                                 spaceAroundCarousel: this.spaceAroundCarousel,
@@ -66,7 +66,7 @@ export default (element) => {
                                 tainacanApiRoot: this.tainacanApiRoot,
                                 tainacanBaseUrl: this.tainacanBaseUrl,
                                 className: this.className,
-                                style: this.style
+                                customStyle: this.style
                             }
                         });
                     },
@@ -83,7 +83,7 @@ export default (element) => {
                         this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;
                         this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
                         this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
-                        this.cropImagesToSquare = this.$el.attributes['crop-images-to-square'] != undefined ? this.$el.attributes['crop-images-to-square'].value == 'true' : false;
+                        this.imageSize = this.$el.attributes['image-size'] != undefined ? this.$el.attributes['image-size'].value : 'tainacan-medium';
                         this.hideName = this.$el.attributes['hide-name'] != undefined ? this.$el.attributes['hide-name'].value == 'true' : false;
                         this.showCollectionThumbnail = this.$el.attributes['show-collection-thumbnail'] != undefined ? this.$el.attributes['show-collection-thumbnail'].value == 'true' : false;
                         this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;

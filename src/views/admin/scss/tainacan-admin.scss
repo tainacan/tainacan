@@ -29,7 +29,6 @@
 @import "../scss/_notices.scss";
 @import "../scss/_filters-menu-modal.scss";
 @import "../scss/_repository-level-overrides.scss";
-@import "../scss/_iframe_special_modes_overrides.scss";
 @import "../scss/_custom_variables.scss";
 
 // Clears wordpress content
@@ -61,14 +60,20 @@ body.tainacan-admin-page #wp-auth-check-wrap {
 #tainacan-admin-app * {
     // For Firefox
     scrollbar-color: var(--tainacan-gray3) transparent;
-    scrollbar-width: thin;
 
     // For Chromium and related
-    &::-webkit-scrollbar {
-        width: 0.4em;
-    }
     &::-webkit-scrollbar-thumb {
         background-color: var(--tainacan-gray3);
+    }
+
+    @media screen and (min-width: 770px) {
+        // For Firefox
+        scrollbar-width: thin;
+
+        // For Chromium and related
+        &::-webkit-scrollbar {
+            width: 0.4em;
+        }
     }
 }
 
@@ -129,11 +134,18 @@ a:hover {
         font-size: 0.8125em;
     }
 }
+html.is-clipped .page-container:not(.is-filters-menu-open) {
+    overflow-y: hidden;
+}
+
 // Used for pages with collection subheader
 .page-container-small {
-    height: calc(100% - 42px);
+    height: calc(100% - 38px);
     overflow-y: auto;
     transition: height 0.6s;
+}
+html.is-clipped .page-container-small:not(.is-filters-menu-open) {
+    overflow-y: hidden;
 }
 // Used for pages with subheader in mobile
 .page-container-narrow {
@@ -153,72 +165,8 @@ a:hover {
     color: var(--tainacan-gray3);
 }
 
-.column-large-width {
-    .tainacan-compound-group {
-        display: inline-block;
-        font-size: 1.125em;
-        margin-top: -0.25em;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        max-width: 100%;
-
-        & * {
-            display: inline-block;
-        }
-        .label {
-            font-size: 1em;
-            color: var(--tainacan-info-color);
-            &:not(:first-child)::before {
-                content: ', ';
-                font-size: 1em;
-                font-weight: normal;
-                color: var(--tainacan-info-color);
-                display: inline-block;
-                margin-right: 0.35em;
-                margin-left: -0.15em;
-            }
-            &::after {
-                content: ': ';
-                font-size: 1em;
-                color: var(--tainacan-info-color);
-                display: inline-block;
-                margin-right: 0.15em;
-            }
-        }
-        p {
-            font-size: 1em !important;
-            line-height: 1.25em !important;
-        }
-    }
-}
-
 // Inside one of the view modes
 .metadata-value {
-    .tainacan-compound-group {
-        margin-left: 2px;
-        padding-left: 0.875em;
-        border-left: 1px solid var(--tainacan-gray2);
-
-        .tainacan-compound-metadatum .label {
-            margin-bottom: 0.25em;
-            font-size: 1em;
-            color: var(--tainacan-info-color);
-        }
-        .tainacan-compound-metadatum p {
-            margin-bottom: 0.75em;
-            font-size: 1em;
-        }
-        .multivalue-separator {
-            display: block;
-            max-height: 1px;
-            width: 80px;
-            background: var(--tainacan-gray2);
-            content: none;
-            color: transparent;
-            margin: 1em auto 1em -0.875em;
-        }
-    }
     .tainacan-relationship-group {
         .tainacan-relationship-metadatum {
             .tainacan-relationship-metadatum-header {
@@ -240,6 +188,48 @@ a:hover {
         }
     }
 }
+.metadata-value,
+.tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-metadatum {
+    .tainacan-compound-group {
+        margin-left: 2px;
+        padding-left: 0.875em;
+        border-left: 1px solid var(--tainacan-gray2);
+
+        .tainacan-compound-metadatum .label {
+            margin-bottom: 0.25em;
+            font-size: 1em;
+            color: var(--tainacan-info-color);
+        }
+        .tainacan-compound-metadatum p {
+            margin-bottom: 0.75em;
+            font-size: 1em;
+        }
+        .tainacan-metadatum .label {
+            font-size: 1em;
+        }
+        .multivalue-separator {
+            display: block;
+            max-height: 1px;
+            width: 80px;
+            background: var(--tainacan-gray2);
+            content: none;
+            color: transparent;
+            margin: 1em auto 1em -0.875em;
+        }
+    }
+}
+.tainacan-relationship-group .tainacan-relationship-metadatum .tainacan-metadatum .tainacan-compound-group {
+    font-size: 0.75em;
+
+    .tainacan-metadatum {
+        margin-left: 20px;
+
+        .label {
+            font-size: 1em !important;
+        }
+    }
+}
+
 // Inside the admin item page
 .metadata-type-textarea,
 .metadata-type-compound {
@@ -255,7 +245,7 @@ a:hover {
 }
 .metadata-type-compound {
     padding-left: 15px;
-    margin-left: 15px;
+    margin-left: 0px;
     border-left: 1px solid var(--tainacan-gray2);
 
     .tainacan-metadatum {

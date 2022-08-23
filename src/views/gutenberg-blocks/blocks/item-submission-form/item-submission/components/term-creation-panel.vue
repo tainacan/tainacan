@@ -6,9 +6,9 @@
             aria-modal
             id="termEditForm"
             class="tainacan-form term-creation-panel"
-            @submit.prevent="saveEdition(editForm)">
+            @submit.prevent="saveEdition(form)">
 
-        <h4>{{ editForm & editForm.id && editForm.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h4>
+        <h4>{{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h4>
     
         <div>
             <b-loading
@@ -29,7 +29,7 @@
                 </label>
                 <b-input
                         :placeholder="$i18n.get('label_term_without_name')"
-                        v-model="editForm.name"
+                        v-model="form.name"
                         name="name"
                         @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
             </b-field>
@@ -113,7 +113,7 @@
         name: 'TermEditionForm',
         mixins: [ formHooks ],
         props: {
-            editForm: Object,
+            originalForm: Object,
             taxonomyId: ''
         },
         data() {
@@ -128,17 +128,20 @@
                 entityName: 'term',
                 isLoading: false,
                 parentTermSearchQuery: '',
-                parentTermSearchOffset: 0
+                parentTermSearchOffset: 0,
+                form: {}
             }
         },
+        created() {
+            this.form = JSON.parse(JSON.stringify(this.originalForm));
+        },
         mounted() {
-            
-            this.hasParent = this.editForm.parent != undefined && this.editForm.parent > 0;
-            this.initialParentId = this.editForm.parent;
+            this.hasParent = this.form.parent != undefined && this.form.parent > 0;
+            this.initialParentId = this.form.parent;
 
             if (this.hasParent) {
                 this.isFetchingParentTerms = true;
-                this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.editForm.parent })
+                this.fetchParentName({ taxonomyId: this.taxonomyId, parentId: this.form.parent })
                     .then((parentName) => {
                         this.parentTermName = parentName;
                         this.isFetchingParentTerms = false;
@@ -164,20 +167,19 @@
             saveEdition(term) {
 
                 if (term.id === 'new') {
-                    this.$emit('onEditionFinished', { name: this.editForm.name, parent: this.editForm.parent });
-                    this.editForm = {};
+                    this.$emit('onEditionFinished', { name: this.form.name, parent: this.form.parent });
+                    this.form = {};
                     this.formErrors = {};
                     this.isLoading = false;
                 }
             },
             cancelEdition() {
-                this.$emit('onEditionCanceled', this.editForm);
+                this.$emit('onEditionCanceled', this.form);
             },
             clearErrors(attributes) {
-                if (attributes instanceof Object){
-                    for(let attribute in attributes){
+                if (attributes instanceof Object) {
+                    for (let attribute in attributes)
                         this.formErrors[attribute] = undefined;
-                    }
                 } else {
                     this.formErrors[attributes] = undefined;
                 }
@@ -206,7 +208,7 @@
                 
                 this.fetchPossibleParentTerms({
                         taxonomyId: this.taxonomyId, 
-                        termId: this.editForm.id, 
+                        termId: this.form.id, 
                         search: this.parentTermSearchQuery,
                         offset: this.parentTermSearchOffset })
                     .then((res) => {
@@ -227,7 +229,7 @@
             }, 250),
             onToggleSwitch() {
 
-                if (this.editForm.parent == 0)
+                if (this.form.parent == 0)
                     this.hasChangedParent = this.hasParent;
                 else
                     this.hasChangedParent = !this.hasParent;
@@ -237,7 +239,7 @@
             },
             onSelectParentTerm(selectedParentTerm) {
                 this.hasChangedParent = this.initialParentId != selectedParentTerm.id;
-                this.editForm.parent = selectedParentTerm.id;
+                this.form.parent = selectedParentTerm.id;
                 this.selectedParentTerm = selectedParentTerm;
                 this.parentTermName = selectedParentTerm.name;
                 this.showCheckboxesWarning = true;

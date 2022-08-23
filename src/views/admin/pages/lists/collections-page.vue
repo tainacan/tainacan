@@ -2,7 +2,7 @@
     <div class="repository-level-page page-container">
         <b-loading :active.sync="isLoading"/>
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: this.$i18n.get('collections') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]"/>
         <div class="sub-header">
             
             <!-- New Collection button -->
@@ -199,6 +199,7 @@
                                 content: $i18n.get('info_collections_tab_all'),
                                 autoHide: true,
                                 placement: 'auto',
+                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                             }">
                         <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                             {{ `${$i18n.get('label_all_collections')}` }}
@@ -216,6 +217,7 @@
                                 content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('collections')]),
                                 autoHide: true,
                                 placement: 'auto',
+                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
                             }">
                         <a>
                             <span 
@@ -691,6 +693,12 @@ export default {
         margin-bottom: 0;
         margin-top: 0;
         height: auto;
+    }
+    @media screen and (max-width: 769px) {
+        .table-container {
+            padding-left: 0;
+            padding-right: 0;
+        }
     }
 
 </style>

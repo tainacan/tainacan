@@ -19,7 +19,8 @@ class Filter extends Entity {
         $metadatum_id,
         $max_options,
         $filter_type,
-        $filter_type_options;
+        $filter_type_options,
+        $begin_with_filter_collapsed;
 
     static $post_type = 'tainacan-filter';
     public $enabled_for_collection = true;
@@ -179,6 +180,16 @@ class Filter extends Entity {
     }
 
     /**
+     * Return 'yes' or 'no' to the option of begining the filter collapsed
+     * 
+     * @return string
+     */
+    public function get_begin_with_filter_collapsed() {
+        return $this->get_mapped_property('begin_with_filter_collapsed');
+    }
+
+
+    /**
      * Define the filter name
      *
      * @param [string] $value
@@ -248,9 +259,17 @@ class Filter extends Entity {
      * @param string | \Tainacan\Filter_Types\Filter_Type $value The name of the class or the instance
      */
     public function set_filter_type($value){
-				$this->set_mapped_property('filter_type', ( is_object( $value ) ) ? get_class( $value ) : $value );
+		$this->set_mapped_property('filter_type', ( is_object( $value ) ) ? get_class( $value ) : $value );
     }
 
+    /**
+     * Tells if filter should begin collapsed, not loading facets
+     * 
+     * @param string $begin_with_filter_collapsed
+     */
+    public function set_begin_with_filter_collapsed($begin_with_filter_collapsed) {
+        $this->set_mapped_property('begin_with_filter_collapsed', $begin_with_filter_collapsed);
+    }
 
 	/**
 	 * Transient property used to store the status of the filter for a particular collection

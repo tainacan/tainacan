@@ -3,44 +3,46 @@
             id="tainacan-admin-app" 
             class="has-mounted columns is-fullheight"
             :class="{ 
-                'tainacan-admin-iframe-mode': isIframeMode, 
-                'tainacan-admin-mobile-mode': isMobileMode, 
-                'tainacan-admin-read-mode': isReadMode
+                'tainacan-admin-mobile-app-mode': $adminOptions.mobileAppMode
             }">
         <template v-if="activeRoute == 'HomePage'">
-            <tainacan-header />
+            <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
             <router-view /> 
         </template>
         <template v-else>
-            <template v-if="!isIframeMode && !isMobileMode">
-                <primary-menu 
-                        :active-route="activeRoute"
-                        :is-menu-compressed="isMenuCompressed"/>
-                <button 
-                        class="is-hidden-mobile"
-                        id="menu-compress-button"
-                        @click="isMenuCompressed = !isMenuCompressed">          
-                    <span
-                            v-tooltip="{
-                                content: $i18n.get('label_shrink_menu'),
-                                autoHide: true,
-                                placement: 'auto-end',
-                                classes: ['tainacan-tooltip', 'tooltip', 'repository-tooltip']     
-                            }"
-                            class="icon">
-                        <i 
-                                :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
-                                class="tainacan-icon tainacan-icon-1-25em"/>
-                    </span>
-                </button>
-                <tainacan-header />
-                <tainacan-repository-subheader 
-                        :is-repository-level="isRepositoryLevel"
-                        :is-menu-compressed="isMenuCompressed"/>
-            </template>
+            <primary-menu
+                    v-if="!$adminOptions.hidePrimaryMenu" 
+                    :active-route="activeRoute"
+                    :is-menu-compressed="isMenuCompressed"/>
+            <button 
+                    v-if="!$adminOptions.hidePrimaryMenu && !$adminOptions.hidePrimaryMenuCompressButton" 
+                    class="is-hidden-mobile"
+                    id="menu-compress-button"
+                    :style="{ top: menuCompressButtonTop }"
+                    @click="isMenuCompressed = !isMenuCompressed"      
+                    :aria-label="$i18n.get('label_shrink_menu')">    
+                <span
+                        v-tooltip="{
+                            content: $i18n.get('label_shrink_menu'),
+                            autoHide: true,
+                            placement: 'auto-end',
+                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']     
+                        }"
+                        class="icon">
+                    <i 
+                            :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
+                            class="tainacan-icon tainacan-icon-1-25em"/>
+                </span>
+            </button>
+            <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
+            <tainacan-repository-subheader
+                    v-if="!$adminOptions.hideRepositorySubheader" 
+                    :is-repository-level="isRepositoryLevel"
+                    :is-menu-compressed="isMenuCompressed"/>
             <div 
                     id="repository-container"
-                    class="column is-main-content">  
+                    class="column is-main-content"
+                    :style="$adminOptions.hidePrimaryMenu ? '--tainacan-sidebar-width: 0px' : ''">  
                 <router-view /> 
             </div>
         </template>
@@ -52,7 +54,7 @@
     import TainacanHeader from './components/navigation/tainacan-header.vue';
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
-    import 'swiper/css/swiper.min.css';
+    import "floating-vue/dist/style.css";
 
     export default { 
         name: "AdminPage",
@@ -69,14 +71,24 @@
             }
         },
         computed: {
-            isReadMode() {
-                return this.$route && this.$route.query && this.$route.query.readmode;
-            },
-            isIframeMode() {
-                return this.$route && this.$route.query && this.$route.query.iframemode;
-            },
-            isMobileMode() {
-                return this.$route && this.$route.query && this.$route.query.mobilemode;
+            menuCompressButtonTop() {
+                let amountOfElementsAbove = [
+                    this.$adminOptions.hidePrimaryMenuRepositoryButton,
+                    this.$adminOptions.hidePrimaryMenuCollectionsButton,
+                    this.$adminOptions.hidePrimaryMenuItemsButton
+                ].filter(Boolean).length;
+
+                switch (amountOfElementsAbove) {
+                    case 3:
+                        return 'calc(2.05em + 12px)';
+                    case 2:
+                        return 'calc(4.65em + 12px)';
+                    case 1:
+                        return 'calc(7.5em + 12px)';
+                    case 0:
+                    default:
+                        return 'calc(10.125em + 12px)';
+                }
             }
         },
         watch: {
@@ -135,7 +147,7 @@
     }  
 
     @media screen and (max-width: 769px) {
-        .is-fullheight:not(.tainacan-admin-mobile-mode):not(.tainacan-admin-collection-mobile-mode) {
+        .is-fullheight:not(.tainacan-admin-mobile-app-mode):not(.tainacan-admin-collection-mobile-app-mode) {
             height: auto;
         }
     }
@@ -155,18 +167,24 @@
             margin-right: 0px;
         }
     }
+    #primary-menu.is-compressed~.is-main-content {
+        --tainacan-sidebar-width: 3.0em;
+    }
+    #primary-menu:not(.is-compressed)~.is-main-content {
+        --tainacan-sidebar-width: 10em;
+    }
 
     .is-secondary-content {
         padding: 0px !important;
-        margin: 5.875em auto 0 auto;
+        margin: 5.4em auto 0 auto;
         position: relative;
         overflow-y: hidden;
         overflow-x: hidden;
-        height: calc(100% - 5.875em);
+        height: calc(100vh - 5.4em);
 
         @media screen and (max-width: 769px) {
             overflow-y: visible;
-            margin: 40px auto 0 auto;
+            margin: 38px auto 0 auto;
             
         } 
 
@@ -179,7 +197,7 @@
     #menu-compress-button {
         position: absolute;
         z-index: 999;
-        top: calc(11.125em + 12px);
+        top: calc(10.125em + 12px);
         left: 0px;
         max-width: 1.5625em;
         height: 1.5625em;

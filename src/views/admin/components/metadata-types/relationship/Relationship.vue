@@ -17,7 +17,7 @@
                         @add="onAdd"
                         @remove="onRemove"
                         :data="options"
-                        :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : 1)"
+                        :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                         autocomplete
                         :remove-on-keys="[]"
                         :dropdown-position="isLastMetadatum ? 'top' :'auto'"
@@ -30,7 +30,8 @@
                         @typing="search"
                         check-infinite-scroll
                         @infinite-scroll="searchMore"
-                        :has-counter="false">
+                        :has-counter="false"
+                        @focus="onMobileSpecialFocus">
                     <template slot-scope="props">
                         <div 
                                 v-if="!isDisplayingRelatedItemMetadata"
@@ -58,10 +59,10 @@
                         {{ $i18n.get('info_no_item_found') }}
                     </template>
                     <template
-                            v-if="currentUserCanEditItems && !($route && $route.query.iframemode)" 
+                            v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)" 
                             slot="footer">
                         <a @click="editItemModalOpen = true">
-                            {{ $i18n.get('label_crate_new_item') + ' "' + searchQuery + '"' }}
+                            {{ $i18n.get('label_create_new_item') + ' "' + searchQuery + '"' }}
                         </a>
                     </template>
                 </b-taginput>
@@ -80,7 +81,7 @@
                                 style="position: relative;">
                             <div v-html="itemValue.valuesAsHtml" />
                             <a 
-                                    v-if="currentUserCanEditItems && $route && !$route.query.iframemode"
+                                    v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)"
                                     @click="editSelected(itemValue.value)"
                                     class="relationship-value-button--edit">
                                 <span class="icon">
@@ -109,27 +110,33 @@
                 </div>
             </b-tab-item>
         </b-tabs>
-        <a
-                v-if="currentUserCanEditItems && itemMetadatum.item && itemMetadatum.item.id && (maxMultipleValues === undefined || maxMultipleValues > selected.length)"
-                :disabled="!$route || $route.query.iframemode"
-                @click="editItemModalOpen = !editItemModalOpen"
-                class="add-link">
-            <span class="icon is-small">
-                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
-            </span>
-            &nbsp;{{ $i18n.get('label_crate_new_item') }}
-        </a>
-        <b-modal 
-                :width="1200"
-                :active.sync="editItemModalOpen"
-                :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
-                :close-button-aria-label="$i18n.get('close')">
-            <iframe 
-                    :id="relationshipInputId + '_item-edition-modal'"
-                    width="100%"
-                    style="height: 85vh"
-                    :src="itemModalSrc" />
-        </b-modal>
+        <template 
+                v-if="currentUserCanEditItems && 
+                    itemMetadatum.item &&
+                    itemMetadatum.item.id">
+            <a
+                    v-if="(maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
+                            (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
+                    :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
+                    @click="editItemModalOpen = !editItemModalOpen"
+                    class="add-link">
+                <span class="icon is-small">
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                </span>
+                &nbsp;{{ $i18n.get('label_create_new_item') }}
+            </a>
+            <b-modal 
+                    :width="1200"
+                    :active.sync="editItemModalOpen"
+                    :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
+                    :close-button-aria-label="$i18n.get('close')">
+                <iframe 
+                        :id="relationshipInputId + '_item-edition-modal'"
+                        width="100%"
+                        :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
+                        :src="itemModalSrc" />
+            </b-modal>
+        </template>
     </div>
 </template>
 
@@ -144,7 +151,8 @@
             maxtags: undefined,
             disabled: false,
             allowNew: true,
-            isLastMetadatum: false
+            isLastMetadatum: false,
+            isMobileScreen: false
         },
         data() {
             return {
@@ -158,7 +166,7 @@
                 page: 1,
                 activeTab: 0,
                 editItemModalOpen: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
+                adminURL: tainacan_plugin.admin_url + 'admin.php?',
                 currentUserCanEditItems: false,
                 selectedValuesAsHtml: []
             }
@@ -178,9 +186,9 @@
             },
             itemModalSrc() {
                 if (this.editingItemId)
-                    return this.adminFullURL + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId) + '?iframemode=true' + (this.isMobileMode ? '&mobilemode=true' : '');
+                    return this.adminURL + 'itemEditionMode=true' + (this.$adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getItemEditPath(this.collectionId, this.editingItemId);
                 else
-                    return this.adminFullURL + this.$routerHelper.getNewItemPath(this.collectionId) + '?iframemode=true&newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery + (this.isMobileMode ? '&mobilemode=true' : '');
+                    return this.adminURL + 'itemEditionMode=true' + (this.$adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + this.$routerHelper.getNewItemPath(this.collectionId) + '?newmetadatumid=' + this.itemMetadatum.metadatum.metadata_type_options.search + '&newitemtitle=' + this.searchQuery;
             },
             relationshipInputId() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum)
@@ -196,8 +204,11 @@
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length &&
                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.length > 1;
             },
-            isMobileMode() {
-                return this.$route && this.$route.query && this.$route.query.mobilemode;
+            isAcceptingDraftItems() {
+                return this.itemMetadatum &&
+                       this.itemMetadatum.metadatum &&
+                       this.itemMetadatum.metadatum.metadata_type_options &&
+                       this.itemMetadatum.metadatum.metadata_type_options.accept_draft_items === 'yes';
             }
         },
         watch: {
@@ -219,6 +230,9 @@
                 query['order'] = 'asc';
                 query['fetch_only'] = 'title,document_mimetype,thumbnail';
                 query['fetch_only_meta'] = this.isDisplayingRelatedItemMetadata ? (this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.filter(metadatumId => metadatumId !== 'thumbnail') + '') : (this.itemMetadatum.metadatum.metadata_type_options.search ? this.itemMetadatum.metadatum.metadata_type_options.search : '');
+                if (this.isAcceptingDraftItems)
+                    query['status'] = ['publish','private','draft'];
+
                 axios.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
                     .then( res => {
                         if (res.data.items) {
@@ -380,6 +394,9 @@
                 query['paged'] = this.page;
                 query['order'] = 'asc';
 
+                if (this.isAcceptingDraftItems)
+                    query['status'] = ['publish','private','draft'];
+
                 if (this.selected.length > 0)
                     query['exclude'] = this.selected.map((item) => item.value);
 
@@ -389,7 +406,7 @@
                 const message = event.message ? 'message' : 'data';
                 const data = event[message];
 
-                if (data.type == 'itemEditionMessage') {
+                if (data.type == 'itemEditionMessage' && data.item !== null) {
                     this.editItemModalOpen = false;
 
                     // An item is being edited from the modal
@@ -432,7 +449,11 @@
                 let valuesAsHtml = '';
                 valuesAsHtml += `<div class="tainacan-relationship-metadatum" data-item-id="${ item.id }">
                     <div class="tainacan-relationship-metadatum-header">`;
-                    if (this.isDisplayingRelatedItemMetadata && this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf('thumbnail') >= 0)
+                    if (
+                        this.isDisplayingRelatedItemMetadata &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf('thumbnail') >= 0
+                    )
                         valuesAsHtml += `<img src="${ this.$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype) }" class="attachment-tainacan-small size-tainacan-small" alt="${ item.thumbnail_alt }" loading="lazy" width="40" height="40">`;
                 
                     valuesAsHtml += `<h4 class="label">
@@ -443,6 +464,7 @@
                 Object.values(item.metadata).forEach(metadatumValue => {
                     if (
                         metadatumValue.id != this.itemMetadatum.metadatum.metadata_type_options.search &&
+                        this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata &&
                         this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.indexOf(metadatumValue.id) >= 0 &&
                         metadatumValue.value_as_html
                     ) {
@@ -471,6 +493,9 @@
                     this.selected.splice(indexOfRemovedItem, 1);
                     this.onInput(this.selected);
                 }
+            },
+            onMobileSpecialFocus() {
+                this.$emit('mobileSpecialFocus');
             }
         }
     }

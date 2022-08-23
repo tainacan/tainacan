@@ -47,7 +47,8 @@
         color: inherit;
         border: none;
         font-weight: bold;
-        line-height: normal; }
+        line-height: normal;
+        display: block; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item img,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item img {
         height: auto;

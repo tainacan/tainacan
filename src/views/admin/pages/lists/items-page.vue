@@ -9,41 +9,21 @@
 
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
-                v-if="!isIframeMode && !isReadMode && !openAdvancedSearch" 
-                :bread-crumb-items="[{ path: '', label: this.$i18n.get('items') }]"/>
-        <div 
-                v-else-if="openAdvancedSearch"
-                class="tnc-advanced-search-close"> 
-            <div class="advanced-search-criteria-title">
-                <div class="is-flex">
-                    <h1>{{ $i18n.get('info_search_criteria') }}</h1>
-                    <div
-                            :style="{'margin-bottom': 'auto'}"
-                            class="field is-grouped">
-                        <a 
-                                class="back-link"
-                                @click="openAdvancedSearch = false">
-                            {{ $i18n.get('back') }}
-                        </a>
-                    </div>
-                </div>
-                <hr>
-            </div>
-        </div>
+                v-if="!$adminOptions.hideItemsListPageTitle" 
+                :bread-crumb-items="[{ path: '', label: $i18n.get('items') }]"/>
 
         <!-- SEARCH CONTROL ------------------------- -->
-        <h3 
-                id="search-control-landmark"
-                class="sr-only">
-            {{ $i18n.get('label_sort_visualization') }}
-        </h3>
         <div
                 aria-labelledby="search-control-landmark"
                 role="region"
                 ref="search-control"
-                v-if="((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
-                class="search-control">
-
+                class="search-control"  
+                :style="( $adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || $adminOptions.itemsSearchSelectionMode ) ? '--tainacan-container-padding: 6px;' : ''">
+            <h3 
+                    id="search-control-landmark"
+                    class="sr-only">
+                {{ $i18n.get('label_sort_visualization') }}
+            </h3>
             <!-- <b-loading
                     :is-full-page="false"
                     :active.sync="isLoadingMetadata"/> -->
@@ -57,13 +37,13 @@
                     @click="isFiltersModalActive = !isFiltersModalActive"
                     v-tooltip="{
                         delay: {
-                            show: 500,
+                            shown: 500,
                             hide: 300,
                         },
                         content: !isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters'),
                         autoHide: false,
                         placement: 'auto-start',
-                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                     }">
                 <span class="icon">
                     <i 
@@ -74,9 +54,7 @@
             </button>
 
             <!-- Text simple search -->
-            <div 
-                    v-if="!openAdvancedSearch"
-                    class="search-control-item">
+            <div class="search-control-item">
                 <div 
                         role="search"
                         class="search-area">
@@ -90,22 +68,41 @@
                             @keyup.enter.native="updateSearch()"
                             icon-right="magnify"
                             icon-right-clickable
-                            @icon-right-click="updateSearch()" />
+                            @icon-right-click="updateSearch()"
+                            :disabled="openAdvancedSearch" />
                     <a
+                            v-if="!$adminOptions.hideItemsListAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
-                            style="font-size: 0.75em;"
-                            class="has-text-secondary is-pulled-right">{{ $i18n.get('advanced_search') }}</a>
+                            class="advanced-search-toggle has-text-secondary"
+                            :class="openAdvancedSearch ? 'is-open' : 'is-closed'">
+                        {{ $i18n.get('advanced_search') }}
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-search" />
+                        </span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Item Creation Dropdown, only on Admin -->
+            <!-- Item Creation Dropdown (or button, if few options are available) -->
             <div 
-                    class="search-control-item"
-                    v-if="!isIframeMode &&
-                            !openAdvancedSearch &&
+                    v-if="!$adminOptions.hideItemsListCreationDropdown &&
                             collection && 
-                            collection.current_user_can_edit_items">
+                            collection.current_user_can_edit_items"
+                    class="search-control-item">
+                <router-link
+                        id="item-creation-options-dropdown"
+                        v-if="$adminOptions.hideItemsListCreationDropdownBulkAdd && $adminOptions.hideItemsListCreationDropdownImport"
+                        class="button is-secondary"
+                        tag="button"
+                        :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
+                    <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
+                    <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-add" />
+                    </span>
+                </router-link>
                 <b-dropdown
+                        v-else
                         :mobile-modal="true"
                         id="item-creation-options-dropdown"
                         aria-role="list"
@@ -141,7 +138,7 @@
                         </div>
                     </b-dropdown-item>
                     <b-dropdown-item 
-                            v-if="!isRepositoryLevel"
+                            v-if="!isRepositoryLevel && !$adminOptions.hideItemsListCreationDropdownBulkAdd"
                             aria-role="listitem">
                         <router-link
                                 id="a-item-add-bulk"
@@ -152,7 +149,9 @@
                             <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item aria-role="listitem">
+                    <b-dropdown-item 
+                            v-if="!$adminOptions.hideItemsListCreationDropdownImport"
+                            aria-role="listitem">
                         <div
                                 id="a-import-items"
                                 tag="div"
@@ -170,13 +169,13 @@
                 <b-dropdown
                         v-tooltip="{
                             delay: {
-                                show: 500,
+                                shown: 500,
                                 hide: 300,
                             },
                             content: (totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? (adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry') ? $i18n.get('info_current_view_mode_metadata_not_allowed') : $i18n.get('info_cant_select_metadata_without_items') : '',
                             autoHide: false,
                             placement: 'auto-start',
-                            classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : '']
+                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }" 
                         ref="displayedMetadataDropdown"
                         :mobile-modal="true"
@@ -413,7 +412,7 @@
 
             <!-- Exposers or alternative links modal button -->
             <div 
-                    v-if="!isIframeMode"
+                    v-if="!$adminOptions.hideItemsListExposersButton"
                     class="search-control-item">
                 <button 
                         class="button is-white"
@@ -432,7 +431,6 @@
          <!-- SIDEBAR WITH FILTERS -->
         <b-modal
                 role="region"
-                aria-labelledby="filters-label-landmark"
                 id="filters-modal"     
                 ref="filters-modal"       
                 :active.sync="isFiltersModalActive"
@@ -445,6 +443,7 @@
                 :close-button-aria-label="$i18n.get('close')">
             <filters-items-list
                     :is-loading-items="isLoadingItems"
+                    @updateIsLoadingItemsState="(state) => isLoadingItems = state"
                     autofocus="true"
                     tabindex="-1"
                     aria-modal
@@ -461,41 +460,22 @@
                 @mousemove="handleMouseMoveOverList">
 
             <!-- ADVANCED SEARCH -->
-            <div
-                    id="advanced-search-container"
-                    role="search"
-                    v-if="openAdvancedSearch">
-                
-                <advanced-search
-                        :collection-id="collectionId"
-                        :is-repository-level="isRepositoryLevel"
-                        :advanced-search-results="advancedSearchResults"
-                        :open-form-advanced-search="openFormAdvancedSearch"
-                        :is-doing-search="isDoingSearch"/>
-
-                <div class="advanced-search-form-submit">
-                    <p
-                            v-if="advancedSearchResults"
-                            class="control">
-                        <button
-                                aria-controls="items-list-results"
-                                @click="advancedSearchResults = !advancedSearchResults"
-                                class="button is-outlined">{{ $i18n.get('edit_search') }}</button>
-                    </p>
-                    <p
-                            v-if="advancedSearchResults"
-                            class="control">
-                        <button
-                                aria-controls="items-list-results"
-                                @click="isDoingSearch = !isDoingSearch"
-                                class="button is-success">{{ $i18n.get('search') }}</button>
-                    </p>
+            <transition name="filter-item">
+                <div
+                        id="advanced-search-container"
+                        role="search"
+                        v-if="openAdvancedSearch">
+                    
+                    <advanced-search
+                            :collection-id="collectionId"
+                            :is-repository-level="isRepositoryLevel"
+                            @close="openAdvancedSearch = false" />
                 </div>
-            </div>
+            </transition>
 
             <!-- STATUS TABS, only on Admin -------- -->
             <items-status-tabs 
-                    v-if="!openAdvancedSearch && !isIframeMode"
+                    v-if="!$adminOptions.hideItemsListStatusTabs"
                     :is-repository-level="isRepositoryLevel"/>
 
             <!-- FILTERS TAG LIST-->
@@ -539,8 +519,7 @@
                 <div 
                         v-if="hasAnOpenAlert &&
                             isSortingByCustomMetadata &&
-                            !showLoading &&
-                            ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                            !showLoading"
                         class="metadata-alert">
                     <p class="text">
                         {{ 
@@ -565,9 +544,7 @@
 
                 <!-- Admin View Modes-->
                 <items-list
-                        v-if="!showLoading &&
-                              totalItems > 0 &&
-                              ((openAdvancedSearch && advancedSearchResults) || !openAdvancedSearch)"
+                        v-if="!showLoading && totalItems > 0"
                         :collection-id="collectionId"
                         :displayed-metadata="displayedMetadata"
                         :items="items"
@@ -575,7 +552,8 @@
                         :is-loading="showLoading"
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"
-                        @updateIsLoading="newIsLoading => isLoadingItems = newIsLoading"/>
+                        :is-repository-level="isRepositoryLevel"
+                        @updateIsLoading="(newIsLoadingState) => isLoadingItems = newIsLoadingState"/>
 
                 <!-- Empty Placeholder (only used in Admin) -->
                 <section
@@ -587,7 +565,7 @@
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
-                        <p v-if="status == undefined || status == ''">{{ hasFiltered ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}</p>
+                        <p v-if="status == undefined || status == '' || status == 'publish,private,draft'">{{ (hasFiltered || openAdvancedSearch) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}</p>
                         <p
                                 v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                 :key="index"
@@ -596,7 +574,7 @@
                         </p>
 
                         <router-link
-                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !isIframeMode"
+                                v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
                                 id="button-create-item"
                                 tag="button"
                                 class="button is-secondary"
@@ -604,7 +582,7 @@
                             {{ $i18n.getFrom('items', 'add_new') }}
                         </router-link> 
                         <button
-                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !isIframeMode"
+                                v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
                                 id="button-create-item"
                                 class="button is-secondary"
                                 @click="onOpenCollectionsModal">
@@ -617,7 +595,7 @@
                 <div ref="items-pagination">
                     <pagination
                             :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
-                            v-if="totalItems > 0 && (advancedSearchResults || !openAdvancedSearch)"/>
+                            v-if="totalItems > 0"/>
                 </div>
             </div>
         </div>
@@ -662,14 +640,13 @@
                 localDisplayedMetadata: [],
                 registeredViewModes: tainacan_plugin.registered_view_modes,
                 openAdvancedSearch: false,
-                openFormAdvancedSearch: false,
-                advancedSearchResults: false,
-                isDoingSearch: false,
                 sortingMetadata: [],
                 isFiltersModalActive: false,
                 hasAnOpenModal: false,
                 hasAnOpenAlert: true,
-                metadataSearchCancel: undefined
+                metadataSearchCancel: undefined,
+                isMobileScreen: false,
+                windowWidth: null
             }
         },
         computed: {
@@ -720,13 +697,7 @@
                     metakey: this.$route.query.metakey
                 }, this.sortingMetadata);
                 return this.$route.query.metakey ? metadatumName : this.$i18n.get(metadatumName);
-            },
-            isReadMode () {
-                return this.$route && this.$route.query && this.$route.query.readmode;
-            },
-            isIframeMode () {
-                return this.$route && this.$route.query && this.$route.query.iframemode;
-            },
+            }
         },
         watch: {
             displayedMetadata() {
@@ -735,7 +706,6 @@
             openAdvancedSearch(newValue) {
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
-                    this.advancedSearchResults = false;
                     this.isFiltersModalActive = true;
                 } else {
                     this.isFiltersModalActive = false;
@@ -767,8 +737,8 @@
 
                     if ((this.$refs['search-control'].classList.contains('floating-search-control')))
                         this.$refs['search-control'].classList.remove('floating-search-control');
-                        
-                    this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - (this.isRepositoryLevel ? 94 : 42), behavior: 'smooth'});
+                    
+                    this.$refs['items-page-container'].scrollTo({ top: this.$refs['search-control'].offsetTop - ((this.$adminOptions.hideCollectionSubheader || this.isRepositoryLevel) ? 94 : 42), behavior: 'smooth'});
                 }
 
                 this.isLoadingItems = isLoadingItems;
@@ -776,10 +746,6 @@
 
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
-            });
-
-            this.$eventBusSearch.$on('advancedSearchResults', advancedSearchResults => {
-                this.advancedSearchResults = advancedSearchResults;
             });
 
             this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
@@ -1216,7 +1182,7 @@
                     })
                     .catch(() => this.isLoadingMetadata = false);     
             },
-            updateCollectionInfo () {
+            updateCollectionInfo() {
                 // Only needed for displaying totalItems on tabs.
                 if (this.collectionId)
                     this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true });
@@ -1253,11 +1219,18 @@
             },
             hideFiltersOnMobile: _.debounce( function() {
                 this.$nextTick(() => {
- 
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
-                        const isMobile = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
-                        
-                        if (isMobile || this.openAdvancedSearch) {
+                        const previousMobileScreen = this.isMobileScreen;
+                        const previousWindowWidth = this.windowWidth;
+
+                        this.windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+                        this.isMobileScreen = this.windowWidth <= 768;
+
+                        if (                                                    // We DO NOT want to open the filters due to this resize event IF:
+                            (!previousMobileScreen && this.isMobileScreen) ||   // We're coming from a non-mobile screen to a mobile screen, or
+                            (previousWindowWidth == this.windowWidth) ||        // The window size didn't changed (the resize event is triggered by scrolls on mobile), or
+                            this.openAdvancedSearch                             // Advanced search is opened
+                        ) {
                             this.isFiltersModalActive = false;
                         } else {
                             this.isFiltersModalActive = true;
@@ -1315,7 +1288,6 @@
                 // $eventBusSearch
                 this.$eventBusSearch.$off('isLoadingItems');
                 this.$eventBusSearch.$off('hasFiltered');
-                this.$eventBusSearch.$off('advancedSearchResults');
                 this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
             }
         }
@@ -1333,58 +1305,6 @@
 
     .repository-level-page {
         overflow-y: auto;
-    }
-
-    .advanced-search-criteria-title {
-        margin-bottom: 40px;
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 2px;
-            background-color: var(--tainacan-secondary);
-            border: none;
-        }
-    }
-
-    .advanced-search-results-title {
-        margin-bottom: 40px;
-        margin: 0 var(--tainacan-one-column) 42px var(--tainacan-one-column);
-
-        h1, h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            color: var(--tainacan-heading-color);
-            display: inline-block;
-            margin-bottom: 0;
-        }
-        .field.is-grouped {
-            margin-left: auto;
-        }
-        a.back-link{
-            font-weight: 500;
-            float: right;
-            margin-top: 5px;
-        }
-        hr{
-            margin: 3px 0px 4px 0px; 
-            height: 1px;
-            background-color: var(--tainacan-secondary);
-        }
     }
 
     .advanced-search-form-submit {
@@ -1424,6 +1344,9 @@
         visibility: visible;
         display: block;
 
+        /deep/ .filters-components-list {
+            margin-left: 3px;
+        }
         @media screen and (max-width: 768px) {
             width: 100%;
             padding: 0;
@@ -1504,7 +1427,7 @@
                 opacity: 1;
             }
 
-            .search-area .is-pulled-right {
+            .search-area .advanced-search-toggle {
                 display: none;
             }
         }
@@ -1526,10 +1449,10 @@
                         padding-right: 0;
                         max-width: 100% !important;
                     }
-                    .is-pulled-right {
-                        position: relative;
-                        right: 0px !important;
-                    }
+                }
+                .label {
+                    display: flex;
+                    align-items: center;
                 }
             }
 
@@ -1615,14 +1538,26 @@
                     width: 100%;
                     margin-bottom: 5px;
                 }
-                .is-pulled-right {
-                    position: absolute;
-                    right: 15px;
-                    top: 100%;
-                }
-                a {
+                a.advanced-search-toggle {
                     margin-left: 12px;
                     white-space: nowrap; 
+                    position: absolute;
+                    font-size: 0.75em;
+                    right: 15px;
+                    left: unset;
+                    top: 100%;
+                    transition: font-size 0.2s ease, right 0.3s ease, left 0.3s ease, top 0.4s ease;
+                    
+                    .icon {
+                        display: 0;
+                        opacity: 0.0;
+                        max-width: 0;
+                        transition: opacity 0.2s ease, max-width 0.2s ease;                            
+                    }
+
+                    &.is-open {
+                        font-size: 0;
+                    }
                 }
             }
 

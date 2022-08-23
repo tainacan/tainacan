@@ -815,12 +815,16 @@ class CSV extends Importer {
 
 		if( (!empty( $itemMetadataArray ) || $special_columns) && $collection instanceof Entities\Collection ) {
 			$item->set_collection( $collection );
-			if( $item->validate() ) {
-				$insertedItem = $Tainacan_Items->insert( $item );
+			if ( !$updating_item ) {
+				if( $item->validate() ) {
+					$insertedItem = $Tainacan_Items->insert( $item );
+				} else {
+					$this->add_error_log( 'Error inserting Item Title: ' . $item->get_title() );
+					$this->add_error_log( $item->get_errors() );
+					return false;
+				}
 			} else {
-				$this->add_error_log( 'Error inserting Item Title: ' . $item->get_title() );
-				$this->add_error_log( $item->get_errors() );
-				return false;
+				$insertedItem = $item;
 			}
 			global $wpdb;
 			$wpdb->query( 'SET autocommit = 0;' );
@@ -900,7 +904,7 @@ class CSV extends Importer {
 		$compound_item_metadata_value = $this->is_assoc($compound_item_metadata_value) ? [$compound_item_metadata_value] : $compound_item_metadata_value;
 		foreach($compound_item_metadata_value as $item_metadata_value) {
 			foreach ($item_metadata_value as $itemMetadata) {
-				$Tainacan_Item_Metadata->remove_compound_value($item, $compound_metadata, $itemMetadata->get_parent_meta_id());
+				$Tainacan_Item_Metadata->remove_compound_value($itemMetadata->get_parent_meta_id());
 			}
 		}
 	}

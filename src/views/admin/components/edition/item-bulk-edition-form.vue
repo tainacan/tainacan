@@ -5,7 +5,7 @@
                 :active.sync="isLoading"
                 :can-cancel="false"/>
         <div 
-                v-if="!isMobileMode"
+                v-if="!$adminOptions.hideBulkEditionPageTitle"
                 class="tainacan-page-title">
             <h1>{{ $i18n.get('add_items_bulk') }}</h1>
             <a 
@@ -111,12 +111,13 @@
                                     class="icon has-text-success"
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_document_uploaded'),
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                             </span>  
@@ -127,12 +128,13 @@
                             <span 
                                     v-tooltip="{
                                         delay: {
-                                            show: 500,
+                                            shown: 500,
                                             hide: 300,
                                         },
                                         content: $i18n.get('label_button_delete_document'),
                                         autoHide: false,
-                                        placement: 'auto-start'
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
                                     class="icon has-text-secondary action-icon"
                                     @click="deleteOneItem(item.id, index)">
@@ -209,9 +211,6 @@ export default {
         },
         collection() {
             return this.getCollection()
-        },
-        isMobileMode() {
-            return this.$route && this.$route.query && this.$route.query.mobilemode;
         }
     },
     created() {
@@ -378,7 +377,7 @@ export default {
         }
 
         .tainacan-page-title {
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             display: flex;
             flex-wrap: wrap;
             align-items: flex-end;
@@ -507,13 +506,13 @@ export default {
         }
 
         .footer {
-            padding: 18px var(--tainacan-one-column);
+            padding: 14px var(--tainacan-one-column);
             position: absolute;
             bottom: 0;
             z-index: 999999;
             background-color: var(--tainacan-gray1);
             width: 100%;
-            height: 65px;
+            height: 60px;
             display: flex;
             justify-content: flex-end;
             align-items: center;

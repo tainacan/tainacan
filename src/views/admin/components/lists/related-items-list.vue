@@ -40,7 +40,7 @@
                                     style="margin-left: auto;"
                                     class="column is-narrow">
                                 <div class="section-status">
-                                    <div class="field has-addons">
+                                    <div class="field">
                                         <b-button
                                                 class="button is-secondary"
                                                 tag="router-link"
@@ -66,7 +66,8 @@
                                             v-tooltip="{
                                                 content: $i18n.get('status_' + relatedItem.status),
                                                 autoHide: true,
-                                                placement: 'auto-start'
+                                                placement: 'top',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-1em"
@@ -92,13 +93,14 @@
                                     <p
                                             v-tooltip="{
                                                 delay: {
-                                                    show: 500,
+                                                    shown: 500,
                                                     hide: 300,
                                                 },
                                                 content: relatedItem.title != undefined && relatedItem.title != '' ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                                 html: true,
                                                 autoHide: false,
-                                                placement: 'auto-start'
+                                                placement: 'top',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
                                 </div>
@@ -110,13 +112,18 @@
                                         <a
                                                 v-if="!relatedItem.status != 'trash'"
                                                 id="button-edit"
-                                                @click.prevent.stop="editItemModal = true; editItemId = relatedItem.id; editMetadataId = relatedItemGroup.metadata_id;"
+                                                @click.prevent.stop="setItemForEdit(relatedItem, relatedItemGroup)"
                                                 :aria-label="$i18n.getFrom('items','edit_item')">
                                             <span
                                                     v-tooltip="{
+                                                         delay: {
+                                                            shown: 500,
+                                                            hide: 100,
+                                                        },
                                                         content: $i18n.get('edit'),
                                                         autoHide: true,
-                                                        placement: 'auto'
+                                                        placement: 'auto',
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }"
                                                     class="icon">
                                                 <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
@@ -131,13 +138,13 @@
                 <b-modal 
                         :width="1200"
                         :active.sync="editItemModal"
-                        @close="reloadRelatedItems"
+                        @after-leave="reloadRelatedItems"
                         custom-class="tainacan-modal"
                         :close-button-aria-label="$i18n.get('close')">
                     <iframe 
                             width="100%"
-                            style="height: 85vh"
-                            :src="adminFullURL + $routerHelper.getItemEditPath(collectionId, editItemId) + '?iframemode=true&editingmetadata=' + editMetadataId + (isMobileMode ? '&mobilemode=true' : '')" />
+                            :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
+                            :src="adminURL + 'itemEditionMode=true' + ($adminOptions.mobileAppMode ? '&mobileAppMode=true' : '') + '&page=tainacan_admin#' + $routerHelper.getItemEditPath(editCollectionId, editItemId) + '?editingmetadata=' + editMetadataId" />
                 </b-modal>
             </div>
         </div>
@@ -153,14 +160,16 @@
             isLoading: Boolean,
             isEditable: Boolean,
             itemId: String,
-            collectionId: String
+            collectionId: String,
+            isMobileScreen: Boolean
         },
         data() {
             return {
                 editMetadataId: false,
                 editItemId: false,
+                editCollectionId: false,
                 editItemModal: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#',
+                adminURL: tainacan_plugin.admin_url + 'admin.php?',
                 isUpdatingRelatedItems: false
             }
         },
@@ -170,9 +179,6 @@
             },
             displayLoading() {
                 return this.isLoading || this.isUpdatingRelatedItems;
-            },
-            isMobileMode() {
-                return this.$route && this.$route.query && this.$route.query.mobilemode;
             }
         },
         watch: {
@@ -181,6 +187,7 @@
                     window.addEventListener('message', this.updateReloadItemsAfterModal, false);
                 } else {
                     this.editItemId = false;
+                    this.editCollectionId = false;
                     this.editMetadataId = false;
                     window.removeEventListener('message', this.updateReloadItemsAfterModal);
                 }
@@ -191,10 +198,16 @@
                 'fetchOnlyRelatedItems'
             ]),
             openItemOnNewTab(relatedItem) {
-                if (relatedItem && relatedItem.id) {
-                    let routeData = this.$router.resolve(this.$routerHelper.getItemPath(this.collectionId, relatedItem.id));
+                if (relatedItem && relatedItem.id && relatedItem.collection_id) {
+                    let routeData = this.$router.resolve(this.$routerHelper.getItemPath(relatedItem.collection_id, relatedItem.id));
                     window.open(routeData.href, '_blank');
                 }
+            },
+            setItemForEdit(aRelatedItem, aRelatedItemGroup) {
+                this.editItemId = aRelatedItem.id;
+                this.editCollectionId = aRelatedItem.collection_id;
+                this.editMetadataId = aRelatedItemGroup.metadata_id;
+                this.editItemModal = true;
             },
             reloadRelatedItems() {
                 this.isUpdatingRelatedItems = true;
@@ -212,7 +225,7 @@
                 const message = event.message ? 'message' : 'data';
                 const data = event[message];
 
-                if (data.type == 'itemEditionMessage') {
+                if (data.type == 'itemEditionMessage' && data.item !== null) {
                     this.editItemModal = false;
                 }  
             }
@@ -237,7 +250,7 @@
         .related-item-group {
             
             &:not(:last-child) {
-                border-bottom: 1px dashed var(--tainacan-info-color);
+                border-bottom: 1px dashed var(--tainacan-gray3);
                 margin-bottom: 2rem;
             }
             

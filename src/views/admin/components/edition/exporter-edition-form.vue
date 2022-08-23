@@ -30,7 +30,8 @@
                             :label="$i18n.get('label_source_collection')">
                         <help-button
                                 :title="$i18n.get('label_source_collection')"
-                                :message="$i18n.get('info_source_collection_helper')"/>
+                                :message="$i18n.get('info_source_collection_helper')"
+                                extra-classes="tainacan-repository-tooltip"/>
                         <br>
                         <b-select
                                 @input="formErrorMessage = null"
@@ -75,7 +76,8 @@
                             :label="$i18n.get('label_send_email')">
                         <help-button
                                 :title="$i18n.get('label_send_email')"
-                                :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + adminFullURL + $routerHelper.getProcessesPage() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"/>
+                                :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + adminFullURL + $routerHelper.getProcessesPage() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"
+                                extra-classes="tainacan-repository-tooltip"/>
                         <b-checkbox
                                 true-value="1"
                                 false-value="0"
@@ -101,7 +103,7 @@
                             :class="{'is-loading': runButtonLoading}"
                             @click.prevent="runExporter()"
                             :disabled="!formIsValid()"
-                            class="button is-pulled-right is-turquoise5">
+                            class="button is-pulled-right is-success">
                         {{ $i18n.get('run') }}
                     </button>
                 </div>

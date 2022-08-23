@@ -97,7 +97,8 @@
                             :index="index"
                             :taxonomy-id="taxonomyId"
                             :order="order"
-                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
+                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
+                            @onUpdateTermOpenedState="(state) => term.opened = state"/>
                 </div>
             </template>
             <a 
@@ -119,7 +120,8 @@
                             :index="index"
                             :taxonomy-id="taxonomyId"
                             :order="order" 
-                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"/>
+                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
+                            @onUpdateTermOpenedState="(state) => term.opened = state"/>
                 </div>
             </template>
             <a 
@@ -139,7 +141,7 @@
                     @onEditionFinished="onTermEditionFinished($event)"
                     @onEditionCanceled="onTermEditionCanceled($event)"
                     @onErrorFound="formWithErrors = editTerm.id"
-                    :edit-form="editTerm"/>
+                    :original-form="editTerm"/>
         </div>
     </div>
     <!-- Empty state image -->
@@ -175,14 +177,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import TermEditionForm from '../edition/term-edition-form.vue';
-import RecursiveTermItem from './recursive-term-item.vue'
 import BasicTermItem from './basic-term-item.vue'
 import t from 't';
 
 export default {
     name: 'TermsList',
     components: {
-        RecursiveTermItem,
         BasicTermItem,
         TermEditionForm
     },

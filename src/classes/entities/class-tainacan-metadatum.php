@@ -14,6 +14,7 @@ class Metadatum extends Entity {
 		$order,
 		$parent,
 		$description,
+		$description_bellow_name,
 		$placeholder,
 		$required,
 		$multiple,
@@ -23,7 +24,8 @@ class Metadatum extends Entity {
 		$mask,
 		$default_value,
 		$metadata_type,
-		$metadata_type_options;
+		$metadata_type_options,
+		$metadata_section_id;
 
 	// Collection getter and setter declared here
 	use \Tainacan\Traits\Entity_Collection_Relation;
@@ -110,6 +112,15 @@ class Metadatum extends Entity {
 	 */
 	function get_description() {
 		return $this->get_mapped_property('description');
+	}
+
+	/**
+	 * Return the metadatum description_bellow_name
+	 *
+	 * @return string
+	 */
+	function get_description_bellow_name() {
+		return $this->get_mapped_property('description_bellow_name');
 	}
 
 	/**
@@ -243,6 +254,15 @@ class Metadatum extends Entity {
 	}
 
 	/**
+	 * Return the metadata_section_id
+	 *
+	 * @return string
+	 */
+	function get_metadata_section_id(){
+		return $this->get_mapped_property('metadata_section_id');
+	}
+
+	/**
 	 * Set the metadatum name
 	 *
 	 * @param [string] $value
@@ -296,6 +316,16 @@ class Metadatum extends Entity {
 	 */
 	function set_description($value) {
 		$this->set_mapped_property('description', $value);
+	}
+
+	/**
+	 * Set metadatum description_bellow_name
+	 *
+	 * @param [string] $value If the description will be displayed bellow the name instead of inside a tooltip (yes/no)
+	 * @return void
+	 */
+	function set_description_bellow_name($value) {
+		$this->set_mapped_property('description_bellow_name', $value);
 	}
 
 	/**
@@ -411,6 +441,17 @@ class Metadatum extends Entity {
 	 */
 	function set_semantic_uri( $value ){
 		$this->set_mapped_property('semantic_uri', $value);
+	}
+
+
+	/**
+	 * Set metadatum section ID for the metadatum
+	 *
+	 * @param [string] $value
+	 * @return void
+	 */
+	function set_metadata_section_id( $value) {
+		return $this->set_mapped_property('metadata_section_id', $value);
 	}
 	
 	/**

@@ -8,12 +8,13 @@
         <button
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: $i18n.get('label_slides_help'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="slides-help-button"
                 class="is-hidden-mobile"
@@ -27,12 +28,13 @@
         <button
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="metedata-panel-button"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
@@ -46,12 +48,13 @@
         <a
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: $i18n.get('label_item_page'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="item-page-button"
                 v-if="slideItems && swiper && swiper.activeIndex != undefined && slideItems[swiper.activeIndex]"
@@ -66,12 +69,13 @@
         <button
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: $i18n.get('close'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="close-fullscren-button"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
@@ -85,12 +89,13 @@
         <button
                 v-tooltip="{
                     delay: {
-                        show: 500,
+                        shown: 500,
                         hide: 300,
                     },
                     content: isMetadataCompressed ? $i18n.get('label_show_metadata') : $i18n.get('label_hide_metadata'),
                     autoHide: false,
-                    placement: 'auto-start'
+                    placement: 'auto-start',
+                    popperClass: ['tainacan-tooltip', 'tooltip']
                 }"  
                 id="metadata-compress-button"
                 @click="isMetadataCompressed = !isMetadataCompressed">
@@ -120,7 +125,8 @@
                                 v-tooltip="{
                                     content: $i18n.get('previous'),
                                     autoHide: true,
-                                    placement: 'auto'
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-large">
                             <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
@@ -137,6 +143,7 @@
                                     class="icon is-large loading-icon">
                                 <div class="is-large control has-icons-right is-loading is-clearfix" />
                             </span>
+
                             <!-- Empty result placeholder -->
                             <section
                                     v-if="!isLoading && !isLoadingItem && items.length <= 0"
@@ -150,6 +157,13 @@
                                     <p>{{ $i18n.get('info_no_item_found') }}</p>
                                 </div>
                             </section>
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasBeforeHook()"
+                                    class="faceted-search-hook faceted-search-hook-item-before"
+                                    v-html="getBeforeHook(item)" />
+
                             <div 
                                     v-if="!isLoadingItem && slideItems.length > 0 && (item.document != undefined && item.document != undefined && item.document != '')"
                                     v-html="item.document_as_html" />  
@@ -161,6 +175,12 @@
                                             :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                                 </div>
                             </div>
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasAfterHook()"
+                                    class="faceted-search-hook faceted-search-hook-item-after"
+                                    v-html="getAfterHook(item)" />
                         </transition>
                     </div>
                     <button 
@@ -172,7 +192,8 @@
                                 v-tooltip="{
                                     content: $i18n.get('next'),
                                     autoHide: true,
-                                    placement: 'auto'
+                                    placement: 'auto',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-large has-text-turoquoise5">
                             <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
@@ -195,7 +216,8 @@
                                     v-tooltip="{
                                         content: isPlaying ? $i18n.get('label_pause_slide_transition') : $i18n.get('label_begin_slide_transition'),
                                         autoHide: true,
-                                        placement: 'auto'
+                                        placement: 'auto',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
                                     class="icon">
                                 <i 
@@ -211,7 +233,7 @@
                     <!-- The Swiper slider itself -->
                     <div   
                             id="tainacan-slide-container"
-                            class="swiper-container">
+                            class="swiper">
                         <div 
                                 role="list"
                                 class="swiper-wrapper" />
@@ -286,12 +308,13 @@
                         <span 
                                 v-tooltip="{
                                     delay: {
-                                        show: 500,
+                                        shown: 500,
                                         hide: 300,
                                     },
                                     content: metadatum.name,
                                     autoHide: false,
-                                    placement: 'auto-start'
+                                    placement: 'auto-start',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"  
                                 class="ellipsed-text">
                             {{ metadatum.name }}
@@ -316,8 +339,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import axios from '../../../../../admin/js/axios';
-import 'swiper/css/swiper.min.css';
-import Swiper from 'swiper';
+import 'swiper/css';
+import 'swiper/css/mousewheel';
+import 'swiper/css/navigation';
+import 'swiper/css/virtual';
+import Swiper, {Navigation, Virtual, Mousewheel } from 'swiper';
 import CircularCounter from './circular-counter.vue';
 import SlidesHelpModal from './slides-help-modal.vue'
 import { viewModesMixin } from '../js/view-modes-mixin.js';
@@ -471,7 +497,8 @@ export default {
                         self.itemPosition = null;
                     }
                 }
-            }
+            },
+            modules: [Navigation, Virtual, Mousewheel]
         });
 
         // Adds clipped class to root html
@@ -486,7 +513,8 @@ export default {
         window.removeEventListener('keyup', this.handleKeyboardKeys);
 
         clearInterval(this.intervalId);
-        if (this.swiper)
+
+        if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },
     methods: {

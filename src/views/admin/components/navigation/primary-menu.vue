@@ -8,10 +8,13 @@
         <aside class="menu">
 
             <ul class="menu-list">
-                <li class="repository-label">
+                <li 
+                        v-if="!$adminOptions.hidePrimaryMenuRepositoryButton"
+                        class="repository-label">
                     <router-link
                             tag="a"
-                            :to="$routerHelper.getCollectionsPath()">
+                            :to="$routerHelper.getCollectionsPath()"
+                            :aria-label="$i18n.get('repository')">
                         <span v-if="!isMenuCompressed">{{ $i18n.get('repository') }}</span>
                         <span 
                                 v-else
@@ -20,7 +23,7 @@
                         </span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuCollectionsButton">
                     <router-link
                             tag="a"
                             :to="$routerHelper.getCollectionsPath()"
@@ -31,7 +34,7 @@
                         <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuItemsButton">
                     <router-link
                             tag="a"
                             :to="$routerHelper.getItemsPath()"
@@ -43,7 +46,7 @@
                     </router-link>
                 </li>
                 <li class="separator"/>
-                <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata')">
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata') && !$adminOptions.hidePrimaryMenuMetadataButton">
                     <router-link
                             tag="a"
                             to="/metadata"
@@ -54,7 +57,7 @@
                         <span class="menu-text">{{ $i18n.get('metadata') }}</span>
                     </router-link>
                 </li>
-                <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters')">
+                <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters') && !$adminOptions.hidePrimaryMenuFiltersButton">
                     <router-link
                             tag="a"
                             to="/filters"
@@ -65,7 +68,7 @@
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuTaxonomiesButton">
                     <router-link
                             tag="a"
                             to="/taxonomies"
@@ -76,7 +79,7 @@
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuActivitiesButton">
                     <router-link
                             tag="a"
                             to="/activities"
@@ -87,10 +90,12 @@
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
                 </li>
-                <li v-if="$userCaps.hasCapability('tnc_rep_edit_users')">
+                <li 
+                        class="is-hidden-mobile"
+                        v-if="$userCaps.hasCapability('tnc_rep_edit_users') && !$adminOptions.hidePrimaryMenuCapabilitiesButton">
                     <router-link
                             tag="a"
-                            :to="this.$routerHelper.getCapabilitiesPath()"
+                            :to="$routerHelper.getCapabilitiesPath()"
                             :class="activeRoute == 'CapabilitiesPage' ? 'is-active':''">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-capability"/>
@@ -98,7 +103,7 @@
                         <span class="menu-text">{{ $i18n.get('capabilities') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuImportersButton">
                     <router-link
                             tag="a"
                             to="/importers"
@@ -113,7 +118,7 @@
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
                 </li>
-                <li>
+                <li v-if="!$adminOptions.hidePrimaryMenuExportersButton">
                     <router-link
                             tag="a"
                             to="/exporters"
@@ -151,7 +156,7 @@ export default {
         max-height: 100%;
         max-height: 100vh;
         overflow: auto;
-        z-index: 101;
+        z-index: 9;
         max-width: 10em;
         -webkit-transition: max-width 0.2s linear; /* Safari */
         transition: max-width 0.2s linear;
@@ -200,7 +205,7 @@ export default {
                 white-space: nowrap;
                 overflow: hidden;
                 padding: 8px 15px;
-                line-height: 1.5em;
+                line-height: 1.28em;
                 border-radius: 0px;
                 -webkit-transition: padding 0.2s linear, background-color 0.3s ease; /* Safari */
                 transition: padding 0.2s linear, background-color 0.3s ease;
@@ -248,7 +253,8 @@ export default {
         }
 
         &.is-compressed {
-            max-width: $header-height;
+            max-width: var(--tainacan-sidebar-width, $sidebar-width);
+
             .menu-text {
                 visibility: hidden;
                 opacity: 0;
@@ -282,7 +288,7 @@ export default {
                     height: $header-height;
                 }
                 a {
-                    padding: 0.8em !important;
+                    padding: 0.85em !important;
                     text-align: center;
                 }
                 .menu-text {

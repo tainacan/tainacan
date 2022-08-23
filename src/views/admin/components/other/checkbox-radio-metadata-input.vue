@@ -1,5 +1,12 @@
 <template>
-    <div class="tainacan-form">
+    <div 
+            class="tainacan-form">
+        <input 
+                type="text"
+                aria-hidden="true"
+                class="is-special-hidden-for-mobile"
+                autocomplete="on"
+                @focus="onMobileSpecialFocus">
         <b-tabs
                 size="is-small"
                 animated
@@ -60,28 +67,24 @@
                                     v-for="(option, key) in searchResults"
                                     :key="key">
                                 <label 
-                                        v-if="isCheckbox"
-                                        class="b-checkbox checkbox">
+                                        :class="{ 
+                                            'b-checkbox checkbox': isCheckbox,
+                                            'b-radio radio': !isCheckbox,
+                                            'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
+                                        }">
                                     <input
-                                            :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
-                                            v-model="selected"
-                                            :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
-                                            type="checkbox"> 
+                                            :disabled="!isOptionSelected(option.id ? option.id : option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
+                                            @input="updateLocalSelection($event.target.value)"
+                                            :checked="isOptionSelected(option.id ? option.id : option.value)"
+                                            :value="option.id ? getOptionValue(option.id) : getOptionValue(option.value)"
+                                            :type="isCheckbox ? 'checkbox' : 'radio'"> 
                                     <span class="check" /> 
                                     <span class="control-label">
                                         <span 
                                                 class="checkbox-label-text"
                                                 v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
                                     </span>
-                                </label>
-                                <b-radio
-                                        v-else
-                                        v-model="selected"
-                                        :native-value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.value)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                    <span 
-                                                class="checkbox-label-text"
-                                                v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" />
-                                </b-radio>
+                                </label>                                
                             </li>
                         </template>
                         <template v-if="!isLoadingSearch && !searchResults.length">
@@ -130,12 +133,18 @@
                                 class="tainacan-li-checkbox-list"
                                 v-for="(option, key) in options"
                                 :key="key">
-                            <label class="b-checkbox checkbox">
+                            <label
+                                :class="{ 
+                                    'b-checkbox checkbox': isCheckbox,
+                                    'b-radio radio': !isCheckbox,
+                                    'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
+                                }">
                                 <input 
-                                        :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
-                                        v-model="selected"
-                                        :value="option.value"
-                                        type="checkbox"> 
+                                        :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
+                                        :checked="isOptionSelected(option.value)"
+                                        @input="updateLocalSelection($event.target.value)"
+                                        :value="getOptionValue(option.value)"
+                                        :type="isCheckbox ? 'checkbox' : 'radio'"> 
                                 <span class="check" /> 
                                 <span class="control-label">
                                     <span class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
@@ -162,7 +171,8 @@
                         v-if="!isSearching && isTaxonomy"
                         class="modal-card-body tainacan-finder-columns-container"
                         :style="{ height: expandResultsSection ? 'auto' : '0px' }"
-                        name="page-left">
+                        name="page-left"
+                        ref="tainacan-finder-scrolling-container">
                     <div 
                             v-for="(finderColumn, key) in finderColumns"
                             class="tainacan-finder-column"
@@ -182,25 +192,22 @@
                                     :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                                     :key="index">
                                 <label 
-                                        v-if="isCheckbox"
-                                        class="b-checkbox checkbox"
-                                        :class="{ 'is-disabled': (Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length }">
+                                        :class="{
+                                            'b-checkbox checkbox': isCheckbox,
+                                            'b-radio radio': !isCheckbox, 
+                                            'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
+                                        }" >
                                     <input 
-                                            :disabled="(Array.isArray(selected) && selected.indexOf((isNaN(Number(option.value)) ? option.value : Number(option.value))) < 0) && maxMultipleValues !== undefined && maxMultipleValues - 1 < selected.length"
-                                            v-model="selected"
-                                            :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
-                                            type="checkbox"> 
+                                            :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
+                                            @input="updateLocalSelection($event.target.value)"
+                                            :checked="isOptionSelected(option.value)"
+                                            :value="getOptionValue(option.value)"
+                                            :type="isCheckbox ? 'checkbox' : 'radio'"> 
                                     <span class="check" /> 
                                     <span class="control-label">
-                                        <span class="checkbox-label-text">{{ `${option.label}` }}</span>
+                                        <span class="checkbox-label-text">{{ option.label }}</span>
                                     </span>
                                 </label>
-                                <b-radio
-                                        v-else
-                                        v-model="selected"
-                                        :native-value="(isNaN(Number(option.value)) ? option.value : Number(option.value))">
-                                    {{ `${option.label}` }}
-                                </b-radio>
                                 <a
                                         v-if="option.total_children > 0"
                                         @click="getOptionChildren(option, key, index)">
@@ -213,6 +220,7 @@
                                             v-tooltip="{
                                                 content: option.total_children + ' ' + $i18n.get('label_children_terms'),
                                                 autoHide: false,
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }" 
                                             v-else>{{ option.total_children }}</span>
                                     <span class="icon is-pulled-right">
@@ -272,7 +280,7 @@
                                     attached
                                     closable
                                     class="is-small"
-                                    @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
+                                    @close="updateLocalSelection(term)">
                                  <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                             </b-tag>
                         </div>
@@ -335,7 +343,8 @@
                 default: true,
             },
             amountSelected: 0,
-            maxMultipleValues: undefined
+            maxMultipleValues: undefined,
+            isMobileScreen: false
         },
         data() {
             return {
@@ -385,7 +394,6 @@
                 this.highlightHierarchyPath();
         },
         created() {
-
             if (this.shouldBeginWithListExpanded)
                 this.initializeValues();
 
@@ -452,6 +460,7 @@
                     }
                     
                 } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
+                    
                     this.isSelectedTermsLoading = true;
 
                     axios.get(`/items/?${qs.stringify({ fetch_only: 'title', postin: selected})}`)
@@ -680,6 +689,28 @@
                     this.finderColumns.splice(first, 1, { label: label, children: children, lastTerm: res.data.last_term.es_term });
                 else
                     this.finderColumns.push({ label: label, children: children, lastTerm: res.data.last_term.es_term });
+
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        if (
+                            this.$refs &&
+                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`] &&
+                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0] &&
+                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el &&
+                            this.$refs['tainacan-finder-scrolling-container'] &&
+                            this.$refs['tainacan-finder-scrolling-container'].$el) {
+
+                            // Scroll Into does not solve as it would scroll vertically as well...
+                            //this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
+
+                            this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
+                                top: 0,
+                                left: first != undefined ? 0 : this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.offsetLeft,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 500);
+                }); 
             },
             appendMore(options, key, lastTerm) {
                 for (let option of options)
@@ -774,6 +805,39 @@
             },
             renderHierarchicalPath(hierachyPath, label) {
                 return '<span style="color: var(--tainacan-info-color);">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
+            },
+            onMobileSpecialFocus($event) {
+                $event.target.blur();
+                this.$emit('mobileSpecialFocus');
+            },
+            isOptionSelected(optionValue) {
+                if (Array.isArray(this.selected))
+                    return (this.selected.indexOf((isNaN(Number(optionValue)) ? optionValue : Number(optionValue))) >= 0)
+                else
+                    return optionValue == this.selected;
+            },
+            getOptionValue(optionValue) {
+                return isNaN(Number(optionValue)) ? optionValue : Number(optionValue)
+            },
+            updateLocalSelection(newSelected) {
+
+                let localSelection = this.isCheckbox ? this.selected : (Array.isArray(this.selected) ? this.selected[0] : this.selected);
+
+                if (Array.isArray(localSelection)) {
+                    const existingValueIndex = this.selected.indexOf(isNaN(Number(newSelected)) ? newSelected : Number(newSelected));
+                    
+                    if (existingValueIndex >= 0)
+                        localSelection.splice(existingValueIndex, 1);
+                    else
+                        localSelection.push(isNaN(Number(newSelected)) ? newSelected : Number(newSelected));
+                } else {
+
+                    if (newSelected == localSelection)
+                        localSelection = false;
+                    else
+                        localSelection = isNaN(Number(newSelected)) ? newSelected : Number(newSelected);
+                }
+                this.$emit('input', localSelection);
             }
         }
     }
@@ -813,8 +877,20 @@
     .tainacan-form {
         margin-top: 12px;
         max-width: 100%;
+
         .form-submit {
             padding-top: 16px !important;
+        }
+        &.is-expanded-on-mobile:focus,
+        &.is-expanded-on-mobile:focus-within,
+        &.is-expanded-on-mobile:focus-visible {
+            background-color: var(--tainacan-background-color);
+            z-index: 9999999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
     }
 
@@ -835,8 +911,9 @@
     .tainacan-li-checkbox-modal {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        padding: 0;
+        align-items: stretch;
+        margin-left: 0px !important;
+        padding: 2px 0 !important;
         -webkit-break-inside: avoid;
         break-inside: avoid;
 
@@ -846,14 +923,24 @@
             margin-left: 0.7em;
             margin-bottom: 0px !important;
             height: auto;
-            padding-top: 2px;
-            padding-bottom: 2px;
+            padding-top: 0px;
+            padding-bottom: 0px;
             -webkit-break-inside: avoid;
             break-inside: avoid;
 
             .control-label {
                 white-space: normal;
                 overflow: visible;
+            }
+
+            @media screen and (max-width: 768px) {
+                .control-label {
+                    padding-top: 0.8125em;
+                    padding-bottom: 0.8125em;
+                    padding-left: calc(0.875em - 1px);
+                    width: 100%;
+                    border-bottom: 1px solid var(--tainacan-gray1);
+                }
             }
 
             &.is-disabled {
@@ -877,7 +964,7 @@
         -webkit-break-inside: avoid;
         break-inside: avoid;
 
-        .b-checkbox, .b-radio {
+        /deep/ .b-checkbox, /deep/ .b-radio {
             margin-right: 0px;
             margin-bottom: 0;
             -webkit-break-inside: avoid;
@@ -890,6 +977,15 @@
             &.is-disabled {
                 cursor: not-allowed;
                 opacity: 0.5;
+            }
+            @media screen and (max-width: 768px) {
+                .control-label {
+                    padding-top: 0.8125em;
+                    padding-bottom: 0.8125em;
+                    padding-left: calc(0.875em - 1px);
+                    width: 100%;
+                    border-bottom: 1px solid var(--tainacan-gray1);
+                }
             }
         }
 
@@ -914,6 +1010,8 @@
         margin-top: -1px;
         display: flex;
         overflow: auto;
+        scroll-snap-type: x mandatory;
+        scroll-snap-align: start;
         padding: 0 !important;
         max-height: 40vh;
         transition: heigth 0.5s ease, min-height 0.5s ease;
@@ -935,6 +1033,7 @@
 
         &.has-only-one-column {
             max-width: 100%;
+            border-right: none;
 
             ul {
                 -moz-column-count: 2;
@@ -965,6 +1064,7 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
+
             .tainacan-icon {
                 font-size: 1.5em;
             }
@@ -1028,7 +1128,9 @@
     }
 
     .tainacan-checkbox-search-section {
-        margin-bottom: 0;
+        margin: 0px !important;
+        padding: 0px !important;
+
         .control {
             margin: 0;
         }
@@ -1049,6 +1151,10 @@
                 color: var(--tainacan-secondary)
             }
         } 
+        /deep/ .field-body>.field {
+            padding: 0px !important;
+            margin-left: 0px !important;
+        }
     }
 
     .tainacan-checkbox-list-container {
@@ -1169,13 +1275,41 @@
     @media screen and (max-width: 768px) {
 
         .tainacan-modal-checkbox-list-body,
-        .tainacan-finder-column.has-only-one-column,
+        .tainacan-finder-column.has-only-one-column ul,
         .tainacan-modal-checkbox-search-results-body {
             -moz-column-count: auto;
             -webkit-column-count: auto;
             column-count: auto;
+            overflow-y: auto;
         }
+        .tainacan-modal-checkbox-search-results-body,
+        .tainacan-modal-checkbox-list-body,
+        .tainacan-finder-columns-container {
+            font-size: 1.125em;
+        }
+        .tainacan-finder-columns-container {
+            max-height: calc(100vh - 184px - 56px);
 
+            .tainacan-finder-column,
+            .tainacan-finder-column ul {
+                max-height: 100%;
+            }
+            .tainacan-finder-column {
+                max-width: calc(99vw - 0.75em - 0.75em - 2px);
+                min-width: calc(99vw - 0.75em - 0.75em - 24px);
+            }
+            .tainacan-finder-column .column-label+ul {
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em - 3px);
+            }
+            .tainacan-finder-column a {
+                width: 3.5em;
+                border-left: 1px solid var(--tainacan-gray1);
+                border-bottom: 1px solid var(--tainacan-gray1);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
         .tainacan-li-checkbox-list {
             max-width: calc(100% - 20px) !important;
         }

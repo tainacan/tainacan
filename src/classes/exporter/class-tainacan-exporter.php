@@ -250,7 +250,7 @@ abstract class Exporter {
 	}
 
 	public function get_step_length_items() {
-		return apply_filters('exporter_step_length_items', 20, $this->get_current_step());
+		return apply_filters('tainacan-exporter-step-length-items', 20, $this->get_current_step());
 	}
 
 	public function set_current_collection_item($value) {

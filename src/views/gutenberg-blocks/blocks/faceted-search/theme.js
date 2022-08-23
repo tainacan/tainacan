@@ -1,8 +1,28 @@
 // Main imports
 import Vue from 'vue';
-import Buefy from 'buefy';
-import VTooltip from 'v-tooltip';
-import VueMasonry from 'vue-masonry-css';
+import {
+    Field,
+    Input,
+    Collapse,
+    Autocomplete,
+    Taginput,
+    Tabs,
+    Select,
+    Button,
+    Datepicker,
+    Checkbox,
+    Radio,
+    Tag,
+    Loading,
+    Dropdown,
+    Modal,
+    Dialog,
+    Snackbar,
+    Toast,
+    Pagination,
+    Numberinput
+} from 'buefy';
+import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';
 import VueBlurHash from 'vue-blurhash';
@@ -39,7 +59,8 @@ import eventBusSearch from '../../../admin/js/event-bus-search';
 import { 
     I18NPlugin,
     UserPrefsPlugin,
-    ConsolePlugin
+    ConsolePlugin,
+    AdminOptionsHelperPlugin
 } from '../../../admin/js/admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -49,7 +70,7 @@ import {
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanItemsListComponent() {
 
@@ -67,19 +88,44 @@ export default (element) => {
             }
 
             // Configure and Register Plugins
-            Vue.use(Buefy, {
-                defaultTooltipAnimated: true
-            });
+            Vue.use(Field);
+            Vue.use(Input);
+            Vue.use(Autocomplete);
+            Vue.use(Taginput);
+            Vue.use(Collapse);
+            Vue.use(Button); 
+            Vue.use(Datepicker);
+            Vue.use(Select);
+            Vue.use(Checkbox);
+            Vue.use(Radio);
+            Vue.use(Tag);
+            Vue.use(Tabs);
+            Vue.use(Loading);
+            Vue.use(Dropdown);
+            Vue.use(Modal);
+            Vue.use(Dialog);
+            Vue.use(Snackbar);
+            Vue.use(Toast);
+            Vue.use(Pagination);
+            Vue.use(Numberinput);
             Vue.use(VTooltip, {
-                defaultClass: 'tainacan-tooltip tooltip'
+                popperTriggers: ['hover'],
+                themes: {
+                    'taianacan-tooltip': {
+                        '$extend': 'tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
+                }
             });
-            Vue.use(VueMasonry);
             Vue.use(VueBlurHash);
             Vue.use(I18NPlugin);
             Vue.use(UserPrefsPlugin);
             Vue.use(ThumbnailHelperPlugin);
             Vue.use(OrderByHelperPlugin);
             Vue.use(ConsolePlugin, {visual: false});
+            Vue.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {

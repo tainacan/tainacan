@@ -3,12 +3,18 @@
         <figure 
                 class="file-item"
                 :class="{'shows-modal-on-click' : modalOnClick}"
-                @click="modalOnClick? isPreviewModalActive = true : null">
+                @click="modalOnClick? openPreviewModal() : null">
             <figcaption 
-                    :style="{ 'max-width': size != undefined ? size + 'px' : '112px' }"
-                    v-if="showName && file.title != undefined">{{ file.title }}</figcaption>
+                    v-if="showName && file.title != undefined"
+                    v-tooltip="{
+                        content: file.title,
+                        popperClass: [ 'tainacan-tooltip', 'tooltip']
+                    }"
+                    :style="{ 'max-width': size != undefined ? size + 'px' : '94px' }">
+                {{ file.title }}
+            </figcaption>
             <div 
-                    :style="{ 'width': size != undefined ? size + 'px' : '112px', 'height': size != undefined ? size + 'px' : '112px' }"
+                    :style="{ 'width': size != undefined ? size + 'px' : '94px', 'height': size != undefined ? size + 'px' : '94px' }"
                     class="image-wrapper">
                 <div
                         v-if="file.media_type == 'image'" 
@@ -26,65 +32,20 @@
                 </div>
             </div>
         </figure>
-    
-        <!-- Preview Modal ----------------- -->
-        <template v-if="modalOnClick">
-            <b-modal
-                    :active.sync="isPreviewModalActive"
-                    :width="1024"
-                    scroll="keep"
-                    trap-focus
-                    aria-modal
-                    aria-role="dialog"
-                    custom-class="tainacan-modal"
-                    :close-button-aria-label="$i18n.get('close')">
-                <div 
-                        autofocus
-                        role="dialog"
-                        tabindex="-1"
-                        aria-modal
-                        class="tainacan-modal-content">
-                    <header class="tainacan-modal-title">
-                        <h2 v-if="file.title != undefined">{{ $i18n.get('label_attachment') + ': ' + file.title }}</h2>
-                        <hr>
-                    </header>
-                    <div    
-                            class="is-flex rendered-content"
-                            v-html="file.description ? file.description : `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + file.url + `'/>`" />
-                    <iframe
-                            style="width: 100%; min-height: 50vh;"    
-                            v-if="file.url != undefined && file.url != undefined && file.mime_type != undefined && file.mime_type == 'application/pdf'"
-                            :src="file.url" />
-                    <div class="field is-grouped form-submit">
-                        <div class="control">
-                            <button
-                                    id="button-cancel-importer-edition"
-                                    class="button is-outlined"
-                                    type="button"
-                                    @click="isPreviewModalActive = false">
-                                {{ $i18n.get('exit') }}</button>
-                        </div>
-                    </div>
-                </div>
-            </b-modal>
-        </template>
     </div>
 </template>
 
 <script>
+import FilePreview from './file-preview.vue';
+
 export default {
     name: 'FileItem',
     props: {
         file: Object,
-        size: 112,
+        size: 94,
         showName: false,
         isSelected: false,
         modalOnClick: true
-    },
-    data() {
-        return {
-            isPreviewModalActive: false
-        }
     },
     methods: {
         getIconForMimeType(mimeType) {
@@ -114,6 +75,22 @@ export default {
                 return 'attatchments'
             }
             
+        },
+        openPreviewModal() {
+            this.$buefy.modal.open({
+                parent: this,
+                component: FilePreview,
+                props: {
+                    file: this.file
+                },
+                ariaModal: true,
+                width: 1024,
+                scroll: 'keep',
+                trapFocus: true,
+                ariaRole: 'dialog',
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });
         }
     }
 }

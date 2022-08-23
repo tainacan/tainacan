@@ -74,6 +74,7 @@ class Media {
 
 			return $this->insert_attachment_from_blob($file, basename($url), $post_id);
 		} catch (\Exception $e) {
+			error_log($e);
 			return false;
 		}
 
@@ -96,19 +97,22 @@ class Media {
 
 	}
 
-		/**
-		 * Avoid memory overflow problems with large files (Exceeded maximum memory limit of PHP)
-		 *
-		 * @param $url
-		 * @return string the file path
-		 */
-		public function save_remote_file($url) {
-			$filename = download_url($url, 900);
-			if( is_wp_error($filename) ) {
-				throw new \Exception( "[save_remote_file]:" . implode("\n", $filename->get_error_messages()));
-			}
-			return $filename;
+	/**
+	 * Avoid memory overflow problems with large files (Exceeded maximum memory limit of PHP)
+	 *
+	 * @param $url
+	 * @return string the file path
+	 */
+	public function save_remote_file($url) {
+		// Include file.php
+		require_once( ABSPATH . 'wp-admin/includes/file.php' );
+
+		$filename = \download_url($url, 900);
+		if( is_wp_error($filename) ) {
+			throw new \Exception( "[save_remote_file]:" . implode("\n", $filename->get_error_messages()));
 		}
+		return $filename;
+	}
 
 
 		/**
@@ -330,7 +334,7 @@ class Media {
 
 			$embed = $wp_embed->autoembed($url);
 
-			if ( $embed == $url ) {
+			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 			} else {
 				$output .= $embed;

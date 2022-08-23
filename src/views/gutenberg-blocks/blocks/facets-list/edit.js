@@ -9,7 +9,7 @@ import ParentTermModal from './parent-term-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
-import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
+import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }) {
     let {

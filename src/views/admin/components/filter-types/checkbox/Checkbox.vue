@@ -1,6 +1,6 @@
 <template>
     <div 
-            :style="{ 'height': isLoadingOptions && !filtersAsModal ? (Number(filter.max_options)*28) + 'px' : 'auto' }"
+            :style="{ 'height': isLoadingOptions && !filtersAsModal ? (Number(filter.max_options)*1.375) + 'rem' : 'auto' }"
             :class="{ 'skeleton': isLoadingOptions && !filtersAsModal }"
             class="block">
         <template v-if="!filtersAsModal">
@@ -43,6 +43,13 @@
                     :is-modal="false" 
                     :filter="filter"
                     :selected="selected"
+                    @input="(newSelected) => {
+                        const existingValue = selected.indexOf(newSelected); 
+                        if (existingValue >= 0)
+                            selected.splice(existingValue, 1);
+                        else
+                            selected.push(newSelected);
+                    }"
                     :metadatum-id="metadatumId"
                     :collection-id="collectionId"
                     :metadatum_type="metadatumType"
@@ -72,10 +79,9 @@
         },
         watch: {
             selected(newVal, oldVal) {
-                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
+                const isEqual = (Array.isArray(newVal) && Array.isArray(oldVal) && (newVal.length == oldVal.length)) && newVal.every((element, index) => {
                     return element === oldVal[index]; 
                 });
-
                 if (!isEqual)
                     this.onSelect();
             },
@@ -88,7 +94,7 @@
             },
         },
         mounted() {
-            if (!this.isUsingElasticSearch && !this.filtersAsModal)
+            if (!this.isUsingElasticSearch)
                 this.loadOptions();
         },
         created() {
@@ -185,6 +191,13 @@
                     events: {
                         appliedCheckBoxModal: () => {
                             this.loadOptions();
+                        },
+                        input: (newSelected) => {
+                            const existingValue = this.selected.indexOf(newSelected); 
+                            if (existingValue >= 0)
+                                this.selected.splice(existingValue, 1);
+                            else
+                                this.selected.push(newSelected);
                         } 
                     },
                     trapFocus: true,

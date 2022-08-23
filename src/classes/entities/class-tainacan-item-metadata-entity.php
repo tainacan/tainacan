@@ -500,6 +500,9 @@ class Item_Metadata_Entity extends Entity {
 						$one_filled = true;
 
 					if ($this->is_collection_key()) {
+						if ( !isset($dupe_array[$val]) ) {
+							$dupe_array[$val] = 1;
+						} else
 						if (++$dupe_array[$val] > 1) {
 							$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
 							return false;
@@ -553,7 +556,31 @@ class Item_Metadata_Entity extends Entity {
 			
 			if ($this->is_collection_key()) {
 				$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-				
+				if($metadatum->get_parent()) {
+					$patent_metadatum = \tainacan_metadata()->fetch( $metadatum->get_parent(), 'OBJECT' );
+					if($patent_metadatum->is_multiple()) {
+						global $wpdb;
+						$test = get_post_meta( $item->get_id(), $this->metadatum->get_id(), true);
+						$rows = $wpdb->get_results(
+							$wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s AND meta_value = %s AND meta_id <> %d",
+							$item->get_id(), $this->metadatum->get_id(), $value, $this->get_meta_id()),
+						ARRAY_A );
+						if ( is_array( $rows ) &&  count($rows) > 0 ) {
+							if( !$this->get_meta_id() ) {
+								$current_meta_value = array_column($rows, "meta_value");
+								if ( count($current_meta_value) !== count(array_unique($current_meta_value)) ) {
+									// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
+									$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
+									return false;
+								}
+							} else {
+								// translators: %s = metadatum name. ex: Register ID is a collection key and there is another item with the same value
+								$this->add_error( 'key_exists', sprintf( __('%s is a collection key and there is another item with the same value', 'tainacan'), $metadatum->get_name() ) );
+								return false;
+							}
+						}
+					}
+				}
 				$test = $Tainacan_Items->fetch([
 					'meta_query' => [
 						[

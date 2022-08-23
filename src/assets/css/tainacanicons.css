@@ -24,6 +24,7 @@
     letter-spacing: normal !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+	overflow-wrap: normal;
     
 }
 
@@ -149,6 +150,9 @@
 }
 .tainacan-icon-items:before {
     content: "items";
+}
+.tainacan-icon-item:before {
+    content: "item";
 }
 .tainacan-icon-menu:before {
     content: "menu";

@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import store from '../../admin/js/store/store';
 import router from './reports-router';
-import VTooltip from 'v-tooltip';
 import { Snackbar, Modal } from 'buefy';
 import VueApexCharts from 'vue-apexcharts';
 import cssVars from 'css-vars-ponyfill';
@@ -32,7 +31,7 @@ import ptBrLocaleConfig from 'apexcharts/dist/locales/pt-br.json';
 export default (element) => {
 
     // Vue Dev Tools!
-    Vue.config.devtools = process && process.env && process.env.NODE_ENV === 'development';
+    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanReportsPage() {
         
@@ -78,9 +77,6 @@ export default (element) => {
             Vue.use(I18NPlugin);
             Vue.use(UserCapabilitiesPlugin);
             Vue.use(StatusHelperPlugin);
-            Vue.use(VTooltip, {
-                defaultClass: 'tainacan-tooltip tooltip'
-            });
             Vue.use(Snackbar);
             Vue.use(Modal);
 

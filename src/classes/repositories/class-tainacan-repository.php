@@ -515,6 +515,7 @@ abstract class Repository {
 			$Tainacan_Metadata    = Repositories\Metadata::get_instance();
 			$Tainacan_Taxonomies  = Repositories\Taxonomies::get_instance();
 			$Tainacan_Terms       = Repositories\Terms::get_instance();
+			$Tainacan_Metadata_Sections = Repositories\Metadata_Sections::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
@@ -522,7 +523,8 @@ abstract class Repository {
 				$Tainacan_Filters,
 				$Tainacan_Taxonomies,
 				$Tainacan_Terms,
-				$Tainacan_Logs
+				$Tainacan_Logs,
+				$Tainacan_Metadata_Sections
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
 				$tnc_entity       = new $tnc_repository->entities_type();
@@ -725,7 +727,10 @@ abstract class Repository {
 		$entity_cap = $entity->get_capabilities();
 
 		if ( ! isset( $entity_cap->read ) ) {
-			if ( $entity->get_post_type() === false ) { // Allow read of not post entities
+			$prefix = Entities\Collection::$db_identifier_prefix;
+			$sufix = Entities\Collection::$db_identifier_sufix;
+			$is_a_item = preg_match('/^'. $prefix . '[0-9]*' . $sufix . '$/i', $entity->WP_Post->post_type);
+			if ( $entity->get_post_type() === false && !$is_a_item) { // Allow read of not post entities
 				return true;
 			}
 

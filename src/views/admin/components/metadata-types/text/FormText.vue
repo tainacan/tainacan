@@ -43,7 +43,7 @@
     section{
         margin-bottom: 10px;
     }
-    .help-wrapper {
+    .tainacan-help-tooltip-trigger {
         font-size: 1em;
     }
 </style>

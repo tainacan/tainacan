@@ -127,7 +127,7 @@ function tainacan_the_item_document_download_link($item_id = 0) {
 	if (!$link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url')
 		return;
 
-	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '">' . __('Download', 'tainacan') . '</a>';
+	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '" target="_blank">' . __('Download', 'tainacan') . '</a>';
 }
 
 
@@ -279,23 +279,29 @@ function tainacan_the_media_component($media_id, $media_items_thumbs, $media_ite
  * @param array        $media_items_main       Array of media items to be rendered inside main, bigger the carousel. Default to empty array
  * @param array|string $args {
  *   Optional. Array of arguments.
- *     @type string      before_main_div          String to be added before the main gallery div
- *     @type string      after_main_div           String to be added after the main gallery div
- *     @type string      before_thumbs_div        String to be added before the thumbs gallery div
- *     @type string      after_thumbs_div         String to be added after the thumbs gallery div
- *     @type string      before_main_ul           String to be added before the main gallery ul
- *     @type string      after_main_ul            String to be added after the main gallery ul
- *     @type string      before_thumbs_ul         String to be added before the thumbs gallery ul
- *     @type string      after_thumbs_ul          String to be added after the thumbs gallery ul
- *     @type string      class_main_div           Class to be added to the main gallery div
- *     @type string      class_main_ul	          Class to be added to the main gallery ul
- *     @type string      class_main_li            Class to be added to the main gallery li
- *     @type string      class_thumbs_div         Class to be added to the thumbs gallery div
- *     @type string      class_thumbs_ul          Class to be added to the thumbs gallery ul
- *     @type string      class_thumbs_li          Class to be added to the thumbs gallery li
- *     @type array       swiper_main_options      Object with SwiperJS options for the main gallery
- *     @type array       swiper_thumbs_options    Object with SwiperJS options for the thumb gallery
- *     @type bool        show_share_button        Shows share button on lightbox
+ * 	   @type string      wrapper_attributes       		String containing attrs (style, class) for the wrapper div. If used, remember to pass class="tainacan-media-component"
+ *     @type string      before_main_div          		String to be added before the main gallery div
+ *     @type string      after_main_div           		String to be added after the main gallery div
+ *     @type string      before_thumbs_div        		String to be added before the thumbs gallery div
+ *     @type string      after_thumbs_div         		String to be added after the thumbs gallery div
+ *     @type string      before_main_ul           		String to be added before the main gallery ul
+ *     @type string      after_main_ul            		String to be added after the main gallery ul
+ *     @type string      before_thumbs_ul         		String to be added before the thumbs gallery ul
+ *     @type string      after_thumbs_ul          		String to be added after the thumbs gallery ul
+ *     @type string      class_main_div           		Class to be added to the main gallery div
+ *     @type string      class_main_ul	          		Class to be added to the main gallery ul
+ *     @type string      class_main_li            		Class to be added to the main gallery li
+ *     @type string      class_thumbs_div         		Class to be added to the thumbs gallery div
+ *     @type string      class_thumbs_ul          		Class to be added to the thumbs gallery ul
+ *     @type string      class_thumbs_li          		Class to be added to the thumbs gallery li
+ *     @type array       swiper_main_options      		Object with SwiperJS options for the main gallery
+ *     @type array       swiper_thumbs_options    		Object with SwiperJS options for the thumb gallery
+ * 	   @type bool		 swiper_arrows_as_svg	  		Uses SVG icons insetead of Tainacan Icon font for navigation arrows
+ *     @type string      swiper_arrow_next_custom_svg 	Custom SVG icon to render next navigation arrow
+ *     @type string      swiper_arrow_prev_custom_svg 	Custom SVG icon to render previous navigation arrow
+ *     @type bool 		 disable_lightbox				Do not open Photoswiper layer on click
+ *     @type bool        show_share_button        		Shows share button on lightbox
+ *	   @type bool	 	 lightbox_has_light_background  Show a light background instead of dark in the lightbox 
  * }
  * @return string
  */
@@ -309,6 +315,7 @@ function tainacan_get_the_media_component(
 	global $TAINACAN_BASE_URL;
 
 	$args = array_merge(array(
+		'wrapper_attributes' => 'class="tainacan-media-component"',
 		'before_main_div' => '',
 		'after_main_div' => '',
 		'before_thumbs_div' => '',
@@ -325,7 +332,12 @@ function tainacan_get_the_media_component(
 		'class_thumbs_li' => '',
 		'swiper_main_options' => [],
 		'swiper_thumbs_options' => [],
-		'show_share_button' => false
+		'swiper_arrows_as_svg' => false,
+		'swiper_arrow_next_custom_svg' => '',
+		'swiper_arrow_prev_custom_svg' => '',
+		'disable_lightbox' => false,
+		'show_share_button' => false,
+		'lightbox_has_light_background' => false
 	), $args);
 
 	$args['has_media_main'] = $media_items_main && is_array($media_items_main) && count($media_items_main);
@@ -342,11 +354,26 @@ function tainacan_get_the_media_component(
 			return $styles;
 		}
 	}
+	$allowed_html = array(
+		'svg' => array(
+			'xmlns' => true,
+			'fill' => true,
+			'viewbox' => true,
+			'role' => true,
+			'aria-hidden' => true,
+			'focusable' => true,
+			'width' => true,
+			'height' => true,
+		),
+		'path' => array(
+			'd' => true,
+			'fill' => true,
+		)
+	);
 	add_filter( 'safe_style_css', 'tainacan_get_default_allowed_styles');
 
+	ob_start();
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
-		// Modal lightbox layer for rendering photoswipe
-		add_action('wp_footer', 'tainacan_get_the_media_modal_layer');
 	
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
 		?>
@@ -361,14 +388,13 @@ function tainacan_get_the_media_component(
 			tainacan_plugin.tainacan_media_components['<?php echo esc_attr($args['media_id']) ?>'] = <?php echo json_encode($args) ?>;
 		</script>	
 
-		<div id="<?php echo esc_attr($media_id) ?>" class="tainacan-media-component" data-module='item-gallery'>
-
+		<div id="<?php echo esc_attr($media_id) ?>" data-module="item-gallery" <?php echo wp_kses_post($args['wrapper_attributes']); ?>>
 			<?php if ( $args['has_media_main'] ) : ?>
 				
 				<!-- Slider main container -->
 				<?php echo wp_kses_post($args['before_main_div']) ?>
-				<div id="<?php echo esc_attr($args['media_main_id']) ?>" class="tainacan-media-component__swiper-main swiper-container <?php echo esc_attr($args['class_main_div']) ?>">
-					
+				<div id="<?php echo esc_attr($args['media_main_id']) ?>" class="tainacan-media-component__swiper-main swiper <?php echo esc_attr($args['class_main_div']) ?>">
+
 					<!-- Additional required wrapper -->
 					<?php echo wp_kses_post($args['before_main_ul']) ?>
 					<ul class="swiper-wrapper <?php echo esc_attr($args['class_main_ul']) ?>">
@@ -388,9 +414,33 @@ function tainacan_get_the_media_component(
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['navigation']) ) : ?>
+
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_main_id']) ?>"></div>
-						<div class="swiper-button-next swiper-navigation-next_<?php echo esc_attr($args['media_main_id']) ?>"></div>
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_main_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+							<?php if ( $args['swiper_arrows_as_svg'] ): ?>
+								<?php if ( $args['swiper_arrow_prev_custom_svg'] ): ?>
+									<?php echo wp_kses($args['swiper_arrow_prev_custom_svg'], $allowed_html); ?>
+								<?php else: ?>
+									<svg width="var(--swiper-navigation-size)" height="var(--swiper-navigation-size)" viewBox="0 0 24 24">
+										<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+										<path d="M0 0h24v24H0z" fill="none"/>
+									</svg>
+								<?php endif; ?>
+							<?php endif; ?>
+						</div>
+						<div class="swiper-button-next swiper-navigation-next_<?php echo esc_attr($args['media_main_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+							<?php if ( $args['swiper_arrows_as_svg'] ): ?>	
+								<?php if ( $args['swiper_arrow_next_custom_svg'] ): ?>
+									<?php echo wp_kses($args['swiper_arrow_next_custom_svg'], $allowed_html); ?>
+								<?php else: ?>
+									<svg width="42" height="42" viewBox="0 0 24 24">
+										<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+										<path d="M0 0h24v24H0z" fill="none"/>
+									</svg>
+								<?php endif; ?>
+							<?php endif; ?>
+						</div>
+
 					<?php endif; ?>
 				</div>
 				<?php echo wp_kses_post($args['after_main_div']) ?>
@@ -400,8 +450,8 @@ function tainacan_get_the_media_component(
 
 				<!-- Slider thumbs container -->
 				<?php echo wp_kses_post($args['before_thumbs_div']) ?>
-				<div id="<?php echo esc_attr($args['media_thumbs_id']) ?>" class="tainacan-media-component__swiper-thumbs swiper-container <?php echo esc_attr($args['class_thumbs_div']) ?>">
-					
+				<div id="<?php echo esc_attr($args['media_thumbs_id']) ?>" class="tainacan-media-component__swiper-thumbs swiper <?php echo esc_attr($args['class_thumbs_div']) ?>">
+
 					<!-- Additional required wrapper -->
 					<?php echo wp_kses_post($args['before_thumbs_ul']) ?>
 					<ul class="swiper-wrapper <?php echo esc_attr($args['class_thumbs_ul']) ?>">
@@ -420,8 +470,32 @@ function tainacan_get_the_media_component(
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
-						<div class="swiper-button-next swiper-navigation-next_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
+
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_thumbs_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+							<?php if ( $args['swiper_arrows_as_svg'] ): ?>
+								<?php if ( $args['swiper_arrow_prev_custom_svg'] ): ?>
+									<?php echo wp_kses($args['swiper_arrow_prev_custom_svg'], $allowed_html); ?>
+									
+								<?php else: ?>
+									<svg width="var(--swiper-navigation-size)" height="var(--swiper-navigation-size)" viewBox="0 0 24 24">
+										<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+										<path d="M0 0h24v24H0z" fill="none"/>
+									</svg>
+								<?php endif; ?>
+							<?php endif; ?>
+						</div>
+						<div class="swiper-button-next swiper-navigation-next_<?php echo esc_attr($args['media_thumbs_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+							<?php if ( $args['swiper_arrows_as_svg'] ): ?>	
+								<?php if ( $args['swiper_arrow_next_custom_svg'] ): ?>
+									<?php echo wp_kses($args['swiper_arrow_next_custom_svg'], $allowed_html); ?>
+								<?php else: ?>
+									<svg width="42" height="42" viewBox="0 0 24 24">
+										<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+										<path d="M0 0h24v24H0z" fill="none"/>
+									</svg>
+								<?php endif; ?>
+							<?php endif; ?>
+						</div>
 					<?php endif; ?>
 
 					<!-- These elements will create a gradient on the side of the carousel -->
@@ -432,12 +506,13 @@ function tainacan_get_the_media_component(
 			<?php endif; ?>
 
 		</div>
-
 	<?php
-	endif;
+	endif;  // <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) --> 
 	remove_filter( 'safe_style_css', 'tainacan_get_default_allowed_styles');
-	?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
-<?php
+	$content = ob_get_contents();
+	ob_end_clean();
+
+	return $content;
 }
 
 
@@ -534,75 +609,6 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 	ob_end_clean();
 
 	return $content;
-}
-
-/**
- * Div with content necessay to render the photowipe modal
- *
- * @return string
- */
-function tainacan_get_the_media_modal_layer() {
-?> 
-    <!-- Root element of PhotoSwipe lightbox. Must have class pswp. -->
-    <div class="tainacan-photoswipe-layer pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-        <!-- Background of PhotoSwipe. 
-                It's a separate element, as animating opacity is faster than rgba(). -->
-        <div class="pswp__bg"></div>
-
-        <!-- Slides wrapper with overflow:hidden. -->
-        <div class="pswp__scroll-wrap">
-
-            <!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
-            <!-- don't modify these 3 pswp__item elements, data is added later on. -->
-            <div class="pswp__container">
-                <div class="pswp__item"></div>
-                <div class="pswp__item"></div>
-                <div class="pswp__item"></div>
-            </div>
-
-            <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-            <div class="pswp__ui pswp__ui--hidden">
-
-                <div class="pswp__top-bar">
-
-                    <!--  Controls are self-explanatory. Order can be changed. -->
-                    <div class="pswp__counter"></div>
-
-                    <div class="pswp__name"></div>
-
-                    <button class="pswp__button pswp__button--close" title="<?php __('Close modal (Esc)', 'tainacan') ?>"></button>
-                    <button class="pswp__button pswp__button--share" title="<?php __('Share', 'tainacan') ?>"></button>
-                    <button class="pswp__button pswp__button--fs" title="<?php __('Toggle fullscreen', 'tainacan') ?>"></button>
-                    <button class="pswp__button pswp__button--zoom" title="<?php __('Zoom in/out', 'tainacan') ?>"></button>
-
-                    <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
-                    <!-- element will get class pswp__preloader--active when preloader is running -->
-                    <div class="pswp__preloader">
-                        <div class="pswp__preloader__icn">
-                            <div class="pswp__preloader__cut">
-                                <div class="pswp__preloader__donut"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                    <div class="pswp__share-tooltip"></div>
-                </div>
-
-                <button class="pswp__button pswp__button--arrow--left" title="<?php __('Next', 'tainacan') ?>"></button>
-
-                <button class="pswp__button pswp__button--arrow--right" title="<?php __('Previous', 'tainacan') ?>"></button>
-
-                <div class="pswp__caption">
-                    <div class="pswp__caption__center"></div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-<?php
 }
 
 /**
@@ -1022,8 +1028,8 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
  * @param array $args {
  	*     Optional. Array of arguments.
  	*     @type string  $collection_id					The Collection ID
- 	*     @type string  $search_URL					A query string to fetch items from, if load strategy is 'search'
- 	*     @type array   $selected_items				An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'
+ 	*     @type string  $search_URL						A query string to fetch items from, if load strategy is 'search'
+ 	*     @type array   $selected_items					An array of item IDs to fetch items from, if load strategy is 'selection' and an array of items, if the load strategy is 'parent'
  	*     @type string  $load_strategy					Either 'search' or 'selection', to determine how items will be fetch
  	*     @type integer $max_items_number				Maximum number of items to be fetch
  	*     @type integer $max_tems_per_screen			Maximum columns of items to be displayed on a row of the carousel
@@ -1032,9 +1038,9 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
  	*     @type bool    $auto_play						Should the Caroulsel start automatically to slide?
  	*     @type integer $auto_play_speed				The time in s to translate to the next slide automatically 
  	*     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
- 	*     @type bool    $hide_title					Should the title of the items be displayed?
- 	*     @type bool    $crop_images_to_square			Should it use the `tainacan-medium-size` instead of the `tainacan-medium-large-size`?
- 	*     @type bool    $show_collection_header		Should it display a small version of the collection header?
+ 	*     @type bool    $hide_title						Should the title of the items be displayed?
+ 	*     @type string  $image_size					Item image size. Defaults to 'tainacan-medium'
+ 	*     @type bool    $show_collection_header			Should it display a small version of the collection header?
  	*     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
  	*     @type string  $collection_background_color	Color of the collection header background
  	*     @type string  $collection_text_color			Color of the collection header text
@@ -1095,4 +1101,101 @@ function tainacan_has_related_items($item_id = false) {
 			return true;
 	}
 	return false;
+}
+
+
+/**
+ * Renders the content of the item gallery block
+ * using Tainacan template functions that create
+ * a Swiper.js carousel and slider, with a PhotoSwipe.js 
+ * lightbox
+ *
+ * @param array $args {
+	*     Optional. Array of arguments.
+	*     @type string  $item_id						  The Item ID
+	* 	   @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,
+	* 	   @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'
+	* 	   @type array 	 $mediaSources 					  Array of sources for the gallery. Possible values are 'document' and 'attachments'
+	* 	   @type bool 	 $hideFileNameMain 				  Hides the Main slider file name
+	* 	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
+	* 	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
+	* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
+	* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
+	* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
+	* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
+	* 	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
+	* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
+	* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
+	*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
+	*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
+	*	   @type bool    $showArrowsAsSVG			      Decides if the swiper carousel arrows will be an SVG icon or font icon
+	* @return void
+ */
+function tainacan_the_item_gallery($args = []) {
+	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_item_gallery($args);
+}
+
+
+/**
+ * Render the item metadata sections as a HTML string.
+ *
+ * Each metadata section is a label with the list of its metadata name and value.
+ *
+ * If an ID, a slug or a Tainacan\Entities\Metadata_Section object is passed in the 'metadata_section' argument, it returns only one metadata section, otherwise
+ * it returns all metadata section
+ *
+ * @param array|string $args {
+	*     Optional. Array or string of arguments.
+	*
+	* 	  @type mixed		 $metadata_section				Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata_sections
+	*
+	*     @type array		 $metadata_sections__in			Array of metadata_sections IDs or Slugs to be retrieved. Default none
+	*
+	*     @type array		 $metadata_sections__not_in		Array of metadata_sections IDs (slugs not accepted) to excluded. Default none
+	* 
+	*     @type bool		 $hide_name						Do not display the Metadata Section name. Default false
+	*
+	*     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
+	*
+	*     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	*                                                  	Default: true
+	*     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
+	*                                                  	Default: ''
+	*     @type bool        $display_slug_as_class     	Show metadata slug as a class in the div before the metadata block
+	*                                                  	Default: true
+	*     @type string      $before                    	String to be added before each metadata section block
+	*                                                  	Default '<section $id>'
+	*     @type string      $after		                String to be added after each metadata section block
+	*                                                  	Default '</section>'
+	*     @type string      $before_name              	String to be added before each metadata section name
+	*                                                  	Default '<h2>'
+	*     @type string      $after_name               	String to be added after each metadata section name
+	*                                                  	Default '</h2>'
+	* 	  @type string      $before_description         String to be added before each metadata section description
+	*                                                  	Default '<p>'
+	*     @type string      $after_description          String to be added after each metadata section description
+	*                                                  	Default '</p>'
+	*     @type string      $before_metadata_list      	String to be added before each metadata section inner metadata list
+	*                                                  	Default '<div class="metadata-section__metadata-list">'
+	*     @type string      $after_metadata_list       	String to be added after each metadata section inner metadata list
+	*                                                  	Default '</div>'
+	*	  @type array		$metadata_list_args			Arguments to be passed to the get_metadata_as_html function when calling section metadata
+	* }
+	*
+	* @return string        The HTML output
+ */
+function tainacan_get_the_metadata_sections($args = array(), $item_id = 0) {
+
+	$item = tainacan_get_item( $item_id );
+
+	if ($item instanceof \Tainacan\Entities\Item) {
+		return $item->get_metadata_sections_as_html($args);
+	}
+
+	return '';
+
+}
+
+function tainacan_the_metadata_sections($args = array()) {
+	echo tainacan_get_the_metadata_sections($args);
 }

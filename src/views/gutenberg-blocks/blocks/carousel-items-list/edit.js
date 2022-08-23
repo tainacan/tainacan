@@ -2,16 +2,23 @@ const { __ } = wp.i18n;
 
 const { RangeControl, Spinner, Button, ToggleControl, SelectControl, Placeholder, IconButton, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
+const { useSelect } = wp.data;
+
+import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
+import pick from 'lodash/pick';
 import CarouselItemsModal from './dynamic-and-carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
-import TainacanBlocksCompatToolbar from '../../js/tainacan-blocks-compat-toolbar.js';
-import TainacanBlocksCompatColorPicker from '../../js/tainacan-blocks-compat-colorpicker.js';
-import 'swiper/css/swiper.min.css';
+import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
+import TainacanBlocksCompatColorPicker from '../../js/compatibility/tainacan-blocks-compat-colorpicker.js';
+import 'swiper/css';
+import 'swiper/css/a11y';
+import 'swiper/css/autoplay';
+import 'swiper/css/navigation';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }){
     let {
@@ -35,7 +42,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         autoPlaySpeed,
         loopSlides,
         hideTitle,
-        cropImagesToSquare,
+        imageSize,
         showCollectionHeader,
         showCollectionLabel,
         isLoadingCollection,
@@ -56,16 +63,37 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxItemsPerScreen = 7;
         setAttributes({ maxItemsPerScreen: maxItemsPerScreen });
     }
-    if (cropImagesToSquare === undefined) {  
-        cropImagesToSquare = true;    
-        setAttributes({ cropImagesToSquare: cropImagesToSquare });
+    if (maxItemsNumber === undefined) {
+        maxItemsNumber = 12;
+        setAttributes({ maxItemsNumber: maxItemsNumber });
     }
+    if (imageSize === undefined) {
+        imageSize = 'tainacan-medium';
+        setAttributes({ imageSize: imageSize });
+    }
+
+    // Get available image sizes
+    const {	imageSizes } = useSelect(
+		( select ) => {
+			const {	getSettings	} = select( store );
+
+			const settings = pick( getSettings(), [
+                'imageSizes'
+			] );
+            return settings
+        },
+		[ clientId ]
+	);
+    const imageSizeOptions = map(
+		imageSizes,
+		( { name, slug } ) => ( { value: slug, label: name } )
+	);
 
     function prepareItem(item) {
         return (
             <li 
                 key={ item.id }
-                className={ 'item-list-item ' + (maxItemsPerScreen ? ' max-itens-per-screen-' + maxItemsPerScreen : '') + (cropImagesToSquare ? ' is-forced-square' : '') }>   
+                className={ 'swiper-slide item-list-item ' + (maxItemsPerScreen ? ' max-itens-per-screen-' + maxItemsPerScreen : '') + (['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 ? ' is-forced-square' : '') }>   
                 { loadStrategy == 'selection' ?
                     ( tainacan_blocks.wp_version < '5.4' ?
                         <IconButton
@@ -85,8 +113,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     href={ item.url }>
                     <div class="items-list-item--image-wrap">
                         <img
-                            src={ thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
-                            srcSet={ thumbHelper.getSrcSet(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype']) }
+                            src={ thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype']) }
+                            srcSet={ thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype']) }
                             alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
                     </div>
                     { !hideTitle ? <span>{ item.title ? item.title : '' }</span> : null }
@@ -152,15 +180,13 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             if (maxItemsNumber != undefined && maxItemsNumber > 0)
                 queryObject.perpage = maxItemsNumber;
             else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                setAttributes({ maxItemsNumber: queryObject.perpage });
+                setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
             else {
                 queryObject.perpage = 12;
                 setAttributes({ maxItemsNumber: 12 });
             }
 
             // Remove unecessary queries
-            delete queryObject.readmode;
-            delete queryObject.iframemode;
             delete queryObject.admin_view_mode;
             delete queryObject.fetch_only_meta;
             
@@ -364,7 +390,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             help={ maxItemsPerScreen <= 4 ? __('Warning: with such a small number of items per slide, the image size is greater, thus the cropped version of the thumbnail won\'t be used.', 'tainacan') : null }
                                             value={ maxItemsPerScreen ? maxItemsPerScreen : 7 }
                                             onChange={ ( aMaxItemsPerScreen ) => {
-                                                maxItemsPerScreen = aMaxItemsPerScreen;
+                                                maxItemsPerScreen = Number(aMaxItemsPerScreen);
                                                 setAttributes( { maxItemsPerScreen: aMaxItemsPerScreen } );
                                                 setContent(); 
                                             }}
@@ -373,22 +399,21 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                         />
                                 : null
                             }
-                            <ToggleControl
-                                    label={__('Crop Images', 'tainacan')}
-                                    help={ cropImagesToSquare ? __('Do not use square cropeed version of the item thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the item thumbnail.', 'tainacan') }
-                                    checked={ cropImagesToSquare }
-                                    onChange={ ( isChecked ) => {
-                                            cropImagesToSquare = isChecked;
-                                            setAttributes({ cropImagesToSquare: cropImagesToSquare });
-                                            setContent();
-                                        } 
-                                    }
+                            <SelectControl
+                                    label={__('Image size', 'tainacan')}
+                                    value={ imageSize }
+                                    options={ imageSizeOptions }
+                                    onChange={ ( anImageSize ) => { 
+                                        imageSize = anImageSize;
+                                        setAttributes({ imageSize: imageSize });
+                                        setContent();
+                                    }}
                                 />
                             <RangeControl
                                     label={ __('Space between each item', 'tainacan') }
                                     value={ !isNaN(spaceBetweenItems) ? spaceBetweenItems : 32 }
                                     onChange={ ( aSpaceBetweenItems ) => {
-                                        spaceBetweenItems = aSpaceBetweenItems;
+                                        spaceBetweenItems = Number(aSpaceBetweenItems);
                                         setAttributes( { spaceBetweenItems: aSpaceBetweenItems } );
                                     }}
                                     min={ 0 }
@@ -477,7 +502,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     label={ __('Space around the carousel', 'tainacan') }
                                     value={ !isNaN(spaceAroundCarousel) ? spaceAroundCarousel : 50 }
                                     onChange={ ( aSpaceAroundCarousel ) => {
-                                        spaceAroundCarousel = aSpaceAroundCarousel;
+                                        spaceAroundCarousel = Number(aSpaceAroundCarousel);
                                         setAttributes( { spaceAroundCarousel: aSpaceAroundCarousel } );
                                     }}
                                     min={ 0 }
@@ -496,7 +521,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     label={__('Maximum number of items to load', 'tainacan')}
                                     value={ maxItemsNumber }
                                     onChange={ ( aMaxItemsNumber ) => {
-                                        maxItemsNumber = aMaxItemsNumber;
+                                        maxItemsNumber = Number(aMaxItemsNumber);
                                         setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
                                         setContent();
                                     }}
@@ -659,13 +684,21 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         : null
                     }
                     {  items.length ? (
-
                         <div
                                 className={'items-list-edit-container ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') }
                                 style={{
                                     '--spaceBetweenItems': !isNaN(spaceBetweenItems) ? (spaceBetweenItems + 'px') : '32px',
                                     '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px'
                                 }}>
+                            <div className={'swiper'}>
+                                <ul 
+                                    style={{ 
+                                        marginTop: showCollectionHeader ? '1.5rem' : '0px'
+                                    }}
+                                    className={ 'swiper-wrapper items-list-edit' }>
+                                    { items }
+                                </ul>
+                            </div>
                             <button 
                                     class="swiper-button-prev" 
                                     slot="button-prev"
@@ -685,13 +718,6 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             fill="none"/>
                                 </svg>
                             </button>
-                            <ul 
-                                style={{ 
-                                    marginTop: showCollectionHeader ? '1.5rem' : '0px'
-                                }}
-                                className={ 'items-list-edit' }>
-                                { items }
-                            </ul>
                             <button 
                                     class="swiper-button-next" 
                                     slot="button-next"

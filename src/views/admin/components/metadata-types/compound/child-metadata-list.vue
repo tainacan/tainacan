@@ -42,11 +42,53 @@
                 <div 
                         :ref="'metadatum-handler-' + metadatum.id"
                         class="handle">
+                    <span class="sorting-buttons">
+                        <button 
+                                :disabled="index == 0"
+                                class="link-button"
+                                @click="moveMetadatumUpViaButton(index)"
+                                :aria-label="$i18n.get('label_move_up')">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
+                            </span>
+                        </button>
+                        <button 
+                                :disabled="index == childrenMetadata.length - 1"
+                                class="link-button"
+                                @click="moveMetadatumDownViaButton(index)"
+                                :aria-label="$i18n.get('label_move_down')">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
+                            </span>
+                        </button>
+                    </span>
+                    <span 
+                            :style="{ opacity: !(metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
+                            v-tooltip="{
+                                content: metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
+                                autoHide: true,
+                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                placement: 'auto-start'
+                            }"
+                            class="icon grip-icon">
+                        <!-- <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/> -->
+                        <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                height="24px"
+                                viewBox="0 0 24 24"
+                                width="24px"
+                                fill="currentColor">
+                            <path
+                                    d="M0 0h24v24H0V0z"
+                                    fill="transparent"/>
+                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                    </span>
                     <span 
                             v-tooltip="{
                                 content: $i18n.get('label_view_metadata_details'),
                                 autoHide: true,
-                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                 placement: 'auto-start'
                             }"
                             @click="$set(collapses, metadatum.id, !isCollapseOpen(metadatum.id))"
@@ -54,26 +96,24 @@
                             :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }">
                         <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
                     </span>
-                    <span 
-                            :style="{ opacity: !(metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
-                            v-tooltip="{
-                                content: metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
-                                autoHide: true,
-                                classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                placement: 'auto-start'
-                            }"
-                            class="icon grip-icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/>
-                    </span>
-                     
                     <span class="metadatum-name">
                             {{ metadatum.name }}
                     </span>
                     <span   
                             v-if="metadatum.id != undefined && metadatum.metadata_type_object"
-                            class="label-details">  
+                            class="label-details">
+                        <span 
+                                v-if="metadatum.required === 'yes'"
+                                v-tooltip="{
+                                    content: $i18n.get('label_required'),
+                                    autoHide: true,
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }">
+                            *&nbsp;
+                        </span>
                         ({{ metadatum.metadata_type_object.name }}) 
-                        <em v-if="metadatum.collection_id != collectionId">{{ $i18n.get('label_inherited') }}</em>
+                        <!-- <em v-if="metadatum.collection_id != collectionId">{{ $i18n.get('label_inherited') }}</em> -->
                         <em 
                                 v-if="metadatum.metadata_type_object.core && 
                                     metadatum.metadata_type_object.related_mapped_prop == 'title'">
@@ -90,32 +130,22 @@
                                 v-tooltip="{
                                     content: $i18n.get('status_private'),
                                     autoHide: true,
-                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }">
                             <i class="tainacan-icon tainacan-icon-private"/>
                         </span>
                         <span 
-                                v-if="metadatum.required === 'yes'"
-                                v-tooltip="{
-                                    content: $i18n.get('label_required'),
-                                    autoHide: true,
-                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
-                                    placement: 'auto-start'
-                                }">
-                            *&nbsp;
-                        </span>
-                        <span 
                                 v-tooltip="{
                                     content: (metadatum.collection_id == 'default') || isRepositoryLevel ? $i18n.get('label_repository_metadatum') : $i18n.get('label_collection_metadatum'),
                                     autoHide: true,
-                                    classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"
                                 class="icon icon-level-identifier">
                             <i 
                                 :class="{ 
-                                    'tainacan-icon-collections': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                    'tainacan-icon-collection': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
                                     'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
                                     'has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
                                     'has-text-blue5': (metadatum.collection_id == 'default' || isRepositoryLevel),
@@ -141,7 +171,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('edit'),
                                         autoHide: true,
-                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
                                     class="icon">
@@ -161,7 +191,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('delete'),
                                         autoHide: true,
-                                        classes: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'repository-tooltip' : ''],
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
                                     }"
                                     class="icon">
@@ -224,7 +254,8 @@
             collapseAll: {
                 type: Boolean,
                 default: new Boolean()
-            }
+            },
+            sectionId: String
         },
         data() {
             return {
@@ -284,13 +315,12 @@
                 'updateChildMetadataOrder'
             ]),
             handleChange(event) {     
-               if (event.added) {
+                if (event.added)
                     this.addNewMetadatum(event.added.element, event.added.newIndex);
-                } else if (event.removed) {
+                else if (event.removed)
                     this.removeMetadatum(event.removed.element);
-                } else if (event.moved) {
+                else if (event.moved)
                     this.updateMetadataOrder();
-                }
             },
             updateMetadataOrder() {
                 let metadataOrder = [];
@@ -316,7 +346,8 @@
                     status: 'auto-draft', 
                     isRepositoryLevel: this.isRepositoryLevel, 
                     newIndex: newIndex,
-                    parent: this.parent.id
+                    parent: this.parent.id,
+                    sectionId: this.sectionId ? this.sectionId : false
                 })
                 .then((metadatum) => {
                     this.updateMetadataOrder();
@@ -376,6 +407,14 @@
             onEditionCanceled() {
                 this.openedMetadatumId = '';
                 this.$router.push({ query: {}});
+            },
+            moveMetadatumUpViaButton(index) {
+                this.childrenMetadata.splice(index - 1, 0, this.childrenMetadata.splice(index, 1)[0]);
+                this.updateMetadataOrder();
+            },
+            moveMetadatumDownViaButton(index) {
+                this.childrenMetadata.splice(index + 1, 0, this.childrenMetadata.splice(index, 1)[0]);
+                this.updateMetadataOrder();
             },
             isAvailableChildMetadata(to, from, item) {
                 return !['tainacan-compound', 'tainacan-taxonomy'].includes(item.id);

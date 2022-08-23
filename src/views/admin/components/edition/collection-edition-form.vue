@@ -11,7 +11,7 @@
                 label-width="120px">
         
             <div class="columns">
-                <div class="column is-5">
+                <div class="column">
 
                     <!-- Name -------------------------------- --> 
                     <b-field 
@@ -25,177 +25,54 @@
                                 :message="$i18n.getHelperMessage('collections', 'name')"/>
                         <b-input
                                 id="tainacan-text-name"
+                                :placeholder="$i18n.get('instruction_collection_name')"
                                 v-model="form.name"
                                 @blur="updateSlug"
                                 @focus="clearErrors('name')"/>
                     </b-field>
 
                     <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['collection'] != undefined &&
-                                formHooks['collection']['begin-left'] != undefined">  
+                    <template v-if="hasBeginLeftForm">  
                         <form
                             class="form-hook-region" 
                             id="form-collection-begin-left"
-                            v-html="formHooks['collection']['begin-left'].join('')"/>
+                            v-html="getBeginLeftForm"/>
                     </template>
 
-                    <!-- Thumbnail -------------------------------- --> 
-                    <b-field :addons="false">
-                        <label class="label">{{ $i18n.get('label_thumbnail') }}</label>
-                        <div class="thumbnail-field">
-                            <file-item
-                                    v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
-                                    :show-name="false"
-                                    :modal-on-click="true"
-                                    :size="178"
-                                    :file="{ 
-                                        media_type: 'image', 
-                                        thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium') ] },
-                                        title: $i18n.get('label_thumbnail'),
-                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(collection['thumbnail'], 'full') + `'/>` 
-                                    }"/>
-                          <figure 
-                                    v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
-                                    class="image">
-                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
-                                <img  
-                                        :alt="$i18n.get('label_thumbnail')" 
-                                        :src="$thumbHelper.getEmptyThumbnailPlaceholder()">
-                            </figure>
-                            <div class="thumbnail-buttons-row">
-                                <a 
-                                        class="button is-rounded is-secondary"
-                                        id="button-edit-thumbnail" 
-                                        :aria-label="$i18n.get('label_button_edit_thumb')"
-                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
-                                    <span 
-                                            v-tooltip="{
-                                                content: $i18n.get('edit'),
-                                                autoHide: true,
-                                                placement: 'bottom'
-                                            }"
-                                            class="icon">
-                                        <i class="tainacan-icon tainacan-icon-edit"/>
-                                    </span>
-                                </a>
-                                <a 
-                                        class="button is-rounded is-secondary"
-                                        id="button-delete-header-image" 
-                                        :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                        @click="deleteThumbnail()">
-                                    <span 
-                                            v-tooltip="{
-                                                content: $i18n.get('delete'),
-                                                autoHide: true,
-                                                placement: 'bottom'
-                                            }"
-                                            class="icon">
-                                        <i class="tainacan-icon tainacan-icon-delete"/>
-                                    </span>
-                                </a>
-                            </div>
-                        </div>
-                    </b-field>
-
-                    <!-- Cover Page -------------------------------- --> 
+                    <!-- Description -------------------------------- --> 
                     <b-field
                             :addons="false" 
-                            :label="$i18n.get('label_cover_page')"
-                            :type="editFormErrors['cover_page_id'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['cover_page_id'] != undefined ? editFormErrors['cover_page_id'] : ''">
-                        &nbsp;
-                        <b-switch
-                                id="tainacan-checkbox-cover-page" 
-                                size="is-small"
-                                true-value="yes" 
-                                false-value="no"
-                                v-model="form.enable_cover_page" />
+                            :label="$i18n.get('label_description')"
+                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
                         <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'cover_page_id')" 
-                                :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
-                        <b-autocomplete
-                                id="tainacan-text-cover-page"
-                                :placeholder="$i18n.get('instruction_cover_page')"
-                                :data="coverPages"
-                                v-model="coverPageTitle"
-                                @select="onSelectCoverPage($event)"
-                                :loading="isFetchingPages"
-                                @input="fecthCoverPages"
-                                @focus="clearErrors('cover_page_id')"
-                                v-if="coverPage == undefined || coverPage.title == undefined"
-                                :disabled="form.enable_cover_page != 'yes'"
-                                check-infinite-scroll
-                                @infinite-scroll="fetchMoreCoverPages">
-                            <template slot-scope="props">
-                                {{ props.option.title.rendered }}
-                            </template>
-                            <template slot="empty">{{ $i18n.get('info_no_page_found') }}</template>
-                        </b-autocomplete>
-  
-                        <div 
-                                v-if="coverPage != undefined && coverPage.title != undefined"
-                                class="control selected-cover-page">
-                            <span v-html="coverPage.title.rendered" />
-                            <span class="selected-cover-page-control">
-                                <a 
-                                        target="_blank"
-                                        @click.prevent="removeCoverPage()">
-                                    <span 
-                                            v-tooltip="{
-                                                content: $i18n.get('remove_value'),
-                                                autoHide: true,
-                                                placement: 'bottom'
-                                            }"
-                                            class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-close"/>
-                                    </span>
-                                </a>
-                            </span>
-                        </div>
-                        <span 
-                                :class="{'disabled': form.enable_cover_page != 'yes' || coverPage == undefined || coverPage.title == undefined}"
-                                class="selected-cover-page-buttons">
-                            <a 
-                                    target="_blank" 
-                                    :href="coverPage.link">
-                                <span 
-                                        v-tooltip="{
-                                            content: $i18n.get('see'),
-                                            autoHide: true,
-                                            placement: 'bottom'
-                                        }"
-                                        class="icon is-small">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
-                                </span>
-                            </a>
-                            &nbsp;&nbsp;
-                            <a 
-                                    target="blank" 
-                                    :href="coverPageEditPath">
-                                <span 
-                                        v-tooltip="{
-                                            content: $i18n.get('edit'),
-                                            autoHide: true,
-                                            placement: 'bottom'
-                                        }"
-                                        class="icon is-small">
-                                    <i class="tainacan-icon tainacan-icon-edit"/>
-                                </span>
-                            </a>
-                        </span>
-                        <br>
-                        <a
-                                class="add-link"  
-                                style="font-size: 0.875em;" 
-                                :class="{'disabled': form.enable_cover_page != 'yes'}"
-                                target="_blank"  
-                                :href="newPagePath">
-                            <span class="icon is-small">
-                                <i class="tainacan-icon tainacan-icon-add"/>
-                            </span>
-                            {{ $i18n.get('label_create_new_page') }}</a>                        
+                                :title="$i18n.getHelperTitle('collections', 'description')" 
+                                :message="$i18n.getHelperMessage('collections', 'description')"/>
+                        <b-input
+                                id="tainacan-text-description"
+                                type="textarea"
+                                rows="3"
+                                :placeholder="$i18n.get('instruction_collection_description')"
+                                v-model="form.description"
+                                @focus="clearErrors('description')"/>
+                    </b-field>
+
+                    <!-- Slug -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_slug')"
+                            :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
+                            :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['slug'] != undefined ? editFormErrors['slug'] : '')">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'slug')" 
+                                :message="$i18n.getHelperMessage('collections', 'slug')"/>
+                        <b-input
+                                id="tainacan-text-slug"
+                                @input="updateSlug"
+                                v-model="form.slug"
+                                @focus="clearErrors('slug')"
+                                :disabled="isUpdatingSlug"
+                                :loading="isUpdatingSlug"/>
                     </b-field>
 
                     <!-- Change Default OrderBy Select and Order Button-->
@@ -245,6 +122,90 @@
                         </div>
                     </b-field>
 
+
+                    <label class="label">{{ $i18n.get('label_view_modes_public_list') }}</label>
+                    <div class="items-view-mode-options">
+
+                        <!-- Enabled View Modes ------------------------------- --> 
+                        <div class="field">
+                            <label class="label">{{ $i18n.get('label_view_modes_available') }}</label>
+                            <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
+                                        :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
+                            <div class="control">
+                                <b-dropdown
+                                        class="enabled-view-modes-dropdown"
+                                        ref="enabledViewModesDropdown"
+                                        :mobile-modal="true"
+                                        :disabled="Object.keys(registeredViewModes).length < 0"
+                                        aria-role="list"
+                                        trap-focus
+                                        position="is-top-right">
+                                    <button
+                                            class="button is-white"
+                                            slot="trigger"
+                                            position="is-top-right"
+                                            type="button">
+                                        <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
+                                        <span class="icon">
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                        </span>
+                                    </button>
+                                    <b-dropdown-item
+                                            v-for="(viewMode, index) in Object.keys(registeredViewModes)"
+                                            :key="index"
+                                            custom
+                                            aria-role="listitem">
+                                        <b-checkbox
+                                                v-if="registeredViewModes[viewMode] != undefined"
+                                                @input="updateViewModeslist(viewMode)"
+                                                :value="checkIfViewModeEnabled(viewMode)"
+                                                :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1">
+                                            <p>
+                                                <strong>
+                                                    <span 
+                                                            class="gray-icon"
+                                                            :class="{ 
+                                                                'has-text-secondary' : checkIfViewModeEnabled(viewMode),
+                                                                'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
+                                                            }"
+                                                            v-html="registeredViewModes[viewMode].icon"/>
+                                                    &nbsp;{{ registeredViewModes[viewMode].label }}
+                                                </strong>
+                                            </p>
+                                            <p v-if="registeredViewModes[viewMode].description">{{ registeredViewModes[viewMode].description }}</p>
+                                        </b-checkbox>
+                                    </b-dropdown-item>   
+                                </b-dropdown>
+                            </div>
+                        </div>
+                        
+                        <!-- Default View Mode -------------------------------- --> 
+                        <b-field
+                                v-if="form.enabled_view_modes.length > 0"
+                                :addons="false" 
+                                :label="$i18n.get('label_default')"
+                                :type="editFormErrors['default_view_mode'] != undefined ? 'is-danger' : ''" 
+                                :message="editFormErrors['default_view_mode'] != undefined ? editFormErrors['default_view_mode'] : ''">
+                            <help-button 
+                                    :title="$i18n.getHelperTitle('collections', 'default_view_mode')" 
+                                    :message="$i18n.getHelperMessage('collections', 'default_view_mode')"/>
+                            <b-select
+                                    expanded
+                                    id="tainacan-select-default_view_mode"
+                                    v-model="form.default_view_mode"
+                                    @focus="clearErrors('default_view_mode')">
+                                <option
+                                        v-for="(viewMode, index) of form.enabled_view_modes"
+                                        v-if="registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen != true"
+                                        :key="index"
+                                        :value="viewMode">
+                                    {{ registeredViewModes[viewMode].label }}
+                                </option>
+                            </b-select>
+                        </b-field>
+                    </div>
+
                     <!-- Hide Items Thumbnail on Lists ------------------------ --> 
                     <b-field
                             :addons="false" 
@@ -259,243 +220,6 @@
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'hide_items_thumbnail_on_lists')" 
                                 :message="$i18n.getHelperMessage('collections', 'hide_items_thumbnail_on_lists')"/>
-                    </b-field>
-
-                    <!-- Enabled View Modes ------------------------------- --> 
-                    <div class="field">
-                        <label class="label">{{ $i18n.get('label_view_modes_available') }}</label>
-                        <help-button 
-                                    :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
-                                    :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
-                        <div class="control">
-                            <b-dropdown
-                                    class="two-columns-dropdown enabled-view-modes-dropdown"
-                                    ref="enabledViewModesDropdown"
-                                    :mobile-modal="true"
-                                    :disabled="Object.keys(registeredViewModes).length < 0"
-                                    aria-role="list"
-                                    trap-focus>
-                                <button
-                                        class="button is-white"
-                                        slot="trigger"
-                                        position="is-top-right"
-                                        type="button">
-                                    <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
-                                    <span class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                                    </span>
-                                </button>
-                                <b-dropdown-item
-                                        v-for="(viewMode, index) in Object.keys(registeredViewModes)"
-                                        :key="index"
-                                        custom
-                                        aria-role="listitem">
-                                    <b-checkbox
-                                            v-if="registeredViewModes[viewMode] != undefined"
-                                            @input="updateViewModeslist(viewMode)"
-                                            :value="checkIfViewModeEnabled(viewMode)"
-                                            :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1">
-                                        <p>
-                                            <strong>
-                                                <span 
-                                                        class="gray-icon"
-                                                        :class="{ 
-                                                            'has-text-secondary' : checkIfViewModeEnabled(viewMode),
-                                                            'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
-                                                        }"
-                                                        v-html="registeredViewModes[viewMode].icon"/>
-                                                &nbsp;{{ registeredViewModes[viewMode].label }}
-                                            </strong>
-                                        </p>
-                                        <p v-if="registeredViewModes[viewMode].description">{{ registeredViewModes[viewMode].description }}</p>
-                                    </b-checkbox>
-                                </b-dropdown-item>   
-                            </b-dropdown>
-                        </div>
-                    </div>
-                    
-                    <!-- Default View Mode -------------------------------- --> 
-                    <b-field
-                            v-if="form.enabled_view_modes.length > 0"
-                            :addons="false" 
-                            :label="$i18n.get('label_default_view_mode')"
-                            :type="editFormErrors['default_view_mode'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['default_view_mode'] != undefined ? editFormErrors['default_view_mode'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'default_view_mode')" 
-                                :message="$i18n.getHelperMessage('collections', 'default_view_mode')"/>
-                        <b-select
-                                expanded
-                                id="tainacan-select-default_view_mode"
-                                v-model="form.default_view_mode"
-                                @focus="clearErrors('default_view_mode')">
-                            <option
-                                    v-for="(viewMode, index) of form.enabled_view_modes"
-                                    v-if="registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen != true"
-                                    :key="index"
-                                    :value="viewMode">
-                                {{ registeredViewModes[viewMode].label }}
-                            </option>
-                        </b-select>
-                    </b-field>
-
-                    <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['collection'] != undefined &&
-                                formHooks['collection']['end-left'] != undefined">  
-                        <form
-                            ref="form-collection-end-left" 
-                            id="form-collection-end-left"
-                            class="form-hook-region"
-                            v-html="formHooks['collection']['end-left'].join('')"/>
-                    </template>
-
-                </div>
-                <div class="column">
-
-                    <!-- Status -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_status')"
-                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'status')" 
-                                :message="$i18n.getHelperMessage('collections', 'status')"/>
-                        <div class="status-radios">
-                            <b-radio
-                                    v-model="form.status"
-                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
-                                    :key="index"
-                                    :native-value="statusOption.slug">
-                                <span class="icon has-text-gray">
-                                    <i 
-                                        class="tainacan-icon tainacan-icon-18px"
-                                        :class="$statusHelper.getIcon(statusOption.slug)"/>
-                                </span>
-                                {{ statusOption.name }}
-                            </b-radio>
-                        </div>
-                    </b-field>
-
-                    <!-- Header Image -------------------------------- --> 
-                    <b-field :addons="false">
-                        <label class="label">{{ $i18n.get('label_header_image') }}</label>
-                        <div class="header-field">
-                            <figure class="image">
-                                <span 
-                                        v-if="collection.header_image == undefined || collection.header_image == false"
-                                        class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
-                                <img  
-                                        :alt="$i18n.get('label_thumbnail')" 
-                                        :src="(collection.header_image == undefined || collection.header_image == false) ? headerPlaceholderPath : collection.header_image">
-                            </figure>
-                            <div class="header-buttons-row">
-                                <a 
-                                        class="button is-rounded is-secondary"
-                                        id="button-edit-header-image" 
-                                        :aria-label="$i18n.get('label_button_edit_header_image')"
-                                        @click="headerImageMediaFrame.openFrame($event)">
-                                    <span 
-                                            v-tooltip="{
-                                                content: $i18n.get('edit'),
-                                                autoHide: true,
-                                                placement: 'bottom'
-                                            }"
-                                            class="icon">
-                                        <i class="tainacan-icon tainacan-icon-edit"/>
-                                    </span>
-                                </a>
-                                <a 
-                                        class="button is-rounded is-secondary"
-                                        id="button-delete-header-image" 
-                                        :aria-label="$i18n.get('label_button_delete_thumb')" 
-                                        @click="deleteHeaderImage()">
-                                    <span 
-                                            v-tooltip="{
-                                                content: $i18n.get('delete'),
-                                                autoHide: true,
-                                                placement: 'bottom'
-                                            }"
-                                            class="icon">
-                                        <i class="tainacan-icon tainacan-icon-delete"/>
-                                    </span>
-                                </a>
-                            </div>     
-                        </div>
-                    </b-field>
-                    
-                    <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['collection'] != undefined &&
-                                formHooks['collection']['begin-right'] != undefined">  
-                        <form 
-                            id="form-collection-begin-right"
-                            class="form-hook-region"
-                            v-html="formHooks['collection']['begin-right'].join('')"/>
-                    </template>
-
-                    <!-- Description -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_description')"
-                            :type="editFormErrors['description'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'description')" 
-                                :message="$i18n.getHelperMessage('collections', 'description')"/>
-                        <b-input
-                                id="tainacan-text-description"
-                                type="textarea"
-                                v-model="form.description"
-                                @focus="clearErrors('description')"/>
-                    </b-field>
-
-                    <!-- Parent Collection -------------------------------- --> 
-                    <!-- DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY -->
-                    <!-- <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_parent_collection')"
-                            :type="editFormErrors['parent'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['parent'] != undefined ? editFormErrors['parent'] : ''">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'parent')" 
-                                :message="$i18n.getHelperMessage('collections', 'parent')"/>
-                        <b-select
-                                expanded
-                                id="tainacan-select-parent"
-                                v-model="form.parent"
-                                @focus="clearErrors('parent')"
-                                :loading="isFetchingCollections"
-                                :placeholder="$i18n.get('instruction_select_a_parent_collection')">
-                            <option value="0">{{ $i18n.get('label_no_parent_collection') }}</option>
-                            <option
-                                    v-if="collection.id != anotherCollection.id"
-                                    v-for="anotherCollection of collections"
-                                    :key="anotherCollection.id"
-                                    :value="anotherCollection.id">{{ anotherCollection.name }}
-                            </option>
-                        </b-select>
-                    </b-field> -->
-
-                    <!-- Slug -------------------------------- --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_slug')"
-                            :type="editFormErrors['slug'] != undefined ? 'is-danger' : ''" 
-                            :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['slug'] != undefined ? editFormErrors['slug'] : '')">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'slug')" 
-                                :message="$i18n.getHelperMessage('collections', 'slug')"/>
-                        <b-input
-                                id="tainacan-text-slug"
-                                @input="updateSlug"
-                                v-model="form.slug"
-                                @focus="clearErrors('slug')"
-                                :disabled="isUpdatingSlug"
-                                :loading="isUpdatingSlug"/>
                     </b-field>
 
                     <!-- Comment Status ------------------------ --> 
@@ -606,14 +330,299 @@
                     </transition>
 
                     <!-- Hook for extra Form options -->
-                    <template 
-                            v-if="formHooks != undefined && 
-                                formHooks['collection'] != undefined &&
-                                formHooks['collection']['end-right'] != undefined">  
+                    <template v-if="hasEndLeftForm">  
+                        <form
+                            ref="form-collection-end-left" 
+                            id="form-collection-end-left"
+                            class="form-hook-region"
+                            v-html="getEndLeftForm"/>
+                    </template>
+
+                </div>
+                <div class="column">
+
+                    <!-- Status -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_status')"
+                            :type="editFormErrors['status'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'status')" 
+                                :message="$i18n.getHelperMessage('collections', 'status')"/>
+                        <div class="status-radios">
+                            <b-radio
+                                    v-model="form.status"
+                                    v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
+                                    :key="index"
+                                    :native-value="statusOption.slug">
+                                <span class="icon has-text-gray">
+                                    <i 
+                                        class="tainacan-icon tainacan-icon-18px"
+                                        :class="$statusHelper.getIcon(statusOption.slug)"/>
+                                </span>
+                                {{ statusOption.name }}
+                            </b-radio>
+                        </div>
+                    </b-field>
+
+                    <!-- Hook for extra Form options -->
+                    <template v-if="hasBeginRightForm">  
+                        <form 
+                            id="form-collection-begin-right"
+                            class="form-hook-region"
+                            v-html="getBeginRightForm"/>
+                    </template>
+
+                    <!-- Image thumbnail & Header Image -------------------------------- --> 
+                    <b-field :addons="false">
+                        <label class="label">
+                            {{ $i18n.get('label_thumbnail') }} & {{ $i18n.get('label_header_image') }}
+                            <help-button 
+                                    :title="$i18n.get('label_thumbnail') + ' & ' + $i18n.get('label_header_image')" 
+                                    :message="$i18n.get('info_collection_thumbnail_and_header')"/>
+                        </label>
+
+                        <!-- Header Image -------------------------------- --> 
+                        <div class="header-field">
+                            <figure class="image">
+                                <span 
+                                        v-if="collection.header_image == undefined || collection.header_image == false"
+                                        class="image-placeholder">{{ $i18n.get('label_empty_header_image') }}</span>
+                                <img  
+                                        :alt="$i18n.get('label_thumbnail')" 
+                                        :src="(collection.header_image == undefined || collection.header_image == false) ? headerPlaceholderPath : collection.header_image">
+                            </figure>
+                            <div class="header-buttons-row">
+                                <a 
+                                        class="button is-rounded is-secondary"
+                                        id="button-edit-header-image" 
+                                        :aria-label="$i18n.get('label_button_edit_header_image')"
+                                        @click="headerImageMediaFrame.openFrame($event)">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                    </span>
+                                </a>
+                                <a 
+                                        class="button is-rounded is-secondary"
+                                        id="button-delete-header-image" 
+                                        :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                        @click="deleteHeaderImage()">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                    </span>
+                                </a>
+                            </div>     
+                        </div>
+
+                        <!-- Thumbnail -------------------------------- --> 
+                        <div class="thumbnail-field">
+                            <file-item
+                                    v-if="collection.thumbnail != undefined && ((collection.thumbnail['tainacan-medium'] != undefined && collection.thumbnail['tainacan-medium'] != false) || (collection.thumbnail.medium != undefined && collection.thumbnail.medium != false))"
+                                    :show-name="false"
+                                    :modal-on-click="true"
+                                    :size="146"
+                                    :file="{ 
+                                        media_type: 'image', 
+                                        thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium') ] },
+                                        title: $i18n.get('label_thumbnail'),
+                                        description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(collection['thumbnail'], 'full') + `'/>` 
+                                    }"/>
+                        <figure 
+                                    v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
+                                    class="image">
+                                <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
+                                <img  
+                                        :alt="$i18n.get('label_thumbnail')" 
+                                        :src="$thumbHelper.getEmptyThumbnailPlaceholder()">
+                            </figure>
+                            <div class="thumbnail-buttons-row">
+                                <a 
+                                        class="button is-rounded is-secondary"
+                                        id="button-edit-thumbnail" 
+                                        :aria-label="$i18n.get('label_button_edit_thumb')"
+                                        @click.prevent="thumbnailMediaFrame.openFrame($event)">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']  
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                    </span>
+                                </a>
+                                <a 
+                                        class="button is-rounded is-secondary"
+                                        id="button-delete-header-image" 
+                                        :aria-label="$i18n.get('label_button_delete_thumb')" 
+                                        @click="deleteThumbnail()">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']  
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </b-field>
+
+                    <!-- Cover Page -------------------------------- --> 
+                    <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_cover_page')"
+                            :type="editFormErrors['cover_page_id'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['cover_page_id'] != undefined ? editFormErrors['cover_page_id'] : ''">
+                        &nbsp;
+                        <b-switch
+                                id="tainacan-checkbox-cover-page" 
+                                size="is-small"
+                                true-value="yes" 
+                                false-value="no"
+                                v-model="form.enable_cover_page" />
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'cover_page_id')" 
+                                :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
+                        <b-autocomplete
+                                id="tainacan-text-cover-page"
+                                :placeholder="$i18n.get('instruction_cover_page')"
+                                :data="coverPages"
+                                v-model="coverPageTitle"
+                                @select="onSelectCoverPage($event)"
+                                :loading="isFetchingPages"
+                                @input="fecthCoverPages"
+                                @focus="clearErrors('cover_page_id')"
+                                v-if="coverPage == undefined || coverPage.title == undefined"
+                                :disabled="form.enable_cover_page != 'yes'"
+                                check-infinite-scroll
+                                @infinite-scroll="fetchMoreCoverPages">
+                            <template slot-scope="props">
+                                {{ props.option.title.rendered }}
+                            </template>
+                            <template slot="empty">{{ $i18n.get('info_no_page_found') }}</template>
+                        </b-autocomplete>
+  
+                        <div 
+                                v-if="coverPage != undefined && coverPage.title != undefined"
+                                class="control selected-cover-page">
+                            <span v-html="coverPage.title.rendered" />
+                            <span class="selected-cover-page-control">
+                                <a 
+                                        target="_blank"
+                                        @click.prevent="removeCoverPage()">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('remove_value'),
+                                                autoHide: true,
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']  
+                                            }"
+                                            class="icon is-small">
+                                        <i class="tainacan-icon tainacan-icon-close"/>
+                                    </span>
+                                </a>
+                            </span>
+                        </div>
+                        <span 
+                                :class="{'disabled': form.enable_cover_page != 'yes' || coverPage == undefined || coverPage.title == undefined}"
+                                class="selected-cover-page-buttons">
+                            <a 
+                                    target="_blank" 
+                                    :href="coverPage.link">
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('see'),
+                                            autoHide: true,
+                                            placement: 'bottom',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                        }"
+                                        class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                                </span>
+                            </a>
+                            &nbsp;&nbsp;
+                            <a 
+                                    target="blank" 
+                                    :href="coverPageEditPath">
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('edit'),
+                                            autoHide: true,
+                                            placement: 'bottom',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                        }"
+                                        class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-edit"/>
+                                </span>
+                            </a>
+                        </span>
+                        <br>
+                        <a
+                                class="add-link"  
+                                style="font-size: 0.875em;" 
+                                :class="{'disabled': form.enable_cover_page != 'yes'}"
+                                target="_blank"  
+                                :href="newPagePath">
+                            <span class="icon is-small">
+                                <i class="tainacan-icon tainacan-icon-add"/>
+                            </span>
+                            {{ $i18n.get('label_create_new_page') }}</a>                        
+                    </b-field>
+
+                    <!-- Parent Collection -------------------------------- --> 
+                    <!-- DISABLED IN 0.18 AS WE DISCUSS BETTER IMPLEMENTATION FOR COLLECTIONS HIERARCHY -->
+                    <!-- <b-field
+                            :addons="false" 
+                            :label="$i18n.get('label_parent_collection')"
+                            :type="editFormErrors['parent'] != undefined ? 'is-danger' : ''" 
+                            :message="editFormErrors['parent'] != undefined ? editFormErrors['parent'] : ''">
+                        <help-button 
+                                :title="$i18n.getHelperTitle('collections', 'parent')" 
+                                :message="$i18n.getHelperMessage('collections', 'parent')"/>
+                        <b-select
+                                expanded
+                                id="tainacan-select-parent"
+                                v-model="form.parent"
+                                @focus="clearErrors('parent')"
+                                :loading="isFetchingCollections"
+                                :placeholder="$i18n.get('instruction_select_a_parent_collection')">
+                            <option value="0">{{ $i18n.get('label_no_parent_collection') }}</option>
+                            <option
+                                    v-if="collection.id != anotherCollection.id"
+                                    v-for="anotherCollection of collections"
+                                    :key="anotherCollection.id"
+                                    :value="anotherCollection.id">{{ anotherCollection.name }}
+                            </option>
+                        </b-select>
+                    </b-field> -->
+
+
+                    <!-- Hook for extra Form options -->
+                    <template v-if="hasEndRightForm">  
                         <form 
                             id="form-collection-end-right"
                             class="form-hook-region"
-                            v-html="formHooks['collection']['end-right'].join('')"/>
+                            v-html="getEndRightForm"/>
                     </template>
                 </div>
 
@@ -1310,7 +1319,7 @@ export default {
         }
     }
     .header-field {  
-        padding-top: 24px;
+        padding-top: 1px;
 
         .image-placeholder {
             position: absolute;
@@ -1333,38 +1342,53 @@ export default {
             top: -15px;
             position: relative;
         }
-    }
-    .thumbnail-field {  
-        padding: 24px;
-        // margin-top: 16px;
-        // margin-bottom: 38px;
 
+        &+.thumbnail-field {
+            opacity: 1.0;
+            transition: opacity 0.2s ease;
+        }
+        &:hover+.thumbnail-field {
+            opacity: 0.3;
+        }
+    }
+
+    .thumbnail-field {
+        display: inline-block;  
+        padding: 1rem;
+        margin-top: -120px;
+        margin-bottom: -30px;
+        position: relative;
+        z-index: 99;
+        
         .content {
             padding: 10px;
             font-size: 0.8em;
         }
-        img {
-            height: 178px;
-            width: 178px;
+        img,
+        /deep/ .image-wrapper {
+            height: 146px;
+            width: 146px;
+            border: 6px solid var(--tainacan-background-color);
         }
         .image-placeholder {
             position: absolute;
-            margin-left: 45px;
-            margin-right: 45px;
+            margin-left: 26px;
+            margin-right: 26px;
             font-size: 0.8em;
             font-weight: bold;
             z-index: 99;
             text-align: center;
             color: var(--tainacan-info-color);
-            top: 70px;
+            top: 64px;
             max-width: 90px;
         }
         .thumbnail-buttons-row {
             position: relative;
-            left: 90px;
-            bottom: 1.0em;
+            left: 52px;
+            bottom: calc(1.0em + 12px);
         }
     }
+    
     .switch {
         position: relative;
         top: -1px;
@@ -1392,11 +1416,18 @@ export default {
     .sorting-options {
         display: flex;
         align-items: center;
+        width: 100%;
 
         .label {
             font-weight: normal;
             margin-bottom: 0;
         }
+        .control.is-expanded {
+            width: 100%;
+        }
+    }
+    .sorting-options+.help {
+        opacity: 0.7;
     }
     .status-radios {
         display: flex;
@@ -1406,6 +1437,30 @@ export default {
             align-items: center;
         }
     }
+    .items-view-mode-options {
+        display: flex;
+
+        &>.field:first-child {
+            width: 66.66%;
+            margin-right: 12px;
+
+            .dropdown-trigger>.button {
+                min-height: 35px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+        &>.field:last-child {
+            width: 33.33%;
+        }
+
+        @media screen and (min-width: 1024px) {
+            .dropdown-trigger>.button {
+                min-height: 40px;
+            }
+        }
+    }
     .item-submission-options {
         padding-left: 1em;
         padding-top: 1.25em;
@@ -1413,6 +1468,9 @@ export default {
         border-left: 1px solid var(--tainacan-gray2);
     }
     .enabled-view-modes-dropdown {
+        position: relative;
+        z-index: 101;
+
         /deep/ .dropdown-item {
             display: flex !important;
         }

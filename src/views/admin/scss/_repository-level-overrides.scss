@@ -2,7 +2,7 @@
 // This garantees that any component inside a .repository-level-page
 // will have a blue color instead of a turquoise.
 #tainacan-admin-app .repository-level-page {
-    margin-top: 5.875em; 
+    margin-top: 5.35em; 
     height: $page-height !important;
 
     @media screen and (max-width: 769px) {
@@ -38,7 +38,7 @@
         background-color: var(--tainacan-blue3) !important;
     }
     button.link-style, button.link-style:focus button.link-style:active {
-        color: var(--tainacan-blue4);
+        color: var(--tainacan-blue4) !important;
     }
     .button[disabled]:not(.is-white), .button:hover[disabled]:not(.is-white) {
         border: none !important;
@@ -129,10 +129,15 @@
     .active-metadatum-item.not-focusable-item>.handle>.metadatum-name {
         color: var(--tainacan-blue3) !important;
     }
+}
+.v-popper--theme-tooltip.tainacan-repository-tooltip {
+    --tainacan-primary: var(--tainacan-blue1);
+    --tainacan-secondary: var(--tainacan-blue5);
+
     .metadata-type-preview {
-        background-color: var(--tainacan-blue1) !important;
+        // background-color: var(--tainacan-blue1) !important;
         .metadata-type-label {
-            color: var(--tainacan-blue4) !important;
+            color: var(--tainacan-blue5) !important;
         }
         .autocomplete>.control, .autocomplete>.control>input, .dropdown-content {
             background-color: #f9fcff !important;
@@ -141,4 +146,8 @@
             border-color: transparent transparent transparent var(--tainacan-blue1) !important;
         }
     }
+}
+.v-popper--theme-tooltip.tainacan-repository-header-tooltip {
+    --tainacan-primary: var(--tainacan-blue4);
+    --tainacan-info-color: var(--tainacan-white);
 }

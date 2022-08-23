@@ -95,168 +95,168 @@ class Collections extends TAINACAN_UnitTestCase {
 			true
 		);
 
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
-        $this->assertEquals('Tainacan\Entities\Collection', get_class($x));
+		$this->assertEquals('Tainacan\Entities\Collection', get_class($x));
 
-        $test = $Tainacan_Collections->fetch($x->get_id());
+		$test = $Tainacan_Collections->fetch($x->get_id());
 
-        $this->assertEquals('teste', $test->get_name());
-        $this->assertEquals('adasdasdsa', $test->get_description());
-        $this->assertEquals('DESC', $test->get_default_order());
-        $this->assertEquals('draft', $test->get_status());
-    }
+		$this->assertEquals('teste', $test->get_name());
+		$this->assertEquals('adasdasdsa', $test->get_description());
+		$this->assertEquals('DESC', $test->get_default_order());
+		$this->assertEquals('draft', $test->get_status());
+	}
 
-    function test_unique_slugs() {
+	function test_unique_slugs() {
 		$x = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
 				'name'          => 'teste',
 				'description'   => 'adasdasdsa',
 				'default_order' => 'DESC',
-                'slug'          => 'duplicated_slug',
-                'status'        => 'publish'
+				'slug'          => 'duplicated_slug',
+				'status'        => 'publish'
 			),
 			true
 		);
 
-        $y = $this->tainacan_entity_factory->create_entity(
+		$y = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
 				'name'          => 'teste',
 				'description'   => 'adasdasdsa',
 				'default_order' => 'DESC',
-                'slug'          => 'duplicated_slug',
-                'status'        => 'publish'
+				'slug'          => 'duplicated_slug',
+				'status'        => 'publish'
 			),
 			true
 		);
 
-        $this->assertNotEquals($x->get_slug(), $y->get_slug());
+		$this->assertNotEquals($x->get_slug(), $y->get_slug());
 
-        // Create as draft and publish later
-        $x = $this->tainacan_entity_factory->create_entity(
+		// Create as draft and publish later
+		$x = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
 				'name'          => 'teste',
 				'description'   => 'adasdasdsa',
 				'default_order' => 'DESC',
-                'slug'          => 'duplicated_slug',
+				'slug'          => 'duplicated_slug',
 			),
 			true
 		);
 
-        $y = $this->tainacan_entity_factory->create_entity(
+		$y = $this->tainacan_entity_factory->create_entity(
 			'collection',
 			array(
 				'name'          => 'teste',
 				'description'   => 'adasdasdsa',
 				'default_order' => 'DESC',
-                'slug'          => 'duplicated_slug',
+				'slug'          => 'duplicated_slug',
 			),
 			true
 		);
 
-        $this->assertEquals($x->get_slug(), $y->get_slug());
+		$this->assertEquals($x->get_slug(), $y->get_slug());
 
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-        $x->set_status('publish');
-        $x->validate();
-        $x = $Tainacan_Collections->insert($x);
-        $y->set_status('private'); // or publish shoud behave the same
-        $y->validate();
-        $y = $Tainacan_Collections->insert($y);
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+		$x->set_status('publish');
+		$x->validate();
+		$x = $Tainacan_Collections->insert($x);
+		$y->set_status('private'); // or publish shoud behave the same
+		$y->validate();
+		$y = $Tainacan_Collections->insert($y);
 
-        $this->assertNotEquals($x->get_slug(), $y->get_slug());
+		$this->assertNotEquals($x->get_slug(), $y->get_slug());
 
-    }
+	}
 
-    function test_item() {
-	    $x = $this->tainacan_entity_factory->create_entity(
-		    'collection',
-		    array(
-			    'name'          => 'teste',
-			    'description'   => 'adasdasdsa',
-			    'default_order' => 'DESC'
-		    ),
-		    true
-	    );
+	function test_item() {
+		$x = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+				'default_order' => 'DESC'
+			),
+			true
+		);
 
-        $Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-        $collection = $Tainacan_Collections->fetch($x->get_id());
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+		$collection = $Tainacan_Collections->fetch($x->get_id());
 
-	    $i = $this->tainacan_entity_factory->create_entity(
-		    'item',
-		    array(
-			    'title'         => 'item test',
-			    'description'   => 'adasdasdsa',
-			    'order'         => 'DESC',
-			    'collection'    => $collection
-		    ),
-		    true
-	    );
+		$i = $this->tainacan_entity_factory->create_entity(
+			'item',
+			array(
+				'title'         => 'item test',
+				'description'   => 'adasdasdsa',
+				'order'         => 'DESC',
+				'collection'    => $collection
+			),
+			true
+		);
 
-        $Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
-        $item = $Tainacan_Items->fetch( $i->get_id() );
+		$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
+		$item = $Tainacan_Items->fetch( $i->get_id() );
 
-        $this->assertEquals($item->get_title(), 'item test');
-        $this->assertEquals($item->get_description(), 'adasdasdsa');
-        $this->assertEquals($item->get_collection_id(), $collection->get_id());
+		$this->assertEquals($item->get_title(), 'item test');
+		$this->assertEquals($item->get_description(), 'adasdasdsa');
+		$this->assertEquals($item->get_collection_id(), $collection->get_id());
 
-    }
+	}
 
-    function test_validation() {
-	    $x = $this->tainacan_entity_factory->create_entity(
-		    'collection',
-		    array(
-			    'name'          => 'teste',
-			    'description'   => 'adasdasdsa',
-			    'default_order' => 13,
-                'status'        => 'publish'
-		    )
-	    );
+	function test_validation() {
+		$x = $this->tainacan_entity_factory->create_entity(
+			'collection',
+			array(
+				'name'          => 'teste',
+				'description'   => 'adasdasdsa',
+				'default_order' => 13,
+				'status'        => 'publish'
+			)
+		);
 
-        $this->assertFalse($x->validate());
-        $this->assertTrue(sizeof($x->get_errors()) > 0);
+		$this->assertFalse($x->validate());
+		$this->assertTrue(sizeof($x->get_errors()) > 0);
 
-        $x->set_default_order('ASDASD');
+		$x->set_default_order('ASDASD');
 
-        $this->assertFalse($x->validate());
-        $this->assertTrue(sizeof($x->get_errors()) > 0);
+		$this->assertFalse($x->validate());
+		$this->assertTrue(sizeof($x->get_errors()) > 0);
 
-        $x->set_default_order('DESC');
-        $this->assertTrue($x->validate());
-        $this->assertTrue(empty($x->get_errors()));
-    }
+		$x->set_default_order('DESC');
+		$this->assertTrue($x->validate());
+		$this->assertTrue(empty($x->get_errors()));
+	}
 
-    function test_hooks() {
-    	$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
-    	$this->assertTrue(has_action('init', array($Tainacan_Collections, 'register_post_type')) !== false, 'Collections Init is not registred!');
-    }
+	function test_hooks() {
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+		$this->assertTrue(has_action('init', array($Tainacan_Collections, 'register_post_type')) !== false, 'Collections Init is not registred!');
+	}
 
 
 	function test_create_child_collection() {
 
 		$x = $this->tainacan_entity_factory->create_entity(
-    		'collection',
-    		array(
-    			'name'				=> 'test',
-    			'description'		=> 'adasdasdsa',
-    			'default_order' 	=> 'DESC',
-    		),
-    		true
-    	);
+			'collection',
+			array(
+				'name'				=> 'test',
+				'description'		=> 'adasdasdsa',
+				'default_order' 	=> 'DESC',
+			),
+			true
+		);
 
 		$col = $this->tainacan_entity_factory->create_entity(
-    		'collection',
-    		array(
-    			'name'				=> 'test',
-    			'description'		=> 'adasdasdsa',
-    			'default_order' 	=> 'DESC',
+			'collection',
+			array(
+				'name'				=> 'test',
+				'description'		=> 'adasdasdsa',
+				'default_order' 	=> 'DESC',
 				'status'			=> 'auto-draft'
-    		),
-    		true
-    	);
+			),
+			true
+		);
 
 		$Collections = \Tainacan\Repositories\Collections::get_instance();
 

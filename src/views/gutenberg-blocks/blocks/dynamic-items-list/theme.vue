@@ -1,6 +1,6 @@
 <template>
     <div 
-            :style="style"
+            :style="customStyle"
             :class="className + ' has-mounted'">
         <div v-if="showCollectionHeader">
             <div
@@ -14,13 +14,13 @@
                 <div
                         :style="{
                             backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
-                            paddingRight: collection && collection.thumbnail && (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] || collection.thumbnail['medium']) ? '' : '20px',
-                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] && !collection.thumbnail['medium'])) ? '1em' : '',
+                            paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
+                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1em' : '',
                             width: collection && collection.header_image ? '' : '100%'
                         }"
                         :class="
                             'collection-name ' + 
-                            ((!collection || !collection.thumbnail || (!collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
+                            ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                         ">
                     <h3 :style="{ color: collectionTextColor ? collectionTextColor : '' }">
                         <span
@@ -33,17 +33,17 @@
                     </h3>
                 </div>
                 <div
-                    v-if="collection && collection.thumbnail && (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] || collection.thumbnail['medium'])"   
+                    v-if="collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])"   
                     class="collection-thumbnail"
                     :style="{ 
-                        backgroundImage: 'url(' + (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] != undefined ? (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )][0]) : (collection.thumbnail['medium'][0])) + ')',
+                        backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
                     }"/>
                 <div
                         class="collection-header-image"
                         :style="{
                             backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
                             minHeight: collection && collection.header_image ? '' : '80px',
-                            display: !(collection && collection.thumbnail && (collection.thumbnail[( cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' )] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
+                            display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
                         }"/>
             </a>   
         </div>
@@ -130,7 +130,7 @@
             <button
                     :style="{ marginLeft: paged <= 1 ? 'auto' : '0' }"
                     class="next-button"
-                    v-if="paged < totalItems/maxItemsNumber && items.length < totalItems"
+                    v-if="paged < totalItems/localMaxItemsNumber && items.length < totalItems"
                     @click="paged++; fetchItems()"
                     :label="$root.__('Next page', 'tainacan')">
                 <span class="icon">
@@ -160,7 +160,7 @@
                     :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
                 <li
                         :key="item"
-                        v-for="item in Number(maxItemsNumber)"
+                        v-for="item in Number(localMaxItemsNumber)"
                         class="item-list-item skeleton"
                         :style="{ 
                             marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
@@ -206,11 +206,11 @@
                             :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
                         <blur-hash-image
                                 v-if="showImage"
-                                :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
-                                :width="$thumbHelper.getWidth(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
-                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
-                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || imageSize ))"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], ( layout == 'list' || imageSize ))"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], ( layout == 'list' || imageSize ), item['document_mimetype'])"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( layout == 'list' || imageSize ), item['document_mimetype'])"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || imageSize ))"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
                                 :transition-duration="500" />
                         <span v-if="item.title">{{ item.title }}</span>
@@ -244,7 +244,7 @@
                             v-for="(item, index) of mosaicGroup"
                             class="item-list-item"
                             :style="{
-                                backgroundImage: layout == 'mosaic' ? `url(${$thumbHelper.getSrc(item['thumbnail'], 'medium_large', item['document_mimetype'])})` : 'none',
+                                backgroundImage: layout == 'mosaic' ? `url(${$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])})` : 'none',
                                 backgroundPosition: layout == 'mosaic' ? `${ mosaicItemFocalPointX * 100 }% ${ mosaicItemFocalPointY * 100 }%` : 'none'
                             }">          
                         <a 
@@ -252,11 +252,11 @@
                                 :href="item.url"
                                 :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
                             <blur-hash-image
-                                    :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
-                                    :width="$thumbHelper.getWidth(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
-                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ), item['document_mimetype'])"
-                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || cropImagesToSquare ? 'tainacan-medium' : 'tainacan-medium-full' ))"
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || imageSize ))"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], ( layout == 'list' || imageSize ))"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], ( layout == 'list' || imageSize ), item['document_mimetype'])"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( layout == 'list' || imageSize ), item['document_mimetype'])"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || imageSize ))"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                             <span v-if="item.title">{{ item.title }}</span>
@@ -297,7 +297,7 @@ export default {
         mosaicItemFocalPointX: Number,
         mosaicItemFocalPointY: Number,
         maxColumnsCount: Number,
-        cropImagesToSquare: Boolean,
+        imageSize: String,
         order: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
@@ -307,7 +307,7 @@ export default {
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
         className: String,
-        style: String
+        customStyle: String
     },    
     data() {
         return {
@@ -332,6 +332,7 @@ export default {
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
             
         this.localOrder = this.order;
+        this.localMaxItemsNumber = this.maxItemsNumber;
   
         if (this.showCollectionHeader)
             this.fetchCollectionForHeader();
@@ -370,9 +371,9 @@ export default {
 
             } else if (this.loadStrategy == 'selection') {
     
-                this.maxItemsNumber = this.selectedItems.length;
+                this.localMaxItemsNumber = this.selectedItems.length;
                 
-                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.maxItemsNumber }) + '&fetch_only=title,url,thumbnail';
+                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&fetch_only=title,url,thumbnail';
 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {
@@ -395,8 +396,8 @@ export default {
                 let queryObject = qs.parse(query);
 
                 // Set up max items to be shown
-                if (this.maxItemsNumber != undefined && Number(this.maxItemsNumber) > 0)
-                    queryObject.perpage = this.maxItemsNumber;
+                if (this.localMaxItemsNumber != undefined && Number(this.localMaxItemsNumber) > 0)
+                    queryObject.perpage = this.localMaxItemsNumber;
                 else if (queryObject.perpage != undefined && queryObject.perpage > 0)
                     this.localMaxItemsNumber = queryObject.perpage;
                 else {
@@ -432,9 +433,7 @@ export default {
                 else
                     this.paged = 1;
 
-                // emove unecessary queries
-                delete queryObject.readmode;
-                delete queryObject.iframemode;
+                // Remove unecessary queries
                 delete queryObject.admin_view_mode;
                 delete queryObject.fetch_only_meta;
                 

@@ -1,4 +1,5 @@
 import * as conditioner from 'conditioner-core/conditioner-core.esm';
+const { __ } = wp.i18n;
 
 // Updates Webpack public path based on plugin folder URL, using variable obtained from server side.
 __webpack_public_path__ = tainacan_plugin.plugin_dir_url + 'assets/js/';
@@ -23,7 +24,8 @@ const addDataModuleToOldBlocks = () => {
         'carousel-items-list',
         'carousel-terms-list',
         'related-items-list',
-        'carousel-collections-list'
+        'carousel-collections-list',
+        'item-gallery'
     ];
     
     // Looks for Tainacan Blocks based on their classes.
@@ -35,7 +37,7 @@ const addDataModuleToOldBlocks = () => {
         });
     });
 
-    // Extra case for the items list and item submission, as their
+    // Extra case for the items list, item gallery and item submission, as their
     // theme wrapper does not uses gutenberg classes, but the div ID
     let existingItemListOnPage = document.getElementById('tainacan-items-page');
     if ( existingItemListOnPage && !existingItemListOnPage.getAttribute('data-module') )
@@ -44,6 +46,7 @@ const addDataModuleToOldBlocks = () => {
     let existingItemSubmissionFormOnPage = document.getElementById('tainacan-item-submission-form');
     if ( existingItemSubmissionFormOnPage && !existingItemSubmissionFormOnPage.getAttribute('data-module') )
         existingItemSubmissionFormOnPage.setAttribute('data-module', 'item-submission-form');
+
 }
 
 performWhenDocumentIsLoaded(() => {
@@ -65,7 +68,17 @@ performWhenDocumentIsLoaded(() => {
             /* webpackMode: "lazy" */
             /* webpackInclude: /theme\.js$/ */
             /* webpackChunkName: "tainacan-chunks-" */
-            `${name}`)
+            `${name}`
+        )
+            .catch((error) => {
+                let moduleElements = document.querySelectorAll('[data-module]');
+                moduleElements.forEach((moduleElement) => {
+                    moduleElement.innerHTML = `<p style="font-size: 1rem;"><strong>` + __( 'An error ocurred while loading this Tainacan component. Please reload your page (CTRL+SHIFT+R).', 'tainacan') + `</strong></p>`;
+                });
+                console.warn( __( 'An error ocurred while loading some Tainacan components. Please reload your page (CTRL+SHIFT+R).', 'tainacan') );
+                console.warn( __( 'Clearing the cache may help. It is possible that the browser or server are retaining old information that are preventing Tainacan components to be loading correctly.', 'tainacan') );
+                console.error(error);
+            })
     });
 
     // lets go!

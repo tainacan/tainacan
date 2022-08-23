@@ -43,7 +43,8 @@
                         <help-button
                                 :title="$i18n.get('label_inherited_roles')"
                                 :message="$i18n.get('info_inherited_roles')"
-                                forced-color="yellow2"/>
+                                extra-classes="is-warning"
+                                forced-icon-color="yellow2"/>
                     </label>
                     <br>
                     <div class="roles-list">

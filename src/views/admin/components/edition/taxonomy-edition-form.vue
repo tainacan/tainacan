@@ -25,7 +25,8 @@
                                     <span class="required-metadatum-asterisk">*</span>
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'name')" 
-                                            :message="$i18n.getHelperMessage('taxonomies', 'name')"/>
+                                            :message="$i18n.getHelperMessage('taxonomies', 'name')"
+                                            extra-classes="tainacan-repository-tooltip"/>
                                     <b-input
                                             id="tainacan-text-name"
                                             v-model="form.name"
@@ -36,14 +37,11 @@
                                 </b-field>
 
                                 <!-- Hook for extra Form options -->
-                                <template 
-                                        v-if="formHooks != undefined && 
-                                            formHooks['taxonomy'] != undefined &&
-                                            formHooks['taxonomy']['begin-left'] != undefined">  
+                                <template v-if="hasBeginLeftForm">  
                                     <form 
                                         id="form-taxonomy-begin-left"
                                         class="form-hook-region"
-                                        v-html="formHooks['taxonomy']['begin-left'].join('')"/>
+                                        v-html="getBeginLeftForm"/>
                                 </template>
 
                                 <!-- Description -------------------------------- -->
@@ -54,7 +52,8 @@
                                         :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'description')" 
-                                            :message="$i18n.getHelperMessage('taxonomies', 'description')"/>
+                                            :message="$i18n.getHelperMessage('taxonomies', 'description')"
+                                            extra-classes="tainacan-repository-tooltip"/>
                                     <b-input
                                             id="tainacan-text-description"
                                             type="textarea"
@@ -74,7 +73,8 @@
                                                     false-value="no" />
                                             <help-button 
                                                 :title="$i18n.getHelperTitle('taxonomies', 'allow_insert')" 
-                                                :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"/>
+                                                :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"
+                                                extra-classes="tainacan-repository-tooltip"/>
                                         </label>
                                 </b-field>
                             </div>
@@ -89,7 +89,8 @@
                                         :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'status')" 
-                                            :message="$i18n.getHelperMessage('taxonomies', 'status')"/>
+                                            :message="$i18n.getHelperMessage('taxonomies', 'status')"
+                                            extra-classes="tainacan-repository-tooltip"/>
                                     <div class="status-radios">
                                         <b-radio
                                                 v-model="form.status"
@@ -114,7 +115,8 @@
                                         :message="editFormErrors['slug'] != undefined ? editFormErrors['slug'] : ''">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('taxonomies', 'slug')" 
-                                            :message="$i18n.getHelperMessage('taxonomies', 'slug')"/>
+                                            :message="$i18n.getHelperMessage('taxonomies', 'slug')"
+                                            extra-classes="tainacan-repository-tooltip"/>
                                     <b-input
                                             @input="updateSlug()"
                                             id="tainacan-text-slug"
@@ -131,7 +133,8 @@
                                         :message="editFormErrors['enabled_post_types'] != undefined ? editFormErrors['enabled_post_types'] : ''">
                                     <help-button 
                                         :title="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')" 
-                                        :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"/>
+                                        :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"
+                                        extra-classes="tainacan-repository-tooltip"/>
 
                                     <div 
                                             v-for="wpPostType in wpPostTypes"
@@ -149,14 +152,11 @@
                                 </b-field>
 
                                 <!-- Hook for extra Form options -->
-                                <template 
-                                        v-if="formHooks != undefined && 
-                                            formHooks['taxonomy'] != undefined &&
-                                            formHooks['taxonomy']['end-left'] != undefined">  
+                                <template v-if="hasEndLeftForm">  
                                     <form 
                                         id="form-taxonomy-end-left"
                                         class="form-hook-region"
-                                        v-html="formHooks['taxonomy']['end-left'].join('')"/>
+                                        v-html="getEndLeftForm"/>
                                 </template>
                             </div>
                         </div>
@@ -245,31 +245,7 @@
             TermsList
         },
         mixins: [ wpAjax, formHooks ],
-        data(){
-            return {
-                taxonomyId: String,
-                tabIndex: 0,
-                taxonomy: null,
-                isLoadingTaxonomy: false,
-                isUpdatingSlug: false,
-                isEditingTerm: false,
-                form: {
-                    name: String,
-                    status: String,
-                    description: String,
-                    slug: String,
-                    allowInsert: String,
-                    enabledPostTypes: Array
-                },
-                wpPostTypes: tainacan_plugin.wp_post_types,
-                editFormErrors: {},
-                formErrorMessage: '',
-                entityName: 'taxonomy',
-                updatedAt: undefined,
-                shouldReloadTermsList: false
-            }
-        },
-        beforeRouteLeave( to, from, next ) {
+         beforeRouteLeave( to, from, next ) {
             let formNotSaved = false;
 
             if (this.taxonomy) {
@@ -322,6 +298,30 @@
             } else {
                 next();
             }  
+        },
+        data(){
+            return {
+                taxonomyId: String,
+                tabIndex: 0,
+                taxonomy: null,
+                isLoadingTaxonomy: false,
+                isUpdatingSlug: false,
+                isEditingTerm: false,
+                form: {
+                    name: String,
+                    status: String,
+                    description: String,
+                    slug: String,
+                    allowInsert: String,
+                    enabledPostTypes: Array
+                },
+                wpPostTypes: tainacan_plugin.wp_post_types,
+                editFormErrors: {},
+                formErrorMessage: '',
+                entityName: 'taxonomy',
+                updatedAt: undefined,
+                shouldReloadTermsList: false
+            }
         },
         mounted(){
   

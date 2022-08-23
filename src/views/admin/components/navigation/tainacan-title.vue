@@ -1,7 +1,9 @@
 <template>
     <div class="tainacan-page-title">
-    
-        <h1>{{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span></h1>
+        <slot />
+        <h1 v-if="!slotPassed">
+            {{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span>
+        </h1>
         <a 
                 @click="$router.go(-1)"
                 class="back-link has-text-secondary">
@@ -47,7 +49,7 @@
                         :key="index"
                         v-if="childBreadCrumbItem.path != ''"
                         tag="a"
-                        :to="childBreadCrumbItem.path">{{ childBreadCrumbItem.label }}</router-link>
+                        :to="{ path: childBreadCrumbItem.path, query: index === $i18n.get('items') ? { fromBreadcrumb: true } : null }">{{ childBreadCrumbItem.label }}</router-link>
                 <span 
                         :key="index"
                         v-else>{{ childBreadCrumbItem.label }}</span>
@@ -74,6 +76,9 @@ export default {
         }
     },
     computed: {
+        slotPassed() {
+            return this.$slots && this.$slots.default && (!!this.$slots.default[0].text || !!this.$slots.default[0].tag)
+        },
         collection() {
             return this.getCollection();
         },
@@ -119,7 +124,7 @@ export default {
 <style lang="scss" scoped>
 
     .tainacan-page-title {
-        margin-bottom: 32px;
+        margin-bottom: 28px;
         display: flex;
         flex-wrap: wrap;
         align-items: flex-end;

@@ -5,11 +5,12 @@
             :class="{ 'tainacan-modal-content': isModal }"
             :tabindex="isModal ? -1 : 0"
             :aria-modal="isModal"
+            :aria-labelledby="'checkbox-radio-filter--title-' + filter.id"
             ref="CheckboxRadioFilterInput">
         <header 
                 v-if="isModal"
                 class="tainacan-modal-title">
-            <h2>{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
+            <h2 :id="'checkbox-radio-filter--title-' + filter.id">{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
             <hr>
         </header>
 
@@ -62,8 +63,9 @@
                                         :key="key">
                                     <label class="b-checkbox checkbox">
                                         <input                                     
-                                                v-model="selected"
+                                                @input="$emit('input', $event.target.value)"
                                                 :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
+                                                :checked="isOptionSelected(option.value)"
                                                 type="checkbox"> 
                                         <span class="check" /> 
                                         <span class="control-label">
@@ -122,8 +124,9 @@
                                         :key="key">
                                     <label class="b-checkbox checkbox">
                                         <input 
-                                                v-model="selected"
+                                                @input="$emit('input', $event.target.value)"
                                                 :value="option.value"
+                                                :checked="isOptionSelected(option.value)"
                                                 type="checkbox"> 
                                         <span class="check" /> 
                                         <span class="control-label">
@@ -131,6 +134,7 @@
                                                     v-tooltip="{
                                                         content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                         autoHide: false,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }" 
                                                     class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
                                             <span 
@@ -185,8 +189,9 @@
                                         :key="index">
                                     <label class="b-checkbox checkbox">
                                         <input 
-                                                v-model="selected"
+                                                @input="$emit('input', $event.target.value)"
                                                 :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
+                                                :checked="isOptionSelected(option.value)"
                                                 type="checkbox"> 
                                         <span class="check" /> 
                                         <span class="control-label">
@@ -194,6 +199,7 @@
                                                     v-tooltip="{
                                                         content: option.label + (option.total_items != undefined ? ('(' + option.total_items + ' ' + $i18n.get('items') + ')') : ''),
                                                         autoHide: false,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip']
                                                     }" 
                                                     class="checkbox-label-text">{{ `${option.label}` }}</span> 
                                             <span 
@@ -215,6 +221,7 @@
                                                 v-tooltip="{
                                                     content: option.total_children + ' ' + $i18n.get('label_children_terms'),
                                                     autoHide: false,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }" 
                                                 v-else>{{ option.total_children }}</span>
                                         <span class="icon is-pulled-right">
@@ -247,7 +254,7 @@
                     
                 </b-tab-item>
 
-                <b-tab-item :label="isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values')">
+                <b-tab-item :label="( isTaxonomy ? $i18n.get('label_selected_terms') : $i18n.get('label_selected_metadatum_values') ) + ( Array.isArray(selected) && selected.length ? (' (' + selected.length + ')') : '' )">
                     <div class="modal-card-body tainacan-tags-container">
                         <b-field
                                 v-if="(selected instanceof Array ? selected.length > 0 : selected) && !isSelectedTermsLoading"
@@ -262,7 +269,7 @@
                                         attached
                                         closable
                                         :class="isModal ? '' : 'is-small'"
-                                        @close="selected instanceof Array ? selected.splice(index, 1) : selected = ''">
+                                        @close="$emit('input', term)">
                                        <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                                 </b-tag>
                             </div>
@@ -787,6 +794,12 @@
                         });
                 }
             },
+            isOptionSelected(optionValue) {
+                if (Array.isArray(this.selected))
+                    return this.selected.find(aSelected => aSelected == optionValue)
+                else
+                    return optionValue == this.selected;
+            },
             applyFilter() {
                 if (this.isModal)
                     this.$parent.close();
@@ -899,6 +912,13 @@
             margin-left: 0.7em;
             margin-right: 2em !important;
             margin-bottom: 0px !important;
+        }
+
+        @media screen and (max-width: 768px) {
+            .control-label {
+                padding-top: 0.45em;
+                padding-bottom: 0.45em;
+            }
         }
 
         &:hover {
@@ -1220,6 +1240,23 @@
             -moz-column-count: auto !important;
             -webkit-column-count: auto !important;
             column-count: auto !important;
+        }
+
+        .tainacan-modal-checkbox-search-results-body,
+        .tainacan-checkbox-list-container,
+        .tainacan-finder-columns-container {
+            font-size: 1.125em;
+        }
+
+        .tainacan-finder-columns-container {
+            max-height: 48vh;
+            .tainacan-finder-column,
+            .tainacan-finder-column ul {
+                max-height: 100%;
+            }
+            .tainacan-finder-column .column-label+ul {
+                max-height: calc(100% - 0.75em - 0.45em - 0.45em);
+            }
         }
 
         .tainacan-li-checkbox-list {

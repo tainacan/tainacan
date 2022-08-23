@@ -1,0 +1,40 @@
+html {
+  overflow-y: hidden; }
+
+body.admin_page_tainacan_mobile_app {
+  background-color: white;
+  padding: 0px;
+  margin: 0px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden; }
+  body.admin_page_tainacan_mobile_app #adminmenumain,
+  body.admin_page_tainacan_mobile_app #wpadminbar,
+  body.admin_page_tainacan_mobile_app #wpfooter {
+    display: none; }
+  body.admin_page_tainacan_mobile_app #wp-auth-check-wrap {
+    z-index: 9999999; }
+  body.admin_page_tainacan_mobile_app #wpcontent,
+  body.admin_page_tainacan_mobile_app #wpbody,
+  body.admin_page_tainacan_mobile_app #wpbody-content {
+    padding: 0px;
+    margin: 0; }
+  body.admin_page_tainacan_mobile_app h1 {
+    display: none; }
+  body.admin_page_tainacan_mobile_app .wrap {
+    margin: 0px !important;
+    padding: 1em 2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: calc(100vh - 2em);
+    width: calc(100vw - 4em);
+    text-align: center;
+    background-image: url("../../assets/images/tainacan_loading.gif");
+    background-repeat: no-repeat;
+    background-position: center; }
+
+/*# sourceMappingURL=tainacan-mobile-app.css.map */

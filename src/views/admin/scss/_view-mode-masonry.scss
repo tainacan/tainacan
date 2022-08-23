@@ -1,14 +1,65 @@
 .tainacan-masonry-container {
     min-height: 50vh;
+    margin-left: 25px;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
     flex-grow: 1;
     flex-shrink: 1;
     justify-content: space-evenly;
+    list-style: none;
     animation-name: appear;   
     animation-duration: 0.5s;
+    
+    &:not(.tainacan-masonry-container--legacy){
+        &>li,
+        &>.tainacan-masonry-grid-sizer {
+            list-style-type: none;
+            width: calc(14.285% - 25px);
 
+            @media screen and (max-width: 2560px) {
+                width: calc(16.666% - 25px);
+            }
+            @media screen and (max-width: 1920px) {
+                width: calc(20% - 25px);
+            }
+            @media screen and (max-width: 1740px) {
+                width: calc(25% - 25px);
+            }
+            @media screen and (max-width: 1440px) {
+                width: calc(33.333% - 25px);
+            }
+            @media screen and (max-width: 1024px) {
+                width: calc(50% - 25px);
+            }
+            @media screen and (max-width: 620px) {
+                width: calc(100% - 25px);
+            }
+        }
+    }
+    &.tainacan-masonry-container--legacy {
+        &>li,
+        &>.tainacan-masonry-grid-sizer {
+            list-style-type: none;
+            width: calc(14.285% - 25px);
+    
+            @media screen and (max-width: 1920px) {
+                width: calc(16.666% - 25px);
+            }
+            @media screen and (max-width: 1440px) {
+                width: calc(20% - 25px);
+            }
+            @media screen and (max-width: 1360px) {
+                width: calc(25% - 25px);
+            }
+            @media screen and (max-width: 1024px) {
+                width: calc(33.333% - 25px);
+            }
+            @media screen and (max-width: 768px) {
+                width: calc(50% - 25px);
+            }
+        }
+    }
     .tainacan-masonry-item {
         display: block;
         width: 100%;
@@ -131,6 +182,69 @@
             }
         }
     }
-}
 
+    &.hide-items-selection {
+        .tainacan-masonry-item {
+            &:hover { background-color: transparent; cursor: default; }
+            &:hover .tainacan-masonry-item-thumbnail { cursor: default; }
+            .metadata-title { margin-left: 6px; }
+        }
+    }
+}
+.tainacan-masonry-container--skeleton {
+    display: block;
+    min-height: 50vh;
+    padding-left: 25px;
+    padding-right: 25px;
+    column-gap: 25px;
+    height: auto !important;
+
+    .skeleton {
+        width: 100%;
+        margin-bottom: 25px;
+        break-inside: avoid;
+    }
+
+    &:not(.tainacan-masonry-container--legacy) {
+        column-count: 7;
+
+        @media screen and (max-width: 2560px) {
+            column-count: 6;
+        }
+        @media screen and (max-width: 1920px) {
+            column-count: 5;
+        }
+        @media screen and (max-width: 1740px) {
+            column-count: 4;
+        }
+        @media screen and (max-width: 1440px) {
+            column-count: 3;
+        }
+        @media screen and (max-width: 1024px) {
+            column-count: 2;
+        }
+        @media screen and (max-width: 620px) {
+            column-count: 1;
+        }
+    }
+    &.tainacan-masonry-container--legacy {
+        column-count: 7;
+
+        @media screen and (max-width: 1920px) {
+            column-count: 6;
+        }
+        @media screen and (max-width: 1440px) {
+            column-count: 5;
+        }
+        @media screen and (max-width: 1360px) {
+            column-count: 4;
+        }
+        @media screen and (max-width: 1024px) {
+            column-count: 3;
+        }
+        @media screen and (max-width: 768px) {
+            column-count: 2;
+        }
+    }
+}
 

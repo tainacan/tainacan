@@ -2,7 +2,7 @@
     <form 
             id="filterEditForm" 
             class="tainacan-form" 
-            @submit.prevent="saveEdition(editForm)">
+            @submit.prevent="saveEdition(form)">
         <div class="options-columns">
             <b-field 
                     :addons="false"
@@ -18,20 +18,17 @@
                             :message="$i18n.getHelperMessage('filters', 'name')"/>
                 </label>
                 <b-input
-                        v-model="editForm.name" 
+                        v-model="form.name" 
                         name="name" 
                         @focus="clearErrors('name')"/>
             </b-field>
 
             <!-- Hook for extra Form options -->
-            <template 
-                    v-if="formHooks != undefined && 
-                        formHooks['filter'] != undefined &&
-                        formHooks['filter']['begin-left'] != undefined">  
+            <template v-if="hasBeginLeftForm">  
                 <form 
                     id="form-filter-begin-left"
                     class="form-hook-region"
-                    v-html="formHooks['filter']['begin-left'].join('')"/>
+                    v-html="getBeginLeftForm"/>
             </template>
 
             <b-field
@@ -48,7 +45,7 @@
                         type="textarea" 
                         name="description" 
                         :rows="3"
-                        v-model="editForm.description" 
+                        v-model="form.description" 
                         @focus="clearErrors('description')" />
             </b-field>
 
@@ -67,7 +64,7 @@
                             @focus="clearErrors('label_status')"
                             id="tainacan-select-status-publish"
                             name="status" 
-                            v-model="editForm.status"
+                            v-model="form.status"
                             native-value="publish">
                         <span class="icon has-text-gray3">
                             <i class="tainacan-icon tainacan-icon-public"/>
@@ -79,7 +76,7 @@
                             @focus="clearErrors('label_status')"
                             id="tainacan-select-status-private"
                             name="status" 
-                            v-model="editForm.status"
+                            v-model="form.status"
                             native-value="private">
                         <span class="icon has-text-gray3">
                             <i class="tainacan-icon tainacan-icon-private"/>
@@ -91,7 +88,7 @@
 
             <b-field
                     :addons="false"
-                    v-if="editForm.filter_type_object && editForm.filter_type_object.use_max_options">
+                    v-if="form.filter_type_object && form.filter_type_object.use_max_options">
                 <label class="label is-inline">
                     {{ $i18n.get('label_max_options_to_show') }}
                     <help-button
@@ -104,15 +101,15 @@
                         class="is-flex">
                     <b-select
                             name="max_options"
-                            v-model="editForm.max_options"
+                            v-model="form.max_options"
                             :placeholder="$i18n.get('instruction_select_max_options_to_show')">
                         <option value="4">4</option>
                         <option value="8">8</option>
                         <option value="12">12</option>
                         <option
-                                v-if="editForm.max_options && ![4,8,12].find( (element) => element == editForm.max_options )"
-                                :value="editForm.max_options">
-                            {{ editForm.max_options }}</option>
+                                v-if="form.max_options && ![4,8,12].find( (element) => element == form.max_options )"
+                                :value="form.max_options">
+                            {{ form.max_options }}</option>
                     </b-select>
                     <button
                             class="button is-white is-pulled-right"
@@ -122,7 +119,8 @@
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
                                     autoHide: true,
-                                    placement: 'bottom'
+                                    placement: 'bottom',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary"/>
@@ -134,7 +132,7 @@
                         class="is-flex">
                     <b-input
                             name="max_options"
-                            v-model="editForm.max_options"
+                            v-model="form.max_options"
                             type="number"
                             step="1" />
                     <button
@@ -144,7 +142,8 @@
                                 v-tooltip="{
                                     content: $i18n.get('close'),
                                     autoHide: true,
-                                    placement: 'bottom'
+                                    placement: 'bottom',
+                                    popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary"/>
@@ -153,25 +152,43 @@
                 </div>
             </b-field>
 
+             <b-field 
+                    :addons="false"
+                    :label="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
+                    :type="formErrors['begin_with_filter_collapsed'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['begin_with_filter_collapsed'] != undefined ? formErrors['begin_with_filter_collapsed'] : ''">
+                    &nbsp;
+                <b-switch
+                        size="is-small"
+                        @input="clearErrors('begin_with_filter_collapsed')"
+                        v-model="form.begin_with_filter_collapsed"
+                        :true-value="'yes'"
+                        :false-value="'no'"
+                        :native-value="form.begin_with_filter_collapsed == 'yes' ? 'yes' : 'no'"
+                        name="begin_with_filter_collapsed">
+                <help-button
+                        :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
+                        :message="$i18n.getHelperMessage('filters', 'begin_with_filter_collapsed')"
+                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                </b-switch>
+            </b-field>
+
             <component
                     :errors="formErrors['filter_type_options']"
-                    v-if="(editForm.filter_type_object && editForm.filter_type_object.form_component) || editForm.edit_form == ''"
-                    :is="editForm.filter_type_object.form_component"
-                    :filter="editForm"
-                    v-model="editForm.filter_type_options"/>
+                    v-if="(form.filter_type_object && form.filter_type_object.form_component) || form.edit_form == ''"
+                    :is="form.filter_type_object.form_component"
+                    :filter="form"
+                    v-model="form.filter_type_options"/>
             <div 
-                    v-html="editForm.edit_form" 
+                    v-html="form.edit_form" 
                     v-else/>
         
             <!-- Hook for extra Form options -->
-            <template 
-                    v-if="formHooks != undefined && 
-                        formHooks['filter'] != undefined &&
-                        formHooks['filter']['end-left'] != undefined">  
+            <template v-if="hasEndLeftForm">  
                 <form 
                     id="form-filter-end-left"
                     class="form-hook-region"
-                    v-html="formHooks['filter']['end-left'].join('')"/>
+                    v-html="getEndLeftForm"/>
             </template>
         </div>
         
@@ -210,7 +227,7 @@ export default {
     },
     data(){
         return {
-            editForm: {},
+            form: {},
             oldForm: {},
             formErrors: {},
             formErrorMessage: '',
@@ -223,9 +240,9 @@ export default {
 
     created() {
 
-        this.editForm = this.editedFilter;
-        this.formErrors = this.editForm.formErrors != undefined ? this.editForm.formErrors : {};
-        this.formErrorMessage = this.editForm.formErrors != undefined ? this.editForm.formErrorMessage : ''; 
+        this.form = this.editedFilter;
+        this.formErrors = this.form.formErrors != undefined ? this.form.formErrors : {};
+        this.formErrorMessage = this.form.formErrors != undefined ? this.form.formErrorMessage : ''; 
 
         this.oldForm = JSON.parse(JSON.stringify(this.originalFilter));
     },
@@ -233,18 +250,18 @@ export default {
         // Fills hook forms with it's real values 
         this.$nextTick()
             .then(() => {
-                this.updateExtraFormData(this.editForm);
+                this.updateExtraFormData(this.form);
             });
     },
     beforeDestroy() {
         if (this.closedByForm) {
-            this.editedFilter.saved = true;
+            this.$emit('onUpdateSavedState', true);
         } else {
-            this.oldForm.saved = this.editForm.saved;
-            if (JSON.stringify(this.editForm) != JSON.stringify(this.oldForm)) 
-                this.editedFilter.saved = false;
+            this.oldForm.saved = this.form.saved;
+            if (JSON.stringify(this.form) != JSON.stringify(this.oldForm)) 
+                this.$emit('onUpdateSavedState', false);
             else    
-                this.editedFilter.saved = true;
+                this.$emit('onUpdateSavedState', true);
         }
     },
     methods: {
@@ -256,10 +273,17 @@ export default {
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
                 
                 this.isLoading = true;
-                // this.fillExtraFormData(this.editForm);
-                this.updateFilter({ filterId: filter.id, index: this.index, options: this.editForm})
+
+                for (let [key, value] of this.form) {
+                    if (key === 'begin_with_filter_collapsed')
+                        this.form[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
+                }
+                if (this.form['begin_with_filter_collapsed'] === undefined)
+                    this.form['begin_with_filter_collapsed'] = 'no';
+                
+                this.updateFilter({ filterId: filter.id, index: this.index, options: this.form })
                     .then(() => {
-                        this.editForm = {};
+                        this.form = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
                         this.isLoading = false;
@@ -275,23 +299,28 @@ export default {
                         this.formErrorMessage = errors.error_message;
                         this.$emit('onErrorFound');
 
-                        this.editForm.formErrors = this.formErrors;
-                        this.editForm.formErrorMessage = this.formErrorMessage;
+                        this.form.formErrors = this.formErrors;
+                        this.form.formErrorMessage = this.formErrorMessage;
                     });
             } else {
                 let formElement = document.getElementById('filterEditForm');
                 let formData = new FormData(formElement); 
                 let formObj = {};
-
+                
                 for (let [key, value] of formData.entries()) {
-                    formObj[key] = value;
+                    if (key === 'begin_with_filter_collapsed')
+                        formObj[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
+                    else
+                        formObj[key] = value;
                 }
-
+                if (formObj['begin_with_filter_collapsed'] === undefined)
+                    formObj['begin_with_filter_collapsed'] = 'no';
+                    
                 this.fillExtraFormData(formObj);
                 this.isLoading = true;
-                this.updateFilter({ filterId: filter.id, index: this.index, options: formObj})
+                this.updateFilter({ filterId: filter.id, index: this.index, options: formObj })
                     .then(() => {
-                        this.editForm = {};
+                        this.form = {};
                         this.formErrors = {};
                         this.formErrorMessage = '';
                         this.isLoading = false;
@@ -307,8 +336,8 @@ export default {
                         this.formErrorMessage = errors.error_message;
                         this.$emit('onErrorFound');
 
-                        this.editForm.formErrors = this.formErrors;
-                        this.editForm.formErrorMessage = this.formErrorMessage;
+                        this.form.formErrors = this.formErrors;
+                        this.form.formErrorMessage = this.formErrorMessage;
                     });
             }           
         },
@@ -352,7 +381,7 @@ export default {
             .field > .field:not(:last-child) {
                 margin-bottom: 0em;
             }
-            .help-wrapper {
+            .tainacan-help-tooltip-trigger {
                 font-size: 1.25em;
             }
         }

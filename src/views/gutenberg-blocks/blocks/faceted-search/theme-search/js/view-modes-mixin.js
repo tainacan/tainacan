@@ -34,6 +34,22 @@ export const viewModesMixin = {
         this.isSlideshowViewModeEnabled = (this.enabledViewModes && Array.isArray(this.enabledViewModes)) ? (this.enabledViewModes.findIndex((viewMode) => viewMode == 'slideshow') >= 0) : false;
     },
     methods: {
+        hasBeforeHook() {
+            if (wp !== undefined)
+                return wp.hooks.hasFilter(`tainacan_faceted_search_item_before`) || wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_item_before`);
+        },
+        hasAfterHook() {
+            if (wp !== undefined)
+                return wp.hooks.hasFilter(`tainacan_faceted_search_collection_item_after`) || wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_item_after`);
+        },
+        getBeforeHook(item) {
+            if (wp !== undefined)
+                return wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_item_before`, wp.hooks.applyFilters(`tainacan_faceted_search_item_before`, '', item), item);
+        },
+        getAfterHook(item) {
+            if (wp !== undefined)
+                return wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_item_after`, wp.hooks.applyFilters(`tainacan_faceted_search_item_after`, '', item), item);
+        },
         getItemLink(itemUrl, index) {
             if (this.queries) {
                 // Inserts information necessary for item by item navigation on single pages
@@ -64,6 +80,10 @@ export const viewModesMixin = {
         },
         starSlideshowFromHere(index) {
             this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }}).catch((error) => this.$console.log(error));
+        },
+        getPosInSet(index) {
+            if (Number(this.queries.paged) !== NaN && Number(this.queries.perpage) !== NaN)
+                return ((Number(this.queries.paged) - 1) * Number(this.queries.perpage)) + index + 1;
         }
     }
 }

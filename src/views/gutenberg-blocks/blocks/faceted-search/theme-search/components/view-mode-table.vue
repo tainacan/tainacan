@@ -84,16 +84,28 @@
                                 v-if="isSlideshowViewModeEnabled"
                                 class="actions-header">
                             &nbsp;
+                            <span class="sr-only">
+                                {{ $i18n.get('label_actions_column') }}
+                            </span>
                             <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody role="list">
                     <tr     
                             :data-tainacan-item-id="item.id"
+                            :aria-setsize="totalItems"
+                            :aria-posinset="getPosInSet(index)"
+                            role="listitem"
                             :key="index"
                             v-for="(item, index) of items">
                         
+                        <!-- JS-side hook for extra content -->
+                        <td 
+                                v-if="hasBeforeHook()"
+                                class="faceted-search-hook faceted-search-hook-item-before"
+                                v-html="getBeforeHook(item)" />
+                                
                         <!-- Item Displayed Metadata -->
                         <td 
                                 :key="metadatumIndex"    
@@ -119,13 +131,14 @@
                                 <p
                                         v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
                                             content: item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
-                                            placement: 'auto-start'
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         :aria-label="column.name + ': ' + (item.title != undefined && item.title != '' ? item.title : $i18n.get('label_value_not_provided'))"
                                         v-if="!collectionId &&
@@ -135,13 +148,14 @@
                                 <p
                                         v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
                                             content: item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
-                                            placement: 'auto-start'
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         v-if="!collectionId &&
                                             column.metadata_type_object != undefined && 
@@ -150,10 +164,10 @@
                                 <p
                                         v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 300,
                                             },
-                                            classes: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
+                                            popperClass: [ 'tainacan-tooltip', 'tooltip', column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' ? 'metadata-type-textarea' : '' ],
                                             content: renderMetadataWithLabel(item.metadata, column) != '' ? renderMetadataWithLabel(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`,
                                             html: true,
                                             autoHide: false,
@@ -187,11 +201,12 @@
                                 <span 
                                         v-tooltip="{
                                             delay: {
-                                                show: 500,
+                                                shown: 500,
                                                 hide: 100,
                                             },
                                             content: $i18n.get('label_see_on_fullscreen'),
-                                            placement: 'auto-start'
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"          
                                         @click.prevent="starSlideshowFromHere(index)"
                                         class="icon slideshow-icon">
@@ -199,6 +214,12 @@
                                 </span> 
                             </div>
                         </td>
+                
+                        <!-- JS-side hook for extra content -->
+                        <td 
+                                v-if="hasAfterHook()"
+                                class="faceted-search-hook faceted-search-hook-item-after"
+                                v-html="getAfterHook(item)" />
                     </tr>
                 </tbody>
             </table>

@@ -51,6 +51,13 @@
                     :filter="filter"
                     :taxonomy_id="taxonomyId"
                     :selected="selected"
+                    @input="(newSelected) => {
+                        const existingValue = selected.indexOf(newSelected); 
+                        if (existingValue >= 0)
+                            selected.splice(existingValue, 1);
+                        else
+                            selected.push(newSelected);
+                    }"
                     :metadatum-id="metadatumId"
                     :taxonomy="taxonomy"
                     :collection-id="collectionId"
@@ -93,7 +100,7 @@
         },
         watch: {
             selected(newVal, oldVal) {
-                const isEqual = (newVal.length == oldVal.length) && newVal.every((element, index) => {
+                const isEqual = (Array.isArray(newVal) && Array.isArray(oldVal) && (newVal.length == oldVal.length)) && newVal.every((element, index) => {
                     return element === oldVal[index]; 
                 });
                 if (!isEqual)
@@ -126,7 +133,7 @@
             this.$eventBusSearch.$on('has-to-reload-facets', this.reloadOptions); 
         },
         mounted(){
-            if (!this.isUsingElasticSearch && !this.filtersAsModal)
+            if (!this.isUsingElasticSearch)
                 this.loadOptions();
         },
         beforeDestroy() {
@@ -253,6 +260,13 @@
                     events: {
                         appliedCheckBoxModal: () => {
                             this.loadOptions();
+                        },
+                        input: (newSelected) => {
+                            const existingValue = this.selected.indexOf(newSelected); 
+                            if (existingValue >= 0)
+                                this.selected.splice(existingValue, 1);
+                            else
+                                this.selected.push(newSelected);
                         } 
                     },
                     width: 'calc(100% - (4 * var(--tainacan-one-column)))',
