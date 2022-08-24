@@ -90,7 +90,7 @@
         methods: {
             onUpdateStep(value) {
                 this.$emit('input', { step: value });
-            },
+            }
         }
     }
 </script>

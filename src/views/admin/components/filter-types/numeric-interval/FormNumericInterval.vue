@@ -13,7 +13,7 @@
                 <b-select
                         name="step_options"
                         v-model="step"
-                        @input="onUpdate">
+                        @input="onUpdateStep">
                     <option value="0.001">0.001</option>
                     <option value="0.01">0.01</option>
                     <option value="0.1">0.1</option>
@@ -50,7 +50,7 @@
                 <b-input
                         name="max_options"
                         v-model="step"
-                        @input="onUpdate"
+                        @input="onUpdateStep"
                         type="number"
                         step="1" />
                 <button
@@ -77,11 +77,7 @@
 
     export default {
         props: {
-            filter: {
-                type: Object
-            },
-            value: [String, Number, Array],
-            disabled: false,
+            value: [String, Number, Array]
         },
         data() {
             return {
@@ -93,12 +89,9 @@
             this.step = this.value && this.value.step ? this.value.step : 1;
         },
         methods: {
-            onUpdate() {
-                this.$emit('input', { 
-                    step: this.step
-                });
+            onUpdateStep(value) {
+                this.$emit('input', { step: value });
             },
-            
         }
     }
 </script>
