@@ -464,6 +464,7 @@ class REST_Items_Controller extends REST_Controller {
 			$meta_id = $meta['key'];
 			$meta_value = is_array($meta['value']) ? $meta['value'] : [$meta['value']];
 			$meta_label = isset($meta['label']) ? $meta['label'] : $meta_value;
+			$meta_type = 'CHAR';
 			$filter_type_component = false;
 			$arg_type = 'meta';
 			$f = false;
@@ -535,6 +536,11 @@ class REST_Items_Controller extends REST_Controller {
 								return apply_filters("tainacan-item-get-author-name", $name);
 							}, $meta_label);
 							break;
+						case 'int':
+						case 'float':
+						case 'numeric':
+							$meta_type = 'NUMERIC';
+							break;
 					}
 				}
 			}
@@ -549,7 +555,8 @@ class REST_Items_Controller extends REST_Controller {
 				'arg_type' => $arg_type,
 				'value' => $meta_value,
 				'label' => $meta_label,
-				'compare' => isset($meta['compare']) ? $meta['compare'] : '='
+				'compare' => isset($meta['compare']) ? $meta['compare'] : '=',
+				'type' => $meta_type,
 			));
 		}
 
@@ -596,6 +603,17 @@ class REST_Items_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 		}
 		$filters_args = $this->prepare_filters_arguments($args, $collection_id);
+		if(isset($args['meta_query']) && !empty($args['meta_query']) && is_array($filters_args) && !empty($filters_args)) {
+			foreach($filters_args as $filters_arg) {
+				if($filters_arg['filter'] !== false) {
+					for($idx = 0; $idx < count($args['meta_query']); $idx++) {
+						if($args['meta_query'][$idx]['key'] == $filters_arg['metadatum']['metadatum_id']) {
+							$args['meta_query'][$idx]['type'] = $filters_arg['type'];
+						}
+					}
+				}
+			}
+		}
 
 		$max_items_per_page = $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 		if ( $max_items_per_page > -1 ) {
