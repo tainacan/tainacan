@@ -377,10 +377,36 @@ class Metadata_Sections extends Repository {
 	}
 
 	public function get_default_section_metadata_object_list (Entities\Collection $collection, $args = []) {
+		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
 		$metadata_sections_ids = $this->fetch_ids();
+		$collection_metadata_sections_id = array_diff(array_map(function($el) {return $el->get_id();} , $this->fetch_by_collection($collection)), [\Tainacan\Entities\Metadata_Section::$default_section_slug]);
+
+		$args_exclude = array_merge(
+			array(
+				'meta_query' => array(
+					'relation' => 'AND',
+					array(
+						array(
+							'key' => 'collection_id',
+							'value' => 'default',
+							'compare' => '='
+						),
+						array(
+							'key' => 'metadata_section_id',
+							'value' => $collection_metadata_sections_id,
+							'compare' => 'IN'
+						)
+					)
+				)
+			)
+		);
+		$list_exclude = $metadata_repository->fetch_by_collection($collection, $args_exclude);
+		$not_post_ids = array_map(function($el) { return $el->get_id(); }, $list_exclude);
+
 		$args = array_merge(
 			$args,
 			array(
+				'post__not_in' => $not_post_ids,
 				'meta_query' => array(
 					array(
 						'relation' => 'OR',
@@ -399,12 +425,11 @@ class Metadata_Sections extends Repository {
 							'key' => 'metadata_section_id',
 							'value' => $metadata_sections_ids,
 							'compare' => 'NOT IN'
-						),
+						)
 					)
 				)
 			)
 		);
-		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
 		$metadata_list = $metadata_repository->fetch_by_collection($collection, $args);
 		return $metadata_list;
 	}

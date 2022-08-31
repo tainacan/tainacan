@@ -227,7 +227,7 @@ class Metadata extends Repository {
 				'default'     => 'no'
 			],
 			'metadata_section_id' => [
-				'map'         => 'meta',
+				'map'         => 'meta_multi',
 				'title'       => __( 'Metadata section', 'tainacan' ),
 				'type'        => ['integer', 'string', 'array'],
 				'description' => __( 'The metadata section ID', 'tainacan' ),
@@ -743,6 +743,30 @@ class Metadata extends Repository {
 		return $new_metadatum;
 	}
 
+	public function pre_update_metadata_repository_level($metadatum, $attributes) {
+		if (isset($attributes['target_collection_id']) && is_numeric($attributes['target_collection_id']) && $metadatum->is_repository_level()) {
+			$collection =  \tainacan_collections()->fetch($attributes['target_collection_id'], 'OBJECT');
+
+			$new_metadata_section_id = $metadatum->get_metadata_section_id();
+			$new_metadata_section_id = is_array($new_metadata_section_id) ? $new_metadata_section_id[0] : $new_metadata_section_id;
+
+			if($collection instanceof \Tainacan\Entities\Collection) {
+				$collection_metadata_sections_id = array_filter(
+					array_map(function($el) {return $el->get_id();} , \tainacan_metadata_sections()->fetch_by_collection($collection)),
+					function($el) {return $el != \Tainacan\Entities\Metadata_Section::$default_section_slug;}
+				);
+				$old_value = get_post_meta($metadatum->get_id(), 'metadata_section_id');
+				$new_value = array_diff($old_value, $collection_metadata_sections_id);
+				$new_value[] = (string)$new_metadata_section_id;
+				$metadatum->set_metadata_section_id($new_value);
+				if(!$metadatum->validate()) { 
+					throw new \Exception( $metadatum->get_errors() );
+				}
+			}
+		}
+		return $metadatum;
+	}
+
 	/**
 	 * @param $object
 	 * @param $new_values
@@ -751,6 +775,7 @@ class Metadata extends Repository {
 	 * @throws \Exception
 	 */
 	public function update( $object, $new_values = null ) {
+		$object = $this->pre_update_metadata_repository_level($object, $new_values);
 		return $this->insert( $object );
 	}
 

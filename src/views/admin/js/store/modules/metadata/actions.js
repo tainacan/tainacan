@@ -111,10 +111,12 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
     return new Promise((resolve, reject) => {
         let endpoint = '';
 
-        if (!isRepositoryLevel)
+        if (!isRepositoryLevel) {
             endpoint = '/collection/' + collectionId + '/metadata/' + metadatumId;
-        else
+        } else {
             endpoint = '/metadata/' + metadatumId;
+            options['target_collection_id'] = collectionId;
+        }
 
         endpoint += '?context=edit';
 
