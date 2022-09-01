@@ -515,6 +515,7 @@ abstract class Repository {
 			$Tainacan_Metadata    = Repositories\Metadata::get_instance();
 			$Tainacan_Taxonomies  = Repositories\Taxonomies::get_instance();
 			$Tainacan_Terms       = Repositories\Terms::get_instance();
+			$Tainacan_Metadata_Sections = Repositories\Metadata_Sections::get_instance();
 
 			$tnc_globals = [
 				$Tainacan_Collections,
@@ -522,7 +523,8 @@ abstract class Repository {
 				$Tainacan_Filters,
 				$Tainacan_Taxonomies,
 				$Tainacan_Terms,
-				$Tainacan_Logs
+				$Tainacan_Logs,
+				$Tainacan_Metadata_Sections
 			];
 			foreach ( $tnc_globals as $tnc_repository ) {
 				$tnc_entity       = new $tnc_repository->entities_type();

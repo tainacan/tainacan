@@ -51,17 +51,7 @@
         </h1>
 
         <ul class="repository-subheader-icons">
-            <li
-                    v-tooltip="{
-                            delay: {
-                                shown: 500,
-                                hide: 300,
-                            },
-                            content: $i18n.get('exporters'),
-                            autoHide: false,
-                            placement: 'bottom-start',
-                            popperClass: ['tainacan-tooltip', 'tainacan-header-tooltip', 'tooltip']
-                        }">
+            <li>
                 <a
                         @click="openAvailableExportersModal"
                         class="button"
@@ -71,52 +61,33 @@
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                     </span>
+                    <span class="is-hidden-mobile">{{ $i18n.get('exporters') }}</span>
                 </a>
             </li>
-            <li     
-                    v-tooltip="{
-                            delay: {
-                                shown: 500,
-                                hide: 300,
-                            },
-                            content: $i18n.get('label_view_collection_on_website'),
-                            autoHide: false,
-                            placement: 'bottom-end',
-                            popperClass: ['tainacan-tooltip', 'tainacan-header-tooltip', 'tooltip']
-                        }">
+            <li>
                 <a
                         :href="collection && collection.url ? collection.url : ''"
                         target="_blank"
                         v-if="!isRepositoryLevel && collection && collection.url && !$adminOptions.hideRepositorySubheaderViewCollectionButton"
                         class="button"
-                        id="view-collection-button"
-                        :aria-label="$i18n.get('label_view_collection_on_website')">
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
-                </span>
+                        id="view-collection-button">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                    </span>
+                    <span class="is-hidden-mobile">{{ $i18n.get('label_view_collection_on_website') }}</span>
                 </a>
             </li>
-            <li     
-                    v-tooltip="{
-                            delay: {
-                                shown: 500,
-                                hide: 300,
-                            },
-                            content: $i18n.get('label_view_repository'),
-                            autoHide: false,
-                            placement: 'bottom-end',
-                            popperClass: [ 'tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-header-tooltip' : 'tainacan-header-tooltip']
-                        }">
+            <li>
                 <a
                         :href="repositoryURL"
                         target="_blank"
                         v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewCollectionsButton"
                         class="button"
-                        id="view-repository-button"
-                        :aria-label="$i18n.get('label_view_repository')">
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
-                </span>
+                        id="view-repository-button">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                    </span>
+                    <span class="is-hidden-mobile">{{ $i18n.get('label_view_collections_on_website') }}</span>
                 </a>
             </li>
         </ul>
@@ -200,7 +171,7 @@ export default {
         height: $subheader-height;
         max-height: $subheader-height;
         width: 100%;
-        // overflow-y: hidden;
+        overflow-y: hidden;
         padding-top: 10px;
         padding-bottom: 10px;
         padding-right: 0;
@@ -231,7 +202,6 @@ export default {
         h1 {
             font-size: 1.125em;
             color: var(--tainacan-white);
-            line-height: 1.4em;
             max-width: 100%;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -271,26 +241,25 @@ export default {
 
             #view-collection-button,
             #exporter-collection-button {
-                font-size: 1rem !important;
+                font-size: 0.9375em !important;
                 border: none;
                 border-radius: 0px !important;
-                height: $subheader-height !important;
+                height: $header-height !important;
                 background-color: transparent;
                 color: var(--tainacan-white);
-                width: 48px;
 
                 &:hover {
                     background-color: var(--tainacan-turquoise5) !important;
                 }
             }
             #view-repository-button {
-                font-size: 1rem !important;
+                font-size: 0.9375em !important;
                 border: none;
                 border-radius: 0px !important;
-                height: $subheader-height !important;
+                height: $header-height !important;
                 background-color: transparent;
                 color: var(--tainacan-white);
-                width: 48px;
+
                 &:hover {
                     background-color: var(--tainacan-blue4) !important;
                 }
@@ -298,7 +267,7 @@ export default {
         }
 
         @media screen and (max-width: 769px) {
-            top: 102px;
+            top: 96px;
             padding-left: var(--tainacan-one-column) !important;
         }
     }

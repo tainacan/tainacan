@@ -3,6 +3,7 @@
 use \Tainacan\Entities;
 use \Tainacan\Repositories;
 
+
 /**
  * To be used inside The Loop
  *
@@ -126,7 +127,7 @@ function tainacan_the_item_document_download_link($item_id = 0) {
 	if (!$link || $item->get_document_type() == 'text' || $item->get_document_type() == 'url')
 		return;
 
-	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';
+	return '<a name="' . __('Download the item document', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '" target="_blank">' . __('Download', 'tainacan') . '</a>';
 }
 
 
@@ -137,7 +138,7 @@ function tainacan_the_item_attachment_download_link($attachment_id) {
 
 	$link = wp_get_attachment_url($attachment_id);
 
-	return '<a name="' . __('Download the item attachment', 'tainacan') . '" download="'. $link . '" href="' . $link . '">' . __('Download', 'tainacan') . '</a>';
+	return '<a name="' . __('Download the item attachment', 'tainacan') . '" download="'. esc_url($link) . '" href="' . esc_url($link) . '">' . __('Download', 'tainacan') . '</a>';
 }
 
 function tainacan_the_document() {
@@ -212,7 +213,7 @@ function tainacan_get_the_collection_name() {
 	if ( $collection ) {
 		$name = $collection->get_name();
 	}
-	return apply_filters('tainacan-get-collection-name', $name, $collection);
+	return apply_filters('tainacan-get-collection-name', esc_html($name), $collection);
 }					
 
 /**
@@ -234,7 +235,7 @@ function tainacan_get_adjacent_items() {
  * @return void
  */
 function tainacan_the_collection_name() {
-	echo tainacan_get_the_collection_name();
+	echo esc_html(tainacan_get_the_collection_name());
 }
 
 /**
@@ -248,7 +249,7 @@ function tainacan_get_the_collection_description() {
 	if ( $collection ) {
 		$description = $collection->get_description();
 	}
-	return apply_filters('tainacan-get-collection-description', $description, $collection);
+	return apply_filters('tainacan-get-collection-description', esc_html($description), $collection);
 }
 
 /**
@@ -257,7 +258,7 @@ function tainacan_get_the_collection_description() {
  * @return void
  */
 function tainacan_the_collection_description() {
-	echo tainacan_get_the_collection_description();
+	echo esc_html(tainacan_get_the_collection_description());
 }
 
 /**
@@ -344,9 +345,34 @@ function tainacan_get_the_media_component(
 	$args['media_main_id'] = $media_id . '-main';
 	$args['media_thumbs_id'] = $media_id . '-thumbs';
 	$args['media_id'] = $media_id;
-	
-	ob_start();
 
+	if (!function_exists('tainacan_get_default_allowed_styles')) {
+		function tainacan_get_default_allowed_styles ( $styles ) {
+			$styles[] = 'display';
+			$styles[] = 'position';
+			$styles[] = 'visibility';
+			return $styles;
+		}
+	}
+	$allowed_html = array(
+		'svg' => array(
+			'xmlns' => true,
+			'fill' => true,
+			'viewbox' => true,
+			'role' => true,
+			'aria-hidden' => true,
+			'focusable' => true,
+			'width' => true,
+			'height' => true,
+		),
+		'path' => array(
+			'd' => true,
+			'fill' => true,
+		)
+	);
+	add_filter( 'safe_style_css', 'tainacan_get_default_allowed_styles');
+
+	ob_start();
 	if ( $args['has_media_main'] || $args['has_media_thumbs'] ) :
 	
 		wp_enqueue_style( 'tainacan-media-component', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-item-gallery.css', array(), TAINACAN_VERSION);
@@ -359,39 +385,41 @@ function tainacan_get_the_media_component(
 				tainacan_plugin = {};
 			}
 			tainacan_plugin.tainacan_media_components = (typeof tainacan_plugin.tainacan_media_components != "undefined") ? tainacan_plugin.tainacan_media_components : {};
-			tainacan_plugin.tainacan_media_components['<?php echo $args['media_id'] ?>'] = <?php echo json_encode($args) ?>;
+			tainacan_plugin.tainacan_media_components['<?php echo esc_attr($args['media_id']) ?>'] = <?php echo json_encode($args) ?>;
 		</script>	
 
-		<div id="<?php echo $media_id ?>" <?php echo $args['wrapper_attributes']; ?> data-module='item-gallery'>
-
+		<div id="<?php echo esc_attr($media_id) ?>" data-module="item-gallery" <?php echo wp_kses_post($args['wrapper_attributes']); ?>>
 			<?php if ( $args['has_media_main'] ) : ?>
 				
 				<!-- Slider main container -->
-				<?php echo $args['before_main_div'] ?>
-				<div id="<?php echo $args['media_main_id'] ?>" class="tainacan-media-component__swiper-main swiper <?php echo $args['class_main_div'] ?>">
-					
+				<?php echo wp_kses_post($args['before_main_div']) ?>
+				<div id="<?php echo esc_attr($args['media_main_id']) ?>" class="tainacan-media-component__swiper-main swiper <?php echo esc_attr($args['class_main_div']) ?>">
+
 					<!-- Additional required wrapper -->
-					<?php echo $args['before_main_ul'] ?>
-					<ul class="swiper-wrapper <?php echo $args['class_main_ul'] ?>">
+					<?php echo wp_kses_post($args['before_main_ul']) ?>
+					<ul class="swiper-wrapper <?php echo esc_attr($args['class_main_ul']) ?>">
 						<?php foreach($media_items_main as $media_item) { ?>
-							<li class="swiper-slide <?php echo $args['class_main_li'] ?>">
-								<?php echo $media_item ?>
+							<li class="swiper-slide <?php echo esc_attr($args['class_main_li']) ?>">
+								<?php 
+									echo wp_kses_tainacan($media_item);
+								 ?>
 							</li>
 						<?php }; ?>
 					</ul>
-					<?php echo $args['before_main_ul'] ?>
+					<?php echo wp_kses_post($args['before_main_ul']) ?>
 
 					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-pagination swiper-pagination_<?php echo $args['media_main_id'] ?>"></div>
+						<div class="swiper-pagination swiper-pagination_<?php echo esc_attr($args['media_main_id']) ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_main_options'] && isset($args['swiper_main_options']['navigation']) ) : ?>
+
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_main_id'] ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_main_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
 							<?php if ( $args['swiper_arrows_as_svg'] ): ?>
 								<?php if ( $args['swiper_arrow_prev_custom_svg'] ): ?>
-									<?php echo $args['swiper_arrow_prev_custom_svg']; ?>
+									<?php echo wp_kses($args['swiper_arrow_prev_custom_svg'], $allowed_html); ?>
 								<?php else: ?>
 									<svg width="var(--swiper-navigation-size)" height="var(--swiper-navigation-size)" viewBox="0 0 24 24">
 										<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
@@ -400,10 +428,10 @@ function tainacan_get_the_media_component(
 								<?php endif; ?>
 							<?php endif; ?>
 						</div>
-						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_main_id'] ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+						<div class="swiper-button-next swiper-navigation-next_<?php echo esc_attr($args['media_main_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
 							<?php if ( $args['swiper_arrows_as_svg'] ): ?>	
 								<?php if ( $args['swiper_arrow_next_custom_svg'] ): ?>
-									<?php echo $args['swiper_arrow_next_custom_svg']; ?>
+									<?php echo wp_kses($args['swiper_arrow_next_custom_svg'], $allowed_html); ?>
 								<?php else: ?>
 									<svg width="42" height="42" viewBox="0 0 24 24">
 										<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
@@ -412,39 +440,42 @@ function tainacan_get_the_media_component(
 								<?php endif; ?>
 							<?php endif; ?>
 						</div>
+
 					<?php endif; ?>
 				</div>
-				<?php echo $args['after_main_div'] ?>
+				<?php echo wp_kses_post($args['after_main_div']) ?>
 			<?php endif; ?>
 
 			<?php if ( $args['has_media_thumbs'] ) : ?>
 
 				<!-- Slider thumbs container -->
-				<?php echo $args['before_thumbs_div'] ?>
-				<div id="<?php echo $args['media_thumbs_id'] ?>" class="tainacan-media-component__swiper-thumbs swiper <?php echo $args['class_thumbs_div'] ?>">
-					
+				<?php echo wp_kses_post($args['before_thumbs_div']) ?>
+				<div id="<?php echo esc_attr($args['media_thumbs_id']) ?>" class="tainacan-media-component__swiper-thumbs swiper <?php echo esc_attr($args['class_thumbs_div']) ?>">
+
 					<!-- Additional required wrapper -->
-					<?php echo $args['before_thumbs_ul'] ?>
-					<ul class="swiper-wrapper <?php echo $args['class_thumbs_ul'] ?>">
+					<?php echo wp_kses_post($args['before_thumbs_ul']) ?>
+					<ul class="swiper-wrapper <?php echo esc_attr($args['class_thumbs_ul']) ?>">
 						<?php foreach($media_items_thumbs as $media_item) { ?>
-							<li class="swiper-slide <?php echo $args['class_thumbs_li'] ?>">
-								<?php echo $media_item ?>
+							<li class="swiper-slide <?php echo esc_attr($args['class_thumbs_li']) ?>">
+								<?php echo wp_kses_tainacan($media_item); ?>
 							</li>
 						<?php }; ?>
 					</ul>
-					<?php echo $args['before_thumbs_ul'] ?>
+					<?php echo wp_kses_post($args['before_thumbs_ul']) ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-paginations swiper-pagination_<?php echo $args['media_thumbs_id'] ?>"></div>
+						<div class="swiper-paginations swiper-pagination_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
 						<!-- If we need navigation buttons -->
-						<div class="swiper-button-prev swiper-navigation-prev_<?php echo $args['media_thumbs_id'] ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+
+						<div class="swiper-button-prev swiper-navigation-prev_<?php echo esc_attr($args['media_thumbs_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
 							<?php if ( $args['swiper_arrows_as_svg'] ): ?>
 								<?php if ( $args['swiper_arrow_prev_custom_svg'] ): ?>
-									<?php echo $args['swiper_arrow_prev_custom_svg']; ?>
+									<?php echo wp_kses($args['swiper_arrow_prev_custom_svg'], $allowed_html); ?>
+									
 								<?php else: ?>
 									<svg width="var(--swiper-navigation-size)" height="var(--swiper-navigation-size)" viewBox="0 0 24 24">
 										<path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
@@ -453,10 +484,10 @@ function tainacan_get_the_media_component(
 								<?php endif; ?>
 							<?php endif; ?>
 						</div>
-						<div class="swiper-button-next swiper-navigation-next_<?php echo $args['media_thumbs_id'] ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
+						<div class="swiper-button-next swiper-navigation-next_<?php echo esc_attr($args['media_thumbs_id']) ?> <?php echo ($args['swiper_arrows_as_svg'] ? 'swiper-button-has-svg' : '' ) ?>">
 							<?php if ( $args['swiper_arrows_as_svg'] ): ?>	
 								<?php if ( $args['swiper_arrow_next_custom_svg'] ): ?>
-									<?php echo $args['swiper_arrow_next_custom_svg']; ?>
+									<?php echo wp_kses($args['swiper_arrow_next_custom_svg'], $allowed_html); ?>
 								<?php else: ?>
 									<svg width="42" height="42" viewBox="0 0 24 24">
 										<path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
@@ -471,15 +502,13 @@ function tainacan_get_the_media_component(
 					<div class="swiper-start-border"></div>
 					<div class="swiper-end-border"></div>
 				</div>
-				<?php echo $args['after_thumbs_div'] ?>
+				<?php echo wp_kses_post($args['after_thumbs_div']) ?>
 			<?php endif; ?>
 
 		</div>
-
-	<?php endif; ?> <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) -->
-	
 	<?php
-
+	endif;  // <!-- End of if ($args['has_media_main'] || $args['has_media_thumbs'] ) --> 
+	remove_filter( 'safe_style_css', 'tainacan_get_default_allowed_styles');
 	$content = ob_get_contents();
 	ob_end_clean();
 
@@ -528,49 +557,51 @@ function tainacan_get_the_media_component_slide( $args = array() ) {
 	ob_start();
 
 ?>
-	<?php echo $args['before_slide_content'] ?>
+	<?php echo wp_kses_post($args['before_slide_content']) ?>
 
-	<div class="swiper-slide-content <?php echo $args['class_slide_content'] ?>">
+	<div class="swiper-slide-content <?php echo esc_attr($args['class_slide_content']) ?>">
 
 		<?php if ( isset($args['media_content']) && !empty($args['media_content']) && $args['media_content'] !== false ) :?>
-			<?php echo $args['media_content'] ?>
+			<?php echo wp_kses_tainacan($args['media_content']) ?>
 		<?php else: ?>
-			<img src="<?php echo tainacan_get_the_mime_type_icon($args['media_type']) ?>" alt="<?php echo ( !empty($args['media_title']) ? $args['media_title'] : __('File', 'tainacan') ) ?>" >
+			<img src="<?php echo esc_url(tainacan_get_the_mime_type_icon($args['media_type'])) ?>" alt="<?php echo ( !empty($args['media_title']) ? esc_attr($args['media_title']) : __('File', 'tainacan') ) ?>" >
 		<?php endif; ?>
 		
-		<?php echo $args['before_slide_metadata'] ?>
+		<?php echo wp_kses_post($args['before_slide_metadata']); ?>
 
 		<?php if ( !empty($args['media_title']) || !empty($args['description']) || !empty($args['media_caption']) ) : ?>
-			<div class="swiper-slide-metadata  <?php echo $args['class_slide_metadata'] ?>">
+			<div class="swiper-slide-metadata  <?php echo wp_kses_post($args['class_slide_metadata']); ?>">
 				<?php if ( !empty($args['media_caption']) ) :?>
 					<span class="swiper-slide-metadata__caption">
-						<?php echo $args['media_caption'] ?>
+						<?php echo wp_kses_post($args['media_caption']); ?>
 						<br>
 					</span>
 				<?php endif; ?>	
 				<?php if ( !empty($args['media_title']) ) :?>
 					<span class="swiper-slide-metadata__name">
-						<?php echo $args['media_title'] ?>
+						<?php echo wp_kses_post($args['media_title']); ?>
 					</span>
 				<?php endif; ?>
 				<br>
 				<?php if ( !empty($args['media_description']) ) :?>
 					<span class="swiper-slide-metadata__description">
-						<?php echo $args['media_description'] ?>
+						<?php echo wp_kses_post($args['media_description']); ?>
 					</span>
 				<?php endif; ?>
 			</div>
 		<?php endif; ?>
 
 		<?php if ( !empty($args['media_content_full']) ) : ?>
-			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;"><?php echo $args['media_content_full'] ?></div>
+			<div class="media-full-content" style="display: none; position: absolute; visibility: hidden;">
+				<?php echo wp_kses_tainacan($args['media_content_full']) ?>
+			</div>
 		<?php endif; ?>
 
-		<?php echo $args['after_slide_metadata'] ?>
+		<?php echo wp_kses_post($args['after_slide_metadata']) ?>
 
 	</div>
 
-	<?php echo $args['after_slide_content'] ?>
+	<?php echo wp_kses_post($args['after_slide_content']) ?>
 
 <?php
 
@@ -592,7 +623,7 @@ function tainacan_get_the_collection_url() {
 	if ( $collection ) {
 		$url = $collection->get_url();
 	}
-	return apply_filters('tainacan-get-collection-url', $url, $collection);
+	return apply_filters('tainacan-get-collection-url', esc_url($url), $collection);
 }					
 
 
@@ -602,7 +633,7 @@ function tainacan_get_the_collection_url() {
  * @return void
  */
 function tainacan_the_collection_url() {
-	echo tainacan_get_the_collection_url();
+	echo esc_url(tainacan_get_the_collection_url());
 }
 
 
@@ -726,7 +757,7 @@ function tainacan_get_the_term_name() {
 	if ( $term ) {
 		$name = $term->name;
 	}
-	return apply_filters('tainacan-get-term-name', $name, $term);
+	return apply_filters('tainacan-get-term-name', esc_html($name), $term);
 }
 
 /**
@@ -735,7 +766,7 @@ function tainacan_get_the_term_name() {
  * @return void
  */
 function tainacan_the_term_name() {
-	echo tainacan_get_the_term_name();
+	echo esc_html(tainacan_get_the_term_name());
 }
 
 /**
@@ -749,7 +780,7 @@ function tainacan_get_the_term_description() {
 	if ( $term ) {
 		$description = $term->description;
 	}
-	return apply_filters('tainacan-get-term-description', $description, $term);
+	return apply_filters('tainacan-get-term-description', esc_html($description), $term);
 }
 
 /**
@@ -758,7 +789,7 @@ function tainacan_get_the_term_description() {
  * @return void
  */
 function tainacan_the_term_description() {
-	echo tainacan_get_the_term_description();
+	echo esc_html(tainacan_get_the_term_description());
 }
 
 /**
@@ -861,9 +892,9 @@ function tainacan_the_item_edit_link( $text = null, $before = '', $after = '', $
 		$text = __( 'Edit this item', 'tainacan' );
 	}
 
-	$link = '<a class="' . esc_attr( $class ) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
+	$link = '<a class="' . esc_attr($class) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
 
-	echo $before . $link . $after;
+	echo wp_kses_post($before . $link . $after);
 }
 
 /**
@@ -1008,7 +1039,7 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
  	*     @type integer $auto_play_speed				The time in s to translate to the next slide automatically 
  	*     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
  	*     @type bool    $hide_title						Should the title of the items be displayed?
- 	*     @type bool    $crop_images_to_square			Should it use the `tainacan-medium-size` instead of the `tainacan-medium-large-size`?
+ 	*     @type string  $image_size					Item image size. Defaults to 'tainacan-medium'
  	*     @type bool    $show_collection_header			Should it display a small version of the collection header?
  	*     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
  	*     @type string  $collection_background_color	Color of the collection header background
@@ -1102,4 +1133,69 @@ function tainacan_has_related_items($item_id = false) {
  */
 function tainacan_the_item_gallery($args = []) {
 	echo \Tainacan\Theme_Helper::get_instance()->get_tainacan_item_gallery($args);
+}
+
+
+/**
+ * Render the item metadata sections as a HTML string.
+ *
+ * Each metadata section is a label with the list of its metadata name and value.
+ *
+ * If an ID, a slug or a Tainacan\Entities\Metadata_Section object is passed in the 'metadata_section' argument, it returns only one metadata section, otherwise
+ * it returns all metadata section
+ *
+ * @param array|string $args {
+	*     Optional. Array or string of arguments.
+	*
+	* 	  @type mixed		 $metadata_section				Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata_sections
+	*
+	*     @type array		 $metadata_sections__in			Array of metadata_sections IDs or Slugs to be retrieved. Default none
+	*
+	*     @type array		 $metadata_sections__not_in		Array of metadata_sections IDs (slugs not accepted) to excluded. Default none
+	* 
+	*     @type bool		 $hide_name						Do not display the Metadata Section name. Default false
+	*
+	*     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
+	*
+	*     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	*                                                  	Default: true
+	*     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
+	*                                                  	Default: ''
+	*     @type bool        $display_slug_as_class     	Show metadata slug as a class in the div before the metadata block
+	*                                                  	Default: true
+	*     @type string      $before                    	String to be added before each metadata section block
+	*                                                  	Default '<section $id>'
+	*     @type string      $after		                String to be added after each metadata section block
+	*                                                  	Default '</section>'
+	*     @type string      $before_name              	String to be added before each metadata section name
+	*                                                  	Default '<h2>'
+	*     @type string      $after_name               	String to be added after each metadata section name
+	*                                                  	Default '</h2>'
+	* 	  @type string      $before_description         String to be added before each metadata section description
+	*                                                  	Default '<p>'
+	*     @type string      $after_description          String to be added after each metadata section description
+	*                                                  	Default '</p>'
+	*     @type string      $before_metadata_list      	String to be added before each metadata section inner metadata list
+	*                                                  	Default '<div class="metadata-section__metadata-list">'
+	*     @type string      $after_metadata_list       	String to be added after each metadata section inner metadata list
+	*                                                  	Default '</div>'
+	*	  @type array		$metadata_list_args			Arguments to be passed to the get_metadata_as_html function when calling section metadata
+	* }
+	*
+	* @return string        The HTML output
+ */
+function tainacan_get_the_metadata_sections($args = array(), $item_id = 0) {
+
+	$item = tainacan_get_item( $item_id );
+
+	if ($item instanceof \Tainacan\Entities\Item) {
+		return $item->get_metadata_sections_as_html($args);
+	}
+
+	return '';
+
+}
+
+function tainacan_the_metadata_sections($args = array()) {
+	echo tainacan_get_the_metadata_sections($args);
 }

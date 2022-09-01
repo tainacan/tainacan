@@ -3,11 +3,19 @@
         <div
             :class="{
                    'repository-level-page': isRepositoryLevel,
-                   'page-container': isRepositoryLevel
+                   'page-container': isRepositoryLevel,
+                   'tainacan-modal-content': isItemLevel
                }">
             <tainacan-title
                     v-if="!isItemLevel"
                     :bread-crumb-items="[{ path: '', label: $i18n.get('activities') }]"/>
+            <header 
+                    v-else
+                    class="tainacan-modal-title">
+                <h2>{{ $i18n.get('label_item_activities') }}</h2>
+                <hr>
+            </header>
+
             <div :class="{ 'above-subheader': isRepositoryLevel }">
 
                 <div 
@@ -700,6 +708,13 @@
                 padding-right: 0.2em;
             }
         }
+    }
+
+    .tainacan-modal-content .table-container {
+        max-height: calc(100vh - 412px);
+        overflow-y: scroll;
+        margin-bottom: 0;
+        padding-bottom: 1.5rem;
     }
 
     .above-subheader {

@@ -84,16 +84,16 @@
                             :key="index"
                             v-for="(item, index) of items"
                             class="swiper-slide item-list-item"
-                            :class="{ 'is-forced-square': cropImagesToSquare }">
+                            :class="{ 'is-forced-square': ['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 }">
                         <a 
                                 :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
                                 :href="item.url">
                             <blur-hash-image
-                                    :height="$thumbHelper.getHeight(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
-                                    :width="$thumbHelper.getWidth(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype'])"
-                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'), item['document_mimetype'])"
-                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], (maxItemsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'large'))"
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                             <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
@@ -178,7 +178,7 @@ export default {
         autoPlaySpeed: Number,
         loopSlides: Boolean,
         hideTitle: Boolean,
-        cropImagesToSquare: Boolean,
+        imageSize: String,
         showCollectionHeader: Boolean,
         showCollectionLabel: Boolean,
         collectionBackgroundColor: String,
@@ -332,6 +332,8 @@ export default {
         },
         mountCarousel() {
             const self = this;
+            const spaceBetween = Number(self.spaceBetweenItems);
+            const slidesPerView = Number(self.maxItemsPerScreen);
             this.swiper = new Swiper('#' + self.blockId + '-carousel', {
                 watchOverflow: true,
                 mousewheel: {
@@ -343,24 +345,24 @@ export default {
                 allowTouchMove: true, 
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: self.spaceBetweenItems,
+                spaceBetween: spaceBetween,
                 slideToClickedSlide: true,
                 navigation: {
                     nextEl: '#' + self.blockId + '-next',
                     prevEl: '#' + self.blockId + '-prev',
                 }, 
                 breakpoints: (!isNaN(self.maxItemsPerScreen) && self.maxItemsPerScreen != 6) ? {
-                    498:  { slidesPerView: self.maxItemsPerScreen - 4 > 0 ? self.maxItemsPerScreen - 4 : 1, spaceBetween: self.spaceBetweenItems }, 
-                    768:  { slidesPerView: self.maxItemsPerScreen - 3 > 0 ? self.maxItemsPerScreen - 3 : 1, spaceBetween: self.spaceBetweenItems },
-                    1024: { slidesPerView: self.maxItemsPerScreen - 2 > 0 ? self.maxItemsPerScreen - 2 : 1, spaceBetween: self.spaceBetweenItems },
-                    1366: { slidesPerView: self.maxItemsPerScreen - 1 > 0 ? self.maxItemsPerScreen - 1 : 1, spaceBetween: self.spaceBetweenItems },
-                    1600: { slidesPerView: self.maxItemsPerScreen > 0 ? self.maxItemsPerScreen : 1, spaceBetween: self.spaceBetweenItems },
+                    498:  { slidesPerView: slidesPerView - 4 > 0 ? slidesPerView - 4 : 1, spaceBetween: spaceBetween }, 
+                    768:  { slidesPerView: slidesPerView - 3 > 0 ? slidesPerView - 3 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: slidesPerView - 2 > 0 ? slidesPerView - 2 : 1, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: slidesPerView - 1 > 0 ? slidesPerView - 1 : 1, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: slidesPerView > 0 ? slidesPerView : 1, spaceBetween: spaceBetween },
                 } : {
-                    498:  { slidesPerView: 2, spaceBetween: self.spaceBetweenItems }, 
-                    768:  { slidesPerView: 3, spaceBetween: self.spaceBetweenItems },
-                    1024: { slidesPerView: 4, spaceBetween: self.spaceBetweenItems },
-                    1366: { slidesPerView: 5, spaceBetween: self.spaceBetweenItems },
-                    1600: { slidesPerView: 6, spaceBetween: self.spaceBetweenItems }
+                    498:  { slidesPerView: 2, spaceBetween: spaceBetween }, 
+                    768:  { slidesPerView: 3, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: 4, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: 5, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: 6, spaceBetween: spaceBetween }
                 },
                 autoplay: self.autoPlay ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides ? self.loopSlides : false,

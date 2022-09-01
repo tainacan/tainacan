@@ -17,7 +17,8 @@ import {
     Loading,
     Input,
     Select,
-    Taginput
+    Taginput,
+    Snackbar
 } from 'buefy';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
@@ -81,6 +82,7 @@ export default (element) => {
             Vue.use(Taginput);
             Vue.use(Autocomplete);
             Vue.use(Collapse);
+            Vue.use(Snackbar);
             Vue.use(Input);
             Vue.use(VTooltip, {
                 popperTriggers: ['hover'],

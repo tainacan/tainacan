@@ -57,3 +57,12 @@ export const setTaxonomyFiltersForCollection = (state, { collectionName, taxonom
 export const clearTaxonomyFilters = (state) => {
     state.taxonomyFilters = {};
 }
+
+export const moveFilterUp = (state, index) => {
+    state.filters.splice(index - 1, 0, state.filters.splice(index, 1)[0]);   
+}
+
+
+export const moveFilterDown = (state, index) => {
+    state.filters.splice(index + 1, 0, state.filters.splice(index, 1)[0]);
+}

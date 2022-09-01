@@ -155,6 +155,7 @@
                                     v-tooltip="{
                                         content: $i18n.get('status_' + collection.status),
                                         autoHide: true,
+                                        html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
@@ -193,6 +194,7 @@
                                         },
                                         content: collection.name,
                                         autoHide: false,
+                                        html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }">
@@ -213,6 +215,7 @@
                                         },
                                         content: (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`,
                                         autoHide: false,
+                                        html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
@@ -233,6 +236,7 @@
                                         },
                                         content: collection.modification_date,
                                         autoHide: false,
+                                        html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
@@ -253,6 +257,7 @@
                                         },
                                         content: collection.creation_date,
                                         autoHide: false,
+                                        html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
@@ -273,6 +278,7 @@
                                         },
                                         content: collection.author_name,
                                         autoHide: false,
+                                        html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
@@ -294,6 +300,7 @@
                                         },
                                         content: getTotalItemsDetailed(collection.total_items),
                                         autoHide: false,
+                                        html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 

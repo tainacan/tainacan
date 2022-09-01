@@ -1,6 +1,6 @@
 <template>
     <transition name="filter-item">
-        <div v-if="filterTags != undefined && filterTags.length > 0">
+        <div v-show="filterTags != undefined && filterTags.length > 0">
             <p class="filter-tags-info">
                 <span 
                         style="margin-right: 1em"
@@ -17,7 +17,7 @@
             </p>
             <div 
                     class="swiper"
-                    id="tainacanFilterTagsSwiper">
+                    :id="'tainacanFilterTagsSwiper' + (isInsideModal ? 'InsideModal' : '')">
                 <ul class="swiper-wrapper">
                     <li 
                             v-for="(filterTag, index) of filterTags"
@@ -82,6 +82,9 @@
 
     export default {
         name: 'FiltersTagsList',
+        props: {
+            isInsideModal: Boolean
+        },
         data() {
             return {
                 swiper: {}
@@ -133,7 +136,7 @@
         },
         mounted() {
            this.$nextTick(() => {
-                this.swiper = new Swiper('#tainacanFilterTagsSwiper', {
+                this.swiper = new Swiper('#tainacanFilterTagsSwiper' + (this.isInsideModal ? 'InsideModal' : ''), {
                     mousewheel: true,
                     observer: true,
                     resizeObserver: true,

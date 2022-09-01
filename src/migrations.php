@@ -480,6 +480,23 @@ class Migrations {
 		}
 	}
 
+	static function insert_meta_default_metadata_section() {
+		global $wpdb;
+		// create metadata
+		$wpdb->query(
+			$wpdb->prepare(
+				"INSERT INTO $wpdb->postmeta (post_id,meta_key,meta_value)
+				SELECT ID,'metadata_section_id', %s FROM $wpdb->posts 
+				WHERE post_type = %s AND ID NOT IN (
+					SELECT post_id FROM $wpdb->postmeta WHERE meta_key = %s
+				)"
+				,\Tainacan\Entities\Metadata_Section::$default_section_slug
+				,\Tainacan\Entities\Metadatum::$post_type
+				,\Tainacan\Entities\Metadata_Section::$default_section_slug
+			)
+		);
+	}
+
 }
 
 

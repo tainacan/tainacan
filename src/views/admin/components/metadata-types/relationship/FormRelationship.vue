@@ -48,7 +48,7 @@
                         v-model="modelSearch"
                         expanded>
                     <option
-                            v-for="(option, index) in metadata"
+                            v-for="(option, index) in metadata.filter(metadatum => metadatum.metadata_type_object.component !== 'tainacan-compound')"
                             :key="index"
                             :value="option.id"
                             class="field">
@@ -224,10 +224,10 @@
                             this.metadata = [];
 
                             for (let metadatum of metadata) {
-                               if ( (metadatum.metadata_type_object.component !== 'tainacan-relationship' || this.isMetaqueryRelationshipEnabled) && metadatum.metadata_type_object.component !== 'tainacan-compound' ) {
+                               if ( (metadatum.metadata_type_object.component !== 'tainacan-relationship' || this.isMetaqueryRelationshipEnabled) ) {
                                    this.metadata.push( metadatum );
                                    this.hasMetadata = true;
-                                   this.checkMetadata();
+                                   this.checkSearchMetadatum();
                                }
                             }
                     
@@ -259,15 +259,17 @@
                     });
 
             },
-            checkMetadata(){
-                if( this.value && this.value.search ){
+            checkSearchMetadatum() {
+                if ( this.value && this.value.search ) {
                     this.modelSearch = this.value.search;
                 } else {
-                    try {
-                        const json = JSON.parse( this.search );
-                        this.modelSearch = json;
-                    } catch(e){
-                        this.modelSearch = '';
+                    const titleMetadatumIndex = this.metadata.findIndex(metadatum => metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Core_Title');
+                    if (titleMetadatumIndex >= 0)
+                        this.modelSearch = this.metadata[titleMetadatumIndex].id;
+                    else {
+                        const nonCompountMetadatumIndex = this.metadata.findIndex(metadatum => metadatum.metadata_type_object.component !== 'tainacan-compound');
+                        if (nonCompountMetadatumIndex >= 0) 
+                            this.modelSearch = this.metadata[nonCompountMetadatumIndex].id;
                     }
                 }
             },

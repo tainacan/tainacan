@@ -42,6 +42,12 @@
                         class="tainacan-list">
                     <a :href="getItemLink(item.url, index)">
 
+                        <!-- JS-side hook for extra content -->
+                        <div 
+                                v-if="hasBeforeHook()"
+                                class="faceted-search-hook faceted-search-hook-item-before"
+                                v-html="getBeforeHook(item)" />
+
                         <!-- Title -->
                         <div class="metadata-title">
                             <p 
@@ -111,6 +117,13 @@
                                 </span>
                             </div>
                         </div>
+
+                        <!-- JS-side hook for extra content -->
+                        <div 
+                                v-if="hasAfterHook()"
+                                class="faceted-search-hook faceted-search-hook-item-after"
+                                v-html="getAfterHook(item)" />
+                                
                     </a>
                 </div>
             </div>

@@ -320,7 +320,13 @@ class Relationship extends Metadata_Type {
 					<div class="tainacan-relationship-metadatum-header">
 						<?php echo ($should_display_thumbnail ? $this->get_item_thumbnail($thumbnail_id, $item) : ''); ?>
 						<h4 class="label">
-							<?php echo $value_link; ?>
+							<?php
+							/**
+							 * Note to code reviewers: This lines doesn't need to be escaped.
+							 * The variable $value_link is escaped.
+							 */
+							echo $value_link;
+							?>
 						</h4>
 					</div>
 				<?php
@@ -328,10 +334,10 @@ class Relationship extends Metadata_Type {
 				?>
 					<div class="tainacan-metadatum">
 						<h5 class="label">
-							<?php echo $meta->get_metadatum()->get_name(); ?>
+							<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 						</h5>
 						<p>
-							<?php echo ($value_link === false ? $meta->get_value_as_html() : $value_link); ?> 
+							<?php echo wp_kses_tainacan(($value_link === false ? $meta->get_value_as_html() : $value_link)); ?> 
 						</p>
 					</div>
 				<?php

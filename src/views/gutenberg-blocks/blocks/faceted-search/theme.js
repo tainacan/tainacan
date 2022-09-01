@@ -19,10 +19,10 @@ import {
     Dialog,
     Snackbar,
     Toast,
+    Pagination,
     Numberinput
 } from 'buefy';
 import VTooltip from 'floating-vue';
-import VueMasonry from 'vue-masonry-css';
 import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';
 import VueBlurHash from 'vue-blurhash';
@@ -106,6 +106,7 @@ export default (element) => {
             Vue.use(Dialog);
             Vue.use(Snackbar);
             Vue.use(Toast);
+            Vue.use(Pagination);
             Vue.use(Numberinput);
             Vue.use(VTooltip, {
                 popperTriggers: ['hover'],
@@ -118,7 +119,6 @@ export default (element) => {
                     }
                 }
             });
-            Vue.use(VueMasonry);
             Vue.use(VueBlurHash);
             Vue.use(I18NPlugin);
             Vue.use(UserPrefsPlugin);

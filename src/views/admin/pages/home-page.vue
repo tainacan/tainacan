@@ -250,6 +250,10 @@ export default {
         }
 
         .home-section {
+
+            @media screen and (max-width: 768px) {
+                margin-right: 25px;
+            }
             
             &.home-section-repository{
                 position: relative;
@@ -260,7 +264,11 @@ export default {
             &.home-section-collection {
                 position: relative;
                 margin-left: 52px;
-                margin-bottom: 80px;
+                margin-bottom: 80px;    
+                
+                @media screen and (max-width: 768px) {
+                    padding-right: 0.75em;
+                }
             }
 
             .section-connector {

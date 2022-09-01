@@ -42,6 +42,7 @@ class Metadata extends Repository {
 
 		add_action('tainacan-insert-tainacan-taxonomy', [$this, 'hook_taxonomies_saved_as_private']);
 		add_action('tainacan-insert-tainacan-taxonomy', [$this, 'hook_taxonomies_saved_not_allow_insert_new_terms']);
+		add_action('tainacan-insert-tainacan-metadatum', [$this, 'hook_metadata_update_order']);
 
 	}
 
@@ -49,7 +50,7 @@ class Metadata extends Repository {
 	 * {@inheritDoc}
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
-  protected function _get_map() {
+	protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
 			'name'                  => [
 				'map'         => 'post_title',
@@ -225,6 +226,13 @@ class Metadata extends Repository {
 				// yes or no. It cant be multiple if its collection_key
 				'default'     => 'no'
 			],
+			'metadata_section_id' => [
+				'map'         => 'meta_multi',
+				'title'       => __( 'Metadata section', 'tainacan' ),
+				'type'        => ['integer', 'string', 'array'],
+				'description' => __( 'The metadata section ID', 'tainacan' ),
+				'default'     => \Tainacan\Entities\Metadata_Section::$default_section_slug
+			],
 		] );
 	}
 
@@ -368,7 +376,7 @@ class Metadata extends Repository {
 
 			$args['post_type'] = Entities\Metadatum::get_post_type();
 
-			$args = apply_filters( 'tainacan_fetch_args', $args, 'metadata' );
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'metadata' );
 
 
 			$wp_query = new \WP_Query( $args );
@@ -455,6 +463,33 @@ class Metadata extends Repository {
 
 				$args['meta_query'] = $original_meta_q;
 				$args['meta_query'][] = $meta_query;
+
+				if ($this->get_default_metadata_attribute() != $parent_id) {
+					$read_private_metasection_cap = "tnc_col_{$parent_id}_read_private_metasection";
+					if ( !current_user_can($read_private_metasection_cap) ) {
+						$private_metadata_sections_ids = \tainacan_metadata_sections()->fetch_ids(
+						array(
+							'post_status' => get_post_stati( array( 'private' => true ) ),
+							'meta_query' => array(
+								'key'     => 'collection_id',
+								'value'   => $parent_id,
+							)
+						));
+
+						$args['meta_query'][] = array(
+							'relation' => 'OR',
+							array(
+								'key'     => 'metadata_section_id',
+								'value'   => $private_metadata_sections_ids,
+								'compare' => 'NOT IN'
+							),
+							array( //note: using the comparete 'NOT EXISTS' to cases where metadata section id is not present in mapped property (meta) of metadatum  
+								'key'     => 'metadata_section_id',
+								'compare' => 'NOT EXISTS'
+							)
+						);
+					}
+				}
 
 				$results = array_merge($results, $this->fetch( $args, 'OBJECT' ));
 			}
@@ -587,6 +622,40 @@ class Metadata extends Repository {
 	}
 
 	/**
+	 * fetch metadatum by metadata section, considering order
+	 *
+	 * @param Entities\Metadata_Section $collection
+	 * @param array $args WP_Query args plus disabled_metadata
+	 *
+	 * @return array Entities\Metadatum
+	 * @throws \Exception
+	 */
+	public function fetch_by_metadata_section( Entities\Metadata_Section $metadata_section, $args = [] ) {
+		$results = [];
+		if ($metadata_section && $metadata_section->can_read()) {
+			$metadata_section_id = $metadata_section->get_id();
+			$collection = $metadata_section->get_collection();
+			$args = array_merge($args, array(
+				'parent' => 0,
+				'meta_query' => [
+					[
+						'key'     => 'metadata_section_id',
+						'value'   => $metadata_section_id,
+						'compare' => '='
+					]
+				]
+			));
+			$results = $this->fetch($args, 'OBJECT');
+			return $this->order_result(
+				$results,
+				$collection,
+				isset( $args['include_disabled'] ) ? $args['include_disabled'] : false
+			);
+		}
+		return $results;
+	}
+
+	/**
 	 * Ordinate the result from fetch response if $collection has an ordination,
 	 * metadata not ordinated appear on the end of the list
 	 *
@@ -599,6 +668,7 @@ class Metadata extends Repository {
 	 */
 	public function order_result( $result, Entities\Collection $collection, $include_disabled = false ) {
 		$order = $collection->get_metadata_order();
+		$section_order = $collection->get_metadata_section_order();
 
 		if ( $order ) {
 			$order = ( is_array( $order ) ) ? $order : unserialize( $order );
@@ -610,11 +680,23 @@ class Metadata extends Repository {
 				foreach ( $result as $item ) {
 					$id    = $item->WP_Post->ID;
 					$index = array_search( $id, array_column( $order, 'id' ) );
+					$metadata_section_ids = get_post_meta( $id, 'metadata_section_id');
+
+					$enabled_metadata_section = true;
+					if(!empty($metadata_section_ids) && $metadata_section_ids !== false && !empty($section_order)) {
+						foreach( $metadata_section_ids as $metadata_section_id) {
+							$section_order_index = array_search( $metadata_section_id, array_column( $section_order, 'id' ) );
+							if ( $section_order_index !== false ) {
+								$enabled_metadata_section = boolval($section_order[$section_order_index]['enabled']);
+								break;
+							}
+						}
+					}
 
 					if ( $index !== false ) {
 
 						// skipping metadata disabled if the arg is set
-						if ( ! $include_disabled && isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] ) {
+						if ( ! $include_disabled && (!$enabled_metadata_section || isset( $order[ $index ]['enabled'] ) && ! $order[ $index ]['enabled'] )) {
 							continue;
 						}
 
@@ -623,6 +705,14 @@ class Metadata extends Repository {
 
 						$result_ordinate[ $index ] = $item;
 					} else {
+						// skipping if metadata coumpound is disabled if the arg is set
+						if ($item->get_parent() > 0) {
+							$parent_metadatum = new \Tainacan\Entities\Metadatum($item->get_parent());
+							$parent_index = array_search( $parent_metadatum->get_id(), array_column( $order, 'id' ) );
+							if ( ! $include_disabled && (!$enabled_metadata_section || isset( $order[ $parent_index ]['enabled'] ) && ! $order[ $parent_index ]['enabled'] )) {
+								continue;
+							}
+						}
 						$not_ordinate[] = $item;
 					}
 				}
@@ -648,11 +738,33 @@ class Metadata extends Repository {
 	public function insert( $metadatum ) {
 		$this->pre_update_taxonomy_metadatum( $metadatum );
 		$new_metadatum = parent::insert( $metadatum );
-
 		$this->update_taxonomy_metadatum( $new_metadatum );
 		$this->update_metadata_type_index( $new_metadatum );
-
 		return $new_metadatum;
+	}
+
+	public function pre_update_metadata_repository_level($metadatum, $attributes) {
+		if (isset($attributes['target_collection_id']) && is_numeric($attributes['target_collection_id']) && $metadatum->is_repository_level()) {
+			$collection =  \tainacan_collections()->fetch($attributes['target_collection_id'], 'OBJECT');
+
+			$new_metadata_section_id = $metadatum->get_metadata_section_id();
+			$new_metadata_section_id = is_array($new_metadata_section_id) ? $new_metadata_section_id[0] : $new_metadata_section_id;
+
+			if($collection instanceof \Tainacan\Entities\Collection) {
+				$collection_metadata_sections_id = array_filter(
+					array_map(function($el) {return $el->get_id();} , \tainacan_metadata_sections()->fetch_by_collection($collection)),
+					function($el) {return $el != \Tainacan\Entities\Metadata_Section::$default_section_slug;}
+				);
+				$old_value = get_post_meta($metadatum->get_id(), 'metadata_section_id');
+				$new_value = array_diff($old_value, $collection_metadata_sections_id);
+				$new_value[] = (string)$new_metadata_section_id;
+				$metadatum->set_metadata_section_id($new_value);
+				if(!$metadatum->validate()) { 
+					throw new \Exception( $metadatum->get_errors() );
+				}
+			}
+		}
+		return $metadatum;
 	}
 
 	/**
@@ -663,6 +775,7 @@ class Metadata extends Repository {
 	 * @throws \Exception
 	 */
 	public function update( $object, $new_values = null ) {
+		$object = $this->pre_update_metadata_repository_level($object, $new_values);
 		return $this->insert( $object );
 	}
 
@@ -751,7 +864,7 @@ class Metadata extends Repository {
 	 */
 	private function get_data_core_metadata( Entities\Collection $collection ) {
 
-		return $data_core_metadata = [
+		$data_core_metadata = [
 			'core_title'       => [
 				'name'            => __('Title', 'tainacan'),
 				'collection_id'   => $collection->get_id(),
@@ -766,6 +879,7 @@ class Metadata extends Repository {
 				'status'          => 'publish',
 			]
 		];
+		return $data_core_metadata;
 
 	}
 
@@ -1713,6 +1827,40 @@ class Metadata extends Repository {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * When a metadata is saved, if the metadata section changes, the ordering needs to be updated
+	 *
+	 * @param \Tainacan\Entities\Metadatum $metadata
+	 * @return void
+	 */
+	public function hook_metadata_update_order($metadata) {
+		$tainacan_metadata_sections_repository = \tainacan_metadata_sections();
+		$tainacan_collections_repository = \tainacan_collections();
+		$metadata_section_id = $metadata->get_metadata_section_id();
+		$metadata_section = $tainacan_metadata_sections_repository->fetch($metadata_section_id);
+		if ( $metadata_section instanceof \Tainacan\Entities\Metadata_Section ) {
+			$collection = $metadata_section->get_collection();
+			$metadata_sections_order = $collection->get_metadata_section_order();
+			if( empty($metadata_sections_order) ) {
+				return;
+			}
+			foreach( $metadata_sections_order as &$metadata_section_order ) {
+				$pos = array_search($metadata->get_id(), array_column($metadata_section_order['metadata_order'], 'id'));
+				if($pos !== false) {
+					if( $metadata_section_id != $metadata_section_order['id']) {
+						array_splice($metadata_section_order['metadata_order'], $pos, 1);
+					}
+				} else if($metadata_section_id == $metadata_section_order['id']) {
+					$metadata_section_order['metadata_order'][] = ["id" => $metadata->get_id(), "enabled" => $metadata->get_enabled_for_collection()];
+				}
+			}
+			$collection->set_metadata_section_order($metadata_sections_order);
+			if($collection->validate()) {
+				$tainacan_collections_repository->update($collection);
+			}
+		}
 	}
 
 }

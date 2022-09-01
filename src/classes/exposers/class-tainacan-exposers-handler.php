@@ -148,7 +148,7 @@ class Exposers_Handler {
 					$type_responde = $exposer->rest_request_after_callbacks($response, $handler, $request);
 					if(self::request_has_url_param($request)) {
 						header(implode('', $response->get_headers()));
-						echo stripcslashes($response->get_data());
+						echo wp_kses_tainacan(stripcslashes($response->get_data()));
 						exit();
 					}
 					return $type_responde;

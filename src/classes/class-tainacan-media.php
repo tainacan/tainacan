@@ -74,6 +74,7 @@ class Media {
 
 			return $this->insert_attachment_from_blob($file, basename($url), $post_id);
 		} catch (\Exception $e) {
+			error_log($e);
 			return false;
 		}
 
@@ -96,62 +97,22 @@ class Media {
 
 	}
 
-		/**
-		 * Avoid memory overflow problems with large files (Exceeded maximum memory limit of PHP)
-		 *
-		 * @param $url
-		 * @return string the file path
-		 */
-		public function save_remote_file($url) {
-				set_time_limit(0);
+	/**
+	 * Avoid memory overflow problems with large files (Exceeded maximum memory limit of PHP)
+	 *
+	 * @param $url
+	 * @return string the file path
+	 */
+	public function save_remote_file($url) {
+		// Include file.php
+		require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
-				$filename = tempnam(sys_get_temp_dir(), basename($url));
-
-				# Open the file for writing...
-				self::$file_handle = fopen($filename, 'w+');
-				self::$file_name = $filename;
-
-				$callback = function ($ch, $str)  {
-						$len = fwrite(self::$file_handle, $str);
-						return $len;
-				};
-
-				$ch = curl_init();
-				curl_setopt($ch, CURLOPT_URL, $url);
-				curl_setopt($ch, CURLOPT_FILE, self::$file_handle);
-				curl_setopt($ch, CURLOPT_HEADER, 0);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-				curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
-				curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); # optional
-				curl_setopt($ch, CURLOPT_TIMEOUT, -1); # optional: -1 = unlimited, 3600 = 1 hour
-				curl_setopt($ch, CURLOPT_VERBOSE, false); # Set to true to see all the innards
-
-				# Only if you need to bypass SSL certificate validation
-				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-				# Assign a callback function to the CURL Write-Function
-				curl_setopt($ch, CURLOPT_WRITEFUNCTION, $callback);
-
-				# Execute the download - note we DO NOT put the result into a variable!
-				curl_exec($ch);
-				if (curl_errno($ch)) {
-					$error_msg = curl_error($ch);
-					# Close CURL
-					curl_close($ch);
-					# Close the file pointer
-					fclose(self::$file_handle);
-					throw new \Exception( "[save_remote_file]:" . $error_msg);
-				}
-
-				# Close CURL
-				curl_close($ch);
-
-				# Close the file pointer
-				fclose(self::$file_handle);
-
-				return $filename;
+		$filename = \download_url($url, 900);
+		if( is_wp_error($filename) ) {
+			throw new \Exception( "[save_remote_file]:" . implode("\n", $filename->get_error_messages()));
 		}
+		return $filename;
+	}
 
 
 		/**
@@ -373,7 +334,7 @@ class Media {
 
 			$embed = $wp_embed->autoembed($url);
 
-			if ( $embed == $url ) {
+			if ( esc_url($embed) == esc_url($url) ) {
 				$output .= sprintf("<a href='%s' target='blank'>%s</a>", $url, $url);
 			} else {
 				$output .= $embed;

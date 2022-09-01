@@ -530,7 +530,11 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             hideItemsListPageTitle: true,
             hideItemEditionPageTitle: true,
             hideBulkEditionPageTitle: true,
-            hideItemSingleCollectionName: true
+            hideItemSingleCollectionName: true,
+            hideItemEditionCollapses: true,
+            hideItemEditionMetadataTypes: true,
+            itemEditionDocumentInsideTabs: true,
+            itemEditionAttachmentsInsideTabs: true,
         }
     }
     for (let adminSpecialMode in adminSpecialModes) {
@@ -572,7 +576,6 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideTainacanHeaderSearchInput
             * hideTainacanHeaderAdvancedSearch
             * hideTainacanHeaderProcessesPopup
-        * hidePrimaryMenuCompressButton
         * hidePrimaryMenu
             * hidePrimaryMenuCompressButton
             * hidePrimaryMenuRepositoryButton
@@ -622,7 +625,13 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideItemEditionDocumentUrlInput
         * hideItemEditionThumbnail
         * hideItemEditionAttachments
+        * hideItemEditionCollapses
+        * hideItemEditionFocusMode
+        * hideItemEditionRequiredOnlySwitch
+        * hideItemEditionMetadataTypes
         * allowItemEditionModalInsideModal // Not recommended!
+        * itemEditionDocumentInsideTabs
+        * itemEditionAttachmentInsideTabs
         
         * hideBulkEditionPageTitle
         

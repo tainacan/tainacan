@@ -103,7 +103,7 @@
                             :class="{'is-loading': runButtonLoading}"
                             @click.prevent="runExporter()"
                             :disabled="!formIsValid()"
-                            class="button is-pulled-right is-turquoise5">
+                            class="button is-pulled-right is-success">
                         {{ $i18n.get('run') }}
                     </button>
                 </div>

@@ -96,9 +96,13 @@
             a {
                 cursor: zoom-in !important;
             }
+            .tainacan-item-file-download a {
+                cursor: pointer !important;
+            }
         }
     }
     li.swiper-slide {
+        box-sizing: border-box;
         height: 100%;
         max-width: 100%;
         //min-width: 100%;

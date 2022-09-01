@@ -42,6 +42,12 @@
                     <a
                             class="tainacan-card"
                             :href="getItemLink(item.url, index)">     
+                      
+                        <!-- JS-side hook for extra content -->
+                        <div 
+                                v-if="hasBeforeHook()"
+                                class="faceted-search-hook faceted-search-hook-item-before"
+                                v-html="getBeforeHook(item)" />
 
                         <!-- Title -->
                         <div class="metadata-title">
@@ -74,6 +80,7 @@
                                 <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
                             </span>
                         </div>
+
                         <!-- Remaining metadata -->
                         <div class="media">
                             <div 
@@ -111,6 +118,13 @@
 
                             </div>
                         </div>
+                  
+                        <!-- JS-side hook for extra content -->
+                        <div 
+                                v-if="hasAfterHook()"
+                                class="faceted-search-hook faceted-search-hook-item-after"
+                                v-html="getAfterHook(item)" />
+                                
                     </a>
                 </div>
             </div>

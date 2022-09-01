@@ -362,8 +362,6 @@ class Theme_Helper {
 	}
 
 	public function item_submission_shortcode($args) {
-		global $TAINACAN_BASE_URL;
-
 		$props = ' ';
 
 		// Passes arguments to custom props
@@ -377,7 +375,36 @@ class Theme_Helper {
 
 		wp_enqueue_media();
 
-		return "<div data-module='item-submission-form' id='tainacan-item-submission-form' $props ></div>";
+		$allowed_html = [
+			'div' => [
+				'id' => true,
+				'data-module' => true,
+				'collection-id' => true,
+				'hide-file-modal-button' => true,
+				'hide-text-modal-button' => true,
+				'hide-link-modal-button' => true,
+				'hide-thumbnail-section' => true,
+				'hide-attachments-section' => true,
+				'show-allow-comments-section' => true,
+				'hide-collapses' => true,
+				'hide-help-buttons' => true,
+				'hide-metadata-types' => true,
+				'help-info-bellow-label' => true,
+				'document-section-label' => true,
+				'thumbnail-section-label' => true,
+				'attachments-section-label' => true,
+				'metadata-section-label' => true,
+				'sent-form-heading' => true,
+				'sent-form-message' => true,
+				'item-link-button-label' => true,
+				'show-item-link-button' => true,
+				'show-terms-agreement-checkbox' => true,
+				'terms-agreement-message' => true,
+				'enabled-metadata' => true,
+			]
+		];
+
+		return wp_kses("<div data-module='item-submission-form' id='tainacan-item-submission-form' $props ></div>", $allowed_html);
 	}
 
 	/**
@@ -489,7 +516,40 @@ class Theme_Helper {
 			}
 		}
 
-		return "<div data-module='faceted-search' id='tainacan-items-page' $props ></div>";
+		$allowed_html = [
+			'div' => [
+				'id' => true,
+				'data-module' => true,
+				'collection-id' => true,
+				'term-id' => true,
+				'taxonomy' => true,
+				'default-view-mode' => true,
+				'is-forced-view-mode' => true,
+				'enabled-view-modes' => true,
+				'default-order' => true,
+				'default-orderby' => true,
+				'hide-filters' => true,
+				'hide-hide-filters-button' => true,
+				'hide-search' => true,
+				'hide-advanced-search' => true,
+				'hide-displayed-metadata-button' => true,
+				'hide-sorting-area' => true,
+				'hide-items-thumbnail' => true,
+				'hide-sort-by-button' => true,
+				'hide-exposers-button' => true,
+				'hide-items-per-page-button' => true,
+				'hide-go-to-page-button' => true,
+				'hide-pagination-area' => true,
+				'default-items-per-page' => true,
+				'show-filters-button-inside-search-control' => true,
+				'start-with-filters-hidden' => true,
+				'filters-as-modal' => true,
+				'show-inline-view-mode-options' => true,
+				'show-fullscreen-with-view-modes' => true
+			]
+		];
+
+		return wp_kses("<div data-module='faceted-search' id='tainacan-items-page' $props ></div>", $allowed_html);
 	}
 	
 	function get_items_list_slug() {
@@ -680,7 +740,7 @@ class Theme_Helper {
 
 			$logo = get_template_directory_uri() . '/assets/images/social-logo.png';
 			$excerpt = get_bloginfo( 'description' );
-			$url_src = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+			$url_src = esc_url((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 			global $wp;
 				
 			if ( is_post_type_archive() ) {
@@ -749,13 +809,13 @@ class Theme_Helper {
 
 			?>
 			<meta property="og:type" content="article"/>
-			<meta property="og:title" content="<?php echo $title; ?>"/>
-			<meta property="og:site_name" content="<?php echo get_bloginfo(); ?>"/>
-			<meta property="og:description" content="<?php echo $excerpt; ?>"/>
-			<meta property="og:url" content="<?php echo $url_src; ?>"/>
-			<meta property="og:image" content="<?php echo $image['url']; ?>"/>
-			<meta property="og:image:width" content="<?php echo $image['width']; ?>"/>
-			<meta property="og:image:height" content="<?php echo $image['height']; ?>"/>
+			<meta property="og:title" content="<?php echo esc_attr($title); ?>"/>
+			<meta property="og:site_name" content="<?php echo esc_attr(get_bloginfo()); ?>"/>
+			<meta property="og:description" content="<?php echo esc_html($excerpt); ?>"/>
+			<meta property="og:url" content="<?php echo esc_url($url_src); ?>"/>
+			<meta property="og:image" content="<?php echo esc_url($image['url']); ?>"/>
+			<meta property="og:image:width" content="<?php echo esc_attr($image['width']); ?>"/>
+			<meta property="og:image:height" content="<?php echo esc_attr($image['height']); ?>"/>
 
 
 		<?php } else { return; } // End if().
@@ -854,7 +914,7 @@ class Theme_Helper {
          *     @type integer $auto_play_speed				The time in s to translate to the next slide automatically 
          *     @type bool    $loop_slides					Should slides loop when reached the end of the Carousel?
          *     @type bool    $hide_title					Should the title of the items be displayed?
-         *     @type bool    $crop_images_to_square			Should it use the `tainacan-medium-size` instead of the `tainacan-medium-large-size`?
+         *     @type string  $image_size					Item image size. Defaults to 'tainacan-medium'
          *     @type bool    $show_collection_header		Should it display a small version of the collection header?
          *     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
          *     @type string  $collection_background_color	Color of the collection header background
@@ -877,7 +937,7 @@ class Theme_Helper {
 			'auto_play_speed' => 3,
 			'loop_slides' => false,
 			'hide_title' => false,
-			'crop_images_to_square' => true,
+			'image_size' => 'tainacan-medium',
 			'show_collection_header' => false,
 			'show_collection_label' => false,
 			'collection_background_color' => '#454647',
@@ -888,6 +948,11 @@ class Theme_Helper {
 		);
 		$args = wp_parse_args($args, $defaults);
 
+		/* Compatibility with previous version */
+		if ( isset($args['crop_images_to_square	']) && !$args['crop_images_to_square'] ) {
+			$args['image_size'] = 'tainacan-medium-full';
+		}
+
 		$props = ' ';
 
 		// Always pass the class needed by Vue to mount the component;
@@ -895,14 +960,22 @@ class Theme_Helper {
 		unset($args['class_name']);
 		
 		// Builds parameters to the html div rendered by Vue
+		$allowed_html = [
+			'div' => [
+				'data-module' => true,
+				'id' => true
+			]
+		];
 		foreach ($args as $key => $value) {
 			if (is_bool($value))
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
-			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
+			$key_attr = str_replace('_', '-', $key);
+			$props .= "$key_attr='$value' ";
+			$allowed_html['div'][$key_attr] = true;
 		}
 		
-		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>";
+		return wp_kses( "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>", $allowed_html);
 	} 
 
 	/**
@@ -920,7 +993,7 @@ class Theme_Helper {
          *     @type string  $show_name						Show the item title
          *     @type string  $show_image					Show the item thumbnail
          *     @type string  $layout						Either 'grid', 'list' or 'mosaic'
-         *     @type string  $crop_images_to_square			Force images shape to be squared
+         *     @type string  $image_size					Item image size. Defaults to 'tainacan-medium'
          *     @type bool    $show_collection_header		Should it display a small version of the collection header?
          *     @type bool    $show_collection_label			Should it displar a 'Collection' label before the collection name on the collection header?
          *     @type string  $collection_background_color	Color of the collection header background
@@ -947,7 +1020,7 @@ class Theme_Helper {
 			'show_name' => true,
 			'show_image' => true,
 			'layout' => 'grid',
-			'crop_images_to_square' => true,
+			'image_size' => 'tainacan-medium',
 			'show_collection_header' => false,
 			'show_collection_label' => false,
 			'collection_background_color' => '#454647',
@@ -964,6 +1037,11 @@ class Theme_Helper {
 		);
 		$args = wp_parse_args($args, $defaults);
 
+		/* Compatibility with previous version */
+		if ( isset($args['crop_images_to_square	']) && !$args['crop_images_to_square'] ) {
+			$args['image_size'] = 'tainacan-medium-full';
+		}
+
 		$props = ' ';
 
 		// Always pass the class needed by Vue to mount the component;
@@ -971,14 +1049,23 @@ class Theme_Helper {
 		unset($args['class_name']);
 		
 		// Builds parameters to the html div rendered by Vue
+		$allowed_html = [
+			'div' => [
+				'data-module' => true,
+				"id" => true
+			]
+		];
+		// Builds parameters to the html div rendered by Vue
 		foreach ($args as $key => $value) {
 			if (is_bool($value))
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
-			$props .= (str_replace('_', '-', $key) . "='" . $value . "' ");
+			$key_attr = str_replace('_', '-', $key);
+			$props .=  "$key_attr='$value' ";
+			$allowed_html['div'][$key_attr] = true;
 		}
 		
-		return "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>";
+		return wp_kses("<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>", $allowed_html);
 	} 
 
 	/**
@@ -1000,9 +1087,6 @@ class Theme_Helper {
 		 * @return string  The HTML div to be used for rendering the related items vue component
 	 */
 	public function get_tainacan_related_items_list($args = []) {
-		global $TAINACAN_BASE_URL;
-		global $TAINACAN_VERSION;
-		
 		$defaults = array(
 			'class_name' => '',
 			'collection_heading_class_name' => '',
@@ -1025,22 +1109,21 @@ class Theme_Helper {
 			return;
 
 		// Always pass the default class. We force passing the wp-block-tainacan-carousel-related-items because themes might have used it to style before the other layouts exist;
-		$output = '<div data-module="related-items-list" class="' . $args['class_name'] . ' wp-block-tainacan-carousel-related-items wp-block-tainacan-related-items' . '">';
+		$output = '<div data-module="related-items-list" class="' .  esc_attr($args['class_name']) . ' wp-block-tainacan-carousel-related-items wp-block-tainacan-related-items' . '">';
 		
 		foreach($related_items as $collection_id => $related_group) {
 			
 			if ( isset($related_group['items']) && isset($related_group['total_items']) && $related_group['total_items'] ) {
-
 				// Adds a heading with the collection name
 				$collection_heading = '';
 				if ( isset($related_group['collection_name']) ) {
-					$collection_heading = '<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>';
+					$collection_heading = wp_kses_post('<' . $args['collection_heading_tag'] . ' class="' . $args['collection_heading_class_name'] . '">' . $related_group['collection_name'] . '</' . $args['collection_heading_tag'] . '>');
 				}
 				
 				// Adds a paragraph with the metadata name
 				$metadata_label = '';
 				if ( isset($related_group['metadata_name']) ) {
-					$metadata_label = '<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>';
+					$metadata_label = wp_kses_post('<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>');
 				}
 				
 				// Sets the carousel, from the items carousel template tag.
@@ -1069,6 +1152,10 @@ class Theme_Helper {
 				
 				$output .= '<div class="wp-block-group">
 					<div class="wp-block-group__inner-container">' .
+						/**
+						 * Note to code reviewers: This lines doesn't need to be escaped.
+						 * Functions get_tainacan_items_carousel() and get_tainacan_dynamic_items_list used here escape the return value.
+						 */
 						$collection_heading .
 						$metadata_label .
 						$items_list_div .
@@ -1076,7 +1163,7 @@ class Theme_Helper {
 							$related_group['total_items'] > 1 ?
 								'<div class="wp-block-buttons">
 									<div class="wp-block-button">
-										<a class="wp-block-button__link" href="/' . $related_group['collection_slug'] . '?metaquery[0][key]=' . $related_group['metadata_id'] . '&metaquery[0][value][0]=' . $item->get_ID() . '&metaquery[0][compare]=IN">
+										<a class="wp-block-button__link" href="' . esc_url('/' . $related_group['collection_slug']) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
 											' . sprintf( __('View all %s related items', 'tainacan'), $related_group['total_items'] ) . '
 										</a>
 									</div>
@@ -1306,9 +1393,10 @@ class Theme_Helper {
 
 			if ( $media_sources['document'] && !empty(tainacan_get_the_document($item_id)) ) {
 				$is_document_type_attachment = tainacan_get_the_document_type($item_id) === 'attachment';
+				
 				$media_items_thumbnails[] =
 					tainacan_get_the_media_component_slide(array(
-						'media_content' => get_the_post_thumbnail(null, 'tainacan-medium'),
+						'media_content' => get_the_post_thumbnail($item_id, 'tainacan-medium'),
 						'media_content_full' => $open_lightbox_on_click ? ($is_document_type_attachment ? tainacan_get_the_document($item_id, 'full') : sprintf('<div class="attachment-without-image">%s</div>', tainacan_get_the_document($item_id, 'full')) ) : '',
 						'media_title' => $is_document_type_attachment ? get_the_title(tainacan_get_the_document_raw($item_id)) : '',
 						'media_description' => $is_document_type_attachment ? get_the_content(null, false, tainacan_get_the_document_raw($item_id)) : '',

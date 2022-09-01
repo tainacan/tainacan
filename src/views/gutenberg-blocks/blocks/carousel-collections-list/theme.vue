@@ -39,22 +39,22 @@
                                 :href="collection.url">
                             <img
                                 :src=" 
-                                    collection.thumbnail && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
+                                    collection.thumbnail && collection.thumbnail[imageSize] && collection.thumbnail[imageSize][0] 
                                         ?
-                                    collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
+                                    collection.thumbnail[imageSize][0] 
                                         :
-                                    (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                    (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
                                         ?    
                                     collection.thumbnail['thumbnail'][0] 
                                         : 
                                     `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                                 "
                                 :data-src=" 
-                                    collection.thumbnail && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] && collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
+                                    collection.thumbnail && collection.thumbnail[imageSize] && collection.thumbnail[imageSize][0] 
                                         ?
-                                    collection.thumbnail[maxCollectionsPerScreen > 4 ? (!cropImagesToSquare ? 'tainacan-medium-full' : 'tainacan-medium') : 'full'][0] 
+                                    collection.thumbnail[imageSize][0] 
                                         :
-                                    (collection.thumbnail && collection.thumbnail['thumbnail'][0] && collection.thumbnail['thumbnail'][0]
+                                    (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
                                         ?    
                                     collection.thumbnail['thumbnail'][0] 
                                         : 
@@ -69,27 +69,27 @@
                                 :href="collection.url">
                             <div class="collection-items-grid">
                                 <blur-hash-image
-                                        :height="collectionItems[collection.id][0] ? $thumbHelper.getHeight(collectionItems[collection.id][0]['thumbnail'], 'tainacan-medium') : 275"
-                                        :width="collectionItems[collection.id][0] ? $thumbHelper.getWidth(collectionItems[collection.id][0]['thumbnail'], 'tainacan-medium') : 275"
-                                        :src="collectionItems[collection.id][0] ? $thumbHelper.getSrc(collectionItems[collection.id][0]['thumbnail'], 'tainacan-medium', collectionItems[collection.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :srcset="collectionItems[collection.id][0] ? $thumbHelper.getSrcSet(collectionItems[collection.id][0]['thumbnail'], 'tainacan-medium', collectionItems[collection.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :hash="collectionItems[collection.id][0] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][0]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
+                                        :height="collectionItems[collection.id][0] ? $thumbHelper.getHeight(collectionItems[collection.id][0]['thumbnail'], imageSize) : 275"
+                                        :width="collectionItems[collection.id][0] ? $thumbHelper.getWidth(collectionItems[collection.id][0]['thumbnail'], imageSize) : 275"
+                                        :src="collectionItems[collection.id][0] ? $thumbHelper.getSrc(collectionItems[collection.id][0]['thumbnail'], imageSize, collectionItems[collection.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :srcset="collectionItems[collection.id][0] ? $thumbHelper.getSrcSet(collectionItems[collection.id][0]['thumbnail'], imageSize, collectionItems[collection.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :hash="collectionItems[collection.id][0] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][0]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
                                         :alt="collectionItems[collection.id][0] && collectionItems[collection.id][0].thumbnail_alt ? collectionItems[collection.id][0].thumbnail_alt : (collectionItems[collection.id][0] && collectionItems[collection.id][0].name ? collectionItems[collection.id][0].name : $root.__( 'Thumbnail', 'tainacan' ))"
                                         :transition-duration="500" />
                                 <blur-hash-image
-                                        :height="collectionItems[collection.id][1] ? $thumbHelper.getHeight(collectionItems[collection.id][1]['thumbnail'], 'tainacan-medium') : 275"
-                                        :width="collectionItems[collection.id][1] ? $thumbHelper.getWidth(collectionItems[collection.id][1]['thumbnail'], 'tainacan-medium') : 275"
-                                        :src="collectionItems[collection.id][1] ? $thumbHelper.getSrc(collectionItems[collection.id][1]['thumbnail'], 'tainacan-medium', collectionItems[collection.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :srcset="collectionItems[collection.id][1] ? $thumbHelper.getSrcSet(collectionItems[collection.id][1]['thumbnail'], 'tainacan-medium', collectionItems[collection.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :hash="collectionItems[collection.id][1] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][1]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
+                                        :height="collectionItems[collection.id][1] ? $thumbHelper.getHeight(collectionItems[collection.id][1]['thumbnail'], imageSize) : 275"
+                                        :width="collectionItems[collection.id][1] ? $thumbHelper.getWidth(collectionItems[collection.id][1]['thumbnail'], imageSize) : 275"
+                                        :src="collectionItems[collection.id][1] ? $thumbHelper.getSrc(collectionItems[collection.id][1]['thumbnail'], imageSize, collectionItems[collection.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :srcset="collectionItems[collection.id][1] ? $thumbHelper.getSrcSet(collectionItems[collection.id][1]['thumbnail'], imageSize, collectionItems[collection.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :hash="collectionItems[collection.id][1] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][1]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
                                         :alt="collectionItems[collection.id][1] && collectionItems[collection.id][1].thumbnail_alt ? collectionItems[collection.id][1].thumbnail_alt : (collectionItems[collection.id][1] && collectionItems[collection.id][1].name ? collectionItems[collection.id][1].name : $root.__( 'Thumbnail', 'tainacan' ))"
                                         :transition-duration="500" />
                                 <blur-hash-image
-                                        :height="collectionItems[collection.id][2] ? $thumbHelper.getHeight(collectionItems[collection.id][2]['thumbnail'], 'tainacan-medium') : 275"
-                                        :width="collectionItems[collection.id][2] ? $thumbHelper.getWidth(collectionItems[collection.id][2]['thumbnail'], 'tainacan-medium') : 275"
-                                        :src="collectionItems[collection.id][2] ? $thumbHelper.getSrc(collectionItems[collection.id][2]['thumbnail'], 'tainacan-medium', collectionItems[collection.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :srcset="collectionItems[collection.id][2] ? $thumbHelper.getSrcSet(collectionItems[collection.id][2]['thumbnail'], 'tainacan-medium', collectionItems[collection.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                        :hash="collectionItems[collection.id][2] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][2]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
+                                        :height="collectionItems[collection.id][2] ? $thumbHelper.getHeight(collectionItems[collection.id][2]['thumbnail'], imageSize) : 275"
+                                        :width="collectionItems[collection.id][2] ? $thumbHelper.getWidth(collectionItems[collection.id][2]['thumbnail'], imageSize) : 275"
+                                        :src="collectionItems[collection.id][2] ? $thumbHelper.getSrc(collectionItems[collection.id][2]['thumbnail'], imageSize, collectionItems[collection.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :srcset="collectionItems[collection.id][2] ? $thumbHelper.getSrcSet(collectionItems[collection.id][2]['thumbnail'], imageSize, collectionItems[collection.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                        :hash="collectionItems[collection.id][2] ? $thumbHelper.getBlurhashString(collectionItems[collection.id][2]['thumbnail'], imageSize) : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
                                         :alt="collectionItems[collection.id][2] && collectionItems[collection.id][2].thumbnail_alt ? collectionItems[collection.id][2].thumbnail_alt : (collectionItems[collection.id][2] && collectionItems[collection.id][2].name ? collectionItems[collection.id][2].name : $root.__( 'Thumbnail', 'tainacan' ))"
                                         :transition-duration="500" />
                             </div>
@@ -172,7 +172,7 @@ export default {
         hideName: Boolean,
         largeArrows: Boolean,
         arrowsStyle: String,
-        cropImagesToSquare: Boolean,
+        imageSize: String,
         showCollectionThumbnail: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,
@@ -247,6 +247,8 @@ export default {
         },
         mountCarousel() {
             const self = this;
+            const spaceBetween = Number(self.spaceBetweenCollections);
+            const slidesPerView = Number(self.maxCollectionsPerScreen);
             this.swiper = new Swiper('#' + self.blockId + '-carousel', {
                 mousewheel: {
                     forceToAxis: true
@@ -257,24 +259,24 @@ export default {
                 allowTouchMove: true, 
                 slidesPerView: 1,
                 slidesPerGroup: 1,
-                spaceBetween: self.spaceBetweenCollections,
+                spaceBetween: spaceBetween,
                 slideToClickedSlide: true,
                 navigation: {
                     nextEl: '#' + self.blockId + '-next',
                     prevEl: '#' + self.blockId + '-prev',
                 },
                 breakpoints: !isNaN(self.maxCollectionsPerScreen) ? {
-                    498:  { slidesPerView: self.showCollectionThumbnail ? 1 : 1, spaceBetween: self.spaceBetweenCollections },
-                    768:  { slidesPerView: self.showCollectionThumbnail ? 2 : 1, spaceBetween: self.spaceBetweenCollections },
-                    1024: { slidesPerView: self.showCollectionThumbnail ? 3 : 2, spaceBetween: self.spaceBetweenCollections },
-                    1366: { slidesPerView: self.showCollectionThumbnail ? 4 : 3, spaceBetween: self.spaceBetweenCollections },
-                    1600: { slidesPerView: self.showCollectionThumbnail ? 5 : 4, spaceBetween: self.spaceBetweenCollections },
+                    498:  { slidesPerView: self.showCollectionThumbnail ? 1 : 1, spaceBetween: spaceBetween },
+                    768:  { slidesPerView: self.showCollectionThumbnail ? 2 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: self.showCollectionThumbnail ? 3 : 2, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: self.showCollectionThumbnail ? 4 : 3, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: self.showCollectionThumbnail ? 5 : 4, spaceBetween: spaceBetween },
                 } : {
-                    498:  { slidesPerView: self.maxCollectionsPerScreen - 4 > 0 ? self.maxCollectionsPerScreen - 4 : 1, spaceBetween: self.spaceBetweenCollections }, 
-                    768:  { slidesPerView: self.maxCollectionsPerScreen - 3 > 0 ? self.maxCollectionsPerScreen - 3 : 1, spaceBetween: self.spaceBetweenCollections },
-                    1024: { slidesPerView: self.maxCollectionsPerScreen - 2 > 0 ? self.maxCollectionsPerScreen - 2 : 1, spaceBetween: self.spaceBetweenCollections },
-                    1366: { slidesPerView: self.maxCollectionsPerScreen - 1 > 0 ? self.maxCollectionsPerScreen - 1 : 1, spaceBetween: self.spaceBetweenCollections },
-                    1600: { slidesPerView: self.maxCollectionsPerScreen > 0 ? self.maxCollectionsPerScreen : 1, spaceBetween: self.spaceBetweenCollections },
+                    498:  { slidesPerView: slidesPerView - 4 > 0 ? slidesPerView - 4 : 1, spaceBetween: spaceBetween }, 
+                    768:  { slidesPerView: slidesPerView - 3 > 0 ? slidesPerView - 3 : 1, spaceBetween: spaceBetween },
+                    1024: { slidesPerView: slidesPerView - 2 > 0 ? slidesPerView - 2 : 1, spaceBetween: spaceBetween },
+                    1366: { slidesPerView: slidesPerView - 1 > 0 ? slidesPerView - 1 : 1, spaceBetween: spaceBetween },
+                    1600: { slidesPerView: slidesPerView > 0 ? slidesPerView : 1, spaceBetween: spaceBetween },
                 },
                 autoplay: (self.autoPlay && !self.isLoading) ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides && !self.isLoading,

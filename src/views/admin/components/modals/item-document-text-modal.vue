@@ -24,7 +24,7 @@
                 <button
                         id="button-submit-text-content-writing"
                         type="submit"
-                        @click.prevent="$parent.close();"
+                        @click.prevent="confirmTextWriting();$parent.close();"
                         class="button is-success">
                     {{ $i18n.get('save') }}</button>
             </div>
@@ -54,6 +54,11 @@ export default {
         ) {
             this.$refs['item-document-text-input']['$el'].children[0].focus();
             this.$refs['item-document-text-input']['$el'].children[0].click();
+        }
+    },
+    methods: {
+        confirmTextWriting() {
+            this.$emit('confirmTextWriting', this.localTextContent);
         }
     }
 }

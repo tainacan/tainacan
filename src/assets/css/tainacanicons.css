@@ -151,6 +151,9 @@
 .tainacan-icon-items:before {
     content: "items";
 }
+.tainacan-icon-item:before {
+    content: "item";
+}
 .tainacan-icon-menu:before {
     content: "menu";
 }

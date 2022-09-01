@@ -370,7 +370,7 @@
         <p class="help is-danger">{{ formErrorMessage }}</p>
         <div class="control">
             <b-button
-                    :loading="isLoading"
+                    :loading="isUpdating"
                     class="button is-success"
                     native-type="submit">
                 {{ $i18n.get('save') }}
@@ -437,7 +437,6 @@
                 'updateMetadatum'
             ]),
             saveEdition(metadatum) {
-
                 if ( (metadatum.metadata_type_object && metadatum.metadata_type_object.form_component) || metadatum.edit_form == '') {
                     let repository = this.form.repository_level;
 
@@ -449,7 +448,8 @@
                         isRepositoryLevel: this.isRepositoryLevel || (repository && repository === 'yes'),
                         index: this.index,
                         options: this.form,
-                        includeOptionsAsHtml: true
+                        includeOptionsAsHtml: true,
+                        sectionId: metadatum.metadata_section_id
                     })
                         .then(() => {
                             this.form = {};
@@ -493,7 +493,8 @@
                         isRepositoryLevel: this.isRepositoryLevel || (repository && repository === 'yes'),
                         index: this.index,
                         options: formObj,
-                        includeOptionsAsHtml: true
+                        includeOptionsAsHtml: true,
+                        sectionId: metadatum.metadata_section_id
                     })
                         .then(() => {
                             this.form = {};

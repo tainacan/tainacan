@@ -67,7 +67,7 @@ export const fetchMetadata = ({commit}, {
     });
 };
 
-export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, status, isRepositoryLevel, newIndex, parent, includeOptionsAsHtml}) => {
+export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, status, isRepositoryLevel, newIndex, parent, includeOptionsAsHtml, sectionId }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
         if (!isRepositoryLevel)
@@ -80,15 +80,24 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
         if (includeOptionsAsHtml)
             endpoint += '&include_options_as_html=yes';
 
-        axios.tainacan.post(endpoint, {
+        let params = {
             name: name,
             metadata_type: metadatumType,
             status: status,
             parent: parent
-        })
+        }
+
+        if (sectionId != undefined && sectionId != false)
+            params['metadata_section_id'] = sectionId;
+
+        axios.tainacan.post(endpoint, params)
             .then(res => {
                 let metadatum = res.data;
-                commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex, isRepositoryLevel: isRepositoryLevel });
+                
+                if (sectionId != undefined && sectionId != false)
+                    commit('updateMetadatumInsideSectionMetadata', { metadatum: metadatum, index: newIndex, sectionId: sectionId })
+                else
+                    commit('setSingleMetadatum', { metadatum: metadatum, index: newIndex, isRepositoryLevel: isRepositoryLevel });
 
                 resolve(metadatum);
             })
@@ -98,24 +107,33 @@ export const sendMetadatum = ({commit}, {collectionId, name, metadatumType, stat
     });
 };
 
-export const updateMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel, index, options, includeOptionsAsHtml}) => {
+export const updateMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel, index, options, includeOptionsAsHtml, sectionId }) => {
     return new Promise((resolve, reject) => {
         let endpoint = '';
 
-        if (!isRepositoryLevel)
+        if (!isRepositoryLevel) {
             endpoint = '/collection/' + collectionId + '/metadata/' + metadatumId;
-        else
+        } else {
             endpoint = '/metadata/' + metadatumId;
+            options['target_collection_id'] = collectionId;
+        }
 
         endpoint += '?context=edit';
 
         if (includeOptionsAsHtml)
             endpoint += '&include_options_as_html=yes';
 
+        if (sectionId != undefined)
+            options['metadata_section_id'] = sectionId;
+
         axios.tainacan.put(endpoint, options)
             .then(res => {
                 let metadatum = res.data;
-                commit('setSingleMetadatum', { metadatum: metadatum, index: index, isRepositoryLevel: isRepositoryLevel });
+
+                if (sectionId !== null && sectionId !== undefined)
+                    commit('updateMetadatumInsideSectionMetadata', { metadatum: metadatum, index: index, sectionId: sectionId });
+                else
+                    commit('setSingleMetadatum', { metadatum: metadatum, index: index, isRepositoryLevel: isRepositoryLevel });
 
                 resolve(metadatum);
             })
@@ -152,7 +170,7 @@ export const updateMetadata = ({commit}, metadata) => {
     commit('setMetadata', metadata);
 };
 
-export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel}) => {
+export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isRepositoryLevel }) => {
     let endpoint = '';
     if (!isRepositoryLevel)
         endpoint = '/collection/' + collectionId + '/metadata/' + metadatumId;
@@ -163,12 +181,16 @@ export const deleteMetadatum = ({commit}, {collectionId, metadatumId, isReposito
         axios.tainacan.delete(endpoint)
             .then(res => {
                 const metadatum = res.data;
-                commit('deleteMetadatum', metadatum);
+                if (metadatum.metadata_section_id && !isRepositoryLevel)
+                    commit('deleteMetadatumInsideMetadataSection', metadatum)
+                else
+                    commit('deleteMetadatum', metadatum);
+           
                 resolve(res.data);
-            }).catch((error) => {
-            console.log(error);
-            reject(error);
-        });
+            })
+            .catch((error) => {
+                reject(error);
+            });
 
     });
 };
@@ -177,14 +199,14 @@ export const cleanMetadata = ({commit}) => {
     commit('cleanMetadata');
 };
 
-export const updateCollectionMetadataOrder = ({ commit }, {collectionId, metadataOrder}) => {
+export const updateCollectionMetadataOrder = ({ commit }, { collectionId, metadataOrder, metadataSectionId }) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/collections/' + collectionId + '/metadata_order?context=edit', {
+        axios.tainacan.patch('/collections/' + collectionId + '/metadata_section/' + metadataSectionId + '/metadata_order?context=edit', {
             metadata_order: metadataOrder
         }).then(res => {
             commit('collection/setCollection', res.data, { root: true });
-            commit('updateMetadataOrderFromCollection', res.data.metadata_order);
+            commit('updateCollectionMetadataOrder', { metadataOrder: res.data.metadata_order, metadataSectionId: metadataSectionId });
             resolve(res.data);
         }).catch(error => {
             reject(error.response);
@@ -236,6 +258,7 @@ export const updateMetadatumTypes = ({commit}, metadatumTypes) => {
     commit('setMetadatumTypes', metadatumTypes);
 };
 
+// METADATA MAPPERS
 export const fetchMetadatumMappers = ({commit}) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.get('/metadatum-mappers')
@@ -271,4 +294,142 @@ export const updateMetadatumMappers = ({commit}, metadatumMappers) => {
     commit('setMetadatumMappers', metadatumMappers);
 };
 
+// METADATA SECTIONS
+export const fetchMetadataSections = ({commit}, { collectionId, isContextEdit, includeDisabled }) => {
+
+    let endpoint = '/collection/' + collectionId + '/metadata-sections?';
+
+    if (isContextEdit)
+        endpoint += 'context=edit&'
+
+    if (includeDisabled)
+        endpoint += 'include_disabled=true'
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get(endpoint)
+            .then((res) => {
+                let metadataSections = res.data;
+                commit('setMetadataSections', metadataSections);
+                resolve(metadataSections);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
+
+export const sendMetadataSection = ({commit}, { collectionId, name, status, newIndex }) => {
+    return new Promise((resolve, reject) => {
+        let endpoint = '/collection/' + collectionId + '/metadata-sections/';
+
+        endpoint += '?context=edit';
+
+        axios.tainacan.post(endpoint, {
+            name: name,
+            status: status,
+        })
+            .then(res => {
+                let metadataSection = res.data;
+                // commit('clearPlaceholderMetadataSection');
+                commit('setSingleMetadataSection', { metadataSection: metadataSection, index: newIndex });
+                
+                resolve(res.data);
+            })
+            .catch(error => {
+                reject(error.response);
+            });
+    });
+};
+
+
+export const updateMetadataSection = ({commit}, {collectionId, metadataSectionId, index, options }) => {
+    return new Promise((resolve, reject) => {
+        let endpoint = '/collection/' + collectionId + '/metadata-sections/' + metadataSectionId;
+
+        endpoint += '?context=edit';
+
+        axios.tainacan.put(endpoint, options)
+            .then(res => {
+                let metadataSection = res.data;
+                commit('setSingleMetadataSection', { metadataSection: metadataSection, index: index });
+                resolve(metadataSection);
+            })
+            .catch(error => {
+                reject({
+                    error_message: error['response']['data'].error_message,
+                    errors: error['response']['data'].errors
+                });
+            });
+    });
+};
+
+export const deleteMetadataSection = ({commit}, { collectionId, metadataSectionId }) => {
+    let endpoint = '/collection/' + collectionId + '/metadata-sections/' + metadataSectionId;
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.delete(endpoint)
+            .then(res => {
+                const metadataSection = res.data;
+                commit('deleteMetadataSection', metadataSection);
+                resolve(res.data);
+            }).catch((error) => {
+                console.log(error);
+                reject(error);
+            });
+    });
+};
+
+export const updateMetadataSections = ({commit}, metadataSections) => {
+    commit('setMetadataSections', metadataSections);
+};
+
+export const updateCollectionMetadataSectionsOrder = ({ commit }, {collectionId, metadataSectionsOrder }) => {
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.patch('/collections/' + collectionId + '/metadata_section_order?context=edit', {
+            metadata_section_order: metadataSectionsOrder
+        }).then(res => {
+            commit('collection/setCollection', res.data, { root: true });
+            commit('updateMetadataSectionsOrderFromCollection', res.data.metadata_section_order);
+            resolve(res.data);
+        }).catch(error => {
+            reject(error.response);
+        });
+    });
+}
+
+export const cleanMetadataSections = ({commit}) => {
+    commit('cleanMetadataSections');
+};
+
+export const moveMetadataSectionUp = ({ commit }, index) => {
+    commit('moveMetadataSectionUp', index);
+}
+
+export const moveMetadataSectionDown = ({ commit }, index) => {
+    commit('moveMetadataSectionDown', index);
+}
+
+export const moveMetadatumUp = ({ commit }, { index, sectionIndex }) => {
+    commit('moveMetadatumUp', { index, sectionIndex });
+}
+
+export const moveMetadatumDown = ({ commit }, { index, sectionIndex }) => {
+    commit('moveMetadatumDown', { index, sectionIndex });
+}
+
+// METADATA SECTION METADATA LIST
+export const fetchMetadataSectionMetadata = ({commit}, { collectionId , metadataSectionId }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get('/collection/' + collectionId + '/metadata-sections/' + metadataSectionId + '/metadata')
+            .then((res) => {
+                let metadataSectionMetadata = res.data;
+                commit('setMetadataSectionMetadata', { metadataSectionId: metadataSectionId, metadata: metadataSectionMetadata });
+                resolve(metadataSectionMetadata);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+    });
+}
 

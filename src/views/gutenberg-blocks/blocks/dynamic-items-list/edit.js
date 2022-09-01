@@ -2,8 +2,12 @@ const { __ } = wp.i18n;
 
 const { ResizableBox, FocalPointPicker, SelectControl, RangeControl, Spinner, Button, ToggleControl, Placeholder, ColorPalette, BaseControl, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
+const { useSelect } = wp.data;
+
+import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
+import pick from 'lodash/pick';
 import DynamicItemsModal from '../carousel-items-list/dynamic-and-carousel-items-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
@@ -44,7 +48,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         sampleBackgroundImage,
         mosaicDensity,
         maxColumnsCount,
-        cropImagesToSquare
+        imageSize
     } = attributes;
 
     // Gets blocks props from hook
@@ -59,15 +63,60 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxColumnsCount = 5;
         setAttributes({ maxColumnsCount: maxColumnsCount });
     }
-    if (cropImagesToSquare === undefined) {  
-        cropImagesToSquare = true;    
-        setAttributes({ cropImagesToSquare: cropImagesToSquare });
+    if (maxItemsNumber === undefined) {
+        maxItemsNumber = 12;
+        setAttributes({ maxItemsNumber: maxItemsNumber });
     }
     if (loadStrategy === undefined) {
         loadStrategy = 'search';
         setAttributes({ loadStrategy: loadStrategy });
     }
-    
+    if (mosaicGridRows === undefined) {
+        mosaicGridRows = 3;
+        setAttributes({ mosaicGridRows: mosaicGridRows });
+    }
+    if (imageSize === undefined) {
+        imageSize = 'tainacan-medium';
+        setAttributes({ imageSize: imageSize });
+    }
+
+    const layoutControls = [
+        {
+            icon: 'grid-view',
+            title: __( 'Grid View', 'tainacan' ),
+            onClick: () => updateLayout('grid'),
+            isActive: layout === 'grid',
+        },
+        {
+            icon: 'list-view',
+            title: __( 'List View', 'tainacan' ),
+            onClick: () => updateLayout('list'),
+            isActive: layout === 'list',
+        },
+        {
+            icon: 'layout',
+            title: __( 'Mosaic View', 'tainacan' ),
+            onClick: () => updateLayout('mosaic'),
+            isActive: layout === 'mosaic',
+        }
+    ];
+
+    // Get available image sizes
+    const {	imageSizes } = useSelect(
+		( select ) => {
+			const {	getSettings	} = select( store );
+
+			const settings = pick( getSettings(), [
+                'imageSizes'
+			] );
+            return settings
+        },
+		[ clientId ]
+	);
+    const imageSizeOptions = map(
+		imageSizes,
+		( { name, slug } ) => ( { value: slug, label: name } )
+	);
     function prepareItem(item) {
         return (
             <li 
@@ -98,8 +147,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     onClick={ (event) => event.preventDefault() }
                     className={ (!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '') }>
                     <img
-                        src={ thumbHelper.getSrc(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
-                        srcSet={ thumbHelper.getSrcSet(item['thumbnail'], ( (layout == 'list' || cropImagesToSquare) ? 'tainacan-medium' : 'tainacan-medium-full'), item['document_mimetype']) }
+                        src={ thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype']) }
+                        srcSet={ thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype']) }
                         alt={ item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : __( 'Thumbnail', 'tainacan' )) }/>
                     { item.title ?
                         <span>{ item.title }</span>
@@ -152,10 +201,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
             } else {
                 // Initializes some variables
-                mosaicDensity = mosaicDensity ? mosaicDensity : 5;
-                mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
-                mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
-                mosaicHeight = mosaicHeight ? mosaicHeight : 280;
+                mosaicDensity = mosaicDensity ? Number(mosaicDensity) : 5;
+                mosaicGridRows = mosaicGridRows ? Number(mosaicGridRows) : 3;
+                mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumnsRows) : 3;
+                mosaicHeight = mosaicHeight ? Number(mosaicHeight) : 280;
                 mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
                 sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
 
@@ -203,10 +252,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
                     } else {
                         // Initializes some variables
-                        mosaicDensity = mosaicDensity ? mosaicDensity : 5;
-                        mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
-                        mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
-                        mosaicHeight = mosaicHeight ? mosaicHeight : 280;
+                        mosaicDensity = mosaicDensity ? Number(mosaicDensity) : 5;
+                        mosaicGridRows = mosaicGridRows ? Number(mosaicGridRows) : 3;
+                        mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumns) : 3;
+                        mosaicHeight = mosaicHeight ? Number(mosaicHeight) : 280;
                         mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
                         sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
 
@@ -246,7 +295,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 if (maxItemsNumber != undefined && maxItemsNumber > 0)
                     queryObject.perpage = maxItemsNumber;
                 else if (queryObject.perpage != undefined && queryObject.perpage > 0)
-                    setAttributes({ maxItemsNumber: queryObject.perpage });
+                    setAttributes({ maxItemsNumber: Number(queryObject.perpage) });
                 else {
                     queryObject.perpage = 12;
                     setAttributes({ maxItemsNumber: 12 });
@@ -295,10 +344,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
                         } else {
                             // Initializes some variables
-                            mosaicDensity = mosaicDensity ? mosaicDensity : 5;
-                            mosaicGridRows = mosaicGridRows ? mosaicGridRows : 3;
-                            mosaicGridColumns = mosaicGridColumns ? mosaicGridColumns : 3;
-                            mosaicHeight = mosaicHeight ? mosaicHeight : 280;
+                            mosaicDensity = mosaicDensity ? Number(mosaicDensity) : 5;
+                            mosaicGridRows = mosaicGridRows ? Number(mosaicGridRows) : 3;
+                            mosaicGridColumns = mosaicGridColumns ? Number(mosaicGridColumns) : 3;
+                            mosaicHeight = mosaicHeight ? Number(mosaicHeight) : 280;
                             mosaicItemFocalPoint = mosaicItemFocalPoint ? mosaicItemFocalPoint : { x: 0.5, y: 0.5 };
                             sampleBackgroundImage = response.data.items && response.data.items[0] && response.data.items[0] ? getItemThumbnail(response.data.items[0], 'tainacan-medium') : ''; 
 
@@ -468,27 +517,6 @@ export default function({ attributes, setAttributes, className, isSelected, clie
     // Executed only on the first load of page
     if(content && content.length && content[0].type)
         setContent();
-
-    const layoutControls = [
-        {
-            icon: 'grid-view',
-            title: __( 'Grid View', 'tainacan' ),
-            onClick: () => updateLayout('grid'),
-            isActive: layout === 'grid',
-        },
-        {
-            icon: 'list-view',
-            title: __( 'List View', 'tainacan' ),
-            onClick: () => updateLayout('list'),
-            isActive: layout === 'list',
-        },
-        {
-            icon: 'layout',
-            title: __( 'Mosaic View', 'tainacan' ),
-            onClick: () => updateLayout('mosaic'),
-            isActive: layout === 'mosaic',
-        }
-    ];
     
     return content == 'preview' ? 
         <div className={className}>
@@ -623,7 +651,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     label={__('Maximum number of items', 'tainacan')}
                                     value={ maxItemsNumber ? maxItemsNumber : 12 }
                                     onChange={ ( aMaxItemsNumber ) => {
-                                        maxItemsNumber = aMaxItemsNumber;
+                                        maxItemsNumber = Number(aMaxItemsNumber);
                                         setAttributes( { maxItemsNumber: aMaxItemsNumber } ) 
                                         setContent();
                                     }}
@@ -640,7 +668,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                         label={ __('Maximum number of columns on a wide screen', 'tainacan') }
                                         value={ maxColumnsCount ? maxColumnsCount : 5 }
                                         onChange={ ( aMaxColumnsCount ) => {
-                                            maxColumnsCount = aMaxColumnsCount;
+                                            maxColumnsCount = Number(aMaxColumnsCount);
                                             setAttributes( { maxColumnsCount: aMaxColumnsCount } );
                                             setContent(); 
                                         }}
@@ -678,7 +706,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             label={__('Margin between items in pixels', 'tainacan')}
                                             value={ gridMargin ? gridMargin : 0 }
                                             onChange={ ( margin ) => {
-                                                gridMargin = margin;
+                                                gridMargin = Number(margin);
                                                 setAttributes( { gridMargin: margin } );
                                                 setContent();
                                             }}
@@ -694,26 +722,25 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             label={ __('Maximum number of columns on a wide screen', 'tainacan') }
                                             value={ maxColumnsCount ? maxColumnsCount : 5 }
                                             onChange={ ( aMaxColumnsCount ) => {
-                                                maxColumnsCount = aMaxColumnsCount;
+                                                maxColumnsCount = Number(aMaxColumnsCount);
                                                 setAttributes( { maxColumnsCount: aMaxColumnsCount } );
                                                 setContent(); 
                                             }}
                                             min={ 1 }
                                             max={ 7 }
                                         />
-                                    <ToggleControl
-                                            label={__('Crop Images', 'tainacan')}
-                                            help={ cropImagesToSquare ? __('Do not use square cropeed version of the item thumbnail.', 'tainacan') : __('Toggle to use square cropped version of the item thumbnail.', 'tainacan') }
-                                            checked={ cropImagesToSquare }
-                                            onChange={ ( isChecked ) => {
-                                                    cropImagesToSquare = isChecked;
-                                                    setAttributes({ cropImagesToSquare: cropImagesToSquare });
-                                                    setContent();
-                                                } 
-                                            }
-                                        />
                                 </div>
                             : null }
+                            <SelectControl
+                                    label={__('Image size', 'tainacan')}
+                                    value={ imageSize }
+                                    options={ imageSizeOptions }
+                                    onChange={ ( anImageSize ) => { 
+                                        imageSize = anImageSize;
+                                        setAttributes({ imageSize: imageSize });
+                                        setContent();
+                                    }}
+                                />
                         </div>
                     </PanelBody>
                     { layout == 'mosaic' ?
@@ -724,9 +751,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         <div>
                             <RangeControl
                                 label={__('Container height (px)', 'tainacan')}
-                                value={ mosaicHeight ? mosaicHeight : 280 }
+                                value={ mosaicHeight ? Number(mosaicHeight) : 280 }
                                 onChange={ ( height ) => {
-                                    mosaicHeight = height;
+                                    mosaicHeight = Number(height);
                                     setAttributes( { mosaicHeight: height } );
                                     setContent();
                                 }}
@@ -737,9 +764,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         <div>
                             <RangeControl
                                 label={__('Group Grid Density', 'tainacan')}
-                                value={ mosaicDensity ? mosaicDensity : 5 }
+                                value={ mosaicDensity ? Number(mosaicDensity) : 5 }
                                 onChange={ ( value ) => {
-                                    mosaicDensity = value;
+                                    mosaicDensity = Number(value);
                                     setAttributes( { mosaicDensity: mosaicDensity } );
                                     setContent();
                                 }}
@@ -762,8 +789,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     { label: '6 x 2', value: '6x2' }
                                 ] }
                                 onChange={ ( aGrid ) => { 
-                                    mosaicGridRows = aGrid.split('x')[0];
-                                    mosaicGridColumns = aGrid.split('x')[1];
+                                    mosaicGridRows = Number(aGrid.split('x')[0]);
+                                    mosaicGridColumns = Number(aGrid.split('x')[1]);
                 
                                     setAttributes({
                                         mosaicGridRows: mosaicGridRows,
@@ -1035,7 +1062,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     ) : 
                         <ResizableBox
                             size={ {
-                                height: mosaicHeight ? mosaicHeight + (3 * gridMargin) : 280 + (3 * gridMargin),
+                                height: mosaicHeight ? Number(mosaicHeight) + (3 * gridMargin) : 280 + (3 * gridMargin),
                                 width: '100%'
                             } }
                             minHeight="80"

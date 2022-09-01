@@ -1,8 +1,14 @@
 <template>
-    <div>
+    <div class="metadata-mappers-area">
         <b-loading
                 :can-cancel="false"
+                :is-full-page="false"
                 :active.sync="isLoadingMetadatumMappers"/>
+        <b-loading
+                :can-cancel="false"
+                :is-full-page="false"
+                :active.sync="isLoadingMetadata"/>
+
         <b-field>
             <p style="line-height: 2em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
             <b-select
@@ -129,7 +135,7 @@
 
              <div 
                     v-if="mapper != '' && !isLoadingMetadatumMappers"
-                    class="field is-grouped form-submit">
+                    class="field is-grouped form-submit fixed-form-submit">
                 <div class="control">
                     <button
                             class="button is-outlined"
@@ -139,6 +145,7 @@
                 <div class="control">
                     <button
                             @click.prevent="onUpdateMetadataMapperMetadataClick"
+                            :class="{ 'is-loading': isMapperMetadataLoading }"
                             class="button is-success">{{ $i18n.get('save') }}</button>
                 </div>
             </div>
@@ -209,6 +216,7 @@ export default {
         return {
             collectionId: '',
             isLoadingMetadatumMappers: true,
+            isLoadingMetadata: false,
             mapper: '',
             mapperMetadata: [],
             isMapperMetadataLoading: false,
@@ -231,20 +239,36 @@ export default {
         }
     },
     mounted() {
-        this.isLoadingMetadatumMappers = true;
-        this.fetchMetadatumMappers()
-            .then(() => {
-                this.isLoadingMetadatumMappers = false;
 
-                if (this.metadatumMappers.length == 1)
-                    this.onSelectMetadataMapper(this.metadatumMappers[0])
+        /* If we're in a collection list, the metadata won't exist as they are read inside sections */        
+        if (!this.isRepositoryLevel) {
+            this.collectionId = this.$route.params.collectionId;
+
+            this.isLoadingMetadata = true;
+            
+            this.cleanMetadata();
+            this.fetchMetadata({
+                collectionId: this.collectionId,
+                isRepositoryLevel: false, 
+                isContextEdit: true, 
+                includeDisabled: true,
+                includeOptionsAsHtml: false
             })
-            .catch(() => {
-                this.isLoadingMetadatumMappers = false;
-            });
+                .then(() => {
+                    this.loadMetadataMappers();
+                    this.isLoadingMetadata = false;
+                })
+                .catch(() => {
+                    this.isLoadingMetadata = false;
+                });
+        } else {
+            this.loadMetadataMappers();
+        }
     },
     methods: {
         ...mapActions('metadata', [
+            'fetchMetadata',
+            'cleanMetadata',
             'fetchMetadatumMappers',
             'updateMetadataMapperMetadata',
         ]),
@@ -252,12 +276,25 @@ export default {
             'getMetadatumMappers',
             'getMetadata'
         ]),
+        loadMetadataMappers() {
+            this.isLoadingMetadatumMappers = true;
+            this.fetchMetadatumMappers()
+                .then(() => {
+                    this.isLoadingMetadatumMappers = false;
+
+                    if (this.metadatumMappers.length >= 1)
+                        this.onSelectMetadataMapper(this.metadatumMappers[0])
+                })
+                .catch(() => {
+                    this.isLoadingMetadatumMappers = false;
+                });
+        },
         onSelectMetadataMapper(metadatumMapper) {
 
             this.isMapperMetadataLoading = true;
             this.mapper = metadatumMapper; //TODO try to use v-model again
             this.mapperMetadata = [];
-            
+
             if (metadatumMapper != '') {
                 for (var k in metadatumMapper.metadata) {
                     var item = metadatumMapper.metadata[k];
@@ -442,6 +479,10 @@ export default {
 
 <style lang="scss" scoped>
 
+    .metadata-mappers-area {
+        padding: 0 1em;
+    }
+
     .tainacan-form {
         display: flex;
         flex-direction: column;
@@ -546,7 +587,7 @@ export default {
         }
     }
 
-    .form-submit {
+    .fixed-form-submit {
         margin-top: 24px;
         position: sticky !important;
         bottom: 0;

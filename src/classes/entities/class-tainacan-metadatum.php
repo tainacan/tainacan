@@ -24,7 +24,8 @@ class Metadatum extends Entity {
 		$mask,
 		$default_value,
 		$metadata_type,
-		$metadata_type_options;
+		$metadata_type_options,
+		$metadata_section_id;
 
 	// Collection getter and setter declared here
 	use \Tainacan\Traits\Entity_Collection_Relation;
@@ -253,6 +254,15 @@ class Metadatum extends Entity {
 	}
 
 	/**
+	 * Return the metadata_section_id
+	 *
+	 * @return string
+	 */
+	function get_metadata_section_id(){
+		return $this->get_mapped_property('metadata_section_id');
+	}
+
+	/**
 	 * Set the metadatum name
 	 *
 	 * @param [string] $value
@@ -432,6 +442,20 @@ class Metadatum extends Entity {
 	function set_semantic_uri( $value ){
 		$this->set_mapped_property('semantic_uri', $value);
 	}
+
+
+	/**
+	 * Set metadatum section ID for the metadatum
+	 *
+	 * @param [string] $value
+	 * @return void
+	 */
+	function set_metadata_section_id($value) {
+		if( !is_array($value) ) {
+			$value = [$value];
+		}
+		return $this->set_mapped_property('metadata_section_id', $value);
+	}
 	
 	/**
 	 * Transient property used to store the status of the metadatum for a particular collection
@@ -474,6 +498,15 @@ class Metadatum extends Entity {
 	 */
 	function is_required() {
 		return $this->get_required() === 'yes';
+	}
+
+	/**
+	 * Return true if is repository level, else return false
+	 * 
+	 * @return boolean
+	 */
+	function is_repository_level() {
+		return $this->get_collection_id() === 'default';
 	}
 
 	/**

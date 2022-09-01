@@ -131,6 +131,13 @@ class Collections extends Repository {
 				'items'       => [ 'type' => 'string' ],
 				//'validation' => v::stringType(),
 			],
+			'metadata_section_order'             => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadata order', 'tainacan' ),
+				'type'        => ['array', 'object', 'string'],
+				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
+				'description' => __( 'The order of the metadata section in the collection', 'tainacan' ),
+			],
 			'metadata_order'             => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata order', 'tainacan' ),
@@ -179,21 +186,21 @@ class Collections extends Repository {
 				'title'       => __( 'Thumbnail', 'tainacan' ),
 				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
 			],
-		    'comment_status'  => [
-	            'map'         => 'comment_status',
-	            'title'       => __( 'Comment Status', 'tainacan' ),
-	            'type'        => 'string',
-	            'description' => __( 'Collection comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
-		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
-		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
-		    ],
-		    'allow_comments'  => [
-		        'map'         => 'meta',
+			'comment_status'  => [
+				'map'         => 'comment_status',
+				'title'       => __( 'Comment Status', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Collection comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
+				'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
+				'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
+			],
+			'allow_comments'  => [
+				'map'         => 'meta',
 				'title'       => __( 'Allow enabling comments on items', 'tainacan' ),
-	            'type'        => 'string',
-	            'description' => __( 'If this option is enabled, items of this collection can be set to enable a comments section on their page. "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
-		        'default'     => 'closed',
-		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
+				'type'        => 'string',
+				'description' => __( 'If this option is enabled, items of this collection can be set to enable a comments section on their page. "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
+				'default'     => 'closed',
+				'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
 			'submission_anonymous_user'  => [
 				'map'                    => 'meta',
@@ -238,7 +245,13 @@ class Collections extends Repository {
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			],
-			
+			'default_metadata_section_properties'              => [
+				'map'         => 'meta',
+				'title'       => __( 'Default metadata section properties', 'tainacan' ),
+				'type'        => 'object',
+				'items'       => [ 'name' => 'string', 'description' => 'string', 'description_bellow_name' => 'string' ],
+				'description' => __( 'The default metadata section properties', 'tainacan' ),
+			],
 		] );
 	}
 
@@ -304,7 +317,7 @@ class Collections extends Repository {
 	 * @see \Tainacan\Repositories\Repository::insert()
 	 */
 	public function insert( $collection ) {
-		$this->pre_process( $collection );		
+		$this->pre_process( $collection );
 		$this->handle_parent_order_clone( $collection );
 
 		$new_collection = parent::insert( $collection );
@@ -366,7 +379,7 @@ class Collections extends Repository {
 
 			// TODO: Pegar coleções registradas via código
 
-			$args = apply_filters( 'tainacan_fetch_args', $args, 'collections' );
+			$args = apply_filters( 'tainacan-fetch-args', $args, 'collections' );
 
 			$wp_query = new \WP_Query( $args );
 
@@ -429,6 +442,7 @@ class Collections extends Repository {
 	function handle_parent_order_clone( &$collection ) {
 		if ($collection instanceof Entities\Collection && $collection->get_parent() != 0) {
 			$parent_collection = $this->fetch( $collection->get_parent() );
+			$collection->set_metadata_section_order($parent_collection->get_metadata_section_order());
 			$collection->set_metadata_order($parent_collection->get_metadata_order());
 			$collection->set_filters_order($parent_collection->get_filters_order());
 

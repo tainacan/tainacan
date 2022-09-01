@@ -19,7 +19,7 @@ export default function ({ attributes, className }) {
         autoPlaySpeed,
         loopSlides,
         hideTitle,
-        cropImagesToSquare,
+        imageSize,
         showCollectionHeader,
         showCollectionLabel,
         collectionBackgroundColor,
@@ -42,7 +42,7 @@ export default function ({ attributes, className }) {
                 hide-title={ '' + hideTitle }
                 large-arrows={ '' + largeArrows }
                 arrows-style={ arrowsStyle }
-                crop-images-to-square={ '' + cropImagesToSquare }
+                image-size={ imageSize }
                 show-collection-header={ '' + showCollectionHeader }
                 show-collection-label={ '' + showCollectionLabel }
                 collection-background-color={ collectionBackgroundColor }

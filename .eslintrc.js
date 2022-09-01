@@ -25,15 +25,18 @@ module.exports = {
         'vue/no-confusing-v-for-v-if': 'off',
         'vue/no-use-v-if-with-v-for': 'off',
         'vue/multi-word-component-names': 'off',
-        'vue/require-default-prop': 'off'
+        'vue/require-default-prop': 'off',
+        'vue/no-v-text-v-html-on-component': 'off'
     },
     globals: {
+        'wp': true,
         'tainacan_plugin': true,
         'tainacan_blocks': true,
         '_': true,
         'jQuery': true,
         'tainacan_extra_components': true,
         'tainacan_extra_plugins': true,
-        'grecaptcha': true
+        'grecaptcha': true,
+        'webkit': true
     }
 }

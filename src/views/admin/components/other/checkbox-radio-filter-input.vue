@@ -65,6 +65,7 @@
                                         <input                                     
                                                 @input="$emit('input', $event.target.value)"
                                                 :value="option.id ? (isNaN(Number(option.id)) ? option.id : Number(option.id)) : (isNaN(Number(option.value)) ? option.value : Number(option.value))"
+                                                :checked="isOptionSelected(option.value)"
                                                 type="checkbox"> 
                                         <span class="check" /> 
                                         <span class="control-label">
@@ -125,6 +126,7 @@
                                         <input 
                                                 @input="$emit('input', $event.target.value)"
                                                 :value="option.value"
+                                                :checked="isOptionSelected(option.value)"
                                                 type="checkbox"> 
                                         <span class="check" /> 
                                         <span class="control-label">
@@ -189,6 +191,7 @@
                                         <input 
                                                 @input="$emit('input', $event.target.value)"
                                                 :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
+                                                :checked="isOptionSelected(option.value)"
                                                 type="checkbox"> 
                                         <span class="check" /> 
                                         <span class="control-label">
@@ -790,6 +793,12 @@
                             this.isColumnLoading = false;
                         });
                 }
+            },
+            isOptionSelected(optionValue) {
+                if (Array.isArray(this.selected))
+                    return this.selected.find(aSelected => aSelected == optionValue)
+                else
+                    return optionValue == this.selected;
             },
             applyFilter() {
                 if (this.isModal)

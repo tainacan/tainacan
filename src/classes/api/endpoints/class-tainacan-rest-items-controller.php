@@ -464,6 +464,7 @@ class REST_Items_Controller extends REST_Controller {
 			$meta_id = $meta['key'];
 			$meta_value = is_array($meta['value']) ? $meta['value'] : [$meta['value']];
 			$meta_label = isset($meta['label']) ? $meta['label'] : $meta_value;
+			$meta_type = 'CHAR';
 			$filter_type_component = false;
 			$arg_type = 'meta';
 			$f = false;
@@ -535,6 +536,11 @@ class REST_Items_Controller extends REST_Controller {
 								return apply_filters("tainacan-item-get-author-name", $name);
 							}, $meta_label);
 							break;
+						case 'int':
+						case 'float':
+						case 'numeric':
+							$meta_type = 'NUMERIC';
+							break;
 					}
 				}
 			}
@@ -549,7 +555,8 @@ class REST_Items_Controller extends REST_Controller {
 				'arg_type' => $arg_type,
 				'value' => $meta_value,
 				'label' => $meta_label,
-				'compare' => isset($meta['compare']) ? $meta['compare'] : '='
+				'compare' => isset($meta['compare']) ? $meta['compare'] : '=',
+				'type' => $meta_type,
 			));
 		}
 
@@ -596,6 +603,17 @@ class REST_Items_Controller extends REST_Controller {
 			$collection_id = $request['collection_id'];
 		}
 		$filters_args = $this->prepare_filters_arguments($args, $collection_id);
+		if(isset($args['meta_query']) && !empty($args['meta_query']) && is_array($filters_args) && !empty($filters_args)) {
+			foreach($filters_args as $filters_arg) {
+				if($filters_arg['filter'] !== false) {
+					for($idx = 0; $idx < count($args['meta_query']); $idx++) {
+						if($args['meta_query'][$idx]['key'] == $filters_arg['metadatum']['metadatum_id']) {
+							$args['meta_query'][$idx]['type'] = $filters_arg['type'];
+						}
+					}
+				}
+			}
+		}
 
 		$max_items_per_page = $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 		if ( $max_items_per_page > -1 ) {
@@ -996,16 +1014,32 @@ class REST_Items_Controller extends REST_Controller {
 					$errors = [];
 
 					foreach ($metadata as $item_metadatum) {
-
-						$new_item_metadatum = new Entities\Item_Metadata_Entity( $new_item, $item_metadatum->get_metadatum() );
-						$new_item_metadatum->set_value( $item_metadatum->get_value() );
-
-						if ( $new_item_metadatum->validate() ) {
-							Repositories\Item_Metadata::get_instance()->insert( $new_item_metadatum );
+						if ( $item_metadatum->get_metadatum()->get_metadata_type() == 'Tainacan\Metadata_Types\Compound' ) {
+							$multiple_values = $item_metadatum->is_multiple() ? $item_metadatum->get_value() : [$item_metadatum->get_value()] ;
+							foreach ($multiple_values as $value) {
+								$parent_meta_id = null;
+								foreach ( $value as $meta_id => $meta ) {
+									if ( $meta instanceof Entities\Item_Metadata_Entity) {
+										$item_metadata = new Entities\Item_Metadata_Entity($new_item, $meta->get_metadatum(), null, $parent_meta_id);
+										$item_metadata->set_value( $meta->get_value() );
+										if ( $item_metadata->validate() ) {
+											$item_metadata = Repositories\Item_Metadata::get_instance()->insert( $item_metadata );
+											$parent_meta_id = $item_metadata->get_parent_meta_id();
+										} else {
+											$errors[] = $item_metadata->get_errors();
+										}
+									}
+								}
+							}
 						} else {
-							$errors[] = $new_item_metadatum->get_errors();
+							$new_item_metadatum = new Entities\Item_Metadata_Entity( $new_item, $item_metadatum->get_metadatum() );
+							$new_item_metadatum->set_value( $item_metadatum->get_value() );
+							if ( $new_item_metadatum->validate() ) {
+								Repositories\Item_Metadata::get_instance()->insert( $new_item_metadatum );
+							} else {
+								$errors[] = $new_item_metadatum->get_errors();
+							}
 						}
-
 					}
 
 					if ($args['status'] != 'draft') {
@@ -1382,7 +1416,12 @@ class REST_Items_Controller extends REST_Controller {
 				], 400);
 			}
 			$secret_key = get_option("tnc_option_recaptch_secret_key");
-			$response = json_decode(file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=".$captcha_data."&remoteip=".$_SERVER['REMOTE_ADDR']));
+			$api_url = "https://www.google.com/recaptcha/api/siteverify?secret=$secret_key&response=".$captcha_data."&remoteip=".$_SERVER['REMOTE_ADDR'];
+
+			$response = wp_remote_get( $api_url );
+			$body = wp_remote_retrieve_body( $response );
+			$response = json_decode($body);
+
 			if ($response->success) {
 				return true;
 			} else {

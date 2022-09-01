@@ -68,7 +68,7 @@
                 </b-taginput>
             </b-tab-item>
             <b-tab-item
-                    v-if="itemMetadatum"
+                    v-if="itemMetadatum && itemMetadatum.value !== undefined"
                     style="min-height: 56px;"
                     :label="( itemMetadatum.value.length == 1 || itemMetadatum.metadatum.multiple != 'yes' ) ? $i18n.get('label_selected_item') : ( $i18n.get('label_selected_items') + ' (' + itemMetadatum.value.length + ')' )">
                 <div class="tainacan-relationship-results-container">

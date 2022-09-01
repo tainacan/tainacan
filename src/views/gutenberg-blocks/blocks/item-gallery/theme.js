@@ -268,6 +268,16 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 }
             });
         });
+
+        /* Stops propagation of download button to avoid opening the gallery on it */
+        let carouselDownloadButtons = galleryElement.getElementsByClassName('tainacan-item-file-download');
+        if (carouselDownloadButtons && carouselDownloadButtons.length) {
+            for (let i = 0; i < carouselDownloadButtons.length; i++) {
+                carouselDownloadButtons[i].addEventListener('click',function(e){
+                    e.stopPropagation();
+                });
+            }
+        }
     }
   
     // Parse slide data (url, title, size ...) from DOM elements

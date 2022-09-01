@@ -162,7 +162,7 @@ class CSV extends Exporter {
 		$last_id = get_post_meta( $item_id, '_user_edit_lastr', true );
 		if ( $last_id ) {
 			$last_user = get_userdata( $last_id );
- 			return apply_filters( 'the_modified_author', $last_user->display_name );
+ 			return apply_filters( 'tainacan-the-modified-author', $last_user->display_name );
 		}
 		return "";
 	}
@@ -312,7 +312,7 @@ class CSV extends Exporter {
 					</div>
 			</span>
 			<div class="control is-clearfix">
-				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php echo $this->get_option('delimiter'); ?>">
+				<input class="input" type="text" name="delimiter" maxlength="1" value="<?php echo esc_attr($this->get_option('delimiter')); ?>">
 			</div>
 		</div>
 
@@ -334,7 +334,7 @@ class CSV extends Exporter {
 					</div>
 			</span>
 			<div class="control is-clearfix">
-				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo $this->get_option('multivalued_delimiter'); ?>">
+				<input class="input" type="text" name="multivalued_delimiter" value="<?php echo esc_attr($this->get_option('multivalued_delimiter')); ?>">
 			</div>
 		</div>
 

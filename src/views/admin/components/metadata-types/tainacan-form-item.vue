@@ -44,7 +44,7 @@
         </span>
         <transition name="filter-item">
             <div   
-                    v-show="hideCollapses || (isCollapsed || errorMessage)"
+                    v-show="hideCollapses || isCollapsed || !!errorMessage"
                     v-if="isTextInputComponent">
                 <p
                         class="metadatum-description-help-info"
@@ -111,13 +111,11 @@
                     </a>
                 </template>
             </div>
-        </transition>
 
-        <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
-        <transition name="filter-item">
+            <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
             <div 
                     v-show="hideCollapses || isCollapsed"
-                    v-if="!isTextInputComponent">
+                    v-else>
                 <p
                         class="metadatum-description-help-info"
                         v-if="itemMetadatum.metadatum &&
@@ -245,13 +243,13 @@
                 this.performValueChange();
             }, 800),
             performValueChange() {
-                
+
                 // Compound metadata do not emit values, only their children.
                 if (this.metadatumComponent == 'tainacan-compound')
                     return;
 
                 if (this.itemMetadatum.value !== null && this.itemMetadatum.value !== false) {
-                    
+
                     // This routine avoids calling the API if the value did not changed
                     switch(this.itemMetadatum.value.constructor.name) {
                         // Multivalored Metadata requires checking the whole array
@@ -291,7 +289,7 @@
 
                         // Any single metadatum value that is not a term
                         default:
-                            if (this.values.length && this.values[0] == this.itemMetadatum.value)
+                            if (!this.errorMessage && this.values.length && this.values[0] == this.itemMetadatum.value)
                                 return;
                     }
                 }
@@ -314,7 +312,8 @@
                 this.changeValue();
             },
             onMobileSpecialFocus() {
-                this.$emit('mobileSpecialFocus');
+                if (this.isMobileScreen)
+                    this.$emit('mobileSpecialFocus');
             }
         }
     }
@@ -374,12 +373,13 @@
             border-bottom: none;
             padding: 10px !important;
 
-            .collapse-handle {
-                margin-left: -15px;
-            }
-
             .child-metadata-inputs {
                 margin-left: 0.25em;
+            }
+            @media screen and (min-width: 770px) {
+                .collapse-handle {
+                    margin-left: -15px;
+                }
             }
         }
 
@@ -406,12 +406,40 @@
             cursor: pointer;
             margin-left: -42px;
             line-height: 1.5em;
+
+            .tainacan-help-tooltip-trigger {
+                margin-right: auto;
+            }
         }
         .collapse-handle+div {
             margin-top: 0.5em;
         }
         .add-link {
             font-size: 0.75em;
+        }
+
+        @media screen and (max-width: 769px) {
+            .collapse-handle {
+                font-size: 1em;
+                margin-left: 0;
+                margin-right: 22px;
+                width: 100%;
+                display: flex;
+                position: relative;
+                justify-content: space-between;
+                align-items: center;
+
+                .label {
+                    margin-left: 2px;
+                    margin-right: 0.5em;
+                }
+                .icon {
+                    margin-left: auto;
+                    order: 3;
+                    width: 2em;
+                    justify-content: flex-end;
+                }
+            }
         }
     }
 </style>
