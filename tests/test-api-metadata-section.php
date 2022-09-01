@@ -354,7 +354,7 @@ class TAINACAN_REST_Metadata_Sections_Controller extends TAINACAN_UnitApiTestCas
 		$section1 = $this->tainacan_entity_factory->create_entity(
 			'Metadata_Section',
 			array(
-				'name'        => 'Section',
+				'name'        => 'Section-1',
 				'description' => 'Section Description',
 				'collection' => $collection,
 				// 'metadata_list' => [$metadatum_1->get_id(), $metadatum_2->get_id()]
@@ -366,7 +366,7 @@ class TAINACAN_REST_Metadata_Sections_Controller extends TAINACAN_UnitApiTestCas
 		$section2 = $this->tainacan_entity_factory->create_entity(
 			'Metadata_Section',
 			array(
-				'name'        => 'Section',
+				'name'        => 'Section-2',
 				'description' => 'Section Description',
 				'collection' => $collection,
 				// 'metadata_list' => [$metadatum_3->get_id(), $metadatum_4->get_id()]
@@ -427,6 +427,21 @@ class TAINACAN_REST_Metadata_Sections_Controller extends TAINACAN_UnitApiTestCas
 			),
 			true
 		);
+
+		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+		$collection->set_metadata_section_order(
+			[
+				array( 'id' => $section1->get_id(), 'enabled' => true, 'metadata_order' => [
+					array( 'id' => $metadatum_1->get_id(), 'enabled' => true ),
+					array( 'id' => $metadatum_2->get_id(), 'enabled' => true )
+				] ),
+				array( 'id' => $section2->get_id(), 'enabled' => true, 'metadata_order' => [
+					array( 'id' => $metadatum_3->get_id(), 'enabled' => true ),
+					array( 'id' => $metadatum_4->get_id(), 'enabled' => true )
+				])
+			]
+		);
+		$Tainacan_Collections->update( $collection );
 
 		$request = new \WP_REST_Request(
 			'GET',
