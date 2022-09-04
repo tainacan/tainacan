@@ -507,4 +507,26 @@ class Metadata_Sections extends Repository {
 
 		return parent::can_read($entity, $user);
 	}
+
+	/**
+	 * Check if $user can edit/create a metadata section
+	 *
+	 * @param Entities\Entity $entity
+	 * @param int|\WP_User|null $user default is null for the current user
+	 *
+	 * @return boolean
+	 * @throws \Exception
+	 */
+	public function can_edit( Entities\Entity $entity, $user = null ) {
+		if ( is_null($entity) )
+			return false;
+		if ($entity instanceof Entities\Metadata_Section && $entity->get_id() == Entities\Metadata_Section::$default_section_slug ) {
+			$collection = $entity->get_collection();
+			if($collection instanceof Entities\Collection) {
+				return current_user_can( 'tnc_col_' . $collection->get_id() . '_edit_metasection' );
+			}
+			return false;
+		}
+		return parent::can_edit($entity, $user);
+	}
 }
