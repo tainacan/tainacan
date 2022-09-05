@@ -381,8 +381,10 @@ class Metadata_Sections extends Repository {
 		$metadata_sections_ids = $this->fetch_ids();
 		$collection_metadata_sections_id = array_diff(array_map(function($el) {return $el->get_id();} , $this->fetch_by_collection($collection)), [\Tainacan\Entities\Metadata_Section::$default_section_slug]);
 
-		$args_exclude = array_merge(
-			array(
+		if ( empty($collection_metadata_sections_id) ) {
+			$not_post_ids = [];
+		} else {
+			$args_exclude =	array(
 				'meta_query' => array(
 					'relation' => 'AND',
 					array(
@@ -398,10 +400,11 @@ class Metadata_Sections extends Repository {
 						)
 					)
 				)
-			)
-		);
-		$list_exclude = $metadata_repository->fetch_by_collection($collection, $args_exclude);
-		$not_post_ids = array_map(function($el) { return $el->get_id(); }, $list_exclude);
+			);
+			
+			$list_exclude = $metadata_repository->fetch_by_collection($collection, $args_exclude);
+			$not_post_ids = array_map(function($el) { return $el->get_id(); }, $list_exclude);
+		}
 
 		$args = array_merge(
 			$args,
@@ -416,10 +419,8 @@ class Metadata_Sections extends Repository {
 							'compare' => '='
 						),
 						array(
-							array(
-								'key' => 'metadata_section_id',
-								'compare' => 'NOT EXISTS'
-							)
+							'key' => 'metadata_section_id',
+							'compare' => 'NOT EXISTS'
 						),
 						array(
 							'key' => 'metadata_section_id',
@@ -506,5 +507,27 @@ class Metadata_Sections extends Repository {
 		}
 
 		return parent::can_read($entity, $user);
+	}
+
+	/**
+	 * Check if $user can edit/create a metadata section
+	 *
+	 * @param Entities\Entity $entity
+	 * @param int|\WP_User|null $user default is null for the current user
+	 *
+	 * @return boolean
+	 * @throws \Exception
+	 */
+	public function can_edit( Entities\Entity $entity, $user = null ) {
+		if ( is_null($entity) )
+			return false;
+		if ($entity instanceof Entities\Metadata_Section && $entity->get_id() == Entities\Metadata_Section::$default_section_slug ) {
+			$collection = $entity->get_collection();
+			if($collection instanceof Entities\Collection) {
+				return current_user_can( 'tnc_col_' . $collection->get_id() . '_edit_metasection' );
+			}
+			return false;
+		}
+		return parent::can_edit($entity, $user);
 	}
 }

@@ -240,7 +240,7 @@ class Relationship extends Metadata_Type {
 				is_user_logged_in() ||
 				(
 					\is_post_status_viewable( $item->get_status() ) &&
-					\is_post_status_viewable( $item->get_collection()->get_status() )
+					($item->get_collection() != null && \is_post_status_viewable( $item->get_collection()->get_status() ))
 				)
 			)
 		);
