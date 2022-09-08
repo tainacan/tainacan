@@ -102,30 +102,32 @@
                                                 </span>
                                             </label>
                                         </div>
-                                        <div
-                                                v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)"
-                                                :key="index"
-                                                class="field">
-                                            <label class="label">{{ itemMetadatum.metadatum.name }}</label>
+                                        <template v-if="metadatumList && Array.isArray(metadatumList)">
                                             <div
-                                                    :class="{
-                                                        'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
-                                                        'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound',
-                                                        'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
-                                                    }"
-                                                    class="content">
-                                                <component 
-                                                        :is="
-                                                            itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
-                                                            (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
-                                                            itemMetadatum.metadatum.metadata_type_object.options &&
-                                                            itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
-                                                            itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
-                                                            ) ? 'div' : 'p'" 
-                                                        v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
+                                                    v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)"
+                                                    :key="index"
+                                                    class="field">
+                                                <label class="label">{{ itemMetadatum.metadatum.name }}</label>
+                                                <div
+                                                        :class="{
+                                                            'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
+                                                            'metadata-type-compound': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound',
+                                                            'metadata-type-relationship': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship'
+                                                        }"
+                                                        class="content">
+                                                    <component 
+                                                            :is="
+                                                                itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
+                                                                (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
+                                                                itemMetadatum.metadatum.metadata_type_object.options &&
+                                                                itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
+                                                                itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
+                                                                ) ? 'div' : 'p'" 
+                                                            v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <br>
+                                            <br>
+                                        </template>
                                     </div>
                                 </div>
 
