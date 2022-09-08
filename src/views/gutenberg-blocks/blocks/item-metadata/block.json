@@ -50,8 +50,11 @@
         }
     },
     "providesContext": {
-        "tainacan/itemId": "itemId"
+        "tainacan/itemId": "itemId",
+        "postType": "postType",
+        "postId": "postId"
     },
+    "usesContext": [ "postType", "postId" ],
     "supports": {
         "align": ["full", "wide"],
         "multiple": true,

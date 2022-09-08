@@ -114,7 +114,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	}
 
 	// Defines dependencies for editor script
-	$editor_script_deps = array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-server-side-render');
+	$editor_script_deps = array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-server-side-render', 'wp-data');
 	if ( version_compare( $wp_version, '5.2', '<') )
 		$editor_script_deps[] = 'wp-editor';
 	else
