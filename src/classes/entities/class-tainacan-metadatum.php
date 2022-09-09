@@ -258,8 +258,11 @@ class Metadatum extends Entity {
 	 *
 	 * @return string
 	 */
-	function get_metadata_section_id(){
-		return $this->get_mapped_property('metadata_section_id');
+	function get_metadata_section_id() {
+		$mapped_metadata_section_id = $this->get_mapped_property('metadata_section_id');
+		if($this->is_repository_level())
+			return $mapped_metadata_section_id;
+		return is_array($mapped_metadata_section_id) ? $mapped_metadata_section_id[0] : $mapped_metadata_section_id;
 	}
 
 	/**
@@ -450,7 +453,10 @@ class Metadatum extends Entity {
 	 * @param [string] $value
 	 * @return void
 	 */
-	function set_metadata_section_id( $value) {
+	function set_metadata_section_id($value) {
+		if( !is_array($value) ) {
+			$value = [$value];
+		}
 		return $this->set_mapped_property('metadata_section_id', $value);
 	}
 	
@@ -495,6 +501,15 @@ class Metadatum extends Entity {
 	 */
 	function is_required() {
 		return $this->get_required() === 'yes';
+	}
+
+	/**
+	 * Return true if is repository level, else return false
+	 * 
+	 * @return boolean
+	 */
+	function is_repository_level() {
+		return $this->get_collection_id() === 'default';
 	}
 
 	/**

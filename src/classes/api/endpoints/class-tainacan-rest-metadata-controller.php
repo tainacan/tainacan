@@ -488,8 +488,6 @@ class REST_Metadata_Controller extends REST_Controller {
 
 			$metadatum = $this->metadatum_repository->fetch($metadatum_id);
 
-			$error_message = __('Metadata with this ID was not found', 'tainacan');
-
 			if ($metadatum) {
 				// These conditions are for verify if endpoints are used correctly
 				if(!$collection_id && $metadatum->get_collection_id() !== 'default') {
@@ -498,14 +496,14 @@ class REST_Metadata_Controller extends REST_Controller {
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,
 						'metadatum_id'  => $metadatum_id
-					] );
+					], 400 );
 				} elseif ($collection_id && $metadatum->get_collection_id() === 'default'){
 					$error_message = __('This metadata is not a collection metadata', 'tainacan');
 
 					return new \WP_REST_Response( [
 						'error_message' => $error_message,
 						'metadatum_id'  => $metadatum_id
-					] );
+					], 400 );
 				}
 
 				if (isset($request['repository_level']) && $confirm_repository) {
@@ -515,7 +513,7 @@ class REST_Metadata_Controller extends REST_Controller {
 				$prepared_metadata = $this->prepare_item_for_updating($metadatum, $attributes);
 
 				if($prepared_metadata->validate()){
-					$updated_metadata = $this->metadatum_repository->update($prepared_metadata);
+					$updated_metadata = $this->metadatum_repository->update($prepared_metadata, $attributes);
 
 					$response = $this->prepare_item_for_response($updated_metadata, $request);
 
@@ -529,6 +527,7 @@ class REST_Metadata_Controller extends REST_Controller {
 				], 400);
 			}
 
+			$error_message = __('Metadata with this ID was not found', 'tainacan');
 			return new \WP_REST_Response( [
 				'error_message' => $error_message,
 				'metadatum_id'  => $metadatum_id

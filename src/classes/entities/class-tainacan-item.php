@@ -609,7 +609,7 @@ class Item extends Entity {
 			}
 
 			// Some checks to see if things are really ok
-			if ( !($metadatum instanceof \Tainacan\Entities\Metadatum) ) {
+			if ( !($metadatum_object instanceof \Tainacan\Entities\Metadatum) ) {
 				return $return;
 			} else {
 				// Makes sure the current Metadatum is desired

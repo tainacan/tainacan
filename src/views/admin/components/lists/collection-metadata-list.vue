@@ -636,7 +636,7 @@ export default {
                     this.updateMetadatum({
                         collectionId: this.collectionId,
                         metadatumId: event.added.element.id,
-                        isRepositoryLevel: false,
+                        isRepositoryLevel: event.added.element.collection_id === 'default',
                         index: event.added.newIndex,
                         options: {},
                         includeOptionsAsHtml: true,

@@ -68,6 +68,8 @@
                                 class="column-default-width"
                                 :class="{
                                         'thumbnail-cell': column.metadatum == 'row_thumbnail',
+                                        'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 
+                                                                                                                               column.metadata_type_object.primitive_type == 'int' ) : false,
                                         'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
                                                                                                            column.metadata_type_object.primitive_type == 'float' ||
                                                                                                            column.metadata_type_object.primitive_type == 'int') : false,

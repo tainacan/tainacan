@@ -937,7 +937,9 @@ class Theme_Helper {
 			'auto_play_speed' => 3,
 			'loop_slides' => false,
 			'hide_title' => false,
-			'image_size' => 'tainacan-medium',
+			'image_size' => ( isset($args['crop_images_to_square']) && !$args['crop_images_to_square'] )
+				? 'tainacan-medium-full'
+				: 'tainacan-medium',
 			'show_collection_header' => false,
 			'show_collection_label' => false,
 			'collection_background_color' => '#454647',
@@ -947,12 +949,6 @@ class Theme_Helper {
 			'class_name' => ''
 		);
 		$args = wp_parse_args($args, $defaults);
-
-		/* Compatibility with previous version */
-		if ( isset($args['crop_images_to_square	']) && !$args['crop_images_to_square'] ) {
-			$args['image_size'] = 'tainacan-medium-full';
-		}
-
 		$props = ' ';
 
 		// Always pass the class needed by Vue to mount the component;
@@ -960,22 +956,15 @@ class Theme_Helper {
 		unset($args['class_name']);
 		
 		// Builds parameters to the html div rendered by Vue
-		$allowed_html = [
-			'div' => [
-				'data-module' => true,
-				'id' => true
-			]
-		];
 		foreach ($args as $key => $value) {
 			if (is_bool($value))
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
 			$key_attr = str_replace('_', '-', $key);
-			$props .= "$key_attr='$value' ";
-			$allowed_html['div'][$key_attr] = true;
+			$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 		}
 		
-		return wp_kses( "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>", $allowed_html);
+		return "<div data-module='carousel-items-list' id='tainacan-items-carousel-shortcode_" . uniqid() . "' $props ></div>";
 	} 
 
 	/**
@@ -1020,7 +1009,9 @@ class Theme_Helper {
 			'show_name' => true,
 			'show_image' => true,
 			'layout' => 'grid',
-			'image_size' => 'tainacan-medium',
+			'image_size' => ( isset($args['crop_images_to_square']) && !$args['crop_images_to_square'] )
+				? 'tainacan-medium-full'
+				: 'tainacan-medium',
 			'show_collection_header' => false,
 			'show_collection_label' => false,
 			'collection_background_color' => '#454647',
@@ -1036,12 +1027,6 @@ class Theme_Helper {
 			'mosaic_item_focal_point_y' => 0.5
 		);
 		$args = wp_parse_args($args, $defaults);
-
-		/* Compatibility with previous version */
-		if ( isset($args['crop_images_to_square	']) && !$args['crop_images_to_square'] ) {
-			$args['image_size'] = 'tainacan-medium-full';
-		}
-
 		$props = ' ';
 
 		// Always pass the class needed by Vue to mount the component;
@@ -1049,23 +1034,15 @@ class Theme_Helper {
 		unset($args['class_name']);
 		
 		// Builds parameters to the html div rendered by Vue
-		$allowed_html = [
-			'div' => [
-				'data-module' => true,
-				"id" => true
-			]
-		];
-		// Builds parameters to the html div rendered by Vue
 		foreach ($args as $key => $value) {
 			if (is_bool($value))
 				$value = $value ? 'true' : 'false';
 			// Changes from PHP '_' notation to HTML '-' notation
 			$key_attr = str_replace('_', '-', $key);
-			$props .=  "$key_attr='$value' ";
-			$allowed_html['div'][$key_attr] = true;
+			$props .= sprintf("%s='%s' ", $key_attr, esc_attr($value));
 		}
 		
-		return wp_kses("<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>", $allowed_html);
+		return "<div data-module='dynamic-items-list' id='tainacan-dynamic-items-list-shortcode_" . uniqid(). "' $props ></div>";
 	} 
 
 	/**
@@ -1104,7 +1081,7 @@ class Theme_Helper {
 			return;
 		
 		// Then fetches related ones
-		$related_items = $item->get_related_items();	
+		$related_items = $item->get_related_items();
 		if (!count($related_items))
 			return;
 
@@ -1125,18 +1102,37 @@ class Theme_Helper {
 				if ( isset($related_group['metadata_name']) ) {
 					$metadata_label = wp_kses_post('<' . $args['metadata_label_tag'] . ' class="' . $args['metadata_label_class_name'] . '">' . $related_group['metadata_name'] . '</' . $args['metadata_label_tag'] . '>');
 				}
-				
+
 				// Sets the carousel, from the items carousel template tag.
 				$items_list_div = '';
 				if ( isset($related_group['collection_id']) ) {
-					
+
+					$block_args = (isset($args['items_list_layout']) && $args['items_list_layout'] !== 'carousel' )
+						? $args['dynamic_items_args']
+						: $args['carousel_args'];
+
+					$no_crop_images_to_square = isset($block_args['crop_images_to_square']) && !$block_args['crop_images_to_square'];
+					$image_size =  isset($block_args['image_size']) 
+						? $block_args['image_size']
+						: ($no_crop_images_to_square ? 'tainacan-medium-full' : 'tainacan-medium');
+					// remove attribute description and unused thumbnails image sizes, to avoid poluting HTML
+					$related_group['items'] = array_map(
+						function($el) use ($image_size) {
+							$el['thumbnail'] = array_filter($el['thumbnail'], function($key) use ($image_size) {
+								return $key == $image_size;
+							}, ARRAY_FILTER_USE_KEY);
+							unset($el['description']);
+							return $el;
+						}, $related_group['items']
+					);
+
 					if ( isset($args['items_list_layout']) && $args['items_list_layout'] !== 'carousel' ) {
 						$items_list_args = wp_parse_args([
 							'collection_id' => $related_group['collection_id'],
 							'load_strategy' => 'parent',
 							'selected_items' => json_encode($related_group['items']),
 							'layout' => $args['items_list_layout']
-						], $args['dynamic_items_args']);
+						], $block_args);
 
 						$items_list_div = $this->get_tainacan_dynamic_items_list($items_list_args);
 					} else {
@@ -1144,10 +1140,10 @@ class Theme_Helper {
 							'collection_id' => $related_group['collection_id'],
 							'load_strategy' => 'parent',
 							'selected_items' => json_encode($related_group['items'])
-						], $args['carousel_args']);
+						], $block_args);
 
 						$items_list_div = $this->get_tainacan_items_carousel($items_list_args);
-					}	
+					}
 				}
 				
 				$output .= '<div class="wp-block-group">

@@ -269,12 +269,10 @@ export default {
             'updateFilter'
         ]),
         saveEdition(filter) {
-
             if ((filter.filter_type_object && filter.filter_type_object.form_component) || filter.edit_form == '') {
                 
                 this.isLoading = true;
-
-                for (let [key, value] of this.form) {
+                for (let [key, value] of Object.entries(this.form)) {
                     if (key === 'begin_with_filter_collapsed')
                         this.form[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
                 }

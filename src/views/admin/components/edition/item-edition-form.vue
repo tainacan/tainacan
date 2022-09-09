@@ -1250,7 +1250,7 @@ export default {
 
                     if (this.isOnSequenceEdit && this.$route.query.collapses) {
                         for (let i = 0; i < metadata.length; i++) {
-                            this.metadataCollapses.push(this.$route.query.collapses[i] != undefined ? this.$route.query.collapses[i] : true);
+                            this.metadataCollapses.push(this.$route.query.collapses[i] != undefined ? (this.$route.query.collapses[i] == 'true' || this.$route.query.collapses[i] === true) : true);
                         }
                     } else if (this.isOnSequenceEdit && !this.$route.query.collapses) {
                         for (let i = 0; i < metadata.length; i++) {

@@ -111,10 +111,12 @@ export const updateMetadatum = ({commit}, {collectionId, metadatumId, isReposito
     return new Promise((resolve, reject) => {
         let endpoint = '';
 
-        if (!isRepositoryLevel)
+        if (!isRepositoryLevel) {
             endpoint = '/collection/' + collectionId + '/metadata/' + metadatumId;
-        else
+        } else {
             endpoint = '/metadata/' + metadatumId;
+            options['target_collection_id'] = collectionId;
+        }
 
         endpoint += '?context=edit';
 
@@ -295,16 +297,20 @@ export const updateMetadatumMappers = ({commit}, metadatumMappers) => {
 // METADATA SECTIONS
 export const fetchMetadataSections = ({commit}, { collectionId, isContextEdit, includeDisabled }) => {
 
-    let endpoint = '/collection/' + collectionId + '/metadata-sections?';
+    let endpoint = '/collection/' + collectionId + '/metadata-sections';
+
+    let params = {
+        nopaging: 1
+    };
 
     if (isContextEdit)
-        endpoint += 'context=edit&'
+        params['context'] = 'edit';
 
     if (includeDisabled)
-        endpoint += 'include_disabled=true'
+        params['include_disabled'] = true;
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacan.get(endpoint + '?' + qs.stringify(params) )
             .then((res) => {
                 let metadataSections = res.data;
                 commit('setMetadataSections', metadataSections);

@@ -44,7 +44,7 @@
         </span>
         <transition name="filter-item">
             <div   
-                    v-show="hideCollapses || (isCollapsed || errorMessage)"
+                    v-show="hideCollapses || isCollapsed || !!errorMessage"
                     v-if="isTextInputComponent">
                 <p
                         class="metadatum-description-help-info"
@@ -111,13 +111,11 @@
                     </a>
                 </template>
             </div>
-        </transition>
 
-        <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
-        <transition name="filter-item">
+            <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
             <div 
                     v-show="hideCollapses || isCollapsed"
-                    v-if="!isTextInputComponent">
+                    v-else>
                 <p
                         class="metadatum-description-help-info"
                         v-if="itemMetadatum.metadatum &&

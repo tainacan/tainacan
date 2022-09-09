@@ -1,6 +1,6 @@
 <template>
     <transition name="filter-item">
-        <div v-if="filterTags != undefined && filterTags.length > 0">
+        <div v-show="filterTags != undefined && filterTags.length > 0">
             <p class="filter-tags-info">
                 <span 
                         style="margin-right: 1em"
