@@ -413,6 +413,7 @@ class Items extends Repository {
 		$clauses = [];
 		$user_id = get_current_user_id();
 		$post_status = $wp_query->get( 'post_status' );
+		$post_status = is_array($post_status) ? $post_status : explode(",", $post_status);
 
 		foreach ($this->fetching_from_collections as $collection) {
 
