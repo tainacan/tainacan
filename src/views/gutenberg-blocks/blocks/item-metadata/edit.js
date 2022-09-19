@@ -15,8 +15,9 @@ export default function ({ attributes, setAttributes, className, isSelected, con
         collectionId,
         itemId,
         isLoading,
-        itemRequestSource,
+        metadataSectionsRequestSource,
         isModalOpen,
+        metadataSections,
         itemMetadata,
         itemMetadataTemplate,
         dataSource
@@ -24,6 +25,8 @@ export default function ({ attributes, setAttributes, className, isSelected, con
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+
+    checkIfTemplateEdition();
 
     function setContent() {
         
@@ -33,21 +36,21 @@ export default function ({ attributes, setAttributes, className, isSelected, con
             isLoading: isLoading
         });
 
-        if (itemRequestSource != undefined && typeof itemRequestSource == 'function')
-            itemRequestSource.cancel('Previous items search canceled.');
+        if (metadataSectionsRequestSource != undefined && typeof metadataSectionsRequestSource == 'function')
+            metadataSectionsRequestSource.cancel('Previous items search canceled.');
 
-        itemRequestSource = axios.CancelToken.source();
+        metadataSectionsRequestSource = axios.CancelToken.source();
 
-        let endpoint = '/item/'+ itemId + '/metadata';
+        let endpoint = '/collection/'+ collectionId + '/metadata-sections';
 
-        tainacan.get(endpoint, { cancelToken: itemRequestSource.token })
+        tainacan.get(endpoint, { cancelToken: metadataSectionsRequestSource.token })
             .then(response => {
 
-                itemMetadata = response.data ? response.data : [];
+                metadataSections = response.data ? response.data : [];
                 setAttributes({
-                    itemMetadata: itemMetadata,
+                    metadataSections: metadataSections,
                     isLoading: false,
-                    itemRequestSource: itemRequestSource
+                    metadataSectionsRequestSource: metadataSectionsRequestSource
                 });
                 getItemMetadataTemplates();
             });
@@ -56,28 +59,83 @@ export default function ({ attributes, setAttributes, className, isSelected, con
     function getItemMetadataTemplates() {
         itemMetadataTemplate = [];
 
-        itemMetadata.forEach((itemMetadatum) => {
-            if (
-                (itemMetadatum.value !== '' && itemMetadatum.value !== false) &&
-                (!Array.isArray(itemMetadatum.value) || itemMetadatum.value.lenght) &&
-                itemMetadatum.metadatum &&
-                itemMetadatum.metadatum.id
-            ) {
-                itemMetadataTemplate.push([ 
-                    'tainacan/item-metadatum',
-                    {
-                        placeholder: __( 'Item Metadatum', 'tainacan' ),
-                        metadatumId: itemMetadatum.metadatum.id,
-                        itemId: Number(itemId),
-                        collectionId: Number(collectionId),
-                        dataSource: 'parent'
-                    }
-                ]);
-            }
-        });
+        console.log(metadataSections);
+        // itemMetadata.forEach((itemMetadatum) => {
+
+        //     if (dataSource == 'template') {
+        //         itemMetadataTemplate.push([ 
+        //             'tainacan/item-metadatum',
+        //             {
+        //                 placeholder: __( 'Item Metadatum', 'tainacan' ),
+        //                 metadatumId: itemMetadatum.id,
+        //                 itemId: Number(itemId),
+        //                 collectionId: Number(collectionId),
+        //                 dataSource: 'template'
+        //             }
+        //         ]);
+        //     } else {
+        //         if (
+        //             (itemMetadatum.value !== '' && itemMetadatum.value !== false) &&
+        //             (!Array.isArray(itemMetadatum.value) || itemMetadatum.value.lenght) &&
+        //             itemMetadatum.metadatum &&
+        //             itemMetadatum.metadatum.id
+        //         ) {
+        //             itemMetadataTemplate.push([ 
+        //                 'tainacan/item-metadatum',
+        //                 {
+        //                     placeholder: __( 'Item Metadatum', 'tainacan' ),
+        //                     metadatumId: itemMetadatum.metadatum.id,
+        //                     itemId: Number(itemId),
+        //                     collectionId: Number(collectionId),
+        //                     dataSource: 'parent'
+        //                 }
+        //             ]);
+        //         }
+        //     }
+        // });
         setAttributes({ itemMetadataTemplate: itemMetadataTemplate });
     }
     
+    function checkIfTemplateEdition() {
+        // Check custom template edition state
+        const queryParams = new URLSearchParams(window.location.search);
+        if (queryParams.get('postType') == 'wp_template') {
+
+            // Extracts collectionId from a string like theme-slug//single-tnc_col_123_item
+            let postId = queryParams.get('postId');
+            
+            if (typeof postId == 'string') {
+                postId = postId.split('single-tnc_col_');
+                
+                if (postId.length == 2) {
+                    postId = postId[1];
+
+                    if (typeof postId == 'string') {
+                        postId = postId.split('_item');
+
+                        if (postId.length == 2) {
+                            postId = postId[0];
+
+                            collectionId = Number(postId);
+                            itemId = 0;
+
+                            const shouldSetContent = dataSource !== 'template';
+                            dataSource = 'template';
+
+                            setAttributes({ 
+                                collectionId: itemId,
+                                itemId: itemId,
+                                dataSource: dataSource
+                            });
+
+                            if (shouldSetContent)
+                                setContent();
+                        }
+                    }
+                }
+            }
+        }
+    }
     // Executed only on the first load of page
     if (content && content.length && content[0].type) {
         setAttributes({ content: '' });
@@ -124,7 +182,7 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                 ) : null
             }
 
-            { !itemId ? (
+            { !itemId && dataSource != 'template' ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
@@ -167,7 +225,8 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                     {  itemMetadata.length ?
                         <InnerBlocks
                                 allowedBlocks={ true }
-                                template={ itemMetadataTemplate } />
+                                template={ itemMetadataTemplate }
+                                templateLock={ "all" } />
                         : null
                     }
                 </div>

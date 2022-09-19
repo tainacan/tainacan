@@ -193,7 +193,7 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                 ) : null
             }
             
-            { (collectionId && itemId && metadatumId) ? (
+            { (collectionId && (itemId || dataSource == 'template') && metadatumId) ? (
                 <div className={ 'item-metadatum-edit-container' }>
                     <ServerSideRender
                         block="tainacan/item-metadatum"

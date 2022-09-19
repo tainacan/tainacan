@@ -9,10 +9,12 @@ function tainacan_blocks_render_item_metadatum( $block_attributes, $content, $bl
 	// Basic check, otherwise we don't have nothing to render here.
 	$item_id = !empty($block->context['tainacan/itemId']) ? $block->context['tainacan/itemId'] : (isset($block_attributes['itemId']) ? $block_attributes['itemId'] : false);
 	$metadatum_id = isset($block_attributes['metadatumId']) ? $block_attributes['metadatumId'] : false;
-
-	if ( !$item_id || !$metadatum_id )
+	$collection_id = isset($block_attributes['collectionId']) ? $block_attributes['collectionId'] : false;
+	$data_source = isset($block_attributes['dataSource']) ? $block_attributes['dataSource'] : 'parent';
+	
+	if ( !$metadatum_id )
 		return '';
-
+	
 	$args = array(
 		'metadata' => $metadatum_id,
 		'before_title' => '<h3 class="wp-block-tainacan-item-metadatum__metadatum-label">',
@@ -38,5 +40,18 @@ function tainacan_blocks_render_item_metadatum( $block_attributes, $content, $bl
 	$args['before'] = '<div ' . $wrapper_attributes . '>';
 	$args['after'] = '</div>';
 
-	return tainacan_get_the_metadata( $args, $item_id );
+	// Checks if we are in the edit page or in the published
+	$current_post = get_post();
+	
+	if ( $data_source == 'template' && $collection_id ) {
+		$collection_pt_pattern = '/' . \Tainacan\Entities\Collection::$db_identifier_prefix . '\d+' . \Tainacan\Entities\Collection::$db_identifier_sufix . '/';
+
+		if ( $current_post == NULL )
+			return \Tainacan\Theme_Helper::get_instance()->get_tainacan_item_metadata_template( $args, $collection_id );
+		else if ( $current_post->post_type !== false && preg_match($collection_pt_pattern, $current_post->post_type) ) 
+			return tainacan_get_the_metadata( $args, $current_post->ID );
+		
+	} else if ( $item_id ) {
+		return tainacan_get_the_metadata( $args, $item_id );
+	}
 }

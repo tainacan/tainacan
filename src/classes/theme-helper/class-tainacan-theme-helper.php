@@ -1452,7 +1452,6 @@ class Theme_Helper {
 				'class' => 'tainacan-media-component'
 			)
 		);
-
 		return tainacan_get_the_media_component(
 			'tainacan-item-gallery-block_id-' . $block_id,
 			$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
@@ -1486,5 +1485,90 @@ class Theme_Helper {
 			)
 		);
 	}
-}
 
+	function get_tainacan_item_metadata_template($args = array(), $collection_id = 0) {
+
+		if ( !$collection_id )
+			return '';
+		
+		$args['p'] = $args['metadata'];
+		$args['posts_per_page'] = 1;
+		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+		$metadata = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection, $args);
+		if (!is_array($metadata) || count($metadata) <= 0 && !($metadata[0] instanceof \Tainacan\Entities\Metadatum))
+			return '';
+
+		$metadatum = $metadata[0];
+		$item_metadatum = new \Tainacan\Entities\Item_Metadata_Entity(null, $metadatum);
+		
+		$defaults = array(
+			'hide_empty' 			=> true,
+			'empty_value_message' 	=> '',
+			'display_slug_as_class' => false,
+			'before' 				=> '<div class="metadata-type-$type" $id>',
+			'after' 				=> '</div>',
+			'before_title' 			=> '<h3>',
+			'after_title' 			=> '</h3>',
+			'before_value' 			=> '<p>',
+			'after_value' 			=> '</p>'
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		// Gets the metadata type object to use it if we need the slug
+		$metadata_type_object = $metadatum->get_metadata_type_object();
+
+		// Get metadatum wrapper tag. 
+		$before = str_replace('$type', $metadata_type_object->get_slug(), $args['before']);
+
+		// Adds class with slug and adds metadatum id
+		if ($args['display_slug_as_class']) {
+			if ( !strpos($before, 'class="') ) {
+				$before = str_replace('>', ' class="metadata-slug-'. $metadatum->get_slug() . '">', $before);
+			} else
+				$before = str_replace('class="', 'class="metadata-slug-'. $metadatum->get_slug() . ' ', $before);
+		}
+		$before = str_replace('$id', ' id="metadata-id-' . $metadatum->get_id() . '"', $before);
+
+		// Let theme authors tweak the wrapper opener
+		$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before', $before, $item_metadatum );
+		$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--type-' . $metadatum->get_metadata_type(), $before, $item_metadatum );
+		$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--id-' . $metadatum->get_id(), $before, $item_metadatum );
+		if ( is_numeric($metadatum_index) ) {
+			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--index-' . $metadatum_index, $before, $item_metadatum );
+		}
+
+		// Renders the metadatum opener
+		$return .= $before;
+
+		// Renders the metadatum name
+		$metadatum_title_before = $args['before_title'];
+		$metadatum_title_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-title', $metadatum_title_before, $item_metadatum );
+		$metadatum_title_after = $args['after_title'];
+		$metadatum_title_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-title', $metadatum_title_after, $item_metadatum );
+		$return .= $metadatum_title_before . $metadatum->get_name() . $metadatum_title_after;
+		
+		// Renders the metadatum value
+		$metadatum_value_before = $args['before_value'];
+		$metadatum_value_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-value', $metadatum_value_before, $item_metadatum );
+		$metadatum_value_after = $args['after_value'];
+		$metadatum_value_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-value', $metadatum_value_after, $item_metadatum );
+		$return .= $metadatum_value_before . __('The item metadata value goes here', 'tainacan' ) . $metadatum_value_after;
+
+		$after = $args['after'];
+
+		// Let theme authors tweak the wrapper closer
+		if ( is_numeric($metadatum_index) ) {
+			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--index-' . $metadatum_index, $after, $item_metadatum );
+		}
+		$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--id-' . $metadatum->get_id(), $after, $item_metadatum );
+		$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--type-' . $metadatum->get_metadata_type(), $after, $item_metadatum );
+		$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after', $after, $item_metadatum );
+		
+		// Closes the wrapper
+		$return .= $after;
+
+		// Returns the html content created by the function
+		return $return;
+
+	}
+}

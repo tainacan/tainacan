@@ -48,9 +48,7 @@
 		}
     },
     "usesContext": [
-        "tainacan/itemId",
-        "postType",
-        "postId"
+        "tainacan/itemId"
     ],
     "supports": {
         "align": ["full", "wide"],
