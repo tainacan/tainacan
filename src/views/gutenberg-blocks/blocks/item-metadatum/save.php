@@ -43,10 +43,10 @@ function tainacan_blocks_render_item_metadatum( $block_attributes, $content, $bl
 	// Checks if we are in the edit page or in the published
 	$current_post = get_post();
 	
-	if ( $data_source == 'template' && $collection_id ) {
+	if ( $data_source === 'template' && $collection_id ) {
 		$collection_pt_pattern = '/' . \Tainacan\Entities\Collection::$db_identifier_prefix . '\d+' . \Tainacan\Entities\Collection::$db_identifier_sufix . '/';
 
-		if ( $current_post == NULL )
+		if ( $current_post === NULL )
 			return \Tainacan\Theme_Helper::get_instance()->get_tainacan_item_metadata_template( $args, $collection_id );
 		else if ( $current_post->post_type !== false && preg_match($collection_pt_pattern, $current_post->post_type) ) 
 			return tainacan_get_the_metadata( $args, $current_post->ID );

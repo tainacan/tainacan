@@ -1533,12 +1533,9 @@ class Theme_Helper {
 		$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before', $before, $item_metadatum );
 		$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--type-' . $metadatum->get_metadata_type(), $before, $item_metadatum );
 		$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--id-' . $metadatum->get_id(), $before, $item_metadatum );
-		if ( is_numeric($metadatum_index) ) {
-			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--index-' . $metadatum_index, $before, $item_metadatum );
-		}
 
 		// Renders the metadatum opener
-		$return .= $before;
+		$return = $before;
 
 		// Renders the metadatum name
 		$metadatum_title_before = $args['before_title'];
@@ -1557,9 +1554,6 @@ class Theme_Helper {
 		$after = $args['after'];
 
 		// Let theme authors tweak the wrapper closer
-		if ( is_numeric($metadatum_index) ) {
-			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--index-' . $metadatum_index, $after, $item_metadatum );
-		}
 		$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--id-' . $metadatum->get_id(), $after, $item_metadatum );
 		$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--type-' . $metadatum->get_metadata_type(), $after, $item_metadatum );
 		$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after', $after, $item_metadatum );
