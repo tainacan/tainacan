@@ -623,7 +623,7 @@ class Item extends Entity {
 				}
 			}
 
-			// Add it to the array which will be looped bellow
+			// Add it to the array which will be looped below
 			$item_metadata[] = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum_object);
 
 		// If not single metadatum is passed, we query them
@@ -1065,7 +1065,7 @@ class Item extends Entity {
 				}
 			}
 
-			// Add it to the array which will be looped bellow
+			// Add it to the array which will be looped below
 			$metadata_sections[] = $metadata_section_object;
 
 		// If not single metadata section is passed, we query them

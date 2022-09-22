@@ -133,7 +133,7 @@ class Metadata_Section extends Entity {
 	/**
 	 * Set metadatum description_bellow_name
 	 *
-	 * @param [string] $value If the description will be displayed bellow the name instead of inside a tooltip (yes/no)
+	 * @param [string] $value If the description will be displayed below the name instead of inside a tooltip (yes/no)
 	 * @return void
 	 */
 	function set_description_bellow_name($value) {
