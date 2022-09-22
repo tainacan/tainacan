@@ -923,65 +923,68 @@
                 'getItemsPerPage'
             ]),
             parseHooks() {
-                const searchControlBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_search_control_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_search_control_before`, '');
-                const searchControlBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_search_control_before`) || searchControlBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_search_control_before`, searchControlBeforeFilters);
-                if (searchControlBeforeFiltersCollection)
-                    this.hooks['search_control_before'] = searchControlBeforeFiltersCollection;
+                if (wp !== undefined && wp.hooks !== undefined) {
 
-                const searchControlAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_search_control_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_search_control_after`, ''); 
-                const searchControlAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_search_control_after`) || searchControlAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_search_control_after`, searchControlAfterFilters); 
-                if (searchControlAfterFiltersCollection)
-                    this.hooks['search_control_after'] = searchControlAfterFiltersCollection; 
+                    const searchControlBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_search_control_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_search_control_before`, '');
+                    const searchControlBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_search_control_before`) || searchControlBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_search_control_before`, searchControlBeforeFilters);
+                    if (searchControlBeforeFiltersCollection)
+                        this.hooks['search_control_before'] = searchControlBeforeFiltersCollection;
 
-                const advancedSearchBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_advanced_search_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_advanced_search_before`, '');
-                const advancedSearchBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_before`) || advancedSearchBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_before`, advancedSearchBeforeFilters);
-                if (advancedSearchBeforeFiltersCollection)
-                    this.hooks['advanced_search_before'] = advancedSearchBeforeFiltersCollection;
+                    const searchControlAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_search_control_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_search_control_after`, ''); 
+                    const searchControlAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_search_control_after`) || searchControlAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_search_control_after`, searchControlAfterFilters); 
+                    if (searchControlAfterFiltersCollection)
+                        this.hooks['search_control_after'] = searchControlAfterFiltersCollection; 
 
-                const advancedSearchAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_advanced_search_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_advanced_search_after`, ''); 
-                const advancedSearchAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_after`) || advancedSearchAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_after`, advancedSearchAfterFilters); 
-                if (advancedSearchAfterFiltersCollection)
-                    this.hooks['advanced_search_after'] = advancedSearchAfterFiltersCollection; 
+                    const advancedSearchBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_advanced_search_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_advanced_search_before`, '');
+                    const advancedSearchBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_before`) || advancedSearchBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_before`, advancedSearchBeforeFilters);
+                    if (advancedSearchBeforeFiltersCollection)
+                        this.hooks['advanced_search_before'] = advancedSearchBeforeFiltersCollection;
 
-                const filtersBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filters_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_filters_before`, '');
-                const filtersBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filters_before`) || filtersBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filters_before`, filtersBeforeFilters);
-                if (filtersBeforeFiltersCollection)
-                    this.hooks['filters_before'] = filtersBeforeFiltersCollection;
+                    const advancedSearchAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_advanced_search_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_advanced_search_after`, ''); 
+                    const advancedSearchAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_after`) || advancedSearchAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_advanced_search_after`, advancedSearchAfterFilters); 
+                    if (advancedSearchAfterFiltersCollection)
+                        this.hooks['advanced_search_after'] = advancedSearchAfterFiltersCollection; 
 
-                const filtersAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filters_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_filters_after`, ''); 
-                const filtersAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filters_after`) || filtersAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filters_after`, filtersAfterFilters); 
-                if (filtersAfterFiltersCollection)
-                    this.hooks['filters_after'] = filtersAfterFiltersCollection; 
+                    const filtersBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filters_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_filters_before`, '');
+                    const filtersBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filters_before`) || filtersBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filters_before`, filtersBeforeFilters);
+                    if (filtersBeforeFiltersCollection)
+                        this.hooks['filters_before'] = filtersBeforeFiltersCollection;
 
-                const filterTagsBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filter_tags_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_filter_tags_before`, '');
-                const filterTagsBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_before`) || filterTagsBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_before`, filterTagsBeforeFilters);
-                if (filterTagsBeforeFiltersCollection)
-                    this.hooks['filte_tags_before'] = filterTagsBeforeFiltersCollection;
+                    const filtersAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filters_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_filters_after`, ''); 
+                    const filtersAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filters_after`) || filtersAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filters_after`, filtersAfterFilters); 
+                    if (filtersAfterFiltersCollection)
+                        this.hooks['filters_after'] = filtersAfterFiltersCollection; 
 
-                const filterTagsAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filter_tags_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_filter_tags_after`, ''); 
-                const filterTagsAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_after`) || filterTagsAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_after`, filterTagsAfterFilters); 
-                if (filterTagsAfterFiltersCollection)
-                    this.hooks['filter_tags_after'] = filterTagsAfterFiltersCollection;
+                    const filterTagsBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filter_tags_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_filter_tags_before`, '');
+                    const filterTagsBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_before`) || filterTagsBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_before`, filterTagsBeforeFilters);
+                    if (filterTagsBeforeFiltersCollection)
+                        this.hooks['filte_tags_before'] = filterTagsBeforeFiltersCollection;
 
-                const itemsListBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_before`, '');
-                const itemsListBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`) || itemsListBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`, itemsListBeforeFilters);
-                if (itemsListBeforeFiltersCollection)
-                    this.hooks['items_list_before'] = itemsListBeforeFiltersCollection;
+                    const filterTagsAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_filter_tags_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_filter_tags_after`, ''); 
+                    const filterTagsAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_after`) || filterTagsAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_filter_tags_after`, filterTagsAfterFilters); 
+                    if (filterTagsAfterFiltersCollection)
+                        this.hooks['filter_tags_after'] = filterTagsAfterFiltersCollection;
 
-                const itemsListAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_after`, ''); 
-                const itemsListAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_after`) || itemsListAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_after`, itemsListAfterFilters); 
-                if (itemsListAfterFiltersCollection)
-                    this.hooks['items_list_after'] = itemsListAfterFiltersCollection; 
+                    const itemsListBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_before`, '');
+                    const itemsListBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`) || itemsListBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`, itemsListBeforeFilters);
+                    if (itemsListBeforeFiltersCollection)
+                        this.hooks['items_list_before'] = itemsListBeforeFiltersCollection;
 
-                const paginationBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_pagination_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_pagination_before`, '');
-                const paginationBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_pagination_before`) || paginationBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_pagination_before`, paginationBeforeFilters);
-                if (paginationBeforeFiltersCollection)
-                    this.hooks['pagination_before'] = paginationBeforeFiltersCollection;
+                    const itemsListAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_after`, ''); 
+                    const itemsListAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_after`) || itemsListAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_after`, itemsListAfterFilters); 
+                    if (itemsListAfterFiltersCollection)
+                        this.hooks['items_list_after'] = itemsListAfterFiltersCollection; 
 
-                const paginationAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_pagination_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_pagination_after`, ''); 
-                const paginationAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`) || paginationAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`, paginationAfterFilters); 
-                if (paginationAfterFiltersCollection)
-                    this.hooks['pagination_after'] = paginationAfterFiltersCollection; 
+                    const paginationBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_pagination_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_pagination_before`, '');
+                    const paginationBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_pagination_before`) || paginationBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_pagination_before`, paginationBeforeFilters);
+                    if (paginationBeforeFiltersCollection)
+                        this.hooks['pagination_before'] = paginationBeforeFiltersCollection;
+
+                    const paginationAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_pagination_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_pagination_after`, ''); 
+                    const paginationAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`) || paginationAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`, paginationAfterFilters); 
+                    if (paginationAfterFiltersCollection)
+                        this.hooks['pagination_after'] = paginationAfterFiltersCollection; 
+                }
             },
             openExposersModal() {
                 this.$buefy.modal.open({

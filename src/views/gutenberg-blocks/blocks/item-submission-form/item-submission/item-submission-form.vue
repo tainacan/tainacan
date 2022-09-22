@@ -837,20 +837,28 @@ export default {
             'fetchCollectionForItemSubmission'
         ]),
         hasBeforeHook(location) {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`);
+            
+            return false;
         },
         hasAfterHook(location) {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`);
+
+            return false;
         },
         getBeforeHook(location, entity = '') {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`, entity);
+            
+            return '';
         },
         getAfterHook(location, entity = '') {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`, entity);
+            
+            return '';
         },
         onSubmit() {
 
