@@ -1,12 +1,13 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
-    "name": "tainacan/item-metadata",
-    "title": "Tainacan Item Metadata",
+    "name": "tainacan/metadata-section-name",
+    "title": "Tainacan Metadata Section Name",
     "apiVersion": 2,
     "category": "tainacan-blocks",
-    "keywords": [ "item", "metadata", "fields", "values" ],
-    "description": "The item metadata, including a label and its value.",
+    "keywords": ["metadata", "field", "section", "region" ],
+    "description": "A metadata section label, used to identify different metadata sections.",
     "textdomain": "tainacan",
+    "parent": [ "tainacan/item-metadata-section" ],
     "example": {
         "attributes": {
             "content": "preview"
@@ -28,38 +29,28 @@
         "itemId": {
             "type": "integer"
         },
+        "sectionId": {
+            "type": "string"
+        },
+        "sectionName": {
+            "type": "string",
+            "default": ""
+        },
         "isModalOpen": {
             "type": "boolean",
             "default": false
         },
-        "isLoading": {
-            "type": "boolean",
-            "default": false
-        },
-        "itemMetadataRequestSource": {
-            "type": "string",
-            "default": ""
-        },
-        "itemMetadata": {
-            "type": "array",
-            "default": []
-        },
-        "metadata": {
-            "type": "array",
-            "default": []
-        },
-        "itemMetadataTemplate": {
-            "type": "array",
-            "default": []
-        },
-        "sectionId": {
-            "type": "string",
-            "default": ""
-        }
+        "labelLevel": {
+			"type": "number",
+			"default": 3
+		},
+        "textAlign": {
+			"type": "string"
+		}
     },
-    "providesContext": {
-        "tainacan/itemId": "itemId"
-    },
+    "usesContext": [
+        "tainacan/itemId"
+    ],
     "supports": {
         "align": ["full", "wide"],
         "multiple": true,
@@ -77,10 +68,9 @@
         },
         "spacing": {
             "margin": true,
-            "padding": true,
-            "spacing": true
+            "padding": true
         }
     },
-    "editorScript": "item-metadata",
-	"editorStyle": "item-metadata"
+    "editorScript": "metadata-section-name",
+	"editorStyle": "metadata-section-name"
 }

@@ -1,11 +1,11 @@
 {
     "$schema": "https://schemas.wp.org/trunk/block.json",
-    "name": "tainacan/item-metadata",
-    "title": "Tainacan Item Metadata",
+    "name": "tainacan/item-metadata-section",
+    "title": "Tainacan Item Metadata Section",
     "apiVersion": 2,
     "category": "tainacan-blocks",
-    "keywords": [ "item", "metadata", "fields", "values" ],
-    "description": "The item metadata, including a label and its value.",
+    "keywords": [ "item", "metadata", "section", "regions", "fields" ],
+    "description": "The metadata sections, including its label and metadata whitin it.",
     "textdomain": "tainacan",
     "example": {
         "attributes": {
@@ -36,25 +36,26 @@
             "type": "boolean",
             "default": false
         },
-        "itemMetadataRequestSource": {
+        "metadataSectionRequestSource": {
             "type": "string",
             "default": ""
         },
-        "itemMetadata": {
-            "type": "array",
-            "default": []
-        },
-        "metadata": {
-            "type": "array",
-            "default": []
-        },
-        "itemMetadataTemplate": {
+        "metadataSectionTemplate": {
             "type": "array",
             "default": []
         },
         "sectionId": {
-            "type": "string",
-            "default": ""
+            "type": "string"
+        },
+        "sectionName": {
+            "type": "string"
+        },
+        "sectionDescription": {
+            "type": "string"
+        },
+        "sectionMetadata": {
+            "type": "array",
+            "default": []
         }
     },
     "providesContext": {
@@ -81,6 +82,6 @@
             "spacing": true
         }
     },
-    "editorScript": "item-metadata",
-	"editorStyle": "item-metadata"
+    "editorScript": "item-metadata-section",
+	"editorStyle": "item-metadata-section"
 }

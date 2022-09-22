@@ -17,8 +17,11 @@ const TAINACAN_BLOCKS = [
 	'faceted-search' => [],
 	'item-submission-form' => [],
 	'item-gallery' => ['render_callback' => 'tainacan_blocks_render_items_gallery'],
+	'item-metadata-sections' => [],
+	'item-metadata-section' => [],
 	'item-metadata' => [],
-	'item-metadatum' => ['render_callback' => 'tainacan_blocks_render_item_metadatum']
+	'item-metadatum' => ['render_callback' => 'tainacan_blocks_render_item_metadatum'],
+	'metadata-section-name' => []
 ];
 
 // Lets do this!
