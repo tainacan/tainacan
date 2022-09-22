@@ -4,7 +4,7 @@ const { Button, Spinner, Placeholder } = wp.components;
 
 const { useBlockProps, InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
-import SingleItemModal from '../../js/selection/single-item-modal.js';
+import SingleItemMetadataSectionModal from '../../js/selection/single-item-metadata-section-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
@@ -31,54 +31,58 @@ export default function ({ attributes, setAttributes, className, isSelected, con
     checkIfTemplateEdition();
 
     function setContent() {
-        isLoading = true;
 
-        setAttributes({
-            isLoading: isLoading
-        });
+        if (sectionId) {
 
-        if ( dataSource === 'parent' && sectionId && sectionDescription && sectionName && sectionMetadata.length ) {
-            
-            getMetadataSectionTemplates({
-                sectionId: sectionId,
-                sectionName: sectionName,
-                sectionDescription: sectionDescription,
-                sectionMetadata: sectionMetadata,
-                metadataSectionRequestSource: metadataSectionRequestSource
+            isLoading = true;
+
+            setAttributes({
+                isLoading: isLoading
             });
 
-        } else {
-            if (metadataSectionRequestSource != undefined && typeof metadataSectionRequestSource == 'function')
-                metadataSectionRequestSource.cancel('Previous metadata sections search canceled.');
-
-            metadataSectionRequestSource = axios.CancelToken.source();
-
-            let endpoint = '/collection/'+ collectionId + '/metadata-sections/' + sectionId;
-
-            tainacan.get(endpoint, { cancelToken: metadataSectionRequestSource.token })
-                .then(response => {
-
-                    metadataSection = response.data ? response.data : [];
-
-                    getMetadataSectionTemplates({
-                        sectionId: metadataSection.id,
-                        sectionName: metadataSection.name,
-                        sectionDescription: metadataSection.description,
-                        sectionMetadata: metadataSection['metadata_object_list'],
-                        metadataSectionRequestSource: metadataSectionRequestSource
-                    });
-                })
-                .catch((error) => {
-                    console.error(error);
-
-                    setAttributes({
-                        sectionId: '',
-                        sectionName: '',
-                        sectionDescription: '',
-                        sectionMetadata: [],
-                        isLoading: false
-                    });
+            if ( dataSource === 'parent' && sectionMetadata.length ) {
+                
+                getMetadataSectionTemplates({
+                    sectionId: sectionId,
+                    sectionName: sectionName,
+                    sectionDescription: sectionDescription,
+                    sectionMetadata: sectionMetadata,
+                    metadataSectionRequestSource: metadataSectionRequestSource
                 });
+
+            } else {
+                if (metadataSectionRequestSource != undefined && typeof metadataSectionRequestSource == 'function')
+                    metadataSectionRequestSource.cancel('Previous metadata sections search canceled.');
+
+                metadataSectionRequestSource = axios.CancelToken.source();
+
+                let endpoint = '/collection/'+ collectionId + '/metadata-sections/' + sectionId;
+
+                tainacan.get(endpoint, { cancelToken: metadataSectionRequestSource.token })
+                    .then(response => {
+
+                        let metadataSection = response.data ? response.data : [];
+
+                        getMetadataSectionTemplates({
+                            sectionId: metadataSection.id,
+                            sectionName: metadataSection.name,
+                            sectionDescription: metadataSection.description,
+                            sectionMetadata: metadataSection['metadata_object_list'],
+                            metadataSectionRequestSource: metadataSectionRequestSource
+                        });
+                    })
+                    .catch((error) => {
+                        console.error(error);
+
+                        setAttributes({
+                            sectionId: '',
+                            sectionName: '',
+                            sectionDescription: '',
+                            sectionMetadata: [],
+                            isLoading: false
+                        });
+                    });
+            }
         }
     }
 
@@ -89,16 +93,14 @@ export default function ({ attributes, setAttributes, className, isSelected, con
         sectionMetadata,
         metadataSectionRequestSource
     }) {
-        console.log(sectionName)
+        metadataSectionTemplate = [];
+
         if (sectionName) {
             metadataSectionTemplate.push([
                 'tainacan/metadata-section-name',
                 {
                     sectionId: sectionId,
-                    itemId: Number(itemId),
-                    collectionId: Number(collectionId),
                     sectionName: sectionName,
-                    dataSource: 'parent'
                 }
             ]);
         }
@@ -193,21 +195,27 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                 ( 
                 <div>
                     { isModalOpen ?
-                        <SingleItemModal
-                            modalTitle={ __('Select one item to render its metadata', 'tainacan') }
-                            applyButtonLabel={ __('List metadata for this item', 'tainacan') }
+                        <SingleItemMetadataSectionModal
+                            modalTitle={ __('Select one item to render a metadata section of it', 'tainacan') }
                             existingCollectionId={ collectionId }
                             existingItemId={ itemId }
+                            existingMetadataSectionId={ sectionId }
                             onSelectCollection={ (selectedCollectionId) => {
                                 collectionId = Number(selectedCollectionId);
                                 setAttributes({ 
                                     collectionId: collectionId
                                 });
                             }}
-                            onApplySelectedItem={ (selectedItemId) => {
-                                itemId = Number(selectedItemId);
+                            onSelectItem={ (selectedItemId) => {
+                                itemId = selectedItemId;
+                                setAttributes({ 
+                                    itemId: itemId
+                                });
+                            }}
+                            onApplySelectedMetadataSection={ (selectedMetadataSection) => {
+                                sectionId = selectedMetadataSection.sectionId;
                                 setAttributes({
-                                    itemId: itemId,
+                                    sectionId: sectionId,
                                     isModalOpen: false
                                 });
                                 setContent();
@@ -237,7 +245,7 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                                 width="24px">
                             <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
                         </svg>
-                        {__('Select an item to display its metadata list.', 'tainacan')}
+                        { __('Select an item and a metadata section to display it.', 'tainacan') }
                     </p>
                     <Button
                         isPrimary
@@ -249,7 +257,7 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                                 }); 
                             }
                         }>
-                        {__('Select Item', 'tainacan')}
+                        {__('Select Item and Metadata Section', 'tainacan')}
                     </Button>
                 </Placeholder>
                 ) : null

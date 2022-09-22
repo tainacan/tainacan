@@ -6,7 +6,7 @@ const { __ } = wp.i18n;
 const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
 const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
-export default class SingleItemModal extends React.Component {
+export default class SingleItemMetadataSectionModal extends React.Component {
     constructor(props) {
         super(props);
 
@@ -15,25 +15,24 @@ export default class SingleItemModal extends React.Component {
             collectionsPerPage: 24,
             collectionId: undefined,
             itemId: undefined,
-            metadatumId: undefined,
+            sectionId: undefined,
             collectionName: '',
             isLoadingCollections: false, 
             modalCollections: [],
             itemTitle: '',
-            metadatumType: undefined,
-            isLoadingMetadata: false, 
-            modalMetadata: [],
+            isLoadingMetadataSections: false, 
+            modalMetadataSections: [],
             totalModalCollections: 0, 
             collectionOrderBy: 'date-desc',
             collectionPage: 1,
             temporaryCollectionId: '',
             temporaryItemId: '',
-            temporaryMetadatumId: '',
+            temporaryMetadataSectionId: '',
             searchCollectionName: '',
             collections: [],
             collectionsRequestSource: undefined,
-            metadata: [],
-            metadataRequestSource: undefined,
+            metadataSections: [],
+            metadataSectionsRequestSource: undefined,
             searchURL: '',
             itemsPerPage: 12
         };
@@ -48,9 +47,9 @@ export default class SingleItemModal extends React.Component {
         this.fetchItem = this.fetchItem.bind(this);
         this.selectItem = this.selectItem.bind(this);
 
-        this.fetchModalMetadata = this.fetchModalMetadata.bind(this);
+        this.fetchModalMetadataSections = this.fetchModalMetadataSections.bind(this);
         
-        this.applySelectedMetadatum = this.applySelectedMetadatum.bind(this);
+        this.applySelectedMetadataSection = this.applySelectedMetadataSection.bind(this);
     }
 
     componentWillMount() {
@@ -58,7 +57,7 @@ export default class SingleItemModal extends React.Component {
         this.setState({ 
             collectionId: this.props.existingCollectionId,
             itemId: this.props.existingItemId,
-            metadatumId: this.props.existingMetadatumId
+            sectionId: this.props.existingSectionId
         });
          
         if (this.props.existingCollectionId) {
@@ -69,7 +68,7 @@ export default class SingleItemModal extends React.Component {
 
             if (this.props.existingItemId) {
                 this.fetchItem(this.props.existingItemId);
-                this.fetchModalMetadata();
+                this.fetchModalMetadataSections();
             }
 
         } else {
@@ -197,39 +196,37 @@ export default class SingleItemModal extends React.Component {
             });
     }
 
-    fetchModalMetadata() {
+    fetchModalMetadataSections() {
 
-        let someModalMetadata = [];
-        let endpoint = '/collection/' + this.state.collectionId + '/metadata/?nopaging=1';
+        let someModalMetadataSections = [];
+        let endpoint = '/collection/' + this.state.collectionId + '/metadata-sections/?nopaging=1';
         
         this.setState({ 
-            isLoadingMetadata: true,
-            modalMetadata: someModalMetadata
+            isLoadingMetadataSections: true,
+            modalMetadataSections: someModalMetadataSections
         });
 
         tainacan.get(endpoint)
             .then(response => {
 
-                let otherModalMetadata = this.state.modalMetadata;
+                let otherModalMetadataSections = this.state.modalMetadataSections;
 
-                for (let metadatum of response.data) {
-                    otherModalMetadata.push({ 
-                        name: metadatum.name, 
-                        id: metadatum.id,
-                        type: metadatum.metadata_type,
-                        typeLabel: metadatum.metadata_type_object ? metadatum.metadata_type_object.name : ''
+                for (let metadataSection of response.data) {
+                    otherModalMetadataSections.push({ 
+                        name: metadataSection.name, 
+                        id: metadataSection.id,
                     });
                 }
 
                 this.setState({ 
-                    isLoadingMetadata: false, 
-                    modalMetadata: otherModalMetadata
+                    isLoadingMetadataSections: false, 
+                    modalMetadataSections: otherModalMetadataSections
                 });
             
-                return otherModalMetadata;
+                return otherModalMetadataSections;
             })
             .catch(error => {
-                console.log('Error trying to fetch metadata: ' + error);
+                console.log('Error trying to fetch metadataSections: ' + error);
             });
     }
 
@@ -245,19 +242,17 @@ export default class SingleItemModal extends React.Component {
                     itemId: selectedItems[0]
                 });
                 this.props.onSelectItem(selectedItems[0]);
-                this.fetchModalMetadata();
+                this.fetchModalMetadataSections();
             }
         }
     }
 
-    applySelectedMetadatum(selectedMetadatum) {
+    applySelectedMetadataSection(selectedMetadataSection) {
         this.setState({
-            metadatumId: selectedMetadatum.id,
-            metadatumType: selectedMetadatum.type
+            sectionId: selectedMetadataSection.id
         });
-        this.props.onApplySelectedMetadatum({ 
-            metadatumId: selectedMetadatum.id,
-            metadatumType: selectedMetadatum.type
+        this.props.onApplySelectedMetadataSection({ 
+            sectionId: selectedMetadataSection.id
         });
     }
 
@@ -282,7 +277,7 @@ export default class SingleItemModal extends React.Component {
 
         this.setState({
             modalCollections: [],
-            modalMetadata: []
+            modalMetadataSections: []
         });
 
         this.props.onCancelSelection();
@@ -290,33 +285,33 @@ export default class SingleItemModal extends React.Component {
 
     render() {
         return (this.state.collectionId && this.state.itemId) ? (
-            // Metadata modal
+            // metadataSections modal
             <Modal
                 className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
-                title={__('Select a metadatum to show it\'s value', 'tainacan')}
+                title={__('Select a metadata section to show', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
-                contentLabel={__('Select metadatum', 'tainacan')}>
+                contentLabel={__('Select metadata section', 'tainacan')}>
                 {(
-                    this.state.modalMetadata.length > 0 ? 
+                    this.state.modalMetadataSections.length > 0 ? 
                     (   
                         <div>
                             <div className="modal-radio-list">
                                 <RadioControl
-                                    selected={ this.state.temporaryMetadatumId }
+                                    selected={ this.state.temporaryMetadataSectionId }
                                     options={
-                                        this.state.modalMetadata.map((metadatum) => {
-                                            return { label: metadatum.name + ' (' + metadatum.typeLabel + ')', value: '' + metadatum.id }
+                                        this.state.modalMetadataSections.map((metadataSection) => {
+                                            return { label: metadataSection.name , value: '' + metadataSection.id }
                                         })
                                     }
-                                    onChange={ ( aMetadatumId ) => { 
+                                    onChange={ ( aMetadataSectionId ) => { 
                                         this.setState({ 
-                                            temporaryMetadatumId: aMetadatumId
+                                            temporaryMetadataSectionId: aMetadataSectionId
                                         });
                                     } } />                          
                             </div>
                             <br/>
                         </div>
-                    ) : this.state.isLoadingMetadata ? <Spinner/> :
+                    ) : this.state.isLoadingMetadataSections ? <Spinner/> :
                         <div className="modal-loadmore-section">
                             <p>{ __('Sorry, no metadatum found.', 'tainacan') }</p>
                         </div>
@@ -326,18 +321,18 @@ export default class SingleItemModal extends React.Component {
                 <Button 
                     isSecondary
                     onClick={ () => { this.resetCollections(); }}>
-                    {__('Switch Collection', 'tainacan')}
+                    { __('Switch Collection', 'tainacan') }
                 </Button>
                 <Button 
                     isSecondary
                     onClick={ () => { this.resetItem(); }}>
-                    {__('Switch Item', 'tainacan')}
+                    { __('Switch Item', 'tainacan') }
                 </Button>
                 <Button
                     isPrimary
-                    disabled={ this.state.temporaryMetadatumId == undefined || this.state.temporaryMetadatumId == null || this.state.temporaryMetadatumId == ''}
-                    onClick={ () => { this.applySelectedMetadatum(this.state.modalMetadata.find((metadatatum) => metadatatum.id == this.state.temporaryMetadatumId));  } }>
-                    {__('Use this metadatum', 'tainacan')}
+                    disabled={ this.state.temporaryMetadataSectionId == undefined || this.state.temporaryMetadataSectionId == null || this.state.temporaryMetadataSectionId == ''}
+                    onClick={ () => { this.applySelectedMetadataSection(this.state.modalMetadataSections.find((metadataSection) => metadataSection.id == this.state.temporaryMetadataSectionId));  } }>
+                    { __('Use this metadata section', 'tainacan') }
                 </Button>
             </div>
         </Modal> 

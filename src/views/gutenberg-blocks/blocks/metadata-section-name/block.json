@@ -19,30 +19,13 @@
             "source": "query",
             "selector": "div"
         },
-        "dataSource": {
-            "type": "string",
-            "default": "selection"
-        },
-        "collectionId": {
-            "type": "integer"
-        },
-        "itemId": {
-            "type": "integer"
-        },
-        "sectionId": {
-            "type": "string"
-        },
         "sectionName": {
             "type": "string",
             "default": ""
         },
-        "isModalOpen": {
-            "type": "boolean",
-            "default": false
-        },
         "labelLevel": {
 			"type": "number",
-			"default": 3
+			"default": 2
 		},
         "textAlign": {
 			"type": "string"
@@ -68,7 +51,8 @@
         },
         "spacing": {
             "margin": true,
-            "padding": true
+            "padding": true,
+            "spacing": true
         }
     },
     "editorScript": "metadata-section-name",

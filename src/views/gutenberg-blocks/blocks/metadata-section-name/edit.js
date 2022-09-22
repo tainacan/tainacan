@@ -1,11 +1,7 @@
 const { __ } = wp.i18n;
-const { Button, Placeholder, ToolbarDropdownMenu, SVG, Path, __experimentalHeading: Heading } = wp.components;
+const { Placeholder, ToolbarDropdownMenu, SVG, Path, __experimentalHeading: Heading } = wp.components;
 
-const ServerSideRender = wp.serverSideRender;
 const { useBlockProps, BlockControls, AlignmentControl } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
-
-import SingleItemMetadatumModal from '../../js/selection/single-item-metadatum-modal.js';
-import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 
 const levelToPath = {
     1: 'M9 5h2v10H9v-4H5v4H3V5h2v4h4V5zm6.6 0c-.6.9-1.5 1.7-2.6 2v1h2v7h2V5h-1.4z',
@@ -16,16 +12,11 @@ const levelToPath = {
     6: 'M9 15H7v-4H3v4H1V5h2v4h4V5h2v10zm8.6-7.5c-.2-.2-.5-.4-.8-.5-.6-.2-1.3-.2-1.9 0-.3.1-.6.3-.8.5l-.6.9c-.2.5-.2.9-.2 1.4.4-.3.8-.6 1.2-.8.4-.2.8-.3 1.3-.3.4 0 .8 0 1.2.2.4.1.7.3 1 .6.3.3.5.6.7.9.2.4.3.8.3 1.3s-.1.9-.3 1.4c-.2.4-.5.7-.8 1-.4.3-.8.5-1.2.6-1 .3-2 .3-3 0-.5-.2-1-.5-1.4-.9-.4-.4-.8-.9-1-1.5-.2-.6-.3-1.3-.3-2.1s.1-1.6.4-2.3c.2-.6.6-1.2 1-1.6.4-.4.9-.7 1.4-.9.6-.3 1.1-.4 1.7-.4.7 0 1.4.1 2 .3.5.2 1 .5 1.4.8 0 .1-1.3 1.4-1.3 1.4zm-2.4 5.8c.2 0 .4 0 .6-.1.2 0 .4-.1.5-.2.1-.1.3-.3.4-.5.1-.2.1-.5.1-.7 0-.4-.1-.8-.4-1.1-.3-.2-.7-.3-1.1-.3-.3 0-.7.1-1 .2-.4.2-.7.4-1 .7 0 .3.1.7.3 1 .1.2.3.4.4.6.2.1.3.3.5.3.2.1.5.2.7.1z',
 };
 
-export default function ({ attributes, setAttributes, className, isSelected }) {
+export default function ({ attributes, setAttributes, className }) {
     
     let {
         content, 
-        collectionId,
-        itemId,
-        sectionId,
         sectionName,
-        isModalOpen,
-        dataSource,
         labelLevel,
         textAlign,
         style
@@ -38,7 +29,6 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
 		},
 		style,
 	} );
-    const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
     return content == 'preview' ? 
             <div className={className}>
@@ -50,25 +40,6 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         <>
 
             <BlockControls group="block">
-                { dataSource == 'selection' ? (
-                        TainacanBlocksCompatToolbar({
-                            label: __('Select item', 'tainacan'),
-                            icon: <svg 
-                                    xmlns="http://www.w3.org/2000/svg" 
-                                    viewBox="-2 -2 24 24"
-                                    height="24px"
-                                    width="24px">
-                                <path d="m 6,3.9960001 h 5.016 c 0.544,0 1.008,0.192 1.392,0.576 L 19.416,11.58 c 0.384,0.384 0.576,0.856 0.576,1.416 0,0.56 -0.192,1.032 -0.576,1.416 l -4.992,4.992 c -0.176,0.176 -0.392,0.32 -0.648,0.432 -0.24,0.112 -0.496,0.168 -0.768,0.168 -0.272,0 -0.536,-0.056 -0.792,-0.168 -0.24,-0.112 -0.448,-0.256 -0.624,-0.432 L 4.608,12.42 c -0.4,-0.4 -0.6,-0.872 -0.6,-1.416 V 5.988 C 4.008,5.428 4.2,4.956 4.584,4.572 4.968,4.188 5.44,3.996 6,3.9960001 Z m 1.512,4.992 c 0.416,0 0.768,-0.144 1.056,-0.432 C 8.856,8.2680001 9,7.916 9,7.5 9,7.084 8.856,6.732 8.568,6.444 8.28,6.14 7.928,5.988 7.512,5.988 7.096,5.988 6.736,6.14 6.432,6.444 6.144,6.732 6,7.084 6,7.5 c 0,0.416 0.144,0.7680001 0.432,1.0560001 0.304,0.288 0.664,0.432 1.08,0.432 z"/>
-                            </svg>,
-                            onClick: () => {
-                                isModalOpen = true;
-                                setAttributes( { 
-                                    isModalOpen: isModalOpen
-                                });
-                            }
-                        })
-                    ): null
-                }
                 <ToolbarDropdownMenu
                     popoverProps={{
                         className: 'block-library-heading-level-dropdown',
@@ -119,44 +90,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
 				/>
             </BlockControls>
 
-            { isSelected ? 
-                ( 
-                <div>
-                    { isModalOpen ?
-                        <SingleItemMetadatumModal
-                            modalTitle={ __('Select one item to render its metadata', 'tainacan') }
-                            existingCollectionId={ collectionId }
-                            existingItemId={ itemId }
-                            existingSectionId={ sectionId }
-                            onSelectCollection={ (selectedCollectionId) => {
-                                collectionId = selectedCollectionId;
-                                setAttributes({ 
-                                    collectionId: collectionId
-                                });
-                            }}
-                            onSelectItem={ (selectedItemId) => {
-                                itemId = selectedItemId;
-                                setAttributes({ 
-                                    itemId: itemId
-                                });
-                            }}
-                            onApplySelectedMetadatum={ (selectedMetadatum) => {
-                                sectionId = selectedMetadatum.sectionId;
-                                
-                                setAttributes({
-                                    sectionId: sectionId,
-                                    isModalOpen: false
-                                });
-                            }}
-                            onCancelSelection={ () => setAttributes({ isModalOpen: false }) }/> 
-                        : null
-                    }
-                    
-                </div>
-                ) : null
-            }
-
-            { dataSource == 'selection' && !(collectionId && itemId && sectionId) ? (
+            { !sectionName ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
@@ -173,20 +107,8 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                                 width="24px">
                             <path d="m 6,3.9960001 h 5.016 c 0.544,0 1.008,0.192 1.392,0.576 L 19.416,11.58 c 0.384,0.384 0.576,0.856 0.576,1.416 0,0.56 -0.192,1.032 -0.576,1.416 l -4.992,4.992 c -0.176,0.176 -0.392,0.32 -0.648,0.432 -0.24,0.112 -0.496,0.168 -0.768,0.168 -0.272,0 -0.536,-0.056 -0.792,-0.168 -0.24,-0.112 -0.448,-0.256 -0.624,-0.432 L 4.608,12.42 c -0.4,-0.4 -0.6,-0.872 -0.6,-1.416 V 5.988 C 4.008,5.428 4.2,4.956 4.584,4.572 4.968,4.188 5.44,3.996 6,3.9960001 Z m 1.512,4.992 c 0.416,0 0.768,-0.144 1.056,-0.432 C 8.856,8.2680001 9,7.916 9,7.5 9,7.084 8.856,6.732 8.568,6.444 8.28,6.14 7.928,5.988 7.512,5.988 7.096,5.988 6.736,6.14 6.432,6.444 6.144,6.732 6,7.084 6,7.5 c 0,0.416 0.144,0.7680001 0.432,1.0560001 0.304,0.288 0.664,0.432 1.08,0.432 z"/>
                         </svg>
-                        {__('Select an item metadata to display its label and value.', 'tainacan')}
+                        { __('No metadata section was found. Please use this block only inside metadata section block.', 'tainacan') }
                     </p>
-                    <Button
-                        isPrimary
-                        type="button"
-                        onClick={ () => {
-                                isModalOpen = true;
-                                setAttributes( { 
-                                    isModalOpen: isModalOpen
-                                }); 
-                            }
-                        }>
-                        {__('Select Item Metadatum', 'tainacan')}
-                    </Button>
                 </Placeholder>
                 ) : null
             }

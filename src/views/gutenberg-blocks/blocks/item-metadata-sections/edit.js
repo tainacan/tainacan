@@ -8,7 +8,7 @@ import SingleItemModal from '../../js/selection/single-item-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
-export default function ({ attributes, setAttributes, className, isSelected, context }) {
+export default function ({ attributes, setAttributes, className, isSelected }) {
     
     let {
         content, 
