@@ -463,32 +463,32 @@
                                     v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
                                 {{ metadataSection.description }}
                             </p>
+                            <template v-if="metadatumList && Array.isArray(metadatumList)">
+                                <template v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
+                            
+                                    <!-- JS-side hook for extra content -->
+                                    <div 
+                                            :key="index"
+                                            v-if="hasBeforeHook('metadatum')"
+                                            class="item-submission-hook item-submission-hook-metadatum-before"
+                                            v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
 
-                            <template v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
+                                    <tainacan-form-item
+                                            :key="index"
+                                            v-if="enabledMetadata[index] == 'true'"
+                                            :item-metadatum="itemMetadatum"
+                                            :hide-collapses="hideCollapses"
+                                            :is-collapsed="metadataCollapses[index]"
+                                            @changeCollapse="onChangeCollapse($event, index)"/>
 
-                                <!-- JS-side hook for extra content -->
-                                <div 
-                                        :key="index"
-                                        v-if="hasBeforeHook('metadatum')"
-                                        class="item-submission-hook item-submission-hook-metadatum-before"
-                                        v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
-
-                                <tainacan-form-item
-                                        :key="index"
-                                        v-if="enabledMetadata[index] == 'true'"
-                                        :item-metadatum="itemMetadatum"
-                                        :hide-collapses="hideCollapses"
-                                        :is-collapsed="metadataCollapses[index]"
-                                        @changeCollapse="onChangeCollapse($event, index)"/>
-
-                                <!-- JS-side hook for extra content -->
-                                <div 
-                                        :key="index"
-                                        v-if="hasAfterHook('metadatum')"
-                                        class="item-submission-hook item-submission-hook-metadatum-after"
-                                        v-html="getAfterHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+                                    <!-- JS-side hook for extra content -->
+                                    <div 
+                                            :key="index"
+                                            v-if="hasAfterHook('metadatum')"
+                                            class="item-submission-hook item-submission-hook-metadatum-after"
+                                            v-html="getAfterHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+                                </template>
                             </template>
-
                             <!-- JS-side hook for extra content -->
                             <div 
                                     v-if="hasAfterHook('metadata_section')"
@@ -837,20 +837,28 @@ export default {
             'fetchCollectionForItemSubmission'
         ]),
         hasBeforeHook(location) {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`);
+            
+            return false;
         },
         hasAfterHook(location) {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`);
+
+            return false;
         },
         getBeforeHook(location, entity = '') {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`, entity);
+            
+            return '';
         },
         getAfterHook(location, entity = '') {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`, entity);
+            
+            return '';
         },
         onSubmit() {
 

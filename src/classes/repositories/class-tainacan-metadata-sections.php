@@ -64,10 +64,10 @@ class Metadata_Sections extends Repository {
 			],
 			'description_bellow_name' => [
 				'map'         => 'meta',
-				'title'       => __( 'Description bellow name', 'tainacan' ),
+				'title'       => __( 'Description below name', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'Whether the section metadata description should be displayed bellow the name instead of inside a tooltip.', 'tainacan' ),
-				'on_error'    => __( 'Please set the "Description bellow name" value as "yes" or "no"', 'tainacan' ),
+				'description' => __( 'Whether the section metadata description should be displayed below the name instead of inside a tooltip.', 'tainacan' ),
+				'on_error'    => __( 'Please set the "Description below name" value as "yes" or "no"', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'no'
 			],

@@ -1196,6 +1196,7 @@ class Theme_Helper {
 		*     Optional. Array of arguments.
 		*      @type string  $item_id						  The Item ID
 		* 	   @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,
+		*	   @type bool    $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;
 		* 	   @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'
 		* 	   @type array 	 $mediaSources 					  Array of sources for the gallery. Possible values are 'document' and 'attachments'
 		* 	   @type bool 	 $hideFileNameMain 				  Hides the Main slider file name
@@ -1208,7 +1209,7 @@ class Theme_Helper {
 		* 	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
 		* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 		* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
-		*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
+		*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
 		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
 		* @return string  The HTML div to be used for rendering the item galery component
@@ -1218,6 +1219,7 @@ class Theme_Helper {
 		$defaults = array(
 			'blockId' => 						uniqid(),
 			'layoutElements' => 				array( 'main' => true, 'thumbnails' => true ),
+			'isBlock' =>						false,
 			'mediaSources' => 					array( 'document' => true, 'attachments' => true, 'metadata' => false),
 			'hideFileNameMain' => 				true, 
 			'hideFileCaptionMain' => 			false,
@@ -1446,12 +1448,22 @@ class Theme_Helper {
 		$block_custom_css .= (isset($args['thumbnailsCarouselWidth']) && is_numeric($args['thumbnailsCarouselWidth'])) ? sprintf('--tainacan-media-thumbs-carousel-width: %s%%;', $args['thumbnailsCarouselWidth']) : '';
 		$block_custom_css .= (isset($args['thumbnailsCarouselItemSize']) && is_numeric($args['thumbnailsCarouselItemSize'])) ? sprintf('--tainacan-media-thumbs-carousel-item-size: %spx;', $args['thumbnailsCarouselItemSize']) : '';
 
-		$wrapper_attributes = get_block_wrapper_attributes(
-			array(
-				'style' => $block_custom_css,
-				'class' => 'tainacan-media-component'
-			)
-		);
+		// Checks if we're inside a block, otherwise we have to build this manually.
+		if ( isset($args['isBlock']) && $args['isBlock'] ) {
+			$wrapper_attributes = get_block_wrapper_attributes(
+				array(
+					'style' => $block_custom_css,
+					'class' => 'tainacan-media-component'
+				)
+			);
+		}  else {
+			$wrapper_attributes = '';
+			if ( !empty($block_custom_css) )
+				$wrapper_attributes .= 'style="' . $block_custom_css . '" ';
+			
+			$wrapper_attributes .=	'class="tainacan-media-component"';
+		}
+
 		return tainacan_get_the_media_component(
 			'tainacan-item-gallery-block_id-' . $block_id,
 			$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
