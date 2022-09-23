@@ -43,7 +43,7 @@ function tainacan_blocks_render_item_metadatum( $block_attributes, $content, $bl
 	// Checks if we are in the edit page or in the published
 	$current_post = get_post();
 	
-	if ( $data_source === 'template' && $collection_id ) {
+	if ( ($data_source === 'template' || ($data_source === 'parent' && !$item_id) ) && $collection_id ) {
 		$collection_pt_pattern = '/' . \Tainacan\Entities\Collection::$db_identifier_prefix . '\d+' . \Tainacan\Entities\Collection::$db_identifier_sufix . '/';
 
 		if ( $current_post === NULL )

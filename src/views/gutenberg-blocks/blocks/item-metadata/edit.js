@@ -18,49 +18,89 @@ export default function ({ attributes, setAttributes, className, isSelected, con
         itemMetadataRequestSource,
         isModalOpen,
         itemMetadata,
+        metadata,
         itemMetadataTemplate,
-        dataSource,
-        sectionId
+        dataSource
     } = attributes;
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
     checkIfTemplateEdition();
-
+    
     function setContent() {
         isLoading = true;
         
         setAttributes({
             isLoading: isLoading
         });
-
-        if (itemMetadataRequestSource != undefined && typeof itemMetadataRequestSource == 'function')
-            itemMetadataRequestSource.cancel('Previous metadata sections search canceled.');
-
-        itemMetadataRequestSource = axios.CancelToken.source();
-
-        let endpoint = '/item/' + itemId + '/metadata';
-
-        tainacan.get(endpoint, { cancelToken: itemMetadataRequestSource.token })
-            .then(response => {
-
-                itemMetadata = response.data ? response.data : [];
-
-                getItemMetadataTemplates({
-                    metadata: itemMetadata.map(anItemMetadata => anItemMetadata.metadatum),
-                    itemMetadata: itemMetadata,
-                    itemMetadataRequestSource: itemMetadataRequestSource
-                });
-            })
-            .catch((error) => {
-                console.error(error);
-
-                setAttributes({
-                    itemMetadata: [],
-                    isLoading: false
-                });
+        
+        if ( dataSource === 'parent' && metadata.length && itemMetadata.length) {
+            
+            getItemMetadataTemplates({
+                metadata: metadata,
+                itemMetadata: itemMetadata,
+                itemMetadataRequestSource: itemMetadataRequestSource
             });
+
+        } else if ( dataSource === 'template' ) {
+            if (itemMetadataRequestSource != undefined && typeof itemMetadataRequestSource == 'function')
+                itemMetadataRequestSource.cancel('Previous metadata sections search canceled.');
+
+            itemMetadataRequestSource = axios.CancelToken.source();
+
+            let endpoint = '/collection/' + collectionId + '/metadata';
+
+            tainacan.get(endpoint, { cancelToken: itemMetadataRequestSource.token })
+                .then(response => {
+
+                    metadata = response.data ? response.data : [];
+
+                    getItemMetadataTemplates({
+                        metadata: metadata,
+                        itemMetadata: [],
+                        itemMetadataRequestSource: itemMetadataRequestSource
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+
+                    setAttributes({
+                        metadata: [],
+                        itemMetadata: [],
+                        isLoading: false
+                    });
+                });
+        } else {
+
+            if (itemMetadataRequestSource != undefined && typeof itemMetadataRequestSource == 'function')
+                itemMetadataRequestSource.cancel('Previous metadata sections search canceled.');
+
+            itemMetadataRequestSource = axios.CancelToken.source();
+
+            let endpoint = '/item/' + itemId + '/metadata';
+
+            tainacan.get(endpoint, { cancelToken: itemMetadataRequestSource.token })
+                .then(response => {
+
+                    itemMetadata = response.data ? response.data : [];
+
+                    getItemMetadataTemplates({
+                        metadata: itemMetadata.map(anItemMetadata => anItemMetadata.metadatum),
+                        itemMetadata: itemMetadata,
+                        itemMetadataRequestSource: itemMetadataRequestSource
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+
+                    setAttributes({
+                        metadata: [],
+                        itemMetadata: [],
+                        isLoading: false
+                    });
+                });
+        }
     }
 
     function getItemMetadataTemplates({
@@ -69,8 +109,7 @@ export default function ({ attributes, setAttributes, className, isSelected, con
         itemMetadataRequestSource
     }) {
         let itemMetadataTemplate = []; 
-
-        if (dataSource === 'template') {
+        if (dataSource === 'template' || (dataSource === 'parent' && !itemId)) {
             metadata.forEach((aMetadatum) => {
                 itemMetadataTemplate.push([ 
                     'tainacan/item-metadatum',
@@ -78,7 +117,7 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                         placeholder: __( 'Item Metadatum', 'tainacan' ),
                         metadatumId: aMetadatum.id,
                         collectionId: Number(collectionId),
-                        dataSource: 'template'
+                        dataSource: dataSource
                     }
                 ]);
             });
@@ -113,39 +152,42 @@ export default function ({ attributes, setAttributes, className, isSelected, con
     }
     
     function checkIfTemplateEdition() {
+
         // Check custom template edition state
-        const queryParams = new URLSearchParams(window.location.search);
-        if (queryParams.get('postType') == 'wp_template') {
+        if (dataSource !== 'parent' && !collectionId) {
 
-            // Extracts collectionId from a string like theme-slug//single-tnc_col_123_item
-            let postId = queryParams.get('postId');
-            
-            if (typeof postId == 'string') {
-                postId = postId.split('single-tnc_col_');
+            const queryParams = new URLSearchParams(window.location.search);
+            if (queryParams.get('postType') == 'wp_template') {
+
+                // Extracts collectionId from a string like theme-slug//single-tnc_col_123_item
+                let postId = queryParams.get('postId');
                 
-                if (postId.length == 2) {
-                    postId = postId[1];
+                if (typeof postId == 'string') {
+                    postId = postId.split('single-tnc_col_');
+                    
+                    if (postId.length == 2) {
+                        postId = postId[1];
 
-                    if (typeof postId == 'string') {
-                        postId = postId.split('_item');
+                        if (typeof postId == 'string') {
+                            postId = postId.split('_item');
 
-                        if (postId.length == 2) {
-                            postId = postId[0];
+                            if (postId.length == 2) {
+                                postId = postId[0];
+                                collectionId = Number(postId);
+                                itemId = 0;
 
-                            collectionId = Number(postId);
-                            itemId = 0;
+                                const shouldSetContent = dataSource !== 'template';
+                                dataSource = 'template';
 
-                            const shouldSetContent = dataSource !== 'template';
-                            dataSource = 'template';
+                                setAttributes({ 
+                                    collectionId: collectionId,
+                                    itemId: itemId,
+                                    dataSource: dataSource
+                                });
 
-                            setAttributes({ 
-                                collectionId: itemId,
-                                itemId: itemId,
-                                dataSource: dataSource
-                            });
-
-                            if (shouldSetContent)
-                                setContent();
+                                if (shouldSetContent)
+                                    setContent();
+                            }
                         }
                     }
                 }
@@ -199,7 +241,7 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                 ) : null
             }
 
-            { !itemId && dataSource !== 'template' ? (
+            { !itemId && dataSource !== 'template' && dataSource !== 'parent' ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
