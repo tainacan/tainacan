@@ -21,7 +21,8 @@ const TAINACAN_BLOCKS = [
 	'item-metadata-section' => [],
 	'item-metadata' => [],
 	'item-metadatum' => ['render_callback' => 'tainacan_blocks_render_item_metadatum'],
-	'metadata-section-name' => []
+	'metadata-section-name' => [],
+	'metadata-section-description' => []
 ];
 
 // Lets do this!

@@ -54,9 +54,11 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-23 src/views/gutenberg-blocks/b
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-24 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-name.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-25 src/views/gutenberg-blocks/scss/gutenberg-blocks-editor-style.scss:src/assets/css/tainacan-gutenberg-block-common-editor-styles.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-25 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-description.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-26 src/views/gutenberg-blocks/scss/gutenberg-blocks-theme-style.scss:src/assets/css/tainacan-gutenberg-block-common-theme-styles.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-26 src/views/gutenberg-blocks/scss/gutenberg-blocks-editor-style.scss:src/assets/css/tainacan-gutenberg-block-common-editor-styles.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-27 src/views/gutenberg-blocks/scss/gutenberg-blocks-theme-style.scss:src/assets/css/tainacan-gutenberg-block-common-theme-styles.css
 
 echo "Compilação do Sass Concluído!"
 exit 0

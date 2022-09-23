@@ -79,7 +79,7 @@ export default class SingleItemMetadataSectionModal extends React.Component {
                 collectionId: this.props.existingCollectionId,
                 templateMode: this.props.isTemplateMode
             });
-            this.fetchModalMetadataSections();
+            this.fetchModalMetadataSections(this.props.existingCollectionId);
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -205,10 +205,10 @@ export default class SingleItemMetadataSectionModal extends React.Component {
             });
     }
 
-    fetchModalMetadataSections() {
+    fetchModalMetadataSections(existingCollectionId) {
 
         let someModalMetadataSections = [];
-        let endpoint = '/collection/' + this.state.collectionId + '/metadata-sections/?nopaging=1';
+        let endpoint = '/collection/' + (existingCollectionId ? existingCollectionId : this.state.collectionId) + '/metadata-sections/?nopaging=1';
         
         this.setState({ 
             isLoadingMetadataSections: true,

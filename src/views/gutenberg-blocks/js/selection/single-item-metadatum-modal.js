@@ -35,7 +35,8 @@ export default class SingleItemModal extends React.Component {
             metadata: [],
             metadataRequestSource: undefined,
             searchURL: '',
-            itemsPerPage: 12
+            itemsPerPage: 12,
+            templateMode: false
         };
         
         // Bind events
@@ -58,10 +59,11 @@ export default class SingleItemModal extends React.Component {
         this.setState({ 
             collectionId: this.props.existingCollectionId,
             itemId: this.props.existingItemId,
-            metadatumId: this.props.existingMetadatumId
+            metadatumId: this.props.existingMetadatumId,
+            templateMode: this.props.isTemplateMode
         });
          
-        if (this.props.existingCollectionId) {
+        if (this.props.existingCollectionId && !this.props.isTemplateMode) {
             this.fetchCollection(this.props.existingCollectionId);
             this.setState({ 
                 searchURL: tainacan_blocks.admin_url + 'admin.php?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish'
@@ -71,7 +73,13 @@ export default class SingleItemModal extends React.Component {
                 this.fetchItem(this.props.existingItemId);
                 this.fetchModalMetadata();
             }
-
+        } else if (this.props.existingCollectionId && this.props.isTemplateMode) {
+            this.fetchCollection(this.props.existingCollectionId);
+            this.setState({
+                collectionId: this.props.existingCollectionId,
+                templateMode: this.props.isTemplateMode
+            });
+            this.fetchModalMetadata(this.props.existingCollectionId);
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -197,10 +205,10 @@ export default class SingleItemModal extends React.Component {
             });
     }
 
-    fetchModalMetadata() {
+    fetchModalMetadata(existingCollectionId) {
 
         let someModalMetadata = [];
-        let endpoint = '/collection/' + this.state.collectionId + '/metadata/?nopaging=1';
+        let endpoint = '/collection/' + (existingCollectionId ? existingCollectionId : this.state.collectionId) + '/metadata/?nopaging=1';
         
         this.setState({ 
             isLoadingMetadata: true,
@@ -289,7 +297,7 @@ export default class SingleItemModal extends React.Component {
     }
 
     render() {
-        return (this.state.collectionId && this.state.itemId) ? (
+        return (this.state.collectionId && (this.state.templateMode || this.state.itemId)) ? (
             // Metadata modal
             <Modal
                 className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
@@ -328,11 +336,13 @@ export default class SingleItemModal extends React.Component {
                     onClick={ () => { this.resetCollections(); }}>
                     {__('Switch Collection', 'tainacan')}
                 </Button>
-                <Button 
-                    isSecondary
-                    onClick={ () => { this.resetItem(); }}>
-                    {__('Switch Item', 'tainacan')}
-                </Button>
+                { !this.state.templateMode ?
+                    <Button 
+                        isSecondary
+                        onClick={ () => { this.resetItem(); }}>
+                        { __('Switch Item', 'tainacan') }
+                    </Button>
+                : null }
                 <Button
                     isPrimary
                     disabled={ this.state.temporaryMetadatumId == undefined || this.state.temporaryMetadatumId == null || this.state.temporaryMetadatumId == ''}
@@ -343,7 +353,7 @@ export default class SingleItemModal extends React.Component {
         </Modal> 
         
     ) : (
-        this.state.collectionId ? (
+        this.state.collectionId && !this.state.templateMode ? (
             // Item modal
             <Modal
                 className={ 'wp-block-tainacan-modal dynamic-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '') }
@@ -369,6 +379,7 @@ export default class SingleItemModal extends React.Component {
                 </div>
         </Modal>
         ) : (
+            !this.state.templateMode ?
             // Collections modal
             <Modal
                     className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
@@ -489,7 +500,9 @@ export default class SingleItemModal extends React.Component {
                         </Button>
                     </div>
                 </div>
-            </Modal>) 
+            </Modal>
+            : null
+        ) 
         );
     }
 }

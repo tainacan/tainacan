@@ -124,8 +124,8 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 <div>
                     { isModalOpen ?
                         <SingleItemModal
-                            modalTitle={ __('Select one item to render its metadata', 'tainacan') }
-                            applyButtonLabel={ __('List metadata for this item', 'tainacan') }
+                            modalTitle={ templateMode ? __('Select one metadata section', 'tainacan') : __('Select one item to render its metadata section', 'tainacan') }
+                            applyButtonLabel={ templateMode ?  __('Show this metadata section', 'tainacan') : __('Show this metadata section for this item', 'tainacan') }
                             existingCollectionId={ collectionId }
                             existingItemId={ itemId }
                             onSelectCollection={ (selectedCollectionId) => {

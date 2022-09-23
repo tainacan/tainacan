@@ -63,7 +63,9 @@
         }
     },
     "providesContext": {
-        "tainacan/itemId": "itemId"
+        "tainacan/metadataSectionId": "sectionId",
+        "tainacan/metadataSectionName": "sectionName",
+        "tainacan/metadataSectionDescription": "sectionDescription"
     },
     "supports": {
         "align": ["full", "wide"],

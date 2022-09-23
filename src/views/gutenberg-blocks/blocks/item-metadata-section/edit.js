@@ -98,18 +98,11 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         if (sectionName) {
             metadataSectionTemplate.push([
                 'tainacan/metadata-section-name',
-                {
-                    sectionId: sectionId,
-                    sectionName: sectionName,
-                }
             ]);
         }
         if (sectionDescription) {
             metadataSectionTemplate.push([
-                'core/paragraph',
-                {
-                    content: sectionDescription,
-                }
+                'tainacan/metadata-section-description',
             ]);
         }
         if (sectionMetadata.length) {

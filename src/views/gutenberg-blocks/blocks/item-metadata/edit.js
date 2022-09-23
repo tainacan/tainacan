@@ -29,13 +29,13 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
     
     function setContent() {
-        isLoading = true;
-        
-        setAttributes({
-            isLoading: isLoading
-        });
-        
         if ( dataSource === 'parent' && templateMode) {
+
+            isLoading = true;
+        
+            setAttributes({
+                isLoading: isLoading
+            });    
             
             getItemMetadataTemplates({
                 metadata: metadata,
@@ -44,6 +44,12 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
             });
 
         } else if ( dataSource !== 'parent' && templateMode && collectionId ) {
+
+            isLoading = true;
+        
+            setAttributes({
+                isLoading: isLoading
+            });    
 
             if (itemMetadataRequestSource != undefined && typeof itemMetadataRequestSource == 'function')
                 itemMetadataRequestSource.cancel('Previous metadata sections search canceled.');
@@ -72,7 +78,13 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                         isLoading: false
                     });
                 });
-        } else {
+        } else if (itemId) {
+
+            isLoading = true;
+        
+            setAttributes({
+                isLoading: isLoading
+            });    
 
             if (itemMetadataRequestSource != undefined && typeof itemMetadataRequestSource == 'function')
                 itemMetadataRequestSource.cancel('Previous metadata sections search canceled.');
