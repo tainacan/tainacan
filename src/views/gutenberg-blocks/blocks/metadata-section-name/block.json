@@ -19,6 +19,10 @@
             "source": "query",
             "selector": "div"
         },
+        "sectionId": {
+            "type": "string",
+            "default": ""
+        },
         "sectionName": {
             "type": "string",
             "default": ""
@@ -31,9 +35,6 @@
 			"type": "string"
 		}
     },
-    "usesContext": [
-        "tainacan/itemId"
-    ],
     "supports": {
         "align": ["full", "wide"],
         "multiple": true,

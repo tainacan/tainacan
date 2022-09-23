@@ -1,5 +1,5 @@
 const { __ } = wp.i18n;
-const { Placeholder, ToolbarDropdownMenu, SVG, Path, __experimentalHeading: Heading } = wp.components;
+const { ToolbarDropdownMenu, SVG, Path, __experimentalHeading: Heading } = wp.components;
 
 const { useBlockProps, BlockControls, AlignmentControl } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
@@ -16,6 +16,7 @@ export default function ({ attributes, setAttributes, className }) {
     
     let {
         content, 
+        sectionId,
         sectionName,
         labelLevel,
         textAlign,
@@ -89,39 +90,13 @@ export default function ({ attributes, setAttributes, className }) {
 					} }
 				/>
             </BlockControls>
-
-            { !sectionName ? (
-                <Placeholder
-                    className="tainacan-block-placeholder"
-                    icon={(
-                        <img
-                            width={148}
-                            src={ `${tainacan_blocks.base_url}/assets/images/tainacan_logo_header.svg` }
-                            alt="Tainacan Logo"/>
-                    )}>
-                    <p>
-                        <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                viewBox="-2 -2 24 24"
-                                height="24px"
-                                width="24px">
-                            <path d="m 6,3.9960001 h 5.016 c 0.544,0 1.008,0.192 1.392,0.576 L 19.416,11.58 c 0.384,0.384 0.576,0.856 0.576,1.416 0,0.56 -0.192,1.032 -0.576,1.416 l -4.992,4.992 c -0.176,0.176 -0.392,0.32 -0.648,0.432 -0.24,0.112 -0.496,0.168 -0.768,0.168 -0.272,0 -0.536,-0.056 -0.792,-0.168 -0.24,-0.112 -0.448,-0.256 -0.624,-0.432 L 4.608,12.42 c -0.4,-0.4 -0.6,-0.872 -0.6,-1.416 V 5.988 C 4.008,5.428 4.2,4.956 4.584,4.572 4.968,4.188 5.44,3.996 6,3.9960001 Z m 1.512,4.992 c 0.416,0 0.768,-0.144 1.056,-0.432 C 8.856,8.2680001 9,7.916 9,7.5 9,7.084 8.856,6.732 8.568,6.444 8.28,6.14 7.928,5.988 7.512,5.988 7.096,5.988 6.736,6.14 6.432,6.444 6.144,6.732 6,7.084 6,7.5 c 0,0.416 0.144,0.7680001 0.432,1.0560001 0.304,0.288 0.664,0.432 1.08,0.432 z"/>
-                        </svg>
-                        { __('No metadata section was found. Please use this block only inside metadata section block.', 'tainacan') }
-                    </p>
-                </Placeholder>
-                ) : null
-            }
             
-            { sectionName ? (
-                <Heading
-                        { ...blockProps }
-                        level={ labelLevel }>
-                    { sectionName }
-                </Heading>
-                ) : null
-            }
-            
+            <Heading
+                    { ...blockProps }
+                    level={ labelLevel }
+                    id={ 'tainacan-metadata-section-name-block-id--' + sectionId }>
+                { sectionName }
+            </Heading>
         </>
     );
 };

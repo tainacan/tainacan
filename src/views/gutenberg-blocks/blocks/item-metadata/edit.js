@@ -5,10 +5,11 @@ const { Button, Spinner, Placeholder } = wp.components;
 const { useBlockProps, InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
+import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
-export default function ({ attributes, setAttributes, className, isSelected, context }) {
+export default function ({ attributes, setAttributes, className, isSelected }) {
     
     let {
         content, 
@@ -20,13 +21,12 @@ export default function ({ attributes, setAttributes, className, isSelected, con
         itemMetadata,
         metadata,
         itemMetadataTemplate,
-        dataSource
+        dataSource,
+        templateMode
     } = attributes;
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
-
-    checkIfTemplateEdition();
     
     function setContent() {
         isLoading = true;
@@ -35,7 +35,7 @@ export default function ({ attributes, setAttributes, className, isSelected, con
             isLoading: isLoading
         });
         
-        if ( dataSource === 'parent' && metadata.length && itemMetadata.length) {
+        if ( dataSource === 'parent' && templateMode) {
             
             getItemMetadataTemplates({
                 metadata: metadata,
@@ -43,7 +43,8 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                 itemMetadataRequestSource: itemMetadataRequestSource
             });
 
-        } else if ( dataSource === 'template' ) {
+        } else if ( dataSource !== 'parent' && templateMode && collectionId ) {
+
             if (itemMetadataRequestSource != undefined && typeof itemMetadataRequestSource == 'function')
                 itemMetadataRequestSource.cancel('Previous metadata sections search canceled.');
 
@@ -109,7 +110,8 @@ export default function ({ attributes, setAttributes, className, isSelected, con
         itemMetadataRequestSource
     }) {
         let itemMetadataTemplate = []; 
-        if (dataSource === 'template' || (dataSource === 'parent' && !itemId)) {
+
+        if ( templateMode ) {
             metadata.forEach((aMetadatum) => {
                 itemMetadataTemplate.push([ 
                     'tainacan/item-metadatum',
@@ -117,7 +119,8 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                         placeholder: __( 'Item Metadatum', 'tainacan' ),
                         metadatumId: aMetadatum.id,
                         collectionId: Number(collectionId),
-                        dataSource: dataSource
+                        dataSource: 'parent',
+                        templateMode: templateMode
                     }
                 ]);
             });
@@ -136,7 +139,8 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                             metadatumId: itemMetadatum.metadatum.id,
                             itemId: Number(itemId),
                             collectionId: Number(collectionId),
-                            dataSource: 'parent'
+                            dataSource: 'parent',
+                            templateMode: templateMode
                         }
                     ]);
                 }
@@ -151,47 +155,17 @@ export default function ({ attributes, setAttributes, className, isSelected, con
         });
     }
     
-    function checkIfTemplateEdition() {
-
-        // Check custom template edition state
-        if (dataSource !== 'parent' && !collectionId) {
-
-            const queryParams = new URLSearchParams(window.location.search);
-            if (queryParams.get('postType') == 'wp_template') {
-
-                // Extracts collectionId from a string like theme-slug//single-tnc_col_123_item
-                let postId = queryParams.get('postId');
-                
-                if (typeof postId == 'string') {
-                    postId = postId.split('single-tnc_col_');
-                    
-                    if (postId.length == 2) {
-                        postId = postId[1];
-
-                        if (typeof postId == 'string') {
-                            postId = postId.split('_item');
-
-                            if (postId.length == 2) {
-                                postId = postId[0];
-                                collectionId = Number(postId);
-                                itemId = 0;
-
-                                const shouldSetContent = dataSource !== 'template';
-                                dataSource = 'template';
-
-                                setAttributes({ 
-                                    collectionId: collectionId,
-                                    itemId: itemId,
-                                    dataSource: dataSource
-                                });
-
-                                if (shouldSetContent)
-                                    setContent();
-                            }
-                        }
-                    }
-                }
-            }
+    // Checks if we are in template mode, if so, gets the collection Id from URL.
+    if ( !templateMode ) {
+        const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
+        if (possibleCollectionId) {
+            collectionId = possibleCollectionId;
+            templateMode = true
+            setAttributes({ 
+                collectionId: collectionId,
+                templateMode: templateMode
+            });
+            setContent();
         }
     }
 
@@ -241,7 +215,7 @@ export default function ({ attributes, setAttributes, className, isSelected, con
                 ) : null
             }
 
-            { !itemId && dataSource !== 'template' && dataSource !== 'parent' ? (
+            { !itemId && !templateMode && dataSource !== 'parent' ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(

@@ -1,7 +1,7 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default function({ attributes }) {
-    const { textAlign, style, sectionName, labelLevel } = attributes;
+    const { textAlign, style, sectionId, sectionName, labelLevel } = attributes;
 	const TagName = 'h' + labelLevel;
 
     // Gets blocks props from hook
@@ -10,7 +10,7 @@ export default function({ attributes }) {
         style,
     } );
 	return (
-		<TagName { ...blockProps }>
+		<TagName { ...blockProps } id={ 'tainacan-metadata-section-name-block-id--' + sectionId }>
 			{ sectionName }
 		</TagName>
 	);

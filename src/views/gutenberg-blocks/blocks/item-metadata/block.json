@@ -22,6 +22,10 @@
             "type": "string",
             "default": "selection"
         },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
+        },
         "collectionId": {
             "type": "integer"
         },

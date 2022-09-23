@@ -22,6 +22,10 @@
             "type": "string",
             "default": "selection"
         },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
+        },
         "collectionId": {
             "type": "integer"
         },
@@ -48,9 +52,6 @@
             "type": "array",
             "default": []
         }
-    },
-    "providesContext": {
-        "tainacan/itemId": "itemId"
     },
     "supports": {
         "align": ["full", "wide"],

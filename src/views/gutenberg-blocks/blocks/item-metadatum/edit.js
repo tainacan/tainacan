@@ -26,6 +26,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         metadatumType,
         isModalOpen,
         dataSource,
+        templateMode,
         labelLevel,
         textAlign,
         style
@@ -193,7 +194,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 ) : null
             }
             
-            { (collectionId && (itemId || dataSource === 'template' || dataSource === 'parent') && metadatumId) ? (
+            { (collectionId && (itemId || templateMode) && metadatumId) ? (
                 <div className={ 'item-metadatum-edit-container' }>
                     <ServerSideRender
                         block="tainacan/item-metadatum"

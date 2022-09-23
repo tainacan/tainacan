@@ -5,6 +5,7 @@ const { Button, Spinner, Placeholder } = wp.components;
 const { useBlockProps, InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import SingleItemMetadataSectionModal from '../../js/selection/single-item-metadata-section-modal.js';
+import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
@@ -22,17 +23,16 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         sectionDescription,
         sectionMetadata,
         metadataSectionTemplate,
-        dataSource
+        dataSource,
+        templateMode
     } = attributes;
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
-    checkIfTemplateEdition();
-
     function setContent() {
 
-        if (sectionId) {
+        if ( sectionId && collectionId ) {
 
             isLoading = true;
 
@@ -40,7 +40,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 isLoading: isLoading
             });
 
-            if ( dataSource === 'parent' && sectionMetadata.length ) {
+            if ( dataSource === 'parent' ) {
                 
                 getMetadataSectionTemplates({
                     sectionId: sectionId,
@@ -120,7 +120,8 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                     itemId: Number(itemId),
                     collectionId: Number(collectionId),
                     metadata: sectionMetadata,
-                    dataSource: dataSource
+                    dataSource: 'parent',
+                    templateMode: templateMode
                 }
             ]);
         }
@@ -135,51 +136,22 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
             metadataSectionRequestSource: metadataSectionRequestSource
         });
     }
-    
-    function checkIfTemplateEdition() {
 
-        // Check custom template edition state
-        if (dataSource !== 'parent' && !collectionId) {
-
-            const queryParams = new URLSearchParams(window.location.search);
-            if (queryParams.get('postType') == 'wp_template') {
-
-                // Extracts collectionId from a string like theme-slug//single-tnc_col_123_item
-                let postId = queryParams.get('postId');
-                
-                if (typeof postId == 'string') {
-                    postId = postId.split('single-tnc_col_');
-                    
-                    if (postId.length == 2) {
-                        postId = postId[1];
-
-                        if (typeof postId == 'string') {
-                            postId = postId.split('_item');
-
-                            if (postId.length == 2) {
-                                postId = postId[0];
-
-                                collectionId = Number(postId);
-                                itemId = 0;
-
-                                const shouldSetContent = dataSource !== 'template';
-                                dataSource = 'template';
-
-                                setAttributes({ 
-                                    collectionId: collectionId,
-                                    itemId: itemId,
-                                    dataSource: dataSource
-                                });
-
-                                if (shouldSetContent)
-                                    setContent();
-                            }
-                        }
-                    }
-                }
-            }
+    // Checks if we are in template mode, if so, gets the collection Id from URL.
+    if ( !templateMode ) {
+        const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
+        if (possibleCollectionId) {
+            collectionId = possibleCollectionId;
+            templateMode = true
+            setAttributes({ 
+                collectionId: collectionId,
+                templateMode: templateMode
+            });
+            console.log(collectionId)
+            setContent();
         }
     }
+
     // Executed only on the first load of page
     if (content === undefined || (content && content.length && content[0].type)) {
         setAttributes({ content: '' });
@@ -204,6 +176,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                             existingCollectionId={ collectionId }
                             existingItemId={ itemId }
                             existingMetadataSectionId={ sectionId }
+                            isTemplateMode={ templateMode }
                             onSelectCollection={ (selectedCollectionId) => {
                                 collectionId = Number(selectedCollectionId);
                                 setAttributes({ 
@@ -232,7 +205,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 ) : null
             }
 
-            { !sectionId && (dataSource !== 'parent' || dataSource !== 'template') ? (
+            { !sectionId && dataSource !== 'parent' ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
@@ -249,7 +222,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                                 width="24px">
                             <path d="M16,6H12a2,2,0,0,0-2,2v6.52A6,6,0,0,1,12,19a6,6,0,0,1-.73,2.88A1.92,1.92,0,0,0,12,22h8a2,2,0,0,0,2-2V12Zm-1,6V7.5L19.51,12ZM15,2V4H8v9.33A5.8,5.8,0,0,0,6,13V4A2,2,0,0,1,8,2ZM10.09,19.05,7,22.11V16.05L8,17l2,2ZM5,16.05v6.06L2,19.11Z"/>
                         </svg>
-                        { __('Select an item and a metadata section to display it.', 'tainacan') }
+                        { collectionId ? __('Select a metadata section to display it.', 'tainacan') : __('Select an item and a metadata section to display it.', 'tainacan') }
                     </p>
                     <Button
                         isPrimary
@@ -261,7 +234,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                                 }); 
                             }
                         }>
-                        {__('Select Item and Metadata Section', 'tainacan')}
+                        { collectionId ?  __('Select a Metadata Section', 'tainacan') : __('Select Item and Metadata Section', 'tainacan') }
                     </Button>
                 </Placeholder>
                 ) : null

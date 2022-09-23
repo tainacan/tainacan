@@ -11,6 +11,7 @@ function tainacan_blocks_render_item_metadatum( $block_attributes, $content, $bl
 	$metadatum_id = isset($block_attributes['metadatumId']) ? $block_attributes['metadatumId'] : false;
 	$collection_id = isset($block_attributes['collectionId']) ? $block_attributes['collectionId'] : false;
 	$data_source = isset($block_attributes['dataSource']) ? $block_attributes['dataSource'] : 'parent';
+	$template_mode = isset($block_attributes['templateMode']) ? $block_attributes['templateMode'] : false;
 	
 	if ( !$metadatum_id )
 		return '';
@@ -43,7 +44,7 @@ function tainacan_blocks_render_item_metadatum( $block_attributes, $content, $bl
 	// Checks if we are in the edit page or in the published
 	$current_post = get_post();
 	
-	if ( ($data_source === 'template' || ($data_source === 'parent' && !$item_id) ) && $collection_id ) {
+	if ( $template_mode && $collection_id ) {
 		$collection_pt_pattern = '/' . \Tainacan\Entities\Collection::$db_identifier_prefix . '\d+' . \Tainacan\Entities\Collection::$db_identifier_sufix . '/';
 
 		if ( $current_post === NULL )

@@ -5,6 +5,7 @@ const { Button, Spinner, Placeholder } = wp.components;
 const { useBlockProps, InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
+import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
@@ -19,46 +20,49 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         isModalOpen,
         metadataSections,
         metadataSectionsTemplate,
-        dataSource
+        dataSource,
+        templateMode
     } = attributes;
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
 
-    checkIfTemplateEdition();
-
     function setContent() {
-        isLoading = true;
 
-        setAttributes({
-            isLoading: isLoading
-        });
+        if (collectionId) {
 
-        if (metadataSectionsRequestSource != undefined && typeof metadataSectionsRequestSource == 'function')
-            metadataSectionsRequestSource.cancel('Previous metadata sections search canceled.');
+            isLoading = true;
 
-        metadataSectionsRequestSource = axios.CancelToken.source();
-
-        let endpoint = '/collection/'+ collectionId + '/metadata-sections';
-
-        tainacan.get(endpoint, { cancelToken: metadataSectionsRequestSource.token })
-            .then(response => {
-
-                metadataSections = response.data ? response.data : [];
-
-                getMetadataSectionsTemplates({
-                    metadataSections: metadataSections,
-                    metadataSectionsRequestSource: metadataSectionsRequestSource
-                });
-            })
-            .catch((error) => {
-                console.error(error);
-
-                setAttributes({
-                    metadataSections: [],
-                    isLoading: false
-                });
+            setAttributes({
+                isLoading: isLoading
             });
+
+            if (metadataSectionsRequestSource != undefined && typeof metadataSectionsRequestSource == 'function')
+                metadataSectionsRequestSource.cancel('Previous metadata sections search canceled.');
+
+            metadataSectionsRequestSource = axios.CancelToken.source();
+
+            let endpoint = '/collection/'+ collectionId + '/metadata-sections';
+
+            tainacan.get(endpoint, { cancelToken: metadataSectionsRequestSource.token })
+                .then(response => {
+
+                    metadataSections = response.data ? response.data : [];
+
+                    getMetadataSectionsTemplates({
+                        metadataSections: metadataSections,
+                        metadataSectionsRequestSource: metadataSectionsRequestSource
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+
+                    setAttributes({
+                        metadataSections: [],
+                        isLoading: false
+                    });
+                });
+        }
     }
 
     function getMetadataSectionsTemplates({
@@ -79,6 +83,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                         itemId: Number(itemId),
                         collectionId: Number(collectionId),
                         dataSource: 'parent',
+                        templateMode: templateMode
                     }
                 ]);
             }
@@ -90,55 +95,19 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
             metadataSectionsRequestSource: metadataSectionsRequestSource
         });
     }
-    
-    function checkIfTemplateEdition() {
 
-        // Check custom template edition state
-        if (dataSource !== 'parent' && !collectionId) {
-
-            const queryParams = new URLSearchParams(window.location.search);
-            if (queryParams.get('postType') == 'wp_template') {
-
-                // Extracts collectionId from a string like theme-slug//single-tnc_col_123_item
-                let postId = queryParams.get('postId');
-                
-                if (typeof postId == 'string') {
-                    postId = postId.split('single-tnc_col_');
-                    
-                    if (postId.length == 2) {
-                        postId = postId[1];
-
-                        if (typeof postId == 'string') {
-                            postId = postId.split('_item');
-
-                            if (postId.length == 2) {
-                                postId = postId[0];
-
-                                collectionId = Number(postId);
-                                itemId = 0;
-
-                                const shouldSetContent = dataSource !== 'template';
-                                dataSource = 'template';
-
-                                setAttributes({ 
-                                    collectionId: collectionId,
-                                    itemId: itemId,
-                                    dataSource: dataSource
-                                });
-
-                                if (shouldSetContent)
-                                    setContent();
-                            }
-                        }
-                    }
-                }
-            }
+    // Checks if we are in template mode, if so, gets the collection Id from URL.
+    if ( !templateMode ) {
+        const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
+        if (possibleCollectionId) {
+            collectionId = possibleCollectionId;
+            templateMode = true
+            setAttributes({ 
+                collectionId: collectionId,
+                templateMode: templateMode
+            });
+            setContent();
         }
-    }
-    // Executed only on the first load of page
-    if (content && content.length && content[0].type) {
-        setAttributes({ content: '' });
-        setContent();
     }
     
     return content == 'preview' ? 
@@ -181,7 +150,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 ) : null
             }
 
-            { !itemId && dataSource !== 'template' ? (
+            { !itemId && !templateMode ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(

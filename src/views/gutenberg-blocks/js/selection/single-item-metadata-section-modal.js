@@ -34,7 +34,8 @@ export default class SingleItemMetadataSectionModal extends React.Component {
             metadataSections: [],
             metadataSectionsRequestSource: undefined,
             searchURL: '',
-            itemsPerPage: 12
+            itemsPerPage: 12,
+            templateMode: false
         };
         
         // Bind events
@@ -57,10 +58,11 @@ export default class SingleItemMetadataSectionModal extends React.Component {
         this.setState({ 
             collectionId: this.props.existingCollectionId,
             itemId: this.props.existingItemId,
-            sectionId: this.props.existingSectionId
+            sectionId: this.props.existingSectionId,
+            templateMode: this.props.isTemplateMode
         });
          
-        if (this.props.existingCollectionId) {
+        if (this.props.existingCollectionId && !this.props.isTemplateMode) {
             this.fetchCollection(this.props.existingCollectionId);
             this.setState({ 
                 searchURL: tainacan_blocks.admin_url + 'admin.php?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish'
@@ -71,6 +73,13 @@ export default class SingleItemMetadataSectionModal extends React.Component {
                 this.fetchModalMetadataSections();
             }
 
+        }  else if (this.props.existingCollectionId && this.props.isTemplateMode) {
+            this.fetchCollection(this.props.existingCollectionId);
+            this.setState({
+                collectionId: this.props.existingCollectionId,
+                templateMode: this.props.isTemplateMode
+            });
+            this.fetchModalMetadataSections();
         } else {
             this.setState({ collectionPage: 1 });
             this.fetchModalCollections();
@@ -284,7 +293,7 @@ export default class SingleItemMetadataSectionModal extends React.Component {
     }
 
     render() {
-        return (this.state.collectionId && this.state.itemId) ? (
+        return (this.state.collectionId && (this.state.templateMode || this.state.itemId)) ? (
             // metadataSections modal
             <Modal
                 className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
@@ -313,7 +322,7 @@ export default class SingleItemMetadataSectionModal extends React.Component {
                         </div>
                     ) : this.state.isLoadingMetadataSections ? <Spinner/> :
                         <div className="modal-loadmore-section">
-                            <p>{ __('Sorry, no metadatum found.', 'tainacan') }</p>
+                            <p>{ __('Sorry, no metadata section found.', 'tainacan') }</p>
                         </div>
                 )
             }
@@ -323,11 +332,13 @@ export default class SingleItemMetadataSectionModal extends React.Component {
                     onClick={ () => { this.resetCollections(); }}>
                     { __('Switch Collection', 'tainacan') }
                 </Button>
-                <Button 
-                    isSecondary
-                    onClick={ () => { this.resetItem(); }}>
-                    { __('Switch Item', 'tainacan') }
-                </Button>
+                { !this.state.templateMode ?
+                    <Button 
+                        isSecondary
+                        onClick={ () => { this.resetItem(); }}>
+                        { __('Switch Item', 'tainacan') }
+                    </Button>
+                : null }
                 <Button
                     isPrimary
                     disabled={ this.state.temporaryMetadataSectionId == undefined || this.state.temporaryMetadataSectionId == null || this.state.temporaryMetadataSectionId == ''}
@@ -338,7 +349,7 @@ export default class SingleItemMetadataSectionModal extends React.Component {
         </Modal> 
         
     ) : (
-        this.state.collectionId ? (
+        this.state.collectionId && !this.state.templateMode ? (
             // Item modal
             <Modal
                 className={ 'wp-block-tainacan-modal dynamic-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '') }
@@ -364,127 +375,130 @@ export default class SingleItemMetadataSectionModal extends React.Component {
                 </div>
         </Modal>
         ) : (
-            // Collections modal
-            <Modal
-                    className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
-                    title={__('Select a collection to fetch items from', 'tainacan')}
-                    onRequestClose={ () => this.cancelSelection() }
-                    shouldCloseOnClickOutside={ false }
-                    contentLabel={__('Select item', 'tainacan')}>
-                    <div>
-                        <div className="modal-search-area">
-                            <TextControl 
-                                    label={__('Search for a collection', 'tainacan')}
-                                    placeholder={ __('Search by collection\'s name', 'tainacan') }
-                                    value={ this.state.searchCollectionName }
-                                    onChange={(value) => {
-                                        this.setState({ 
-                                            searchCollectionName: value
-                                        });
-                                        _.debounce(this.fetchCollections(value), 300);
-                                    }}/>
-                            <SelectControl
-                                    label={__('Order by', 'tainacan')}
-                                    value={ this.state.collectionOrderBy }
-                                    options={ [
-                                        { label: __('Latest', 'tainacan'), value: 'date-desc' },
-                                        { label: __('Oldest', 'tainacan'), value: 'date' },
-                                        { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
-                                        { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
-                                    ] }
-                                    onChange={ ( aCollectionOrderBy ) => { 
-                                        this.state.collectionOrderBy = aCollectionOrderBy;
-                                        this.state.collectionPage = 1;
-                                        this.setState({ 
-                                            collectionOrderBy: this.state.collectionOrderBy,
-                                            collectionPage: this.state.collectionPage 
-                                        });
-                                        if (this.state.searchCollectionName && this.state.searchCollectionName != '') {
-                                            this.fetchCollections(this.state.searchCollectionName);
-                                        } else {
-                                            this.fetchModalCollections();
-                                        }
-                                    }}/>
-                        </div>
-                        {(
-                        this.state.searchCollectionName != '' ? (
-                            this.state.collections.length > 0 ?
-                            (
+            !this.state.templateMode ?
+                // Collections modal
+                <Modal
+                        className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
+                        title={__('Select a collection to fetch items from', 'tainacan')}
+                        onRequestClose={ () => this.cancelSelection() }
+                        shouldCloseOnClickOutside={ false }
+                        contentLabel={__('Select item', 'tainacan')}>
+                        <div>
+                            <div className="modal-search-area">
+                                <TextControl 
+                                        label={__('Search for a collection', 'tainacan')}
+                                        placeholder={ __('Search by collection\'s name', 'tainacan') }
+                                        value={ this.state.searchCollectionName }
+                                        onChange={(value) => {
+                                            this.setState({ 
+                                                searchCollectionName: value
+                                            });
+                                            _.debounce(this.fetchCollections(value), 300);
+                                        }}/>
+                                <SelectControl
+                                        label={__('Order by', 'tainacan')}
+                                        value={ this.state.collectionOrderBy }
+                                        options={ [
+                                            { label: __('Latest', 'tainacan'), value: 'date-desc' },
+                                            { label: __('Oldest', 'tainacan'), value: 'date' },
+                                            { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
+                                            { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
+                                        ] }
+                                        onChange={ ( aCollectionOrderBy ) => { 
+                                            this.state.collectionOrderBy = aCollectionOrderBy;
+                                            this.state.collectionPage = 1;
+                                            this.setState({ 
+                                                collectionOrderBy: this.state.collectionOrderBy,
+                                                collectionPage: this.state.collectionPage 
+                                            });
+                                            if (this.state.searchCollectionName && this.state.searchCollectionName != '') {
+                                                this.fetchCollections(this.state.searchCollectionName);
+                                            } else {
+                                                this.fetchModalCollections();
+                                            }
+                                        }}/>
+                            </div>
+                            {(
+                            this.state.searchCollectionName != '' ? (
+                                this.state.collections.length > 0 ?
+                                (
+                                    <div>
+                                        <div className="modal-radio-list">
+                                            {
+                                            <RadioControl
+                                                selected={ this.state.temporaryCollectionId }
+                                                options={
+                                                    this.state.collections.map((collection) => {
+                                                        return { label: collection.name, value: '' + collection.id }
+                                                    })
+                                                }
+                                                onChange={ ( aCollectionId ) => { 
+                                                    this.setState({ temporaryCollectionId: aCollectionId });
+                                                } } />
+                                            }                                      
+                                        </div>
+                                    </div>
+                                ) :
+                                this.state.isLoadingCollections ? (
+                                    <Spinner />
+                                ) :
+                                <div className="modal-loadmore-section">
+                                    <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
+                                </div> 
+                            ):
+                            this.state.modalCollections.length > 0 ? 
+                            (   
                                 <div>
                                     <div className="modal-radio-list">
                                         {
                                         <RadioControl
                                             selected={ this.state.temporaryCollectionId }
                                             options={
-                                                this.state.collections.map((collection) => {
+                                                this.state.modalCollections.map((collection) => {
                                                     return { label: collection.name, value: '' + collection.id }
                                                 })
                                             }
                                             onChange={ ( aCollectionId ) => { 
                                                 this.setState({ temporaryCollectionId: aCollectionId });
                                             } } />
-                                        }                                      
+                                        }                                     
+                                    </div>
+                                    <div className="modal-loadmore-section">
+                                        <p>{ __('Showing', 'tainacan') + " " + this.state.modalCollections.length + " " + __('of', 'tainacan') + " " + this.state.totalModalCollections + " " + __('collections', 'tainacan') + "."}</p>
+                                        {
+                                            this.state.modalCollections.length < this.state.totalModalCollections ? (
+                                            <Button 
+                                                isSecondary
+                                                isSmall
+                                                onClick={ () => this.fetchModalCollections() }>
+                                                {__('Load more', 'tainacan')}
+                                            </Button>
+                                            ) : null
+                                        }
                                     </div>
                                 </div>
-                            ) :
-                            this.state.isLoadingCollections ? (
-                                <Spinner />
-                            ) :
+                            ) : this.state.isLoadingCollections ? <Spinner/> :
                             <div className="modal-loadmore-section">
                                 <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
-                            </div> 
-                        ):
-                        this.state.modalCollections.length > 0 ? 
-                        (   
-                            <div>
-                                <div className="modal-radio-list">
-                                    {
-                                    <RadioControl
-                                        selected={ this.state.temporaryCollectionId }
-                                        options={
-                                            this.state.modalCollections.map((collection) => {
-                                                return { label: collection.name, value: '' + collection.id }
-                                            })
-                                        }
-                                        onChange={ ( aCollectionId ) => { 
-                                            this.setState({ temporaryCollectionId: aCollectionId });
-                                        } } />
-                                    }                                     
-                                </div>
-                                <div className="modal-loadmore-section">
-                                    <p>{ __('Showing', 'tainacan') + " " + this.state.modalCollections.length + " " + __('of', 'tainacan') + " " + this.state.totalModalCollections + " " + __('collections', 'tainacan') + "."}</p>
-                                    {
-                                        this.state.modalCollections.length < this.state.totalModalCollections ? (
-                                        <Button 
-                                            isSecondary
-                                            isSmall
-                                            onClick={ () => this.fetchModalCollections() }>
-                                            {__('Load more', 'tainacan')}
-                                        </Button>
-                                        ) : null
-                                    }
-                                </div>
                             </div>
-                        ) : this.state.isLoadingCollections ? <Spinner/> :
-                        <div className="modal-loadmore-section">
-                            <p>{ __('Sorry, no collection found.', 'tainacan') }</p>
+                        )}
+                        <div className="modal-footer-area">
+                            <Button 
+                                isSecondary
+                                onClick={ () => { this.cancelSelection() }}>
+                                {__('Cancel', 'tainacan')}
+                            </Button>
+                            <Button
+                                isPrimary
+                                disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
+                                onClick={ () => { this.selectCollection(this.state.temporaryCollectionId);  } }>
+                                { __('Select item', 'tainacan') }
+                            </Button>
                         </div>
-                    )}
-                    <div className="modal-footer-area">
-                        <Button 
-                            isSecondary
-                            onClick={ () => { this.cancelSelection() }}>
-                            {__('Cancel', 'tainacan')}
-                        </Button>
-                        <Button
-                            isPrimary
-                            disabled={ this.state.temporaryCollectionId == undefined || this.state.temporaryCollectionId == null || this.state.temporaryCollectionId == ''}
-                            onClick={ () => { this.selectCollection(this.state.temporaryCollectionId);  } }>
-                            { __('Select item', 'tainacan') }
-                        </Button>
                     </div>
-                </div>
-            </Modal>) 
+                </Modal>
+            : null
+        ) 
         );
     }
 }
