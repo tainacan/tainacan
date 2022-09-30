@@ -1258,9 +1258,20 @@ class Item extends Entity {
 			// Renders the section metadata list, using Items' get_metadata_as_html()
 			// Note that this is already escaped in the calling function
 			if ($has_metadata_list) {
+				$has_some_metadata_value = false;
+
 				foreach( $metadata_section_metadata_list as $metadata_object) {
-					$return .= $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object ]) );
+					$the_metadata_list = $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object ]) );
+					if (!$has_some_metadata_value && !empty($the_metadata_list))
+						$has_some_metadata_value = true;
+
+					$return .= $the_metadata_list;
 				}
+
+				// If no metadata value was found, this section may not be necessary
+				if (!$has_some_metadata_value && $args['hide_empty'])
+					return '';
+
 			} else {
 				$return .= $args['empty_metadata_list_message'];
 			}
