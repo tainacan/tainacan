@@ -654,6 +654,11 @@ return apply_filters( 'tainacan-i18n', [
 	'label_create_item'								 => __( 'Create item', 'tainacan' ),
 	'label_ready_to_create_item'					 => __( 'Ready to create this item?', 'tainacan' ),
 	'label_only_required'					 		 => __( 'Only required', 'tainacan' ),
+	'label_create_collection_from_mapper'	 		 => __( 'Create a new collection from a mapper', 'tainacan' ),
+	'label_create_collection_from_preset'	 		 => __( 'Create a preset collection', 'tainacan' ),
+	'label_preset_collections'				 		 => __( 'Preset collections', 'tainacan' ),
+	'label_from_a_mapper'					 		 => __( 'From a metadata mapper', 'tainacan' ),
+	'label_using_a_preset'					 		 => __( 'Using a preset', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -970,6 +975,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_metadata_mapper_helper'					 => __(	'Select the corresponding metadata so they can be exposed according to the mapper', 'tainacan'),
 	'info_default_orderby'							 => __( 'These settings only affect the initial state of the items sorting. After changed, the value used will be the latest selected by the user.', 'tainacan' ),
 	'info_collection_thumbnail_and_header'			 => __( 'The thumbnail is a squared image that will represent the collection in listings. The header image is a complementary, decorative image that may or not be displayed by your theme in the items list. Keep in mind that it might be cropped.', 'tainacan'),
+	'info_preset_collections'				 		 => __( 'Use mappers or standards as pre configuration', 'tainacan' ),
+	'info_create_collection_from_mapper'			 => __( 'Have the metadata preset by an installed mapper, such as Dublin core, then set the rest manually.', 'tainacan' ),
+	'info_create_collection_from_preset'			 => __( 'Have metadata, taxonomies, terms and related collections preset according to a standard.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
