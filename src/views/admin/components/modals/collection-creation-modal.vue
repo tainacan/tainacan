@@ -66,7 +66,23 @@
                         v-for="metadatumMapper in metadatumMappers"
                         v-if="metadatumMapper.metadata != false"
                         aria-role="listitem">
-                    {{ $i18n.get(metadatumMapper.name) }}
+                    <h3>{{ metadatumMapper.name }}</h3>
+                    <p>{{ metadatumMapper.description }}</p>
+                </button>
+            </div>
+
+            <div 
+                    v-if="selectedEstrategy == 'presets'"
+                    class="collection-creation-options-container"
+                    role="list">
+                <button
+                         class="collection-creation-option"
+                        @click="onNewCollectionPreset(collectionPreset)"
+                        :key="collectionPreset.slug"
+                        v-for="collectionPreset in getPresetsHook"
+                        aria-role="listitem">
+                    <h3>{{ collectionPreset.name }}</h3>
+                    <p>{{ collectionPreset.description }}</p>
                 </button>
             </div>
 
@@ -89,29 +105,33 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { tainacan as axios } from '../../js/axios';
 
 export default {
     name: 'CollectionCreationModal',
-    directives: {
-        focus: {
-            inserted(el) {
-                el.focus();
-       
-                if (el.value != undefined)
-                    el.setSelectionRange(0,el.value.length)
-            }
-        }
-    },
     data(){
         return {
-            selectedEstrategy: undefined,
+            selectedEstrategy: this.hasPresetsHook ? undefined : 'mappers',
             isLoadingMetadatumMappers: true,
+            collectionPresets: []
         }
     },
     computed: {
         metadatumMappers() {
             return this.getMetadatumMappers();
-        }
+        },
+        hasPresetsHook() {
+            if (wp !== undefined && wp.hooks !== undefined)
+                return wp.hooks.hasFilter(`tainacan_collections_presets`);
+
+            return false;
+        },
+        getPresetsHook() {
+            if (wp !== undefined && wp.hooks !== undefined)
+                return wp.hooks.applyFilters(`tainacan_collections_presets`, this.collectionPresets);
+
+            return this.collectionPresets;
+        },
     },
     mounted() {
         this.isLoadingMetadatumTypes = true;
@@ -134,6 +154,18 @@ export default {
         ...mapGetters('metadata', [
             'getMetadatumMappers'
         ]),
+        onNewCollectionPreset(collectionPreset) {
+            axios.post(collectionPreset.endpoint)
+                .then((response) => {
+                    console.log(response);
+
+                    this.$router.push($routerHelper.getCollectionsPath());
+                    this.$parent.close();
+                })
+                .catch((error) =>{
+                    this.$console.error(error);
+                });
+        }
     }
 }
 </script>
