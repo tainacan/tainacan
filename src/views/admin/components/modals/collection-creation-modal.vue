@@ -105,7 +105,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { tainacan as axios } from '../../js/axios';
+import axios from 'axios';
 
 export default {
     name: 'CollectionCreationModal',
@@ -114,11 +114,6 @@ export default {
             selectedEstrategy: 'mappers',
             isLoadingMetadatumMappers: true,
             collectionPresets: []
-        }
-    },
-    watch: {
-        hasPresetsHook() {
-            this.selectedEstrategy = this.hasPresetsHook ? undefined : 'mappers';
         }
     },
     computed: {
@@ -133,10 +128,15 @@ export default {
         },
         getPresetsHook() {
             if (wp !== undefined && wp.hooks !== undefined)
-                this.collectionPresets = wp.hooks.applyFilters(`tainacan_collections_presets`, this.collectionPresets);
+                return wp.hooks.applyFilters(`tainacan_collections_presets`, this.collectionPresets);
 
             return this.collectionPresets;
         },
+    },
+    watch: {
+        hasPresetsHook() {
+            this.selectedEstrategy = this.hasPresetsHook ? undefined : 'mappers';
+        }
     },
     mounted() {
         this.isLoadingMetadatumTypes = true;
@@ -161,10 +161,8 @@ export default {
         ]),
         onNewCollectionPreset(collectionPreset) {
             axios.post(collectionPreset.endpoint)
-                .then((response) => {
-                    console.log(response);
-
-                    this.$router.push($routerHelper.getCollectionsPath());
+                .then(() => {
+                    this.$router.push(this.$routerHelper.getCollectionsPath());
                     this.$parent.close();
                 })
                 .catch((error) =>{
