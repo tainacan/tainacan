@@ -25,8 +25,8 @@
                 {{ $i18n.get('label_create_collection') }}
             </h2>
             <a 
-                    @click="selectedEstrategy = undefined"
-                    v-if="selectedEstrategy != undefined"
+                    @click="selectedEstrategy = hasPresetsHook ? undefined : 'mappers'"
+                    v-if="(hasPresetsHook && selectedEstrategy != undefined) || (!hasPresetsHook && selectedEstrategy == 'mappers')"
                     class="back-link">
                 {{ $i18n.get('back') }}
             </a>
@@ -111,9 +111,14 @@ export default {
     name: 'CollectionCreationModal',
     data(){
         return {
-            selectedEstrategy: this.hasPresetsHook ? undefined : 'mappers',
+            selectedEstrategy: 'mappers',
             isLoadingMetadatumMappers: true,
             collectionPresets: []
+        }
+    },
+    watch: {
+        hasPresetsHook() {
+            this.selectedEstrategy = this.hasPresetsHook ? undefined : 'mappers';
         }
     },
     computed: {
@@ -128,7 +133,7 @@ export default {
         },
         getPresetsHook() {
             if (wp !== undefined && wp.hooks !== undefined)
-                return wp.hooks.applyFilters(`tainacan_collections_presets`, this.collectionPresets);
+                this.collectionPresets = wp.hooks.applyFilters(`tainacan_collections_presets`, this.collectionPresets);
 
             return this.collectionPresets;
         },
@@ -204,7 +209,7 @@ export default {
             text-align: left;
             padding: 15px;
             cursor: pointer;
-            max-width: 50%;
+            flex-basis: calc(50% - 12px);
             flex-grow: 1;
             font-size: 1em;
             transition: border 0.3s ease;
