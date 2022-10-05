@@ -134,8 +134,11 @@ export default {
         },
     },
     watch: {
-        hasPresetsHook() {
-            this.selectedEstrategy = this.hasPresetsHook ? undefined : 'mappers';
+        hasPresetsHook: {
+            handler() {
+                this.selectedEstrategy = this.hasPresetsHook ? undefined : 'mappers';
+            },
+            immediate: true
         }
     },
     mounted() {
