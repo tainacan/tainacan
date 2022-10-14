@@ -1028,7 +1028,7 @@ class Theme_Helper {
 		);
 		$args = wp_parse_args($args, $defaults);
 		$props = ' ';
-
+		
 		// Always pass the class needed by Vue to mount the component;
 		$args['class'] = $args['class_name'] . ' wp-block-tainacan-dynamic-items-list';
 		unset($args['class_name']);
@@ -1112,10 +1112,11 @@ class Theme_Helper {
 						: $args['carousel_args'];
 
 					$no_crop_images_to_square = isset($block_args['crop_images_to_square']) && !$block_args['crop_images_to_square'];
-					$image_size =  isset($block_args['image_size']) 
+					$image_size = isset($block_args['image_size']) 
 						? $block_args['image_size']
 						: ($no_crop_images_to_square ? 'tainacan-medium-full' : 'tainacan-medium');
-					// remove attribute description and unused thumbnails image sizes, to avoid poluting HTML
+
+					// Remove attribute description and unused thumbnails image sizes, to avoid poluting HTML
 					$related_group['items'] = array_map(
 						function($el) use ($image_size) {
 							$el['thumbnail'] = array_filter($el['thumbnail'], function($key) use ($image_size) {
@@ -1131,7 +1132,8 @@ class Theme_Helper {
 							'collection_id' => $related_group['collection_id'],
 							'load_strategy' => 'parent',
 							'selected_items' => json_encode($related_group['items']),
-							'layout' => $args['items_list_layout']
+							'layout' => $args['items_list_layout'],
+							'image_size' => $image_size
 						], $block_args);
 
 						$items_list_div = $this->get_tainacan_dynamic_items_list($items_list_args);
@@ -1139,7 +1141,8 @@ class Theme_Helper {
 						$items_list_args = wp_parse_args([
 							'collection_id' => $related_group['collection_id'],
 							'load_strategy' => 'parent',
-							'selected_items' => json_encode($related_group['items'])
+							'selected_items' => json_encode($related_group['items']),
+							'image_size' => $image_size
 						], $block_args);
 
 						$items_list_div = $this->get_tainacan_items_carousel($items_list_args);
