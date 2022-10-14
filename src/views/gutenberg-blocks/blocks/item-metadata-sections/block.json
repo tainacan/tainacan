@@ -18,11 +18,11 @@
             "source": "query",
             "selector": "div"
         },
-        "dataSource": {
-            "type": "string",
-            "default": "selection"
-        },
         "templateMode": {
+            "type": "boolean",
+            "default": false
+        },
+        "isDynamic": {
             "type": "boolean",
             "default": false
         },
@@ -41,7 +41,7 @@
             "default": false
         },
         "metadataSectionsRequestSource": {
-            "type": "string",
+            "type": "object",
             "default": ""
         },
         "metadataSections": {
