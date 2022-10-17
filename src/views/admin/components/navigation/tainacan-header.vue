@@ -208,15 +208,18 @@
 
                 h1 {
                     display: flex;
+                    align-items: center;
                     white-space: nowrap;
                     margin: 0px;
                     
                     span {
                         color: var(--tainacan-blue5);
+                        text-decoration-color: var(--tainacan-blue5);
                         text-transform: uppercase;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         font-weight: bold;
+                        font-size: 1.25rem;
                         margin: 0px 0.5rem 0px 0.75rem;
                     }
                 }
