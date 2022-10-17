@@ -572,6 +572,7 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * homeCollectionsOrderBy // Default is 'modified'
             * homeCollectionsOrder // Default is 'desc'
         * hideTainacanHeader
+            * tainacanHeaderExtraLabel // Adds a textual label aside the Tainacan Logo. 
             * hideTainacanHeaderHomeButton
             * hideTainacanHeaderSearchInput
             * hideTainacanHeaderAdvancedSearch
