@@ -567,6 +567,7 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideHomeCollectionFiltersButton
             * hideHomeCollectionActivitiesButton
             * hideHomeCollectionThemeCollectionButton
+            * hideHomeCollectionCreateNewButton
             * showHomeCollectionCreateItemButton // Default is false
             * homeCollectionsPerPage // Default is 9
             * homeCollectionsOrderBy // Default is 'modified'
@@ -594,6 +595,8 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
             * hideRepositorySubheaderViewCollectionsButton
             * hideRepositorySubheaderExportButton
         * hideCollectionSubheader
+        
+        * hideCollectionsListCreationDropdown 
 
         * hideItemsListPageTitle
         * hideItemsListMultipleSelection

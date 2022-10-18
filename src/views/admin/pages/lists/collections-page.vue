@@ -7,7 +7,7 @@
             
             <!-- New Collection button -->
             <div 
-                    v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
+                    v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="header-item">
                 <b-dropdown
                         aria-role="list"
@@ -259,7 +259,7 @@
                                 {{ $i18n.get('info_no_collections_' + statusOption.slug) }}
                             </p>
 
-                            <div v-if="$userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
+                            <div v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         id="collection-creation-options-dropdown"
                                         aria-role="list"
@@ -281,6 +281,16 @@
                                             <br>
                                             <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
                                         </router-link>
+                                    </b-dropdown-item>
+                                    <b-dropdown-item aria-role="listitem">
+                                        <div
+                                                id="a-preset-collection"
+                                                tag="div"
+                                                @click="onOpenCollectionCreationModal">
+                                            {{ $i18n.get('label_preset_collections') }}
+                                            <br>
+                                            <small class="is-small">{{ $i18n.get('info_preset_collections') }}</small>
+                                        </div>
                                     </b-dropdown-item>
                                     <b-dropdown-item aria-role="listitem">
                                         <div
