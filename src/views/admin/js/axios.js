@@ -10,7 +10,7 @@ const i18nGet = function (key) {
 };
 
 const tainacanErrorHandler = function(error) {
-    console.log(error)
+    console.error(error)
     if (error.response && error.response.status) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
@@ -65,10 +65,10 @@ const tainacanErrorHandler = function(error) {
         // The request was made but no response was received
         // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
         // http.ClientRequest in node.js
-        console.log('Tainacan Error Handler: ', error.request);
+        console.error('Tainacan Error Handler: ', error.request);
     } else {
         // Something happened in setting up the request that triggered an Error
-        console.log('Tainacan Error Handler: ', error.message);
+        console.error('Tainacan Error Handler: ', error.message);
     }
     return Promise.reject(error);
 }
@@ -79,6 +79,11 @@ export const tainacan = axios.create({
 });
 if (tainacan_plugin.nonce) {
     tainacan.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+}
+if (tainacan_plugin.admin_request_options) {
+    Object.keys(tainacan_plugin.admin_request_options).forEach(requestOption => {
+        tainacan.defaults.headers[requestOption] = tainacan_plugin.admin_request_options[requestOption];
+    });
 }
 tainacan.interceptors.response.use(
     (response) => response,
