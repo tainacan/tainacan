@@ -74,7 +74,7 @@
             </li>
         </ul>   
         <ul v-if="collections.length > 0 && !isLoading">
-            <li v-if="!$adminOptions.hideHomeCreateNewCollectionButton && $userCaps.hasCapability('tnc_rep_edit_collections')">
+            <li v-if="!$adminOptions.hideHomeCollectionCreateNewButton && $userCaps.hasCapability('tnc_rep_edit_collections')">
                 <router-link
                         tag="a" 
                         :to="$routerHelper.getNewCollectionPath()"
@@ -147,7 +147,7 @@
                     class="tainacan-card"
                     :class="{ 'always-visible-collections': $adminOptions.homeCollectionsPerPage }">       
                 <ul class="menu-list">
-                    <li v-if="!$adminOptions.hideHomeCollectionCreateNewButton">
+                    <li>
                         <router-link 
                                 tag="a" 
                                 :to="{ path: $routerHelper.getCollectionItemsPath(collection.id, '') }" 
