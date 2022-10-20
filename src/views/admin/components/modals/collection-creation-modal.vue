@@ -173,18 +173,16 @@ export default {
             this.isCreatingCollectionPreset = true;
             axios.post(collectionPreset.endpoint)
                 .then(() => {
-                    if (typeof collectionPreset.onSuccess === 'function') {
-                        const successMessage = collectionPreset.onSuccess();
-                        
-                        this.$buefy.snackbar.open({
-                            message: successMessage,
-                            type: 'is-secondary',
-                            position: 'is-bottom-right',
-                            pauseOnHover: true,
-                            duration: 3500,
-                            queue: false
-                        });
-                    } 
+                    const successMessage = typeof collectionPreset.onSuccess === 'function' ? collectionPreset.onSuccess() : this.$i18n.get('label_preset_success');
+
+                    this.$buefy.snackbar.open({
+                        message: successMessage,
+                        type: 'is-success',
+                        position: 'is-bottom-right',
+                        pauseOnHover: true,
+                        duration: 3500,
+                        queue: false
+                    });
                     this.isCreatingCollectionPreset = false;
                     this.$router.push(this.$routerHelper.getCollectionsPath());
                     this.$parent.close();

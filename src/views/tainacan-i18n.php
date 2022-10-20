@@ -523,6 +523,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_%s_items_copy_success'       		     => __( '%s item copies were created with success!', 'tainacan' ),
 	'label_one_item_copy_success'       		     => __( 'The item copy was created with success!', 'tainacan' ),
 	'label_item_copy_failure'		                 => __( 'Something wrong happened... Item copy failed!', 'tainacan' ),
+	'label_preset_success'  		     		     => __( 'The preset was applied with success!', 'tainacan' ),
 	'label_create_another_taxonomy'                  => __( 'Create another Taxonomy', 'tainacan' ),
 	'label_make_copies_of_item'		                 => __( 'Make copies of item', 'tainacan' ),
 	'label_number_of_copies'		                 => __( 'Number of copies', 'tainacan' ),
