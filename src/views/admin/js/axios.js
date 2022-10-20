@@ -9,7 +9,7 @@ const i18nGet = function (key) {
     return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";
 };
 
-const tainacanErrorHandler = function(error) {
+export const tainacanErrorHandler = function(error) {
     console.error(error)
     if (error.response && error.response.status) {
         // The request was made and the server responded with a status code
@@ -106,4 +106,4 @@ export const CancelToken = axios.CancelToken;
 export const isCancel = axios.isCancel;
 export const all = axios.all;
 
-export default { tainacan, wp, CancelToken, isCancel, all};
+export default { tainacan, wp, CancelToken, isCancel, all, tainacanErrorHandler};

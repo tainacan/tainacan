@@ -91,6 +91,11 @@
                     :active.sync="isLoadingMetadatumMappers" 
                     :can-cancel="false"/>
 
+            <b-loading 
+                    :is-full-page="false"
+                    :active.sync="isCreatingCollectionPreset" 
+                    :can-cancel="false"/>
+
             <footer class="field is-grouped form-submit">
                 <div class="control">
                     <button 
@@ -106,6 +111,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import axios from 'axios';
+import { tainacanErrorHandler } from '../../js/axios';
 
 export default {
     name: 'CollectionCreationModal',
@@ -113,7 +119,8 @@ export default {
         return {
             selectedEstrategy: 'mappers',
             isLoadingMetadatumMappers: true,
-            collectionPresets: []
+            collectionPresets: [],
+            isCreatingCollectionPreset: false
         }
     },
     computed: {
@@ -163,13 +170,41 @@ export default {
             'getMetadatumMappers'
         ]),
         onNewCollectionPreset(collectionPreset) {
+            this.isCreatingCollectionPreset = true;
             axios.post(collectionPreset.endpoint)
                 .then(() => {
+                    if (typeof collectionPreset.onSuccess === 'function') {
+                        const successMessage = collectionPreset.onSuccess();
+                        
+                        this.$buefy.snackbar.open({
+                            message: successMessage,
+                            type: 'is-secondary',
+                            position: 'is-bottom-right',
+                            pauseOnHover: true,
+                            duration: 3500,
+                            queue: false
+                        });
+                    } 
+                    this.isCreatingCollectionPreset = false;
                     this.$router.push(this.$routerHelper.getCollectionsPath());
                     this.$parent.close();
                 })
                 .catch((error) =>{
-                    this.$console.error(error);
+                    if (typeof collectionPreset.onError === 'function') {
+                        const errorMessage = collectionPreset.onError();
+                        
+                        this.$buefy.snackbar.open({
+                            message: errorMessage,
+                            type: 'is-danger',
+                            position: 'is-bottom-right',
+                            pauseOnHover: true,
+                            duration: 3500,
+                            queue: false
+                        });
+                    } else {
+                        tainacanErrorHandler(error);
+                    }
+                    this.isCreatingCollectionPreset = false;
                 });
         }
     }
