@@ -15,6 +15,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         content, 
         collectionId,
         itemId,
+        sectionId,
         isLoading,
         itemMetadataRequestSource,
         isModalOpen,
@@ -52,7 +53,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
             });    
 
             if (itemMetadataRequestSource != undefined && typeof itemMetadataRequestSource == 'function')
-                itemMetadataRequestSource.cancel('Previous metadata sections search canceled.');
+                itemMetadataRequestSource.cancel('Previous metadata search canceled.');
 
             itemMetadataRequestSource = axios.CancelToken.source();
 
@@ -87,11 +88,11 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
             });    
 
             if (itemMetadataRequestSource != undefined && typeof itemMetadataRequestSource == 'function')
-                itemMetadataRequestSource.cancel('Previous metadata sections search canceled.');
+                itemMetadataRequestSource.cancel('Previous item metadata search canceled.');
 
             itemMetadataRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/item/' + itemId + '/metadata';
+            const endpoint = '/item/' + itemId + (sectionId ? ('/metadatasection/' + sectionId) : '/metadata');
 
             tainacan.get(endpoint, { cancelToken: itemMetadataRequestSource.token })
                 .then(response => {
