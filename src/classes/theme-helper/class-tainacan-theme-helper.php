@@ -1028,7 +1028,7 @@ class Theme_Helper {
 		);
 		$args = wp_parse_args($args, $defaults);
 		$props = ' ';
-
+		
 		// Always pass the class needed by Vue to mount the component;
 		$args['class'] = $args['class_name'] . ' wp-block-tainacan-dynamic-items-list';
 		unset($args['class_name']);
@@ -1054,6 +1054,7 @@ class Theme_Helper {
 		 *     Optional. Array of arguments.
 		 *     @type string  $item_id							The Item ID
 		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic' and 'carousel'. 
+		 * 	   @type string  $order								Sorting direction to the related items query. Either 'desc' or 'asc'.
 		 *     @type string  $class_name						Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-related-items
 		 *     @type string  $collection_heading_class_name		Extra class to add to the collection name wrapper. Defaults to ''
 		 * 	   @type string  $collection_heading_tag			Tag to be used as wrapper of the collection name. Defaults to h2
@@ -1081,7 +1082,11 @@ class Theme_Helper {
 			return;
 		
 		// Then fetches related ones
-		$related_items = $item->get_related_items();
+		$related_items_query_args = [];
+		if ( isset($args['order']) )
+			$related_items_query_args['order'] = $args['order'];
+
+		$related_items = $item->get_related_items($related_items_query_args);
 		if (!count($related_items))
 			return;
 
@@ -1112,10 +1117,11 @@ class Theme_Helper {
 						: $args['carousel_args'];
 
 					$no_crop_images_to_square = isset($block_args['crop_images_to_square']) && !$block_args['crop_images_to_square'];
-					$image_size =  isset($block_args['image_size']) 
+					$image_size = isset($block_args['image_size']) 
 						? $block_args['image_size']
 						: ($no_crop_images_to_square ? 'tainacan-medium-full' : 'tainacan-medium');
-					// remove attribute description and unused thumbnails image sizes, to avoid poluting HTML
+
+					// Remove attribute description and unused thumbnails image sizes, to avoid poluting HTML
 					$related_group['items'] = array_map(
 						function($el) use ($image_size) {
 							$el['thumbnail'] = array_filter($el['thumbnail'], function($key) use ($image_size) {
@@ -1131,7 +1137,8 @@ class Theme_Helper {
 							'collection_id' => $related_group['collection_id'],
 							'load_strategy' => 'parent',
 							'selected_items' => json_encode($related_group['items']),
-							'layout' => $args['items_list_layout']
+							'layout' => $args['items_list_layout'],
+							'image_size' => $image_size
 						], $block_args);
 
 						$items_list_div = $this->get_tainacan_dynamic_items_list($items_list_args);
@@ -1139,7 +1146,8 @@ class Theme_Helper {
 						$items_list_args = wp_parse_args([
 							'collection_id' => $related_group['collection_id'],
 							'load_strategy' => 'parent',
-							'selected_items' => json_encode($related_group['items'])
+							'selected_items' => json_encode($related_group['items']),
+							'image_size' => $image_size
 						], $block_args);
 
 						$items_list_div = $this->get_tainacan_items_carousel($items_list_args);
@@ -1159,7 +1167,7 @@ class Theme_Helper {
 							$related_group['total_items'] > 1 ?
 								'<div class="wp-block-buttons">
 									<div class="wp-block-button">
-										<a class="wp-block-button__link" href="' . esc_url('/' . $related_group['collection_slug']) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
+										<a class="wp-block-button__link" href="' . esc_url( get_permalink( $related_group['collection_id'] ) ) . '?metaquery[0][key]=' . esc_attr($related_group['metadata_id']) . '&metaquery[0][value][0]=' . esc_attr($item->get_ID()) . '&metaquery[0][compare]=IN">
 											' . sprintf( __('View all %s related items', 'tainacan'), $related_group['total_items'] ) . '
 										</a>
 									</div>
