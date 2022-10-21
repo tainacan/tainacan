@@ -1187,7 +1187,7 @@ function tainacan_the_item_gallery($args = []) {
 function tainacan_get_the_metadata_sections($args = array(), $item_id = 0) {
 
 	$item = tainacan_get_item( $item_id );
-
+	
 	if ($item instanceof \Tainacan\Entities\Item) {
 		return $item->get_metadata_sections_as_html($args);
 	}

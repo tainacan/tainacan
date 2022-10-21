@@ -25,7 +25,7 @@ function tainacan_blocks_render_metadata_sections( $block_attributes, $content, 
             $collection_pt_pattern = '/' . \Tainacan\Entities\Collection::$db_identifier_prefix . '\d+' . \Tainacan\Entities\Collection::$db_identifier_sufix . '/';
 
             if ( $current_post === NULL )
-                return \Tainacan\Theme_Helper::get_instance()->get_tainacan_item_metadata_template( [], $collection_id );
+                return \Tainacan\Theme_Helper::get_instance()->get_tainacan_item_metadata_sections_template( [], $collection_id );
             else if ( $current_post->post_type !== false && preg_match($collection_pt_pattern, $current_post->post_type) ) 
                 return tainacan_get_the_metadata_sections( $args, $current_post->ID );
             

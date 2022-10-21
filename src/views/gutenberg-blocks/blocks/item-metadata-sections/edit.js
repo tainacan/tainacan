@@ -78,11 +78,11 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 metadataSectionsTemplate.push([
                     'tainacan/item-metadata-section',
                     {
-                        sectionId: aMetadataSection.id,
+                        sectionId: String(aMetadataSection.id),
                         sectionName: aMetadataSection.name,
                         sectionDescription: aMetadataSection.description,
                         sectionMetadata: aMetadataSection['metadata_object_list'],
-                        itemId: Number(itemId),
+                        itemId: itemId ? Number(itemId) : 0,
                         collectionId: Number(collectionId),
                         dataSource: 'parent',
                         templateMode: templateMode

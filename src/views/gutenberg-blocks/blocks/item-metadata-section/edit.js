@@ -67,7 +67,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                         let metadataSection = response.data ? response.data : [];
 
                         getMetadataSectionTemplates({
-                            sectionId: metadataSection.id,
+                            sectionId: String(metadataSection.id),
                             sectionName: metadataSection.name,
                             sectionDescription: metadataSection.description,
                             sectionMetadata: metadataSection['metadata_object_list'],
@@ -112,7 +112,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
             metadataSectionTemplate.push([
                 'tainacan/item-metadata',
                 {
-                    sectionId: sectionId,
+                    sectionId: String(sectionId),
                     itemId: Number(itemId),
                     collectionId: Number(collectionId),
                     metadata: sectionMetadata,
@@ -143,7 +143,6 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 collectionId: collectionId,
                 templateMode: templateMode
             });
-            console.log(collectionId)
             setContent();
         }
     }
@@ -163,23 +162,25 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         : (
         <div { ...blockProps }>
 
-            <InspectorControls>
-                <PanelBody
-                    title={ __('Data source', 'tainacan') }
-                    initialOpen={ true }
-                >
-                    <ToggleControl
-                        label={ __('Dynamic sync from Tainacan', 'tainacan') }
-                        help={ __( 'Check this if you want the item metadata and section values to be always sync with its source from Tainacan. If disabled, however, you will be able to change order of inner blocks, delete and wrap them inside other blocks.', 'tainacan' ) }
-                        checked={ isDynamic }
-                        onChange={ ( isChecked ) => {
-                                isDynamic = isChecked;
-                                setAttributes({ isDynamic: isDynamic });
-                            } 
-                        }
-                    />
-                </PanelBody>
-            </InspectorControls>
+            { sectionId ? 
+                <InspectorControls>
+                    <PanelBody
+                        title={ __('Data source', 'tainacan') }
+                        initialOpen={ true }
+                    >
+                        <ToggleControl
+                            label={ __('Dynamic sync from Tainacan', 'tainacan') }
+                            help={ __( 'Check this if you want the item metadata and section values to be always sync with its source from Tainacan. If disabled, however, you will be able to change order of inner blocks, delete and wrap them inside other blocks.', 'tainacan' ) }
+                            checked={ isDynamic }
+                            onChange={ ( isChecked ) => {
+                                    isDynamic = isChecked;
+                                    setAttributes({ isDynamic: isDynamic });
+                                } 
+                            }
+                        />
+                    </PanelBody>
+                </InspectorControls>
+            : null }
 
             { isSelected ? 
                 ( 

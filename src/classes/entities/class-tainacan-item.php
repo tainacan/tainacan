@@ -1039,8 +1039,12 @@ class Item extends Entity {
 				$metadata_section_object = $metadata_section;
 
 			// A metadata section ID was passed
-			} elseif ( is_int($metadata_section) ) {
+			} elseif ( is_numeric($metadata_section) ) {
 				$metadata_section_object = $Tainacan_Metadata_Sections->fetch($metadata_section);
+
+			// The default metadata section was passed
+			} elseif ( $metadata_section == \Tainacan\Entities\Metadata_Section::$default_section_slug ) {
+				$metadata_section_object = $Tainacan_Metadata_Sections->get_default_section($this->get_collection_id());
 
 			// A metadata section slug was passed
 			} elseif ( is_string($metadata_section) ) {
