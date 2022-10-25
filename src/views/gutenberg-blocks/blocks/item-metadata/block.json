@@ -26,6 +26,10 @@
             "type": "boolean",
             "default": false
         },
+        "isDynamic": {
+            "type": "boolean",
+            "default": false
+        },
         "collectionId": {
             "type": "integer"
         },
@@ -41,7 +45,7 @@
             "default": false
         },
         "itemMetadataRequestSource": {
-            "type": "string",
+            "type": "object",
             "default": ""
         },
         "itemMetadata": {

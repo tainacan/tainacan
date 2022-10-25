@@ -1,8 +1,9 @@
 const { __ } = wp.i18n;
 
-const { Button, Spinner, Placeholder } = wp.components;
+const { Button, Spinner, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { useBlockProps, InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const ServerSideRender = wp.serverSideRender;
+const { useBlockProps, InnerBlocks, InspectorControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
@@ -23,12 +24,14 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         metadata,
         itemMetadataTemplate,
         dataSource,
-        templateMode
+        templateMode,
+        isDynamic
     } = attributes;
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
-    
+    const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
+
     function setContent() {
         if ( dataSource === 'parent' && templateMode) {
 
@@ -197,6 +200,24 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         : (
         <div { ...blockProps }>
 
+            <InspectorControls>
+                <PanelBody
+                    title={ __('Data source', 'tainacan') }
+                    initialOpen={ true }
+                >
+                    <ToggleControl
+                        label={ __('Dynamic sync from Tainacan', 'tainacan') }
+                        help={ __( 'Check this if you want the item metadata values to be always sync with its source from Tainacan. If disabled, however, you will be able to change order of inner blocks, delete and wrap them inside other blocks.', 'tainacan' ) }
+                        checked={ isDynamic }
+                        onChange={ ( isChecked ) => {
+                                isDynamic = isChecked;
+                                setAttributes({ isDynamic: isDynamic });
+                            } 
+                        }
+                    />
+                </PanelBody>
+            </InspectorControls>
+
             { isSelected ? 
                 ( 
                 <div>
@@ -269,9 +290,18 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 </div> :
                 <div className={ 'item-metadata-edit-container' }>
                     { itemMetadataTemplate.length ?
-                        <InnerBlocks
+                        ( isDynamic ? 
+                            <ServerSideRender
+                                block="tainacan/item-metadata"
+                                attributes={ attributes }
+                                httpMethod={ currentWPVersion >= '5.5' ? 'POST' : 'GET' }
+                            />
+                            :
+                            <InnerBlocks
                                 allowedBlocks={ true }
-                                template={ itemMetadataTemplate } />
+                                template={ itemMetadataTemplate }
+                                templateInsertUpdatesSelection={ true } />
+                        )
                         : null
                     }
                 </div>

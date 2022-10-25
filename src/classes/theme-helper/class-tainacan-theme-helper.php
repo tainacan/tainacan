@@ -1553,7 +1553,7 @@ class Theme_Helper {
 			return '';
 		
 		$args['p'] = $args['metadata'];
-		$args['posts_per_page'] = 1;
+		//$args['posts_per_page'] = 1;
 		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
 		$metadata = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection, $args);
 

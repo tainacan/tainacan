@@ -19,7 +19,7 @@ const TAINACAN_BLOCKS = [
 	'item-gallery' => ['render_callback' => 'tainacan_blocks_render_items_gallery'],
 	'item-metadata-sections' => ['render_callback' => 'tainacan_blocks_render_metadata_sections'],
 	'item-metadata-section' => ['render_callback' => 'tainacan_blocks_render_metadata_section'],
-	'item-metadata' => [],
+	'item-metadata' => ['render_callback' => 'tainacan_blocks_render_item_metadata'],
 	'item-metadatum' => ['render_callback' => 'tainacan_blocks_render_item_metadatum'],
 	'metadata-section-name' => [],
 	'metadata-section-description' => []
