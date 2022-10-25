@@ -46,7 +46,7 @@ use \Tainacan\Repositories;
  * @return string        The HTML output
  */
 function tainacan_get_the_metadata($args = array(), $item_id = 0) {
-
+	
 	$item = tainacan_get_item( $item_id );
 
 	if ($item instanceof \Tainacan\Entities\Item) {

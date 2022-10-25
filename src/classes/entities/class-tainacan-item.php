@@ -599,7 +599,7 @@ class Item extends Entity {
 			// A metadatum ID was passed
 			} elseif ( is_int($metadatum) ) {
 				$metadatum_object = $Tainacan_Metadata->fetch($metadatum);
-			
+				
 			// A metadatum slug was passed
 			} elseif ( is_string($metadatum) ) {
 				$query = $Tainacan_Metadata->fetch(['slug' => $metadatum], 'OBJECT');
@@ -667,7 +667,7 @@ class Item extends Entity {
 			// Get the item metadata objects from the item repository
 			$item_metadata = $this->get_metadata($query_args);
 		}
-
+		
 		// Loop item metadata to print their "values" as html
 		$metadatum_index = 0;
 		foreach ( $item_metadata as $item_metadatum ) {

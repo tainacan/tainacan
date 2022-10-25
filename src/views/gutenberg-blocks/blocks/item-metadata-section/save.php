@@ -21,10 +21,9 @@ function tainacan_blocks_render_metadata_section( $block_attributes, $content, $
             'metadata_section' => $section_id
         ];
 
-        // Checks if we are in the edit page or in the published
-        $current_post = get_post();
-        
         if ( $template_mode && $collection_id ) {
+            // Checks if we are in the edit page or in the published
+            $current_post = get_post();
             $collection_pt_pattern = '/' . \Tainacan\Entities\Collection::$db_identifier_prefix . '\d+' . \Tainacan\Entities\Collection::$db_identifier_sufix . '/';
 
             if ( $current_post === NULL )

@@ -18,13 +18,12 @@ function tainacan_blocks_render_item_metadata( $block_attributes, $content, $blo
         
         // Builds args from backend query
         $args = [
-            'metadata' => array_map(function($metadatum) { return $metadatum['id']; }, $metadata)
+            'metadata_in' => array_map(function($metadatum) { return $metadatum['id']; }, $metadata)
         ];
-
-        // Checks if we are in the edit page or in the published
-        $current_post = get_post();
         
         if ( $template_mode && $collection_id ) {
+            // Checks if we are in the edit page or in the published
+            $current_post = get_post();
             $collection_pt_pattern = '/' . \Tainacan\Entities\Collection::$db_identifier_prefix . '\d+' . \Tainacan\Entities\Collection::$db_identifier_sufix . '/';
 
             if ( $current_post === NULL )
