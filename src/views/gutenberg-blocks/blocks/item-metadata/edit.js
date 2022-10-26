@@ -60,12 +60,14 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
 
             itemMetadataRequestSource = axios.CancelToken.source();
 
-            let endpoint = '/collection/' + collectionId + '/metadata';
+            let endpoint = '/collection/' + collectionId + (sectionId ? ('/metadata-sections/' + sectionId) : '/metadata');
 
             tainacan.get(endpoint, { cancelToken: itemMetadataRequestSource.token })
                 .then(response => {
 
                     metadata = response.data ? response.data : [];
+                    if (sectionId)
+                        metadata = metadata['metadata_object_list'];
 
                     getItemMetadataTemplates({
                         metadata: metadata,
@@ -95,7 +97,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
 
             itemMetadataRequestSource = axios.CancelToken.source();
 
-            const endpoint = '/item/' + itemId + (sectionId ? ('/metadatasection/' + sectionId) : '/metadata');
+            const endpoint = '/item/' + itemId + (sectionId ? ('/metadata-sections/' + sectionId) : '/metadata');
 
             tainacan.get(endpoint, { cancelToken: itemMetadataRequestSource.token })
                 .then(response => {
