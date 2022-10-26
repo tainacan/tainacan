@@ -26,7 +26,6 @@ class Theme_Helper {
 	private function __construct() {
 
 		add_filter( 'the_content', [$this, 'the_content_filter'] );
-		
 
 		// Replace collections permalink to post type archive if cover not enabled
 		add_filter('post_type_link', array($this, 'permalink_filter'), 10, 3);
@@ -162,16 +161,32 @@ class Theme_Helper {
 		}
 		
 		$item = new Entities\Item($post);
+
 		$content = '';
 		
 		// document
-		$content .= $item->get_document_as_html();
+		$content .= '<section id="tainacan-default-document-section">';
+			$content .= '<h2>' . __( 'Document', 'tainacan' ) . '</h2>';
+			$content .= $this->get_tainacan_item_gallery(array(
+				'layoutElements' => array( 'main' => true, 'thumbnails' => false ),
+				'mediaSources' => 	array( 'document' => true, 'attachments' => false, 'metadata' => false),
+			));
+		$content .= '</section>';
 		
-		// metadata
-		$content .= $item->get_metadata_as_html();
-		
+		// metadata sections
+		$content .= $item->get_metadata_sections_as_html();
+
 		// attachments
+		$content .= '<section id="tainacan-default-attachments-section">';
+			$content .= '<h2>' . __( 'Attachments', 'tainacan' ) . '</h2>';
+			$content .= $this->get_tainacan_item_gallery(array(
+				'layoutElements' => array( 'main' => false, 'thumbnails' => true ),
+				'mediaSources' => 	array( 'document' => false, 'attachments' => true, 'metadata' => false),
+			));
+		$content .= '</section>';
 		
+		$content = apply_filters('tainacan_single_item_content', $content, $item);
+
 		return $content;
 		
 	}
