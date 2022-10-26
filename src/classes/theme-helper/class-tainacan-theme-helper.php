@@ -1566,8 +1566,15 @@ class Theme_Helper {
 		if ( !$collection_id )
 			return '';
 		
-		$args['p'] = $args['metadata'];
-		//$args['posts_per_page'] = 1;
+		if ( isset($args['metadata']) )
+			$args['p'] = $args['metadata'];
+
+		if ( isset($args['metadata__in']) )
+			$args['post__in'] = $args['metadata__in'];
+		
+		if ( isset($args['metadata__not_in']) )
+			$args['post__not_in'] = $args['metadata__not_in'];
+		
 		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
 		$metadata = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection, $args);
 

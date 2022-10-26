@@ -18,9 +18,9 @@ function tainacan_blocks_render_item_metadata( $block_attributes, $content, $blo
         
         // Builds args from backend query
         $args = [
-            'metadata_in' => array_map(function($metadatum) { return $metadatum['id']; }, $metadata)
+            'metadata__in' => array_map(function($metadatum) { return $metadatum['id']; }, $metadata)
         ];
-        
+
         if ( $template_mode && $collection_id ) {
             // Checks if we are in the edit page or in the published
             $current_post = get_post();

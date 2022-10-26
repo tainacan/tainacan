@@ -113,7 +113,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 'tainacan/item-metadata',
                 {
                     sectionId: String(sectionId),
-                    itemId: Number(itemId),
+                    itemId: isDynamic ? Number(itemId) : 0,
                     collectionId: Number(collectionId),
                     metadata: sectionMetadata,
                     dataSource: 'parent',
