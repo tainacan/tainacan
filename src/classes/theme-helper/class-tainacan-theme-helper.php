@@ -26,7 +26,6 @@ class Theme_Helper {
 	private function __construct() {
 
 		add_filter( 'the_content', [$this, 'the_content_filter'] );
-		
 
 		// Replace collections permalink to post type archive if cover not enabled
 		add_filter('post_type_link', array($this, 'permalink_filter'), 10, 3);
@@ -162,16 +161,32 @@ class Theme_Helper {
 		}
 		
 		$item = new Entities\Item($post);
+
 		$content = '';
 		
 		// document
-		$content .= $item->get_document_as_html();
+		$content .= '<section id="tainacan-default-document-section">';
+			$content .= '<h2>' . __( 'Document', 'tainacan' ) . '</h2>';
+			$content .= $this->get_tainacan_item_gallery(array(
+				'layoutElements' => array( 'main' => true, 'thumbnails' => false ),
+				'mediaSources' => 	array( 'document' => true, 'attachments' => false, 'metadata' => false),
+			));
+		$content .= '</section>';
 		
-		// metadata
-		$content .= $item->get_metadata_as_html();
-		
+		// metadata sections
+		$content .= $item->get_metadata_sections_as_html();
+
 		// attachments
+		$content .= '<section id="tainacan-default-attachments-section">';
+			$content .= '<h2>' . __( 'Attachments', 'tainacan' ) . '</h2>';
+			$content .= $this->get_tainacan_item_gallery(array(
+				'layoutElements' => array( 'main' => false, 'thumbnails' => true ),
+				'mediaSources' => 	array( 'document' => false, 'attachments' => true, 'metadata' => false),
+			));
+		$content .= '</section>';
 		
+		$content = apply_filters('tainacan_single_item_content', $content, $item);
+
 		return $content;
 		
 	}
@@ -1251,7 +1266,6 @@ class Theme_Helper {
 			return;
 
 		// Gets options from block attributes
-		$item_id = $item->get_id();
 		$block_id = $args['blockId'];
 		$layout_elements = $args['layoutElements'];
 		$media_sources = $args['mediaSources'];
@@ -1505,5 +1519,549 @@ class Theme_Helper {
 			)
 		);
 	}
-}
 
+	/**
+	 * To be used inside Gutenberg editor side preview of template blocks
+	 *
+	 * Return the metadata with placeholder item metadata values as a HTML string to be used as output.
+	 *
+	 * Each metadata is a label with the metadatum name and the placeholder value.
+	 *
+	 * If an ID, a slug or a Tainacan\Entities\Metadatum object is passed in 'metadata' parameter, it returns only one metadata, otherwise
+	 * it returns all metadata
+	 *
+	 * @param array|string $args {
+		 *     Optional. Array or string of arguments.
+		 *
+		 * 	   @type mixed		 $metadata					Metadatum object, ID or slug to retrieve only one metadatum. empty returns all metadata
+		 *     @type array		 $metadata__in				Array of metadata IDs or Slugs to be retrieved. Default none
+		 *     @type array		 $metadata__not_in			Array of metadata IDs (slugs not accepted) to excluded. Default none
+		 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
+		 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
+		 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
+		 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+		 *                                                  Default: true
+		 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value. Default ''
+		 *     @type string      $before                    String to be added before each metadata block
+		 *                                                  Default '<div class="metadata-type-$type">' where $type is the metadata type slug
+		 *     @type string      $after		                String to be added after each metadata block
+		 *                                                  Default '</div>'
+		 *     @type string      $before_title              String to be added before each metadata title
+		 *                                                  Default '<h3>'
+		 *     @type string      $after_title               String to be added after each metadata title
+		 *                                                  Default '</h3>'
+		 *     @type string      $before_value              String to be added before each metadata value
+		 *                                                  Default '<p>'
+		 *     @type string      $after_value               String to be added after each metadata value
+		 *                                                  Default '</p>'
+		 * }
+	 * 
+	 * @param int|string $item_id       (Optional) The item ID to retrive the metadatum as a HTML string to be used as output. Default is the global $post
+	 * 
+	 * 
+	 * @return string        The HTML output
+	 */
+	function get_tainacan_item_metadata_template($args = array(), $collection_id = 0) {
+
+		if ( !$collection_id )
+			return '';
+		
+		if ( isset($args['metadata']) )
+			$args['p'] = $args['metadata'];
+
+		if ( isset($args['metadata__in']) )
+			$args['post__in'] = $args['metadata__in'];
+		
+		if ( isset($args['metadata__not_in']) )
+			$args['post__not_in'] = $args['metadata__not_in'];
+		
+		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+		$metadata = \Tainacan\Repositories\Metadata::get_instance()->fetch_by_collection($collection, $args);
+
+		if (!is_array($metadata) || count($metadata) <= 0 && !($metadata[0] instanceof \Tainacan\Entities\Metadatum))
+			return '';
+
+		$defaults = array(
+			'hide_empty' 			=> true,
+			'empty_value_message' 	=> '',
+			'display_slug_as_class' => false,
+			'before' 				=> '<div class="metadata-type-$type" $id>',
+			'after' 				=> '</div>',
+			'before_title' 			=> '<h3>',
+			'after_title' 			=> '</h3>',
+			'before_value' 			=> '<p>',
+			'after_value' 			=> '</p>'
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		$return = '';
+		foreach($metadata as $metadatum) {
+			$item_metadatum = new \Tainacan\Entities\Item_Metadata_Entity(null, $metadatum);
+			
+			// Gets the metadata type object to use it if we need the slug
+			$metadata_type_object = $metadatum->get_metadata_type_object();
+
+			// Get metadatum wrapper tag. 
+			$before = str_replace('$type', $metadata_type_object->get_slug(), $args['before']);
+
+			// Adds class with slug and adds metadatum id
+			if ($args['display_slug_as_class']) {
+				if ( !strpos($before, 'class="') ) {
+					$before = str_replace('>', ' class="metadata-slug-'. $metadatum->get_slug() . '">', $before);
+				} else
+					$before = str_replace('class="', 'class="metadata-slug-'. $metadatum->get_slug() . ' ', $before);
+			}
+			$before = str_replace('$id', ' id="metadata-id-' . $metadatum->get_id() . '"', $before);
+
+			// Let theme authors tweak the wrapper opener
+			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before', $before, $item_metadatum );
+			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--type-' . $metadatum->get_metadata_type(), $before, $item_metadatum );
+			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--id-' . $metadatum->get_id(), $before, $item_metadatum );
+
+			// Renders the metadatum opener
+			$return .= $before;
+
+			// Renders the metadatum name
+			$metadatum_title_before = $args['before_title'];
+			$metadatum_title_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-title', $metadatum_title_before, $item_metadatum );
+			$metadatum_title_after = $args['after_title'];
+			$metadatum_title_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-title', $metadatum_title_after, $item_metadatum );
+			$return .= $metadatum_title_before . $metadatum->get_name() . $metadatum_title_after;
+			
+			// Renders the metadatum value
+			$metadatum_value_before = $args['before_value'];
+			$metadatum_value_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-value', $metadatum_value_before, $item_metadatum );
+			$metadatum_value_after = $args['after_value'];
+			$metadatum_value_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-value', $metadatum_value_after, $item_metadatum );
+			$return .= $metadatum_value_before . __('The item metadata value goes here', 'tainacan' ) . $metadatum_value_after;
+
+			$after = $args['after'];
+
+			// Let theme authors tweak the wrapper closer
+			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--id-' . $metadatum->get_id(), $after, $item_metadatum );
+			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--type-' . $metadatum->get_metadata_type(), $after, $item_metadatum );
+			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after', $after, $item_metadatum );
+			
+			// Closes the wrapper
+			$return .= $after;
+		}
+
+		// Returns the html content created by the function
+		return $return;
+
+	}
+
+	function get_tainacan_item_metadata_sections_template($args = array(), $collection_id = 0) {
+		
+		if ( !$collection_id )
+			return '';
+
+		$Tainacan_Metadata_Sections = \Tainacan\Repositories\Metadata_Sections::get_instance();
+
+		$return = '';
+
+		$defaults = array(
+			'metadata_section' 				=> null,
+			'metadata_sections__in' 		=> null,
+			'metadata_sections__not_in' 	=> null,
+			'hide_name' 					=> false,
+			'hide_description' 				=> true,
+			'hide_empty' 					=> true,
+			'empty_metadata_list_message' 	=> '',
+			'before' 						=> '<section class="metadata-section-slug-$slug" id="$id">',
+			'after' 						=> '</section>',
+			'before_name' 					=> '<h2 id="metadata-section-$slug">',
+			'after_name' 					=> '</h2>',
+			'before_metadata_list' 			=> '<div class="metadata-section__metadata-list" aria-labelledby="metadata-section-$slug">',
+			'after_metadata_list' 			=> '</div>',
+			'metadata_list_args' 			=> []
+		);
+		$args = wp_parse_args($args, $defaults);
+		$metadata_sections = array();
+		
+		// If a single metadata section is passed, we use it instead of fetching more
+		if ( !is_null($args['metadata_section']) ) {
+			
+			$metadata_section = $args['metadata_section'];
+			$metadata_section_object = null;
+
+			// A metadata section object was passed
+			if ( $metadata_section instanceof \Tainacan\Entities\Metadata_Section ) {
+				$metadata_section_object = $metadata_section;
+
+			// A metadata section ID was passed
+			} elseif ( is_numeric($metadata_section) ) {
+				$metadata_section_object = $Tainacan_Metadata_Sections->fetch($metadata_section);
+
+			// The default metadata section was passed
+			} elseif ( $metadata_section == \Tainacan\Entities\Metadata_Section::$default_section_slug ) {
+				$metadata_section_object = $Tainacan_Metadata_Sections->get_default_section($collection_id);
+
+			// A metadata section slug was passed
+			} elseif ( is_string($metadata_section) ) {
+				$query = $Tainacan_Metadata_Sections->fetch(['slug' => $metadata_section], 'OBJECT');
+				if ( is_array($query) && sizeof($query) == 1 && isset($metadata_section[0]) ) {
+					$metadata_section_object = $metadata_section[0];
+				}
+			}
+
+			// Some checks to see if things are really ok
+			if ( !($metadata_section_object instanceof \Tainacan\Entities\Metadata_Section) ) {
+				return $return;
+			} else {
+				// Makes sure the current Metadata Section is desired
+				if ( is_array($args['metadata_sections__not_in'])
+					&& (
+						in_array($metadata_section_object->get_slug(), $args['metadata_sections__not_in']) ||
+						in_array($metadata_section_object->get_id(), $args['metadata_sections__not_in'])
+					)
+				) {
+					return $return;
+				}
+			}
+
+			// Add it to the array which will be looped below
+			$metadata_sections[] = $metadata_section_object;
+
+		// If not single metadata section is passed, we query them
+		} else {
+
+			// Build query args ready to be passed to the API fetch
+			$query_args = [];
+			$post__in = [];
+			$post__not_in = [];
+			$post__name_in = [];
+			if (is_array($args['metadata_sections__in'])) {
+				$post__in[] = -1; // If metadata_sections__in is an empty array, this forces empty result
+				foreach ($args['metadata_sections__in'] as $metadata_section) {
+					if (is_numeric($metadata_section) || $metadata_section === \Tainacan\Entities\Metadata_Section::$default_section_slug) {
+						$post__in[] = $metadata_section;
+					} elseif (is_string($metadata_section)) {
+						$post__name_in[] = $metadata_section;
+					}
+				}
+			}
+			if (is_array($args['metadata_sections__not_in'])) {
+				foreach ($args['metadata_sections__not_in'] as $metadata_section) {
+					if (is_integer($metadata_section) || $metadata_section === \Tainacan\Entities\Metadata_Section::$default_section_slug) {
+						$post__not_in[] = $metadata_section;
+					}
+				}
+			}
+
+			if (sizeof($post__in) > 0) {
+				$query_args['post__in'] = $post__in;
+			}
+			if (sizeof($post__not_in) > 0) {
+				$query_args['post__not_in'] = $post__not_in;
+			}
+			if (sizeof($post__name_in) > 0) {
+				$query_args['post__name_in'] = $post__name_in;
+			}
+			
+			// Get metadata section objects from the metadata sections repository
+			$TainacanCollections = \Tainacan\Repositories\Collections::get_instance();
+			$collection = $TainacanCollections->fetch($collection_id);
+			if ( $collection instanceof \Tainacan\Entities\Collection ) {
+				$metadata_sections = $Tainacan_Metadata_Sections->fetch_by_collection($collection, $query_args);
+			}
+		}
+
+		// Loop metadata sections to print their "values" as html
+		$section_index = 0;
+		foreach ( $metadata_sections as $metadata_section_object ) {
+			$return .= $this->get_metadata_section_template($metadata_section_object, $args, $section_index, $collection_id);
+			$section_index++;
+		}
+
+		// Returns the html content created by the function
+		return $return;
+	}
+
+	public function get_metadata_section_template($metadata_section, $args = array(), $section_index = null, $collection_id = 0) {
+		$return = '';
+
+		$defaults = array(
+			'hide_name' 					=> false,
+			'hide_description' 				=> true,
+			'hide_empty' 					=> true,
+			'empty_metadata_list_message' 	=> '',
+			'before' 						=> '<section class="metadata-section-slug-$slug" id="$id">',
+			'after' 						=> '</section>',
+			'before_name' 					=> '<h2 id="metadata-section-$slug">',
+			'after_name' 					=> '</h2>',
+			'before_metadata_list' 			=> '<div class="metadata-section__metadata-list" aria-labelledby="metadata-section-$slug">',
+			'after_metadata_list' 			=> '</div>',
+			'metadata_list_args' 			=> []
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		// Gets the metadata section inner metadata list
+		$metadata_section_metadata_list = $metadata_section->get_metadata_object_list();
+		$has_metadata_list = (is_array($metadata_section_metadata_list) && count($metadata_section_metadata_list) > 0 );
+		
+		if ( $has_metadata_list || !$args['hide_empty'] ) {
+
+			// Slug and ID are used in numerous situations
+			$section_slug = $metadata_section->get_slug();
+			$section_id = $metadata_section->get_id();
+
+			// Get section wrapper tag
+			$before = $args['before'];
+			$before = str_replace('$id', $section_id, $before);
+			$before = str_replace('$slug', $section_slug, $before);
+
+			// Let theme authors tweak the wrapper opener
+			$before = apply_filters( 'tainacan-get-metadata-section-as-html-before', $before, $metadata_section );
+			$before = apply_filters( 'tainacan-get-metadata-section-as-html-before--id-' . $section_id, $before, $metadata_section );
+			if ( is_numeric($section_index) && $section_index >= 0 ) {
+				$before = apply_filters( 'tainacan-get-metadata-section-as-html-before--index-' . $section_index, $before, $metadata_section );	
+			}
+
+			// Renders the wrapper opener
+			$return .= $before;
+
+			// Adds section label (name)
+			if ( !$args['hide_name'] ) {
+
+				// Get section name wrapper
+				$before_name = $args['before_name'];
+				$before_name = str_replace('$id', $section_id, $before_name);
+				$before_name = str_replace('$slug', $section_slug, $before_name);
+
+				// Let theme authors tweak the name wrapper
+				$before_name = apply_filters( 'tainacan-get-metadata-section-as-html-before-name', $before_name, $metadata_section );
+				$before_name = apply_filters( 'tainacan-get-metadata-section-as-html-before-name--id-' . $section_id, $before_name, $metadata_section );
+				if ( is_numeric($section_index) && $section_index >= 0 ) {
+					$before_name = apply_filters( 'tainacan-get-metadata-section-as-html-before-name--index-' . $section_index, $before_name, $metadata_section );	
+				}
+
+				// Get section name closer
+				$after_name = $args['after_name'];
+
+				// Let theme authors tweak the name wrapper
+				$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name', $after_name, $metadata_section );
+				$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name--id-' . $section_id, $after_name, $metadata_section );
+				if ( is_numeric($section_index) && $section_index >= 0 ) {
+					$after_name = apply_filters( 'tainacan-get-metadata-section-as-html-after-name--index-' . $section_index, $after_name, $metadata_section );	
+				}
+
+				// Renders the metadata section name
+				$return .= $before_name . $metadata_section->get_name() . $after_name;
+			}
+
+			// Adds section description
+			if ( !$args['hide_description'] ) {
+				$return .= $args['before_description'] . $metadata_section->get_description() . $args['after_description'];
+			}
+
+			// Gets the section metadata list wrapper
+			$before_metadata_list = $args['before_metadata_list'];
+			$before_metadata_list = str_replace('$id', $section_id, $before_metadata_list);
+			$before_metadata_list = str_replace('$slug', $section_slug, $before_metadata_list);
+
+			// Let theme authors tweak the metadata list wrapper
+			$before_description = isset($args['before_description']) ? $args['before_description'] : '';
+			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list', $before_description, $metadata_section );
+			$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--id-' . $section_id, $before_description, $metadata_section );
+			if ( is_numeric($section_index) && $section_index >= 0 ) {
+				$before_description = apply_filters( 'tainacan-get-metadata-section-as-html-before-metadata-list--index-' . $section_index, $before_description, $metadata_section );	
+			}
+
+			// Renders the section metadata list wrapper
+			$return .= $before_metadata_list;
+
+			// Renders the section metadata list, using get_tainacan_item_metadata_template
+			if ($has_metadata_list) {
+				$has_some_metadata_value = false;
+				foreach( $metadata_section_metadata_list as $metadata_object) {
+					$the_metadata_list = $this->get_tainacan_item_metadata_template( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object->get_id() ]), $collection_id );
+					if (!$has_some_metadata_value && !empty($the_metadata_list))
+						$has_some_metadata_value = true;
+
+					$return .= $the_metadata_list;
+				}
+
+				// If no metadata value was found, this section may not be necessary
+				if (!$has_some_metadata_value && $args['hide_empty'])
+					return '';
+
+			} else {
+				$return .= $args['empty_metadata_list_message'];
+			}
+			// Gets the wrapper closer
+			$after_metadata_list = $args['after_metadata_list'];
+
+			// Let theme authors tweak the metadata list closer
+			$after_description = isset($args['after_description']) ? $args['after_description'] : '';
+			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list', $after_description, $metadata_section );
+			$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--id-' . $section_id, $after_description, $metadata_section );
+			if ( is_numeric($section_index) && $section_index >= 0 ) {
+				$after_description = apply_filters( 'tainacan-get-metadata-section-as-html-after-metadata-list--index-' . $section_index, $after_description, $metadata_section );	
+			}
+			
+			// Renders the section metadata list wrapper
+			$return .= $after_metadata_list;
+
+			// Gets the wrapper closer
+			$after = $args['after'];
+
+			// Let theme authors tweak the wrapper closer
+			if ( is_numeric($section_index) && $section_index >= 0 ) {
+				$after = apply_filters( 'tainacan-get-metadata-section-as-html-after--index-' . $section_index, $after, $metadata_section );	
+			}
+			$after = apply_filters( 'tainacan-get-metadata-section-as-html-after--id-' . $section_id, $after, $metadata_section );
+			$after = apply_filters( 'tainacan-get-metadata-section-as-html-after', $after, $metadata_section );
+			
+			// Closes the wrapper
+			$return .= $after;
+		}
+
+		// Returns the html content created by the function
+		return $return;
+	}
+
+	/**
+	 * Returns a placeholder for the item gallery, to be
+	 * used in the block editor.
+	 *
+	 * @param array $args {
+		*     Optional. Array of arguments.
+		*      @type string  $item_id						  The Item ID
+		* 	   @type string	 $blockId 						  A unique identifier for the gallery, will be generated automatically if not provided,
+		*	   @type bool    $isBlock						  An identifier if we're comming from a block renderer, to avois using functions not available outside of the gutenberg scope;
+		* 	   @type array 	 $layoutElements 				  Array of elements present in the gallery. Possible values are 'main' and 'carousel'
+		* 	   @type array 	 $mediaSources 					  Array of sources for the gallery. Possible values are 'document' and 'attachments'
+		* 	   @type bool 	 $hideFileNameMain 				  Hides the Main slider file name
+		* 	   @type bool 	 $hideFileCaptionMain 			  Hides the Main slider file caption
+		* 	   @type bool 	 $hideFileDescriptionMain		  Hides the Main slider file description
+		* 	   @type bool 	 $hideFileNameThumbnails 		  Hides the Thumbnails carousel file name
+		* 	   @type bool 	 $hideFileCaptionThumbnails 	  Hides the Thumbnails carousel file caption
+		* 	   @type bool 	 $hideFileDescriptionThumbnails   Hides the Thumbnails carousel file description
+		* 	   @type bool 	 $hideFileNameLightbox 			  Hides the Lightbox file name
+		* 	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
+		* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
+		* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
+		*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
+		*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
+		*	   @type bool    $showArrowsAsSVG				  Decides if the swiper carousel arrows will be an SVG icon or font icon
+		* @return string  The HTML div to be used for rendering the item galery component
+	 */
+	public function get_tainacan_item_gallery_template($args = []) {
+
+		$defaults = array(
+			'blockId' => 						uniqid(),
+			'layoutElements' => 				array( 'main' => true, 'thumbnails' => true ),
+			'isBlock' =>						false,
+			'mediaSources' => 					array( 'document' => true, 'attachments' => true, 'metadata' => false),
+			'hideFileNameMain' => 				true, 
+			'hideFileCaptionMain' => 			false,
+			'hideFileDescriptionMain' =>		true,
+			'hideFileNameThumbnails' => 		true, 
+			'hideFileCaptionThumbnails' => 		true,
+			'hideFileDescriptionThumbnails' =>  true,
+			'hideFileNameLightbox' =>	 		false, 
+			'hideFileCaptionLightbox' => 		false,
+			'hideFileDescriptionLightbox' =>	false,
+			'openLightboxOnClick' => 			true,
+			'showDownloadButtonMain' =>			true,
+			'lightboxHasLightBackground' => 	false,
+			'showArrowsAsSVG' =>				true
+		);
+		$args = wp_parse_args($args, $defaults);
+
+		// Gets options from block attributes
+		$block_id = $args['blockId'];
+		$layout_elements = $args['layoutElements'];
+		$media_sources = $args['mediaSources'];
+		$hide_file_name_main = $args['hideFileNameMain'];
+		$hide_file_caption_main = $args['hideFileCaptionMain'];
+		$hide_file_description_main = $args['hideFileDescriptionMain'];
+		$hide_file_name_thumbnails = $args['hideFileNameThumbnails'];
+		$hide_file_caption_thumbnails = $args['hideFileCaptionThumbnails'];
+		$hide_file_description_thumbnails = $args['hideFileDescriptionThumbnails'];
+		$hide_file_name_lightbox = $args['hideFileNameLightbox'];
+		$hide_file_caption_lightbox = $args['hideFileCaptionLightbox'];
+		$hide_file_description_lightbox = $args['hideFileDescriptionLightbox'];
+		$open_lightbox_on_click = $args['openLightboxOnClick'];
+		$show_download_button_main = $args['showDownloadButtonMain'];
+		$lightbox_has_light_background = $args['lightboxHasLightBackground'];
+		$show_arrows_as_svg = $args['showArrowsAsSVG'];
+
+		// Prefils arrays with proper values to avoid messsy IFs
+		$layout_elements = array(
+			'main' => (isset($layout_elements['main']) && ($layout_elements['main'] === true || $layout_elements['main'] == 'true')) ? true : false,
+			'thumbnails' => (isset($layout_elements['thumbnails']) && ($layout_elements['thumbnails'] === true || $layout_elements['thumbnails'] == 'true')) ? true : false
+		);
+		
+		$block_custom_css = '';
+		
+		// Text color. First we check for custom preset colors, then actual values
+		$block_custom_css .= isset($args['textColor']) ? sprintf('--tainacan-media-metadata-color: var(--wp--preset--color--%s);', $args['textColor']) : '';
+		$block_custom_css .= isset($args['style']['color']['text']) ? sprintf('--tainacan-media-metadata-color: %s;', $args['style']['color']['text']) : '';
+		
+		// Background color. First we check for custom preset colors, then actual values
+		$block_custom_css .= isset($args['backgroundColor']) ? sprintf('--tainacan-media-background: var(--wp--preset--color--%s);', $args['backgroundColor']) : '';
+		$block_custom_css .= isset($args['style']['color']['background']) ? sprintf('--tainacan-media-background: %s;', $args['style']['color']['background']) : '';
+
+		// Link color, if enabled. Firts we check for custom preset colors, then actual values.
+		$block_custom_css .= isset($args['linkColor']) ? sprintf('--swiper-theme-color: var(--wp--preset--color--%s);', $args['linkColor']) : '';
+		if ( isset($args['style']['elements']['link']['color']['text']) ) {
+			$link_color = $args['style']['elements']['link']['color']['text'];
+			if ( strpos( $link_color, 'var:' ) !== false ) {
+				$link_color = str_replace('|', '--', $link_color);
+				$link_color = str_replace('var:', 'var(--wp--', $link_color) . ')';
+			}
+			$block_custom_css .= sprintf('--swiper-theme-color: %s;', $link_color);
+		}
+			
+		// Other values are obtained directly from the attributes
+		$block_custom_css .= (isset($args['arrowsSize']) && is_numeric($args['arrowsSize'])) ? sprintf('--swiper-navigation-size: %spx;', $args['arrowsSize']) : '';
+		$block_custom_css .= (isset($args['mainSliderHeight']) && is_numeric($args['mainSliderHeight'])) ? sprintf('--tainacan-media-main-carousel-height: %svh;', $args['mainSliderHeight']) : '';
+		$block_custom_css .= (isset($args['mainSliderWidth']) && is_numeric($args['mainSliderWidth'])) ? sprintf('--tainacan-media-main-carousel-width: %s%%;', $args['mainSliderWidth']) : '';
+		$block_custom_css .= (isset($args['thumbnailsCarouselWidth']) && is_numeric($args['thumbnailsCarouselWidth'])) ? sprintf('--tainacan-media-thumbs-carousel-width: %s%%;', $args['thumbnailsCarouselWidth']) : '';
+		$block_custom_css .= (isset($args['thumbnailsCarouselItemSize']) && is_numeric($args['thumbnailsCarouselItemSize'])) ? sprintf('--tainacan-media-thumbs-carousel-item-size: %spx;', $args['thumbnailsCarouselItemSize']) : '';
+
+		// Checks if we're inside a block, otherwise we have to build this manually.
+		if ( isset($args['isBlock']) && $args['isBlock'] ) {
+			$wrapper_attributes = get_block_wrapper_attributes(
+				array(
+					'style' => $block_custom_css,
+					'class' => 'tainacan-media-component'
+				)
+			);
+		}  else {
+			$wrapper_attributes = '';
+			if ( !empty($block_custom_css) )
+				$wrapper_attributes .= 'style="' . $block_custom_css . '" ';
+			
+			$wrapper_attributes .=	'class="tainacan-media-component"';
+		}
+
+		$placeholder_content = '';
+
+		if ($layout_elements['main'])
+			$placeholder_content .= '<div class="tainacan-gallery-main-placeholder wp-block-post-featured-image wp-block-post-featured-image"><div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div></div>';
+		
+		if ($layout_elements['thumbnails'])
+			$placeholder_content .= '<ul class="tainacan-gallery-thumbnails-placeholder">
+				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
+				</li>
+				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
+				</li>
+				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
+				</li>
+				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
+				</li>
+				<li class="wp-block-post-featured-image wp-block-post-featured-image">
+					<div class="wp-block-post-featured-image__placeholder"><svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" preserveAspectRatio="none" class="components-placeholder__illustration" aria-hidden="true" focusable="false"><path vector-effect="non-scaling-stroke" d="M60 60 0 0"></path></svg></div>
+				</li>
+			</ul>';
+
+		return '<div ' . $wrapper_attributes . '>' . $placeholder_content . '</div>';
+	}
+}

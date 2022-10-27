@@ -1,0 +1,82 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/item-metadata-sections",
+    "title": "Tainacan Item Metadata Sections",
+    "apiVersion": 2,
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "metadata", "sections", "regions", "fields" ],
+    "description": "The metadata sections, including their labels and metadata whitin it.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "query",
+            "selector": "div"
+        },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
+        },
+        "isDynamic": {
+            "type": "boolean",
+            "default": false
+        },
+        "collectionId": {
+            "type": "integer"
+        },
+        "itemId": {
+            "type": "integer"
+        },
+        "isModalOpen": {
+            "type": "boolean",
+            "default": false
+        },
+        "isLoading": {
+            "type": "boolean",
+            "default": false
+        },
+        "metadataSectionsRequestSource": {
+            "type": "object",
+            "default": ""
+        },
+        "metadataSections": {
+            "type": "array",
+            "default": []
+        },
+        "metadataSectionsTemplate": {
+            "type": "array",
+            "default": []
+        },
+        "textAlign": {
+			"type": "string"
+        }
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true,
+        "html": true,
+        "anchor": true,
+        "color": {
+            "text": true,
+            "background": true,
+            "gradients": true,
+            "link": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "spacing": true
+        }
+    },
+    "editorScript": "item-metadata-sections",
+	"editorStyle": "item-metadata-sections"
+}

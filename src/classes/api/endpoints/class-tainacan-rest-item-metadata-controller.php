@@ -70,7 +70,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				)
 			)
 		);
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)/metadatasection/(?P<metadata_section_id>[\d|default_section]+)',
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)/metadata-sections/(?P<metadata_section_id>[\d|default_section]+)',
 		array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,

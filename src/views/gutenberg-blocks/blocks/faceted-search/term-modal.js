@@ -3,6 +3,7 @@ import tainacan from '../../js/axios.js';
 const { __ } = wp.i18n;
 
 const { TextControl, Button, Modal, SelectControl, RadioControl, Spinner } = wp.components;
+const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
 export default class TermModal extends React.Component {
     constructor(props) {
@@ -268,7 +269,7 @@ export default class TermModal extends React.Component {
         return this.state.taxonomyId != null && this.state.taxonomyId != undefined ? (
             // Terms modal
             <Modal
-                    className="wp-block-tainacan-modal"
+                    className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
                     title={__('Select the desired terms from taxonomy ' + this.state.taxonomyName, 'tainacan')}
                     onRequestClose={ () => this.cancelSelection() }
                     contentLabel={__('Select terms', 'tainacan')}>
@@ -386,7 +387,7 @@ export default class TermModal extends React.Component {
     ) : (
         // Taxonomies modal
         <Modal
-                className="wp-block-tainacan-modal"
+                className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
                 title={__('Select a taxonomy to fetch terms from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select terms', 'tainacan')}>

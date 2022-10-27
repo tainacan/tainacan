@@ -599,7 +599,7 @@ class Item extends Entity {
 			// A metadatum ID was passed
 			} elseif ( is_int($metadatum) ) {
 				$metadatum_object = $Tainacan_Metadata->fetch($metadatum);
-			
+				
 			// A metadatum slug was passed
 			} elseif ( is_string($metadatum) ) {
 				$query = $Tainacan_Metadata->fetch(['slug' => $metadatum], 'OBJECT');
@@ -667,7 +667,7 @@ class Item extends Entity {
 			// Get the item metadata objects from the item repository
 			$item_metadata = $this->get_metadata($query_args);
 		}
-
+		
 		// Loop item metadata to print their "values" as html
 		$metadatum_index = 0;
 		foreach ( $item_metadata as $item_metadatum ) {
@@ -1017,7 +1017,7 @@ class Item extends Entity {
 			'hide_description' 				=> true,
 			'hide_empty' 					=> true,
 			'empty_metadata_list_message' 	=> '',
-			'before' 						=> '<section class="metadata-section-slug-$slug" id="$id">',
+			'before' 						=> '<section class="metadata-section-slug-$slug" id="metadata-section-$id">',
 			'after' 						=> '</section>',
 			'before_name' 					=> '<h2 id="metadata-section-$slug">',
 			'after_name' 					=> '</h2>',
@@ -1039,8 +1039,12 @@ class Item extends Entity {
 				$metadata_section_object = $metadata_section;
 
 			// A metadata section ID was passed
-			} elseif ( is_int($metadata_section) ) {
+			} elseif ( is_numeric($metadata_section) ) {
 				$metadata_section_object = $Tainacan_Metadata_Sections->fetch($metadata_section);
+
+			// The default metadata section was passed
+			} elseif ( $metadata_section == \Tainacan\Entities\Metadata_Section::$default_section_slug ) {
+				$metadata_section_object = $Tainacan_Metadata_Sections->get_default_section($this->get_collection_id());
 
 			// A metadata section slug was passed
 			} elseif ( is_string($metadata_section) ) {
@@ -1170,7 +1174,7 @@ class Item extends Entity {
 			'hide_description' 				=> true,
 			'hide_empty' 					=> true,
 			'empty_metadata_list_message' 	=> '',
-			'before' 						=> '<section class="metadata-section-slug-$slug" id="$id">',
+			'before' 						=> '<section class="metadata-section-slug-$slug" id="metadata-section-$id">',
 			'after' 						=> '</section>',
 			'before_name' 					=> '<h2 id="metadata-section-$slug">',
 			'after_name' 					=> '</h2>',

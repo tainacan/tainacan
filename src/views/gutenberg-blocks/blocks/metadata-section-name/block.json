@@ -1,0 +1,65 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/metadata-section-name",
+    "title": "Tainacan Metadata Section Name",
+    "apiVersion": 2,
+    "category": "tainacan-blocks",
+    "keywords": ["metadata", "name", "field", "section"],
+    "description": "A metadata section label, used to identify different metadata sections.",
+    "textdomain": "tainacan",
+    "parent": [ "tainacan/item-metadata-section" ],
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "query",
+            "selector": "div"
+        },
+        "sectionId": {
+            "type": "string",
+            "default": ""
+        },
+        "sectionName": {
+            "type": "string",
+            "default": ""
+        },
+        "labelLevel": {
+			"type": "number",
+			"default": 2
+		},
+        "textAlign": {
+			"type": "string"
+        }
+    },
+    "usesContext": [
+        "tainacan/metadataSectionId",
+        "tainacan/metadataSectionName"
+    ],
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true,
+        "html": true,
+        "anchor": true,
+        "color": {
+            "text": true,
+            "background": true,
+            "gradients": true,
+            "link": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "spacing": true
+        }
+    },
+    "editorScript": "metadata-section-name",
+	"editorStyle": "metadata-section-name"
+}

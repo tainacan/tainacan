@@ -4,6 +4,7 @@ import axios from 'axios';
 const { __ } = wp.i18n;
 
 const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
+const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
 export default class ParentTermModal extends React.Component {
     constructor(props) {
@@ -163,7 +164,7 @@ export default class ParentTermModal extends React.Component {
         
         // Facets modal
         <Modal
-                className="wp-block-tainacan-modal"
+                className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
                 title={__('Select a parent term to fetch facets from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select term', 'tainacan')}>
