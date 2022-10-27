@@ -5,7 +5,7 @@
     "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "item", "metadata", "sections", "regions", "fields" ],
-    "description": "The metadata section, including its label and metadata whitin it.",
+    "description": "The metadata sections, including their labels and metadata whitin it.",
     "textdomain": "tainacan",
     "example": {
         "attributes": {

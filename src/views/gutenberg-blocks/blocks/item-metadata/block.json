@@ -5,7 +5,7 @@
     "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "item", "metadata", "fields", "values" ],
-    "description": "The item metadata, including a label and its value.",
+    "description": "The item metadata, including their labels and values.",
     "textdomain": "tainacan",
     "example": {
         "attributes": {
