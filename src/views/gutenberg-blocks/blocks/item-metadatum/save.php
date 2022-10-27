@@ -16,6 +16,7 @@ function tainacan_blocks_render_item_metadatum( $block_attributes, $content, $bl
 	if ( !$metadatum_id )
 		return '';
 	
+	// Builds args from backend query
 	$args = array(
 		'metadata' => $metadatum_id,
 		'before_title' => '<h3 class="wp-block-tainacan-item-metadatum__metadatum-label">',

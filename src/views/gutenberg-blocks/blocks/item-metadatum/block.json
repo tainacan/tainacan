@@ -49,7 +49,7 @@
 		},
         "textAlign": {
 			"type": "string"
-		}
+        }
     },
     "usesContext": [
         "tainacan/itemId"

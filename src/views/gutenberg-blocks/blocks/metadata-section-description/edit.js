@@ -8,16 +8,14 @@ export default function ({ attributes, setAttributes, className, context }) {
         content, 
         sectionId,
         sectionDescription,
-        textAlign,
-        style
+        textAlign
     } = attributes;
 
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps( {
 		className: {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
-		},
-		style,
+		}
 	} );
 
     if (context['tainacan/metadataSectionId'])

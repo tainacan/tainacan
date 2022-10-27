@@ -3,7 +3,7 @@ const { __ } = wp.i18n;
 const { Button, Spinner, Placeholder, ToggleControl, PanelBody } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
-const { useBlockProps, InnerBlocks, InspectorControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { useBlockProps, InnerBlocks, BlockControls, AlignmentControl, InspectorControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
@@ -22,11 +22,16 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         metadataSections,
         metadataSectionsTemplate,
         templateMode,
-        isDynamic
+        isDynamic,
+        textAlign
     } = attributes;
 
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps( {
+        className: {
+            [ `has-text-align-${ textAlign }` ]: textAlign,
+        }
+    } );
     const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
     function setContent() {
@@ -138,6 +143,15 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                     />
                 </PanelBody>
             </InspectorControls>
+
+            <BlockControls group="block">
+                <AlignmentControl
+                        value={ textAlign }
+                        onChange={ ( nextAlign ) => {
+                            setAttributes( { textAlign: nextAlign } );
+                        } }
+                    />
+            </BlockControls>
 
             { isSelected ? 
                 ( 

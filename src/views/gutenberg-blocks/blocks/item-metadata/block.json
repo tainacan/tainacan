@@ -63,6 +63,9 @@
         "sectionId": {
             "type": "string",
             "default": ""
+        },
+        "textAlign": {
+			"type": "string"
         }
     },
     "providesContext": {

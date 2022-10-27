@@ -29,16 +29,14 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         dataSource,
         templateMode,
         labelLevel,
-        textAlign,
-        style
+        textAlign
     } = attributes;
     
     // Gets blocks props from hook
     const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps( {
 		className: {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
-		},
-		style,
+		}
 	} );
     const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 

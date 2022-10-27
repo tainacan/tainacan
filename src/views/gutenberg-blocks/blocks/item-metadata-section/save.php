@@ -21,6 +21,16 @@ function tainacan_blocks_render_metadata_section( $block_attributes, $content, $
             'metadata_section' => $section_id
         ];
 
+        // Classes from block and Text alignment
+        $text_align = isset($block_attributes['textAlign']) ? $block_attributes['textAlign'] : false;
+        $wrapper_attributes = get_block_wrapper_attributes(
+            array(
+                'class' => 'metadata-section-slug-$slug' . ( $text_align ? (' has-text-align-' . $text_align) : '' ),
+            )
+        );
+        $args['before'] = '<section id="metadata-section-$id ' . $wrapper_attributes . '>';
+        $args['after'] = '</section>';
+
         if ( $template_mode && $collection_id ) {
             // Checks if we are in the edit page or in the published
             $current_post = get_post();
@@ -37,11 +47,20 @@ function tainacan_blocks_render_metadata_section( $block_attributes, $content, $
 
     } else {
 
+        // Classes from block and Text alignment
+        $text_align = isset($block_attributes['textAlign']) ? $block_attributes['textAlign'] : false;
+        $wrapper_attributes = get_block_wrapper_attributes(
+            array(
+                'class' => ( $text_align ? (' has-text-align-' . $text_align) : '' ),
+            )
+        );
+
+        // Gets inner blocks and wraps them with this parent wrapper
         $inner_blocks = $block->inner_blocks;
         $inner_blocks_html = '';
         foreach ( $inner_blocks as $inner_block ) {
             $inner_blocks_html .= $inner_block->render();
         }
-        return $inner_blocks_html;
+        return '<div ' . $wrapper_attributes . '>' . $inner_blocks_html . '</div>';
     }
 }

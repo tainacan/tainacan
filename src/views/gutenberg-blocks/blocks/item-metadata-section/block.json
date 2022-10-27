@@ -65,6 +65,9 @@
         "sectionMetadata": {
             "type": "array",
             "default": []
+        },
+        "textAlign": {
+			"type": "string"
         }
     },
     "providesContext": {

@@ -33,7 +33,7 @@
 		},
         "textAlign": {
 			"type": "string"
-		}
+        }
     },
     "usesContext": [
         "tainacan/metadataSectionId",
