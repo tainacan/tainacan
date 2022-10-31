@@ -1262,6 +1262,7 @@ class Theme_Helper {
 		
 		// Gets the current Item. This way, the function can be used in the loop without needing to pass it
 		$item = isset($args['itemId']) ? $this->tainacan_get_item($args['itemId']) : $this->tainacan_get_item();
+		$item_id = $item->get_id();
 		if (!$item)
 			return;
 

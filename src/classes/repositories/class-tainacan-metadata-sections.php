@@ -136,9 +136,9 @@ class Metadata_Sections extends Repository {
 	 * @return \Tainacan\Entities\Metadata_Section|false return de the default metadata section or false otherwise.
 	 */
 	public function get_default_section ($collection) {
-		if($collection instanceof Entities\Collection) {
+		if ($collection instanceof Entities\Collection) {
 			$collection_id = $collection->get_id();
-		} else if (is_int($collection)) {
+		} else if (is_numeric($collection)) {
 			$collection_id = $collection;
 			$collection = \tainacan_collections()->fetch($collection, 'OBJECT');
 		} else {

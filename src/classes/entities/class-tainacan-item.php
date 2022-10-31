@@ -1033,7 +1033,7 @@ class Item extends Entity {
 			
 			$metadata_section = $args['metadata_section'];
 			$metadata_section_object = null;
-
+			
 			// A metadata section object was passed
 			if ( $metadata_section instanceof \Tainacan\Entities\Metadata_Section ) {
 				$metadata_section_object = $metadata_section;
@@ -1045,7 +1045,7 @@ class Item extends Entity {
 			// The default metadata section was passed
 			} elseif ( $metadata_section == \Tainacan\Entities\Metadata_Section::$default_section_slug ) {
 				$metadata_section_object = $Tainacan_Metadata_Sections->get_default_section($this->get_collection_id());
-
+	
 			// A metadata section slug was passed
 			} elseif ( is_string($metadata_section) ) {
 				$query = $Tainacan_Metadata_Sections->fetch(['slug' => $metadata_section], 'OBJECT');

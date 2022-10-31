@@ -70,7 +70,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                     .then(response => {
 
                         let metadataSection = response.data ? response.data : [];
-
+                        
                         getMetadataSectionTemplates({
                             sectionId: String(metadataSection.id),
                             sectionName: metadataSection.name,
@@ -113,12 +113,13 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                 'tainacan/metadata-section-description',
             ]);
         }
+
         if (sectionMetadata.length) {
             metadataSectionTemplate.push([
                 'tainacan/item-metadata',
                 {
                     sectionId: String(sectionId),
-                    itemId: isDynamic ? Number(itemId) : 0,
+                    itemId: isNaN(itemId) ? 0 : Number(itemId),
                     collectionId: Number(collectionId),
                     metadata: sectionMetadata,
                     dataSource: 'parent',

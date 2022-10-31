@@ -15,7 +15,7 @@ function tainacan_blocks_render_metadata_section( $block_attributes, $content, $
         $collection_id = isset($block_attributes['collectionId']) ? $block_attributes['collectionId'] : false;
         $section_id = isset($block_attributes['sectionId']) ? $block_attributes['sectionId'] : false;
         $template_mode = isset($block_attributes['templateMode']) ? $block_attributes['templateMode'] : false;
-        
+  
         // Builds args from backend query
         $args = [
             'metadata_section' => $section_id
