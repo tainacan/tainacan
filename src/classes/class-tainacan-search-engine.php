@@ -192,7 +192,7 @@ class Search_Engine {
 				WHERE
 					( $searchMetaQuery )
 			) AS metas ON $wpdb->posts.ID = metas.post_id
-			EOF;
+EOF;
 		}
 		return $join;
 	}
