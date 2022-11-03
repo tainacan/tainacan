@@ -47,8 +47,6 @@ class Search_Engine {
 
 		//add_filter( 'posts_where', array( &$this, 'search_attachments' ) );
 
-		add_filter( 'posts_join', array( &$this, 'search_authors_join' ) );
-		
 		add_filter( 'posts_search', array( &$this, 'search_where' ), 10, 2 );
 
 		add_filter( 'posts_request', array( &$this, 'distinct' ) );
@@ -58,7 +56,6 @@ class Search_Engine {
 
 	// creates the list of search keywords from the 's' parameters.
 	function get_search_terms() {
-		global $wpdb;
 		$s = isset( $this->query_instance->query_vars['s'] ) ? $this->query_instance->query_vars['s'] : '';
 		$sentence = isset( $this->query_instance->query_vars['sentence'] ) ? $this->query_instance->query_vars['sentence'] : false;
 		$search_terms = array();
@@ -136,27 +133,8 @@ class Search_Engine {
 		if ( !$this->is_tainacan_search && !$this->ajax_request)
 			return $where;
 
-		global $wpdb;
-
-		$search_query_fields = array();
-		$search_query_fields = array_merge($search_query_fields, $this->search_default());
-		$search_query_fields = array_merge($search_query_fields, $this->build_search_categories());
-		$search_query_fields = array_merge($search_query_fields, $this->build_search_metadata());
-		$search_query_fields = array_merge($search_query_fields, $this->build_search_relationships());
-		$search_query_fields = array_merge($search_query_fields, $this->search_authors());
-
-		$searchQuery = '(';
-		$seperator = '';
-		$not_exact = empty($this->query_instance->query_vars['exact']);
-		$terms = $this->get_search_terms();
-		$fields = implode(", ", $search_query_fields);
-		foreach ( $terms as $term ) {
-			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
-			$searchQuery .= "{$seperator}CONCAT_WS(' || ', $fields ) LIKE $esc_term";
-			$seperator = ' OR ';
-		}
-		$searchQuery .= ')';
-
+		$searchQuery = $this->build_search_terms_query();
+		$searchQuery = "($searchQuery) OR (tax_terms.contains = TRUE) OR (metas.contains = TRUE) ";
 
 		if ( $searchQuery != '' && $searchQuery != '()' ) {
 			// lets use _OUR_ query instead of WP's, as we have posts already included in our query as well(assuming it's not empty which we check for)
@@ -165,18 +143,8 @@ class Search_Engine {
 		return $where;
 	}
 
-	// search for terms in default locations like title and content
-	// replacing the old search terms seems to be the best way to
-	// avoid issue with multiple terms
-	function search_default() {
-		global $wpdb;
-		return ["$wpdb->posts.post_title", "$wpdb->posts.post_content"];
-	}
-
-
 	//Duplicate fix provided by Tiago.Pocinho
 	function distinct( $query ) {
-		global $wpdb;
 		if ( !empty( $this->query_instance->query_vars['s'] ) ) {
 			if ( strstr( $query, 'DISTINCT' ) ) {}
 			else {
@@ -204,49 +172,6 @@ class Search_Engine {
 		return $where;
 	}
 
-	// Build the author search
-	function search_authors() {
-		return ["u.display_name"];
-	}
-	
-	function build_search_relationships(){
-		
-		if ( empty( $this->relationships ) ) {
-			return [];
-		}
-		return ['p2.post_title'];
-	}
-
-	// create the search meta data query
-	function build_search_metadata() {
-		return ["m.meta_value"];
-	}
-
-	// create the search categories query
-	function build_search_categories() {
-		if (empty($this->taxonomies)) {
-			return [];
-		}
-		return ["tter.name", "ttax.description"];
-	}
-
-
-	//join for searching authors
-
-	function search_authors_join( $join ) {
-		
-		if ($this->is_inner_query) {
-			return $join;
-		}
-		
-		global $wpdb;
-
-		if ( $this->is_tainacan_search ) {
-			$join .= " LEFT JOIN $wpdb->users AS u ON ($wpdb->posts.post_author = u.ID) ";
-		}
-		return $join;
-	}
-
 	//join for searching metadata
 	function search_metadata_join( $join ) {
 		
@@ -255,9 +180,19 @@ class Search_Engine {
 		}
 		
 		global $wpdb;
-
 		if ( $this->is_tainacan_search ) {
-			$join .= " LEFT JOIN $wpdb->postmeta AS m ON ($wpdb->posts.ID = m.post_id) ";
+			$searchMetaQuery = $this->build_search_terms_query('meta_terms');
+			$join .= <<<EOF
+			LEFT JOIN
+			(
+				SELECT
+					m.post_id, true as contains
+				FROM 
+					$wpdb->postmeta m
+				WHERE
+					( $searchMetaQuery )
+			) AS metas ON $wpdb->posts.ID = metas.post_id
+			EOF;
 		}
 		return $join;
 	}
@@ -279,7 +214,7 @@ class Search_Engine {
 		return $join;
 	}
 
-	//join for searching tags
+	//join for searching taxonomies terms
 	function terms_join( $join ) {
 		
 		if ($this->is_inner_query) {
@@ -287,17 +222,56 @@ class Search_Engine {
 		}
 		
 		global $wpdb;
-
+		$searchTaxQuery = $this->build_search_terms_query('tax_terms');
 		if ( $this->is_tainacan_search && !empty( $this->taxonomies ) ) {
-
-			foreach ( $this->taxonomies as $taxonomy ) {
-				$on[] = "ttax.taxonomy = '" . addslashes( $taxonomy )."'";
-			}
-			// build our final string
-			$on = ' ( ' . implode( ' OR ', $on ) . ' ) ';
-			$join .= " LEFT JOIN $wpdb->term_relationships AS trel ON ($wpdb->posts.ID = trel.object_id) LEFT JOIN $wpdb->term_taxonomy AS ttax ON ( " . $on . " AND trel.term_taxonomy_id = ttax.term_taxonomy_id) LEFT JOIN $wpdb->terms AS tter ON (ttax.term_id = tter.term_id) ";
+			$tax_where = ' ttax.taxonomy IN ( \'' . implode( '\',\'', $this->taxonomies ) . '\' ) ';
+			$join .= <<<EOF
+				LEFT JOIN (
+					SELECT DISTINCT
+						trel.object_id as post_id,
+						true as contains
+					FROM
+						$wpdb->term_relationships AS trel
+						INNER JOIN $wpdb->term_taxonomy AS ttax ON trel.term_taxonomy_id = ttax.term_taxonomy_id
+						INNER JOIN $wpdb->terms AS tter ON ttax.term_id = tter.term_id
+					WHERE
+						$tax_where AND ( $searchTaxQuery )
+				) tax_terms ON $wpdb->posts.ID = tax_terms.post_id 
+			EOF;
 		}
 		return $join;
+	}
+
+	private function build_search_terms_query ($type = 'default') {
+		global $wpdb;
+		$searchQuery = '(';
+		$seperator = '';
+		$not_exact = empty($this->query_instance->query_vars['exact']);
+		$terms = $this->get_search_terms();
+		foreach ( $terms as $term ) {
+			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
+			switch ($type) {
+				case 'tax_terms':
+					$searchQuery .= "{$seperator}(tter.name LIKE {$esc_term})";
+					break;
+				case 'meta_terms':
+					$searchQuery .= "{$seperator}(m.meta_value LIKE {$esc_term})";
+					break;
+				case 'relationship_terms':
+					
+					break;
+				default:
+					if ( !empty( $this->relationships ) ) {
+						$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term} OR p2->posts.post_title LIKE {$esc_term} OR p2.post_content LIKE {$esc_term})";
+					} else {
+						$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term})";
+					}
+					break;
+			}
+			$seperator = ' AND ';
+		}
+		$searchQuery .= ')';
+		return $searchQuery;
 	}
 
 
