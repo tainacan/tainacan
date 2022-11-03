@@ -237,7 +237,7 @@ class Search_Engine {
 					WHERE
 						$tax_where AND ( $searchTaxQuery )
 				) tax_terms ON $wpdb->posts.ID = tax_terms.post_id 
-			EOF;
+EOF;
 		}
 		return $join;
 	}
@@ -257,9 +257,6 @@ class Search_Engine {
 				case 'meta_terms':
 					$searchQuery .= "{$seperator}(m.meta_value LIKE {$esc_term})";
 					break;
-				case 'relationship_terms':
-					
-					break;
 				default:
 					if ( !empty( $this->relationships ) ) {
 						$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term} OR p2->posts.post_title LIKE {$esc_term} OR p2.post_content LIKE {$esc_term})";
@@ -273,6 +270,5 @@ class Search_Engine {
 		$searchQuery .= ')';
 		return $searchQuery;
 	}
+}
 
-
-} // END
