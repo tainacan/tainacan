@@ -418,7 +418,7 @@
 
                                                 <template v-for="(itemMetadatum, index) of metadatumList">
                                                     <tainacan-form-item
-                                                            v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
+                                                            v-if="Array.isArray(itemMetadatum.metadatum.metadata_section_id) ? itemMetadatum.metadatum.metadata_section_id.indexOf(metadata_section_id) : itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
                                                             :key="index"
                                                             :id="'metadatum-index--' + index"
                                                             v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
