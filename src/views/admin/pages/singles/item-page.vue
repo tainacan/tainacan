@@ -104,7 +104,9 @@
                                         </div>
                                         <template v-if="metadatumList && Array.isArray(metadatumList)">
                                             <div
-                                                    v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)"
+                                                    v-for="(itemMetadatum, index) of metadatumList.filter(
+                                                        anItemMetadatum => Array.isArray(anItemMetadatum.metadatum.metadata_section_id) ? anItemMetadatum.metadatum.metadata_section_id.indexOf(metadataSection.id) : anItemMetadatum.metadatum.metadata_section_id == metadataSection.id
+                                                    )"
                                                     :key="index"
                                                     class="field">
                                                 <label class="label">{{ itemMetadatum.metadatum.name }}</label>
