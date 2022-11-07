@@ -86,7 +86,7 @@ export default class ItemsModal extends React.Component {
 
         let anItemsRequestSource = axios.CancelToken.source();
 
-        let endpoint = '/collection/' + this.state.collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&fetch_only=title,url,thumbnail';
+        let endpoint = '/collection/' + this.state.collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&orderby=post__in&fetch_only=title,url,thumbnail';
         
         tainacan.get(endpoint, { cancelToken: anItemsRequestSource.token })
             .then(response => {

@@ -373,7 +373,7 @@ export default {
     
                 this.localMaxItemsNumber = this.selectedItems.length;
                 
-                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&fetch_only=title,url,thumbnail';
+                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&orderby=post__in&fetch_only=title,url,thumbnail';
 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {
