@@ -18,7 +18,7 @@
                 
                 <span
                         style="margin-left: 10px"
-                        v-if="totalPages > 1 && allItemsOnPageSelected && items.length > 1">
+                        v-if="totalPages > 1 && allItemsOnPageSelected && Array.isArray(items) && items.length > 1">
                     <b-checkbox
                             v-model="isAllItemsSelected">
                         {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
@@ -56,7 +56,7 @@
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
-                        v-if="items.length > 0"
+                        v-if="Array.isArray(items) && items.length > 0"
                         :disabled="selectedItems.length <= 1"
                         id="bulk-actions-dropdown"
                         aria-role="list"
@@ -1405,9 +1405,11 @@ export default {
             return this.selectedItems.length > 0;
         },
         allItemsOnPageSelected() {
-            for (var i = 0; i < this.items.length; i++){
-                if (this.selectedItems.indexOf(this.items[i].id) === -1)
-                    return false;
+            if ( this.items && Array.isArray(this.items) ) {
+                for (let i = 0; i < this.items.length; i++){
+                    if (this.selectedItems.indexOf(this.items[i].id) === -1)
+                        return false;
+                }
             }
             return true;
         },
