@@ -361,7 +361,7 @@ class REST_Items_Controller extends REST_Controller {
 		}
 
 		$args = $this->prepare_filters($request);
-
+		
 		// fixed args
 		$args['post_parent'] = $item_id;
 		$args['post_type'] = 'attachment';
@@ -410,6 +410,15 @@ class REST_Items_Controller extends REST_Controller {
 		return $rest_response;
 	}
 
+	/**
+	 * @param $request
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	protected function prepare_filters($request) {
+		return parent::prepare_filters($request);
+	}
 
 	/**
 	 * @param array $args — array of query arguments.

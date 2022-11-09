@@ -51,6 +51,61 @@ add_filter( 'image_size_names_choose', function ( $sizes ) {
 
 add_action('init', ['Tainacan\Migrations', 'run_migrations']);
 
+// _TODO_ Try to move this to the prepare_filters inside class-tainacan-rest-items-controller.php 
+// Won't work now because the prepare_meta() inside the class-tainacan-rest-controller cannot deal inner metaqueries	
+// Checks if we have an option set to add core title and description to the repository-level advanced search
+if ( defined('TAINACAN_ENABLE_CORE_METADATA_ON_ADVANCED_SEARCH') && true === TAINACAN_ENABLE_CORE_METADATA_ON_ADVANCED_SEARCH ) {
+	function tainacan_enable_core_metadata_on_advanced_search($query) {
+		// Check if there is a meta_query set
+		$is_repository_level = $query->get('query');//!isset($request['collection_id']) || ( $request['collection_id'] === 'default' ) ? true : false;
+		$meta_query = $query->get('query');//isset( $request['metaquery'] ) ? $request['metaquery'] : [];
+
+		if ( $is_repository_level && $meta_query && !empty($meta_query) && is_array($meta_query) ) {
+			
+			$tainacan_core_title_meta_query = [];
+			foreach( $meta_query as $meta_query_unit ) {
+				
+				// Finds a special key value, that should represent all core title
+				if ( isset($meta_query_unit['key']) && $meta_query_unit['key'] === 'tainacan_core_title' ) {
+
+					// Gets every collection to build the OR query
+					$collections = $this->collections_repository->fetch([], 'OBJECT');
+					foreach ($collections as $collection) {
+						$title_meta = $collection->get_core_title_metadatum();
+
+						// Builds inner meta_queries for each collection, using the same settings of the special one
+						$tainacan_core_title_meta_query[] = array(
+							'key' => $title_meta->get_id(),
+							'compare' => $meta_query_unit['compare'],
+							'value' => $meta_query_unit['value']
+						);
+					}
+				}
+			}
+
+			// May be done in the previous loop, doing here for safety
+			foreach( $meta_query as $meta_query_unit_key => $meta_query_unit) {
+
+				// After building the custom meta query, we don't need the special one anymore
+				if ( isset($meta_query_unit['key']) && $meta_query_unit['key'] === 'tainacan_core_title' )
+					unset($meta_query[$meta_query_unit_key]);
+			}
+
+			// If we build a custom meta_query, lets add it to the real one
+			if ( count($tainacan_core_title_meta_query) ) {
+
+				// Internally, the meta_query relation is OR, outside of this group is AND per default
+				$tainacan_core_title_meta_query['relation'] = 'OR';
+				$meta_query[] = $tainacan_core_title_meta_query;
+
+				//$request['metaquery'] = $meta_query;
+				$query->set('meta_query') = $meta_query;
+			}
+		}
+	}
+	add_action( 'pre_get_post', 'tainacan_enable_core_metadata_on_advanced_search' );
+}
+
 //https://core.trac.wordpress.org/ticket/23022
 //https://core.trac.wordpress.org/ticket/23022#comment:13
 add_filter( 'wp_untrash_post_status', function( $new_status, $post_id, $previous_status ) {
