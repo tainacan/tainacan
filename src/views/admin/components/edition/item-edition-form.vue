@@ -262,11 +262,11 @@
 
                                         <!-- Metadata navigation Progress -->
                                         <div
-                                                v-if="isMetadataNavigation && metadatumList && metadatumList.length > 3"
+                                                v-if="isMetadataNavigation && itemMetadata && itemMetadata.length > 3"
                                                 class="sequence-progress-background" />
                                         <div
-                                                v-if="isMetadataNavigation && focusedMetadatum !== false && metadatumList && metadatumList.length > 3"
-                                                :style="{ width: ((focusedMetadatum + 1)/metadatumList.length)*100 + '%' }"
+                                                v-if="isMetadataNavigation && focusedMetadatum !== false && itemMetadata && itemMetadata.length > 3"
+                                                :style="{ width: ((focusedMetadatum + 1)/itemMetadata.length)*100 + '%' }"
                                                 class="sequence-progress" />
 
                                         <a
@@ -283,7 +283,7 @@
                                         </a>
 
                                         <b-field 
-                                                v-if="metadatumList && metadatumList.length > 3"
+                                                v-if="itemMetadata && itemMetadata.length > 3"
                                                 class="header-item metadata-navigation"
                                                 :style="$adminOptions.hideItemEditionCollapses ? 'padding-left: 0.35em !important;' : ''">
                                             <b-button
@@ -310,7 +310,7 @@
                                             </b-button>
                                             <b-button 
                                                     v-if="isMetadataNavigation"
-                                                    :disabled="(focusedMetadatum === metadatumList.length - 1) && (!isCurrentlyFocusedOnCompoundMetadatum || isOnLastMetadatumOfCompoundNavigation)"
+                                                    :disabled="(focusedMetadatum === itemMetadata.length - 1) && (!isCurrentlyFocusedOnCompoundMetadatum || isOnLastMetadatumOfCompoundNavigation)"
                                                     @click="focusNextMetadatum"
                                                     outlined>
                                                 <span
@@ -340,7 +340,7 @@
                                         </span>
 
                                         <b-switch
-                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && metadatumList && metadatumList.length > 3"
+                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && itemMetadata && itemMetadata.length > 3"
                                                 id="tainacan-switch-required-metadata"
                                                 :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
                                                 size="is-small"
@@ -349,7 +349,7 @@
                                         </b-switch>
 
                                         <b-field 
-                                                v-if="!isMetadataNavigation && metadatumList && metadatumList.length > 5"
+                                                v-if="!isMetadataNavigation && itemMetadata && itemMetadata.length > 5"
                                                 class="header-item metadata-name-search">
                                             <b-input
                                                     v-if="!isMobileScreen || openMetadataNameFilter"
@@ -416,9 +416,9 @@
                                                     {{ metadataSection.description }}
                                                 </p>
 
-                                                <template v-for="(itemMetadatum, index) of metadatumList">
+                                                <template v-for="(itemMetadatum, index) of itemMetadata">
                                                     <tainacan-form-item
-                                                            v-if="Array.isArray(itemMetadatum.metadatum.metadata_section_id) ? itemMetadatum.metadatum.metadata_section_id.indexOf(metadata_section_id) : itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
+                                                            v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
                                                             :key="index"
                                                             :id="'metadatum-index--' + index"
                                                             v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
@@ -429,7 +429,7 @@
                                                             :is-collapsed="metadataCollapses[index]"
                                                             :hide-collapses="$adminOptions.hideItemEditionCollapses || isMetadataNavigation"
                                                             :is-mobile-screen="isMobileScreen"
-                                                            :is-last-metadatum="index > 2 && (index == metadatumList.length - 1)"
+                                                            :is-last-metadatum="index > 2 && (index == itemMetadata.length - 1)"
                                                             :is-focused="focusedMetadatum === index"
                                                             :is-metadata-navigation="isMetadataNavigation"
                                                             @changeCollapse="onChangeCollapse($event, index)"
@@ -807,8 +807,29 @@ export default {
         collection() {
             return this.getCollection()
         },
-        metadatumList() {
-            return JSON.parse(JSON.stringify(this.getItemMetadata()));
+        itemMetadata() {
+            const realItemMetadata = JSON.parse(JSON.stringify(this.getItemMetadata()));
+            const tweakedItemMetadata = realItemMetadata.map((anItemMetadatum) => {
+
+                // We need this because repository level metadata have an array of section IDs
+                const metadatumSectionId = anItemMetadatum.metadatum.metadata_section_id;
+                if ( !Array.isArray(metadatumSectionId) )
+                    return anItemMetadatum;
+
+                anItemMetadatum.metadatum.metadata_section_id = 'default_section';
+
+                // To find which is the section of this metadatum, we look for an intersection of the existeing sections
+                // in this collection and the list of section ids in the repository metadata
+                const intersectionOfSections = this.metadataSections.filter(
+                    (aMetadataSection) => metadatumSectionId.includes("" + aMetadataSection.id) && aMetadataSection.id !== 'default_section'
+                ); 
+                if (intersectionOfSections.length === 1)
+                    anItemMetadatum.metadatum.metadata_section_id = intersectionOfSections[0].id;                          
+                    
+                return anItemMetadatum;
+               
+            });
+            return tweakedItemMetadata;
         },
         metadataSections() {
             return this.getMetadataSections();
@@ -839,7 +860,7 @@ export default {
                 slug: 'metadata',
                 icon: 'metadata',
                 name: this.$i18n.get('metadata'),
-                total: this.metadatumList.length
+                total: this.itemMetadata.length
             }];
             if ( this.$adminOptions.itemEditionDocumentInsideTabs && (!this.$adminOptions.hideItemEditionDocument || !this.$adminOptions.hideItemEditionThumbnail) ) {
                 pageTabs.push({
@@ -867,9 +888,9 @@ export default {
             return pageTabs;
         },
         isCurrentlyFocusedOnCompoundMetadatum() {
-            if (!this.isMetadataNavigation || !this.metadatumList[this.focusedMetadatum])
+            if (!this.isMetadataNavigation || !this.itemMetadata[this.focusedMetadatum])
                 return false;
-            return this.metadatumList[this.focusedMetadatum].metadatum && this.metadatumList[this.focusedMetadatum].metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
+            return this.itemMetadata[this.focusedMetadatum].metadatum && this.itemMetadata[this.focusedMetadatum].metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
         }
     },
     watch: {
@@ -1713,7 +1734,7 @@ export default {
             });
         }, 500),
         focusPreviousMetadatum() {
-            const previouslyFocusedMetadatum = this.metadatumList[this.focusedMetadatum - 1];
+            const previouslyFocusedMetadatum = this.itemMetadata[this.focusedMetadatum - 1];
             const isPreviouslyFocusedOnCompoundMetadatum = previouslyFocusedMetadatum.metadatum && previouslyFocusedMetadatum.metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
             
             if (isPreviouslyFocusedOnCompoundMetadatum || this.isCurrentlyFocusedOnCompoundMetadatum)
