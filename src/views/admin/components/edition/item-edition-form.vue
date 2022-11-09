@@ -1661,7 +1661,7 @@ export default {
                     this.loadMetadata();
                     this.setLastUpdated(this.item.modification_date);
 
-                    this.shouldLoadAttachments = true;
+                    this.shouldLoadAttachments = !this.shouldLoadAttachments;
 
                     // Initializes Media Frames now that itemId and item.document exists
                     this.initializeMediaFrames();
