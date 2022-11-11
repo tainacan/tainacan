@@ -60,7 +60,7 @@ class Search_Engine {
 			// added slashes screw with quote grouping when done early, so done later
 			$s = stripslashes( $s );
 			if ( $sentence ) {
-				$search_terms = array( $s );
+				$search_terms = array( trim($s, " '\"\n\r\t\v\0")  );
 			} else {
 				preg_match_all( '/".*?("|$)|((?<=[\\s",+])|^)[^\\s",+]+/', $s, $matches );
 
@@ -116,7 +116,7 @@ class Search_Engine {
 		}
 	}
 
-	private function build_search_terms_query ($type = 'default') {
+	function get_where_to_title_and_content() {
 		global $wpdb;
 		$searchQuery = '';
 		$seperator = '';
@@ -124,62 +124,68 @@ class Search_Engine {
 		$terms = $this->get_search_terms();
 		foreach ( $terms as $term ) {
 			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
-			switch ($type) {
-				case 'tax_terms':
-					$searchQuery .= "{$seperator}(tter.name LIKE {$esc_term})";
-					break;
-				case 'meta_terms':
-					if (defined('TAINACAN_SEARCH_ENGINE_USING_FULL_TEXT') && TAINACAN_SEARCH_ENGINE_USING_FULL_TEXT === true) {
-						$esc_term = $wpdb->prepare("%s", $not_exact ? "*".$term."*" : $term);
-						$searchQuery .= "{$seperator}(MATCH (m.meta_value) AGAINST ({$esc_term} IN BOOLEAN MODE))";
-					} else {
-						$searchQuery .= "{$seperator}(m.meta_value LIKE {$esc_term})";
-					}
-					break;
-				default:
-					if ( !empty( $this->relationships ) ) {
-						$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term} OR p2->posts.post_title LIKE {$esc_term} OR p2.post_content LIKE {$esc_term})";
-					} else {
-						$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term})";
-					}
-					break;
+			if ( !empty( $this->relationships ) ) {
+				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term} OR p2->posts.post_title LIKE {$esc_term} OR p2.post_content LIKE {$esc_term})";
+			} else {
+				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term})";
 			}
-			$seperator = ' OR ';
+			$seperator = ' AND ';
 		}
 		return empty($searchQuery) ? false : "($searchQuery)";
 	}
 
 	function get_where_to_term_taxonomies() {
-		global $wpdb;
-		$join = '';
-		$searchTaxQuery = $this->build_search_terms_query('tax_terms');
-		if ( $searchTaxQuery != false && $this->is_tainacan_search && !empty( $this->taxonomies ) ) {
+		if ( $this->is_tainacan_search && !empty( $this->taxonomies ) ) {
+			global $wpdb;
+			$search_tax_query = '';
+			$seperator = '';
+			$not_exact = empty($this->query_instance->query_vars['exact']);
+			$terms = $this->get_search_terms();
+			foreach ( $terms as $term ) {
+				$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
+				$search_tax_query .= "{$seperator}(tter.name LIKE {$esc_term})";
+				$seperator = ' AND ';
+			}
+			if (empty($search_tax_query)) return '';
+
 			$tax_where = ' ttax.taxonomy IN ( \'' . implode( '\',\'', $this->taxonomies ) . '\' ) ';
-			$join = "EXISTS (
+			return "EXISTS (
 				SELECT trel.object_id
 				FROM
 					$wpdb->term_relationships AS trel
 					INNER JOIN $wpdb->term_taxonomy AS ttax ON trel.term_taxonomy_id = ttax.term_taxonomy_id
 					INNER JOIN $wpdb->terms AS tter ON ttax.term_id = tter.term_id
 				WHERE
-					$wpdb->posts.ID = trel.object_id AND $tax_where AND ( $searchTaxQuery )
+					$wpdb->posts.ID = trel.object_id AND $tax_where AND ( $search_tax_query )
 			)";
 		}
-		return $join;
+		return '';
 	}
 
 	function get_where_to_metadatas() {
-		global $wpdb;
-		$join = "";
-		$searchMetaQuery = $this->build_search_terms_query('meta_terms');
-		if ( $searchMetaQuery != false && $this->is_tainacan_search ) {
-			$join .= "EXISTS (
+		if ( $this->is_tainacan_search ) {
+			global $wpdb;
+			$search_meta_query = '';
+			$seperator = '';
+			$not_exact = empty($this->query_instance->query_vars['exact']);
+			$terms = $this->get_search_terms();
+			foreach ( $terms as $term ) {
+				$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
+				$search_meta_query .= "{$seperator}(m.meta_value LIKE {$esc_term})";
+				$seperator = ' AND ';
+			}
+			if ( empty($search_meta_query) ) return '';
+
+			$join = \is_user_logged_in() 
+				? ''
+				: " INNER JOIN $wpdb->posts pmeta ON m.meta_key = pmeta.ID AND pmeta.post_status = 'publish'";
+			return "EXISTS (
 				SELECT m.post_id
-				FROM $wpdb->postmeta m
-				WHERE ( $wpdb->posts.ID = m.post_id AND $searchMetaQuery )
+				FROM $wpdb->postmeta m $join
+				WHERE ( $wpdb->posts.ID = m.post_id AND $search_meta_query )
 			)";
 		}
-		return $join;
+		return '';
 	}
 
 	// add where clause to the search query
@@ -195,16 +201,16 @@ class Search_Engine {
 		if ( !$this->is_tainacan_search && !$this->ajax_request)
 			return $where;
 
-		$searchQuery = $this->build_search_terms_query();
-		$searchTaxQuery = $this->get_where_to_term_taxonomies();
-		$searchMetaQuery = $this->get_where_to_metadatas();
-		$searchQuery = "($searchQuery) ";
-		if(!empty($searchTaxQuery)) $searchQuery .= " OR ($searchTaxQuery) "; 
-		if(!empty($searchMetaQuery)) $searchQuery .= " OR ($searchMetaQuery) ";
+		$search_query = $this->get_where_to_title_and_content();
+		$search_tax_query = $this->get_where_to_term_taxonomies();
+		$search_meta_query = $this->get_where_to_metadatas();
+		$search_query = "($search_query) ";
+		if(!empty($search_tax_query)) $search_query .= " OR ($search_tax_query) "; 
+		if(!empty($search_meta_query)) $search_query .= " OR ($search_meta_query) ";
 
-		if ( $searchQuery != '' && $searchQuery != '()' ) {
+		if ( $search_query != '' && $search_query != '()' ) {
 			// lets use _OUR_ query instead of WP's, as we have posts already included in our query as well(assuming it's not empty which we check for)
-			$where = " AND ((" . $searchQuery . ")) ";
+			$where = " AND ((" . $search_query . ")) ";
 		}
 		return $where;
 	}
