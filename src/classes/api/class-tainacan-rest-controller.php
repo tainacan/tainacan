@@ -93,7 +93,8 @@ class REST_Controller extends \WP_REST_Controller {
 			'hierarchical' => 'hierarchical',
 			'exclude'      => 'post__not_in',
 			'excludetree'  => 'exclude_tree',
-			'include'      => 'include'
+			'include'      => 'include',
+			'sentence'     => 'sentence'
 		];
 
 		$meta_query = [
@@ -310,6 +311,12 @@ class REST_Controller extends \WP_REST_Controller {
 			'type'               => 'string',
 			'sanitize_callback'  => 'sanitize_text_field',
 			'validate_callback'  => 'rest_validate_request_arg',
+		);
+
+		$query_params['sentence'] = array(
+			'description'        => __( 'Whether to search by phrase. Default false.', 'tainacan' ),
+			'type'               => 'boolean',
+			'default'     => true,
 		);
 
 		$query_params['authorid'] = array(

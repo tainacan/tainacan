@@ -217,7 +217,15 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 	public function test_search() {
 
 		$search_collection_poemas = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection_poemas->get_id() . '/items');
-		$search_query = ['search' => '"Vinícius de Moraes"'];
+		$search_query = ['search' => '"Vinícius de Moraes"', 'sentence' => false];
+		$search_collection_poemas->set_query_params($search_query);
+		$search_response = $this->server->dispatch($search_collection_poemas);
+		$items = $search_response->get_data()['items'];
+
+		$this->assertCount(2, $items);
+
+		$search_collection_poemas = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection_poemas->get_id() . '/items');
+		$search_query = ['search' => 'Vinícius de Moraes', 'sentence' => true];
 		$search_collection_poemas->set_query_params($search_query);
 		$search_response = $this->server->dispatch($search_collection_poemas);
 		$items = $search_response->get_data()['items'];
@@ -225,7 +233,15 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 		$this->assertCount(2, $items);
 
 		$search_collection_frase = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection_frases->get_id() . '/items');
-		$search_query = ['search' => '"Guimarães Rosa"'];
+		$search_query = ['search' => '"Guimarães Rosa"', 'sentence' => false];
+		$search_collection_frase->set_query_params($search_query);
+		$search_response = $this->server->dispatch($search_collection_frase);
+		$items = $search_response->get_data()['items'];
+
+		$this->assertCount(2, $items);
+
+		$search_collection_frase = new \WP_REST_Request('GET', $this->namespace . '/collection/' . $this->collection_frases->get_id() . '/items');
+		$search_query = ['search' => 'Guimarães Rosa', 'sentence' => true];
 		$search_collection_frase->set_query_params($search_query);
 		$search_response = $this->server->dispatch($search_collection_frase);
 		$items = $search_response->get_data()['items'];
@@ -234,7 +250,7 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 
 
 		$search_items = new \WP_REST_Request('GET', $this->namespace . '/items');
-		$search_query = ['search' => 'texto'];
+		$search_query = ['search' => 'texto', 'sentence' => false];
 		$search_items->set_query_params($search_query);
 		$search_response = $this->server->dispatch($search_items);
 		$items = $search_response->get_data()['items'];
@@ -242,7 +258,7 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 		$this->assertCount(4, $items);
 
 		$search_items = new \WP_REST_Request('GET', $this->namespace . '/items');
-		$search_query = ['search' => 'texto poesia'];
+		$search_query = ['search' => 'texto poesia', 'sentence' => false];
 		$search_items->set_query_params($search_query);
 		$search_response = $this->server->dispatch($search_items);
 		$items = $search_response->get_data()['items'];
@@ -250,7 +266,7 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 		$this->assertCount(4, $items);
 
 		$search_items = new \WP_REST_Request('GET', $this->namespace . '/items');
-		$search_query = ['search' => '"texto poesia"'];
+		$search_query = ['search' => '"texto poesia"', 'sentence' => false];
 		$search_items->set_query_params($search_query);
 		$search_response = $this->server->dispatch($search_items);
 		$items = $search_response->get_data()['items'];
@@ -258,15 +274,15 @@ class TAINACAN_REST_Search extends TAINACAN_UnitApiTestCase {
 		$this->assertCount(1, $items);
 
 		$search_items = new \WP_REST_Request('GET', $this->namespace . '/items');
-		$search_query = ['search' => '"texto poesia" sagarana'];
+		$search_query = ['search' => '"texto poesia" sagarana', 'sentence' => false];
 		$search_items->set_query_params($search_query);
 		$search_response = $this->server->dispatch($search_items);
 		$items = $search_response->get_data()['items'];
-
 		$this->assertCount(2, $items);
+		
 
 		$search_items = new \WP_REST_Request('GET', $this->namespace . '/items');
-		$search_query = ['search' => 'infinito dure'];
+		$search_query = ['search' => 'infinito dure', 'sentence' => false];
 		$search_items->set_query_params($search_query);
 		$search_response = $this->server->dispatch($search_items);
 		$items = $search_response->get_data()['items'];
