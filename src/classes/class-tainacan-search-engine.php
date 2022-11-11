@@ -125,7 +125,7 @@ class Search_Engine {
 		foreach ( $terms as $term ) {
 			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
 			if ( !empty( $this->relationships ) ) {
-				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term} OR p2->posts.post_title LIKE {$esc_term} OR p2.post_content LIKE {$esc_term})";
+				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term} OR p2.post_title LIKE {$esc_term} OR p2.post_content LIKE {$esc_term})";
 			} else {
 				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term})";
 			}
@@ -238,7 +238,9 @@ class Search_Engine {
 		if ( $this->is_tainacan_search && !empty( $this->relationships ) ) {
 
 			$relationships = implode(',', $this->relationships);
-			$join .= " LEFT JOIN $wpdb->posts AS p2 ON (m.meta_value = p2.ID AND m.meta_key IN ($relationships)) ";
+			$join .= "
+				LEFT JOIN $wpdb->postmeta m_rel ON ($wpdb->posts.ID = m_rel.post_id AND m_rel.meta_key IN ($relationships))
+				LEFT JOIN $wpdb->posts p2 ON (m_rel.meta_value = p2.ID) ";
 		}
 		return $join;
 	}
