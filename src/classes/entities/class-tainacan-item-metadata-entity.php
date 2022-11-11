@@ -148,6 +148,9 @@ class Item_Metadata_Entity extends Entity {
 		}
 		
 		$value = $this->get_value();
+
+		if ($value === false)
+			return '';
 		
 		$return = '';
 		
