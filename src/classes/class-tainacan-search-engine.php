@@ -129,7 +129,7 @@ class Search_Engine {
 			} else {
 				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term})";
 			}
-			$seperator = ' AND ';
+			$seperator = ' OR ';
 		}
 		return empty($searchQuery) ? false : "($searchQuery)";
 	}
@@ -144,7 +144,7 @@ class Search_Engine {
 			foreach ( $terms as $term ) {
 				$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
 				$search_tax_query .= "{$seperator}(tter.name LIKE {$esc_term})";
-				$seperator = ' AND ';
+				$seperator = ' OR ';
 			}
 			if (empty($search_tax_query)) return '';
 
@@ -172,7 +172,7 @@ class Search_Engine {
 			foreach ( $terms as $term ) {
 				$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
 				$search_meta_query .= "{$seperator}(m.meta_value LIKE {$esc_term})";
-				$seperator = ' AND ';
+				$seperator = ' OR ';
 			}
 			if ( empty($search_meta_query) ) return '';
 
@@ -182,7 +182,7 @@ class Search_Engine {
 			return "EXISTS (
 				SELECT m.post_id
 				FROM $wpdb->postmeta m $join
-				WHERE ( $wpdb->posts.ID = m.post_id AND $search_meta_query )
+				WHERE ( $wpdb->posts.ID = m.post_id AND ($search_meta_query) )
 			)";
 		}
 		return '';
