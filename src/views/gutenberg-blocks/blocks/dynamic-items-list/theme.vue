@@ -206,11 +206,11 @@
                             :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
                         <blur-hash-image
                                 v-if="showImage"
-                                :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || imageSize ))"
-                                :width="$thumbHelper.getWidth(item['thumbnail'], ( layout == 'list' || imageSize ))"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], ( layout == 'list' || imageSize ), item['document_mimetype'])"
-                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( layout == 'list' || imageSize ), item['document_mimetype'])"
-                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || imageSize ))"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
                                 :transition-duration="500" />
                         <span v-if="item.title">{{ item.title }}</span>
@@ -252,11 +252,11 @@
                                 :href="item.url"
                                 :class="(!showName ? 'item-without-title' : '') + ' ' + (!showImage ? 'item-without-image' : '')">
                             <blur-hash-image
-                                    :height="$thumbHelper.getHeight(item['thumbnail'], ( layout == 'list' || imageSize ))"
-                                    :width="$thumbHelper.getWidth(item['thumbnail'], ( layout == 'list' || imageSize ))"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], ( layout == 'list' || imageSize ), item['document_mimetype'])"
-                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], ( layout == 'list' || imageSize ), item['document_mimetype'])"
-                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], ( layout == 'list' || imageSize ))"
+                                    :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
+                                    :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
+                                    :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                             <span v-if="item.title">{{ item.title }}</span>
@@ -373,7 +373,7 @@ export default {
     
                 this.localMaxItemsNumber = this.selectedItems.length;
                 
-                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&fetch_only=title,url,thumbnail';
+                let endpoint = '/collection/' + this.collectionId + '/items?' + qs.stringify({ postin: this.selectedItems, perpage: this.localMaxItemsNumber }) + '&orderby=post__in&fetch_only=title,url,thumbnail';
 
                 this.tainacanAxios.get(endpoint, { cancelToken: this.itemsRequestSource.token })
                     .then(response => {

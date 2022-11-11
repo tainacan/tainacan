@@ -1,0 +1,79 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/item-metadatum",
+    "title": "Tainacan Item Metadatum",
+    "apiVersion": 2,
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "metadatum", "field", "value" ],
+    "description": "A single item metadatum, including a label and its value.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "query",
+            "selector": "div"
+        },
+        "dataSource": {
+            "type": "string",
+            "default": "selection"
+        },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
+        },
+        "collectionId": {
+            "type": "integer"
+        },
+        "itemId": {
+            "type": "integer"
+        },
+        "metadatumId": {
+            "type": "integer"
+        },
+        "metadatumType": {
+            "type": "string",
+            "default": ""
+        },
+        "isModalOpen": {
+            "type": "boolean",
+            "default": false
+        },
+        "labelLevel": {
+			"type": "number",
+			"default": 3
+		},
+        "textAlign": {
+			"type": "string"
+        }
+    },
+    "usesContext": [
+        "tainacan/itemId"
+    ],
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true,
+        "html": true,
+        "anchor": true,
+        "color": {
+            "text": true,
+            "background": true,
+            "gradients": true,
+            "link": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true
+        }
+    },
+    "editorScript": "item-metadatum",
+	"editorStyle": "item-metadatum"
+}

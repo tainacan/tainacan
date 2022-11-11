@@ -53,9 +53,21 @@ class Elastic_Press {
 			//https://www.elasticpress.io/blog/2019/02/custom-search-with-elasticpress-how-to-limit-results-to-full-text-matches/
 			if ( ! empty( $formatted_args['query']['bool']['should'] ) ) {
 				$formatted_args['query']['bool']['must'] = $formatted_args['query']['bool']['should'];
-				$formatted_args['query']['bool']['must'][0]['multi_match']['operator'] = 'AND';
+				$formatted_args["query"]["bool"]["must"][0]["multi_match"]["type"] = "phrase_prefix";
+
+				// $formatted_args['query']['bool']['must'][0]['multi_match']['operator'] = 'AND';
+				if ( isset($formatted_args['query']['bool']['must'][0]['multi_match']['operator']))
+					unset($formatted_args['query']['bool']['must'][0]['multi_match']['operator']);
+				if ( isset($formatted_args['query']['bool']['must'][1]['multi_match']['operator']))
+					unset($formatted_args['query']['bool']['must'][1]['multi_match']['operator']);
+				if ( isset($formatted_args['query']['bool']['must'][2]['multi_match']['operator']))
+					unset($formatted_args['query']['bool']['must'][2]['multi_match']['operator']);
+				
+				if ( isset($formatted_args['query']['bool']['must'][2]) ) { 
+					$formatted_args['query']['bool']['must'][2]['multi_match']['analyzer'] = 'default';
+				}
+
 				unset( $formatted_args['query']['bool']['should'] );
-				unset( $formatted_args["query"]["bool"]["must"][0]["multi_match"]["type"] );
 			}
 
 			/**
@@ -63,22 +75,22 @@ class Elastic_Press {
 			 * Elasticsearch is not good a substring matches similar to SQL like.
 			 * here we replace `match_phrase` with` wildcard`, but this is not an efficient operation.
 			 */
-			if ( ! empty( $formatted_args['post_filter']['bool']['must'] ) ) {
-				$array_must = $formatted_args['post_filter']['bool']['must'];
-				for($i = 0; $i < count($array_must); $i++ ) {
-					$el_must = $array_must[$i];
-					if( ! empty($el_must['bool']['must']) ) {
-						$array_must_nested = $el_must['bool']['must'];
-						for($j = 0; $j < count($array_must_nested); $j++ ) {
-							if ( isset ($array_must_nested[$j]['match_phrase'] ) ) {
-								$formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['match_phrase_prefix'] = 
- 								array_map( function($match) { return "$match"; } ,$array_must_nested[$j]['match_phrase']);
-								unset($formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['match_phrase']);
-							}
-						}
-					}
-				}
-			}
+			// if ( ! empty( $formatted_args['post_filter']['bool']['must'] ) ) {
+			// 	$array_must = $formatted_args['post_filter']['bool']['must'];
+			// 	for($i = 0; $i < count($array_must); $i++ ) {
+			// 		$el_must = $array_must[$i];
+			// 		if( ! empty($el_must['bool']['must']) ) {
+			// 			$array_must_nested = $el_must['bool']['must'];
+			// 			for($j = 0; $j < count($array_must_nested); $j++ ) {
+			// 				if ( isset ($array_must_nested[$j]['match_phrase'] ) ) {
+			// 					$formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['match_phrase_prefix'] = 
+ 			// 					array_map( function($match) { return "$match"; } ,$array_must_nested[$j]['match_phrase']);
+			// 					unset($formatted_args['post_filter']['bool']['must'][$i]['bool']['must'][$j]['match_phrase']);
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// }
 
 			return $formatted_args;
 		 } );

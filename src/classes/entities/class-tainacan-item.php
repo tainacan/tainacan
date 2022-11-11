@@ -599,7 +599,7 @@ class Item extends Entity {
 			// A metadatum ID was passed
 			} elseif ( is_int($metadatum) ) {
 				$metadatum_object = $Tainacan_Metadata->fetch($metadatum);
-			
+				
 			// A metadatum slug was passed
 			} elseif ( is_string($metadatum) ) {
 				$query = $Tainacan_Metadata->fetch(['slug' => $metadatum], 'OBJECT');
@@ -623,7 +623,7 @@ class Item extends Entity {
 				}
 			}
 
-			// Add it to the array which will be looped bellow
+			// Add it to the array which will be looped below
 			$item_metadata[] = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum_object);
 
 		// If not single metadatum is passed, we query them
@@ -667,7 +667,7 @@ class Item extends Entity {
 			// Get the item metadata objects from the item repository
 			$item_metadata = $this->get_metadata($query_args);
 		}
-
+		
 		// Loop item metadata to print their "values" as html
 		$metadatum_index = 0;
 		foreach ( $item_metadata as $item_metadatum ) {
@@ -1017,7 +1017,7 @@ class Item extends Entity {
 			'hide_description' 				=> true,
 			'hide_empty' 					=> true,
 			'empty_metadata_list_message' 	=> '',
-			'before' 						=> '<section class="metadata-section-slug-$slug" id="$id">',
+			'before' 						=> '<section class="metadata-section-slug-$slug" id="metadata-section-$id">',
 			'after' 						=> '</section>',
 			'before_name' 					=> '<h2 id="metadata-section-$slug">',
 			'after_name' 					=> '</h2>',
@@ -1033,15 +1033,19 @@ class Item extends Entity {
 			
 			$metadata_section = $args['metadata_section'];
 			$metadata_section_object = null;
-
+			
 			// A metadata section object was passed
 			if ( $metadata_section instanceof \Tainacan\Entities\Metadata_Section ) {
 				$metadata_section_object = $metadata_section;
 
 			// A metadata section ID was passed
-			} elseif ( is_int($metadata_section) ) {
+			} elseif ( is_numeric($metadata_section) ) {
 				$metadata_section_object = $Tainacan_Metadata_Sections->fetch($metadata_section);
 
+			// The default metadata section was passed
+			} elseif ( $metadata_section == \Tainacan\Entities\Metadata_Section::$default_section_slug ) {
+				$metadata_section_object = $Tainacan_Metadata_Sections->get_default_section($this->get_collection_id());
+	
 			// A metadata section slug was passed
 			} elseif ( is_string($metadata_section) ) {
 				$query = $Tainacan_Metadata_Sections->fetch(['slug' => $metadata_section], 'OBJECT');
@@ -1065,7 +1069,7 @@ class Item extends Entity {
 				}
 			}
 
-			// Add it to the array which will be looped bellow
+			// Add it to the array which will be looped below
 			$metadata_sections[] = $metadata_section_object;
 
 		// If not single metadata section is passed, we query them
@@ -1170,7 +1174,7 @@ class Item extends Entity {
 			'hide_description' 				=> true,
 			'hide_empty' 					=> true,
 			'empty_metadata_list_message' 	=> '',
-			'before' 						=> '<section class="metadata-section-slug-$slug" id="$id">',
+			'before' 						=> '<section class="metadata-section-slug-$slug" id="metadata-section-$id">',
 			'after' 						=> '</section>',
 			'before_name' 					=> '<h2 id="metadata-section-$slug">',
 			'after_name' 					=> '</h2>',
@@ -1258,9 +1262,20 @@ class Item extends Entity {
 			// Renders the section metadata list, using Items' get_metadata_as_html()
 			// Note that this is already escaped in the calling function
 			if ($has_metadata_list) {
+				$has_some_metadata_value = false;
+
 				foreach( $metadata_section_metadata_list as $metadata_object) {
-					$return .= $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object ]) );
+					$the_metadata_list = $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object ]) );
+					if (!$has_some_metadata_value && !empty($the_metadata_list))
+						$has_some_metadata_value = true;
+
+					$return .= $the_metadata_list;
 				}
+
+				// If no metadata value was found, this section may not be necessary
+				if (!$has_some_metadata_value && $args['hide_empty'])
+					return '';
+
 			} else {
 				$return .= $args['empty_metadata_list_message'];
 			}

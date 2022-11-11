@@ -1,0 +1,101 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/item-metadata-section",
+    "title": "Tainacan Item Metadata Section",
+    "apiVersion": 2,
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "metadata", "section", "regions", "fields" ],
+    "description": "A single metadata section, including its label and metadata whitin it.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "query",
+            "selector": "div"
+        },
+        "dataSource": {
+            "type": "string",
+            "default": "selection"
+        },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
+        },
+        "isDynamic": {
+            "type": "boolean",
+            "default": false
+        },
+        "collectionId": {
+            "type": "integer"
+        },
+        "itemId": {
+            "type": "integer"
+        },
+        "isModalOpen": {
+            "type": "boolean",
+            "default": false
+        },
+        "isLoading": {
+            "type": "boolean",
+            "default": false
+        },
+        "metadataSectionRequestSource": {
+            "type": "object",
+            "default": ""
+        },
+        "metadataSectionTemplate": {
+            "type": "array",
+            "default": []
+        },
+        "sectionId": {
+            "type": "string",
+            "default": ""
+        },
+        "sectionName": {
+            "type": "string"
+        },
+        "sectionDescription": {
+            "type": "string"
+        },
+        "sectionMetadata": {
+            "type": "array",
+            "default": []
+        },
+        "textAlign": {
+			"type": "string"
+        }
+    },
+    "providesContext": {
+        "tainacan/metadataSectionId": "sectionId",
+        "tainacan/metadataSectionName": "sectionName",
+        "tainacan/metadataSectionDescription": "sectionDescription"
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true,
+        "html": true,
+        "anchor": true,
+        "color": {
+            "text": true,
+            "background": true,
+            "gradients": true,
+            "link": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "spacing": true
+        }
+    },
+    "editorScript": "item-metadata-section",
+	"editorStyle": "item-metadata-section"
+}

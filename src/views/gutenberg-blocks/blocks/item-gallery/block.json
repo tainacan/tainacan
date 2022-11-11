@@ -116,6 +116,10 @@
         "lightboxHasLightBackground": {
             "type": "boolean",
             "default": false
+        },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {

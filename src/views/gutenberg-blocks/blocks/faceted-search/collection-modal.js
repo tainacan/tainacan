@@ -5,6 +5,7 @@ import qs from 'qs';
 const { __ } = wp.i18n;
 
 const { TextControl, Button, Modal, SelectControl, RadioControl, Spinner } = wp.components;
+const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
 export default class CollectionModal extends React.Component {
     constructor(props) {
@@ -208,7 +209,7 @@ export default class CollectionModal extends React.Component {
     render() {
         return (
         <Modal
-                className="wp-block-tainacan-modal"
+                className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
                 title={__('Select a collection to fetch items from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select items', 'tainacan')}>

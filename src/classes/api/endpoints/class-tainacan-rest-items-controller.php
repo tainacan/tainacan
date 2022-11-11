@@ -607,7 +607,7 @@ class REST_Items_Controller extends REST_Controller {
 			foreach($filters_args as $filters_arg) {
 				if($filters_arg['filter'] !== false) {
 					for($idx = 0; $idx < count($args['meta_query']); $idx++) {
-						if($args['meta_query'][$idx]['key'] == $filters_arg['metadatum']['metadatum_id']) {
+						if( isset($args['meta_query'][$idx]['key']) && $args['meta_query'][$idx]['key'] == $filters_arg['metadatum']['metadatum_id']) {
 							$args['meta_query'][$idx]['type'] = $filters_arg['type'];
 						}
 					}

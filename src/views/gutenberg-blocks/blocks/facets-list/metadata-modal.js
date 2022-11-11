@@ -4,6 +4,7 @@ import axios from 'axios';
 const { __ } = wp.i18n;
 
 const { TextControl, Button, Modal, RadioControl, SelectControl, Spinner } = wp.components;
+const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
 export default class MetadataModal extends React.Component {
     constructor(props) {
@@ -243,7 +244,7 @@ export default class MetadataModal extends React.Component {
         return this.state.collectionId ? (
             // Metadata modal
             <Modal
-                className="wp-block-tainacan-modal"
+                className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
                 title={__('Select a metadatum to show it\'s facets on block', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select metadatum', 'tainacan')}>
@@ -290,7 +291,7 @@ export default class MetadataModal extends React.Component {
         ) : (
         // Collections modal
         <Modal
-                className="wp-block-tainacan-modal"
+                className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
                 title={__('Select a collection to fetch metadata from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select collection', 'tainacan')}>

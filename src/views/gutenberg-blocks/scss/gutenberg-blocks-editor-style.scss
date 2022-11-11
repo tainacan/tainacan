@@ -16,7 +16,7 @@
 .tainacan-block-placeholder.components-placeholder {
     align-items: center !important;
     margin-bottom: 0 !important;
-    background: var(--tainacan-block-gray0, $gray0);
+    background: var(--tainacan-block-gray0, $gray0) !important;
 
     .components-placeholder__label {
         margin-bottom: 0;
@@ -52,20 +52,23 @@
   
 // Generic style for selection modals ---------------------------
 .wp-block-tainacan-modal {
-    width: 50%;
+    width: 50% !important;
 
-    @media only screen and (max-width: 1024px) {  width: 75% }
-    @media only screen and (max-width: 768px) { width: 100%; }
+    @media only screen and (max-width: 1024px) {  width: 75% !important; }
+    @media only screen and (max-width: 768px) { width: 100% !important; }
 
     // Iframe for dynamic modal
     &.dynamic-modal {
-        width: 90%;
+        width: 90% !important;
         height: 90%;
-        width: 80vw;
+        width: 80vw !important;
         height: 80vh;
 
         iframe {
             width: 100%;
+            height: calc(100% - 76px);
+        }
+        &.wp-version-smaller-than-6-1 iframe {
             height: calc(100% - 96px);
         }
         &.wp-version-smaller-than-5-9 iframe {
@@ -133,6 +136,7 @@
             @media only screen and (max-width: 1024px) {  width: 95% }
             &:nth-child(2) {
                 flex-shrink: 2;
+                margin-left: 0.75em
             }
             .components-base-control__field {
                 flex-wrap: wrap;
@@ -160,7 +164,8 @@
     }
 
     .modal-checkbox-list,
-    .modal-radio-list .components-base-control__field {
+    &.wp-version-smaller-than-6-1 .modal-radio-list .components-base-control__field,
+    &:not(.wp-version-smaller-than-6-1) .modal-radio-list .components-flex.components-h-stack.components-v-stack {
         padding: 0;
         @include display-grid;
         -ms-grid-columns: 250px 250px;
@@ -168,11 +173,12 @@
         grid-gap: 0px;
         justify-content: space-evenly;
         list-style-type: none;
-        margin: 10px;
+        margin: 5px 0px;
         padding: 2px;
         max-height: 37vh;
         overflow-y: auto;
         overflow-x: hidden;
+        width: 100%;
 
         .components-base-control {
             overflow: hidden;
@@ -184,6 +190,7 @@
             display: flex;
             justify-content: flex-start;
             align-items: center;
+            margin: 0.35em;
 
             img {
                 width: 24px;

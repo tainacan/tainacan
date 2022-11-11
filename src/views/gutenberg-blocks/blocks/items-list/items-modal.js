@@ -86,7 +86,7 @@ export default class ItemsModal extends React.Component {
 
         let anItemsRequestSource = axios.CancelToken.source();
 
-        let endpoint = '/collection/' + this.state.collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&fetch_only=title,url,thumbnail';
+        let endpoint = '/collection/' + this.state.collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&orderby=post__in&fetch_only=title,url,thumbnail';
         
         tainacan.get(endpoint, { cancelToken: anItemsRequestSource.token })
             .then(response => {
@@ -239,7 +239,7 @@ export default class ItemsModal extends React.Component {
         return this.state.collectionId ? (
         // Items modal
         <Modal
-            className={ 'wp-block-tainacan-modal dynamic-modal ' + (currentWPVersion < 5.9 ? 'wp-version-smaller-than-5-9' : '') }
+            className={ 'wp-block-tainacan-modal dynamic-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '') }
             title={ __('Select items to add on block', 'tainacan', 'tainacan')}
             onRequestClose={ () => this.cancelSelection() }
             shouldCloseOnClickOutside={ false }
@@ -264,7 +264,7 @@ export default class ItemsModal extends React.Component {
         ) : (
         // Collections modal
         <Modal
-                className="wp-block-tainacan-modal"
+                className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
                 title={__('Select a collection to fetch items from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 contentLabel={__('Select items', 'tainacan')}>

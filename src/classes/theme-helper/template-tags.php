@@ -46,7 +46,7 @@ use \Tainacan\Repositories;
  * @return string        The HTML output
  */
 function tainacan_get_the_metadata($args = array(), $item_id = 0) {
-
+	
 	$item = tainacan_get_item( $item_id );
 
 	if ($item instanceof \Tainacan\Entities\Item) {
@@ -1126,7 +1126,7 @@ function tainacan_has_related_items($item_id = false) {
 	* 	   @type bool 	 $hideFileCaptionLightbox 		  Hides the Lightbox file caption
 	* 	   @type bool 	 $hideFileDescriptionLightbox	  Hides the Lightbox file description
 	* 	   @type bool 	 $openLightboxOnClick 			  Enables the behaviour of opening a lightbox with zoom when clicking on the media item
-	*	   @type bool	 $showDownloadButtonMain		  Displays a download button bellow the Main slider
+	*	   @type bool	 $showDownloadButtonMain		  Displays a download button below the Main slider
 	*	   @type bool	 $lightboxHasLightBackground      Show a light background instead of dark in the lightbox 
 	*	   @type bool    $showArrowsAsSVG			      Decides if the swiper carousel arrows will be an SVG icon or font icon
 	* @return void
@@ -1187,7 +1187,7 @@ function tainacan_the_item_gallery($args = []) {
 function tainacan_get_the_metadata_sections($args = array(), $item_id = 0) {
 
 	$item = tainacan_get_item( $item_id );
-
+	
 	if ($item instanceof \Tainacan\Entities\Item) {
 		return $item->get_metadata_sections_as_html($args);
 	}

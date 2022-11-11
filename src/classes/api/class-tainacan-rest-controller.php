@@ -93,7 +93,8 @@ class REST_Controller extends \WP_REST_Controller {
 			'hierarchical' => 'hierarchical',
 			'exclude'      => 'post__not_in',
 			'excludetree'  => 'exclude_tree',
-			'include'      => 'include'
+			'include'      => 'include',
+			'sentence'     => 'sentence'
 		];
 
 		$meta_query = [
@@ -312,6 +313,12 @@ class REST_Controller extends \WP_REST_Controller {
 			'validate_callback'  => 'rest_validate_request_arg',
 		);
 
+		$query_params['sentence'] = array(
+			'description'        => __( 'Whether to search by phrase. Default false.', 'tainacan' ),
+			'type'               => 'boolean',
+			'default'     => true,
+		);
+
 		$query_params['authorid'] = array(
 			'description' => __("Limit result set to objects assigned to specific authors by id.", 'tainacan'),
 			'type'        => 'integer',
@@ -364,7 +371,8 @@ class REST_Controller extends \WP_REST_Controller {
 				'meta_value',
 				'meta_value_num',
 				'menu_order',
-				'rand'
+				'rand',
+				'post__in'
 			),
 		);
 

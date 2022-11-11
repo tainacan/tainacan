@@ -44,9 +44,21 @@ sass -E 'UTF-8' --cache-location .tmp/sass-cache-18 src/views/gutenberg-blocks/b
 
 sass -E 'UTF-8' --cache-location .tmp/sass-cache-19 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-related-items-list.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-20 src/views/gutenberg-blocks/scss/gutenberg-blocks-editor-style.scss:src/assets/css/tainacan-gutenberg-block-common-editor-styles.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-20 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadata.css
 
-sass -E 'UTF-8' --cache-location .tmp/sass-cache-21 src/views/gutenberg-blocks/scss/gutenberg-blocks-theme-style.scss:src/assets/css/tainacan-gutenberg-block-common-theme-styles.css
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-21 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadata-section.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-22 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadata-sections.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-23 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-item-metadatum.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-24 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-name.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-25 src/views/gutenberg-blocks/blocks/related-items-list/style.scss:src/assets/css/tainacan-gutenberg-block-metadata-section-description.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-26 src/views/gutenberg-blocks/scss/gutenberg-blocks-editor-style.scss:src/assets/css/tainacan-gutenberg-block-common-editor-styles.css
+
+sass -E 'UTF-8' --cache-location .tmp/sass-cache-27 src/views/gutenberg-blocks/scss/gutenberg-blocks-theme-style.scss:src/assets/css/tainacan-gutenberg-block-common-theme-styles.css
 
 echo "Compilação do Sass Concluído!"
 exit 0

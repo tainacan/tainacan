@@ -463,8 +463,8 @@
                                     v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
                                 {{ metadataSection.description }}
                             </p>
-                            <template v-if="metadatumList && Array.isArray(metadatumList)">
-                                <template v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
+                            <template v-if="itemMetadata && Array.isArray(itemMetadata)">
+                                <template v-for="(itemMetadatum, index) of itemMetadata.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
                             
                                     <!-- JS-side hook for extra content -->
                                     <div 
@@ -712,18 +712,43 @@ export default {
         itemSubmissionMetadata() {
             return this.getItemSubmissionMetadata();
         },
-        metadatumList() {
-            return (this.itemSubmissionMetadata && this.itemSubmissionMetadata.length) ?
-                    JSON.parse(JSON.stringify(
-                        this.getMetadata().map((metadatum) => {
-                            const metadatumValue = this.itemSubmissionMetadata.find((aMetadatum) => aMetadatum.metadatum_id == metadatum.id);
-                            return {
-                                metadatum: metadatum,
-                                item: {},
-                                value: metadatumValue && metadatumValue.value ? metadatumValue.value : ''
-                            }
-                        } )
-                    )) : [];
+        itemMetadata() {
+
+            if ( !this.itemSubmissionMetadata || !this.itemSubmissionMetadata.length)
+                return [];
+
+            const realItemMetadata = JSON.parse(JSON.stringify(this.getMetadata()));
+            const tweakedItemMetadata = realItemMetadata.map((metadatum) => {
+
+                const metadatumValue = this.itemSubmissionMetadata.find((aMetadatum) => aMetadatum.metadatum_id == metadatum.id);
+
+                // We need this because repository level metadata have an array of section IDs
+                const metadatumSectionId = metadatum.metadata_section_id;
+                if ( !Array.isArray(metadatumSectionId) )
+                    return {
+                        metadatum: metadatum,
+                        item: {},
+                        value: metadatumValue && metadatumValue.value ? metadatumValue.value : ''
+                    }
+
+                metadatum.metadata_section_id = 'default_section';
+
+                // To find which is the section of this metadatum, we look for an intersection of the existeing sections
+                // in this collection and the list of section ids in the repository metadata
+                const intersectionOfSections = this.metadataSections.filter(
+                    (aMetadataSection) => metadatumSectionId.includes("" + aMetadataSection.id) && aMetadataSection.id !== 'default_section'
+                ); 
+                if (intersectionOfSections.length === 1)
+                    metadatum.metadata_section_id = intersectionOfSections[0].id;                          
+                    
+                return {
+                    metadatum: metadatum,
+                    item: {},
+                    value: metadatumValue && metadatumValue.value ? metadatumValue.value : ''
+                };
+               
+            });
+            return tweakedItemMetadata;
         },
         metadataSections() {
             return this.getMetadataSections();
@@ -837,20 +862,28 @@ export default {
             'fetchCollectionForItemSubmission'
         ]),
         hasBeforeHook(location) {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`);
+            
+            return false;
         },
         hasAfterHook(location) {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.hasFilter(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`);
+
+            return false;
         },
         getBeforeHook(location, entity = '') {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_before`, entity);
+            
+            return '';
         },
         getAfterHook(location, entity = '') {
-            if (wp !== undefined)
+            if (wp !== undefined && wp.hooks !== undefined)
                 return wp.hooks.applyFilters(`tainacan_item_submission_collection_${this.collectionId}_${location}_after`, entity);
+            
+            return '';
         },
         onSubmit() {
 

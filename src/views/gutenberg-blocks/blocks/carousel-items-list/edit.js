@@ -150,7 +150,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
             itemsRequestSource = axios.CancelToken.source();
             
-            let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&fetch_only=title,url,thumbnail';
+            let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&orderby=post__in&fetch_only=title,url,thumbnail';
             
             tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
