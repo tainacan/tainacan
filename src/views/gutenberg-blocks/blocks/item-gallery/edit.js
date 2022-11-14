@@ -6,6 +6,7 @@ const ServerSideRender = wp.serverSideRender;
 const { InspectorControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
+import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 
 export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
     
@@ -32,7 +33,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
         thumbnailsCarouselWidth,
         thumbnailsCarouselItemSize,
         showDownloadButtonMain,
-        lightboxHasLightBackground
+        lightboxHasLightBackground,
+        templateMode
     } = attributes;
 
     // Gets blocks props from hook
@@ -41,6 +43,19 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
+
+    // Checks if we are in template mode, if so, gets the collection Id from URL.
+    if ( !templateMode ) {
+        const possibleCollectionId = getCollectionIdFromPossibleTemplateEdition();
+        if (possibleCollectionId) {
+            collectionId = String(possibleCollectionId);
+            templateMode = true;
+            setAttributes({ 
+                collectionId: collectionId,
+                templateMode: templateMode
+            });
+        }
+    }
 
     return content == 'preview' ? 
             <div className={className}>
@@ -339,7 +354,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                 ) : null
             }
 
-            { !itemId ? (
+            { !itemId && !templateMode ? (
                 <Placeholder
                     className="tainacan-block-placeholder"
                     icon={(
@@ -374,7 +389,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                 ) : null
             }
             
-            {  itemId ? (
+            {  itemId || templateMode ? (
                 <div className={ 'item-gallery-edit-container' }>
                     <div class="preview-warning">{__('Warning: this is just a demonstration. To see the gallery in action, either preview or publish your post.', 'tainacan') }</div>
                     <ServerSideRender

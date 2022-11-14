@@ -145,7 +145,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
 
         collections = [];
 
-        let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections.map((collection) => { return collection.id }), perpage: selectedCollections.length, fetch_preview_image_items: showCollectionThumbnail ? 0 : 3 }) + '&fetch_only=name,url,thumbnail';
+        let endpoint = '/collections?'+ qs.stringify({ postin: selectedCollections.map((collection) => { return collection.id }), perpage: selectedCollections.length, fetch_preview_image_items: showCollectionThumbnail ? 0 : 3 }) + '&orderby=post__in&fetch_only=name,url,thumbnail';
         tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
             .then(response => {
 

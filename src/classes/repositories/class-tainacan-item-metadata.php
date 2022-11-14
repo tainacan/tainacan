@@ -98,7 +98,10 @@ class Item_Metadata extends Repository {
 
 				if ( is_array( $item_metadata->get_value() ) ) {
 					$values = $item_metadata->get_value();
-
+					// for relationship metadata do not allow the same item to be present more than once in the value.
+					if ( $metadata_type->get_primitive_type() == 'item' ) {
+						$values = array_unique($values);
+					}
 					foreach ( $values as $value ) {
 						if ( !is_numeric($value) && empty($value) ) {
 							continue;

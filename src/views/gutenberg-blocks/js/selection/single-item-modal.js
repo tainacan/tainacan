@@ -200,7 +200,7 @@ export default class SingleItemModal extends React.Component {
         return this.state.collectionId ? (
             // Items modal
         <Modal
-                className={ 'wp-block-tainacan-modal dynamic-modal ' + (currentWPVersion < 5.9 ? 'wp-version-smaller-than-5-9' : '') }
+                className={ 'wp-block-tainacan-modal dynamic-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '') }
                 title={ this.props.modalTitle ? this.props.modalTitle : __('Select one item for the block', 'tainacan') }
                 onRequestClose={ () => this.cancelSelection() }
                 shouldCloseOnClickOutside={ false }
@@ -225,7 +225,7 @@ export default class SingleItemModal extends React.Component {
     ) : (
         // Collections modal
         <Modal
-                className="wp-block-tainacan-modal"
+                className={ 'wp-block-tainacan-modal ' + (currentWPVersion < '5.9' ? 'wp-version-smaller-than-5-9' : '') + (currentWPVersion < '6.1' ? 'wp-version-smaller-than-6-1' : '')  }
                 title={__('Select a collection to fetch items from', 'tainacan')}
                 onRequestClose={ () => this.cancelSelection() }
                 shouldCloseOnClickOutside={ false }

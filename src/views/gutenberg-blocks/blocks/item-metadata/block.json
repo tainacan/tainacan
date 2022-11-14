@@ -1,0 +1,97 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/item-metadata",
+    "title": "Tainacan Item Metadata",
+    "apiVersion": 2,
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "metadata", "fields", "values" ],
+    "description": "The item metadata, including their labels and values.",
+    "textdomain": "tainacan",
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "query",
+            "selector": "div"
+        },
+        "dataSource": {
+            "type": "string",
+            "default": "selection"
+        },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
+        },
+        "isDynamic": {
+            "type": "boolean",
+            "default": false
+        },
+        "collectionId": {
+            "type": "integer"
+        },
+        "itemId": {
+            "type": "integer"
+        },
+        "isModalOpen": {
+            "type": "boolean",
+            "default": false
+        },
+        "isLoading": {
+            "type": "boolean",
+            "default": false
+        },
+        "itemMetadataRequestSource": {
+            "type": "object",
+            "default": ""
+        },
+        "itemMetadata": {
+            "type": "array",
+            "default": []
+        },
+        "metadata": {
+            "type": "array",
+            "default": []
+        },
+        "itemMetadataTemplate": {
+            "type": "array",
+            "default": []
+        },
+        "sectionId": {
+            "type": "string",
+            "default": ""
+        },
+        "textAlign": {
+			"type": "string"
+        }
+    },
+    "providesContext": {
+        "tainacan/itemId": "itemId"
+    },
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true,
+        "html": true,
+        "anchor": true,
+        "color": {
+            "text": true,
+            "background": true,
+            "gradients": true,
+            "link": true
+        },
+        "typography": {
+            "fontSize": true,
+            "lineHeight": true
+        },
+        "spacing": {
+            "margin": true,
+            "padding": true,
+            "spacing": true
+        }
+    },
+    "editorScript": "item-metadata",
+	"editorStyle": "item-metadata"
+}

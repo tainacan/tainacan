@@ -136,9 +136,9 @@ class Metadata_Sections extends Repository {
 	 * @return \Tainacan\Entities\Metadata_Section|false return de the default metadata section or false otherwise.
 	 */
 	public function get_default_section ($collection) {
-		if($collection instanceof Entities\Collection) {
+		if ($collection instanceof Entities\Collection) {
 			$collection_id = $collection->get_id();
-		} else if (is_int($collection)) {
+		} else if (is_numeric($collection)) {
 			$collection_id = $collection;
 			$collection = \tainacan_collections()->fetch($collection, 'OBJECT');
 		} else {
@@ -295,7 +295,9 @@ class Metadata_Sections extends Repository {
 			$args['meta_query'][] = $meta_query;
 			$results = $this->fetch( $args, 'OBJECT' );
 		}
-		$results[] = $this->get_default_section($collection->get_id());
+		if ( !isset($args['post__not_in']) || !in_array(\Tainacan\Entities\Metadata_Section::$default_section_slug, $args['post__not_in']) ) {
+			$results[] = $this->get_default_section($collection->get_id());
+		}
 
 		return $this->order_result(
 			$results,

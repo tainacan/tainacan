@@ -39,26 +39,19 @@ class Search_Engine {
 
 	function search_hooks() {
 
-		add_filter( 'posts_join', array( &$this, 'terms_join' ) );
-
-		add_filter( 'posts_join', array( &$this, 'search_metadata_join' ) );
-
+		// add_filter( 'posts_join', array( &$this, 'terms_join' ) );
+		// add_filter( 'posts_join', array( &$this, 'search_metadata_join' ) );
 		add_filter( 'posts_join', array( &$this, 'relationships_join' ) );
 
 		//add_filter( 'posts_where', array( &$this, 'search_attachments' ) );
 
-		add_filter( 'posts_join', array( &$this, 'search_authors_join' ) );
-		
 		add_filter( 'posts_search', array( &$this, 'search_where' ), 10, 2 );
-
 		add_filter( 'posts_request', array( &$this, 'distinct' ) );
-
 		//add_filter( 'posts_request', array( &$this, 'log_query' ), 10, 2 );
 	}
 
 	// creates the list of search keywords from the 's' parameters.
 	function get_search_terms() {
-		global $wpdb;
 		$s = isset( $this->query_instance->query_vars['s'] ) ? $this->query_instance->query_vars['s'] : '';
 		$sentence = isset( $this->query_instance->query_vars['sentence'] ) ? $this->query_instance->query_vars['sentence'] : false;
 		$search_terms = array();
@@ -67,7 +60,7 @@ class Search_Engine {
 			// added slashes screw with quote grouping when done early, so done later
 			$s = stripslashes( $s );
 			if ( $sentence ) {
-				$search_terms = array( $s );
+				$search_terms = array( trim($s, " '\"\n\r\t\v\0")  );
 			} else {
 				preg_match_all( '/".*?("|$)|((?<=[\\s",+])|^)[^\\s",+]+/', $s, $matches );
 
@@ -123,6 +116,78 @@ class Search_Engine {
 		}
 	}
 
+	function get_where_to_title_and_content() {
+		global $wpdb;
+		$searchQuery = '';
+		$seperator = '';
+		$not_exact = empty($this->query_instance->query_vars['exact']);
+		$terms = $this->get_search_terms();
+		foreach ( $terms as $term ) {
+			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
+			if ( !empty( $this->relationships ) ) {
+				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term} OR p2.post_title LIKE {$esc_term} OR p2.post_content LIKE {$esc_term})";
+			} else {
+				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term})";
+			}
+			$seperator = ' OR ';
+		}
+		return empty($searchQuery) ? false : "($searchQuery)";
+	}
+
+	function get_where_to_term_taxonomies() {
+		if ( $this->is_tainacan_search && !empty( $this->taxonomies ) ) {
+			global $wpdb;
+			$search_tax_query = '';
+			$seperator = '';
+			$not_exact = empty($this->query_instance->query_vars['exact']);
+			$terms = $this->get_search_terms();
+			foreach ( $terms as $term ) {
+				$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
+				$search_tax_query .= "{$seperator}(tter.name LIKE {$esc_term})";
+				$seperator = ' OR ';
+			}
+			if (empty($search_tax_query)) return '';
+
+			$tax_where = ' ttax.taxonomy IN ( \'' . implode( '\',\'', $this->taxonomies ) . '\' ) ';
+			return "EXISTS (
+				SELECT trel.object_id
+				FROM
+					$wpdb->term_relationships AS trel
+					INNER JOIN $wpdb->term_taxonomy AS ttax ON trel.term_taxonomy_id = ttax.term_taxonomy_id
+					INNER JOIN $wpdb->terms AS tter ON ttax.term_id = tter.term_id
+				WHERE
+					$wpdb->posts.ID = trel.object_id AND $tax_where AND ( $search_tax_query )
+			)";
+		}
+		return '';
+	}
+
+	function get_where_to_metadatas() {
+		if ( $this->is_tainacan_search ) {
+			global $wpdb;
+			$search_meta_query = '';
+			$seperator = '';
+			$not_exact = empty($this->query_instance->query_vars['exact']);
+			$terms = $this->get_search_terms();
+			foreach ( $terms as $term ) {
+				$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
+				$search_meta_query .= "{$seperator}(m.meta_value LIKE {$esc_term})";
+				$seperator = ' OR ';
+			}
+			if ( empty($search_meta_query) ) return '';
+
+			$join = \is_user_logged_in() 
+				? ''
+				: " INNER JOIN $wpdb->posts pmeta ON m.meta_key = pmeta.ID AND pmeta.post_status = 'publish'";
+			return "EXISTS (
+				SELECT m.post_id
+				FROM $wpdb->postmeta m $join
+				WHERE ( $wpdb->posts.ID = m.post_id AND ($search_meta_query) )
+			)";
+		}
+		return '';
+	}
+
 	// add where clause to the search query
 	function search_where( $where, $wp_query ) {
 
@@ -136,47 +201,22 @@ class Search_Engine {
 		if ( !$this->is_tainacan_search && !$this->ajax_request)
 			return $where;
 
-		global $wpdb;
+		$search_query = $this->get_where_to_title_and_content();
+		$search_tax_query = $this->get_where_to_term_taxonomies();
+		$search_meta_query = $this->get_where_to_metadatas();
+		$search_query = "($search_query) ";
+		if(!empty($search_tax_query)) $search_query .= " OR ($search_tax_query) "; 
+		if(!empty($search_meta_query)) $search_query .= " OR ($search_meta_query) ";
 
-		$search_query_fields = array();
-		$search_query_fields = array_merge($search_query_fields, $this->search_default());
-		$search_query_fields = array_merge($search_query_fields, $this->build_search_categories());
-		$search_query_fields = array_merge($search_query_fields, $this->build_search_metadata());
-		$search_query_fields = array_merge($search_query_fields, $this->build_search_relationships());
-		$search_query_fields = array_merge($search_query_fields, $this->search_authors());
-
-		$searchQuery = '(';
-		$seperator = '';
-		$not_exact = empty($this->query_instance->query_vars['exact']);
-		$terms = $this->get_search_terms();
-		$fields = implode(", ", $search_query_fields);
-		foreach ( $terms as $term ) {
-			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
-			$searchQuery .= "{$seperator}CONCAT_WS(' || ', $fields ) LIKE $esc_term";
-			$seperator = ' OR ';
-		}
-		$searchQuery .= ')';
-
-
-		if ( $searchQuery != '' && $searchQuery != '()' ) {
+		if ( $search_query != '' && $search_query != '()' ) {
 			// lets use _OUR_ query instead of WP's, as we have posts already included in our query as well(assuming it's not empty which we check for)
-			$where = " AND ((" . $searchQuery . ")) ";
+			$where = " AND ((" . $search_query . ")) ";
 		}
 		return $where;
 	}
 
-	// search for terms in default locations like title and content
-	// replacing the old search terms seems to be the best way to
-	// avoid issue with multiple terms
-	function search_default() {
-		global $wpdb;
-		return ["$wpdb->posts.post_title", "$wpdb->posts.post_content"];
-	}
-
-
 	//Duplicate fix provided by Tiago.Pocinho
 	function distinct( $query ) {
-		global $wpdb;
 		if ( !empty( $this->query_instance->query_vars['s'] ) ) {
 			if ( strstr( $query, 'DISTINCT' ) ) {}
 			else {
@@ -186,82 +226,6 @@ class Search_Engine {
 		return $query;
 	}
 
-
-	//search attachments
-	function search_attachments( $where ) {
-		global $wpdb;
-		if ( !empty( $this->query_instance->query_vars['s'] ) ) {
-			$where = str_replace( '"', '\'', $where );
-			if ( !$this->wp_ver28 ) {
-				$where = str_replace( " AND (post_status = 'publish'", " AND (post_status = 'publish' OR post_type = 'attachment'", $where );
-				$where = str_replace( "AND post_type != 'attachment'", "", $where );
-			}
-			else {
-				$where = str_replace( " AND ($wpdb->posts.post_status = 'publish'", " AND ($wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_type = 'attachment'", $where );
-				$where = str_replace( "AND $wpdb->posts.post_type != 'attachment'", "", $where );
-			}
-		}
-		return $where;
-	}
-
-	// Build the author search
-	function search_authors() {
-		return ["u.display_name"];
-	}
-	
-	function build_search_relationships(){
-		
-		if ( empty( $this->relationships ) ) {
-			return [];
-		}
-		return ['p2.post_title'];
-	}
-
-	// create the search meta data query
-	function build_search_metadata() {
-		return ["m.meta_value"];
-	}
-
-	// create the search categories query
-	function build_search_categories() {
-		if (empty($this->taxonomies)) {
-			return [];
-		}
-		return ["tter.name", "ttax.description"];
-	}
-
-
-	//join for searching authors
-
-	function search_authors_join( $join ) {
-		
-		if ($this->is_inner_query) {
-			return $join;
-		}
-		
-		global $wpdb;
-
-		if ( $this->is_tainacan_search ) {
-			$join .= " LEFT JOIN $wpdb->users AS u ON ($wpdb->posts.post_author = u.ID) ";
-		}
-		return $join;
-	}
-
-	//join for searching metadata
-	function search_metadata_join( $join ) {
-		
-		if ($this->is_inner_query) {
-			return $join;
-		}
-		
-		global $wpdb;
-
-		if ( $this->is_tainacan_search ) {
-			$join .= " LEFT JOIN $wpdb->postmeta AS m ON ($wpdb->posts.ID = m.post_id) ";
-		}
-		return $join;
-	}
-	
 	// join for relationship metadata
 	function relationships_join( $join ) {
 		
@@ -274,31 +238,81 @@ class Search_Engine {
 		if ( $this->is_tainacan_search && !empty( $this->relationships ) ) {
 
 			$relationships = implode(',', $this->relationships);
-			$join .= " LEFT JOIN $wpdb->posts AS p2 ON (m.meta_value = p2.ID AND m.meta_key IN ($relationships)) ";
+			$join .= "
+				LEFT JOIN $wpdb->postmeta m_rel ON ($wpdb->posts.ID = m_rel.post_id AND m_rel.meta_key IN ($relationships))
+				LEFT JOIN $wpdb->posts p2 ON (m_rel.meta_value = p2.ID) ";
 		}
 		return $join;
 	}
 
-	//join for searching tags
-	function terms_join( $join ) {
+// 	//search attachments
+// 	function search_attachments( $where ) {
+// 		global $wpdb;
+// 		if ( !empty( $this->query_instance->query_vars['s'] ) ) {
+// 			$where = str_replace( '"', '\'', $where );
+// 			if ( !$this->wp_ver28 ) {
+// 				$where = str_replace( " AND (post_status = 'publish'", " AND (post_status = 'publish' OR post_type = 'attachment'", $where );
+// 				$where = str_replace( "AND post_type != 'attachment'", "", $where );
+// 			}
+// 			else {
+// 				$where = str_replace( " AND ($wpdb->posts.post_status = 'publish'", " AND ($wpdb->posts.post_status = 'publish' OR $wpdb->posts.post_type = 'attachment'", $where );
+// 				$where = str_replace( "AND $wpdb->posts.post_type != 'attachment'", "", $where );
+// 			}
+// 		}
+// 		return $where;
+// 	}
+
+// 	//join for searching metadata
+// 	function search_metadata_join( $join ) {
 		
-		if ($this->is_inner_query) {
-			return $join;
-		}
+// 		if ($this->is_inner_query) {
+// 			return $join;
+// 		}
 		
-		global $wpdb;
+// 		global $wpdb;
+// 		if ( $this->is_tainacan_search ) {
+// 			$searchMetaQuery = $this->build_search_terms_query('meta_terms');
+// 			$join .= <<<EOF
+// 			LEFT JOIN
+// 			(
+// 				SELECT
+// 					m.post_id, true as contains
+// 				FROM 
+// 					$wpdb->postmeta m
+// 				WHERE
+// 					( $searchMetaQuery )
+// 			) AS metas ON $wpdb->posts.ID = metas.post_id
+// EOF;
+// 		}
+// 		return $join;
+// 	}
 
-		if ( $this->is_tainacan_search && !empty( $this->taxonomies ) ) {
+// 	//join for searching taxonomies terms
+// 	function terms_join( $join ) {
+		
+// 		if ($this->is_inner_query) {
+// 			return $join;
+// 		}
+		
+// 		global $wpdb;
+// 		$searchTaxQuery = $this->build_search_terms_query('tax_terms');
+// 		if ( $this->is_tainacan_search && !empty( $this->taxonomies ) ) {
+// 			$tax_where = ' ttax.taxonomy IN ( \'' . implode( '\',\'', $this->taxonomies ) . '\' ) ';
+// 			$join .= <<<EOF
+// 				LEFT JOIN (
+// 					SELECT DISTINCT
+// 						trel.object_id as post_id,
+// 						true as contains
+// 					FROM
+// 						$wpdb->term_relationships AS trel
+// 						INNER JOIN $wpdb->term_taxonomy AS ttax ON trel.term_taxonomy_id = ttax.term_taxonomy_id
+// 						INNER JOIN $wpdb->terms AS tter ON ttax.term_id = tter.term_id
+// 					WHERE
+// 						$tax_where AND ( $searchTaxQuery )
+// 				) tax_terms ON $wpdb->posts.ID = tax_terms.post_id 
+// EOF;
+// 		}
+// 		return $join;
+// 	}
 
-			foreach ( $this->taxonomies as $taxonomy ) {
-				$on[] = "ttax.taxonomy = '" . addslashes( $taxonomy )."'";
-			}
-			// build our final string
-			$on = ' ( ' . implode( ' OR ', $on ) . ' ) ';
-			$join .= " LEFT JOIN $wpdb->term_relationships AS trel ON ($wpdb->posts.ID = trel.object_id) LEFT JOIN $wpdb->term_taxonomy AS ttax ON ( " . $on . " AND trel.term_taxonomy_id = ttax.term_taxonomy_id) LEFT JOIN $wpdb->terms AS tter ON (ttax.term_id = tter.term_id) ";
-		}
-		return $join;
-	}
-
-
-} // END
+}

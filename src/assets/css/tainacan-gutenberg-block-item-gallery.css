@@ -10,6 +10,28 @@
   text-align: center;
   margin: 0 auto;
   padding: 8px 2px 2px 2px; }
+.item-gallery-edit-container .tainacan-gallery-main-placeholder {
+  position: relative;
+  min-height: var(--tainacan-media-main-carousel-height, 60vh);
+  max-width: var(--tainacan-media-main-carousel-width, 100%);
+  margin: 0 auto 1em auto; }
+.item-gallery-edit-container .tainacan-gallery-thumbnails-placeholder {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  gap: 20px;
+  list-style: none !important;
+  margin: 0px auto !important;
+  padding: 0px !important;
+  max-width: var(--tainacan-media-thumbs-carousel-width, 100%);
+  width: var(--tainacan-media-thumbs-carousel-width, 100%);
+  overflow-x: auto;
+  overflow-y: hidden; }
+  .item-gallery-edit-container .tainacan-gallery-thumbnails-placeholder li {
+    height: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+    min-width: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+    flex-basis: var(--tainacan-media-thumbs-carousel-item-size, 136px);
+    position: relative; }
 
 .tainacan-media-component {
   --swiper-theme-color: var(--tainacan-secondary, #298596);

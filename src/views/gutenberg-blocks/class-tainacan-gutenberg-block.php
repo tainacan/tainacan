@@ -16,7 +16,13 @@ const TAINACAN_BLOCKS = [
 	'terms-list' => [],
 	'faceted-search' => [],
 	'item-submission-form' => [],
-	'item-gallery' => ['render_callback' => 'tainacan_blocks_render_items_gallery']
+	'item-gallery' => ['render_callback' => 'tainacan_blocks_render_items_gallery'],
+	'item-metadata-sections' => ['render_callback' => 'tainacan_blocks_render_metadata_sections'],
+	'item-metadata-section' => ['render_callback' => 'tainacan_blocks_render_metadata_section'],
+	'item-metadata' => ['render_callback' => 'tainacan_blocks_render_item_metadata'],
+	'item-metadatum' => ['render_callback' => 'tainacan_blocks_render_item_metadatum'],
+	'metadata-section-name' => [],
+	'metadata-section-description' => []
 ];
 
 // Lets do this!
@@ -112,7 +118,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	}
 
 	// Defines dependencies for editor script
-	$editor_script_deps = array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-server-side-render');
+	$editor_script_deps = array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-server-side-render', 'wp-data');
 	if ( version_compare( $wp_version, '5.2', '<') )
 		$editor_script_deps[] = 'wp-editor';
 	else

@@ -102,9 +102,11 @@
                                                 </span>
                                             </label>
                                         </div>
-                                        <template v-if="metadatumList && Array.isArray(metadatumList)">
+                                        <template v-if="itemMetadata && Array.isArray(itemMetadata)">
                                             <div
-                                                    v-for="(itemMetadatum, index) of metadatumList.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)"
+                                                    v-for="(itemMetadatum, index) of itemMetadata.filter(
+                                                        anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id
+                                                    )"
                                                     :key="index"
                                                     class="field">
                                                 <label class="label">{{ itemMetadatum.metadatum.name }}</label>
@@ -475,8 +477,29 @@
 
                 return this.getItem();
             },
-            metadatumList() {
-                return JSON.parse(JSON.stringify(this.getItemMetadata()));
+            itemMetadata() {
+                const realItemMetadata = JSON.parse(JSON.stringify(this.getItemMetadata()));
+                const tweakedItemMetadata = realItemMetadata.map((anItemMetadatum) => {
+
+                    // We need this because repository level metadata have an array of section IDs
+                    const metadatumSectionId = anItemMetadatum.metadatum.metadata_section_id;
+                    if ( !Array.isArray(metadatumSectionId) )
+                        return anItemMetadatum;
+
+                    anItemMetadatum.metadatum.metadata_section_id = 'default_section';
+
+                    // To find which is the section of this metadatum, we look for an intersection of the existeing sections
+                    // in this collection and the list of section ids in the repository metadata
+                    const intersectionOfSections = this.metadataSections.filter(
+                        (aMetadataSection) => metadatumSectionId.includes("" + aMetadataSection.id) && aMetadataSection.id !== 'default_section'
+                    ); 
+                    if (intersectionOfSections.length === 1)
+                        anItemMetadatum.metadatum.metadata_section_id = intersectionOfSections[0].id;                          
+                        
+                    return anItemMetadatum;
+                
+                });
+                return tweakedItemMetadata;
             },
             totalRelatedItems() {
                 return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
@@ -492,7 +515,7 @@
                     slug: 'metadata',
                     icon: 'metadata',
                     name: this.$i18n.get('metadata'),
-                    total: this.metadatumList.length
+                    total: this.itemMetadata.length
                 }];
                 if (this.totalRelatedItems) {
                     pageTabs.push({

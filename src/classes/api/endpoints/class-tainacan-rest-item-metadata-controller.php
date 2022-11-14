@@ -14,7 +14,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	private $metadatum_repository;
 
 	public function __construct() {
-		$this->rest_base = 'metadata';
+		$this->rest_base = 'item';
 		parent::__construct();
 		add_action('init', array(&$this, 'init_objects'), 11);
 	}
@@ -40,7 +40,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	 * Both of GETs return the metadatum of matched objects
 	 */
 	public function register_routes() {
-		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/' . $this->rest_base . '/(?P<metadatum_id>[\d]+)',
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)/metadata/(?P<metadatum_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -60,7 +60,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				),
 			)
 		);
-		register_rest_route($this->namespace,  '/item/(?P<item_id>[\d]+)/' . $this->rest_base,
+		register_rest_route($this->namespace,  '/' . $this->rest_base . '/(?P<item_id>[\d]+)/metadata',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -70,6 +70,15 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				)
 			)
 		);
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)/metadata-sections/(?P<metadata_section_id>[\d|default_section]+)',
+		array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_items'),
+				'permission_callback' => array($this, 'get_items_permissions_check'),
+			),
+		)
+	);
 	}
 
 	/**
@@ -115,13 +124,27 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	public function get_items( $request ) {
 		$item_id = $request['item_id'];
 
+		$args = array();
+		if( isset($request['metadata_section_id']) ) {
+			$args = array_merge($args, array(
+				'parent' => 0,
+				'meta_query' => [
+					[
+						'key'     => 'metadata_section_id',
+						'value'   => $request['metadata_section_id'],
+						'compare' => '='
+					]
+				]
+			));
+		}
+
 		$item = $this->item_repository->fetch($item_id);
 
 		if( in_array($item->get_status(), ['auto-draft'] ) ) {
 			$this->item_metadata_repository->create_default_value_metadata($item);
 		}
 
-		$items_metadata = $item->get_metadata();
+		$items_metadata = $item->get_metadata( $args );
 
 		$prepared_item = [];
 

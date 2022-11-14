@@ -172,7 +172,7 @@ class TAINACAN_REST_Queries extends TAINACAN_UnitApiTestCase {
 		$this->assertEquals($collectionB->get_name(), $data1[0]['name']);
 
 		// Search collection with a specific keyword and not other keyword
-		$search_query = ['search' => 'Collection -A'];
+		$search_query = ['search' => 'Collection -A', 'sentence' => false];
 
 		$search_request = new \WP_REST_Request('GET', $this->namespace . '/collections');
 

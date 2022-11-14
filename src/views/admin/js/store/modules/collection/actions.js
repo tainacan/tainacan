@@ -42,8 +42,8 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
 
             // Admin default tab should load publish, private and draft statuses
             if (!isOnTheme && !postQueries.status) {
-                delete postQueries.status;
-                dispatch('search/setStatus', '', { root: true });
+                postQueries.status = 'publish,private,draft';
+                dispatch('search/setStatus', 'publish,private,draft', { root: true });
             }
             
             // Guarantees at least status is passed in case none is found
