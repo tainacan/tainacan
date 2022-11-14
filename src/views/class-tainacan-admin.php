@@ -374,6 +374,11 @@ class Admin {
 
 		$settings['wp_post_types'] = $wp_post_types;
 
+		// Key-valued array with extra options to be passed to every request in the admin (goes the header)
+		$admin_request_options = [];
+		$admin_request_options = apply_filters('tainacan-admin-extra-request-options', $admin_request_options);
+		$settings['admin_request_options'] = $admin_request_options;
+
 		return $settings;
 
 	}
@@ -394,7 +399,7 @@ class Admin {
 		$admin_options = apply_filters('set_tainacan_admin_options', $_GET);
 		$admin_options = apply_filters('tainacan-admin-ui-options', $_GET);
 		$admin_options = json_encode($admin_options);
-		// TODO move it to a separate file and start the Vue project
+
 		echo "<div id='tainacan-admin-app' data-module='admin' data-options='$admin_options'></div>";
 	}
 

@@ -27,10 +27,15 @@
                         tag="a"
                         to="/"
                         :aria-label="$i18n.get('label_plugin_home_page')">
-                    <img
-                            class="tainacan-logo"
-                            alt="Tainacan Logo"
-                            :src="logoHeader">
+                    <h1>
+                        <img
+                                class="tainacan-logo"
+                                alt="Tainacan Logo"
+                                :src="logoHeader">
+                        <span
+                                v-if="$adminOptions.tainacanHeaderExtraLabel"
+                                v-text="$adminOptions.tainacanHeaderExtraLabel" />
+                    </h1>
                 </router-link>
             </div>
         </div>
@@ -198,11 +203,25 @@
             }
             .logo-area {
                 height: $header-height;
-                width: 10em;
+                min-width: 10em;
                 cursor: pointer;
 
-                &:focus {
-                    box-shadow: none;
+                h1 {
+                    display: flex;
+                    align-items: center;
+                    white-space: nowrap;
+                    margin: 0px;
+                    
+                    span {
+                        color: var(--tainacan-blue5);
+                        text-decoration-color: var(--tainacan-blue5);
+                        text-transform: uppercase;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        font-weight: bold;
+                        font-size: 1.25rem;
+                        margin: 0px 0.5rem 0px 0.75rem;
+                    }
                 }
                 .tainacan-logo {
                     height: 1.5em;
