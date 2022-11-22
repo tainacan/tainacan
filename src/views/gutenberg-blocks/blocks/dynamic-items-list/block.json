@@ -98,6 +98,10 @@
             "type": "string",
             "default": ""
         },
+        "orderBy": {
+            "type": "string",
+            "default": "date"
+        },
         "blockId": {
             "type": "string",
             "default": ""

@@ -31,6 +31,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         itemsRequestSource,
         maxItemsNumber,
         order,
+        orderBy,
         searchString,
         selectedItems,
         isLoading,
@@ -311,7 +312,17 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     setAttributes({ order: 'asc' });
                 }
 
-                // Set up sorting order
+                 // Set up sorting order
+                 if (orderBy != '')
+                    queryObject.orderby = orderBy;
+                else if (queryObject.orderby != '')
+                    setAttributes({ orderBy: queryObject.orderby });
+                else {
+                    queryObject.orderby = 'date';
+                    setAttributes({ orderBy: 'date' });
+                }
+
+                // Set up search string
                 if (searchString != undefined)
                     queryObject.search = searchString;
                 else if (queryObject.search != undefined)

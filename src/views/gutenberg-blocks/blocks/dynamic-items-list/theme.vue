@@ -299,6 +299,7 @@ export default {
         maxColumnsCount: Number,
         imageSize: String,
         order: String,
+        orderBy: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
         showCollectionLabel: Boolean,
@@ -415,7 +416,11 @@ export default {
                     this.localOrder = 'asc';
                 }
 
-                // Set up sorting order
+                // Set up orderBy
+                if (this.orderBy != undefined)
+                    queryObject.orderby = this.orderBy;
+
+                // Set up search string
                 if (this.searchString != undefined)
                     queryObject.search = this.searchString;
                 else if (queryObject.search != undefined)

@@ -14,6 +14,7 @@ export default function({ attributes, className }) {
         searchURL,
         maxItemsNumber,
         order,
+        orderBy,
         showSearchBar,
         showCollectionHeader,
         showCollectionLabel,
@@ -56,6 +57,7 @@ export default function({ attributes, className }) {
                 grid-margin={ gridMargin }
                 max-items-number={ maxItemsNumber }
                 order={ order }
+                orderBy={ orderBy }
                 tainacan-api-root={ tainacan_blocks.root }
                 tainacan-base-url={ tainacan_blocks.base_url }
                 id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>

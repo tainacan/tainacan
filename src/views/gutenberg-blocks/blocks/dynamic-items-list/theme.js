@@ -44,6 +44,7 @@ export default (element) => {
                         maxColumnsCount: 4,
                         imageSize: 'tainacan-medium',
                         order: 'asc',
+                        orderBy: 'date',
                         showSearchBar: false,
                         showCollectionHeader: false,
                         showCollectionLabel: false,
@@ -75,6 +76,7 @@ export default (element) => {
                                 loadStrategy: this.loadStrategy,
                                 maxItemsNumber: this.maxItemsNumber,
                                 order: this.order,
+                                orderBy: this.orderBy,
                                 showSearchBar: this.showSearchBar,
                                 showCollectionHeader: this.showCollectionHeader,
                                 showCollectionLabel: this.showCollectionLabel,
@@ -107,6 +109,7 @@ export default (element) => {
                         this.imageSize = this.$el.attributes['image-size'] != undefined ? this.$el.attributes['image-size'].value : 'tainacan-medium';
                         this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
                         this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
+                        this.orderBy = this.$el.attributes['order-by'] != undefined ? this.$el.attributes['order-by'].value : undefined;
                         this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
                         this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
                         this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;
