@@ -147,6 +147,13 @@ export const setSearchQuery = ( state, searchQuery ) => {
     delete state.postquery.s;
 };
 
+export const setSentenceMode = ( state, sentenceMode ) => {
+    if (sentenceMode == true)
+        state.postquery.sentence = sentenceMode;
+    else
+        delete state.postquery.sentence;
+};
+
 export const setStatus = ( state, status ) => {
     state.postquery.status = status;
 };

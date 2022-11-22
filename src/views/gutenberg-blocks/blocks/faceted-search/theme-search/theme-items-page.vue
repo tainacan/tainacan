@@ -68,18 +68,49 @@
                 <div 
                         role="search" 
                         class="search-area">
-                    <b-input
-                        size="is-small"
-                        :placeholder="$i18n.get('instruction_search')"
-                        type="search"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
-                        :value="searchQuery"
-                        @input.native="futureSearchQuery = $event.target.value"
-                        @keyup.enter.native="updateSearch()"
-                        icon-right="magnify"
-                        icon-right-clickable
-                        @icon-right-click="updateSearch()"
-                        :disabled="openAdvancedSearch" />
+                    <b-dropdown
+                            ref="tainacan-textual-search-input"
+                            class="tainacan-textual-search-input"
+                            aria-role="dialog"
+                            :mobile-modal="false"
+                            :disabled="openAdvancedSearch"
+                            :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
+                        <b-input
+                                slot="trigger"
+                                size="is-small"
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                                :value="searchQuery"
+                                @input.native="typeFutureSearch"
+                                @keyup.enter.native="updateSearch()"
+                                icon-right="magnify"
+                                icon-right-clickable
+                                @icon-right-click="updateSearch()"
+                                :disabled="openAdvancedSearch" />
+                        <b-dropdown-item 
+                                @click="updateSearch()"
+                                :focusable="false">
+                            <span v-html="$i18n.get('instruction_press_enter_to_search_for')"/>&nbsp;"{{ futureSearchQuery }}".
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                                @click="$eventBusSearch.setSentenceMode(true)"
+                                :focusable="false">
+                            {{ $i18n.get('label_use_search_separated_words') }}
+                            <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                                v-if="!$adminOptions.hideItemsListAdvancedSearch"
+                                :focusable="false"
+                                @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                            {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
+                            <a 
+                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                                    class="has-text-secondary">
+                                {{ $i18n.get('advanced_search') }}
+                            </a>
+                        </b-dropdown-item>
+                    </b-dropdown>
                     <a
                             v-if="!hideAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
@@ -720,6 +751,9 @@
                     metakey: this.$route.query.metakey
                 }, this.sortingMetadata);
                 return this.$route.query.metakey ? metadatumName : (metadatumName ? this.$i18n.get(metadatumName) : '');
+            },
+            hasSearchByMoreThanOneWord() {
+                return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
             }
         },
         watch: {
@@ -1274,6 +1308,17 @@
                     this.openMetatadaSortingWarningDialog({ offerCheckbox: true });
                 }
             },
+            typeFutureSearch($event) {
+                this.futureSearchQuery = $event.target.value;
+                
+                // If we have more than one word and the dropdown is not active, open it
+                if ( this.hasSearchByMoreThanOneWord && this.$refs['tainacan-textual-search-input'] && !this.$refs['tainacan-textual-search-input'].isActive && typeof this.$refs['tainacan-textual-search-input'].toggle === 'function' )
+                    this.$refs['tainacan-textual-search-input'].toggle();
+
+                // If we don't have more than one word any more and the dropdown is still active, close it
+                if ( !this.hasSearchByMoreThanOneWord && this.$refs['tainacan-textual-search-input'] && this.$refs['tainacan-textual-search-input'].isActive && typeof this.$refs['tainacan-textual-search-input'].toggle === 'function' )
+                    this.$refs['tainacan-textual-search-input'].toggle();
+            },
             openMetatadaSortingWarningDialog({ offerCheckbox }) {
                 this.$buefy.modal.open({
                         parent: this,
@@ -1567,6 +1612,27 @@
                 align-items: center;
                 width: 100%;
                 max-width: 16.66667vw;
+
+                .tainacan-textual-search-input {
+                    width: 100%;
+
+                    /deep/ .dropdown-trigger {
+                        width: 100%;
+                    }
+                    /deep/ .dropdown-menu {
+                        z-index: 99999991;
+
+                        .dropdown-item:last-of-type {
+                            line-height: 2.25em;
+                            background: var(--tainacan-item-hover-background-color);
+
+                            @media screen and (max-width: 768px) {
+                                white-space: initial;
+                                line-height: 2.125em;
+                            }
+                        }
+                    }
+                }
 
                 .control {
                     width: 100%;

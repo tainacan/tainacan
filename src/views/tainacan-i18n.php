@@ -660,7 +660,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_preset_collections'				 		 => __( 'Preset collections', 'tainacan' ),
 	'label_from_a_mapper'					 		 => __( 'From a metadata mapper', 'tainacan' ),
 	'label_using_a_preset'					 		 => __( 'Using a preset', 'tainacan' ),
-	
+	'label_use_search_separated_words'				 => __( 'Search each word separatelly', 'tainacan' ),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -687,7 +688,9 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_select_document_file_for_item'      => __( 'Select a document file for item', 'tainacan' ),
 	'instruction_insert_url'                         => __( 'Insert URL', 'tainacan' ),
 	'instruction_write_text'                         => __( 'Write Text', 'tainacan' ),
+	/* translators: The verb to search, used in search box placeholder */
 	'instruction_search'                             => __( 'Search', 'tainacan' ),
+	/* translators: The verb to search, used in search box placeholder */
 	'instruction_search_in_repository'               => __( 'Search in repository', 'tainacan' ),
 	'instruction_select_a_target_collection'         => __( 'Select a target collection.', 'tainacan' ),
 	'instruction_select_a_mapper'                    => __( 'Select a mapper', 'tainacan' ),
@@ -733,6 +736,8 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_click_to_easily_see'				 => __( 'Click to easily see', 'tainacan' ),
 	'instruction_create_item_select_status'		 	 => __( 'Select a status for the item visiblity on the site. Remember, whichever you select will still be restricted by the collection status as well.', 'tainacan' ),
 	'instruction_edit_item_status'				 	 => __( 'To alter the item status, select a different update strategy in the footer below.', 'tainacan' ),
+	/* translators: At the end of this sentence there will be a search query typed by the user wrapped in quotes. */
+	'instruction_press_enter_to_search_for'			 => __( 'Press <kbd>ENTER</kbd> to search for', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
@@ -979,7 +984,10 @@ return apply_filters( 'tainacan-i18n', [
 	'info_preset_collections'				 		 => __( 'Use mappers or standards as pre configuration', 'tainacan' ),
 	'info_create_collection_from_mapper'			 => __( 'Have the metadata preset by an installed mapper, such as Dublin core, then set the rest manually.', 'tainacan' ),
 	'info_create_collection_from_preset'			 => __( 'Have metadata, taxonomies, terms and related collections preset according to a standard.', 'tainacan' ),
-
+	'info_use_search_separated_words'				 => __( 'You may wrap the words with quotes to group them.', 'tainacan' ),
+	/* translators: At the end of this sentence there will be a link for the advanced search */
+	'info_for_more_metadata_search_options_use'		 => __( 'For more options of metadata search, use the', 'tainacan' ),
+	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),
