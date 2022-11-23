@@ -49,6 +49,10 @@ export const getSearchQuery = state => {
     return state.postquery.search || state.postquery.s;
 };
 
+export const getSentenceMode = state => {
+    return state.postquery.sentence;
+};
+
 export const getStatus = state => {
     return state.postquery.status;
 };

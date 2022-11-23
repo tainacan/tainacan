@@ -58,18 +58,54 @@
                 <div 
                         role="search"
                         class="search-area">
-                    <b-input
-                            size="is-small"
-                            :placeholder="$i18n.get('instruction_search')"
-                            type="search"
-                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
-                            :value="searchQuery"
-                            @input.native="futureSearchQuery = $event.target.value"
-                            @keyup.enter.native="updateSearch()"
-                            icon-right="magnify"
-                            icon-right-clickable
-                            @icon-right-click="updateSearch()"
-                            :disabled="openAdvancedSearch" />
+                    <b-dropdown
+                            ref="tainacan-textual-search-input"
+                            class="tainacan-textual-search-input"
+                            aria-role="dialog"
+                            :mobile-modal="false"
+                            :disabled="openAdvancedSearch"
+                            :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
+                        <b-input
+                                slot="trigger"
+                                size="is-small"
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                                :value="searchQuery"
+                                @input.native="typeFutureSearch"
+                                @keyup.enter.native="updateSearch()"
+                                icon-right="magnify"
+                                icon-right-clickable
+                                @icon-right-click="updateSearch()"
+                                :disabled="openAdvancedSearch" />
+                        <b-dropdown-item 
+                                @click="updateSearch()"
+                                :focusable="false">
+                            <span v-html="$i18n.get('instruction_press_enter_to_search_for')"/>&nbsp;
+                            <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                                custom
+                                :focusable="false">
+                            <b-checkbox 
+                                    :value="sentenceMode"
+                                    @input="$eventBusSearch.setSentenceMode($event)">
+                                {{ $i18n.get('label_use_search_separated_words') }}
+                            </b-checkbox>
+                            <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                                v-if="!$adminOptions.hideItemsListAdvancedSearch"
+                                :focusable="false"
+                                @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                            {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
+                            <a 
+                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                                    class="has-text-secondary">
+                                {{ $i18n.get('advanced_search') }}
+                            </a>
+                        </b-dropdown-item>
+                    </b-dropdown>
                     <a
                             v-if="!$adminOptions.hideItemsListAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
@@ -555,7 +591,7 @@
                         :is-repository-level="isRepositoryLevel"
                         @updateIsLoading="(newIsLoadingState) => isLoadingItems = newIsLoadingState"/>
 
-                <!-- Empty Placeholder (only used in Admin) -->
+                <!-- Empty Placeholder -->
                 <section
                         v-if="!isLoadingItems && totalItems == 0"
                         class="section">
@@ -565,7 +601,9 @@
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
-                        <p v-if="status == undefined || status == '' || status == 'publish,private,draft'">{{ (hasFiltered || openAdvancedSearch) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}</p>
+                        <p v-if="status == undefined || status == '' || status == 'publish,private,draft'">
+                            {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}
+                        </p>
                         <p
                                 v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                 :key="index"
@@ -588,6 +626,23 @@
                                 @click="onOpenCollectionsModal">
                             {{ $i18n.get('add_one_item') }}
                         </button>
+
+                        <p v-if="searchQuery">
+                            <template v-if="!sentenceMode">
+                                <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                <br>
+                                {{ $i18n.get('info_details_about_search_by_word') }}
+                            </template>
+                            <template v-else>
+                                <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                            </template>
+                            <br>
+                            <b-checkbox 
+                                    :value="sentenceMode"
+                                    @input="$eventBusSearch.setSentenceMode($event); updateSearch();">
+                                {{ $i18n.get('label_use_search_separated_words') }}
+                            </b-checkbox>
+                        </p>
                     </div>
                 </section>
 
@@ -675,6 +730,9 @@
             status() {
                 return this.getStatus();
             },
+            sentenceMode() {
+                return this.getSentenceMode();
+            },
             adminViewMode() {
                 const currentAdminViewMode = this.getAdminViewMode();
                 return ['table', 'cards', 'records', 'grid', 'masonry', 'list'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
@@ -697,6 +755,14 @@
                     metakey: this.$route.query.metakey
                 }, this.sortingMetadata);
                 return this.$route.query.metakey ? metadatumName : this.$i18n.get(metadatumName);
+            },
+            hasSearchByMoreThanOneWord() {
+                return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
+            },
+            searchedForSentence() {
+                if (this.searchQuery)
+                    return this.$i18n.getWithVariables('info_you_searched_for_%s', ['<em>"' + this.searchQuery + '"</em>']);
+                return '';
             }
         },
         watch: {
@@ -706,6 +772,7 @@
             openAdvancedSearch(newValue) {
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
+                    this.futureSearchQuery = '';
                     this.isFiltersModalActive = true;
                 } else {
                     this.isFiltersModalActive = false;
@@ -830,6 +897,7 @@
             ]),
             ...mapGetters('search', [
                 'getSearchQuery',
+                'getSentenceMode',
                 'getStatus',
                 'getOrderBy',
                 'getOrder',
@@ -1197,6 +1265,17 @@
                     this.openMetatadaSortingWarningDialog({ offerCheckbox: true });
                 }
             },
+            typeFutureSearch($event) {
+                this.futureSearchQuery = $event.target.value;
+                
+                // If we have more than one word and the dropdown is not active, open it
+                if ( this.hasSearchByMoreThanOneWord && this.$refs['tainacan-textual-search-input'] && !this.$refs['tainacan-textual-search-input'].isActive && typeof this.$refs['tainacan-textual-search-input'].toggle === 'function' )
+                    this.$refs['tainacan-textual-search-input'].toggle();
+
+                // If we don't have more than one word any more and the dropdown is still active, close it
+                if ( !this.hasSearchByMoreThanOneWord && this.$refs['tainacan-textual-search-input'] && this.$refs['tainacan-textual-search-input'].isActive && typeof this.$refs['tainacan-textual-search-input'].toggle === 'function' )
+                    this.$refs['tainacan-textual-search-input'].toggle();
+            },
             openMetatadaSortingWarningDialog({ offerCheckbox }) {
                 this.$buefy.modal.open({
                         parent: this,
@@ -1533,6 +1612,22 @@
                 min-width: 120px;
                 max-width: calc(16.66667vw - 60px);
                 padding-right: 15px;
+
+                .tainacan-textual-search-input {
+                    width: 100%;
+                    
+                    /deep/ .dropdown-trigger {
+                        width: 100%;
+                    }
+                    /deep/ .dropdown-menu {
+                        z-index: 99999991;
+
+                        .dropdown-item:last-child {
+                            line-height: 2.25em;
+                            background: var(--tainacan-item-hover-background-color);
+                        }
+                    }
+                }
 
                 .control {
                     width: 100%;
