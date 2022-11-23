@@ -81,12 +81,17 @@
                         <b-dropdown-item 
                                 @click="updateSearch()"
                                 :focusable="false">
-                            <span v-html="$i18n.get('instruction_press_enter_to_search_for')"/>&nbsp;"{{ futureSearchQuery }}".
+                            <span v-html="$i18n.get('instruction_press_enter_to_search_for')"/>&nbsp;
+                            <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
                         </b-dropdown-item>
                         <b-dropdown-item
-                                @click="$eventBusSearch.setSentenceMode(true)"
+                                custom
                                 :focusable="false">
-                            {{ $i18n.get('label_use_search_separated_words') }}
+                            <b-checkbox 
+                                    :value="sentenceMode"
+                                    @input="$eventBusSearch.setSentenceMode($event)">
+                                {{ $i18n.get('label_use_search_separated_words') }}
+                            </b-checkbox>
                             <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
                         </b-dropdown-item>
                         <b-dropdown-item
@@ -705,6 +710,9 @@
             },
             status() {
                 return this.getStatus();
+            },
+            sentenceMode() {
+                return this.getSentenceMode();
             },
             adminViewMode() {
                 const currentAdminViewMode = this.getAdminViewMode();
@@ -1590,7 +1598,7 @@
                     /deep/ .dropdown-menu {
                         z-index: 99999991;
 
-                        .dropdown-item:last-of-type {
+                        .dropdown-item:last-child {
                             line-height: 2.25em;
                             background: var(--tainacan-item-hover-background-color);
                         }

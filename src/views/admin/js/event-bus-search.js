@@ -300,7 +300,6 @@ export default {
                 },
                 setSentenceMode(sentenceMode) {
                     this.$store.dispatch('search/setSentenceMode', sentenceMode);
-                    this.updateURLQueries();
                 },
                 setSearchQuery(searchQuery) {
                     this.$store.dispatch('search/setSearchQuery', searchQuery);
