@@ -4,19 +4,8 @@
                 ref="masonryWrapper"
                 class="table-wrapper">
 
-            <!-- Empty result placeholder -->
-            <section
-                    v-if="!isLoading && items.length <= 0"
-                    class="section">
-                <div class="content has-text-gray4 has-text-centered">
-                    <p>
-                        <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items" />
-                        </span>
-                    </p>
-                    <p>{{ $i18n.get('info_no_item_found') }}</p>
-                </div>
-            </section>
+            <!-- Empty result placeholder, rendered in the parent component -->
+            <slot />
 
             <!-- SKELETON LOADING -->
             <div 

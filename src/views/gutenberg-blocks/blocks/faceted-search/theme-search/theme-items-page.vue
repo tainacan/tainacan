@@ -592,7 +592,43 @@
                         :is-loading="showLoading"
                         :enabled-view-modes="enabledViewModes"
                         :initial-item-position="initialItemPosition"
-                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>   
+                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''">
+                    
+                    
+                    <!-- Empty Placeholder, rendered in a slot inside the view modes -->
+                    <section
+                            v-if="!showLoading && totalItems == 0"
+                            class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <span class="icon is-large">
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
+                                </span>
+                            </p>
+                            <p>
+                                {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : $i18n.get('info_no_item_found') }}
+                            </p>
+
+                            <p v-if="searchQuery">
+                                <template v-if="!sentenceMode">
+                                    <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                    <br>
+                                    {{ $i18n.get('info_details_about_search_by_word') }}
+                                </template>
+                                <template v-else>
+                                    <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                </template>
+                                <br>
+                                <b-checkbox 
+                                        :value="sentenceMode"
+                                        @input="$eventBusSearch.setSentenceMode($event); updateSearch();">
+                                    {{ $i18n.get('label_use_search_separated_words') }}
+                                </b-checkbox>
+                            </p>
+                        </div>
+                    </section>
+
+                </component>   
 
                 <!-- JS-side hook for extra form content -->
                 <div 
@@ -762,6 +798,11 @@
             },
             hasSearchByMoreThanOneWord() {
                 return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
+            },
+            searchedForSentence() {
+                if (this.searchQuery)
+                    return this.$i18n.getWithVariables('info_you_searched_for_%s', ['<em>"' + this.searchQuery + '"</em>']);
+                return '';
             }
         },
         watch: {
