@@ -591,7 +591,7 @@
                         :is-repository-level="isRepositoryLevel"
                         @updateIsLoading="(newIsLoadingState) => isLoadingItems = newIsLoadingState"/>
 
-                <!-- Empty Placeholder (only used in Admin) -->
+                <!-- Empty Placeholder -->
                 <section
                         v-if="!isLoadingItems && totalItems == 0"
                         class="section">
@@ -601,7 +601,9 @@
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
-                        <p v-if="status == undefined || status == '' || status == 'publish,private,draft'">{{ (hasFiltered || openAdvancedSearch) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}</p>
+                        <p v-if="status == undefined || status == '' || status == 'publish,private,draft'">
+                            {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}
+                        </p>
                         <p
                                 v-for="(statusOption, index) of $statusHelper.getStatuses()"
                                 :key="index"
@@ -624,6 +626,23 @@
                                 @click="onOpenCollectionsModal">
                             {{ $i18n.get('add_one_item') }}
                         </button>
+
+                        <p v-if="searchQuery">
+                            <template v-if="!sentenceMode">
+                                <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                <br>
+                                {{ $i18n.get('info_details_about_search_by_word') }}
+                            </template>
+                            <template v-else>
+                                <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                            </template>
+                            <br>
+                            <b-checkbox 
+                                    :value="sentenceMode"
+                                    @input="$eventBusSearch.setSentenceMode($event); updateSearch();">
+                                {{ $i18n.get('label_use_search_separated_words') }}
+                            </b-checkbox>
+                        </p>
                     </div>
                 </section>
 
@@ -739,6 +758,11 @@
             },
             hasSearchByMoreThanOneWord() {
                 return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
+            },
+            searchedForSentence() {
+                if (this.searchQuery)
+                    return this.$i18n.getWithVariables('info_you_searched_for_%s', ['<em>"' + this.searchQuery + '"</em>']);
+                return '';
             }
         },
         watch: {
