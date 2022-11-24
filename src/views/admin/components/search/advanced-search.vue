@@ -637,7 +637,7 @@
     #advanced-search-container {
         width: calc(100% - (2 * var(--tainacan-one-column)));
         margin: 0 var(--tainacan-one-column) 0.875em;
-        background: var(--tainacan-input-background-color);
+        background: var(--tainacan-background-color);
         border: 1px solid var(--tainacan-input-border-color);
         border-radius: 1px;
         transition: height 0.2s ease;

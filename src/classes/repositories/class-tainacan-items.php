@@ -356,7 +356,7 @@ class Items extends Repository {
 			$args = $this->parse_relationship_metaquery($args);
 		}
 
-		if ( defined('TAINACAN_ENABLE_CORE_METADATA_ON_ADVANCED_SEARCH') && true === TAINACAN_ENABLE_CORE_METADATA_ON_ADVANCED_SEARCH ) {
+		if ( !defined('TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH') || false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH ) {
 			$args = $this->parse_core_metadata_for_advanced_search($args, $collections_objects);
 		}
 
