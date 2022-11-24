@@ -51,8 +51,6 @@ add_filter( 'image_size_names_choose', function ( $sizes ) {
 
 add_action('init', ['Tainacan\Migrations', 'run_migrations']);
 
-
-
 //https://core.trac.wordpress.org/ticket/23022
 //https://core.trac.wordpress.org/ticket/23022#comment:13
 add_filter( 'wp_untrash_post_status', function( $new_status, $post_id, $previous_status ) {
