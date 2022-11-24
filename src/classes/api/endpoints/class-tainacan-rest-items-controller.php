@@ -333,9 +333,9 @@ class REST_Items_Controller extends REST_Controller {
 
 		if (! $item instanceof Entities\Item) {
 			return new \WP_REST_Response([
-		    	'error_message' => __('An item with this ID was not found', 'tainacan' ),
-			    'item_id' => $item_id
-		    ], 400);
+				'error_message' => __('An item with this ID was not found', 'tainacan' ),
+				'item_id' => $item_id
+			], 400);
 		}
 
 		$response = $this->prepare_item_for_response($item, $request);
@@ -355,13 +355,13 @@ class REST_Items_Controller extends REST_Controller {
 
 		if (! $item instanceof Entities\Item) {
 			return new \WP_REST_Response([
-		    	'error_message' => __('An item with this ID was not found', 'tainacan' ),
-			    'item_id' => $item_id
-		    ], 400);
+				'error_message' => __('An item with this ID was not found', 'tainacan' ),
+				'item_id' => $item_id
+			], 400);
 		}
 
 		$args = $this->prepare_filters($request);
-		
+
 		// fixed args
 		$args['post_parent'] = $item_id;
 		$args['post_type'] = 'attachment';
@@ -408,16 +408,6 @@ class REST_Items_Controller extends REST_Controller {
 		$rest_response->header('X-WP-ItemsPerPage', (int) $posts_query->query_vars['posts_per_page']);
 
 		return $rest_response;
-	}
-
-	/**
-	 * @param $request
-	 *
-	 * @return array
-	 * @throws \Exception
-	 */
-	protected function prepare_filters($request) {
-		return parent::prepare_filters($request);
 	}
 
 	/**
@@ -859,10 +849,10 @@ class REST_Items_Controller extends REST_Controller {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
 
 		if ($collection instanceof Entities\Collection) {
-            return current_user_can($collection->get_items_capabilities()->edit_posts);
-        }
+			return current_user_can($collection->get_items_capabilities()->edit_posts);
+		}
 
-        return false;
+		return false;
 	}
 
 	/**
@@ -878,9 +868,9 @@ class REST_Items_Controller extends REST_Controller {
 
 		if (! $item instanceof Entities\Item) {
 			return new \WP_REST_Response([
-		    	'error_message' => __('An item with this ID was not found', 'tainacan' ),
-			    'item_id' => $item_id
-		    ], 400);
+				'error_message' => __('An item with this ID was not found', 'tainacan' ),
+				'item_id' => $item_id
+			], 400);
 		}
 
 		if($permanently == true) {
