@@ -31,6 +31,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         itemsRequestSource,
         maxItemsNumber,
         order,
+        orderBy,
+        orderByMetaKey,
         searchString,
         selectedItems,
         isLoading,
@@ -302,16 +304,36 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 }
 
                 // Set up sorting order
-                if (order != '' && showSearchBar)
-                    queryObject.order = order;
-                else if (queryObject.order != '')
+                if (queryObject.order != '' && !showSearchBar)
                     setAttributes({ order: queryObject.order });
+                else if (order != '')
+                    queryObject.order = order;
                 else {
                     queryObject.order = 'asc';
                     setAttributes({ order: 'asc' });
                 }
+                
+                // Set up sorting orderby
+                if (queryObject.orderby != '')
+                    setAttributes({ orderBy: queryObject.orderby });
+                else if (orderBy != 'date')
+                    queryObject.orderby = orderBy;
+                else {
+                    queryObject.orderby = 'date';
+                    setAttributes({ orderBy: 'date' });
+                }
 
-                // Set up sorting order
+                // Set up sorting metakey (used by some orderby)
+                if (queryObject.metakey != '')
+                    setAttributes({ orderByMetaKey: queryObject.metakey });
+                else if (orderByMetaKey != '')
+                    queryObject.metakey = orderByMetaKey;
+                else {
+                    queryObject.metakey = '';
+                    setAttributes({ orderByMetaKey: '' });
+                }
+
+                // Set up search string
                 if (searchString != undefined)
                     queryObject.search = searchString;
                 else if (queryObject.search != undefined)
