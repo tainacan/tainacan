@@ -15,6 +15,7 @@ export default function({ attributes, className }) {
         maxItemsNumber,
         order,
         orderBy,
+        orderByMetaKey,
         showSearchBar,
         showCollectionHeader,
         showCollectionLabel,
@@ -58,6 +59,7 @@ export default function({ attributes, className }) {
                 max-items-number={ maxItemsNumber }
                 order={ order }
                 orderBy={ orderBy }
+                orderByMetaKey={ orderByMetaKey }
                 tainacan-api-root={ tainacan_blocks.root }
                 tainacan-base-url={ tainacan_blocks.base_url }
                 id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>

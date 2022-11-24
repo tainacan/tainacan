@@ -1,7 +1,7 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
-    /* Deprecated on 0.19.3 due to the introduction of orderBy */
+    /* Deprecated on 0.19.3 due to the introduction of orderBy and orderByMetaKey */
     {
         attributes: {
             "content": {

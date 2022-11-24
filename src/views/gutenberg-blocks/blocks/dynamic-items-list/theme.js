@@ -45,6 +45,7 @@ export default (element) => {
                         imageSize: 'tainacan-medium',
                         order: 'asc',
                         orderBy: 'date',
+                        orderByMetaKey: '',
                         showSearchBar: false,
                         showCollectionHeader: false,
                         showCollectionLabel: false,
@@ -77,6 +78,7 @@ export default (element) => {
                                 maxItemsNumber: this.maxItemsNumber,
                                 order: this.order,
                                 orderBy: this.orderBy,
+                                orderByMetaKey: this.orderByMetaKey,
                                 showSearchBar: this.showSearchBar,
                                 showCollectionHeader: this.showCollectionHeader,
                                 showCollectionLabel: this.showCollectionLabel,
@@ -110,6 +112,7 @@ export default (element) => {
                         this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
                         this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
                         this.orderBy = this.$el.attributes['order-by'] != undefined ? this.$el.attributes['order-by'].value : undefined;
+                        this.orderByMetaKey = this.$el.attributes['order-by-meta-key'] != undefined ? this.$el.attributes['order-by-meta-key'].value : undefined;
                         this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
                         this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
                         this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;

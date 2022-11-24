@@ -102,6 +102,10 @@
             "type": "string",
             "default": "date"
         },
+        "orderByMetaKey": {
+            "type": "string",
+            "default": ""
+        },
         "blockId": {
             "type": "string",
             "default": ""

@@ -300,6 +300,7 @@ export default {
         imageSize: String,
         order: String,
         orderBy: String,
+        orderByMetaKey: String,
         showSearchBar: Boolean,
         showCollectionHeader: Boolean,
         showCollectionLabel: Boolean,
@@ -419,6 +420,10 @@ export default {
                 // Set up orderBy
                 if (this.orderBy != undefined)
                     queryObject.orderby = this.orderBy;
+                
+                 // Set up orderByMetaKey
+                if (this.orderByMetaKey != undefined)
+                    queryObject.metakey = this.orderByMetaKey;
 
                 // Set up search string
                 if (this.searchString != undefined)
