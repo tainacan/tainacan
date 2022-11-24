@@ -333,9 +333,9 @@ class REST_Items_Controller extends REST_Controller {
 
 		if (! $item instanceof Entities\Item) {
 			return new \WP_REST_Response([
-		    	'error_message' => __('An item with this ID was not found', 'tainacan' ),
-			    'item_id' => $item_id
-		    ], 400);
+				'error_message' => __('An item with this ID was not found', 'tainacan' ),
+				'item_id' => $item_id
+			], 400);
 		}
 
 		$response = $this->prepare_item_for_response($item, $request);
@@ -355,9 +355,9 @@ class REST_Items_Controller extends REST_Controller {
 
 		if (! $item instanceof Entities\Item) {
 			return new \WP_REST_Response([
-		    	'error_message' => __('An item with this ID was not found', 'tainacan' ),
-			    'item_id' => $item_id
-		    ], 400);
+				'error_message' => __('An item with this ID was not found', 'tainacan' ),
+				'item_id' => $item_id
+			], 400);
 		}
 
 		$args = $this->prepare_filters($request);
@@ -409,7 +409,6 @@ class REST_Items_Controller extends REST_Controller {
 
 		return $rest_response;
 	}
-
 
 	/**
 	 * @param array $args — array of query arguments.
@@ -850,10 +849,10 @@ class REST_Items_Controller extends REST_Controller {
 		$collection = $this->collections_repository->fetch($request['collection_id']);
 
 		if ($collection instanceof Entities\Collection) {
-            return current_user_can($collection->get_items_capabilities()->edit_posts);
-        }
+			return current_user_can($collection->get_items_capabilities()->edit_posts);
+		}
 
-        return false;
+		return false;
 	}
 
 	/**
@@ -869,9 +868,9 @@ class REST_Items_Controller extends REST_Controller {
 
 		if (! $item instanceof Entities\Item) {
 			return new \WP_REST_Response([
-		    	'error_message' => __('An item with this ID was not found', 'tainacan' ),
-			    'item_id' => $item_id
-		    ], 400);
+				'error_message' => __('An item with this ID was not found', 'tainacan' ),
+				'item_id' => $item_id
+			], 400);
 		}
 
 		if($permanently == true) {
