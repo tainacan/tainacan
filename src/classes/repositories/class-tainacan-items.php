@@ -772,9 +772,7 @@ class Items extends Repository {
 	 */
 	private function parse_core_metadata_for_advanced_search($args, $collections = [])
 	{
-		$is_repository_level = true;
 		if (
-			$is_repository_level &&
 			isset($args["meta_query"]) &&
 			!empty($args["meta_query"]) &&
 			is_array($args["meta_query"])
