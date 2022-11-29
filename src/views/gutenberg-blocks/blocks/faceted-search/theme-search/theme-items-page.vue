@@ -451,6 +451,12 @@
                 ref="items-list-area"
                 class="items-list-area">
 
+            <!-- JS-side hook for extra form content -->
+            <div 
+                    v-if="hooks['items_list_area_before']"
+                    class="faceted-search-hook faceted-search-hook-items-list-area-before"
+                    v-html="hooks['items_list_area_before']" />
+
             <!-- ADVANCED SEARCH -->
             <transition name="filter-item">
                 <div 
@@ -660,6 +666,12 @@
                             v-html="hooks['pagination_after']" />
                 </template>
 
+                <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['items_list_area_after']"
+                        class="faceted-search-hook faceted-search-hook-items-list-area-after"
+                        v-html="hooks['items_list_area_after']" />
+
                 <!-- This is used by intersection observers to set filters menu as fixed on the bottom -->
                 <div 
                         id="items-list-results-bottom"
@@ -667,6 +679,7 @@
                         class="sr-only"
                         style="bottom: 0px" />
             </div>
+            
         </div>
        
     </div>
@@ -1049,6 +1062,11 @@
                     if (filterTagsAfterFiltersCollection)
                         this.hooks['filter_tags_after'] = filterTagsAfterFiltersCollection;
 
+                    const itemsListAreaBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_area_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_area_list_before`, '');
+                    const itemsListAreaBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_before`) || itemsListAreaBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_before`, itemsListAreaBeforeFilters);
+                    if (itemsListAreaBeforeFiltersCollection)
+                        this.hooks['items_area_list_before'] = itemsListAreaBeforeFiltersCollection;
+
                     const itemsListBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_before`, '');
                     const itemsListBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`) || itemsListBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`, itemsListBeforeFilters);
                     if (itemsListBeforeFiltersCollection)
@@ -1068,6 +1086,11 @@
                     const paginationAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`) || paginationAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`, paginationAfterFilters); 
                     if (paginationAfterFiltersCollection)
                         this.hooks['pagination_after'] = paginationAfterFiltersCollection; 
+
+                    const itemsListAreaAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_area_list_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_area_list_after`, '');
+                    const itemsListAreaAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_after`) || itemsListAreaAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_after`, itemsListAreaAfterFilters);
+                    if (itemsListAreaAfterFiltersCollection)
+                        this.hooks['items_area_list_after'] = itemsListAreaAfterFiltersCollection;
                 }
             },
             openExposersModal() {
