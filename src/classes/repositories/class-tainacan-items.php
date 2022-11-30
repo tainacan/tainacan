@@ -143,13 +143,13 @@ class Items extends Repository {
 				'title'       => __( 'Thumbnail', 'tainacan' ),
 				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
 			],
-		    'comment_status'  => [
-		        'map'         => 'comment_status',
-		        'title'       => __( 'Comment Status', 'tainacan' ),
-		        'type'        => 'string',
-		        'description' => __( 'Item comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
-		        'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
-		        'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
+			'comment_status'  => [
+				'map'         => 'comment_status',
+				'title'       => __( 'Comment Status', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Item comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
+				'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
+				'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
 		] );
 	}
@@ -354,6 +354,10 @@ class Items extends Repository {
 
 		if ( defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') && true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY ) {
 			$args = $this->parse_relationship_metaquery($args);
+		}
+
+		if ( !defined('TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH') || false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH ) {
+			$args = $this->parse_core_metadata_for_advanced_search($args, $collections_objects);
 		}
 
 		$args = apply_filters( 'tainacan-fetch-args', $args, 'items' );
@@ -755,6 +759,78 @@ class Items extends Repository {
 		$where .= " AND (wp_postmeta.meta_key = '$meta_id' AND wp_postmeta.meta_value IN ( $SQL_related_item ) ) ";
 		remove_filter( 'posts_where', array($this, 'posts_where_relationship_metaquery') );
 		return $where;
+	}
+
+	/**
+	 * checks if there is `tainacan_core_title` or `tainacan_core_description` as a key for a meta_query,
+	 * and replaces the ids of the metadata referring to `title_core` and `description_core`.
+	 *
+	 * @param array $args WP_Query args
+	 * @param array $collections Array \Taainacan\Entities\Collection
+	 *
+	 * @return \WP_Query|Array;
+	 */
+	private function parse_core_metadata_for_advanced_search($args, $collections = [])
+	{
+		if (
+			isset($args["meta_query"]) &&
+			!empty($args["meta_query"]) &&
+			is_array($args["meta_query"])
+		) {
+			$core_title_meta_query = [];
+			$core_description_meta_query = [];
+
+			foreach ($args["meta_query"] as $key => $meta_query) {
+				// Finds a special key value, that should represent all core title or core description
+				if (
+					isset($meta_query["key"]) &&
+					($meta_query["key"] === "tainacan_core_title" ||
+					$meta_query["key"] === "tainacan_core_description")
+				) {
+					// Gets every collection to build the OR query
+					if( empty($collections) ) {
+						$collections = \Tainacan\Repositories\Collections::get_instance()->fetch(
+							[],
+							"OBJECT"
+						);
+					}
+
+					foreach ($collections as $collection) {
+						if ($meta_query["key"] === "tainacan_core_title") {
+							$title_meta = $collection->get_core_title_metadatum();
+
+							// Builds inner meta_queries for each collection, using the same settings of the special one
+							$core_title_meta_query[] = [
+								"key" => $title_meta->get_id(),
+								"compare" => $meta_query["compare"],
+								"value" => $meta_query["value"],
+							];
+						} elseif (
+							$meta_query["key"] === "tainacan_core_description"
+						) {
+							$description_meta = $collection->get_core_description_metadatum();
+
+							// Builds inner meta_queries for each collection, using the same settings of the special one
+							$core_description_meta_query[] = [
+								"key" => $description_meta->get_id(),
+								"compare" => $meta_query["compare"],
+								"value" => $meta_query["value"],
+							];
+						}
+					}
+					unset($args["meta_query"][$key]);
+				}
+			}
+			if (count($core_title_meta_query)) {
+				$core_title_meta_query["relation"] = "OR";
+				$args["meta_query"][] = $core_title_meta_query;
+			}
+			if (count($core_description_meta_query)) {
+				$core_description_meta_query["relation"] = "OR";
+				$args["meta_query"][] = $core_description_meta_query;
+			}
+		}
+		return $args;
 	}
 
 }

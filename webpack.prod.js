@@ -10,7 +10,7 @@ const terserPlugin = new TerserPlugin({
             comments: /translators:/i,
         },
         mangle: {
-            reserved: ["__"],
+            reserved: [ '__', '_n', '_nx', '_x' ]
         }
     },
 });
@@ -19,7 +19,7 @@ module.exports = merge(common, {
     mode: 'production',
     devtool: undefined,
     optimization: {
-        minimize: true,
+        concatenateModules: false,
         minimizer: [terserPlugin]
     },
     resolve: {

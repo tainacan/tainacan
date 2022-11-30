@@ -284,9 +284,55 @@
             }).then((resp) => {
                     resp.request
                         .then((metadata) => {
+
+                            this.metadataAsArray = JSON.parse(JSON.stringify(metadata));
+
+                            // In repository level, if set, we add fake options to search on every title and description
+                            if (this.isRepositoryLevel && tainacan_plugin.tainacan_enable_core_metadata_on_advanced_search == true) {
+
+                                 this.metadataAsArray.unshift({
+                                    collection_id: 'default',
+                                    id: 'tainacan_core_description',
+                                    metadata_section_id: 'default_section',
+                                    metadata_type: 'Tainacan\\Metadata_Types\\Core_Description',
+                                    metadata_type_object: {
+                                        className: "Tainacan\\Metadata_Types\\Core_Description",
+                                        component: "tainacan-textarea",
+                                        core: true,
+                                        errors: null,
+                                        form_component: "tainacan-form-textarea",
+                                        name: this.$i18n.get('label_core_description'),
+                                    },
+                                    metadata_type_options: [],
+                                    name: this.$i18n.get('label_core_description'),
+                                    parent: 0,
+                                    repository_level: null,
+                                    slug: 'tainacan-core-description'
+                                });
+
+                                this.metadataAsArray.unshift({
+                                    collection_id: 'default',
+                                    id: 'tainacan_core_title',
+                                    metadata_section_id: 'default_section',
+                                    metadata_type: 'Tainacan\\Metadata_Types\\Core_Title',
+                                    metadata_type_object: {
+                                        className: "Tainacan\\Metadata_Types\\Core_Title",
+                                        component: "tainacan-text",
+                                        core: true,
+                                        errors: null,
+                                        form_component: "tainacan-form-text",
+                                        name: this.$i18n.get('label_core_title'),
+                                    },
+                                    metadata_type_options: [],
+                                    name: this.$i18n.get('label_core_title'),
+                                    parent: 0,
+                                    repository_level: null,
+                                    slug: 'tainacan-core-title'
+                                });
+                            }
+
                             // We create and object keyed by IDs to easily match the query params,
                             // but keep an array version to use the order in the select
-                            this.metadataAsArray = JSON.parse(JSON.stringify(metadata));
                             metadata.forEach(metadatum => {
                                 this.metadataAsObject[metadatum.id] = metadatum;
                             });
@@ -591,7 +637,7 @@
     #advanced-search-container {
         width: calc(100% - (2 * var(--tainacan-one-column)));
         margin: 0 var(--tainacan-one-column) 0.875em;
-        background: var(--tainacan-input-background-color);
+        background: var(--tainacan-background-color);
         border: 1px solid var(--tainacan-input-border-color);
         border-radius: 1px;
         transition: height 0.2s ease;

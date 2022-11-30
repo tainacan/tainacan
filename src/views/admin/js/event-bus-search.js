@@ -298,6 +298,9 @@ export default {
                 setTotalItems(totalItems) {
                     this.$store.dispatch('search/setTotalItems', totalItems);
                 },
+                setSentenceMode(sentenceMode) {
+                    this.$store.dispatch('search/setSentenceMode', sentenceMode);
+                },
                 setSearchQuery(searchQuery) {
                     this.$store.dispatch('search/setSearchQuery', searchQuery);
                     this.updateURLQueries();

@@ -68,18 +68,54 @@
                 <div 
                         role="search" 
                         class="search-area">
-                    <b-input
-                        size="is-small"
-                        :placeholder="$i18n.get('instruction_search')"
-                        type="search"
-                        :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
-                        :value="searchQuery"
-                        @input.native="futureSearchQuery = $event.target.value"
-                        @keyup.enter.native="updateSearch()"
-                        icon-right="magnify"
-                        icon-right-clickable
-                        @icon-right-click="updateSearch()"
-                        :disabled="openAdvancedSearch" />
+                    <b-dropdown
+                            ref="tainacan-textual-search-input"
+                            class="tainacan-textual-search-input"
+                            aria-role="dialog"
+                            :mobile-modal="false"
+                            :disabled="openAdvancedSearch"
+                            :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
+                        <b-input
+                                slot="trigger"
+                                size="is-small"
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                                :value="searchQuery"
+                                @input.native="typeFutureSearch"
+                                @keyup.enter.native="updateSearch()"
+                                icon-right="magnify"
+                                icon-right-clickable
+                                @icon-right-click="updateSearch()"
+                                :disabled="openAdvancedSearch" />
+                        <b-dropdown-item 
+                                @click="updateSearch()"
+                                :focusable="false">
+                            <span v-html="$i18n.get('instruction_press_enter_to_search_for')"/>&nbsp;
+                            <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                                custom
+                                :focusable="false">
+                            <b-checkbox 
+                                    :value="sentenceMode"
+                                    @input="$eventBusSearch.setSentenceMode($event)">
+                                {{ $i18n.get('label_use_search_separated_words') }}
+                            </b-checkbox>
+                            <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
+                        </b-dropdown-item>
+                        <b-dropdown-item
+                                v-if="!hideAdvancedSearch"
+                                :focusable="false"
+                                @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
+                            {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
+                            <a 
+                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
+                                    class="has-text-secondary">
+                                {{ $i18n.get('advanced_search') }}
+                            </a>
+                        </b-dropdown-item>
+                    </b-dropdown>
                     <a
                             v-if="!hideAdvancedSearch"
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
@@ -415,6 +451,12 @@
                 ref="items-list-area"
                 class="items-list-area">
 
+            <!-- JS-side hook for extra form content -->
+            <div 
+                    v-if="hooks['items_list_area_before']"
+                    class="faceted-search-hook faceted-search-hook-items-list-area-before"
+                    v-html="hooks['items_list_area_before']" />
+
             <!-- ADVANCED SEARCH -->
             <transition name="filter-item">
                 <div 
@@ -556,7 +598,43 @@
                         :is-loading="showLoading"
                         :enabled-view-modes="enabledViewModes"
                         :initial-item-position="initialItemPosition"
-                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"/>   
+                        :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''">
+                    
+                    
+                    <!-- Empty Placeholder, rendered in a slot inside the view modes -->
+                    <section
+                            v-if="!showLoading && totalItems == 0"
+                            class="section">
+                        <div class="content has-text-grey has-text-centered">
+                            <p>
+                                <span class="icon is-large">
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
+                                </span>
+                            </p>
+                            <p>
+                                {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : $i18n.get('info_no_item_found') }}
+                            </p>
+
+                            <p v-if="searchQuery">
+                                <template v-if="!sentenceMode">
+                                    <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                    <br>
+                                    {{ $i18n.get('info_details_about_search_by_word') }}
+                                </template>
+                                <template v-else>
+                                    <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                </template>
+                                <br>
+                                <b-checkbox 
+                                        :value="sentenceMode"
+                                        @input="$eventBusSearch.setSentenceMode($event); updateSearch();">
+                                    {{ $i18n.get('label_use_search_separated_words') }}
+                                </b-checkbox>
+                            </p>
+                        </div>
+                    </section>
+
+                </component>   
 
                 <!-- JS-side hook for extra form content -->
                 <div 
@@ -588,6 +666,12 @@
                             v-html="hooks['pagination_after']" />
                 </template>
 
+                <!-- JS-side hook for extra form content -->
+                <div 
+                        v-if="hooks['items_list_area_after']"
+                        class="faceted-search-hook faceted-search-hook-items-list-area-after"
+                        v-html="hooks['items_list_area_after']" />
+
                 <!-- This is used by intersection observers to set filters menu as fixed on the bottom -->
                 <div 
                         id="items-list-results-bottom"
@@ -595,6 +679,7 @@
                         class="sr-only"
                         style="bottom: 0px" />
             </div>
+            
         </div>
        
     </div>
@@ -699,6 +784,9 @@
             searchQuery() {
                 return this.getSearchQuery();
             },
+            sentenceMode() {
+                return this.getSentenceMode();
+            },
             viewMode() {
                 return this.getViewMode();
             },
@@ -720,6 +808,14 @@
                     metakey: this.$route.query.metakey
                 }, this.sortingMetadata);
                 return this.$route.query.metakey ? metadatumName : (metadatumName ? this.$i18n.get(metadatumName) : '');
+            },
+            hasSearchByMoreThanOneWord() {
+                return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
+            },
+            searchedForSentence() {
+                if (this.searchQuery)
+                    return this.$i18n.getWithVariables('info_you_searched_for_%s', ['<em>"' + this.searchQuery + '"</em>']);
+                return '';
             }
         },
         watch: {
@@ -918,6 +1014,7 @@
                 'getOrder',
                 'getViewMode',
                 'getTotalItems',
+                'getSentenceMode',
                 'getMetaKey',
                 'getPage',
                 'getItemsPerPage'
@@ -965,6 +1062,11 @@
                     if (filterTagsAfterFiltersCollection)
                         this.hooks['filter_tags_after'] = filterTagsAfterFiltersCollection;
 
+                    const itemsListAreaBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_area_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_area_list_before`, '');
+                    const itemsListAreaBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_before`) || itemsListAreaBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_before`, itemsListAreaBeforeFilters);
+                    if (itemsListAreaBeforeFiltersCollection)
+                        this.hooks['items_area_list_before'] = itemsListAreaBeforeFiltersCollection;
+
                     const itemsListBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_before`, '');
                     const itemsListBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`) || itemsListBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`, itemsListBeforeFilters);
                     if (itemsListBeforeFiltersCollection)
@@ -984,6 +1086,11 @@
                     const paginationAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`) || paginationAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_pagination_after`, paginationAfterFilters); 
                     if (paginationAfterFiltersCollection)
                         this.hooks['pagination_after'] = paginationAfterFiltersCollection; 
+
+                    const itemsListAreaAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_area_list_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_area_list_after`, '');
+                    const itemsListAreaAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_after`) || itemsListAreaAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_after`, itemsListAreaAfterFilters);
+                    if (itemsListAreaAfterFiltersCollection)
+                        this.hooks['items_area_list_after'] = itemsListAreaAfterFiltersCollection;
                 }
             },
             openExposersModal() {
@@ -1273,6 +1380,17 @@
 
                     this.openMetatadaSortingWarningDialog({ offerCheckbox: true });
                 }
+            },
+            typeFutureSearch($event) {
+                this.futureSearchQuery = $event.target.value;
+                
+                // If we have more than one word and the dropdown is not active, open it
+                if ( this.hasSearchByMoreThanOneWord && this.$refs['tainacan-textual-search-input'] && !this.$refs['tainacan-textual-search-input'].isActive && typeof this.$refs['tainacan-textual-search-input'].toggle === 'function' )
+                    this.$refs['tainacan-textual-search-input'].toggle();
+
+                // If we don't have more than one word any more and the dropdown is still active, close it
+                if ( !this.hasSearchByMoreThanOneWord && this.$refs['tainacan-textual-search-input'] && this.$refs['tainacan-textual-search-input'].isActive && typeof this.$refs['tainacan-textual-search-input'].toggle === 'function' )
+                    this.$refs['tainacan-textual-search-input'].toggle();
             },
             openMetatadaSortingWarningDialog({ offerCheckbox }) {
                 this.$buefy.modal.open({
@@ -1567,6 +1685,27 @@
                 align-items: center;
                 width: 100%;
                 max-width: 16.66667vw;
+
+                .tainacan-textual-search-input {
+                    width: 100%;
+
+                    /deep/ .dropdown-trigger {
+                        width: 100%;
+                    }
+                    /deep/ .dropdown-menu {
+                        z-index: 99999991;
+
+                        .dropdown-item:last-child {
+                            line-height: 2.25em;
+                            background: var(--tainacan-item-hover-background-color);
+
+                            @media screen and (max-width: 768px) {
+                                white-space: initial;
+                                line-height: 2.125em;
+                            }
+                        }
+                    }
+                }
 
                 .control {
                     width: 100%;

@@ -188,7 +188,8 @@ class Media {
 			finfo_close( $finfo );
 			return $mime_type;
 		}
-		return '';
+		$filetypes = \wp_check_filetype($filename);
+		return isset($filetypes['type']) && $filetypes['type'] != false ? $filetypes['type'] : '';
 	}
 
 	/**

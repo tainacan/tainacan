@@ -118,6 +118,11 @@ export const setSearchQuery = ({ commit }, searchQuery ) => {
     commit('setSearchQuery', searchQuery );
 };
 
+// Set sentence mode
+export const setSentenceMode = ({ commit }, sentenceMode ) => {
+    commit('setSentenceMode', sentenceMode );
+};
+
 // Set ViewMode (view_mode)
 export const setViewMode = ({ commit }, viewMode ) => {
     commit('setViewMode', viewMode );

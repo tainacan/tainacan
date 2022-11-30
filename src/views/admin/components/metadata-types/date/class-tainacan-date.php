@@ -11,6 +11,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 class Date extends Metadata_Type {
 
+	private $format;
+
 	function __construct() {
 		// call metadatum type constructor
 		parent::__construct();
@@ -26,17 +28,17 @@ class Date extends Metadata_Type {
 			</div>
 		');
 		$this->output_date_format = get_option('date_format');
+		$this->format = 'Y-m-d';
 	}
 
 	public function validate( Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
-		$format = 'Y-m-d';
 
 		if (is_array($value)) {
 			foreach ($value as $date_value) {
 				if(!empty($date_value)) {
-					$d = \DateTime::createFromFormat($format, $date_value);
-					if (!$d || $d->format($format) !== $date_value) {
+					$d = \DateTime::createFromFormat($this->format, $date_value);
+					if (!$d || $d->format($this->format) !== $date_value) {
 						$this->add_error($this->format_error_msg($date_value));
 						return false;
 					}
@@ -45,8 +47,8 @@ class Date extends Metadata_Type {
 			return true;
 		}
 
-		$d = \DateTime::createFromFormat($format, $value);
-		if (!$d || $d->format($format) !== $value) {
+		$d = \DateTime::createFromFormat($this->format, $value);
+		if (!$d || $d->format($this->format) !== $value) {
 			$this->add_error($this->format_error_msg($value));
 			return false;
 		}
@@ -92,7 +94,8 @@ class Date extends Metadata_Type {
 
 	private function format_error_msg($value) {
 		return sprintf(
-			__('Invalid date format. Expected format is MM/DD/YYYY, got %s.', 'tainacan'),
+			__('Invalid date format. Expected format is %s, got %s.', 'tainacan'),
+			$this->format,
 			$value
 		);
 	}

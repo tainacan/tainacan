@@ -327,6 +327,7 @@ class Admin {
 			'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
 			'wp_elasticpress'    		=> \Tainacan\Elastic_Press::get_instance()->is_active(),
 			'item_submission_captcha_site_key' => get_option("tnc_option_recaptch_site_key"),
+			'tainacan_enable_core_metadata_on_advanced_search' => ( !defined('TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH') || false === TAINACAN_DISABLE_CORE_METADATA_ON_ADVANCED_SEARCH ),
 			'tainacan_enable_relationship_metaquery' => ( defined('TAINACAN_ENABLE_RELATIONSHIP_METAQUERY') && true === TAINACAN_ENABLE_RELATIONSHIP_METAQUERY )
 		];
 		
@@ -374,6 +375,11 @@ class Admin {
 
 		$settings['wp_post_types'] = $wp_post_types;
 
+		// Key-valued array with extra options to be passed to every request in the admin (goes the header)
+		$admin_request_options = [];
+		$admin_request_options = apply_filters('tainacan-admin-extra-request-options', $admin_request_options);
+		$settings['admin_request_options'] = $admin_request_options;
+
 		return $settings;
 
 	}
@@ -394,7 +400,7 @@ class Admin {
 		$admin_options = apply_filters('set_tainacan_admin_options', $_GET);
 		$admin_options = apply_filters('tainacan-admin-ui-options', $_GET);
 		$admin_options = json_encode($admin_options);
-		// TODO move it to a separate file and start the Vue project
+
 		echo "<div id='tainacan-admin-app' data-module='admin' data-options='$admin_options'></div>";
 	}
 

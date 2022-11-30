@@ -147,6 +147,15 @@ export const setSearchQuery = ( state, searchQuery ) => {
     delete state.postquery.s;
 };
 
+export const setSentenceMode = ( state, sentenceMode ) => {
+    if (sentenceMode == true)
+        Vue.set(state.postquery, 'sentence', sentenceMode);
+    else {
+        Vue.set(state.postquery, 'sentence', sentenceMode); // Needed to trigger getter
+        delete state.postquery.sentence;
+    }
+};
+
 export const setStatus = ( state, status ) => {
     state.postquery.status = status;
 };

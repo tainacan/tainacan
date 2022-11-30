@@ -7,7 +7,7 @@
             
             <!-- New Collection button -->
             <div 
-                    v-if="$userCaps.hasCapability('tnc_rep_edit_collections')"
+                    v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="header-item">
                 <b-dropdown
                         aria-role="list"
@@ -31,17 +31,15 @@
                             <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
                         </router-link>
                     </b-dropdown-item>
-                    <b-dropdown-item
-                            :key="metadatum_mapper.slug"
-                            v-for="metadatum_mapper in metadatum_mappers"
-                            v-if="metadatum_mapper.metadata != false"
-                            aria-role="listitem">
-                        <router-link
-                                :id="'a-create-collection-' + metadatum_mapper.slug"
+                    <b-dropdown-item aria-role="listitem">
+                        <div
+                                id="a-preset-collection"
                                 tag="div"
-                                :to="{ path: $routerHelper.getNewMappedCollectionPath(metadatum_mapper.slug) }">
-                            {{ $i18n.get(metadatum_mapper.name) }}
-                        </router-link>
+                                @click="onOpenCollectionCreationModal">
+                            {{ $i18n.get('label_preset_collections') }}
+                            <br>
+                            <small class="is-small">{{ $i18n.get('info_preset_collections') }}</small>
+                        </div>
                     </b-dropdown-item>
                     <b-dropdown-item aria-role="listitem">
                         <div
@@ -261,9 +259,8 @@
                                 {{ $i18n.get('info_no_collections_' + statusOption.slug) }}
                             </p>
 
-                            <div v-if="$userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
+                            <div v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
-                                        :disabled="isLoadingMetadatumMappers"
                                         id="collection-creation-options-dropdown"
                                         aria-role="list"
                                         trap-focus>
@@ -285,17 +282,15 @@
                                             <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
                                         </router-link>
                                     </b-dropdown-item>
-                                    <b-dropdown-item
-                                            :key="metadatum_mapper.slug"
-                                            v-for="metadatum_mapper in metadatum_mappers"
-                                            v-if="metadatum_mapper.metadata != false"
-                                            aria-role="listitem">
-                                        <router-link
-                                                :id="'a-create-collection-' + metadatum_mapper.slug"
+                                    <b-dropdown-item aria-role="listitem">
+                                        <div
+                                                id="a-preset-collection"
                                                 tag="div"
-                                                :to="{ path: $routerHelper.getNewMappedCollectionPath(metadatum_mapper.slug) }">
-                                            {{ $i18n.get(metadatum_mapper.name) }}
-                                        </router-link>
+                                                @click="onOpenCollectionCreationModal">
+                                            {{ $i18n.get('label_preset_collections') }}
+                                            <br>
+                                            <small class="is-small">{{ $i18n.get('info_preset_collections') }}</small>
+                                        </div>
                                     </b-dropdown-item>
                                     <b-dropdown-item aria-role="listitem">
                                         <div
@@ -364,6 +359,7 @@
 <script>
 import CollectionsList from '../../components/lists/collections-list.vue';
 import AvailableImportersModal from '../../components/modals/available-importers-modal.vue';
+import CollectionCreationModal from '../../components/modals/collection-creation-modal.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -391,11 +387,6 @@ export default {
         }
     },
     computed: {
-        metadatum_mappers: {
-            get() {
-                return this.getMetadatumMappers();
-            }
-        },
         collections() {
             return this.getCollections(); 
         },
@@ -419,15 +410,6 @@ export default {
     created() {
         this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
 
-        this.isLoadingMetadatumTypes = true;
-        this.fetchMetadatumMappers()
-            .then(() => {
-                this.isLoadingMetadatumMappers = false;
-            })
-            .catch(() => {
-                this.isLoadingMetadatumMappers = false;
-            });
-        
         this.isLoadingCollectionTaxonomies = true;
         this.fetchCollectionTaxonomies()
             .then(() => {
@@ -437,7 +419,8 @@ export default {
                 this.isLoadingCollectionTaxonomies= false;
             });
     }, 
-    mounted(){
+    mounted() {
+
         if (this.collectionsPerPage != this.$userPrefs.get('collections_per_page'))
             this.collectionsPerPage = this.$userPrefs.get('collections_per_page');
         if (!this.collectionsPerPage) {
@@ -451,7 +434,6 @@ export default {
             this.order = 'asc';
             this.$userPrefs.set('collections_order', 'asc');
         }
-
 
         if (this.orderBy != this.$userPrefs.get('collections_order_by'))
             this.orderBy = this.$userPrefs.get('collections_order_by');
@@ -475,9 +457,6 @@ export default {
             'getCollections',
             'getRepositoryTotalCollections',
             'getCollectionTaxonomies'
-        ]),
-        ...mapGetters('metadata', [
-            'getMetadatumMappers'
         ]),
         onChangeTab(status) {
             this.page = 1;
@@ -563,6 +542,16 @@ export default {
             this.$buefy.modal.open({
                 parent: this,
                 component: AvailableImportersModal,
+                hasModalCard: true,
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });
+        },
+        onOpenCollectionCreationModal() {
+            this.$buefy.modal.open({
+                parent: this,
+                component: CollectionCreationModal,
                 hasModalCard: true,
                 trapFocus: true,
                 customClass: 'tainacan-modal',

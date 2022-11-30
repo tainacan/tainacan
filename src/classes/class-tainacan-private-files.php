@@ -13,13 +13,13 @@ class Private_Files {
 
 	public $dir_separator;
 
-    public static function get_instance() {
-        if(!isset(self::$instance)) {
-            self::$instance = new self();
-        }
+	public static function get_instance() {
+		if(!isset(self::$instance)) {
+			self::$instance = new self();
+		}
 
-        return self::$instance;
-    }
+		return self::$instance;
+	}
 
 	protected function __construct() {
 
