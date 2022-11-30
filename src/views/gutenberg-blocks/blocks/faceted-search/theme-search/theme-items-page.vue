@@ -105,7 +105,7 @@
                             <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
                         </b-dropdown-item>
                         <b-dropdown-item
-                                v-if="!$adminOptions.hideItemsListAdvancedSearch"
+                                v-if="!hideAdvancedSearch"
                                 :focusable="false"
                                 @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                             {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
