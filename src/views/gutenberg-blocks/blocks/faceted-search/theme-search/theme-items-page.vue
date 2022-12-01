@@ -1062,10 +1062,10 @@
                     if (filterTagsAfterFiltersCollection)
                         this.hooks['filter_tags_after'] = filterTagsAfterFiltersCollection;
 
-                    const itemsListAreaBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_area_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_area_list_before`, '');
-                    const itemsListAreaBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_before`) || itemsListAreaBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_before`, itemsListAreaBeforeFilters);
+                    const itemsListAreaBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_area_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_area_before`, '');
+                    const itemsListAreaBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_area_before`) || itemsListAreaBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_area_before`, itemsListAreaBeforeFilters);
                     if (itemsListAreaBeforeFiltersCollection)
-                        this.hooks['items_area_list_before'] = itemsListAreaBeforeFiltersCollection;
+                        this.hooks['items_list_area_before'] = itemsListAreaBeforeFiltersCollection;
 
                     const itemsListBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_before`, '');
                     const itemsListBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`) || itemsListBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`, itemsListBeforeFilters);
@@ -1087,10 +1087,10 @@
                     if (paginationAfterFiltersCollection)
                         this.hooks['pagination_after'] = paginationAfterFiltersCollection; 
 
-                    const itemsListAreaAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_area_list_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_area_list_after`, '');
-                    const itemsListAreaAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_after`) || itemsListAreaAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_after`, itemsListAreaAfterFilters);
+                    const itemsListAreaAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_area_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_area_after`, '');
+                    const itemsListAreaAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_area_after`) || itemsListAreaAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_area_after`, itemsListAreaAfterFilters);
                     if (itemsListAreaAfterFiltersCollection)
-                        this.hooks['items_area_list_after'] = itemsListAreaAfterFiltersCollection;
+                        this.hooks['items_list_area_after'] = itemsListAreaAfterFiltersCollection;
                 }
             },
             openExposersModal() {
