@@ -17,7 +17,7 @@ class GeoCoordinate extends Metadata_Type {
 		$this->set_primitive_type('geo');
 		$this->set_component('tainacan-geocoordinate');
 		$this->set_form_component('tainacan-form-geocoordinate');
-		$this->set_name( __('Geographical Location', 'tainacan') );
+		$this->set_name( __('GeoCoordinate', 'tainacan') );
 		$this->set_description( __('Represents a geographical location that is determined by latitude and longitude coordinates.', 'tainacan') );
 		$this->set_preview_template('
 			<div>
