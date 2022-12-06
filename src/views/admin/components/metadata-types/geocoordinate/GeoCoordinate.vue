@@ -85,9 +85,10 @@
                 return 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '');
             },
             selectedLatLng() {
+                console.log(this.selected)
                 if ( this.selected && Array.isArray(this.selected) ) {
                     return this.selected.map((aSelected) => {
-                        const coordinates = aSelected.indexOf(',') ? aSelected.split(',') : [-14.4086569, -51.31668];
+                        const coordinates = aSelected.indexOf(',') && aSelected.split(',').length == 2 ? aSelected.split(',') : [-14.4086569, -51.31668];
                         return latLng(Number(coordinates[0]), Number(coordinates[1]));
                     }); 
                 }
@@ -105,7 +106,7 @@
             }
         },
         created() {
-            if (this.value)
+            if (this.value && this.value != "")
                 this.selected = Array.isArray(this.value) ? this.value : [this.value];
         },
         methods: {
