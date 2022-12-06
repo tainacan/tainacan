@@ -738,6 +738,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_edit_item_status'				 	 => __( 'To alter the item status, select a different update strategy in the footer below.', 'tainacan' ),
 	/* translators: At the end of this sentence there will be a search query typed by the user wrapped in quotes. */
 	'instruction_press_enter_to_search_for'			 => __( 'Press <kbd>ENTER</kbd> to search for', 'tainacan' ),
+	'instruction_type_geocoordinate'				 => __( 'Type a geo coordinate in the form of lat,lng', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),

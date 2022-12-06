@@ -51,7 +51,7 @@
                 isInvalidDate: false,
             }
         },
-        created(){
+        created() {
             if (this.value)
                 this.dateValue = this.parseDateToNavigatorLanguage(this.value);
         },
