@@ -1,21 +1,20 @@
 <template>
-    <div :id="itemMetadatumIdentifier">
+    <div 
+            :id="itemMetadatumIdentifier"
+            :class="{ 'is-flex is-flex-wrap-wrap': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
                 expanded
                 :disabled="disabled"
                 :id="'taginput--' + itemMetadatumIdentifier"
                 size="is-small"
                 icon="magnify"
-                :allow-new="false"
                 @add="() => $emit('input', selected)"
                 @remove="() => $emit('input', selected)"
                 v-model="selected"
-                :maxtags="maxtags"
-                field="label"
+                :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 :remove-on-keys="[]"
                 :dropdown-position="isLastMetadatum ? 'top' :'auto'"
                 attached
-                ellipsis
                 :aria-close-label="$i18n.get('remove_value')"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_geocoordinate')"
                 :class="{ 'has-selected': selected != undefined && selected != [] }"
@@ -27,7 +26,7 @@
                 :id="'map--' + itemMetadatumIdentifier"
                 :ref="'map--' + itemMetadatumIdentifier"
                 style="height: 300px; width:100%;"
-                :zoom="13"
+                :zoom="5"
                 :center="[-14.4086569, -51.31668]"
                 :zoom-animation="true"
                 @click="onMarkerAdd">
@@ -85,7 +84,6 @@
                 return 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '');
             },
             selectedLatLng() {
-                console.log(this.selected)
                 if ( this.selected && Array.isArray(this.selected) ) {
                     return this.selected.map((aSelected) => {
                         const coordinates = aSelected.indexOf(',') && aSelected.split(',').length == 2 ? aSelected.split(',') : [-14.4086569, -51.31668];
@@ -94,20 +92,28 @@
                 }
                 return [];
             },
+            maxMultipleValues() {
+                return (
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.cardinality &&
+                    !isNaN(this.itemMetadatum.metadatum.cardinality) &&
+                    this.itemMetadatum.metadatum.cardinality > 1
+                ) ? this.itemMetadatum.metadatum.cardinality : undefined;
+            }
         },
         watch: {
             selectedLatLng() {
                 this.$nextTick(() => {
                     const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject ) {
+                    if ( this.selectedLatLng.length && this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
                         this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng,  { animate: true });
-                    }
                 });
             }
         },
         created() {
             if (this.value && this.value != "")
-                this.selected = Array.isArray(this.value) ? this.value : [this.value];
+                this.selected = Array.isArray(this.value) ? (this.value.length == 1 && this.value[0] == "" ? [] : this.value) : [this.value];
         },
         methods: {
             onAddValueFromTaginput(textualValue) {
@@ -115,12 +121,13 @@
             },
             onDragMarker($event, index) {
                 if ( $event.target && $event.target['_latlng'] ) {
-                    this.selected.splice(index, 0, $event.target['_latlng']['lat'] + ',' + $event.target['_latlng']['lng']);
+                    this.selected.splice(index, 1, $event.target['_latlng']['lat'] + ',' + $event.target['_latlng']['lng']);
                     this.$emit('input', this.selected);
                 }
             },
             onMarkerAdd($event) {
-                if ($event.latlng) {
+                const shouldAddMore = this.selected.length < (this.maxtags != undefined ? this.maxtags : (this.itemMetadatum.metadatum.multiple == 'yes' || this.allowNew === true ? (this.maxMultipleValues !== undefined ? this.maxMultipleValues : null) : '1') );
+                if ($event.latlng && shouldAddMore) {
                     const newLocationValue = $event.latlng.lat + ',' + $event.latlng.lng;
                     const existintSelectedValue = this.selected.indexOf((aSelected) => aSelected == newLocationValue);
                     if (existintSelectedValue < 0) {
