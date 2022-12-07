@@ -25,7 +25,7 @@
         <l-map 
                 :id="'map--' + itemMetadatumIdentifier"
                 :ref="'map--' + itemMetadatumIdentifier"
-                style="height: 300px; width:100%;"
+                style="height: 300px; width:100%; border: 1px solid var(--tainacan-input-border-color);"
                 :zoom="5"
                 :center="[-14.4086569, -51.31668]"
                 :zoom-animation="true"
@@ -39,7 +39,7 @@
                     :draggable="true"
                     :lat-lng="markerLatLng"
                     @dragend="($event) => onDragMarker($event, index)"
-                    @click.stop.prevent="() => onMarkerRemove(index)" />
+                    @click="($event) => onMarkerRemove($event, index)" />
         </l-map>
     </div>
 </template>
@@ -114,6 +114,13 @@
         created() {
             if (this.value && this.value != "")
                 this.selected = Array.isArray(this.value) ? (this.value.length == 1 && this.value[0] == "" ? [] : this.value) : [this.value];
+            
+            // Listens to window resize event to update map bounds
+            this.handleWindowResize();
+            window.addEventListener('resize', this.handleWindowResize);
+        },
+        beforeDestroy() {
+            window.removeEventListener('resize', this.handleWindowResize);
         },
         methods: {
             onAddValueFromTaginput(textualValue) {
@@ -126,7 +133,11 @@
                 }
             },
             onMarkerAdd($event) {
-                const shouldAddMore = this.selected.length < (this.maxtags != undefined ? this.maxtags : (this.itemMetadatum.metadatum.multiple == 'yes' || this.allowNew === true ? (this.maxMultipleValues !== undefined ? this.maxMultipleValues : null) : '1') );
+                // MaxTags value may come from a preset prop (bulk adition, for example) or from the actual maxMultipleValues setting.
+                const hasMaxTagsValue = ( this.maxtags != undefined ? this.maxtags : (this.itemMetadatum.metadatum.multiple == 'yes' || this.allowNew === true ? (this.maxMultipleValues !== undefined ? this.maxMultipleValues : null) : '1') );
+                // For multivalued metadata without maxMultipleValues, the limit is infinet, so we should let add anyway.
+                const shouldAddMore = hasMaxTagsValue !== null ? (this.selected.length < hasMaxTagsValue) : true;
+                
                 if ($event.latlng && shouldAddMore) {
                     const newLocationValue = $event.latlng.lat + ',' + $event.latlng.lng;
                     const existintSelectedValue = this.selected.indexOf((aSelected) => aSelected == newLocationValue);
@@ -136,10 +147,18 @@
                     }
                 }
             },
-            onMarkerRemove(index) {
+            onMarkerRemove($event, index) {
+                console.log($event)
                 this.selected.splice(index, 1);
                 this.$emit('input', this.selected);
-            }
+            },
+            handleWindowResize: _.debounce( function() {
+                this.$nextTick(() => {
+                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
+                        this.$refs[mapComponentRef].mapObject.invalidateSize(true);
+                });
+            }, 500),
         }
     }
 </script>
