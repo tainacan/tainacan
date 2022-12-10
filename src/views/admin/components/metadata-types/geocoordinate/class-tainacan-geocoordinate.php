@@ -58,7 +58,24 @@ class GeoCoordinate extends Metadata_Type {
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
-		$return = is_array($value) ? implode(" - ", $value) : $value;
+		$metadatum = $item_metadata->get_metadatum();
+		$item_metadatum_id = $metadatum->get_id();
+		$item_metadatum_id .= $metadatum->get_parent() ? ( $metadatum->get_parent() . '_parent_meta_id-') : '';
+		
+		$return = '';
+		$return .= '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+			integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+			crossorigin=""/>';
+		$return .= '<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+			integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+			crossorigin=""></script>';
+		$return .= '<script type="text/javascript">
+			function loadMap() {
+				map = L.map("map--' . $item_metadatum_id . '").setView([51.505, -0.09], 13);
+			}
+			loadMap();
+		</script>';
+		$return .= '<div data-module="tainacan-maps" id="map--' . $item_metadatum_id . '" style="height: 320px; width:100%; border: 1px solid var(--tainacan-input-border-color, #dbdbdb);"></div/>';
 		return $return;
 	}
 }
