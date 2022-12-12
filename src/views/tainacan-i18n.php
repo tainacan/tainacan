@@ -51,6 +51,7 @@ return apply_filters( 'tainacan-i18n', [
 	'import'                                         => __( 'Import', 'tainacan' ),
 	'export'                                         => __( 'Export', 'tainacan' ),
 	'cancel'                                         => __( 'Cancel', 'tainacan' ),
+	'remove_point'                                   => __( 'Remove point', 'tainacan' ),
 	'remove_value'                                   => __( 'Remove value', 'tainacan' ),
 	'remove_a_value'                                 => __( 'Remove a value', 'tainacan' ),
 	'clear_values'                                   => __( 'Clear values', 'tainacan' ),
