@@ -31,12 +31,14 @@ class GeoCoordinate extends Metadata_Type {
 	/**
 	 * Validates a given coordinate
 	 *
-	 * @param float|int|string $lat Latitude
-	 * @param float|int|string $long Longitude
+	 * @param float|int|number $lat Latitude
+	 * @param float|int|number $long Longitude
 	 * @return bool `true` if the coordinate is valid, `false` if not
 	 */
 	private function validateLatLong($lat, $long) {
-		return preg_match('/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?),[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/', $lat.','.$long);
+		$validataLat = ($lat + 0) >= -90.0 && ($lat + 0) <= 90.0;
+		$validataLong = ($long + 0) >= -180.0 && ($long + 0) <= 180.0;
+		return $validataLat & $validataLong;
 	}
 
 	public function validate( Item_Metadata_Entity $item_metadata) {
