@@ -11,6 +11,7 @@
                 :zoom-animation="true"
                 @click="onMapClick"
                 :options="{
+                    name: 'map--' + itemMetadatumIdentifier,
                     trackResize: false // We handle this manually in the component
                 }">
             <l-tile-layer 

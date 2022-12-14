@@ -63,19 +63,33 @@ class GeoCoordinate extends Metadata_Type {
 		$item_metadatum_id .= $metadatum->get_parent() ? ( $metadatum->get_parent() . '_parent_meta_id-') : '';
 		
 		$return = '';
-		$return .= '<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-			integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
-			crossorigin=""/>';
-		$return .= '<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-			integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
-			crossorigin=""></script>';
-		$return .= '<script type="text/javascript">
-			function loadMap() {
-				map = L.map("map--' . $item_metadatum_id . '").setView([51.505, -0.09], 13);
+		if ( $item_metadata->is_multiple() ) {
+			$prefix = $item_metadata->get_multivalue_prefix();
+			$suffix = $item_metadata->get_multivalue_suffix();
+			$separator = $item_metadata->get_multivalue_separator();
+			
+			foreach ( $value as $coordinate ) {
+
+				$coordinate_as_array = explode(",", $coordinate);
+				$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
+				$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
+
+				$single_value = "<span class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}'><span>{$latitude}</span><span class='coordinates-separator'>,</span><span>{$longitude}</span></span>";
+				$return .= empty($return)
+					? $prefix . $single_value . $suffix
+					: $separator . $prefix . $single_value . $suffix;
 			}
-			loadMap();
-		</script>';
-		$return .= '<div data-module="tainacan-maps" id="map--' . $item_metadatum_id . '" style="height: 320px; width:100%; border: 1px solid var(--tainacan-input-border-color, #dbdbdb);"></div/>';
-		return $return;
+
+		} else {
+			$coordinate_as_array = explode(",", $value);
+			$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
+			$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
+
+			$return .= "<span class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}'><span>{$latitude}</span><span class='coordinates-separator'>,</span><span>{$longitude}</span></span>";
+		}
+
+		return '<span id="tainacan-geocoordinatemetadatum--' . $item_metadatum_id . '" data-module="geocoordinate-item-metadatum">
+					' . $return . '
+				</span>';
 	}
 }
