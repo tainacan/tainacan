@@ -70,7 +70,14 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         itemHoverBackgroundColor,
         itemHeadingHoverBackgroundColor,
         primaryColor,
-        secondaryColor
+        secondaryColor,
+        order,
+        orderBy,
+        orderByMeta,
+        orderByType,
+        collectionOrderBy,
+        collectionOrderByMeta,
+        collectionOrderByType
     } = attributes;
 
     let registeredViewModesEntries = [];
@@ -976,18 +983,31 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             { isCollectionModalOpen ? 
                 <CollectionModal
                     existingCollectionId={ collectionId }  
+                    existingCollectionDefaultOrder={ order } 
+                    existingCollectionDefaultOrderBy={ collectionOrderBy }
+                    existingCollectionDefaultOrderByMeta={ collectionOrderByMeta }
+                    existingCollectionDefaultOrderByType={ collectionOrderByType } 
                     existingCollectionDefaultViewMode={ collectionDefaultViewMode } 
                     existingCollectionEnabledViewModes={ collectionEnabledViewModes }
-                    onSelectCollection={ ({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes }) => {
+                    onSelectCollection={ ({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes, collectionDefaultOrder, collectionDefaultOrderBy, collectionDefaultOrderByMeta, collectionDefaultOrderByType }) => {
                         collectionId = collectionId;
                         collectionDefaultViewMode = collectionDefaultViewMode ? collectionDefaultViewMode : defaultViewMode;
                         collectionEnabledViewModes = collectionEnabledViewModes && collectionEnabledViewModes.length ? collectionEnabledViewModes : enabledViewModes;
+                        order = collectionDefaultOrder ? collectionDefaultOrder : 'ASC';
+                        collectionOrderBy = collectionDefaultOrderBy ? collectionDefaultOrderBy : 'date';
+                        collectionOrderByMeta = collectionDefaultOrderByMeta ? collectionDefaultOrderByMeta : '';
+                        collectionOrderByType = collectionDefaultOrderByType ? collectionDefaultOrderByType : '';
+                        console.log(collectionDefaultOrderByMeta)
                         setAttributes({
                             collectionId: collectionId, 
                             collectionDefaultViewMode: collectionDefaultViewMode,
                             defaultViewMode: collectionDefaultViewMode,
                             collectionEnabledViewModes: collectionEnabledViewModes,
                             enabledViewModes: collectionEnabledViewModes,
+                            order: order,
+                            collectionOrderBy, collectionOrderBy,
+                            collectionOrderByMeta: collectionOrderByMeta,
+                            collectionOrderByType: collectionOrderByType,
                             isCollectionModalOpen: false
                         });
                     }}

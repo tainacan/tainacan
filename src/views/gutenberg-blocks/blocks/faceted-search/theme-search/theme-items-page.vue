@@ -728,6 +728,8 @@
             // Other Tweaks
             defaultOrder: 'ASC',
             defaultOrderBy: 'date',
+            defaultOrderByMeta: '',
+            defaultOrderByType: '',
             defaultItemsPerPage: Number,
             showFiltersButtonInsideSearchControl: false,
             startWithFiltersHidden: false,
@@ -767,7 +769,7 @@
         },
         computed: {
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date'); 
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date' && this.orderBy != 'modified'); 
             },
             items() {
                 return this.getItems();
@@ -855,10 +857,34 @@
                 this.$eventBusSearch.setCollectionId(this.collectionId);
             if (this.termId != undefined && this.termId != null)
                 this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
-            if (this.defaultOrder != undefined)
+            if (this.defaultOrder != undefined) {
                 this.$eventBusSearch.setDefaultOrder(this.defaultOrder);
+
+                if (!this.$route.query.order)
+                    this.$eventBusSearch.setOrder(this.defaultOrder);
+            }
             if (this.defaultOrderBy != undefined) {
-                this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
+                if (this.defaultOrderByMeta || this.defaultOrderByType) {
+                    
+                    let orderByObject = { orderby: this.defaultOrderBy }
+                    
+                    if (this.defaultOrderByMeta)
+                        orderByObject['metakey'] = this.defaultOrderByMeta;
+                    
+                    if (this.defaultOrderByType)
+                        orderByObject['metatype'] = this.defaultOrderByType;
+                    
+                    this.$eventBusSearch.setDefaultOrderBy(orderByObject);
+
+                    if (!this.$route.query.orderby)
+                        this.$eventBusSearch.setOrderBy(orderByObject);
+                
+                } else {                    
+                    this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
+
+                    if (!this.$route.query.orderby)
+                        this.$eventBusSearch.setOrderBy(this.defaultOrderBy);
+                }
             }
             
             this.$eventBusSearch.updateStoreFromURL();
@@ -999,6 +1025,7 @@
         },
         methods: {
             ...mapGetters('collection', [
+                'getCollection',
                 'getItems',
                 'getItemsListTemplate'
             ]),

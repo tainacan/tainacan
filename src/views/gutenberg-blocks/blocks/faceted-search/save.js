@@ -40,7 +40,14 @@ export default function({ attributes, className }) {
         itemHoverBackgroundColor,
         itemHeadingHoverBackgroundColor,
         primaryColor,
-        secondaryColor
+        secondaryColor,
+        order,
+        orderBy,
+        orderByMeta,
+        orderByType,
+        collectionOrderBy,
+        collectionOrderByMeta,
+        collectionOrderByType
     } = attributes;
     
     let updatedListType = '' + listType;
@@ -88,7 +95,6 @@ export default function({ attributes, className }) {
                 hide-sorting-area = { hideSortingArea.toString() }
                 hide-items-thumbnail = { hideItemsThumbnail ? hideItemsThumbnail.toString() : 'false' }
                 hide-sort-by-button = { hideSortByButton.toString() }
-                hide-pagination-area = { hidePaginationArea.toString() }
                 hide-exposers-button = { hideExposersButton.toString() }
                 hide-items-per-page-button = { hideItemsPerPageButton.toString() }
                 default-items-per-page = { defaultItemsPerPage }
@@ -97,7 +103,11 @@ export default function({ attributes, className }) {
                 start-with-filters-hidden = { startWithFiltersHidden.toString() }
                 filters-as-modal = { filtersAsModal.toString() }
                 show-inline-view-mode-options = { showInlineViewModeOptions.toString() }
-                show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() } >
+                show-fullscreen-with-view-modes = { showFullscreenWithViewModes.toString() } 
+                default-order = { order ? order : 'ASC' }
+                default-orderby = { updatedListType == 'collection' ? (collectionOrderBy ? collectionOrderBy : 'date') : (orderBy ? orderBy : 'date') }
+                default-orderby-meta = { updatedListType == 'collection' ? (collectionOrderByMeta ? collectionOrderByMeta : '') : (orderByMeta ? orderByMeta : '') }
+                default-orderby-type = { updatedListType == 'collection' ? (collectionOrderByType ? collectionOrderByType : '') : (orderByType ? orderByType : '') } >
         </main>
     </div>
 };
