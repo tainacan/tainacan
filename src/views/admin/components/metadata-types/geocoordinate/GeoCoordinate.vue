@@ -23,14 +23,16 @@
                             v-if="editingMarkerIndex >= 0"
                             expanded 
                             type="number"
-                            :step="0.000000001"
-                            v-model="latitude" />
+                            :step="0.000000000001"
+                            @input="onUpdateFromLatitudeInput"
+                            :value="latitude" />
                     <b-input 
                             v-if="editingMarkerIndex >= 0"
                             expanded
                             type="number"
-                            :step="0.000000001"
-                            v-model="longitude" />
+                            :step="0.000000000001"
+                            @input="onUpdateFromLongitudeInput"
+                            :value="longitude" />
                     <b-button
                             v-if="editingMarkerIndex >= 0"
                             outlined
@@ -60,7 +62,7 @@
                     @dragend="($event) => onDragMarker($event, index)"
                     @click="($event) => onMarkerEditingClick($event)" />
             <l-marker 
-                    v-if="editingMarkerIndex < 0"
+                    v-if="editingMarkerIndex < 0 && shouldAddMore"
                     :draggable="true"
                     :lat-lng="editingLatLng"
                     @dragend="($event) => onDragEditingMarker($event)"
@@ -180,6 +182,20 @@
             eventBusItemMetadata.$off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         methods: {
+            onUpdateFromLatitudeInput: _.debounce( function(newLatitude) {
+                this.latitude = newLatitude;
+                if (this.editingMarkerIndex >= 0) {
+                    this.selected.splice(this.editingMarkerIndex, 1, this.latitude + ',' + this.longitude);
+                    this.$emit('input', this.selected);
+                }
+            }, 350),
+            onUpdateFromLongitudeInput: _.debounce( function(newLongitude) {
+                this.longitude = newLongitude;
+                if (this.editingMarkerIndex >= 0) {
+                    this.selected.splice(this.editingMarkerIndex, 1, this.latitude + ',' + this.longitude);
+                    this.$emit('input', this.selected);
+                }
+            }, 250),
             onDragMarker($event, index) {
                 if ( $event.target && $event.target['_latlng'] ) {
                     if (this.editingMarkerIndex == index) {
