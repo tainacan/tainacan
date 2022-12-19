@@ -82,6 +82,7 @@
     import iconUrl from 'leaflet/dist/images/marker-icon.png';
     import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
     import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+    import { eventBusItemMetadata } from '../../../js/event-bus-item-metadata';
 
     delete Icon.Default.prototype._getIconUrl;
     Icon.Default.mergeOptions({
@@ -161,11 +162,22 @@
                 this.selected = Array.isArray(this.value) ? (this.value.length == 1 && this.value[0] == "" ? [] : this.value) : [this.value];
             
             // Listens to window resize event to update map bounds
-            this.handleWindowResize();
-            window.addEventListener('resize', this.handleWindowResize);
+            // We need to pass mapComoponentRef here instead of creating it inside the function
+            // otherwise the listener would conflict when multiple geo metadata are inserted.
+            const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+            eventBusItemMetadata.$on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
+        },
+        mounted() {
+            setTimeout(() => {
+                this.$nextTick(() => {
+                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                    this.handleWindowResize(mapComponentRef);
+                });
+            }, 500);
         },
         beforeDestroy() {
-            window.removeEventListener('resize', this.handleWindowResize);
+            const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+            eventBusItemMetadata.$off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         methods: {
             onDragMarker($event, index) {
@@ -228,13 +240,10 @@
                 this.selected.splice(index, 1);
                 this.$emit('input', this.selected);
             },
-            handleWindowResize: _.debounce( function() {
-                this.$nextTick(() => {
-                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
-                        this.$refs[mapComponentRef].mapObject.invalidateSize(true);
-                });
-            }, 500),
+            handleWindowResize(mapComponentRef) {
+                if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
+                    this.$refs[mapComponentRef].mapObject.invalidateSize(true);
+            }
         }
     }
 </script>
