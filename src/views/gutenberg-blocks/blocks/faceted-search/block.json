@@ -13,176 +13,204 @@
     },
     "attributes": {
         "termId": {
-            "type": "String",
+            "type": "string",
             "default": null
         },
         "taxonomyId": {
-            "type": "String",
+            "type": "string",
             "default": null
         },
         "collectionId": {
-            "type": "String",
+            "type": "string",
             "default": null
         },
         "defaultViewMode": {
-            "type": "String",
+            "type": "string",
             "default": "masonry"
         },
         "enabledViewModes": {
-            "type": "Array",
+            "type": "array",
             "default": null
         },
         "collectionDefaultViewMode": {
-            "type": "String",
+            "type": "string",
             "default": "masonry"
         },
         "collectionEnabledViewModes": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "hideFilters": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideHideFiltersButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideSearch": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideAdvancedSearch": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideDisplayedMetadataButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideSortingArea": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideSortByButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideItemsThumbnail": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideExposersButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideItemsPerPageButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "defaultItemsPerPage": {
-            "type": "Number",
+            "type": "number",
             "default": 12
         },
         "hideGoToPageButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hidePaginationArea": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "showFiltersButtonInsideSearchControl": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "startWithFiltersHidden": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "filtersAsModal": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "showInlineViewModeOptions": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "showFullscreenWithViewModes": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "listType": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "isCollectionModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "isTermModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "backgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#ffffff"
         },
         "baseFontSize": {
-            "type": "Number",
+            "type": "number",
             "default": 16
         },
         "filtersAreaWidth": {
-            "type": "Number",
+            "type": "number",
             "default": 20
         },
         "inputColor": {
-            "type": "String",
+            "type": "string",
             "default": "#1d1d1d"
         },
         "inputBackgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#ffffff"
         },
         "inputBorderColor": {
-            "type": "String",
+            "type": "string",
             "default": "#dbdbdb"
         },
         "labelColor": {
-            "type": "String",
+            "type": "string",
             "default": "#454647"
         },
         "infoColor": {
-            "type": "String",
+            "type": "string",
             "default": "#555758"
         },
         "headingColor": {
-            "type": "String",
+            "type": "string",
             "default": "#000000"
         },
         "skeletonColor": {
-            "type": "String",
+            "type": "string",
             "default": "#eeeeee"
         },
         "itemBackgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#ffffff"
         },
         "itemHoverBackgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#f2f2f2"
         },
         "itemHeadingHoverBackgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#dbdbdb"
         },
         "primaryColor": {
-            "type": "String",
+            "type": "string",
             "default": "#d9eced"
         },
         "secondaryColor": {
-            "type": "String",
+            "type": "string",
             "default": "#298596"
+        },
+        "order": {
+            "type": "string",
+            "default": "ASC"
+        },
+        "orderBy": {
+            "type": "string",
+            "default": "date"
+        },
+        "orderByMeta": {
+            "type": "string",
+            "default": ""
+        },
+        "orderByType": {
+            "type": "string",
+            "default": ""
+        },
+        "collectionOrderBy": {
+            "type": "string",
+            "default": "date"
+        },
+        "collectionOrderByMeta": {
+            "type": "string",
+            "default": ""
+        },
+        "collectionOrderByType": {
+            "type": "string",
+            "default": ""
         }
     },
     "supports": {

@@ -67,7 +67,7 @@ export default {
                         if (this.$route.query.order == undefined || to.params.collectionId != from.params.collectionId) {
                             let orderKey = (this.collectionId != undefined ? 'order_' + this.collectionId : 'order');
                             let orderValue = this.$userPrefs.get(orderKey) ? this.$userPrefs.get(orderKey) : this.defaultOrder;
-
+                            
                             if (orderValue)
                                 this.$route.query.order = orderValue;
                             else {
@@ -80,7 +80,7 @@ export default {
                         if (this.$route.query.orderby == undefined || to.params.collectionId != from.params.collectionId) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
                             let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
-
+                            
                             if (orderBy && orderBy != 'name') {
                                 
                                 // Previously was stored as a metadata object, now it is a orderby object
