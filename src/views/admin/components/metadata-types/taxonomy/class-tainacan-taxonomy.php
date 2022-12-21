@@ -23,6 +23,7 @@ class Taxonomy extends Metadata_Type {
 			'allow_new_terms' => 'no',
 			'link_filtered_by_collections' => [],
 			'input_type' => 'tainacan-taxonomy-radio',
+			'hide_hierarchy_path' => 'no'
 		]);
 
 		$this->set_form_component('tainacan-form-taxonomy');
@@ -100,6 +101,10 @@ class Taxonomy extends Metadata_Type {
 			'link_filtered_by_collections' => [
 				'title' => __( 'Link filtered by collections', 'tainacan' ),
 				'description' => __( 'Links to term items list filtered by certain collections instead of repository level term items page.', 'tainacan' ),
+			],
+			'hide_hierarchy_path' => [
+				'title' => __( 'Hide hierarchy path', 'tainacan' ),
+				'description' => __( 'Display only the current child term when showing values that belong to a term hierarchy.', 'tainacan' ),
 			]
 		];
 	}
@@ -188,6 +193,15 @@ class Taxonomy extends Metadata_Type {
 									$readable_option_value = $option_value;
 							} else
 								$readable_option_value = __( 'None', 'tainacan' );
+						break;
+
+						case 'hide_hierarchy_path':
+							if ($option_value == 'yes')
+								$readable_option_value = __('Yes', 'tainacan');
+							else if ($option_value == 'no')
+								$readable_option_value = __('No', 'tainacan');
+							else
+								$readable_option_value = $option_value;
 						break;
 
 						default:
@@ -333,7 +347,7 @@ class Taxonomy extends Metadata_Type {
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
 		$return = '';
-
+		
 		if ( $item_metadata->is_multiple() ) {
 			$count = 1;
 			$total = sizeof($value);
@@ -368,6 +382,10 @@ class Taxonomy extends Metadata_Type {
 	}
 
 	private function get_term_hierarchy_html( \Tainacan\Entities\Term $term ) {
+
+		if ( $this->get_option('hide_hierarchy_path') == 'yes' )
+			return $this->term_to_html($term);
+
 		$terms = [];
 		$terms[] = $this->term_to_html($term);
 
