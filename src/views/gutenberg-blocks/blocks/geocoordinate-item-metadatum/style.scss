@@ -2,4 +2,9 @@
     display: block;
     height: 320px;
     width:100%;
+
+    .tainacan-coordinates,
+    .multivalue-separator {
+        opacity: 0;
+    }
 }

@@ -62,6 +62,7 @@ class GeoCoordinate extends Metadata_Type {
 	 * @return string
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		global $TAINACAN_BASE_URL;
 		$value = $item_metadata->get_value();
 		$metadatum = $item_metadata->get_metadatum();
 		$item_metadatum_id = $metadatum->get_id();
@@ -92,6 +93,8 @@ class GeoCoordinate extends Metadata_Type {
 
 			$return .= "<span class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}'><span>{$latitude}</span><span class='coordinates-separator'>,</span><span>{$longitude}</span></span>";
 		}
+		
+		wp_enqueue_style( 'tainacan-geocoordinate-item-metadatum', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-geocoordinate-item-metadatum.css', array(), TAINACAN_VERSION);
 
 		return '<span id="tainacan-geocoordinatemetadatum--' . $item_metadatum_id . '" data-module="geocoordinate-item-metadatum">
 					' . $return . '

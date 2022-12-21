@@ -48,6 +48,6 @@ export default (element) => {
             TainacanLeaflet.marker(coordinate).addTo(tainacanMap);
         });
 
-        tainacanMap.panInsideBounds(coordinates);
+        tainacanMap.flyToBounds(coordinates);
     }
 };
