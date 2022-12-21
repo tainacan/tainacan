@@ -234,7 +234,7 @@ export default (element) => {
                         this.defaultOrderByMeta = this.$el.attributes['default-orderby-meta'].value;
                     if (this.$el.attributes['default-orderby-type'] != undefined)
                         this.defaultOrderByType = this.maybeConvertFromJSON(this.$el.attributes['default-orderby-type'].value);
-                    
+
                     // Options related to hidding elements
                     if (this.$el.attributes['hide-filters'] != undefined)
                         this.hideFilters = this.isParameterTrue('hide-filters');

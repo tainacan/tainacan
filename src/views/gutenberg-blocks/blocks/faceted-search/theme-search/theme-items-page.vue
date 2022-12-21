@@ -859,7 +859,6 @@
                 this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
             if (this.defaultOrder != undefined) {
                 this.$eventBusSearch.setDefaultOrder(this.defaultOrder);
-
                 if (!this.$route.query.order)
                     this.$eventBusSearch.setOrder(this.defaultOrder);
             }

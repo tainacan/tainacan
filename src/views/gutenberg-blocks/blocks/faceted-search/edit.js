@@ -2,7 +2,6 @@ const { __ } = wp.i18n;
 
 const { 
     Button,
-    ColorPalette,
     BaseControl,
     CheckboxControl,
     RangeControl,
@@ -417,6 +416,50 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 } 
                             }
                         />
+
+                        <BaseControl
+                                id="defaulOrder"
+                                label={ __('Default order', 'tainacan')}
+                                help={ __('The default sorting direction', 'tainacan') }>
+                            <SelectControl
+                                    label={ __('Default order', 'tainacan') }
+                                    hideLabelFromVision
+                                    value={ order }
+                                    options={
+                                        [
+                                            { value: 'ASC', label: __('Ascending', 'tainacan') },
+                                            { value: 'DESC', label: __('Descending', 'tainacan') }
+                                        ]
+                                    }
+                                    onChange={ (anOrder) => {
+                                        order = anOrder;
+                                        setAttributes({ order: anOrder });
+                                    } }
+                                />
+                        </BaseControl>
+
+                        { listType != 'collection' ?
+                            <BaseControl
+                                    id="defaulOrderBy"
+                                    label={ __('Default order by', 'tainacan')}
+                                    help={ __('The default metadata by which the sorting will be applied', 'tainacan') }>
+                                <SelectControl
+                                        label={ __('Default order by', 'tainacan') }
+                                        hideLabelFromVision
+                                        value={ orderBy }
+                                        options={
+                                            [
+                                                { value: 'date', label: __('Creation date', 'tainacan') },
+                                                { value: 'title', label: __('Title', 'tainacan') }
+                                            ]
+                                        }
+                                        onChange={ (anOrderBy) => {
+                                            orderBy = anOrderBy;
+                                            setAttributes({ orderBy: anOrderBy });
+                                        } }
+                                    />
+                            </BaseControl>
+                        : null }
 
                         <BaseControl
                                 id="defaultViewModeSelect"
