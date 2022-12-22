@@ -1,0 +1,33 @@
+.tainacan-leaflet-map-container {
+    position: relative;
+
+    .tainacan-records-container--map {
+        right: 0;
+        top: 0;
+        width: 25%;
+        height: 100%;
+        position: absolute;
+        overflow-y: auto;
+        overflow-x: hidden;
+        
+        &>li {
+            width: 100%;
+            .tainacan-record {
+                margin-bottom: 0.125rem;
+                background-color: var(--tainacan-item-background-color);
+
+                .tainacan-record-item-thumbnail,
+                img {
+                    max-width: 60px;
+                }
+
+                .media .list-metadata {
+                    padding: 1rem;
+                }
+            }
+        }
+    }
+}
+
+
+

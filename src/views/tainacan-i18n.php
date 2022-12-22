@@ -662,6 +662,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_from_a_mapper'					 		 => __( 'From a metadata mapper', 'tainacan' ),
 	'label_using_a_preset'					 		 => __( 'Using a preset', 'tainacan' ),
 	'label_use_search_separated_words'				 => __( 'Search each word separatelly', 'tainacan' ),
+	'label_map'										 => __( 'Map', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

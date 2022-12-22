@@ -5,12 +5,5 @@
   .tainacan-leaflet-map-container .tainacan-coordinates,
   .tainacan-leaflet-map-container .multivalue-separator {
     opacity: 0; }
-  .tainacan-leaflet-map-container div.leaflet-control-attribution,
-  .tainacan-leaflet-map-container div.leaflet-control-zoom,
-  .tainacan-leaflet-map-container div.leaflet-top,
-  .tainacan-leaflet-map-container div.leaflet-left,
-  .tainacan-leaflet-map-container div.leaflet-right,
-  .tainacan-leaflet-map-container div.leaflet-bottom {
-    width: auto; }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-geocoordinate-item-metadatum.css.map */
