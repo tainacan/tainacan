@@ -1354,8 +1354,7 @@
                         :center="[-14.4086569, -51.31668]"
                         :zoom-animation="true"
                         :options="{
-                            name: 'tainacan-admin-view-mode-map',
-                            trackResize: false // We handle this manually in the component
+                            name: 'tainacan-admin-view-mode-map'
                         }">
                     <l-tile-layer 
                             :url="url" 
@@ -1363,8 +1362,24 @@
                     <l-marker 
                             v-for="(itemLocation, index) of itemsLocations"
                             :key="index"
-                            :draggable="true"
                             :lat-lng="itemLocation.location" />
+                    <l-control position="topright">
+                        <div class="geocoordinate-input-panel">
+                            <b-select
+                                    :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
+                                    id="tainacan-select-geocoordinate-metatum"
+                                    v-model="selectedGeocoordinateMetadatum">
+                                <option
+                                        v-for="geocoordinateMetadatum of geocoordinateMetadata"
+                                        :key="geocoordinateMetadatum.id"
+                                        role="button"
+                                        :class="{ 'is-active': selectedGeocoordinateMetadatum == geocoordinateMetadatum.slug }"
+                                        :value="geocoordinateMetadatum.slug">
+                                    {{ geocoordinateMetadatum.name }}
+                                </option>
+                            </b-select>
+                        </div>
+                    </l-control>
                 </l-map>
                 <ul
                         :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
@@ -1605,7 +1620,7 @@ export default {
         // LTooltip,
         LTileLayer,
         LMarker,
-        // LControl
+        LControl
     },
     mixins: [ dateInter ],
     props: {
@@ -1628,7 +1643,7 @@ export default {
             singleItemSelection: false,
             masonry: false,
             shouldUseLegacyMasonyCols: false,
-            selectedGeocoordinateMetadatum: 'geocoordinate',
+            selectedGeocoordinateMetadatum: false,
             latitude: -14.4086569,
             longitude: -51.31668,
             url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -1681,33 +1696,38 @@ export default {
         },
         itemsLocations() {
             let locations = [];
+            
             if ( this.viewMode == 'map' && this.selectedGeocoordinateMetadatum && this.items ) {
                 for (let item of this.items) {
+                    
                     if (
                         item.metadata[this.selectedGeocoordinateMetadatum] &&
-                        item.metadata[this.selectedGeocoordinateMetadatum].value.length 
+                        Array.isArray(item.metadata[this.selectedGeocoordinateMetadatum].value) 
                     ) {
                         for (let value of item.metadata[this.selectedGeocoordinateMetadatum].value) {
                             if (value.split(',').length == 2) {
                                 locations.push({
                                     item: item,
-                                    location: value.split(',')
+                                    location: latLng(value.split(','))
                                 });
                             }
                         }
                     } else if (
                         item.metadata[this.selectedGeocoordinateMetadatum] &&
-                        typeof item.metadata[this.selectedGeocoordinateMetadatum].split == 'function' &&
-                        item.metadata[this.selectedGeocoordinateMetadatum].split(',') == 2
+                        typeof item.metadata[this.selectedGeocoordinateMetadatum].value.split == 'function' &&
+                        item.metadata[this.selectedGeocoordinateMetadatum].value.split(',').length == 2
                     ) {
                         locations.push({
                             item: item,
-                            location: item.metadata[this.selectedGeocoordinateMetadatum].split(',')
+                            location: latLng(item.metadata[this.selectedGeocoordinateMetadatum].value.split(','))
                         });
                     }
                 }   
             }
             return locations;
+        },
+        geocoordinateMetadata() {
+            return this.displayedMetadata && this.displayedMetadata.length ? this.displayedMetadata.filter((aMetadatum) => aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate') : [];
         }
     },
     watch: {
@@ -1749,6 +1769,16 @@ export default {
                 }
             },
             immediate: true
+        },
+        itemsLocations() {
+            setTimeout(() => {
+                if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
+                    if (this.itemsLocations.length == 1)
+                        this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true });
+                    else
+                        this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true });
+                }
+            }, 500)
         }
     },
     mounted() {

@@ -1,20 +1,31 @@
 .tainacan-leaflet-map-container {
-    position: relative;
+
+    #tainacan-admin-view-mode-map {
+        float: right;
+
+        .geocoordinate-input-panel {
+            /deep/ select {
+                background-color: var(--tainacan-input-background-color);
+            }
+        }
+    }
 
     .tainacan-records-container--map {
-        right: 0;
+        left: 0;
         top: 0;
+        position: relative;
+        float: left;
         width: 25%;
-        height: 100%;
-        position: absolute;
+        height: 60vh;
         overflow-y: auto;
         overflow-x: hidden;
         
         &>li {
             width: 100%;
+            max-width: 100%;
+
             .tainacan-record {
                 margin-bottom: 0.125rem;
-                background-color: var(--tainacan-item-background-color);
 
                 .tainacan-record-item-thumbnail,
                 img {

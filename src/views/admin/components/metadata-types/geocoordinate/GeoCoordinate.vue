@@ -166,8 +166,12 @@
             selectedLatLng() {
                 this.$nextTick(() => {
                     const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                    if ( this.selectedLatLng.length && this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
-                        this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng,  { animate: true });
+                    if ( this.selectedLatLng.length && this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject ) {
+                        if (this.selectedLatLng.length == 1)
+                            this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng,  { animate: true });
+                        else
+                            this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng,  { animate: true });
+                    }
                 });
             }
         },

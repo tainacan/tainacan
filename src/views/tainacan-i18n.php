@@ -742,6 +742,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_press_enter_to_search_for'			 => __( 'Press <kbd>ENTER</kbd> to search for', 'tainacan' ),
 	'instruction_type_geocoordinate'				 => __( 'Type a geo coordinate in the form of lat,lng', 'tainacan' ),
 	'instruction_click_to_add_a_point'				 => __( 'Drag to reposition or click to insert a marker', 'tainacan' ),
+	'instruction_select_geocoordinate_metadatum'	 => __( 'Select a geocoordinate metadatum', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
