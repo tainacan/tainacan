@@ -663,6 +663,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_using_a_preset'					 		 => __( 'Using a preset', 'tainacan' ),
 	'label_use_search_separated_words'				 => __( 'Search each word separatelly', 'tainacan' ),
 	'label_map'										 => __( 'Map', 'tainacan' ),
+	'label_show_item_location_on_map'				 => __( 'Show item location on map', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

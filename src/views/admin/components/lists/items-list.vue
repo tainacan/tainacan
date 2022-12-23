@@ -1362,7 +1362,17 @@
                     <l-marker 
                             v-for="(itemLocation, index) of itemsLocations"
                             :key="index"
-                            :lat-lng="itemLocation.location" />
+                            :lat-lng="itemLocation.location"
+                            :opacity="selectedMarkerIndex >= 0 && selectedMarkerIndex != index ? 0.35 : 1.0"
+                            @click="showItemLocation(index)">
+                    <l-tooltip>
+                        <div
+                                v-for="(column, columnIndex) in displayedMetadata"
+                                :key="columnIndex"
+                                v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                v-html="itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item.metadata, column) : ''" />
+                    </l-tooltip>
+                    </l-marker>
                     <l-control position="topright">
                         <div class="geocoordinate-input-panel">
                             <b-select
@@ -1479,6 +1489,28 @@
                                     v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas"
                                     class="actions-area"
                                     :label="$i18n.get('label_actions')">
+                                <a
+                                        id="button-delete" 
+                                        :aria-label="$i18n.get('label_show_item_location_on_map')" 
+                                        @click.prevent.stop="showItemLocation(index)">
+                                    <span
+                                            v-if="selectedGeocoordinateMetadatum"
+                                            v-tooltip="{
+                                                content: $i18n.get('label_show_item_location_on_map'),
+                                                autoHide: true,
+                                                placement: 'auto',
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                                            }"
+                                            class="icon">
+                                        <svg
+                                                style="width:24px;height:24px"
+                                                viewBox="0 0 24 24">
+                                            <path
+                                                    fill="currentColor"
+                                                    d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" />
+                                        </svg>
+                                    </span>
+                                </a>
                                 <a
                                         v-if="!isOnTrash"
                                         id="button-edit"
@@ -1598,7 +1630,7 @@ import ItemCopyDialog from '../other/item-copy-dialog.vue';
 import BulkEditionModal from '../modals/bulk-edition-modal.vue';
 import Masonry from 'masonry-layout';
 import { dateInter } from "../../js/mixins";
-import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl } from 'vue2-leaflet';
+import { LMap, LTooltip, LTileLayer, LMarker, LControl } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon, latLng } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
@@ -1616,8 +1648,7 @@ export default {
     name: 'ItemsList',
     components: {
         LMap,
-        // LIcon,
-        // LTooltip,
+        LTooltip,
         LTileLayer,
         LMarker,
         LControl
@@ -1648,6 +1679,7 @@ export default {
             longitude: -51.31668,
             url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            selectedMarkerIndex: -1,
         }
     },
     computed: {
@@ -2117,10 +2149,11 @@ export default {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         },
-        // handleWindowResize(mapComponentRef) {
-        //     if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
-        //         this.$refs[mapComponentRef].mapObject.invalidateSize(true);
-        // }
+        showItemLocation(index) {
+            this.selectedMarkerIndex = index;
+            if ( this.itemsLocations[this.selectedMarkerIndex] && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
+                this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds([this.itemsLocations[this.selectedMarkerIndex].location],  { animate: true });
+        }
     }
 }
 </script>
