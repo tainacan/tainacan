@@ -1353,6 +1353,7 @@
                         :zoom="5"
                         :center="[-14.4086569, -51.31668]"
                         :zoom-animation="true"
+                        @click="selectedMarkerIndexes = []"
                         :options="{
                             name: 'tainacan-admin-view-mode-map'
                         }">
@@ -1363,8 +1364,8 @@
                             v-for="(itemLocation, index) of itemsLocations"
                             :key="index"
                             :lat-lng="itemLocation.location"
-                            :opacity="selectedMarkerIndex >= 0 && selectedMarkerIndex != index ? 0.35 : 1.0"
-                            @click="showItemLocation(index)">
+                            :opacity="selectedMarkerIndexes.length > 0 && !selectedMarkerIndexes.includes(index) ? 0.35 : 1.0"
+                            @click="showItemByLocation(index)">
                     <l-tooltip>
                         <div
                                 v-for="(column, columnIndex) in displayedMetadata"
@@ -1492,7 +1493,7 @@
                                 <a
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_show_item_location_on_map')" 
-                                        @click.prevent.stop="showItemLocation(index)">
+                                        @click.prevent.stop="showLocationsByItem(item)">
                                     <span
                                             v-if="selectedGeocoordinateMetadatum"
                                             v-tooltip="{
@@ -1679,7 +1680,7 @@ export default {
             longitude: -51.31668,
             url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            selectedMarkerIndex: -1,
+            selectedMarkerIndexes: []
         }
     },
     computed: {
@@ -2149,10 +2150,21 @@ export default {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         },
-        showItemLocation(index) {
-            this.selectedMarkerIndex = index;
-            if ( this.itemsLocations[this.selectedMarkerIndex] && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
-                this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds([this.itemsLocations[this.selectedMarkerIndex].location],  { animate: true });
+        showItemByLocation(index) {
+            this.selectedMarkerIndexes = [];
+            this.selectedMarkerIndexes.push(index);
+            if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
+                this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[0].location ],  { animate: true });
+        },
+        showLocationsByItem(item) {
+            this.selectedMarkerIndexes = [];
+            const selectedLocationsByItem = this.itemsLocations.filter((anItemLocation, index) => {
+                if (anItemLocation.item.id == item.id)
+                    this.selectedMarkerIndexes.push(index);
+                return anItemLocation.item.id == item.id;
+            })
+            if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
+                this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true });
         }
     }
 }
