@@ -22,15 +22,19 @@
                     <b-input
                             v-if="editingMarkerIndex >= 0"
                             expanded 
-                            type="number"
-                            :step="0.000000001"
-                            v-model="latitude" />
+                            :placeholder="-14.408656999999"
+                            type="text"
+                            :step="0.000000000001"
+                            @input.native="onUpdateFromLatitudeInput"
+                            :value="latitude" />
                     <b-input 
                             v-if="editingMarkerIndex >= 0"
                             expanded
-                            type="number"
-                            :step="0.000000001"
-                            v-model="longitude" />
+                            :placeholder="-51.316689999999"
+                            type="text"
+                            :step="0.000000000001"
+                            @input.native="onUpdateFromLongitudeInput"
+                            :value="longitude" />
                     <b-button
                             v-if="editingMarkerIndex >= 0"
                             outlined
@@ -60,11 +64,14 @@
                     @dragend="($event) => onDragMarker($event, index)"
                     @click="($event) => onMarkerEditingClick($event)" />
             <l-marker 
-                    v-if="editingMarkerIndex < 0"
+                    v-if="editingLatLng && editingMarkerIndex < 0 && shouldAddMore"
                     :draggable="true"
                     :lat-lng="editingLatLng"
                     @dragend="($event) => onDragEditingMarker($event)"
                     @click="addLocation(latitude + ',' + longitude)">
+                <l-tooltip :options="{ offset: [16, 0] }">
+                    {{ $i18n.get('instruction_click_to_add_a_point') }}
+                </l-tooltip>
                 <l-icon class-name="tainacan-location-marker-add">
                     <span class="icon">
                         <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
@@ -76,12 +83,13 @@
 </template>
 
 <script>
-    import { LMap, LIcon, LTileLayer, LMarker, LControl } from 'vue2-leaflet';
+    import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl } from 'vue2-leaflet';
     import 'leaflet/dist/leaflet.css';
     import { Icon, latLng } from 'leaflet';
     import iconUrl from 'leaflet/dist/images/marker-icon.png';
     import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
     import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+    import { eventBusItemMetadata } from '../../../js/event-bus-item-metadata';
 
     delete Icon.Default.prototype._getIconUrl;
     Icon.Default.mergeOptions({
@@ -94,6 +102,7 @@
         components: {
             LMap,
             LIcon,
+            LTooltip,
             LTileLayer,
             LMarker,
             LControl
@@ -121,7 +130,10 @@
             },
             selectedLatLng() {
                 if ( this.selected && Array.isArray(this.selected) ) {
-                    return this.selected.map((aSelected) => {
+                    return this.selected.filter((aSelected) => {
+                        const coordinates = aSelected.indexOf(',') && aSelected.split(',').length == 2 ? aSelected.split(',') : [-14.4086569, -51.31668];
+                        return ( !isNaN(Number(coordinates[0])) && !isNaN(Number(coordinates[1])) );
+                    }).map((aSelected) => {
                         const coordinates = aSelected.indexOf(',') && aSelected.split(',').length == 2 ? aSelected.split(',') : [-14.4086569, -51.31668];
                         return latLng(Number(coordinates[0]), Number(coordinates[1]));
                     }); 
@@ -129,7 +141,10 @@
                 return [];
             },
             editingLatLng() {
-                return latLng(Number(this.latitude), Number(this.longitude));
+                if ( !isNaN(this.latitude) && !isNaN(this.longitude) )
+                    return latLng(Number(this.latitude), Number(this.longitude));
+                else 
+                    return null;
             },
             maxMultipleValues() {
                 return (
@@ -152,7 +167,7 @@
                 this.$nextTick(() => {
                     const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
                     if ( this.selectedLatLng.length && this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
-                        this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng,  { animate: true });
+                        this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng,  { animate: true });
                 });
             }
         },
@@ -161,13 +176,69 @@
                 this.selected = Array.isArray(this.value) ? (this.value.length == 1 && this.value[0] == "" ? [] : this.value) : [this.value];
             
             // Listens to window resize event to update map bounds
-            this.handleWindowResize();
-            window.addEventListener('resize', this.handleWindowResize);
+            // We need to pass mapComoponentRef here instead of creating it inside the function
+            // otherwise the listener would conflict when multiple geo metadata are inserted.
+            const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+            eventBusItemMetadata.$on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
+        },
+        mounted() {
+            setTimeout(() => {
+                this.$nextTick(() => {
+                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                    this.handleWindowResize(mapComponentRef);
+                });
+            }, 500);
         },
         beforeDestroy() {
-            window.removeEventListener('resize', this.handleWindowResize);
+            const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+            eventBusItemMetadata.$off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         methods: {
+            onUpdateFromLatitudeInput: _.debounce( function($event) {
+                let newLatitude = $event.target.value;
+                if ( !isNaN(newLatitude) ) {
+                    this.latitude = newLatitude;
+                    this.onUpdateFromLatitudeAndLongitude();
+                } else {
+                    const splitValue = newLatitude.split(',');
+                    if (
+                        splitValue && 
+                        splitValue.length == 2 &&
+                        !isNaN(splitValue[0]) &&
+                        !isNaN(splitValue[1])
+                    ) {
+                        this.latitude = splitValue[0];
+                        this.longitude = splitValue[1];
+                        this.onUpdateFromLatitudeAndLongitude();
+                    }
+                }
+            }, 250),
+            onUpdateFromLongitudeInput: _.debounce( function($event) {
+                let newLongitude = $event.target.value;
+
+                if ( !isNaN(newLongitude) ) {
+                    this.longitude = newLongitude;
+                    this.onUpdateFromLatitudeAndLongitude();
+                } else {
+                    const splitValue = newLongitude.split(',');
+                    if (
+                        splitValue && 
+                        splitValue.length == 2 &&
+                        !isNaN(splitValue[0]) &&
+                        !isNaN(splitValue[1])
+                    ) {
+                        this.latitude = splitValue[0];
+                        this.longitude = splitValue[1];
+                        this.onUpdateFromLatitudeAndLongitude();
+                    }
+                }
+            }, 250),
+            onUpdateFromLatitudeAndLongitude() {
+                if (this.editingMarkerIndex >= 0) {
+                    this.selected.splice(this.editingMarkerIndex, 1, this.latitude + ',' + this.longitude);
+                    this.$emit('input', this.selected);
+                }
+            },
             onDragMarker($event, index) {
                 if ( $event.target && $event.target['_latlng'] ) {
                     if (this.editingMarkerIndex == index) {
@@ -221,20 +292,17 @@
             },
             onMarkerRemove(index) {
                 this.editingMarkerIndex = -1;
-                console.log(this.selectedLatLng[index])
+                
                 this.latitude = this.selectedLatLng[index].lat;
                 this.longitude = this.selectedLatLng[index].lng;
 
                 this.selected.splice(index, 1);
                 this.$emit('input', this.selected);
             },
-            handleWindowResize: _.debounce( function() {
-                this.$nextTick(() => {
-                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
-                        this.$refs[mapComponentRef].mapObject.invalidateSize(true);
-                });
-            }, 500),
+            handleWindowResize(mapComponentRef) {
+                if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
+                    this.$refs[mapComponentRef].mapObject.invalidateSize(true);
+            }
         }
     }
 </script>

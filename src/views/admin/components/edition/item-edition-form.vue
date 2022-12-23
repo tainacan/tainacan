@@ -1729,6 +1729,7 @@ export default {
         },
         handleWindowResize: _.debounce( function() {
             this.$nextTick(() => {
+                eventBusItemMetadata.$emit('itemEditionFormResize');
                 if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
                     this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
             });

@@ -38,6 +38,9 @@ class GeoCoordinate extends Metadata_Type {
 	 * @return bool `true` if the coordinate is valid, `false` if not
 	 */
 	private function validateLatLong($lat, $long) {
+		if ( !is_numeric($lat) || !is_numeric($long) )
+			return false;
+			
 		$validataLat = ($lat + 0) >= -90.0 && ($lat + 0) <= 90.0;
 		$validataLong = ($long + 0) >= -180.0 && ($long + 0) <= 180.0;
 		return $validataLat & $validataLong;
@@ -48,7 +51,7 @@ class GeoCoordinate extends Metadata_Type {
 		$value = is_array($value) ? $value : [$value];
 		foreach ($value as $coordinate) {
 			$arr_coordinate = explode(",", $coordinate);
-			if( count($arr_coordinate) != 2 || !$this->validateLatLong($arr_coordinate[0], $arr_coordinate[1])) {
+			if ( count($arr_coordinate) != 2 || !$this->validateLatLong($arr_coordinate[0], $arr_coordinate[1])) {
 				$this->add_error( sprintf(__('The value (%s) is not a valid geo coordinate', 'tainacan'), $coordinate ) );
 				return false;
 			}
@@ -61,6 +64,7 @@ class GeoCoordinate extends Metadata_Type {
 	 * @return string
 	 */
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		global $TAINACAN_BASE_URL;
 		$value = $item_metadata->get_value();
 		$metadatum = $item_metadata->get_metadatum();
 		$item_metadatum_id = $metadatum->get_id();
@@ -91,6 +95,8 @@ class GeoCoordinate extends Metadata_Type {
 
 			$return .= "<span class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}'><span>{$latitude}</span><span class='coordinates-separator'>,</span><span>{$longitude}</span></span>";
 		}
+		
+		wp_enqueue_style( 'tainacan-geocoordinate-item-metadatum', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-geocoordinate-item-metadatum.css', array(), TAINACAN_VERSION);
 
 		return '<span id="tainacan-geocoordinatemetadatum--' . $item_metadatum_id . '" data-module="geocoordinate-item-metadatum">
 					' . $return . '
