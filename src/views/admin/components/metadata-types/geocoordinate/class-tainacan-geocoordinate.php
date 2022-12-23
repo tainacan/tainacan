@@ -2,6 +2,8 @@
 
 namespace Tainacan\Metadata_Types;
 
+require_once(__DIR__ . '/class-tainacan-geocoordinate-helper.php');
+
 use Tainacan\Entities\Item_Metadata_Entity;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
