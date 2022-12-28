@@ -117,7 +117,7 @@ class Taxonomies extends Repository {
 			'public'              => true,
 			'show_ui'             => tnc_enable_dev_wp_interface(),
 			'show_in_menu'        => tnc_enable_dev_wp_interface(),
-			'publicly_queryable'  => false,
+			'publicly_queryable'  => true,
 			'exclude_from_search' => true,
 			'has_archive'         => false,
 			'query_var'           => true,
