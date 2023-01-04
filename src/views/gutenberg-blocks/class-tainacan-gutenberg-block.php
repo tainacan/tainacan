@@ -134,6 +134,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 		$editor_script_deps,
 		$TAINACAN_VERSION
 	);
+	wp_set_script_translations( $block_slug, 'tainacan' );
 	$register_params['editor_script'] = $block_slug;
 
 	// Passes global variables to the blocks editor side
