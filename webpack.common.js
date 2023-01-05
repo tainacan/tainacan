@@ -33,7 +33,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './src/assets/js/'),
         publicPath: './wp-content/plugins/tainacan/assets/js/',
-        filename: '[name].js'
+        filename: '[name].js',
+        chunkFilename: `[name].js?ver=[contenthash]`
     },
     module: {
         rules: [
