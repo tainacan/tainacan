@@ -120,6 +120,11 @@ class Theme_Helper {
 		$prefix = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
 		return $prefix == Entities\Collection::$db_identifier_prefix;
 	}
+
+	public function is_post_a_tainacan_taxonomy_postype(\WP_Post $post) {
+		$post_type = $post->post_type;
+		return $post_type == Entities\Taxonomy::$post_type;
+	}
 	
 	public function is_taxonomy_a_tainacan_tax($tax_slug) {
 		$prefix = substr( $tax_slug, 0, strlen( Entities\Taxonomy::$db_identifier_prefix ) );
@@ -155,37 +160,42 @@ class Theme_Helper {
 
 		$post = get_queried_object();
 		
-		// Is it a collection Item?
-		if ( !$this->is_post_an_item($post) ) {
+		// Is it a collection Item or a taxonomy-post-type post?
+		if ( !$this->is_post_an_item($post) && !$this->is_post_a_tainacan_taxonomy_postype($post) )
 			return $content;
+		
+		if ( $this->is_post_an_item($post) ) {
+		
+			$item = new Entities\Item($post);
+
+			$content = '';
+			
+			// document
+			$content .= '<section id="tainacan-default-document-section">';
+				$content .= '<h2>' . __( 'Document', 'tainacan' ) . '</h2>';
+				$content .= $this->get_tainacan_item_gallery(array(
+					'layoutElements' => array( 'main' => true, 'thumbnails' => false ),
+					'mediaSources' => 	array( 'document' => true, 'attachments' => false, 'metadata' => false),
+				));
+			$content .= '</section>';
+			
+			// metadata sections
+			$content .= $item->get_metadata_sections_as_html();
+
+			// attachments
+			$content .= '<section id="tainacan-default-attachments-section">';
+				$content .= '<h2>' . __( 'Attachments', 'tainacan' ) . '</h2>';
+				$content .= $this->get_tainacan_item_gallery(array(
+					'layoutElements' => array( 'main' => false, 'thumbnails' => true ),
+					'mediaSources' => 	array( 'document' => false, 'attachments' => true, 'metadata' => false),
+				));
+			$content .= '</section>';
+			
+			$content = apply_filters('tainacan_single_item_content', $content, $item);
+		
+		} else if ( $this->is_post_a_tainacan_taxonomy_postype($post) ) {
+			$content = tainacan_get_single_taxonomy_content($content, $post);
 		}
-		
-		$item = new Entities\Item($post);
-
-		$content = '';
-		
-		// document
-		$content .= '<section id="tainacan-default-document-section">';
-			$content .= '<h2>' . __( 'Document', 'tainacan' ) . '</h2>';
-			$content .= $this->get_tainacan_item_gallery(array(
-				'layoutElements' => array( 'main' => true, 'thumbnails' => false ),
-				'mediaSources' => 	array( 'document' => true, 'attachments' => false, 'metadata' => false),
-			));
-		$content .= '</section>';
-		
-		// metadata sections
-		$content .= $item->get_metadata_sections_as_html();
-
-		// attachments
-		$content .= '<section id="tainacan-default-attachments-section">';
-			$content .= '<h2>' . __( 'Attachments', 'tainacan' ) . '</h2>';
-			$content .= $this->get_tainacan_item_gallery(array(
-				'layoutElements' => array( 'main' => false, 'thumbnails' => true ),
-				'mediaSources' => 	array( 'document' => false, 'attachments' => true, 'metadata' => false),
-			));
-		$content .= '</section>';
-		
-		$content = apply_filters('tainacan_single_item_content', $content, $item);
 
 		return $content;
 		
@@ -286,7 +296,6 @@ class Theme_Helper {
 			}
 			
 		}
-		
 		
 	}
 	

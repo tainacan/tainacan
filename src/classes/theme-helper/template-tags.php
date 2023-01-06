@@ -1199,3 +1199,120 @@ function tainacan_get_the_metadata_sections($args = array(), $item_id = 0) {
 function tainacan_the_metadata_sections($args = array()) {
 	echo tainacan_get_the_metadata_sections($args);
 }
+
+/**
+ * Render the taxonomy single template HTML string.
+ *
+ * This works as an archive of the taxonomy terms, and uses the CPT tainacan-taxonomy.
+ * 
+ * It should display the list of terms, and it is used in the the_content filter of the theme helper to override the cpt single.
+ *
+ * @param string $content		This is the original html string of the tainacan-taxonomy post content. It usually contains the Taxonomy description.
+ * @param object $post			The original tainacan-taxonomy post object. It contains the $post->ID, which can be used to query the taxonomy of slug tnc_tax_<$post-id>
+ * @param array|string $args {
+	*     Optional. Array or string of arguments.
+	*
+	*	  @type bool		$hide_term_thumbnail		Do not display the Term thumbnail. Default false
+	*     @type bool		$hide_term_name				Do not display the Term name. Default false
+	*     @type bool		$hide_term_description		Do not display the Term description. Default true
+	*     @type string      $before_terms_list         	String to be added before the taxonomy terms list
+	*                                                  	Default ''
+	*     @type string      $after_terms_list           String to be added after the taxonomy terms list
+	*                                                  	Default ''
+	*     @type string      $before_term			    String to be added before each term inside the loop
+	*                                                  	Default '<article class="term" id="term-id-$id">'
+	*     @type string      $after_term			        String to be added after each term inside the loop
+	*                                                  	Default '</article>'	
+	*     @type string      $before_term_thumbnail      String to be added before each term thumbnail
+	*                                                  	Default '<div class="term-thumbnail">'
+	*     @type string      $after_term_thumbnail       String to be added after each term thumbnail
+	*                                                  	Default '</div>'	
+	*     @type string      $before_term_name           String to be added before each term name
+	*                                                  	Default '<h2 class="term-name">'
+	*     @type string      $after_term_name            String to be added after each term name
+	*                                                  	Default '</h2>'
+	* 	  @type string      $before_term_description    String to be added before each term description
+	*                                                  	Default '<p class="term-description">'
+	*     @type string      $after_term_description     String to be added after each term description
+	*                                                  	Default '</p>'
+	* }
+	*
+	* @return string        The HTML output
+ */
+function tainacan_get_single_taxonomy_content($content, $post, $args = []) {
+
+	$args = array_merge(array(
+		'hide_term_thumbnail' => false,
+		'hide_term_name' => false,
+		'hide_term_description' => true,
+		'before_terms_list' => '',
+		'after_terms_list' => '',
+		'before_term' => '<article class="term" id="term-id-$id">',
+		'after_term' => '</article>',
+		'before_term_thumbnail' => '<div class="term-thumbnail">',
+		'after_term_thumbnail' => '</div>',
+		'before_term_name' => '<h2 class="term-name">',
+		'after_term_name' => '</h2>',
+		'before_term_description' => '<p class="term-description">',
+		'after_term_description' => '</p>',
+	), $args);
+
+	$terms_query_args = array(
+		'taxonomy' => 'tnc_tax_' . $post->ID,
+		'orderby' => 'name',
+		'order' => 'ASC',
+		'hide_empty' => false,
+		'number' => ''
+	);
+	$terms_query_args = apply_filters('tainacan_single_taxonomy_terms_query', $terms_query_args, $post);
+	$terms = get_terms( $terms_query_args );
+
+	if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
+
+		$content = $args['before_terms_list'] . $content;
+
+		foreach ( $terms as $term ) {
+			$tainacan_term = new Entities\Term( $term );
+			ob_start();
+
+			$before_term = $args['before_term'];
+			$before_term = str_replace('$id', $tainacan_term->get_id(), $before_term);
+		?>    
+			<?php echo $before_term; ?>
+				
+				<a href="<?php echo $tainacan_term->get_url(); ?>">
+
+					<div>
+					<?php 
+						if ( !$args['hide_term_thumbnail'] )
+							echo $args['before_term_thumbnail'] . wp_get_attachment_image( $tainacan_term->get_header_image_id(), 'tainacan-large-full', false ) . $args['after_term_thumbnail'];
+					?>
+						
+						<div>	
+						<?php 
+							if ( !$args['hide_term_name'] )
+								echo $args['before_term_name'] . $tainacan_term->get_name() . $args['after_term_name'];
+
+							if ( !$args['hide_term_description'] )
+								echo $args['before_term_description'] . $tainacan_term->get_description() . $args['after_term_description']
+						?>
+						</div>
+					</div>
+				</a>
+					
+			<?php echo $args['after_term']; ?>
+			
+		<?php
+
+			$html = ob_get_contents();
+			ob_end_clean();
+			
+			$content = $html . $content;
+
+		}
+
+		$content .= $args['after_terms_list'];
+	}
+
+	return apply_filters('tainacan_get_single_taxonomy_content', $content, $post);
+}
