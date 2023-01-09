@@ -1220,7 +1220,7 @@ function tainacan_the_metadata_sections($args = array()) {
 	*     @type string      $after_terms_list           String to be added after the taxonomy terms list
 	*                                                  	Default ''
 	*     @type string      $before_term			    String to be added before each term inside the loop
-	*                                                  	Default '<article class="term" id="term-id-$id">'
+	*                                                  	Default '<article class="tainacan-term-single" id="term-id-$id">'
 	*     @type string      $after_term			        String to be added after each term inside the loop
 	*                                                  	Default '</article>'	
 	*     @type string      $before_term_thumbnail      String to be added before each term thumbnail
@@ -1247,7 +1247,7 @@ function tainacan_get_single_taxonomy_content($content, $post, $args = []) {
 		'hide_term_description' => true,
 		'before_terms_list' => '',
 		'after_terms_list' => '',
-		'before_term' => '<article class="term" id="term-id-$id">',
+		'before_term' => '<article class="tainacan-term-single" id="term-id-$id">',
 		'after_term' => '</article>',
 		'before_term_thumbnail' => '<div class="term-thumbnail">',
 		'after_term_thumbnail' => '</div>',
