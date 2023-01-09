@@ -1366,13 +1366,13 @@
                             :lat-lng="itemLocation.location"
                             :opacity="selectedMarkerIndexes.length > 0 && !selectedMarkerIndexes.includes(index) ? 0.35 : 1.0"
                             @click="showItemByLocation(index)">
-                    <l-tooltip>
-                        <div
-                                v-for="(column, columnIndex) in displayedMetadata"
-                                :key="columnIndex"
-                                v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                v-html="itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item.metadata, column) : ''" />
-                    </l-tooltip>
+                        <l-tooltip>
+                            <div
+                                    v-for="(column, columnIndex) in displayedMetadata"
+                                    :key="columnIndex"
+                                    v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                    v-html="itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item.metadata, column) : ''" />
+                        </l-tooltip>
                     </l-marker>
                     <l-control position="topright">
                         <div class="geocoordinate-input-panel">
@@ -1491,7 +1491,8 @@
                                     class="actions-area"
                                     :label="$i18n.get('label_actions')">
                                 <a
-                                        id="button-delete" 
+                                        id="button-delete"
+                                        v-if="item['metadata'][selectedGeocoordinateMetadatum] && item['metadata'][selectedGeocoordinateMetadatum].value && item['metadata'][selectedGeocoordinateMetadatum].value.length"
                                         :aria-label="$i18n.get('label_show_item_location_on_map')" 
                                         @click.prevent.stop="showLocationsByItem(item)">
                                     <span
@@ -1760,7 +1761,23 @@ export default {
             return locations;
         },
         geocoordinateMetadata() {
-            return this.displayedMetadata && this.displayedMetadata.length ? this.displayedMetadata.filter((aMetadatum) => aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate') : [];
+            let geocoordinateMetadata = [];
+
+            this.displayedMetadata.forEach((aMetadatum) => {
+
+                if ( aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' )
+                    geocoordinateMetadata.push(aMetadatum);
+                
+                if ( aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\Compound' &&
+                    aMetadatum['metadata_type_options']['children_objects'] && aMetadatum['metadata_type_options']['children_objects'].length
+                ) {
+                    for ( let i = 0; i < aMetadatum['metadata_type_options']['children_objects'].length; i++ )
+                        if ( aMetadatum['metadata_type_options']['children_objects'][i]['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' )
+                            geocoordinateMetadata.push(aMetadatum['metadata_type_options']['children_objects'][i]);
+                }
+            });
+
+            return geocoordinateMetadata;
         }
     },
     watch: {
@@ -1812,6 +1829,13 @@ export default {
                         this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true });
                 }
             }, 500)
+        },
+        geocoordinateMetadata: {
+            handler() {
+                if ( this.geocoordinateMetadata.length > 0 )
+                    this.selectedGeocoordinateMetadatum = this.geocoordinateMetadata[0].slug;
+            },
+            immediate: true
         }
     },
     mounted() {
