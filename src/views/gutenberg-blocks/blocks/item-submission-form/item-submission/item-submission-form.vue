@@ -615,26 +615,28 @@
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle"/>
                         </span>
                     </p>
-                    <h2 
-                            id="submission-form-sent-label" 
-                            v-if="sentFormHeading">
-                        {{ sentFormHeading }}
-                    </h2>
-                    <p 
-                            id="submission-form-sent-info"
-                            v-if="sentFormMessage">
-                        {{ sentFormMessage }}
-                    </p>
-                    <p 
-                            id="submission-form-sent-link"
-                            v-if="showItemLinkButton && linkToCreatedItem">
-                        <a
-                                style="text-decoration: none"
-                                :href="linkToCreatedItem"
-                                class="button is-secondary">
-                            {{ itemLinkButtonLabel }}
-                        </a>
-                    </p>
+                    <div>
+                        <h2 
+                                id="submission-form-sent-label" 
+                                v-if="sentFormHeading">
+                            {{ sentFormHeading }}
+                        </h2>
+                        <p 
+                                id="submission-form-sent-info"
+                                v-if="sentFormMessage">
+                            {{ sentFormMessage }}
+                        </p>
+                        <p 
+                                id="submission-form-sent-link"
+                                v-if="showItemLinkButton && linkToCreatedItem">
+                            <a
+                                    style="text-decoration: none"
+                                    :href="linkToCreatedItem"
+                                    class="button is-secondary">
+                                {{ itemLinkButtonLabel }}
+                            </a>
+                        </p>
+                    </div>
                     <br>
                 </div>
             </section>
