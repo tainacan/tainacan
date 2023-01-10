@@ -1369,9 +1369,15 @@
                         <l-tooltip>
                             <div
                                     v-for="(column, columnIndex) in displayedMetadata"
-                                    :key="columnIndex"
-                                    v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                    v-html="itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item.metadata, column) : ''" />
+                                    :key="columnIndex">
+                                <div 
+                                        v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                        style="font-weight: bold;"
+                                        v-html="(itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item.metadata, column) : '') + getMultivalueIndicator(itemLocation)" />
+                                <div 
+                                        v-if="collectionId != undefined && column.display && column.metadata_type == 'Tainacan\\Metadata_Types\\Compound' && selectedGeocoordinateMetadatum.parent == column.id"
+                                        v-html="itemLocation.item.metadata != undefined ? renderMetadata(itemLocation.item.metadata, column, itemLocation.multivalueIndex) : ''" />
+                            </div>
                         </l-tooltip>
                     </l-marker>
                     <l-control position="topright">
@@ -1767,11 +1773,13 @@ export default {
                         selectedItemMetadatum &&
                         Array.isArray(selectedItemMetadatum.value) 
                     ) {
-                        for (let value of selectedItemMetadatum.value) {
-                            if (value.split(',').length == 2) {
+                        for (let i = 0; i < selectedItemMetadatum.value.length; i++) {
+                            if (selectedItemMetadatum.value[i].split(',').length == 2) {
                                 locations.push({
                                     item: item,
-                                    location: latLng(value.split(','))
+                                    multivalueIndex: i,
+                                    multivalueTotal: selectedItemMetadatum.value.length,
+                                    location: latLng(selectedItemMetadatum.value[i].split(','))
                                 });
                             }
                         }
@@ -2190,15 +2198,37 @@ export default {
         goToItemEditPage(item) {
             this.$router.push(this.$routerHelper.getItemEditPath(item.collection_id, item.id));
         },
-        renderMetadata(itemMetadata, column) {
+        renderMetadata(itemMetadata, column, multivalueIndex) {
 
             let metadata = (itemMetadata != undefined && itemMetadata[column.slug] != undefined) ? itemMetadata[column.slug] : false;
 
-            if (!metadata || itemMetadata == undefined) {
+            if (!metadata || itemMetadata == undefined)
                 return '';
-            } else {
-                return this.viewMode == 'table' ? ('<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_html) : metadata.value_as_html;
+
+            if ( multivalueIndex != undefined && metadata.value[multivalueIndex]) {
+                
+                if ( !Array.isArray(metadata.value[multivalueIndex]) && metadata.value[multivalueIndex].value_as_html)
+                    return metadata.value[multivalueIndex].value_as_html;
+
+                if ( Array.isArray(metadata.value[multivalueIndex]) ) {
+                    let sumOfValuesAsHtml = '';
+
+                    metadata.value[multivalueIndex].forEach(aValue => {
+                        if (aValue.value_as_html)
+                            sumOfValuesAsHtml += aValue.value_as_html + '<br>';
+                    })
+
+                    return sumOfValuesAsHtml;
+                }
             }
+
+            return this.viewMode == 'table' ? ('<span class="sr-only">' + column.name + ': </span>' + metadata.value_as_html) : metadata.value_as_html;
+        },
+        getMultivalueIndicator(itemLocation) {
+            if ( itemLocation.multivalueTotal > 1 )
+                return ' <em>(' + (itemLocation.multivalueIndex + 1) + ' of ' + itemLocation.multivalueTotal + ')</em>';
+            else 
+                return '';
         },
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
@@ -2208,7 +2238,7 @@ export default {
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
             if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
-                this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true });
+                this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds( [ this.itemsLocations[index].location ],  { animate: true });
         },
         showLocationsByItem(item) {
             this.selectedMarkerIndexes = [];
@@ -2218,7 +2248,7 @@ export default {
                 return anItemLocation.item.id == item.id;
             })
             if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
-                this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true });
+                this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true });
         }
     }
 }
