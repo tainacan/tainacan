@@ -1384,8 +1384,8 @@
                                         v-for="geocoordinateMetadatum of geocoordinateMetadata"
                                         :key="geocoordinateMetadatum.id"
                                         role="button"
-                                        :class="{ 'is-active': selectedGeocoordinateMetadatum == geocoordinateMetadatum.slug }"
-                                        :value="geocoordinateMetadatum.slug">
+                                        :class="{ 'is-active': selectedGeocoordinateMetadatum.slug == geocoordinateMetadatum.slug }"
+                                        :value="geocoordinateMetadatum">
                                     {{ geocoordinateMetadatum.name }}
                                 </option>
                             </b-select>
@@ -1492,11 +1492,11 @@
                                     :label="$i18n.get('label_actions')">
                                 <a
                                         id="button-delete"
-                                        v-if="item['metadata'][selectedGeocoordinateMetadatum] && item['metadata'][selectedGeocoordinateMetadatum].value && item['metadata'][selectedGeocoordinateMetadatum].value.length"
+                                        v-if="item['metadata'][selectedGeocoordinateMetadatum.slug] && item['metadata'][selectedGeocoordinateMetadatum.slug].value && item['metadata'][selectedGeocoordinateMetadatum.slug].value.length"
                                         :aria-label="$i18n.get('label_show_item_location_on_map')" 
                                         @click.prevent.stop="showLocationsByItem(item)">
                                     <span
-                                            v-if="selectedGeocoordinateMetadatum"
+                                            v-if="selectedGeocoordinateMetadatum.slug"
                                             v-tooltip="{
                                                 content: $i18n.get('label_show_item_location_on_map'),
                                                 autoHide: true,
@@ -1676,7 +1676,7 @@ export default {
             singleItemSelection: false,
             masonry: false,
             shouldUseLegacyMasonyCols: false,
-            selectedGeocoordinateMetadatum: false,
+            selectedGeocoordinateMetadatum: false, // Must became an object containing the whole metadata to handle compound information.
             latitude: -14.4086569,
             longitude: -51.31668,
             url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -1731,14 +1731,43 @@ export default {
         itemsLocations() {
             let locations = [];
             
-            if ( this.viewMode == 'map' && this.selectedGeocoordinateMetadatum && this.items ) {
+            if ( this.viewMode == 'map' && this.selectedGeocoordinateMetadatum.slug && this.items ) {
                 for (let item of this.items) {
                     
+                    let selectedItemMetadatum = item.metadata[this.selectedGeocoordinateMetadatum.slug];
+
+                    // Handle compound metadata child first, as they will not appear in this list by default (they are inside their parents value)
+                    if (!selectedItemMetadatum && this.selectedGeocoordinateMetadatum['parent']) {
+
+                        const parentSlug = Object.keys(item.metadata).find(aMetadatumSlug => item.metadata[aMetadatumSlug].id == this.selectedGeocoordinateMetadatum['parent']);
+                        if (parentSlug) {
+                            item.metadata[parentSlug].value.forEach(aCompoundValue => {
+
+                                const compoundValues = Array.isArray(aCompoundValue) ? aCompoundValue : [aCompoundValue];
+                                compoundValues.forEach(aValue => {
+                                    if ( aValue['metadatum_id'] == this.selectedGeocoordinateMetadatum['id'] ) {
+                                        selectedItemMetadatum = {
+                                            'metadatum_id': aValue['metadatum_id'],
+                                            'parent_meta_id': aValue['parent_meta_id'],
+                                            'value': selectedItemMetadatum && selectedItemMetadatum['value'] ? selectedItemMetadatum['value'] : [],
+                                            'value_as_string': selectedItemMetadatum && selectedItemMetadatum['value_as_string'] ? selectedItemMetadatum['value_as_string'] : [],
+                                            'value_as_html': selectedItemMetadatum && selectedItemMetadatum['value_as_html'] ? selectedItemMetadatum['value_as_html'] : []
+                                        }
+                                        selectedItemMetadatum['value'].push(aValue['value']);
+                                        selectedItemMetadatum['value_as_string'].push(aValue['value_as_string']);
+                                        selectedItemMetadatum['value_as_html'].push(aValue['value_as_html']);
+                                    }
+                                });
+                            });
+                        }
+                    }
+
+                    // Then check if has a single or multi value
                     if (
-                        item.metadata[this.selectedGeocoordinateMetadatum] &&
-                        Array.isArray(item.metadata[this.selectedGeocoordinateMetadatum].value) 
+                        selectedItemMetadatum &&
+                        Array.isArray(selectedItemMetadatum.value) 
                     ) {
-                        for (let value of item.metadata[this.selectedGeocoordinateMetadatum].value) {
+                        for (let value of selectedItemMetadatum.value) {
                             if (value.split(',').length == 2) {
                                 locations.push({
                                     item: item,
@@ -1747,15 +1776,16 @@ export default {
                             }
                         }
                     } else if (
-                        item.metadata[this.selectedGeocoordinateMetadatum] &&
-                        typeof item.metadata[this.selectedGeocoordinateMetadatum].value.split == 'function' &&
-                        item.metadata[this.selectedGeocoordinateMetadatum].value.split(',').length == 2
+                        selectedItemMetadatum &&
+                        typeof selectedItemMetadatum.value.split == 'function' &&
+                        selectedItemMetadatum.value.split(',').length == 2
                     ) {
                         locations.push({
                             item: item,
-                            location: latLng(item.metadata[this.selectedGeocoordinateMetadatum].value.split(','))
+                            location: latLng(selectedItemMetadatum.value.split(','))
                         });
                     }
+                    
                 }   
             }
             return locations;
@@ -1833,7 +1863,7 @@ export default {
         geocoordinateMetadata: {
             handler() {
                 if ( this.geocoordinateMetadata.length > 0 )
-                    this.selectedGeocoordinateMetadatum = this.geocoordinateMetadata[0].slug;
+                    this.selectedGeocoordinateMetadatum = this.geocoordinateMetadata[0];
             },
             immediate: true
         }
