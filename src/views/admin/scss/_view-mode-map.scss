@@ -26,6 +26,20 @@
             .tainacan-record {
                 margin-bottom: 0.125rem;
                 max-width: 100%;
+                opacity: 1.0;
+                transition: 1.0;
+
+                &.non-located-item {
+                    opacity: 0.35;
+                }
+                &.non-focused-item {
+                    opacity: 0.5;
+
+                    &:hover,
+                    &:focus {
+                        opacity: 1.0;
+                    } 
+                }
 
                 .tainacan-record-item-thumbnail,
                 img {

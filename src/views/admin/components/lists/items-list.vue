@@ -1406,7 +1406,11 @@
                             :data-tainacan-item-id="item.id"
                             v-for="(item, index) of items">
                         <div 
-                                :class="{ 'selected-record': getSelectedItemChecked(item.id) == true }"
+                                :class="{
+                                    'selected-record': getSelectedItemChecked(item.id) == true,
+                                    'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id),
+                                    'non-focused-item': selectedMarkerIndexes.length && selectedMarkerIndexes.findIndex((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex].item.id == item.id) < 0 
+                                }"
                                 class="tainacan-record">
                             <!-- Checkbox -->
                             <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
