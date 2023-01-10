@@ -1492,7 +1492,7 @@
                                     :label="$i18n.get('label_actions')">
                                 <a
                                         id="button-delete"
-                                        v-if="item['metadata'][selectedGeocoordinateMetadatum.slug] && item['metadata'][selectedGeocoordinateMetadatum.slug].value && item['metadata'][selectedGeocoordinateMetadatum.slug].value.length"
+                                        v-if="itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)"
                                         :aria-label="$i18n.get('label_show_item_location_on_map')" 
                                         @click.prevent.stop="showLocationsByItem(item)">
                                     <span
@@ -2208,7 +2208,7 @@ export default {
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
             if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
-                this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[0].location ],  { animate: true });
+                this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true });
         },
         showLocationsByItem(item) {
             this.selectedMarkerIndexes = [];
