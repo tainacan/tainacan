@@ -664,6 +664,10 @@ return apply_filters( 'tainacan-i18n', [
 	'label_use_search_separated_words'				 => __( 'Search each word separatelly', 'tainacan' ),
 	'label_map'										 => __( 'Map', 'tainacan' ),
 	'label_show_item_location_on_map'				 => __( 'Show item location on map', 'tainacan' ),
+	/* translators: This appears before a select where you choose possible geocoorinate metadata */
+	'label_showing_locations_for'					 => __( 'Showing locations for:', 'tainacan' ),
+	'label_one_selected_location'                    => __( 'One selected location', 'tainacan' ),
+	'label_%s_selected_locations'                    => __( '%s selected locations', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -997,7 +1001,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_try_enabling_search_by_word'				 => __( 'Try enabling the search by words.', 'tainacan' ),
 	'info_try_disabling_search_by_word'				 => __( 'Try disabling the search by words, to search for the complete phrase.', 'tainacan' ),
 	'info_details_about_search_by_word'				 => __( 'They may be located on different metadata and order, but you will still be able to use quotes to group them.', 'tainacan' ),
-
+	'info_empty_geocoordinate_metadata_list'		 => __( 'No geocoordinate metadata was found. Try enabling it in the "displayed metadata" dropdown.', 'tainacan' ),
+	
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),

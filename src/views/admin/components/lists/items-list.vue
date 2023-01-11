@@ -1381,35 +1381,61 @@
                         </l-tooltip>
                     </l-marker>
                     <l-control position="topright">
-                        <div class="geocoordinate-input-panel">
-                            <b-select
-                                    :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
-                                    id="tainacan-select-geocoordinate-metatum"
-                                    v-model="selectedGeocoordinateMetadatum">
-                                <option
-                                        v-for="geocoordinateMetadatum of geocoordinateMetadata"
-                                        :key="geocoordinateMetadatum.id"
-                                        role="button"
-                                        :class="{ 'is-active': selectedGeocoordinateMetadatum.slug == geocoordinateMetadatum.slug }"
-                                        :value="geocoordinateMetadatum">
-                                    {{ geocoordinateMetadatum.name }}
-                                </option>
-                            </b-select>
+                        <div class="geocoordinate-panel">
+                            <div 
+                                    v-if="geocoordinateMetadata.length"
+                                    class="geocoordinate-panel--input">
+                                <label>{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
+                                <b-select
+                                        :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
+                                        id="tainacan-select-geocoordinate-metatum"
+                                        v-model="selectedGeocoordinateMetadatum">
+                                    <option
+                                            v-for="geocoordinateMetadatum of geocoordinateMetadata"
+                                            :key="geocoordinateMetadatum.id"
+                                            role="button"
+                                            :class="{ 'is-active': selectedGeocoordinateMetadatum.slug == geocoordinateMetadatum.slug }"
+                                            :value="geocoordinateMetadatum">
+                                        {{ geocoordinateMetadatum.name }}
+                                    </option>
+                                </b-select>
+                            </div>
+                            <transition name="filter-item">
+                                <div 
+                                        v-if="selectedMarkerIndexes.length"
+                                        class="geocoordinate-panel--input">
+                                    <p>{{ selectedMarkerIndexes.length == 1 ? $i18n.get('label_one_selected_location') : $i18n.getWithVariables('label_%s_selected_locations', [ selectedMarkerIndexes.length ]) }}. <a @click="selectedMarkerIndexes = []">{{ $i18n.get('label_clean') }}</a></p>
+                                </div>
+                            </transition>
+                            <section 
+                                    v-if="!geocoordinateMetadata.length"
+                                    class="section">
+                                <div class="content has-text-grey has-text-centered">
+                                    <p>
+                                        <span class="icon is-large">
+                                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-public" />
+                                        </span>
+                                    </p>
+                                    <p>{{ $i18n.get('info_empty_geocoordinate_metadata_list') }}</p>
+                                </div>
+                            </section>
                         </div>
                     </l-control>
                 </l-map>
-                <ul
+                <transition-group
+                        tag="ul"
                         :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
-                        class="tainacan-records-container tainacan-records-container--map">
+                        class="tainacan-records-container tainacan-records-container--map"
+                        name="item-appear">
                     <li
-                            :key="index"
+                            :key="item.id"
                             :data-tainacan-item-id="item.id"
-                            v-for="(item, index) of items">
+                            v-for="item of items"
+                            v-show="!selectedMarkerIndexes.length || selectedMarkerIndexes.some((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex].item.id == item.id)">
                         <div 
                                 :class="{
                                     'selected-record': getSelectedItemChecked(item.id) == true,
-                                    'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id),
-                                    'non-focused-item': selectedMarkerIndexes.length && selectedMarkerIndexes.findIndex((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex].item.id == item.id) < 0 
+                                    'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
                                 }"
                                 class="tainacan-record">
                             <!-- Checkbox -->
@@ -1628,7 +1654,7 @@
                             </div>
                         </div>
                     </li>
-                </ul>
+                </transition-group>
             </div>
 
         </div>
@@ -1866,15 +1892,18 @@ export default {
             setTimeout(() => {
                 if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
                     if (this.itemsLocations.length == 1)
-                        this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true });
+                        this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
                     else
-                        this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true });
+                        this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
                 }
             }, 500)
         },
+        selectedGeocoordinateMetadatum() {
+            this.selectedMarkerIndexes = [];
+        },
         geocoordinateMetadata: {
             handler() {
-                if ( this.geocoordinateMetadata.length > 0 )
+                if ( this.geocoordinateMetadata.length )
                     this.selectedGeocoordinateMetadatum = this.geocoordinateMetadata[0];
             },
             immediate: true
@@ -2138,9 +2167,9 @@ export default {
             this.clearContextMenu();
         },
         selectItem() {
-            if (this.contextMenuItem != null) {
+            if (this.contextMenuItem != null)
                 this.setSelectedItemChecked(this.contextMenuItem.id);
-            }
+    
             this.clearContextMenu();
         },
         onClickItem($event, item) {
@@ -2242,7 +2271,7 @@ export default {
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
             if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
-                this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds( [ this.itemsLocations[index].location ],  { animate: true });
+                this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 12 });
         },
         showLocationsByItem(item) {
             this.selectedMarkerIndexes = [];
@@ -2251,8 +2280,12 @@ export default {
                     this.selectedMarkerIndexes.push(index);
                 return anItemLocation.item.id == item.id;
             })
-            if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
-                this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true });
+            if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
+                if (selectedLocationsByItem.length > 1)
+                    this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
+                else
+                    this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
+            }
         }
     }
 }
