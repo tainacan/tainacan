@@ -68,7 +68,7 @@ export const viewModesMixin = {
             }
             return itemUrl;
         },
-        renderMetadata(item, metadatum) {
+        renderMetadata(item, metadatum, multivalueIndex) {
             let metadata = false;
             if (item && item.metadata && item.metadata[metadatum.slug] != undefined)
                 metadata = item.metadata[metadatum.slug] 
@@ -83,8 +83,25 @@ export const viewModesMixin = {
 
             if (!metadata)
                 return '';
-            else
-                return metadata.value_as_html;
+                
+            if ( multivalueIndex != undefined && metadata.value[multivalueIndex]) {
+            
+                if ( !Array.isArray(metadata.value[multivalueIndex]) && metadata.value[multivalueIndex].value_as_html)
+                    return metadata.value[multivalueIndex].value_as_html;
+
+                if ( Array.isArray(metadata.value[multivalueIndex]) ) {
+                    let sumOfValuesAsHtml = '';
+
+                    metadata.value[multivalueIndex].forEach(aValue => {
+                        if (aValue.value_as_html)
+                            sumOfValuesAsHtml += aValue.value_as_html + '<br>';
+                    })
+
+                    return sumOfValuesAsHtml;
+                }
+            }
+
+            return metadata.value_as_html;
         },
         starSlideshowFromHere(index) {
             this.$router.replace({ query: {...this.$route.query, ...{'slideshow-from': index } }}).catch((error) => this.$console.log(error));

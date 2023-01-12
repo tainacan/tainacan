@@ -66,11 +66,19 @@ class GeoCoordinate extends Metadata_Type {
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		global $TAINACAN_BASE_URL;
 		$value = $item_metadata->get_value();
+
+		if ( 
+			( is_string( $value ) && empty( $value ) ) ||
+			( is_array( $value ) && !count( $value ) )
+		)
+			return '';
+
 		$metadatum = $item_metadata->get_metadatum();
 		$item_metadatum_id = $metadatum->get_id();
 		$item_metadatum_id .= $metadatum->get_parent() ? ( $metadatum->get_parent() . '_parent_meta_id-') : '';
 		
 		$return = '';
+
 		if ( $item_metadata->is_multiple() ) {
 			$prefix = $item_metadata->get_multivalue_prefix();
 			$suffix = $item_metadata->get_multivalue_suffix();

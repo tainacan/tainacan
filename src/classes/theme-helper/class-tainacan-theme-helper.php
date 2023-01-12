@@ -113,6 +113,15 @@ class Theme_Helper {
 			'implements_skeleton' => true,
 			'requires_thumbnail' => false
 		]);
+		$this->register_view_mode('map', [
+			'label' => __('Map', 'tainacan'),
+			'dynamic_metadata' => true,
+			'description' => 'A map view, for displaying items that have geocoordinate metadata.',
+			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-public tainacan-icon-1-25em"></i></span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
+		]);
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {

@@ -365,7 +365,8 @@
                                                     'tainacan-icon-viewminiature' : adminViewMode == 'grid',
                                                     'tainacan-icon-viewrecords' : adminViewMode == 'records',
                                                     'tainacan-icon-viewlist' : adminViewMode == 'list',
-                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
+                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry',
+                                                    'tainacan-icon-public' : adminViewMode == 'map' }"
                                             class="tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
                             </span>
@@ -441,6 +442,17 @@
                                 <i class="tainacan-icon tainacan-icon-viewlist"/>
                             </span>
                             <span>{{ $i18n.get('label_list') }}</span>
+                        </b-dropdown-item>
+                        <b-dropdown-item 
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': adminViewMode == 'map' }"
+                                :value="'map'"
+                                aria-role="listitem">
+                            <span class="icon gray-icon">
+                                <i class="tainacan-icon tainacan-icon-public"/>
+                            </span>
+                            <span>{{ $i18n.get('label_map') }}</span>
                         </b-dropdown-item>
                     </b-dropdown>
                 </b-field>
@@ -735,7 +747,7 @@
             },
             adminViewMode() {
                 const currentAdminViewMode = this.getAdminViewMode();
-                return ['table', 'cards', 'records', 'grid', 'masonry', 'list'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
+                return ['table', 'cards', 'records', 'grid', 'masonry', 'list', 'map'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
             },
             orderBy() {
                 return this.getOrderBy();
@@ -847,7 +859,8 @@
                     existingViewMode == 'records' || 
                     existingViewMode == 'list' || 
                     existingViewMode == 'grid' || 
-                    existingViewMode == 'masonry')
+                    existingViewMode == 'masonry'|| 
+                    existingViewMode == 'map')
                         this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
                 else
                     this.$eventBusSearch.setInitialAdminViewMode('table');
@@ -1015,7 +1028,7 @@
                                 this.sortingMetadata = [];
 
                                 // Decides if custom meta will be loaded with item.
-                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == 'list' || this.adminViewMode == undefined;
+                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == 'list' || this.adminViewMode == 'map' || this.adminViewMode == undefined;
                                 
                                 if (shouldLoadMeta) {
                                     
