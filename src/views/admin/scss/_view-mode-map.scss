@@ -1,8 +1,15 @@
 .tainacan-leaflet-map-container {
 
-    #tainacan-admin-view-mode-map {
+    #tainacan-admin-view-mode-map,
+    #tainacan-view-mode-map {
         float: right;
 
+        /deep/ span[data-module="geocoordinate-item-metadatum"],
+        /deep/ span[data-module="geocoordinate-item-metadatum"]+br {
+            display: none;
+            visibility: hidden;
+        }
+        
         .geocoordinate-panel {
             background: var(--tainacan-background-color);
             box-shadow: 0px 0px 12px -10px #000;
@@ -25,6 +32,12 @@
                 padding: 0;
                 font-size: 1.25em;
                 font-family: var(--tainacan-font-family);
+
+                label,
+                p,
+                a {
+                    margin: 0;
+                }
                 
                 /deep/ select {
                     background-color: var(--tainacan-input-background-color);
@@ -54,9 +67,6 @@
 
                 &.non-located-item {
                     opacity: 0.35;
-                }
-                &.non-focused-item {
-                    opacity: 0.5;
 
                     &:hover,
                     &:focus {

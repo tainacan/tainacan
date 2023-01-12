@@ -1353,13 +1353,13 @@
                         :zoom="5"
                         :center="[-14.4086569, -51.31668]"
                         :zoom-animation="true"
-                        @click="selectedMarkerIndexes = []"
+                        @click="clearSelectedMarkers()"
                         :options="{
                             name: 'tainacan-admin-view-mode-map'
                         }">
                     <l-tile-layer 
-                            :url="url" 
-                            :attribution="attribution" />
+                            :url="mapTileUrl" 
+                            :attribution="mapTileAttribution" />
                     <l-marker 
                             v-for="(itemLocation, index) of itemsLocations"
                             :key="index"
@@ -1404,7 +1404,7 @@
                                 <div 
                                         v-if="selectedMarkerIndexes.length"
                                         class="geocoordinate-panel--input">
-                                    <p>{{ selectedMarkerIndexes.length == 1 ? $i18n.get('label_one_selected_location') : $i18n.getWithVariables('label_%s_selected_locations', [ selectedMarkerIndexes.length ]) }}. <a @click="selectedMarkerIndexes = []">{{ $i18n.get('label_clean') }}</a></p>
+                                    <p>{{ selectedMarkerIndexes.length == 1 ? $i18n.get('label_one_selected_location') : $i18n.getWithVariables('label_%s_selected_locations', [ selectedMarkerIndexes.length ]) }}. <a @click="clearSelectedMarkers()">{{ $i18n.get('label_clean') }}</a></p>
                                 </div>
                             </transition>
                             <section 
@@ -1523,11 +1523,11 @@
                             </div>
                             <!-- Actions -->
                             <div
-                                    v-if="item.current_user_can_edit && !$adminOptions.hideItemsListActionAreas"
+                                    v-if="!$adminOptions.hideItemsListActionAreas"
                                     class="actions-area"
                                     :label="$i18n.get('label_actions')">
                                 <a
-                                        id="button-delete"
+                                        id="button-show-location"
                                         v-if="itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)"
                                         :aria-label="$i18n.get('label_show_item_location_on_map')" 
                                         @click.prevent.stop="showLocationsByItem(item)">
@@ -1550,7 +1550,7 @@
                                     </span>
                                 </a>
                                 <a
-                                        v-if="!isOnTrash"
+                                        v-if="!isOnTrash && item.current_user_can_edit"
                                         id="button-edit"
                                         :aria-label="$i18n.getFrom('items','edit_item')"
                                         @click.prevent.stop="goToItemEditPage(item)">
@@ -1568,7 +1568,7 @@
                                 <a
                                         :aria-lavel="$i18n.get('label_button_untrash')"
                                         @click.prevent.stop="untrashOneItem(item.id)"
-                                        v-if="isOnTrash">
+                                        v-if="isOnTrash && item.current_user_can_edit">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('label_recover_from_trash'),
@@ -1581,7 +1581,7 @@
                                     </span>
                                 </a>
                                 <a
-                                        v-if="item.current_user_can_delete"
+                                        v-if="item.current_user_can_delete && item.current_user_can_edit"
                                         id="button-delete" 
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneItem(item.id)">
@@ -1715,8 +1715,8 @@ export default {
             selectedGeocoordinateMetadatum: false, // Must became an object containing the whole metadata to handle compound information.
             latitude: -14.4086569,
             longitude: -51.31668,
-            url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            mapTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            mapTileAttribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             selectedMarkerIndexes: []
         }
     },
@@ -1899,7 +1899,7 @@ export default {
             }, 500)
         },
         selectedGeocoordinateMetadatum() {
-            this.selectedMarkerIndexes = [];
+            this.clearSelectedMarkers();
         },
         geocoordinateMetadata: {
             handler() {
@@ -2266,6 +2266,15 @@ export default {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+        },
+        clearSelectedMarkers() {
+            this.selectedMarkerIndexes = [];
+            if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
+                if (this.itemsLocations.length == 1)
+                    this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
+                else
+                    this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
+            }
         },
         showItemByLocation(index) {
             this.selectedMarkerIndexes = [];
