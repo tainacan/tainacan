@@ -14,7 +14,7 @@
                     drag-class="sortable-drag">
                 <div 
                         :id="metadatum.component"
-                        @click.prevent="addMetadatumViaButton(metadatum)"
+                        @click.prevent.once="addMetadatumViaButton(metadatum)"
                         class="available-metadatum-item"
                         :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
                         v-for="(metadatum, index) in availableMetadatumList"
