@@ -67,7 +67,13 @@ function tainacan_blocks_register_categories($categories, $editor_context) {
 		array(
 			array(
 				'slug' => 'tainacan-blocks',
-				'title' => __( 'Tainacan', 'tainacan' ),
+				'title' => __( 'Tainacan Blocks', 'tainacan' ),
+			),
+		),
+		array(
+			array(
+				'slug' => 'tainacan-blocks-variations',
+				'title' => __( 'Tainacan Query Loop Variations', 'tainacan' ),
 			),
 		)
 	);

@@ -20,7 +20,7 @@ Object.keys(POST_TYPES).forEach((postType) => {
                 );
         },
         attributes: {
-            category: 'tainacan-blocks',
+            category: 'tainacan-blocks-variations',
             namespace: VARIATION_NAME,
             query: {
                 postType: postType,
