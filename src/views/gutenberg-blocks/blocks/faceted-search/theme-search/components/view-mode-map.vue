@@ -333,7 +333,12 @@ export default {
                     
                 }   
             }
-            return locations;
+
+            let selectedItemId = false;
+            if ( this.selectedMarkerIndexes.length > 0 )
+                selectedItemId = locations[this.selectedMarkerIndexes[0]].item.id;
+
+            return selectedItemId ? locations.filter((aLocation) => aLocation.item.id == selectedItemId) : locations;
         },
         geocoordinateMetadata() {
             let geocoordinateMetadata = [];
