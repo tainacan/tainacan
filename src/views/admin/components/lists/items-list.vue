@@ -1355,7 +1355,8 @@
                         :zoom-animation="true"
                         @click="clearSelectedMarkers()"
                         :options="{
-                            name: 'tainacan-admin-view-mode-map'
+                            name: 'tainacan-admin-view-mode-map',
+                            zoomControl: false
                         }">
                     <l-tile-layer 
                             :url="mapTileUrl" 
@@ -1380,7 +1381,8 @@
                             </div>
                         </l-tooltip>
                     </l-marker>
-                    <l-control position="topright">
+                    <l-control-zoom position="bottomright" />
+                    <l-control position="topleft">
                         <div class="geocoordinate-panel">
                             <div 
                                     v-if="geocoordinateMetadata.length"
@@ -1668,7 +1670,7 @@ import ItemCopyDialog from '../other/item-copy-dialog.vue';
 import BulkEditionModal from '../modals/bulk-edition-modal.vue';
 import Masonry from 'masonry-layout';
 import { dateInter } from "../../js/mixins";
-import { LMap, LTooltip, LTileLayer, LMarker, LControl } from 'vue2-leaflet';
+import { LMap, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon, latLng } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
@@ -1689,7 +1691,8 @@ export default {
         LTooltip,
         LTileLayer,
         LMarker,
-        LControl
+        LControl,
+        LControlZoom
     },
     mixins: [ dateInter ],
     props: {
