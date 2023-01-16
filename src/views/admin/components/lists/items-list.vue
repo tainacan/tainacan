@@ -1843,11 +1843,15 @@ export default {
                     aMetadatum['metadata_type_options']['children_objects'] && aMetadatum['metadata_type_options']['children_objects'].length
                 ) {
                     for ( let i = 0; i < aMetadatum['metadata_type_options']['children_objects'].length; i++ )
-                        if ( aMetadatum['metadata_type_options']['children_objects'][i]['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' )
-                            geocoordinateMetadata.push(aMetadatum['metadata_type_options']['children_objects'][i]);
+                        if ( aMetadatum['metadata_type_options']['children_objects'][i]['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' ) {
+                            let childMetadatum = aMetadatum['metadata_type_options']['children_objects'][i];
+                            childMetadatum.name = childMetadatum.name + ' (' + aMetadatum.name + ')';
+                            geocoordinateMetadata.push(childMetadatum);
+                        }
                 }
             });
 
+            console.log(geocoordinateMetadata)
             return geocoordinateMetadata;
         }
     },
