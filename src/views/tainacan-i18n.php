@@ -1002,7 +1002,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_try_disabling_search_by_word'				 => __( 'Try disabling the search by words, to search for the complete phrase.', 'tainacan' ),
 	'info_details_about_search_by_word'				 => __( 'They may be located on different metadata and order, but you will still be able to use quotes to group them.', 'tainacan' ),
 	'info_empty_geocoordinate_metadata_list'		 => __( 'No geocoordinate metadata was found. Try enabling it in the "displayed metadata" dropdown.', 'tainacan' ),
-	
+	'info_non_located_item'							 => __( 'This item does not have any location based on this metadata.', 'tainacan' ),
+
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
 	'action_update'					=> __( 'General Updates', 'tainacan'),

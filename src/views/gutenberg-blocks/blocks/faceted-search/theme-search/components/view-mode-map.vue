@@ -21,7 +21,7 @@
                 <l-map 
                         :id="'tainacan-view-mode-map'"
                         :ref="'tainacan-view-mode-map'"
-                        style="height: 60vh; width: 75%;"
+                        style="height: 60vh; width: calc(100% - 300px);"
                         :zoom="5"
                         :center="[-14.4086569, -51.31668]"
                         :zoom-animation="true"
@@ -54,7 +54,10 @@
                         </l-tooltip>
                     </l-marker>
                     <l-control-zoom position="bottomright" />
-                    <l-control position="topleft">
+                    <l-control 
+                            :disable-scroll-propagation="false"
+                            :disable-click-propagation="false"
+                            position="topleft">
                         <div class="geocoordinate-panel">
                             <div 
                                     v-if="geocoordinateMetadata.length"
