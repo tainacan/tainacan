@@ -1432,6 +1432,20 @@
                             v-if="selectedMarkerIndexes.length"
                             position="topleft"
                             class="tainacan-records-container tainacan-records-container--map">
+                        <button 
+                                :aria-label="$i18n.get('label_clean')"
+                                class="tainacan-records-close-button"
+                                @click="clearSelectedMarkers()"
+                                v-tooltip="{
+                                    content: $i18n.get('label_clean'),
+                                    autoHide: true,
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-close" />
+                            </span>
+                        </button>
                         <transition-group 
                                 tag="ul"
                                 name="item-appear">
@@ -1441,42 +1455,13 @@
                                     v-for="item of items.filter(anItem => selectedMarkerIndexes.some((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex] && itemsLocations[aSelectedMarkerIndex].item.id == anItem.id))">
                                 <div 
                                         :class="{
-                                            'selected-record': getSelectedItemChecked(item.id) == true,
                                             'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
                                         }"
                                         class="tainacan-record">
-                                    <!-- Checkbox -->
-                                    <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
-                                    <div
-                                            v-if="collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))"
-                                            :class="{ 'is-selecting': isSelectingItems }"
-                                            class="record-checkbox">
-                                        <label
-                                                tabindex="0"
-                                                :class="(!$adminOptions.itemsSingleSelectionMode ? 'b-checkbox checkbox' : 'b-radio radio') + ' is-small'">
-                                            <input
-                                                    v-if="!$adminOptions.itemsSingleSelectionMode"
-                                                    type="checkbox"
-                                                    :checked="getSelectedItemChecked(item.id)"
-                                                    @input="setSelectedItemChecked(item.id)">
-                                            <input
-                                                    v-else
-                                                    type="radio"
-                                                    name="item-single-selection"
-                                                    :value="item.id"
-                                                    v-model="singleItemSelection">
-                                            <span class="check" />
-                                            <span class="control-label" />
-                                            <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
-                                        </label>
-                                    </div>
 
                                     <!-- Title -->
                                     <div
-                                            class="metadata-title"
-                                            :style="{
-                                                'padding-left': !collectionId || !($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit)) || $adminOptions.itemsSearchSelectionMode ? '1.5em !important' : '2.75em'
-                                            }">
+                                            class="metadata-title">
                                         <span 
                                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                                 class="icon has-text-gray"
@@ -1528,6 +1513,7 @@
                                                 @click.right="onRightClickItem($event, item)"
                                                 v-html="item.title != undefined ? item.title : ''" />
                                     </div>
+
                                     <!-- Actions -->
                                     <div
                                             v-if="!$adminOptions.hideItemsListActionAreas"
@@ -1831,7 +1817,6 @@
                     </li>
                 </ul>
             </div>
-
         </div>
     </div>
 </template>

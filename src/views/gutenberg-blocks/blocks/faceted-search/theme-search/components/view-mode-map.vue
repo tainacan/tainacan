@@ -12,7 +12,6 @@
                 <div 
                         :key="item"
                         v-for="item in 12"
-                        :style="{'min-height': randomHeightForRecordsItem() + 'px' }"
                         class="skeleton" />
             </div>
             
@@ -98,26 +97,153 @@
                             </section>
                         </div>
                     </l-control>
+                    <l-control
+                            :disable-scroll-propagation="false"
+                            :disable-click-propagation="false"
+                            v-if="selectedMarkerIndexes.length"
+                            position="topleft"
+                            class="tainacan-records-container tainacan-records-container--map">
+                        <transition-group
+                                    tag="ul"
+                                    name="item-appear">
+                            <li
+                                    :aria-setsize="totalItems"
+                                    :aria-posinset="getPosInSet(index)"
+                                    :data-tainacan-item-id="item.id"
+                                    :key="item.id"
+                                    v-for="(item, index) of items.filter(anItem => selectedMarkerIndexes.some((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex].item.id == item.id))">
+                                <a 
+                                        :href="getItemLink(item.url, index)"
+                                        :class="{
+                                            'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
+                                        }"
+                                        class="tainacan-record">
+
+                                    <!-- JS-side hook for extra content -->
+                                    <div 
+                                            v-if="hasBeforeHook()"
+                                            class="faceted-search-hook faceted-search-hook-item-before"
+                                            v-html="getBeforeHook(item)" />
+                                        
+                                    <!-- Title -->
+                                    <div class="metadata-title">
+                                        <span
+                                                v-if="itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id) && selectedGeocoordinateMetadatum.slug"
+                                                v-tooltip="{
+                                                    content: $i18n.get('label_show_item_location_on_map'),
+                                                    autoHide: true,
+                                                    placement: 'auto',
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                                }"
+                                                class="icon"
+                                                style="margin:0px 2px 0px 0px;"
+                                                :aria-label="$i18n.get('label_show_item_location_on_map')" 
+                                                @click.prevent.stop="showLocationsByItem(item)">
+                                            <svg
+                                                    style="width: 1.5em;height: 1.5em;"
+                                                    viewBox="0 0 24 24">
+                                                <path
+                                                        fill="currentColor"
+                                                        d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" />
+                                            </svg>
+                                        </span>
+                                        <p 
+                                                v-tooltip="{
+                                                    delay: {
+                                                        shown: 500,
+                                                        hide: 300,
+                                                    },
+                                                    content: item.metadata != undefined ? renderMetadata(item, column) : '',
+                                                    html: true,
+                                                    autoHide: false,
+                                                    placement: 'auto-start',
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                                }"
+                                                v-for="(column, metadatumIndex) in displayedMetadata"
+                                                :key="metadatumIndex"
+                                                v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                                v-html="item.metadata != undefined && collectionId ? renderMetadata(item, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
+                                        <span 
+                                                v-if="isSlideshowViewModeEnabled"
+                                                v-tooltip="{
+                                                    delay: {
+                                                        shown: 500,
+                                                        hide: 100,
+                                                    },
+                                                    content: $i18n.get('label_see_on_fullscreen'),
+                                                    placement: 'auto-start',
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                                }"          
+                                                @click.prevent="starSlideshowFromHere(index)"
+                                                class="icon slideshow-icon">
+                                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                        </span> 
+                                    </div>
+
+                                    <!-- Remaining metadata -->  
+                                    <div class="media">
+                                        <div class="list-metadata media-body">
+                                            <div 
+                                                    class="tainacan-record-thumbnail"
+                                                    v-if="item.thumbnail != undefined">
+                                                <blur-hash-image
+                                                        @click.left="onClickItem($event, item)"
+                                                        @click.right="onRightClickItem($event, item)"
+                                                        v-if="item.thumbnail != undefined"
+                                                        class="tainacan-record-item-thumbnail"
+                                                        :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                                        :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
+                                                        :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
+                                                        :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                                                        :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
+                                                        :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                                        :transition-duration="500"
+                                                    />
+                                                <div 
+                                                        :style="{ 
+                                                            minHeight: getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px',
+                                                            marginTop: '-' + getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'
+                                                        }" />
+                                            </div>
+                                            <span 
+                                                    v-for="(column, metadatumIndex) in displayedMetadata"
+                                                    :key="metadatumIndex"
+                                                    :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
+                                                    v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                                <h3 class="metadata-label">{{ column.name }}</h3>
+                                                <p      
+                                                        v-html="renderMetadata(item, column)"
+                                                        class="metadata-value"/>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- JS-side hook for extra content -->
+                                    <div 
+                                            v-if="hasAfterHook()"
+                                            class="faceted-search-hook faceted-search-hook-item-after"
+                                            v-html="getAfterHook(item)" />
+                                </a>
+                            </li>
+                        </transition-group>
+                    </l-control>
                 </l-map>
-                <transition-group
+                <ul
                             v-if="!isLoading"
-                            tag="ul"
-                            class="tainacan-records-container tainacan-records-container--map"
-                            name="item-appear">
+                            class="tainacan-map-cards-container">
                     <li
                             role="listitem"
                             :aria-setsize="totalItems"
                             :aria-posinset="getPosInSet(index)"
                             :data-tainacan-item-id="item.id"
                             :key="item.id"
-                            v-for="(item, index) of items"
-                            v-show="!selectedMarkerIndexes.length || selectedMarkerIndexes.some((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex].item.id == item.id)">
-                        <a 
-                                :href="getItemLink(item.url, index)"
+                            v-for="(item, index) of items">
+                        <div 
+                                @click.prevent.stop="showLocationsByItem(item)"
                                 :class="{
                                     'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
                                 }"
-                                class="tainacan-record">
+                                class="tainacan-map-card">
 
                             <!-- JS-side hook for extra content -->
                             <div 
@@ -180,52 +306,14 @@
                                 </span> 
                             </div>
 
-                            <!-- Remaining metadata -->  
-                            <div class="media">
-                                <div class="list-metadata media-body">
-                                    <div 
-                                            class="tainacan-record-thumbnail"
-                                            v-if="item.thumbnail != undefined">
-                                        <blur-hash-image
-                                                @click.left="onClickItem($event, item)"
-                                                @click.right="onRightClickItem($event, item)"
-                                                v-if="item.thumbnail != undefined"
-                                                class="tainacan-record-item-thumbnail"
-                                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
-                                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium-full', 120)"
-                                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium-full')"
-                                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
-                                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
-                                                :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
-                                                :transition-duration="500"
-                                            />
-                                        <div 
-                                                :style="{ 
-                                                    minHeight: getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px',
-                                                    marginTop: '-' + getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'
-                                                }" />
-                                    </div>
-                                    <span 
-                                            v-for="(column, metadatumIndex) in displayedMetadata"
-                                            :key="metadatumIndex"
-                                            :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
-                                            v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
-                                        <h3 class="metadata-label">{{ column.name }}</h3>
-                                        <p      
-                                                v-html="renderMetadata(item, column)"
-                                                class="metadata-value"/>
-                                    </span>
-                                </div>
-                            </div>
-
                             <!-- JS-side hook for extra content -->
                             <div 
                                     v-if="hasAfterHook()"
                                     class="faceted-search-hook faceted-search-hook-item-after"
                                     v-html="getAfterHook(item)" />
-                        </a>
+                        </div>
                     </li>
-                </transition-group>
+                </ul>
            </div>
         </div> 
     </div>
@@ -336,12 +424,7 @@ export default {
                     
                 }   
             }
-
-            let selectedItemId = false;
-            if ( this.selectedMarkerIndexes.length > 0 )
-                selectedItemId = locations[this.selectedMarkerIndexes[0]].item.id;
-
-            return selectedItemId ? locations.filter((aLocation) => aLocation.item.id == selectedItemId) : locations;
+            return locations;
         },
         geocoordinateMetadata() {
             let geocoordinateMetadata = [];
@@ -370,9 +453,9 @@ export default {
             setTimeout(() => {
                 if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
                     if (this.itemsLocations.length == 1)
-                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
+                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 0] });
                     else
-                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
+                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 0] });
                 }
             }, 500)
         },
@@ -388,11 +471,6 @@ export default {
         }
     },
     methods: {
-        randomHeightForRecordsItem() {
-            let min = (70*this.amountOfDisplayedMetadata)*0.8;
-            let max = (70*this.amountOfDisplayedMetadata)*1.2;
-            return Math.floor(Math.random()*(max-min+1)+min);
-        },
         getItemImageHeight(imageWidth, imageHeight) {  
             let itemWidth = 120;
             return (imageHeight*itemWidth)/imageWidth;
@@ -407,16 +485,16 @@ export default {
             this.selectedMarkerIndexes = [];
             if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
                 if (this.itemsLocations.length == 1)
-                    this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
+                    this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 0] });
                 else
-                    this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
+                    this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 0] });
             }
         },
         showItemByLocation(index) {
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
-            // if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
-            //     this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 12 });
+            if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
+                this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 12, paddingTopLeft: [0, 300] });
         },
         showLocationsByItem(item) {
             this.selectedMarkerIndexes = [];
@@ -425,12 +503,21 @@ export default {
                     this.selectedMarkerIndexes.push(index);
                 return anItemLocation.item.id == item.id;
             })
-            // if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
-            //     if (selectedLocationsByItem.length > 1)
-            //         this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
-            //     else
-            //         this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12 });
-            // }
+
+            if ( selectedLocationsByItem.length) {
+                if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
+                    if (selectedLocationsByItem.length > 1)
+                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 300] });
+                    else
+                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 300] });
+                }
+            } else {
+                this.$buefy.snackbar.open({
+                    message: this.$i18n.get('info_non_located_item'),
+                    type: 'is-warning',
+                    duration: 3000
+                });
+            }
         }
     }
 }

@@ -47,22 +47,45 @@
     }
 
     .tainacan-records-container--map {
-        height: 60vh;
+        height: calc(60vh - 72px);
         overflow-y: auto;
         overflow-x: hidden;
         width: 300px;
+        max-width: 300px;
         float: none;
         position: initial;
         font-size: 1rem;
         padding-top: 10px;
+        padding-bottom: 24px;
+
+        .tainacan-records-close-button {
+            background-color: var(--tainacan-background-color);
+            border-radius: 100%;
+            width: 1rem;
+            height: 1rem;
+            border: none;
+            position: absolute;
+            left: 320px;
+            cursor: pointer;
+            padding: 0.75em;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+
+            .icon {
+                height: 0.125em;
+            }
+        }
 
         &>li,
         &>ul>li {
+            max-width: 300px;
             width: 100%;
 
             .tainacan-record {
                 margin-bottom: 0.125rem;
-                max-width: 100%;
+                max-width: 300px;
+                width: 100%;
                 box-shadow: 0px 0px 12px -10px #000;
                 border: 2px solid rgba(0,0,0,0.2);
                 opacity: 1.0;
@@ -70,6 +93,16 @@
 
                 &:not(.is-selecting) {
                     background-color: var(--tainacan-background-color);
+                }
+
+                .metadata-title {
+                    padding: 0.5em 6.75em 0.5em 0.75em;
+
+                    p {
+                        white-space: normal;
+                        overflow: visible;
+                        line-height: 1.5em;
+                    }
                 }
 
                 &.non-located-item {
@@ -80,10 +113,12 @@
                         opacity: 1.0;
                     } 
                 }
-
+                .tainacan-record-item-thumbnail {
+                    margin: 0 0 0.75rem 1rem;
+                }
                 .tainacan-record-item-thumbnail,
                 img {
-                    max-width: 60px;
+                    max-width: 75px;
                 }
 
                 .media .list-metadata {
@@ -145,7 +180,7 @@
                 .actions-area {
                     position: relative;
                     float: right;
-                    top: calc(-1 * var(--tainacan-container-padding));
+                    top: calc(-0.25em * var(--tainacan-container-padding));
                     bottom: 0;
                     padding-right: 12px;
                     //width: 80px;
@@ -165,7 +200,7 @@
                 &:hover .actions-area {
                     visibility: visible;
                     opacity: 1.0;
-                    top:  calc(-1 * 1.5em - var(--tainacan-container-padding));
+                    top:  calc(-0.875em - var(--tainacan-container-padding));
         
                     a {
                         opacity: 1;
@@ -173,7 +208,6 @@
                 }
                 .tainacan-map-card-thumbnail {
                     max-width: 40px;
-                    margin-top: -0.5em;
                     margin-left: auto;
                 }
                 .tainacan-map-card-item-thumbnail,
@@ -186,15 +220,14 @@
                 }
                 .metadata-title {
                     flex-shrink: 0;
-                    padding: 0.75em 1.125em;
+                    padding: 0.25em 1.125em;
                     font-size: 1.0em !important; 
                     min-height: 40px;
                     position: relative;
-                    white-space: wrap;
                     display: flex;
                     gap: 0.75rem;
                     min-width: 100%;
-                    align-items: flex-start;
+                    align-items: center;
                     color: var(--tainacan-heading-color);
                     transition: background-color 0.3s ease;
         
