@@ -21,6 +21,13 @@ class GeoCoordinate extends Metadata_Type {
 		$this->set_form_component('tainacan-form-geocoordinate');
 		$this->set_name( __('GeoCoordinate', 'tainacan') );
 		$this->set_description( __('Represents a geographical location that is determined by latitude and longitude coordinates.', 'tainacan') );
+		$this->set_default_options([
+			'map_provider' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+			'extra_tile_layer' => [],
+			'atrribution' => '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+			'initial_zoom' => 5,
+			'maximum_zoom' => 12,
+		]);
 		$this->set_preview_template('
 			<div>
 				<div class="control">
@@ -28,6 +35,34 @@ class GeoCoordinate extends Metadata_Type {
 				</div>
 			</div>
 		');
+	}
+
+	/**
+	 * @inheritdoc
+	*/
+	public function get_form_labels(){
+		return [
+			'map_tile_provider' => [
+				'title' => __( 'Tile provides', 'tainacan' ),
+				'description' => __( 'Link to the service used as source for displaying tile layers on the map', 'tainacan' ),
+			],
+			'extra_map_tile_layer' => [
+				'title' => __( 'Extra tile layer', 'tainacan' ),
+				'description' => __( 'The extra layer of blocks to be displayed on the map', 'tainacan' ),
+			],
+			'attribution' => [
+				'title' => __( 'Attribution', 'tainacan' ),
+				'description' => __( 'Text/HTML to be shown in the attribution control, e.g. "© OpenStreetMap contributors". It describes source of map data and is often a legal obligation towards copyright holders and tile providers.', 'tainacan' ),
+			],
+			'initial_zoom' => [
+				'title' => __( 'Initial zoom', 'tainacan' ),
+				'description' => __( 'Initial zoom level of the map.', 'tainacan' ),
+			],
+			'maximum_zoom' => [
+				'title' => __( 'Maximum zoom', 'tainacan' ),
+				'description' => __( 'Maximum zoom level of the map.', 'tainacan' ),
+			]
+		];
 	}
 
 	/**
@@ -109,5 +144,9 @@ class GeoCoordinate extends Metadata_Type {
 		return '<span id="tainacan-geocoordinatemetadatum--' . $item_metadatum_id . '" data-module="geocoordinate-item-metadatum">
 					' . $return . '
 				</span>';
+	}
+
+	public function get_options_as_html() {
+		return "";
 	}
 }
