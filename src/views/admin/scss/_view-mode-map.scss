@@ -1,8 +1,18 @@
 .tainacan-leaflet-map-container {
+    display: flex;
+    flex-wrap: nowrap;
+    border: 1px solid var(--tainacan-input-border-color);
+    border-radius: 3px;
 
     #tainacan-admin-view-mode-map,
     #tainacan-view-mode-map {
-        float: right;
+        position: relative;
+        border: none;
+        border-left: 1px solid var(--tainacan-input-border-color);
+
+        /deep/ .leaflet-marker-pane {
+            filter: hue-rotate(-22deg);
+        }
 
         /deep/ span[data-module="geocoordinate-item-metadatum"],
         /deep/ span[data-module="geocoordinate-item-metadatum"]+br {
@@ -12,7 +22,7 @@
         
         .geocoordinate-panel {
             background: var(--tainacan-background-color);
-            box-shadow: 0px 0px 12px -10px #000;
+            box-shadow: 0px 0px 12px -10px var(--tainacan-black);
             border-radius: 3px;
             padding: 0.25rem 0.125rem 0.25rem 1rem;
             border: 2px solid rgba(0,0,0,0.2);
@@ -23,12 +33,13 @@
             &:hover,
             &:focus {
                 opacity: 1.0;
-                box-shadow: 4px 0px 18px -12px #000;
+                box-shadow: 4px 0px 18px -12px var(--tainacan-black);
             }
 
             .geocoordinate-panel--input {
                 display: flex;
                 align-items: center;
+                flex-wrap: wrap;
                 padding: 0;
                 font-size: 1.25em;
                 font-family: var(--tainacan-font-family);
@@ -50,22 +61,29 @@
         height: calc(60vh - 72px);
         overflow-y: auto;
         overflow-x: hidden;
-        width: 300px;
-        max-width: 300px;
+        width: 286px;
+        max-width: 286px;
         float: none;
         position: initial;
         font-size: 1rem;
         padding-top: 10px;
         padding-bottom: 24px;
 
+        &>ul {
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+        }
+
         .tainacan-records-close-button {
             background-color: var(--tainacan-background-color);
             border-radius: 100%;
+            box-shadow: 0px 0px 12px -10px var(--tainacan-black);
+            border: 2px solid rgba(0,0,0,0.2);
             width: 1rem;
             height: 1rem;
-            border: none;
             position: absolute;
-            left: 320px;
+            left: 300px;
             cursor: pointer;
             padding: 0.75em;
             display: flex;
@@ -79,14 +97,14 @@
 
         &>li,
         &>ul>li {
-            max-width: 300px;
+            max-width: 286px;
             width: 100%;
 
             .tainacan-record {
                 margin-bottom: 0.125rem;
-                max-width: 300px;
+                max-width: 286px;
                 width: 100%;
-                box-shadow: 0px 0px 12px -10px #000;
+                box-shadow: 0px 0px 12px -10px var(--tainacan-black);
                 border: 2px solid rgba(0,0,0,0.2);
                 opacity: 1.0;
                 transition: 1.0;
@@ -113,8 +131,8 @@
                         opacity: 1.0;
                     } 
                 }
-                .tainacan-record-item-thumbnail {
-                    margin: 0 0 0.75rem 1rem;
+                .tainacan-record-thumbnail {
+                    margin: 0 0 0.75rem 1rem !important;
                 }
                 .tainacan-record-item-thumbnail,
                 img {
@@ -133,11 +151,10 @@
     }
 
     .tainacan-map-cards-container {
-        left: 0;
-        top: 0;
+        padding: 0;
+        margin: 0;
         position: relative;
-        float: left;
-        width: 300px;
+        width: 286px;
         height: 60vh;
         overflow-y: auto;
         overflow-x: hidden;
@@ -148,13 +165,15 @@
             .tainacan-map-card {
                 max-width: 100%;
                 opacity: 1.0;
-                transition: filter;
+                background-color: var(--tainacan-item-background-color);
+                border-bottom: 1px solid var(--tainacan-item-hover-background-color);
 
                 &.non-located-item {
                     opacity: 0.45;
 
                     &:hover,
                     &:focus {
+                        background-color: var(--tainacan-item-background-color);
                         opacity: 1.0;
                     } 
                 }
@@ -256,6 +275,8 @@
                 }
                 &:hover,
                 &:focus {
+                    background-color: var(--tainacan-item-hover-background-color);
+
                     .tainacan-map-card-item-thumbnail {
                         opacity: 0.0;
                         visibility: hidden;
@@ -270,6 +291,27 @@
                 } 
 
             }
+        }
+    }
+
+    @media screen and (max-width: 960px) {
+        flex-wrap: wrap;
+
+        #tainacan-admin-view-mode-map,
+        #tainacan-view-mode-map,
+        .tainacan-map-cards-container {
+            width: 100% !important;
+            max-width: 100%;
+        }
+
+        #tainacan-admin-view-mode-map,
+        #tainacan-view-mode-map {
+            border-top: 1px solid var(--tainacan-input-border-color);
+            border-left: none;
+        }
+
+        .tainacan-map-cards-container {
+            height: 30vh;
         }
     }
 }

@@ -17,10 +17,80 @@
             
             <!-- MAP VIEW MODE -->
            <div class="tainacan-leaflet-map-container">
+                <ul
+                            v-if="!isLoading"
+                            class="tainacan-map-cards-container">
+                    <li
+                            role="listitem"
+                            :aria-setsize="totalItems"
+                            :aria-posinset="getPosInSet(index)"
+                            :data-tainacan-item-id="item.id"
+                            :key="item.id"
+                            v-for="(item, index) of items">
+                        <div 
+                                @click.prevent.stop="showLocationsByItem(item)"
+                                :class="{
+                                    'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
+                                }"
+                                class="tainacan-map-card">
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasBeforeHook()"
+                                    class="faceted-search-hook faceted-search-hook-item-before"
+                                    v-html="getBeforeHook(item)" />
+                                
+                            <!-- Title -->
+                            <div 
+                                    class="metadata-title"
+                                    :style="{
+                                        'cursor': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id) ? 'auto' : 'pointer',
+                                    }">
+                                <p 
+                                        v-tooltip="{
+                                            delay: {
+                                                shown: 500,
+                                                hide: 300,
+                                            },
+                                            content: item.metadata != undefined ? renderMetadata(item, column) : '',
+                                            html: true,
+                                            autoHide: false,
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                        }"
+                                        v-for="(column, metadatumIndex) in displayedMetadata"
+                                        :key="metadatumIndex"
+                                        v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
+                                        v-html="item.metadata != undefined && collectionId ? renderMetadata(item, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
+                                <span 
+                                        v-if="isSlideshowViewModeEnabled"
+                                        v-tooltip="{
+                                            delay: {
+                                                shown: 500,
+                                                hide: 100,
+                                            },
+                                            content: $i18n.get('label_see_on_fullscreen'),
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                        }"          
+                                        @click.prevent="starSlideshowFromHere(index)"
+                                        class="icon slideshow-icon">
+                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                </span> 
+                            </div>
+
+                            <!-- JS-side hook for extra content -->
+                            <div 
+                                    v-if="hasAfterHook()"
+                                    class="faceted-search-hook faceted-search-hook-item-after"
+                                    v-html="getAfterHook(item)" />
+                        </div>
+                    </li>
+                </ul>
                 <l-map 
                         :id="'tainacan-view-mode-map'"
                         :ref="'tainacan-view-mode-map'"
-                        style="height: 60vh; width: calc(100% - 300px);"
+                        style="height: 60vh; width: calc(100% - 286px);"
                         :zoom="5"
                         :center="[-14.4086569, -51.31668]"
                         :zoom-animation="true"
@@ -54,8 +124,8 @@
                     </l-marker>
                     <l-control-zoom position="bottomright" />
                     <l-control 
-                            :disable-scroll-propagation="false"
-                            :disable-click-propagation="false"
+                            :disable-scroll-propagation="true"
+                            :disable-click-propagation="true"
                             position="topleft">
                         <div class="geocoordinate-panel">
                             <div 
@@ -98,11 +168,25 @@
                         </div>
                     </l-control>
                     <l-control
-                            :disable-scroll-propagation="false"
-                            :disable-click-propagation="false"
+                            :disable-scroll-propagation="true"
+                            :disable-click-propagation="true"
                             v-if="selectedMarkerIndexes.length"
                             position="topleft"
                             class="tainacan-records-container tainacan-records-container--map">
+                        <button 
+                                :aria-label="$i18n.get('label_clean')"
+                                class="tainacan-records-close-button"
+                                @click="clearSelectedMarkers()"
+                                v-tooltip="{
+                                    content: $i18n.get('label_clean'),
+                                    autoHide: true,
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-close" />
+                            </span>
+                        </button>
                         <transition-group
                                     tag="ul"
                                     name="item-appear">
@@ -111,7 +195,7 @@
                                     :aria-posinset="getPosInSet(index)"
                                     :data-tainacan-item-id="item.id"
                                     :key="item.id"
-                                    v-for="(item, index) of items.filter(anItem => selectedMarkerIndexes.some((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex].item.id == item.id))">
+                                    v-for="(item, index) of items.filter(anItem => selectedMarkerIndexes.some((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex].item.id == anItem.id))">
                                 <a 
                                         :href="getItemLink(item.url, index)"
                                         :class="{
@@ -228,92 +312,6 @@
                         </transition-group>
                     </l-control>
                 </l-map>
-                <ul
-                            v-if="!isLoading"
-                            class="tainacan-map-cards-container">
-                    <li
-                            role="listitem"
-                            :aria-setsize="totalItems"
-                            :aria-posinset="getPosInSet(index)"
-                            :data-tainacan-item-id="item.id"
-                            :key="item.id"
-                            v-for="(item, index) of items">
-                        <div 
-                                @click.prevent.stop="showLocationsByItem(item)"
-                                :class="{
-                                    'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
-                                }"
-                                class="tainacan-map-card">
-
-                            <!-- JS-side hook for extra content -->
-                            <div 
-                                    v-if="hasBeforeHook()"
-                                    class="faceted-search-hook faceted-search-hook-item-before"
-                                    v-html="getBeforeHook(item)" />
-                                
-                            <!-- Title -->
-                            <div class="metadata-title">
-                                <span
-                                        v-if="itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id) && selectedGeocoordinateMetadatum.slug"
-                                        v-tooltip="{
-                                            content: $i18n.get('label_show_item_location_on_map'),
-                                            autoHide: true,
-                                            placement: 'auto',
-                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                        }"
-                                        class="icon"
-                                        style="margin:0px 2px 0px 0px;"
-                                        :aria-label="$i18n.get('label_show_item_location_on_map')" 
-                                        @click.prevent.stop="showLocationsByItem(item)">
-                                    <svg
-                                            style="width: 1.5em;height: 1.5em;"
-                                            viewBox="0 0 24 24">
-                                        <path
-                                                fill="currentColor"
-                                                d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" />
-                                    </svg>
-                                </span>
-                                <p 
-                                        v-tooltip="{
-                                            delay: {
-                                                shown: 500,
-                                                hide: 300,
-                                            },
-                                            content: item.metadata != undefined ? renderMetadata(item, column) : '',
-                                            html: true,
-                                            autoHide: false,
-                                            placement: 'auto-start',
-                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                        }"
-                                        v-for="(column, metadatumIndex) in displayedMetadata"
-                                        :key="metadatumIndex"
-                                        v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                        v-html="item.metadata != undefined && collectionId ? renderMetadata(item, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
-                                <span 
-                                        v-if="isSlideshowViewModeEnabled"
-                                        v-tooltip="{
-                                            delay: {
-                                                shown: 500,
-                                                hide: 100,
-                                            },
-                                            content: $i18n.get('label_see_on_fullscreen'),
-                                            placement: 'auto-start',
-                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                        }"          
-                                        @click.prevent="starSlideshowFromHere(index)"
-                                        class="icon slideshow-icon">
-                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
-                                </span> 
-                            </div>
-
-                            <!-- JS-side hook for extra content -->
-                            <div 
-                                    v-if="hasAfterHook()"
-                                    class="faceted-search-hook faceted-search-hook-item-after"
-                                    v-html="getAfterHook(item)" />
-                        </div>
-                    </li>
-                </ul>
            </div>
         </div> 
     </div>
@@ -494,7 +492,7 @@ export default {
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
             if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
-                this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 12, paddingTopLeft: [0, 300] });
+                this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 12, paddingTopLeft: [0, 286] });
         },
         showLocationsByItem(item) {
             this.selectedMarkerIndexes = [];
@@ -507,9 +505,9 @@ export default {
             if ( selectedLocationsByItem.length) {
                 if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
                     if (selectedLocationsByItem.length > 1)
-                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 300] });
+                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 286] });
                     else
-                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 300] });
+                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 12, paddingTopLeft: [0, 286] });
                 }
             } else {
                 this.$buefy.snackbar.open({
