@@ -78,7 +78,7 @@
                 <l-map 
                         :id="'tainacan-view-mode-map'"
                         :ref="'tainacan-view-mode-map'"
-                        style="height: 60vh; width: calc(100% - 286px);"
+                        style="height: 60vh; width: 100%;"
                         :zoom="5"
                         :center="[-14.4086569, -51.31668]"
                         :zoom-animation="true"
@@ -434,9 +434,9 @@ export default {
             setTimeout(() => {
                 if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
                     if (this.itemsLocations.length == 1)
-                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [0, 0] });
+                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
                     else
-                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [0, 0] });
+                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
                 }
             }, 500)
         },
@@ -467,9 +467,9 @@ export default {
             this.selectedMarkerIndexes = [];
             if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
                 if (this.itemsLocations.length == 1)
-                    this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [0, 0] });
+                    this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
                 else
-                    this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [0, 0] });
+                    this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
             }
         },
         showItemByLocation(index) {
@@ -477,7 +477,7 @@ export default {
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
             if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
-                this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 16, paddingTopLeft: [0, 286] });
+                this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 16, paddingTopLeft: [48, 286], paddingTopRight: [48, 48] });
         },
         showLocationsByItem(item) {
             this.mapSelectedItemId = item.id;
@@ -492,9 +492,9 @@ export default {
             if ( selectedLocationsByItem.length) {
                 if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
                     if (selectedLocationsByItem.length > 1)
-                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [0, 286] });
+                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 286], paddingTopRight: [48, 48] });
                     else
-                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [0, 286] });
+                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( selectedLocationsByItem.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 286], paddingTopRight: [48, 48] });
                 }
             } else {
                 this.$buefy.snackbar.open({

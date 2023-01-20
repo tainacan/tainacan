@@ -1,14 +1,13 @@
 .tainacan-leaflet-map-container {
     border: 1px solid var(--tainacan-input-border-color);
     border-radius: 3px;
+    display: flex;
     height: 60vh;
 
     #tainacan-admin-view-mode-map,
     #tainacan-view-mode-map {
-        //position: relative;
         border: none;
         border-left: 1px solid var(--tainacan-input-border-color);
-        float: right;
 
         /deep/ .leaflet-marker-pane {
             filter: hue-rotate(-22deg);
@@ -294,14 +293,13 @@
     }
 
     @media screen and (max-width: 960px) {
+        flex-wrap: nowrap;
 
         #tainacan-admin-view-mode-map,
         #tainacan-view-mode-map,
         .tainacan-map-cards-container {
             width: 100% !important;
             max-width: 100%;
-            float: none;
-            display: block;
         }
 
         #tainacan-admin-view-mode-map,
