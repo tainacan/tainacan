@@ -23,8 +23,8 @@ class GeoCoordinate extends Metadata_Type {
 		$this->set_description( __('Represents a geographical location that is determined by latitude and longitude coordinates.', 'tainacan') );
 		$this->set_default_options([
 			'map_provider' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-			'extra_tile_layer' => [],
-			'atrribution' => '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+			'extra_tile_layers' => [],
+			'attribution' => '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 			'initial_zoom' => 5,
 			'maximum_zoom' => 12,
 		]);
@@ -42,11 +42,11 @@ class GeoCoordinate extends Metadata_Type {
 	*/
 	public function get_form_labels(){
 		return [
-			'map_tile_provider' => [
+			'map_provider' => [
 				'title' => __( 'Tile provides', 'tainacan' ),
 				'description' => __( 'Link to the service used as source for displaying tile layers on the map', 'tainacan' ),
 			],
-			'extra_map_tile_layer' => [
+			'extra_tile_layers' => [
 				'title' => __( 'Extra tile layer', 'tainacan' ),
 				'description' => __( 'The extra layer of blocks to be displayed on the map', 'tainacan' ),
 			],
@@ -141,7 +141,20 @@ class GeoCoordinate extends Metadata_Type {
 		
 		wp_enqueue_style( 'tainacan-geocoordinate-item-metadatum', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-geocoordinate-item-metadatum.css', array(), TAINACAN_VERSION);
 
-		return '<span id="tainacan-geocoordinatemetadatum--' . $item_metadatum_id . '" data-module="geocoordinate-item-metadatum">
+        $options = $this->get_options();
+		$options_as_strings = '';
+		foreach ( $options as $option_key => $option ) {
+			if ( is_array($option) )
+				$options_as_strings .= 'data-' . $option_key . '="' . json_encode($option) . '" ';
+			else if ( $option_key == 'attribution' )
+				$options_as_strings .= 'data-' . $option_key . '="' . htmlentities($option) . '" ';
+			else if ( $option_key == 'map_provider' )
+				$options_as_strings .= 'data-' . $option_key . '="' . esc_url($option) . '" ';
+			else
+				$options_as_strings .= 'data-' . $option_key . '="' . $option . '" ';
+		};
+
+		return '<span id="tainacan-geocoordinatemetadatum--' . $item_metadatum_id . '" data-module="geocoordinate-item-metadatum" ' . $options_as_strings . '>
 					' . $return . '
 				</span>';
 	}

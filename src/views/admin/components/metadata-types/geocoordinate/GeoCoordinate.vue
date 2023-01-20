@@ -6,16 +6,18 @@
                 :id="'map--' + itemMetadatumIdentifier"
                 :ref="'map--' + itemMetadatumIdentifier"
                 style="height: 320px; width:100%;"
-                :zoom="5"
+                :zoom="initialZoom"
+                :max-zoom="maxZoom"
                 :center="[-14.4086569, -51.31668]"
                 :zoom-animation="true"
                 @click="onMapClick"
                 :options="{
                     name: 'map--' + itemMetadatumIdentifier,
-                    trackResize: false // We handle this manually in the component
+                    trackResize: false, // We handle this manually in the component
+                    worldCopyJump: true
                 }">
             <l-tile-layer 
-                    :url="url" 
+                    :url="mapProvider" 
                     :attribution="attribution" />
             <l-control position="topright">
                 <div class="geocoordinate-input-panel">
@@ -120,11 +122,24 @@
                 latitude: -14.4086569,
                 longitude: -51.31668,
                 selected: [],
-                url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                attribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             }
         },
         computed: {
+            mapProvider() {
+                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.map_provider ? this.itemMetadatum.metadatum.metadata_type_options.map_provider : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+            },
+            initialZoom() {
+                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.initial_zoom ? this.itemMetadatum.metadatum.metadata_type_options.initial_zoom : 5;
+            },
+            maxZoom() {
+                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.maximum_zoom ? this.itemMetadatum.metadatum.metadata_type_options.maximum_zoom : 12;
+            },
+            attribution() {
+                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.attribution ? this.itemMetadatum.metadatum.metadata_type_options.attribution : '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+            },
+            extraTileLayers() {
+                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.extra_tile_layers ? this.itemMetadatum.metadatum.metadata_type_options.extra_tile_layers : [];
+            },
             itemMetadatumIdentifier() {
                 return 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '');
             },
@@ -163,16 +178,19 @@
             }
         },
         watch: {
-            selectedLatLng() {
-                this.$nextTick(() => {
-                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                    if ( this.selectedLatLng.length && this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject ) {
-                        if (this.selectedLatLng.length == 1)
-                            this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng,  { animate: true });
-                        else
-                            this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng,  { animate: true });
-                    }
-                });
+            selectedLatLng: {
+                handler() {
+                    this.$nextTick(() => {
+                        const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                        if ( this.selectedLatLng.length && this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject ) {
+                            if (this.selectedLatLng.length == 1)
+                                this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng,  { animate: true, maxZoom: this.maxZoom });
+                            else 
+                                this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng,  { animate: true, maxZoom: this.maxZoom });
+                        }
+                    });
+                },
+                immediate: true
             }
         },
         created() {
@@ -288,10 +306,9 @@
                     
                     const existingSelectedIndex = this.selected.indexOf(this.latitude + ',' + this.longitude);
                     this.editingMarkerIndex = existingSelectedIndex;
-
                     const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
                     if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
-                        this.$refs[mapComponentRef].mapObject.panInsideBounds([ this.selectedLatLng[existingSelectedIndex] ],  { animate: true });
+                        this.$refs[mapComponentRef].mapObject.panInsideBounds([ this.selectedLatLng[existingSelectedIndex] ],  { animate: true, maxZoom: this.maxZoom });
                 }
             },
             onMarkerRemove(index) {

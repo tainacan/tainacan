@@ -2,11 +2,11 @@
     <section> 
         <b-field :addons="false" >
                 <label class="label is-inline">
-                    {{ $i18n.getHelperTitle('tainacan-text', 'mapProvider') }}
+                    {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'map_provider') }}
                     <span>&nbsp;*&nbsp;</span>
                     <help-button
-                            :title="'Titulo do helper'"
-                            :message="'message do helper'" />
+                            :title="$i18n.getHelperTitle('tainacan-geocoordinate', 'map_provider')"
+                            :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'map_provider')" />
                 </label>
                 <b-input
                         name="mapProvider"
@@ -16,10 +16,10 @@
 
         <b-field :addons="false" >
                 <label class="label is-inline">
-                    {{ $i18n.getHelperTitle('tainacan-text', 'extraTileLayer') }}
+                    {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'extra_tile_layers') }}
                     <help-button
-                        :title="'Titulo do helper'"
-                        :message="'message do helper'" />
+                        :title="$i18n.getHelperTitle('tainacan-geocoordinate', 'extra_tile_layers')"
+                        :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'extra_tile_layers')" />
                 </label>
                 <b-input
                         name="extraTileLayer"
@@ -30,15 +30,15 @@
         <b-field
                 :addons="false" >
                 <label class="label is-inline">
-                    {{ $i18n.getHelperTitle('tainacan-text', 'atrribution') }}
+                    {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'attribution') }}
                     <span>&nbsp;*&nbsp;</span>
                     <help-button
-                        :title="'Titulo do helper'"
-                        :message="'message do helper'" />
+                        :title="$i18n.getHelperTitle('tainacan-geocoordinate', 'attribution')"
+                        :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'attribution')" />
                 </label>
                 <b-input
-                        name="atrribution"
-                        v-model="atrribution"
+                        name="attribution"
+                        v-model="attribution"
                         @input="emitValues()" />
 
         </b-field>
@@ -46,11 +46,11 @@
         <b-field
                 :addons="false" >
                 <label class="label is-inline">
-                    {{ $i18n.getHelperTitle('tainacan-text', 'initialZoom') }}
+                    {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'initial_zoom') }}
                     <span>&nbsp;*&nbsp;</span>
                     <help-button
-                        :title="'Titulo do helper'"
-                        :message="'message do helper'" />
+                        :title="$i18n.getHelperTitle('tainacan-geocoordinate', 'initial_zoom')"
+                        :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'initial_zoom')" />
                 </label>
                 <b-input
                         name="initialZoom"
@@ -63,11 +63,11 @@
         <b-field
                 :addons="false" >
                 <label class="label is-inline">
-                    {{ $i18n.getHelperTitle('tainacan-text', 'maximumZoom') }}
+                    {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'maximum_zoom') }}
                     <span>&nbsp;*&nbsp;</span>
                     <help-button
-                        :title="'Titulo do helper'"
-                        :message="'message do helper'" />
+                        :title="$i18n.getHelperTitle('tainacan-geocoordinate', 'maximum_zoom')"
+                        :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'maximum_zoom')" />
                 </label>
                 <b-input
                         name="maximumZoom"
@@ -89,7 +89,7 @@
             return {
                 mapProvider: String,
                 extraTileLayer: [],
-                atrribution: String,
+                attribution: String,
                 initialZoom: Number,
                 maximumZoom: Number,
             }
@@ -97,8 +97,8 @@
         created() {
             if (this.value) {
                 this.mapProvider = this.value.map_provider || 'http://?';
-                this.extraTileLayer = this.value.extra_tile_layer || [];
-                this.atrribution = this.value.atrribution || '';
+                this.extraTileLayer = this.value.extra_tile_layers || [];
+                this.attribution = this.value.attribution || '';
                 this.initialZoom = this.value.initial_zoom || 5;
                 this.maximumZoom = this.value.maximum_zoom || 12;
             }
@@ -107,8 +107,8 @@
             emitValues(){
                 this.$emit('input',{
                     map_provider: this.mapProvider,
-                    extra_tile_layer: this.extraTileLayer,
-                    atrribution: this.atrribution,
+                    extra_tile_layers: this.extraTileLayer,
+                    attribution: this.attribution,
                     initial_zoom: this.initialZoom,
                     maximum_zoom: this.maximumZoom,
                 })

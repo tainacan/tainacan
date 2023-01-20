@@ -39,8 +39,15 @@ export default (element) => {
 
         var tainacanMap = TainacanLeaflet.map(element.id).setView([-14.4086569, -51.31668], 5);
         
-        TainacanLeaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        const map_provider = element.hasAttribute('data-map_provider') ? element.getAttribute('data-map_provider') : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const attribution = element.hasAttribute('data-attribution') ? element.getAttribute('data-attribution') : '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+        const initial_zoom = element.hasAttribute('data-initial_zoom') ? element.getAttribute('data-initial_zoom') : 5;
+        const maximum_zoom = element.hasAttribute('data-maximum_zoom') ? element.getAttribute('data-maximum_zoom') : 12;
+
+        TainacanLeaflet.tileLayer(map_provider, {
+            attribution: attribution,
+            zoom: initial_zoom,
+            maxZoom: maximum_zoom
         })
         .addTo(tainacanMap);
 
