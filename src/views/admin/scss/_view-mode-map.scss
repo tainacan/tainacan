@@ -1,14 +1,14 @@
 .tainacan-leaflet-map-container {
-    display: flex;
-    flex-wrap: nowrap;
     border: 1px solid var(--tainacan-input-border-color);
     border-radius: 3px;
+    height: 60vh;
 
     #tainacan-admin-view-mode-map,
     #tainacan-view-mode-map {
         position: relative;
         border: none;
         border-left: 1px solid var(--tainacan-input-border-color);
+        float: right;
 
         /deep/ .leaflet-marker-pane {
             filter: hue-rotate(-22deg);
@@ -58,7 +58,8 @@
     }
 
     .tainacan-records-container--map {
-        height: calc(60vh - 72px);
+        height: auto;
+        max-height: calc(60vh - 72px);
         overflow-y: auto;
         overflow-x: hidden;
         width: 286px;
@@ -123,14 +124,11 @@
                     }
                 }
 
-                &.non-located-item {
-                    opacity: 0.35;
-
-                    &:hover,
-                    &:focus {
-                        opacity: 1.0;
-                    } 
+                #button-show-location {
+                    color: var(--tainacan-secondary);
+                    cursor: pointer;
                 }
+
                 .tainacan-record-thumbnail {
                     margin: 0 0 0.75rem 1rem !important;
                 }
@@ -158,7 +156,8 @@
         height: 60vh;
         overflow-y: auto;
         overflow-x: hidden;
-        
+        display: inline-block;
+
         &>li {
             width: 100%;
 
@@ -169,11 +168,10 @@
                 border-bottom: 1px solid var(--tainacan-item-hover-background-color);
 
                 &.non-located-item {
-                    opacity: 0.45;
+                    opacity: 0.35;
 
                     &:hover,
                     &:focus {
-                        background-color: var(--tainacan-item-background-color);
                         opacity: 1.0;
                     } 
                 }
@@ -283,6 +281,7 @@
                     }
                     .metadata-title {
                         background-color: var(---tainacan-item-heading-hover-background-color) !important;
+
                         p { text-decoration: none !important; }
                         .slideshow-icon {
                             transform: scale(1.0);
@@ -295,13 +294,14 @@
     }
 
     @media screen and (max-width: 960px) {
-        flex-wrap: wrap;
 
         #tainacan-admin-view-mode-map,
         #tainacan-view-mode-map,
         .tainacan-map-cards-container {
             width: 100% !important;
             max-width: 100%;
+            float: none;
+            display: block;
         }
 
         #tainacan-admin-view-mode-map,

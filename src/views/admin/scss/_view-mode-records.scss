@@ -163,6 +163,7 @@
 
             .list-metadata {
                 padding: var(--tainacan-container-padding);
+                padding-top: 0.5em;
                 flex: 1;
                 font-size: 1em;
                 color: var(--tainacan-info-color);
@@ -171,6 +172,7 @@
             
                 .metadata-label {
                     margin: 0 0 0.5em 0;
+                    padding-top: 0;
                     font-size: 0.75em;
                     font-weight: 700;
                     color: var(--tainacan-info-color);

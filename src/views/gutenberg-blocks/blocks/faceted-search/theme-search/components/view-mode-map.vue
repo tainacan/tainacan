@@ -4,22 +4,10 @@
 
             <!-- Empty result placeholder, rendered in the parent component -->
             <slot />
-
-            <!-- SKELETON LOADING -->
-            <div 
-                    v-if="isLoading"
-                    class="tainacan-records-container--skeleton">
-                <div 
-                        :key="item"
-                        v-for="item in 12"
-                        class="skeleton" />
-            </div>
             
             <!-- MAP VIEW MODE -->
            <div class="tainacan-leaflet-map-container">
-                <ul
-                            v-if="!isLoading"
-                            class="tainacan-map-cards-container">
+                <ul class="tainacan-map-cards-container">
                     <li
                             role="listitem"
                             :aria-setsize="totalItems"
@@ -170,7 +158,7 @@
                     <l-control
                             :disable-scroll-propagation="true"
                             :disable-click-propagation="true"
-                            v-if="selectedMarkerIndexes.length"
+                            v-if="selectedMarkerIndexes.length || mapSelectedItemId"
                             position="topleft"
                             class="tainacan-records-container tainacan-records-container--map">
                         <button 
@@ -189,13 +177,13 @@
                         </button>
                         <transition-group
                                     tag="ul"
-                                    name="item-appear">
+                                    name="appear">
                             <li
                                     :aria-setsize="totalItems"
                                     :aria-posinset="getPosInSet(index)"
                                     :data-tainacan-item-id="item.id"
                                     :key="item.id"
-                                    v-for="(item, index) of items.filter(anItem => selectedMarkerIndexes.some((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex].item.id == anItem.id))">
+                                    v-for="(item, index) of items.filter(anItem => mapSelectedItemId == anItem.id)">
                                 <a 
                                         :href="getItemLink(item.url, index)"
                                         :class="{
@@ -219,12 +207,13 @@
                                                     placement: 'auto',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }"
+                                                id="button-show-location"
                                                 class="icon"
-                                                style="margin:0px 2px 0px 0px;"
+                                                style="margin: -1px 4px 0px 0px;"
                                                 :aria-label="$i18n.get('label_show_item_location_on_map')" 
                                                 @click.prevent.stop="showLocationsByItem(item)">
                                             <svg
-                                                    style="width: 1.5em;height: 1.5em;"
+                                                    style="width: 1.125em;height: 1.125em;"
                                                     viewBox="0 0 24 24">
                                                 <path
                                                         fill="currentColor"
@@ -353,7 +342,8 @@ export default {
             longitude: -51.31668,
             mapTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             mapTileAttribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            selectedMarkerIndexes: []
+            selectedMarkerIndexes: [],
+            mapSelectedItemId: false
         }
     },
     computed: {
@@ -480,6 +470,7 @@ export default {
                 return '';
         },
         clearSelectedMarkers() {
+            this.mapSelectedItemId = false;
             this.selectedMarkerIndexes = [];
             if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
                 if (this.itemsLocations.length == 1)
@@ -489,13 +480,16 @@ export default {
             }
         },
         showItemByLocation(index) {
+            this.mapSelectedItemId = this.itemsLocations[index].item.id;
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
             if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
                 this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 12, paddingTopLeft: [0, 286] });
         },
         showLocationsByItem(item) {
+            this.mapSelectedItemId = item.id;
             this.selectedMarkerIndexes = [];
+
             const selectedLocationsByItem = this.itemsLocations.filter((anItemLocation, index) => {
                 if (anItemLocation.item.id == item.id)
                     this.selectedMarkerIndexes.push(index);

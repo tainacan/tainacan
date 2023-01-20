@@ -1531,7 +1531,7 @@
                             v-for="(itemLocation, index) of itemsLocations"
                             :key="index"
                             :lat-lng="itemLocation.location"
-                            :opacity="selectedMarkerIndexes.length > 0 && !selectedMarkerIndexes.includes(index) ? 0.35 : 1.0"
+                            :opacity="(mapSelectedItemId && itemLocation.item.id != mapSelectedItemId) ? 0.35 : 1.0"
                             @click="showItemByLocation(index)">
                         <l-tooltip>
                             <div
@@ -1595,7 +1595,7 @@
                     <l-control
                             :disable-scroll-propagation="true"
                             :disable-click-propagation="true"
-                            v-if="selectedMarkerIndexes.length"
+                            v-if="selectedMarkerIndexes.length || mapSelectedItemId"
                             position="topleft"
                             class="tainacan-records-container tainacan-records-container--map">
                         <button 
@@ -1614,20 +1614,15 @@
                         </button>
                         <transition-group 
                                 tag="ul"
-                                name="item-appear">
+                                name="appear">
                             <li 
                                     :key="item.id"
                                     :data-tainacan-item-id="item.id"
-                                    v-for="item of items.filter(anItem => selectedMarkerIndexes.some((aSelectedMarkerIndex) => itemsLocations[aSelectedMarkerIndex] && itemsLocations[aSelectedMarkerIndex].item.id == anItem.id))">
-                                <div 
-                                        :class="{
-                                            'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
-                                        }"
-                                        class="tainacan-record">
+                                    v-for="item of items.filter(anItem => mapSelectedItemId == anItem.id)">
+                                <div class="tainacan-record">
 
                                     <!-- Title -->
-                                    <div
-                                            class="metadata-title">
+                                    <div class="metadata-title">
                                         <span 
                                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
                                                 class="icon has-text-gray"
@@ -1688,7 +1683,7 @@
                                         <a
                                                 id="button-show-location"
                                                 v-if="itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)"
-                                                :aria-label="$i18n.get('label_show_item_location_on_map')" 
+                                                :aria-label="$i18n.get('label_show_item_location_on_map')"
                                                 @click.prevent.stop="showLocationsByItem(item)">
                                             <span
                                                     v-if="selectedGeocoordinateMetadatum.slug"
@@ -1878,7 +1873,8 @@ export default {
             longitude: -51.31668,
             mapTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             mapTileAttribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            selectedMarkerIndexes: []
+            selectedMarkerIndexes: [],
+            mapSelectedItemId: false
         }
     },
     computed: {
@@ -2431,6 +2427,7 @@ export default {
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
         },
         clearSelectedMarkers() {
+            this.mapSelectedItemId = false;
             this.selectedMarkerIndexes = [];
             if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
                 if (this.itemsLocations.length == 1)
@@ -2440,13 +2437,16 @@ export default {
             }
         },
         showItemByLocation(index) {
+            this.mapSelectedItemId = this.itemsLocations[index].item.id;
             this.selectedMarkerIndexes = [];
             this.selectedMarkerIndexes.push(index);
             if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
                 this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds( [ this.itemsLocations[index].location ],  { animate: true, maxZoom: 12, paddingTopLeft: [0, 286] });
         },
         showLocationsByItem(item) {
+            this.mapSelectedItemId = item.id;
             this.selectedMarkerIndexes = [];
+
             const selectedLocationsByItem = this.itemsLocations.filter((anItemLocation, index) => {
                 if (anItemLocation.item.id == item.id)
                     this.selectedMarkerIndexes.push(index);
