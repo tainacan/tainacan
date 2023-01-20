@@ -137,9 +137,6 @@
             attribution() {
                 return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.attribution ? this.itemMetadatum.metadatum.metadata_type_options.attribution : '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
             },
-            extraTileLayers() {
-                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.extra_tile_layers ? this.itemMetadatum.metadatum.metadata_type_options.extra_tile_layers : [];
-            },
             itemMetadatumIdentifier() {
                 return 'tainacan-item-metadatum_id-' + this.itemMetadatum.metadatum.id + (this.itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + this.itemMetadatum.parent_meta_id) : '');
             },
@@ -198,7 +195,7 @@
                 this.selected = Array.isArray(this.value) ? (this.value.length == 1 && this.value[0] == "" ? [] : this.value) : [this.value];
             
             // Listens to window resize event to update map bounds
-            // We need to pass mapComoponentRef here instead of creating it inside the function
+            // We need to pass mapComponentRef here instead of creating it inside the function
             // otherwise the listener would conflict when multiple geo metadata are inserted.
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
             eventBusItemMetadata.$on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));

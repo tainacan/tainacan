@@ -43,7 +43,7 @@ export default (element) => {
         const attribution = element.hasAttribute('data-attribution') ? element.getAttribute('data-attribution') : '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors';
         const initial_zoom = element.hasAttribute('data-initial_zoom') ? element.getAttribute('data-initial_zoom') : 5;
         const maximum_zoom = element.hasAttribute('data-maximum_zoom') ? element.getAttribute('data-maximum_zoom') : 12;
-
+        
         TainacanLeaflet.tileLayer(map_provider, {
             attribution: attribution,
             zoom: initial_zoom,
@@ -55,6 +55,6 @@ export default (element) => {
             TainacanLeaflet.marker(coordinate).addTo(tainacanMap);
         });
 
-        tainacanMap.flyToBounds(coordinates);
+        tainacanMap.flyToBounds(coordinates, { maxZoom: maximum_zoom });
     }
 };

@@ -23,7 +23,6 @@ class GeoCoordinate extends Metadata_Type {
 		$this->set_description( __('Represents a geographical location that is determined by latitude and longitude coordinates.', 'tainacan') );
 		$this->set_default_options([
 			'map_provider' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-			'extra_tile_layers' => [],
 			'attribution' => '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 			'initial_zoom' => 5,
 			'maximum_zoom' => 12,
@@ -43,12 +42,8 @@ class GeoCoordinate extends Metadata_Type {
 	public function get_form_labels(){
 		return [
 			'map_provider' => [
-				'title' => __( 'Tile provides', 'tainacan' ),
-				'description' => __( 'Link to the service used as source for displaying tile layers on the map', 'tainacan' ),
-			],
-			'extra_tile_layers' => [
-				'title' => __( 'Extra tile layer', 'tainacan' ),
-				'description' => __( 'The extra layer of blocks to be displayed on the map', 'tainacan' ),
+				'title' => __( 'Map Tiles provider', 'tainacan' ),
+				'description' => __( 'Link to the service used as source for displaying tile layers on the map.', 'tainacan' ),
 			],
 			'attribution' => [
 				'title' => __( 'Attribution', 'tainacan' ),
@@ -101,6 +96,7 @@ class GeoCoordinate extends Metadata_Type {
 	public function get_value_as_html(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
 		global $TAINACAN_BASE_URL;
 		$value = $item_metadata->get_value();
+		$options = $this->get_options();
 
 		if ( 
 			( is_string( $value ) && empty( $value ) ) ||
@@ -111,7 +107,8 @@ class GeoCoordinate extends Metadata_Type {
 		$metadatum = $item_metadata->get_metadatum();
 		$item_metadatum_id = $metadatum->get_id();
 		$item_metadatum_id .= $metadatum->get_parent() ? ( $metadatum->get_parent() . '_parent_meta_id-') : '';
-		
+		$zoom_geo_query = isset($options['initial_zoom']) ? ('z=' . $options['initial_zoom'] ) : '' ;
+
 		$return = '';
 
 		if ( $item_metadata->is_multiple() ) {
@@ -125,7 +122,11 @@ class GeoCoordinate extends Metadata_Type {
 				$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
 				$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
 
-				$single_value = "<span class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}'><span>{$latitude}</span><span class='coordinates-separator'>,</span><span>{$longitude}</span></span>";
+				$single_value = "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
+									<span>{$latitude}</span>
+									<span class='coordinates-separator'>,</span>
+									<span>{$longitude}</span>
+								</a>";
 				$return .= empty($return)
 					? $prefix . $single_value . $suffix
 					: $separator . $prefix . $single_value . $suffix;
@@ -136,20 +137,21 @@ class GeoCoordinate extends Metadata_Type {
 			$latitude = isset($coordinate_as_array[0]) ? $coordinate_as_array[0] : '';
 			$longitude = isset($coordinate_as_array[1]) ? $coordinate_as_array[1] : '';
 
-			$return .= "<span class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}'><span>{$latitude}</span><span class='coordinates-separator'>,</span><span>{$longitude}</span></span>";
+			$return .= "<a class='tainacan-coordinates' data-latitude='{$latitude}' data-longitude='{$longitude}' href='geo:{$latitude},{$longitude}?q={$latitude},{$longitude}&{$zoom_geo_query}'>
+							<span>{$latitude}</span>
+							<span class='coordinates-separator'>,</span>
+							<span>{$longitude}</span>
+						</a>";
 		}
 		
 		wp_enqueue_style( 'tainacan-geocoordinate-item-metadatum', $TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-geocoordinate-item-metadatum.css', array(), TAINACAN_VERSION);
 
-        $options = $this->get_options();
 		$options_as_strings = '';
 		foreach ( $options as $option_key => $option ) {
 			if ( is_array($option) )
 				$options_as_strings .= 'data-' . $option_key . '="' . json_encode($option) . '" ';
 			else if ( $option_key == 'attribution' )
 				$options_as_strings .= 'data-' . $option_key . '="' . htmlentities($option) . '" ';
-			else if ( $option_key == 'map_provider' )
-				$options_as_strings .= 'data-' . $option_key . '="' . esc_url($option) . '" ';
 			else
 				$options_as_strings .= 'data-' . $option_key . '="' . $option . '" ';
 		};
