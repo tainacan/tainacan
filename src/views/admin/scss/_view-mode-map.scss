@@ -4,10 +4,28 @@
     display: flex;
     height: 60vh;
 
+
+    &.has-selected-item { 
+        #tainacan-admin-view-mode-map,
+        #tainacan-view-mode-map {
+            /deep/ .leaflet-active-area {
+                left: 310px;
+            }
+        }
+    }
+
     #tainacan-admin-view-mode-map,
     #tainacan-view-mode-map {
         border: none;
         border-left: 1px solid var(--tainacan-input-border-color);
+
+        /deep/ .leaflet-active-area {
+            position: absolute;
+            top: 56px;
+            left: 10px;
+            right: 42px;
+            height: calc(60vh - 76px)
+        }
 
         /deep/ .leaflet-marker-pane {
             filter: hue-rotate(-22deg);
@@ -58,7 +76,7 @@
 
     .tainacan-records-container--map {
         height: auto;
-        max-height: calc(60vh - 72px);
+        max-height: calc(60vh - 54px);
         overflow-y: auto;
         overflow-x: hidden;
         width: 286px;

@@ -1519,6 +1519,7 @@
                         :zoom="5"
                         :center="[-14.4086569, -51.31668]"
                         :zoom-animation="true"
+                        @ready="onMapReady()"
                         @click="clearSelectedMarkers()"
                         :options="{
                             name: 'tainacan-admin-view-mode-map',
@@ -1810,6 +1811,7 @@ import { Icon, latLng } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+import * as LeafletActiveArea from 'leaflet-active-area';
 
 delete Icon.Default.prototype._getIconUrl;
 Icon.Default.mergeOptions({
@@ -1979,7 +1981,7 @@ export default {
                 ) {
                     for ( let i = 0; i < aMetadatum['metadata_type_options']['children_objects'].length; i++ )
                         if ( aMetadatum['metadata_type_options']['children_objects'][i]['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' ) {
-                            let childMetadatum = aMetadatum['metadata_type_options']['children_objects'][i];
+                            let childMetadatum = JSON.parse(JSON.stringify(aMetadatum['metadata_type_options']['children_objects'][i]));
                             childMetadatum.name = childMetadatum.name + ' (' + aMetadatum.name + ')';
                             geocoordinateMetadata.push(childMetadatum);
                         }
@@ -2406,6 +2408,10 @@ export default {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+        },
+        onMapReady() {
+            if ( LeafletActiveArea && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )
+                this.$refs['tainacan-admin-view-mode-map'].mapObject.setActiveArea('leaflet-active-area');
         },
         clearSelectedMarkers() {
             this.mapSelectedItemId = false;

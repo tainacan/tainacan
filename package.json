@@ -18,6 +18,7 @@
     "css-vars-ponyfill": "^2.4.8",
     "floating-vue": "^1.0.0-beta.18",
     "leaflet": "^1.9.3",
+    "leaflet-active-area": "^1.2.1",
     "masonry-layout": "^4.2.2",
     "moment": "^2.29.4",
     "node-sass": "^7.0.3",
