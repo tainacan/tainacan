@@ -90,6 +90,11 @@ abstract class Metadata_Type  {
      */
     private $preview_template;
 
+    /**
+     * Indicates wether this metadata type will generate metadata that should be available as sorting options in the items list UI.
+     */
+    private $sortable = true;
+
     public function __construct(){
         
     }
@@ -237,25 +242,7 @@ abstract class Metadata_Type  {
     public function form(){
 
     }
-    
-    public function _toArray(){
-	    $attributes = [];
 
-        $attributes['name']                = $this->get_name();
-        $attributes['description']         = $this->get_description();
-        $attributes['errors']              = $this->get_errors();
-	    $attributes['related_mapped_prop'] = $this->get_related_mapped_prop();
-	    $attributes['options']             = $this->get_options();
-        $attributes['className']           = get_class($this);
-        $attributes['core']                = $this->get_core();
-        $attributes['component']           = $this->get_component();
-        $attributes['primitive_type']      = $this->get_primitive_type();
-        $attributes['form_component']      = $this->get_form_component();
-        $attributes['preview_template']    = $this->get_preview_template();
-        
-        return $attributes;
-        
-    }
     
     /**
      * Validates the options Array
@@ -287,6 +274,14 @@ abstract class Metadata_Type  {
 	public function set_repository($repository){
 		$this->repository = $repository;
 	}
+
+    public function get_sortable(){
+        return $this->sortable;
+    }
+
+    public function set_sortable($sortable){
+        $this->sortable = $sortable;
+    }
 	
 	/**
 	* Gets a slug based on the class name to represent the metadata type
@@ -295,4 +290,24 @@ abstract class Metadata_Type  {
 		$classname = get_class($this);
 		return strtolower( substr($classname, strrpos($classname, '\\') + 1) );
 	}
+
+    public function _toArray(){
+	    $attributes = [];
+
+        $attributes['name']                = $this->get_name();
+        $attributes['description']         = $this->get_description();
+        $attributes['errors']              = $this->get_errors();
+	    $attributes['related_mapped_prop'] = $this->get_related_mapped_prop();
+	    $attributes['options']             = $this->get_options();
+        $attributes['className']           = get_class($this);
+        $attributes['core']                = $this->get_core();
+        $attributes['component']           = $this->get_component();
+        $attributes['primitive_type']      = $this->get_primitive_type();
+        $attributes['form_component']      = $this->get_form_component();
+        $attributes['preview_template']    = $this->get_preview_template();
+        $attributes['sortable']      = $this->get_sortable();
+        
+        return $attributes;
+        
+    }
 }

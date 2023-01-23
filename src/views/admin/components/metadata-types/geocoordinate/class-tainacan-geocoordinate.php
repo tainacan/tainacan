@@ -21,6 +21,7 @@ class GeoCoordinate extends Metadata_Type {
 		$this->set_form_component('tainacan-form-geocoordinate');
 		$this->set_name( __('GeoCoordinate', 'tainacan') );
 		$this->set_description( __('Represents a geographical location that is determined by latitude and longitude coordinates.', 'tainacan') );
+		$this->set_sortable( false );
 		$this->set_default_options([
 			'map_provider' => 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
 			'attribution' => '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',

@@ -1122,15 +1122,8 @@
                                                     fetchOnlyMetadatumIds.push(metadatum.id);
                                             }
 
-                                            if (
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound'&&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
-                                            ) {
+                                            if ( metadatum.metadata_type_object.sortable )
                                                 this.sortingMetadata.push(metadatum);
-                                            }
                                             
                                         }
                                     }
@@ -1233,14 +1226,8 @@
                                     }
 
                                     for (let metadatum of this.metadata) {
-                                        if ((metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship'&&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound'&&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User') {
-                                                this.sortingMetadata.push(metadatum);
-                                        }
+                                        if ( (metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') && metadatum.metadata_type_object.sortable )
+                                            this.sortingMetadata.push(metadatum);
                                     }
 
                                     this.sortingMetadata.push({
