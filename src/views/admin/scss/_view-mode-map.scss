@@ -108,8 +108,12 @@
             justify-content: center;
             align-content: center;
 
+            &:hover {
+                background-color: var(--tainacan-item-hover-background-color);
+            }
+
             .icon {
-                height: 0.125em;
+                height: 0.0625em
             }
         }
 
@@ -204,6 +208,12 @@
                         background-color: var(--tainacan-turquoise2);
                     }
                 }    
+                &.clicked-map-card:not(.non-located-item) {
+                    background-color: var(--tainacan-item-hover-background-color);
+                    .metadata-title {
+                        font-weight: bold;
+                    }
+                }
         
                 .map-card-checkbox {
                     position: absolute;

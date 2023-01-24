@@ -1352,10 +1352,13 @@
                     <li
                             :key="item.id"
                             :data-tainacan-item-id="item.id"
-                            v-for="item of items">
+                            v-for="item of items"
+                            @mouseenter="hoveredMapCardItemId = item.id"
+                            @mouseleave="hoveredMapCardItemId = false">
                         <div 
                                 :class="{
                                     'selected-map-card': getSelectedItemChecked(item.id) == true,
+                                    'clicked-map-card': mapSelectedItemId == item.id,
                                     'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
                                 }"
                                 class="tainacan-map-card">
@@ -1532,8 +1535,17 @@
                             v-for="(itemLocation, index) of itemsLocations"
                             :key="index"
                             :lat-lng="itemLocation.location"
-                            :opacity="(mapSelectedItemId && itemLocation.item.id != mapSelectedItemId) ? 0.35 : 1.0"
+                            :opacity="(mapSelectedItemId && itemLocation.item.id != mapSelectedItemId) ? 0.25 : 1.0"
                             @click="showItemByLocation(index)">
+                        <l-icon 
+                                :icon-retina-url="mapIconRetinaUrl"
+                                :icon-url="mapIconUrl"
+                                :shadow-url="mapIconShadowUrl"
+                                :icon-size="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [25, 41] : [16, 28]"
+                                :shadow-size="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [41, 41] : [28, 28]"
+                                :icon-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [12, 41] : [8, 28]"
+                                :tooltip-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [16, -28] : [8, -21]"
+                                :popup-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [1, -34] : [1, -25]" />
                         <l-tooltip>
                             <div
                                     v-for="(column, columnIndex) in displayedMetadata"
@@ -1563,11 +1575,12 @@
                                         id="tainacan-select-geocoordinate-metatum"
                                         v-model="selectedGeocoordinateMetadatum">
                                     <option
-                                            v-for="geocoordinateMetadatum of geocoordinateMetadata"
+                                            v-for="(geocoordinateMetadatum, geocoordinateMetadatumIndex) of geocoordinateMetadata"
                                             :key="geocoordinateMetadatum.id"
                                             role="button"
                                             :class="{ 'is-active': selectedGeocoordinateMetadatum.slug == geocoordinateMetadatum.slug }"
-                                            :value="geocoordinateMetadatum">
+                                            :value="geocoordinateMetadatum"
+                                            @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumIndex)">
                                         {{ geocoordinateMetadatum.name }}
                                     </option>
                                 </b-select>
@@ -1805,25 +1818,19 @@ import ItemCopyDialog from '../other/item-copy-dialog.vue';
 import BulkEditionModal from '../modals/bulk-edition-modal.vue';
 import Masonry from 'masonry-layout';
 import { dateInter } from "../../js/mixins";
-import { LMap, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from 'vue2-leaflet';
+import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Icon, latLng } from 'leaflet';
+import { latLng } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import * as LeafletActiveArea from 'leaflet-active-area';
 
-delete Icon.Default.prototype._getIconUrl;
-Icon.Default.mergeOptions({
-    iconRetinaUrl: iconRetinaUrl,
-    iconUrl: iconUrl,
-    shadowUrl: shadowUrl
-});
-
 export default {
     name: 'ItemsList',
     components: {
         LMap,
+        LIcon,
         LTooltip,
         LTileLayer,
         LMarker,
@@ -1857,7 +1864,12 @@ export default {
             mapTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             mapTileAttribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             selectedMarkerIndexes: [],
-            mapSelectedItemId: false
+            hoveredMapCardItemId: false,
+            mapSelectedItemId: false,
+            mapIconRetinaUrl: iconRetinaUrl,
+            mapIconUrl: iconUrl,
+            mapIconShadowUrl: shadowUrl,
+            selectedGeocoordinateMetadatumIndex: 0
         }
     },
     computed: {
@@ -2046,7 +2058,7 @@ export default {
         geocoordinateMetadata: {
             handler() {
                 if ( this.geocoordinateMetadata.length )
-                    this.selectedGeocoordinateMetadatum = this.geocoordinateMetadata[0];
+                    this.selectedGeocoordinateMetadatum = this.geocoordinateMetadata[this.selectedGeocoordinateMetadatumIndex];
             },
             immediate: true
         }
@@ -2054,6 +2066,14 @@ export default {
     mounted() {
         if (this.highlightsItem)
             setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
+
+        // Setting default geocoordinate metadatum for map view mode
+        let prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
+        
+        if ( this.$userPrefs.get(prefsGeocoordinateMetadatum) == undefined || this.$userPrefs.get(prefsGeocoordinateMetadatum) > this.geocoordinateMetadata.length - 1)
+            this.selectedGeocoordinateMetadatumIndex = 0;
+        else
+            this.selectedGeocoordinateMetadatumIndex = this.$userPrefs.get(prefsGeocoordinateMetadatum);
     },
     created() {
         this.shouldUseLegacyMasonyCols = wp !== undefined && wp.hooks !== undefined && wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
@@ -2408,6 +2428,11 @@ export default {
         getLimitedDescription(description) {
             let maxCharacter = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? 100 : 210;
             return description.length > maxCharacter ? description.substring(0, maxCharacter - 3) + '...' : description;
+        },
+        onChangeSelectedGeocoordinateMetadatum(index) {
+            // Setting default geocoordinate metadatum for map view mode
+            const prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
+            this.$userPrefs.set(prefsGeocoordinateMetadatum, index);
         },
         onMapReady() {
             if ( LeafletActiveArea && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject )

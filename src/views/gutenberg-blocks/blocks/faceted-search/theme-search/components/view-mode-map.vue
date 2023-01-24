@@ -15,11 +15,14 @@
                             :aria-setsize="totalItems"
                             :aria-posinset="getPosInSet(index)"
                             :data-tainacan-item-id="item.id"
+                            @mouseenter="hoveredMapCardItemId = item.id"
+                            @mouseleave="hoveredMapCardItemId = false"
                             :key="item.id"
                             v-for="(item, index) of items">
                         <div 
                                 @click.prevent.stop="showLocationsByItem(item)"
                                 :class="{
+                                    'clicked-map-card': mapSelectedItemId == item.id,
                                     'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
                                 }"
                                 class="tainacan-map-card">
@@ -99,6 +102,15 @@
                             :lat-lng="itemLocation.location"
                             :opacity="selectedMarkerIndexes.length > 0 && !selectedMarkerIndexes.includes(index) ? 0.35 : 1.0"
                             @click="showItemByLocation(index)">
+                        <l-icon 
+                                :icon-retina-url="mapIconRetinaUrl"
+                                :icon-url="mapIconUrl"
+                                :shadow-url="mapIconShadowUrl"
+                                :icon-size="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [25, 41] : [16, 28]"
+                                :shadow-size="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [41, 41] : [28, 28]"
+                                :icon-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [12, 41] : [8, 28]"
+                                :tooltip-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [16, -28] : [8, -21]"
+                                :popup-anchor="(itemLocation.item.id == hoveredMapCardItemId || itemLocation.item.id == mapSelectedItemId) ? [1, -34] : [1, -25]" />
                         <l-tooltip>
                             <div
                                     v-for="(column, metadatumIndex) in displayedMetadata"
@@ -304,25 +316,19 @@
 
 <script>
 import { viewModesMixin } from '../js/view-modes-mixin.js';
-import { LMap, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from 'vue2-leaflet';
+import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Icon, latLng } from 'leaflet';
+import { latLng } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 import * as LeafletActiveArea from 'leaflet-active-area';
 
-delete Icon.Default.prototype._getIconUrl;
-Icon.Default.mergeOptions({
-    iconRetinaUrl: iconRetinaUrl,
-    iconUrl: iconUrl,
-    shadowUrl: shadowUrl
-});
-
 export default {
     name: 'ViewModeMap',
     components: {
         LMap,
+        LIcon,
         LTooltip,
         LTileLayer,
         LMarker,
@@ -340,7 +346,11 @@ export default {
             mapTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             mapTileAttribution: '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             selectedMarkerIndexes: [],
-            mapSelectedItemId: false
+            hoveredMapCardItemId: false,
+            mapSelectedItemId: false,
+            mapIconRetinaUrl: iconRetinaUrl,
+            mapIconUrl: iconUrl,
+            mapIconShadowUrl: shadowUrl
         }
     },
     computed: {
