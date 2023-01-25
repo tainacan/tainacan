@@ -1,7 +1,10 @@
 <template>
     <transition name="filter-item">
         <div v-show="filterTags != undefined && filterTags.length > 0">
-            <p class="filter-tags-info">
+            <!-- The following v-if seems redundant, but we cannot add a v-if to the upper div as the swiper needs to exist to be updated, while the info bellow should never appear in this situation -->
+            <p 
+                    v-if="filterTags != undefined && filterTags.length > 0"
+                    class="filter-tags-info">
                 <span 
                         style="margin-right: 1em"
                         v-html="totalItems == 1 ? $i18n.getWithVariables('info_item_%s_found', [totalItems]) : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />

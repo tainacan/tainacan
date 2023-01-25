@@ -545,7 +545,7 @@ class CSV extends Importer {
 				$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $correct_value, $item_inserted->get_id());
 
 				if(!$id) {
-					$this->add_error_log('Error in Document file imported from server ' . $correct_value);
+					$this->add_error_log('Error in Document file imported from server ' . $server_path_files . $correct_value);
 					return false;
 				}
 
@@ -604,7 +604,7 @@ class CSV extends Importer {
 				$id = $TainacanMedia->insert_attachment_from_file($server_path_files . $attachment, $item_inserted->get_id());
 
 				if(!$id) {
-					$this->add_log('Error in Attachment file imported from server ' . $attachment);
+					$this->add_log('Error in Attachment file imported from server ' . $server_path_files . $attachment);
 					continue;
 				}
 

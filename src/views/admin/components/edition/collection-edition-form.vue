@@ -302,6 +302,13 @@
                                         {{ statusOption.name }}
                                     </b-radio>
                                 </div>
+                                <transition name="filter-item">
+                                    <p 
+                                            class="help"
+                                            v-if="form.submission_default_status == 'draft'">
+                                        {{ $i18n.get('info_item_submission_draft_status') }}
+                                    </p>
+                                </transition>
                             </b-field>
 
                             <!-- Submission process uses reCAPTCHA ------------------------ --> 

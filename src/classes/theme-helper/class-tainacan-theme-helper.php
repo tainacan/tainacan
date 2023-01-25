@@ -1084,7 +1084,8 @@ class Theme_Helper {
 		 *     Optional. Array of arguments.
 		 *     @type string  $item_id							The Item ID
 		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic' and 'carousel'. 
-		 * 	   @type string  $order								Sorting direction to the related items query. Either 'desc' or 'asc'.
+		 * 	   @type string  $order								Sorting direction to the related items query. Either 'desc' or 'asc'. 
+		 * 	   @type string  $orderby							Sortby metadata. By now we're accepting only 'title' and 'date'.
 		 *     @type string  $class_name						Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-related-items
 		 *     @type string  $collection_heading_class_name		Extra class to add to the collection name wrapper. Defaults to ''
 		 * 	   @type string  $collection_heading_tag			Tag to be used as wrapper of the collection name. Defaults to h2
@@ -1113,6 +1114,10 @@ class Theme_Helper {
 		
 		// Then fetches related ones
 		$related_items_query_args = [];
+
+		if ( isset($args['orderby']) )
+			$related_items_query_args['orderby'] = $args['orderby'];
+
 		if ( isset($args['order']) )
 			$related_items_query_args['order'] = $args['order'];
 

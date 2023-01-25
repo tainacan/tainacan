@@ -175,6 +175,8 @@ export default (element) => {
                     defaultViewMode: '',
                     defaultOrder: 'ASC',
                     defaultOrderBy: 'date',
+                    defaultOrderByMeta: '',
+                    defaultOrderByType: '',
                     isForcedViewMode: false,
                     enabledViewModes: {},
                     defaultItemsPerPage: '',
@@ -230,7 +232,11 @@ export default (element) => {
                         this.defaultOrder = this.$el.attributes['default-order'].value;
                     if (this.$el.attributes['default-orderby'] != undefined)
                         this.defaultOrderBy = this.maybeConvertFromJSON(this.$el.attributes['default-orderby'].value);
-                    
+                    if (this.$el.attributes['default-orderby-meta'] != undefined)
+                        this.defaultOrderByMeta = this.$el.attributes['default-orderby-meta'].value;
+                    if (this.$el.attributes['default-orderby-type'] != undefined)
+                        this.defaultOrderByType = this.maybeConvertFromJSON(this.$el.attributes['default-orderby-type'].value);
+
                     // Options related to hidding elements
                     if (this.$el.attributes['hide-filters'] != undefined)
                         this.hideFilters = this.isParameterTrue('hide-filters');

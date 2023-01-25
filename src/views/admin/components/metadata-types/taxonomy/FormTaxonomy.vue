@@ -138,6 +138,20 @@
                 </template>
             </b-taginput>
         </b-field>
+        <b-field
+                :addons="false"
+                :label="$i18n.getHelperTitle('tainacan-taxonomy', 'hide_hierarchy_path')">
+                &nbsp;
+            <b-switch
+                    size="is-small" 
+                    v-model="hide_hierarchy_path"
+                    @input="emitValues()"
+                    true-value="yes"
+                    false-value="no" />
+            <help-button
+                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'hide_hierarchy_path')"
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'hide_hierarchy_path')"/>
+        </b-field>
 
     </section>
 </template>
@@ -159,6 +173,7 @@
                 taxonomy: '',
                 loading: false,
                 allow_new_terms: 'yes',
+                hide_hierarchy_path: 'no',
                 link_filtered_by_collections: [],
                 visible_options_list: false, 
                 input_type: 'tainacan-taxonomy-radio',
@@ -230,6 +245,7 @@
 
                 this.taxonomy_id = this.value.taxonomy_id;
                 this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
+                this.hide_hierarchy_path = ( this.value.hide_hierarchy_path ) ? this.value.hide_hierarchy_path : 'no';
                 
                 if (this.metadatum && this.metadatum.multiple === 'no') {
                     let types = Object.keys( this.single_types );
@@ -296,6 +312,7 @@
                     allow_new_terms: this.allow_new_terms,
                     visible_options_list: this.visible_options_list,
                     link_filtered_by_collections: this.link_filtered_by_collections,
+                    hide_hierarchy_path: this.hide_hierarchy_path,
                     taxonomy: this.taxonomy
                 })
             },

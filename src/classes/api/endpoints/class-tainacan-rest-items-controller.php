@@ -423,6 +423,9 @@ class REST_Items_Controller extends REST_Controller {
 
 		foreach($tax_query as $tax) {
 
+			if ( !isset($tax['taxonomy']) || !isset($tax['terms']) )
+				continue;
+
 			$taxonomy = $tax['taxonomy'];
 			$taxonomy_id = $this->taxonomies_repository->get_id_by_db_identifier($taxonomy);
 			$terms_id = is_array($tax['terms']) ? $tax['terms']: [$tax['terms']];

@@ -7,16 +7,16 @@ const TAINACAN_BLOCKS = [
 	'items-list' => [],
 	'collections-list' => [],
 	'search-bar' => [],
-	'facets-list' => [],
-	'dynamic-items-list' => [],
-	'carousel-items-list' => [],
-	'carousel-terms-list' => [],
-	'carousel-collections-list' => [],
+	'facets-list' => [ 'set_script_translations' => true ],
+	'dynamic-items-list' => [ 'set_script_translations' => true ],
+	'carousel-items-list' => [ 'set_script_translations' => true ],
+	'carousel-terms-list' => [ 'set_script_translations' => true ],
+	'carousel-collections-list' => [ 'set_script_translations' => true ],
 	'related-items-list' => [],
 	'terms-list' => [],
 	'faceted-search' => [],
 	'item-submission-form' => [],
-	'item-gallery' => ['render_callback' => 'tainacan_blocks_render_items_gallery'],
+	'item-gallery' => [  'set_script_translations' => true, 'render_callback' => 'tainacan_blocks_render_items_gallery' ],
 	'item-metadata-sections' => ['render_callback' => 'tainacan_blocks_render_metadata_sections'],
 	'item-metadata-section' => ['render_callback' => 'tainacan_blocks_render_metadata_section'],
 	'item-metadata' => ['render_callback' => 'tainacan_blocks_render_item_metadata'],
@@ -135,6 +135,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 		$editor_script_deps,
 		$TAINACAN_VERSION
 	);
+	wp_set_script_translations( $block_slug, 'tainacan' );
 	$register_params['editor_script'] = $block_slug;
 
 	// Passes global variables to the blocks editor side
@@ -151,6 +152,18 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 		$TAINACAN_VERSION
 	);
 	$register_params['style'] = $block_slug;
+
+	// Makes sure translations that use wp.i18n work with our lazy loading strategy
+	if ( isset($options['set_script_translations']) && $options['set_script_translations'] ) {
+		wp_register_script(
+			'tainacan-chunks-' . $block_slug . '-theme',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan-chunks-' . $block_slug . '-theme.js',
+			array('wp-i18n'),
+			$TAINACAN_VERSION
+		);
+		wp_set_script_translations( 'tainacan-chunks-' . $block_slug . '-theme', 'tainacan' );
+		wp_add_inline_script( 'wp-i18n', wp_scripts()->print_translations('tainacan-chunks-' . $block_slug . '-theme', false) );
+	}
 
 	// Registers the new block
 	if (function_exists('register_block_type')) {
@@ -225,6 +238,8 @@ function tainacan_blocks_add_common_theme_scripts() {
 		array('wp-i18n'),
 		$TAINACAN_VERSION
 	);
+
+	wp_set_script_translations( 'tainacan-blocks-common-scripts', 'tainacan' );
 
 	$block_settings = tainacan_blocks_get_plugin_js_settings();
 	$plugin_settings = \Tainacan\Admin::get_instance()->get_admin_js_localization_params();

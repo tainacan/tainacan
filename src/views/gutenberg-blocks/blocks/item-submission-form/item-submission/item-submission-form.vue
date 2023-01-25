@@ -579,7 +579,8 @@
             <!-- Message displayed when the form is being submitted -->
             <section
                     v-if="isSubmitting || isUploading"
-                    class="section">
+                    class="section"
+                    id="submission-form-processing">
                 <div class="content has-text-grey has-text-centered">
                     <br>
                     <p>
@@ -587,9 +588,17 @@
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-updating tainacan-icon-spin"/>
                         </span>
                     </p>
-                    <h2>{{ $i18n.get('label_sending_form') }}</h2>
-                    <p v-if="isSubmitting">{{ $i18n.get('info_submission_processing') }}</p>
-                    <p v-if="isUploading">{{ $i18n.get('info_submission_uploading') }}</p>
+                    <h2 id="submission-form-is-processing-label">{{ $i18n.get('label_sending_form') }}</h2>
+                    <p
+                            id="submission-form-is-processing-info"
+                            v-if="isSubmitting">
+                        {{ $i18n.get('info_submission_processing') }}
+                    </p>
+                    <p
+                            id="submission-form-is-uploading-info"
+                            v-if="isUploading">
+                        {{ $i18n.get('info_submission_uploading') }}
+                    </p>
                     <br>
                 </div>
             </section>
@@ -597,7 +606,8 @@
             <!-- Message displayed once the form is submitted -->
             <section
                     v-if="hasSentForm"
-                    class="section">
+                    class="section"
+                    id="submission-form-sent">
                 <div class="content has-text-grey has-text-centered">
                     <br>
                     <p>
@@ -605,16 +615,28 @@
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle"/>
                         </span>
                     </p>
-                    <h2 v-if="sentFormHeading">{{ sentFormHeading }}</h2>
-                    <p v-if="sentFormMessage">{{ sentFormMessage }}</p>
-                    <p v-if="showItemLinkButton && linkToCreatedItem">
-                        <a
-                                style="text-decoration: none"
-                                :href="linkToCreatedItem"
-                                class="button is-secondary">
-                            {{ itemLinkButtonLabel }}
-                        </a>
-                    </p>
+                    <div>
+                        <h2 
+                                id="submission-form-sent-label" 
+                                v-if="sentFormHeading">
+                            {{ sentFormHeading }}
+                        </h2>
+                        <p 
+                                id="submission-form-sent-info"
+                                v-if="sentFormMessage">
+                            {{ sentFormMessage }}
+                        </p>
+                        <p 
+                                id="submission-form-sent-link"
+                                v-if="showItemLinkButton && linkToCreatedItem">
+                            <a
+                                    style="text-decoration: none"
+                                    :href="linkToCreatedItem"
+                                    class="button is-secondary">
+                                {{ itemLinkButtonLabel }}
+                            </a>
+                        </p>
+                    </div>
                     <br>
                 </div>
             </section>
