@@ -31,6 +31,7 @@
                         <template v-for="(metadatum, metadatumIndex) in metadataAsArray">
                             <option
                                     v-if="metadatum.metadata_type_object.component !== 'tainacan-user' &&
+                                        metadatum.metadata_type_object.component !== 'tainacan-geocoordinate' &&
                                         metadatum.metadata_type_object.component !== 'tainacan-relationship' &&
                                         metadatum.metadata_type_object.component !== 'tainacan-compound' &&
                                         metadatum.parent <= 0"
@@ -42,12 +43,16 @@
                                     v-if="metadatum.metadata_type_object.component === 'tainacan-compound'"
                                     :key="metadatumIndex"
                                     :label="metadatum.name">
-                                <option
-                                        v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
-                                        :key="childIndex"
-                                        :value="childMetadatum.id">
-                                    {{ childMetadatum.name }}
-                                </option>
+                                <template v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects">
+                                    <option
+                                            v-if="childMetadatum.metadata_type_object.component !== 'tainacan-user' &&
+                                                childMetadatum.metadata_type_object.component !== 'tainacan-geocoordinate' &&
+                                                childMetadatum.metadata_type_object.component !== 'tainacan-relationship'"
+                                            :key="childIndex"
+                                            :value="childMetadatum.id">
+                                        {{ childMetadatum.name }}
+                                    </option>
+                                </template>
                             </optgroup>
                         </template>
                         <option value="document_content_index">
