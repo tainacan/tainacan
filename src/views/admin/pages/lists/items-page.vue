@@ -357,17 +357,23 @@
                                 :aria-label="$i18n.get('label_view_mode')"
                                 class="button is-white"
                                 slot="trigger">
-                            <span>
-                                <span class="view-mode-icon icon is-small gray-icon">
-                                    <i 
-                                            :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
-                                                    'tainacan-icon-viewcards' : adminViewMode == 'cards',
-                                                    'tainacan-icon-viewminiature' : adminViewMode == 'grid',
-                                                    'tainacan-icon-viewrecords' : adminViewMode == 'records',
-                                                    'tainacan-icon-viewlist' : adminViewMode == 'list',
-                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
-                                            class="tainacan-icon tainacan-icon-1-25em"/>
-                                </span>
+                            <span class="view-mode-icon icon is-small gray-icon">
+                                <i 
+                                        v-if="adminViewMode !== 'map'"
+                                        :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
+                                                'tainacan-icon-viewcards' : adminViewMode == 'cards',
+                                                'tainacan-icon-viewminiature' : adminViewMode == 'grid',
+                                                'tainacan-icon-viewrecords' : adminViewMode == 'records',
+                                                'tainacan-icon-viewlist' : adminViewMode == 'list',
+                                                'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
+                                        class="tainacan-icon tainacan-icon-1-25em"/>
+                                <svg
+                                        v-else
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        style="fill: var(--tainacan-info-color)">
+                                    <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+                                </svg>
                             </span>
                             &nbsp;&nbsp;&nbsp;{{ adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table') }}
                             <span class="icon">
@@ -441,6 +447,24 @@
                                 <i class="tainacan-icon tainacan-icon-viewlist"/>
                             </span>
                             <span>{{ $i18n.get('label_list') }}</span>
+                        </b-dropdown-item>
+                        <b-dropdown-item 
+                                aria-controls="items-list-results"
+                                role="button"
+                                :class="{ 'is-active': adminViewMode == 'map' }"
+                                :value="'map'"
+                                aria-role="listitem">
+                            <span 
+                                    style="width: 2em; margin-left: -0.45em; padding-right: 6px;"
+                                    class="icon gray-icon">
+                                <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        style="fill: var(--tainacan-info-color)">
+                                    <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+                                </svg>
+                            </span>
+                            <span>{{ $i18n.get('label_map') }}</span>
                         </b-dropdown-item>
                     </b-dropdown>
                 </b-field>
@@ -735,7 +759,7 @@
             },
             adminViewMode() {
                 const currentAdminViewMode = this.getAdminViewMode();
-                return ['table', 'cards', 'records', 'grid', 'masonry', 'list'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
+                return ['table', 'cards', 'records', 'grid', 'masonry', 'list', 'map'].indexOf(currentAdminViewMode) >= 0 ? currentAdminViewMode : 'table';
             },
             orderBy() {
                 return this.getOrderBy();
@@ -847,7 +871,8 @@
                     existingViewMode == 'records' || 
                     existingViewMode == 'list' || 
                     existingViewMode == 'grid' || 
-                    existingViewMode == 'masonry')
+                    existingViewMode == 'masonry'|| 
+                    existingViewMode == 'map')
                         this.$eventBusSearch.setInitialAdminViewMode(this.$userPrefs.get(prefsAdminViewMode));
                 else
                     this.$eventBusSearch.setInitialAdminViewMode('table');
@@ -1015,7 +1040,7 @@
                                 this.sortingMetadata = [];
 
                                 // Decides if custom meta will be loaded with item.
-                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == 'list' || this.adminViewMode == undefined;
+                                let shouldLoadMeta = this.adminViewMode == 'table' || this.adminViewMode == 'records' || this.adminViewMode == 'list' || this.adminViewMode == 'map' || this.adminViewMode == undefined;
                                 
                                 if (shouldLoadMeta) {
                                     
@@ -1097,15 +1122,8 @@
                                                     fetchOnlyMetadatumIds.push(metadatum.id);
                                             }
 
-                                            if (
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound'&&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
-                                            ) {
+                                            if ( metadatum.metadata_type_object.sortable )
                                                 this.sortingMetadata.push(metadatum);
-                                            }
                                             
                                         }
                                     }
@@ -1208,14 +1226,8 @@
                                     }
 
                                     for (let metadatum of this.metadata) {
-                                        if ((metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship'&&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound'&&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User') {
-                                                this.sortingMetadata.push(metadatum);
-                                        }
+                                        if ( (metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') && metadatum.metadata_type_object.sortable )
+                                            this.sortingMetadata.push(metadatum);
                                     }
 
                                     this.sortingMetadata.push({

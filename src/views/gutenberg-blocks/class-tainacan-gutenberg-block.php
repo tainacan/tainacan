@@ -21,6 +21,7 @@ const TAINACAN_BLOCKS = [
 	'item-metadata-section' => ['render_callback' => 'tainacan_blocks_render_metadata_section'],
 	'item-metadata' => ['render_callback' => 'tainacan_blocks_render_item_metadata'],
 	'item-metadatum' => ['render_callback' => 'tainacan_blocks_render_item_metadatum'],
+	'geocoordinate-item-metadatum' => ['render_callback' => 'tainacan_blocks_render_geocoordinate_item_metadatum'],
 	'metadata-section-name' => [],
 	'metadata-section-description' => []
 ];

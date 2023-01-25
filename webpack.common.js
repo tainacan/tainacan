@@ -27,6 +27,7 @@ module.exports = {
         block_item_metadata_section: './src/views/gutenberg-blocks/blocks/item-metadata-section/index.js',
         block_item_metadata: './src/views/gutenberg-blocks/blocks/item-metadata/index.js',
         block_item_metadatum: './src/views/gutenberg-blocks/blocks/item-metadatum/index.js',
+        block_geocoordinate_item_metadatum: './src/views/gutenberg-blocks/blocks/geocoordinate-item-metadatum/index.js',
         block_metadata_section_name: './src/views/gutenberg-blocks/blocks/metadata-section-name/index.js',
         block_metadata_section_description: './src/views/gutenberg-blocks/blocks/metadata-section-description/index.js'
     },
@@ -103,7 +104,7 @@ module.exports = {
             'PhotoSwipe': 'PhotoSwipe'
         }),
         new MomentLocalesPlugin({
-            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
+            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'ca', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv', 'sq', 'sk', 'uk'],
         }),
         new ESLintPlugin({
             extensions: ['vue'],

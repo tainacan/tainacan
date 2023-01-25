@@ -21,6 +21,7 @@ class Core_Description extends Metadata_Type {
         $this->set_component('tainacan-textarea');
         $this->set_name( __('Core Description', 'tainacan') );
         $this->set_description( __('The "Core Description" is a compulsory metadata automatically created for all collections by default. This is the main description displayed in items lists and where the basic research tools will do their searches.', 'tainacan') );
+		$this->set_sortable( false );
     }
 
     /**

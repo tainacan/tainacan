@@ -112,7 +112,7 @@
                 </template>
             </div>
 
-            <!-- Non-textual metadata such as taxonomy, relationship and compound manage multiple state in different ways -->
+            <!-- Non-textual metadata such as taxonomy, relationship, geocoordinate and compound manage multiple state in different ways -->
             <div 
                     v-show="hideCollapses || isCollapsed"
                     v-else>
@@ -183,7 +183,7 @@
                 ) ? this.itemMetadatum.metadatum.cardinality : undefined;
             },
             isTextInputComponent() {
-                const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user'];
+                const array = ['tainacan-relationship','tainacan-taxonomy', 'tainacan-compound', 'tainacan-user', 'tainacan-geocoordinate'];
                 return !(array.indexOf(this.metadatumComponent) >= 0 );
             },
             metadatumFormClasses() {
