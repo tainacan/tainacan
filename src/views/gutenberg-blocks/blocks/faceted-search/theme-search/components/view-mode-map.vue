@@ -132,26 +132,26 @@
                             position="topleft">
                         <div class="geocoordinate-panel">
                             <div 
-                                    v-if="geocoordinateMetadata.length"
+                                    v-if="Object.keys(geocoordinateMetadata).length"
                                     class="geocoordinate-panel--input">
                                 <label>{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
                                 <b-select
                                         :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model="selectedGeocoordinateMetadatumIndex">
+                                        v-model="selectedGeocoordinateMetadatumId">
                                     <option
-                                            v-for="(geocoordinateMetadatum, geocoordinateMetadatumIndex) of geocoordinateMetadata"
+                                            v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
                                             :key="geocoordinateMetadatum.id"
                                             role="button"
-                                            :class="{ 'is-active': selectedGeocoordinateMetadatum.slug == geocoordinateMetadatum.slug }"
-                                            :value="geocoordinateMetadatumIndex"
-                                            @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumIndex)">
+                                            :class="{ 'is-active': selectedGeocoordinateMetadatumId == geocoordinateMetadatumId }"
+                                            :value="geocoordinateMetadatumId"
+                                            @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumId)">
                                         {{ geocoordinateMetadatum.name }}
                                     </option>
                                 </b-select>
                             </div>
                             <section 
-                                    v-if="!geocoordinateMetadata.length"
+                                    v-else
                                     class="section">
                                 <div class="content has-text-grey has-text-centered">
                                     <p>
@@ -341,7 +341,7 @@ export default {
     ],
     data () {
         return {
-            selectedGeocoordinateMetadatumIndex: 0,
+            selectedGeocoordinateMetadatumId: false,
             latitude: -14.4086569,
             longitude: -51.31668,
             mapTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -423,12 +423,12 @@ export default {
             return locations;
         },
         geocoordinateMetadata() {
-            let geocoordinateMetadata = [];
+            let geoMetadata = {};
 
             this.displayedMetadata.forEach((aMetadatum) => {
 
                 if ( aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' )
-                    geocoordinateMetadata.push(aMetadatum);
+                    geoMetadata[aMetadatum.id] = aMetadatum;
                 
                 if ( aMetadatum['display'] && aMetadatum['metadata_type'] == 'Tainacan\\Metadata_Types\\Compound' &&
                     aMetadatum['metadata_type_options']['children_objects'] && aMetadatum['metadata_type_options']['children_objects'].length
@@ -437,17 +437,20 @@ export default {
                         if ( aMetadatum['metadata_type_options']['children_objects'][i]['metadata_type'] == 'Tainacan\\Metadata_Types\\GeoCoordinate' ) {
                             let childMetadatum = JSON.parse(JSON.stringify(aMetadatum['metadata_type_options']['children_objects'][i]));
                             childMetadatum.name = childMetadatum.name + ' (' + aMetadatum.name + ')';
-                            geocoordinateMetadata.push(childMetadatum);
+                            geoMetadata[aMetadatum.id] = childMetadatum;
                         }
                 }
             });
-            return geocoordinateMetadata;
+            return geoMetadata;
         },
         selectedGeocoordinateMetadatum() {
-            if ( !this.geocoordinateMetadata.length || this.selectedGeocoordinateMetadatumIndex > this.geocoordinateMetadata.length - 1 )
+            if (
+                !Object.keys(this.geocoordinateMetadata).length ||
+                !this.geocoordinateMetadata[this.selectedGeocoordinateMetadatumId]
+            ) 
                 return false;
             else 
-                return this.geocoordinateMetadata[this.selectedGeocoordinateMetadatumIndex];
+                return this.geocoordinateMetadata[this.selectedGeocoordinateMetadatumId];
         }
     },
     watch: {
@@ -464,20 +467,28 @@ export default {
         selectedGeocoordinateMetadatum() {
             this.clearSelectedMarkers();
         },
-        geocoordinateMetadata() {
-            // Setting default geocoordinate metadatum for map view mode
-            let prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
-            if ( !this.geocoordinateMetadata.length || this.$userPrefs.get(prefsGeocoordinateMetadatum) == undefined || this.$userPrefs.get(prefsGeocoordinateMetadatum) > this.geocoordinateMetadata.length - 1)
-                this.selectedGeocoordinateMetadatumIndex = 0;
-            else 
-                this.selectedGeocoordinateMetadatumIndex = this.$userPrefs.get(prefsGeocoordinateMetadatum);
+        geocoordinateMetadata: {
+            handler () {
+                // Setting default geocoordinate metadatum for map view mode
+                const prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
+                const geocoordinateMetadataIds = Object.keys(this.geocoordinateMetadata);
+                if (
+                    !geocoordinateMetadataIds.length ||
+                    !this.$userPrefs.get(prefsGeocoordinateMetadatum) ||
+                    !this.geocoordinateMetadata[this.$userPrefs.get(prefsGeocoordinateMetadatum)]
+                )
+                    this.selectedGeocoordinateMetadatumId = geocoordinateMetadataIds.length ? geocoordinateMetadataIds[0] : false;
+                else 
+                    this.selectedGeocoordinateMetadatumId = this.$userPrefs.get(prefsGeocoordinateMetadatum);
+            },
+            immediate: true
         }
     },
     methods: {
-        onChangeSelectedGeocoordinateMetadatum(index) {
+        onChangeSelectedGeocoordinateMetadatum(id) {
             // Setting default geocoordinate metadatum for map view mode
             const prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
-            this.$userPrefs.set(prefsGeocoordinateMetadatum, index);
+            this.$userPrefs.set(prefsGeocoordinateMetadatum, id);
         },
         onMapReady() {
             if ( LeafletActiveArea && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject )
