@@ -1573,13 +1573,13 @@
                                 <b-select
                                         :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model="selectedGeocoordinateMetadatum">
+                                        v-model="selectedGeocoordinateMetadatumIndex">
                                     <option
                                             v-for="(geocoordinateMetadatum, geocoordinateMetadatumIndex) of geocoordinateMetadata"
                                             :key="geocoordinateMetadatum.id"
                                             role="button"
                                             :class="{ 'is-active': selectedGeocoordinateMetadatum.slug == geocoordinateMetadatum.slug }"
-                                            :value="geocoordinateMetadatum"
+                                            :value="geocoordinateMetadatumIndex"
                                             @click="onChangeSelectedGeocoordinateMetadatum(geocoordinateMetadatumIndex)">
                                         {{ geocoordinateMetadatum.name }}
                                     </option>
@@ -1858,7 +1858,6 @@ export default {
             singleItemSelection: false,
             masonry: false,
             shouldUseLegacyMasonyCols: false,
-            selectedGeocoordinateMetadatum: false, // Must became an object containing the whole metadata to handle compound information.
             latitude: -14.4086569,
             longitude: -51.31668,
             mapTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -2000,6 +1999,12 @@ export default {
                 }
             });
             return geocoordinateMetadata;
+        },
+        selectedGeocoordinateMetadatum() {
+            if ( !this.geocoordinateMetadata.length || this.selectedGeocoordinateMetadatumIndex > this.geocoordinateMetadata.length - 1 )
+                return false;
+            else 
+                return this.geocoordinateMetadata[this.selectedGeocoordinateMetadatumIndex];
         }
     },
     watch: {
@@ -2055,25 +2060,18 @@ export default {
         selectedGeocoordinateMetadatum() {
             this.clearSelectedMarkers();
         },
-        geocoordinateMetadata: {
-            handler() {
-                if ( this.geocoordinateMetadata.length )
-                    this.selectedGeocoordinateMetadatum = this.geocoordinateMetadata[this.selectedGeocoordinateMetadatumIndex];
-            },
-            immediate: true
+        geocoordinateMetadata() {
+            // Setting default geocoordinate metadatum for map view mode
+            let prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
+            if ( !this.geocoordinateMetadata.length || this.$userPrefs.get(prefsGeocoordinateMetadatum) == undefined || this.$userPrefs.get(prefsGeocoordinateMetadatum) > this.geocoordinateMetadata.length - 1)
+                this.selectedGeocoordinateMetadatumIndex = 0;
+            else 
+                this.selectedGeocoordinateMetadatumIndex = this.$userPrefs.get(prefsGeocoordinateMetadatum);
         }
     },
     mounted() {
         if (this.highlightsItem)
             setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
-
-        // Setting default geocoordinate metadatum for map view mode
-        let prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
-        
-        if ( this.$userPrefs.get(prefsGeocoordinateMetadatum) == undefined || this.$userPrefs.get(prefsGeocoordinateMetadatum) > this.geocoordinateMetadata.length - 1)
-            this.selectedGeocoordinateMetadatumIndex = 0;
-        else
-            this.selectedGeocoordinateMetadatumIndex = this.$userPrefs.get(prefsGeocoordinateMetadatum);
     },
     created() {
         this.shouldUseLegacyMasonyCols = wp !== undefined && wp.hooks !== undefined && wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
