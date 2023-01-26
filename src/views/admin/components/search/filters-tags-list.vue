@@ -203,6 +203,7 @@
         display: flex;
         justify-content: flex-start;
         align-items: baseline;
+        color: var(--tainacan-label-color);
 
         .filter-tags-info {
             margin: 0 1.25em 4px 0;
