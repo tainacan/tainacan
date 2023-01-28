@@ -381,15 +381,17 @@ class Metadata_Sections extends Repository {
 	public function get_default_section_metadata_object_list(Entities\Collection $collection, $args = []) {
 		$metadata_repository = \Tainacan\Repositories\Metadata::get_instance();
 		$list_all_metadatas = $metadata_repository->fetch_by_collection($collection, $args);
-		$metadata_sections_ids = array_map(function($el) {return $el->get_id();} , $this->fetch_by_collection($collection, ['posts_per_page' => - 1]));
-
-		$metadata_list = array_filter($list_all_metadatas, function($meta) use ($metadata_sections_ids) {
+		$sections_ids = array_map(function($el) {return $el->get_id();} , $this->fetch_by_collection($collection, ['posts_per_page' => - 1]));
+		$metadata_list = array_filter($list_all_metadatas, function($meta) use ($sections_ids) {
 			$metadata_section_id = $meta->get_metadata_section_id();
 			if( !isset($metadata_section_id) ) return true;
 			if( !is_array($metadata_section_id) ) {
 				return $metadata_section_id == \Tainacan\Entities\Metadata_Section::$default_section_slug; 
 			}
-			return count( array_intersect($metadata_sections_ids, $metadata_section_id) ) > 0;
+			$diff = array_filter(array_intersect($sections_ids, $metadata_section_id), function($el) {
+				return $el != \Tainacan\Entities\Metadata_Section::$default_section_slug;
+			});
+			return count( $diff ) == 0;
 		});
 		return $metadata_list;
 	}
