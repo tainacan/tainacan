@@ -25,7 +25,9 @@ class Theme_Helper {
 
 	private function __construct() {
 
-		add_filter( 'the_content', [$this, 'the_content_filter'] );
+		if ( !defined('TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER') || true !== TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER ) {
+			add_filter( 'the_content', [$this, 'the_content_filter'] );
+		}
 
 		// Replace collections permalink to post type archive if cover not enabled
 		add_filter('post_type_link', array($this, 'permalink_filter'), 10, 3);
