@@ -1229,9 +1229,9 @@ export default {
     
     .form-error-area {
         font-size: 0.9375em;
-        margin-top: 0.875rem;
+        margin-top: 1rem;
         margin-bottom: 1.125rem;
-        padding: 0.75em 0.75em 0.5em 0.75em;
+        padding: 0.875em;
         display: flex;
         flex-wrap: nowrap;
         border: 1px solid var(--tainacan-red-2, #a23939);
@@ -1243,7 +1243,8 @@ export default {
             padding-right: 0.75rem;
         }
 
-        .form-error-area-messages>p {
+        .form-error-area-messages > p {
+            margin-top: 0.25rem;
             margin-bottom: 0.25rem;
         }
 
