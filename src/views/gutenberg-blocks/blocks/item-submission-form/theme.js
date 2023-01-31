@@ -6,6 +6,7 @@ import {
     Switch,
     Tabs,
     Tag,
+    Modal,
     Checkbox,
     Collapse,
     Radio,
@@ -34,6 +35,7 @@ import Relationship from '../../../admin/components/metadata-types/relationship/
 import Taxonomy from '../../../admin/components/metadata-types/taxonomy/Taxonomy.vue';
 import Compound from '../../../admin/components/metadata-types/compound/Compound.vue';
 import User from '../../../admin/components/metadata-types/user/User.vue';
+import GeoCoordinate from '../../../admin/components/metadata-types/geocoordinate/GeoCoordinate.vue';
 
 // Main components
 import ItemSubmissionForm from './item-submission/item-submission-form.vue';
@@ -83,6 +85,7 @@ export default (element) => {
             Vue.use(Autocomplete);
             Vue.use(Collapse);
             Vue.use(Snackbar);
+            Vue.use(Modal);
             Vue.use(Input);
             Vue.use(VTooltip, {
                 popperTriggers: ['hover'],
@@ -128,6 +131,7 @@ export default (element) => {
             Vue.component('tainacan-taxonomy', Taxonomy);
             Vue.component('tainacan-compound', Compound);
             Vue.component('tainacan-user', User);
+            Vue.component('tainacan-geocoordinate', GeoCoordinate);
 
             /* Main page component */
             Vue.component('item-submission-form', ItemSubmissionForm);

@@ -514,6 +514,47 @@
                         v-html="getEndRightForm"/>
                 </template>
 
+
+                <!-- Form errors area -->
+                <div 
+                        v-if="formErrorMessage"
+                        class="form-error-area is-danger">
+                    <div class="form-error-area-icon">
+                        <a class="help-button has-text-danger">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-alertcircle" />
+                            </span>
+                        </a>
+                    </div>
+                    <div class="form-error-area-messages">
+                        <strong>{{ formErrorMessage }}</strong>
+                        <template v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length">
+                            <p>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</p>
+                            <ol>
+                                <template v-for="(error, index) of formErrors">
+                                    <li 
+                                            v-if="error.errors.length"
+                                            :key="index">
+                                        <a 
+                                                v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id)"
+                                                class="has-text-danger"
+                                                @click="metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' })">
+                                            {{ getErrorMessage(error.errors) }}
+                                        </a>
+                                        <a 
+                                                v-else-if="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
+                                                class="has-text-danger"
+                                                @click="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' })">
+                                            {{ getErrorMessage(error.errors) }}
+                                        </a>                           
+                                        <p v-else>{{ getErrorMessage(error.errors) }}</p>
+                                    </li>
+                                </template>
+                            </ol>
+                        </template>
+                    </div>
+                </div>
+
                 <!-- Google reCAPTCHA -->
                 <template v-if="useCaptcha == 'yes'">
                     <div
@@ -547,19 +588,6 @@
                             @click="onDiscard()"
                             type="button"
                             class="button is-outlined">{{ $i18n.get('cancel') }}</button>
-
-                    <!-- Updated and Error Info -->
-                    <div class="update-info-section">
-                        <p class="footer-message">
-
-                            <span class="help is-danger">
-                                {{ formErrorMessage }}
-                                <item-metadatum-errors-tooltip
-                                        v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length"
-                                        :form-errors="formErrors" />
-                            </span>
-                        </p>
-                    </div>
 
                     <button
                             :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
@@ -661,13 +689,9 @@
 import { mapActions, mapGetters } from 'vuex';
 import { eventBusItemMetadata } from '../../../../admin/js/event-bus-item-metadata';
 import { formHooks } from '../../../../admin/js/mixins';
-import ItemMetadatumErrorsTooltip from '../../../../admin/components/other/item-metadatum-errors-tooltip.vue';
 
 export default {
     name: 'ItemSubmissionForm',
-    components: {
-        ItemMetadatumErrorsTooltip,
-    },
     mixins: [ formHooks ],
     props: {
         collectionId: String,
@@ -724,7 +748,8 @@ export default {
             useCaptcha: 'no',
             captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key'],
             linkToCreatedItem: '',
-            userHasAgreedToTerms: false
+            userHasAgreedToTerms: false,
+            metadataElements: {}
         }
     },
     computed: {
@@ -824,6 +849,7 @@ export default {
                                 this.$set(this.metadataSectionCollapses, i, true);
                         }
                         this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
+                        this.loadMetadataElements();
                     } else
                         this.formErrorMessage = '';
                 });
@@ -1042,6 +1068,24 @@ export default {
         },
         toggleMetadataSectionCollapse(sectionIndex) {
             this.$set(this.metadataSectionCollapses, sectionIndex, (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]));
+        },
+        getErrorMessage(errors) {
+            let metadatumErrorMessage = '';
+            for (let singleError of errors) {
+                if (typeof singleError != 'string') {
+                    for (let index of Object.keys(singleError))
+                        metadatumErrorMessage += singleError[index] + '\n';
+                } else {
+                    metadatumErrorMessage += singleError;
+                }
+            }
+            return metadatumErrorMessage;
+        },
+        loadMetadataElements() {
+            this.metadataElements = {};
+            this.formErrors.map((error) => {
+                this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')] = document.getElementById('tainacan-item-metadatum_id-' + error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : ''));
+            });
         }
     }
 }
@@ -1067,9 +1111,11 @@ export default {
         .field {
             padding: 12px 0px 12px 34px;
             margin-left: 16px;
-
         }
-         .columns {
+        /deep/ input {
+            box-sizing: border-box;
+        }
+        .columns {
             flex-wrap: wrap;
             justify-content: space-between;
 
@@ -1178,6 +1224,34 @@ export default {
         /deep/ .control-label {
             white-space: normal !important;
             overflow: visible;
+        }
+    }
+    
+    .form-error-area {
+        font-size: 0.9375em;
+        margin-top: 0.875rem;
+        margin-bottom: 1.125rem;
+        padding: 0.75em 0.75em 0.5em 0.75em;
+        display: flex;
+        flex-wrap: nowrap;
+        border: 1px solid var(--tainacan-red-2, #a23939);
+        color: var(--tainacan-red-2, #a23939);
+        background: var(--tainacan-red-1, #eadadc);
+
+        .form-error-area-icon {
+            font-size: 2rem;
+            padding-right: 0.75rem;
+        }
+
+        .form-error-area-messages>p {
+            margin-bottom: 0.25rem;
+        }
+
+        /deep/ ol {
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
         }
     }
 
