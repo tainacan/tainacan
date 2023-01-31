@@ -584,16 +584,25 @@
                             class="item-submission-hook item-submission-hook-footer-before"
                             v-html="getBeforeHook('footer')" />
 
-                    <button
-                            @click="onDiscard()"
-                            type="button"
-                            class="button is-outlined">{{ $i18n.get('cancel') }}</button>
-
-                    <button
-                            :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
-                            @click="onSubmit()"
-                            type="button"
-                            class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
+                    <div class="wp-block-buttons">
+                        <div class="wp-block-button is-style-outline">
+                            <button 
+                                    @click="onDiscard()"
+                                    type="button"
+                                    class="wp-block-button__link wp-element-button">
+                                {{ $i18n.get('cancel') }}
+                            </button>
+                        </div>
+                        <div class="wp-block-button">
+                            <button 
+                                    :disbuttonbled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
+                                    @click="onSubmit()"
+                                    type="button"
+                                    class="wp-block-button__link wp-element-button">
+                                {{ $i18n.get('label_submit') }}
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- JS-side hook for extra content -->
                     <div 
@@ -1272,6 +1281,13 @@ export default {
         justify-content: space-between;
         align-items: center;
         font-size: 1em;
+
+        .wp-block-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
 
         @keyframes blink {
             from { color: var(--tainacan-blue5); }

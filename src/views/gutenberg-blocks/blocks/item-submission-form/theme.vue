@@ -84,11 +84,12 @@ export default {
         @import "../../../admin/scss/_control.scss";
         @import "../../../admin/scss/_upload.scss";
 
-        a, a:not([href]) { 
+        a:not(.wp-element-button),
+        a:not(.wp-element-button):not([href]) { 
             color: var(--tainacan-secondary);
         }
-        a:hover, 
-        a:hover:not([href]) {
+        a:not(.wp-element-button):hover, 
+        a:not(.wp-element-button):hover:not([href]) {
             cursor: pointer;
             color: var(--tainacan-secondary);
             text-decoration: underline;
