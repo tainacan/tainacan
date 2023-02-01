@@ -31,7 +31,8 @@
     flex-direction: column;
     border-radius: 4px;
     border: 1px solid rgba(200, 200, 200, 0.3);
-    overflow: hidden; }
+    overflow: hidden;
+    box-sizing: border-box; }
     .wp-block-tainacan-item-submission-form .item-submission-form-placeholder .fake-text {
       background-color: var(--tainacan-label-color, rgba(200, 200, 200, 0.3));
       height: 0.25em;
