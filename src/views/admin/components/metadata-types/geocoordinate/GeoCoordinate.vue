@@ -366,7 +366,7 @@
             border-radius: 0px !important;
             height: 100% !important;
             line-height: 1.7rem;
-            background-color: var(--tainacan-background-color, #fff) !important;
+            background-color: var(--tainacan-input-background-color, #fff) !important;
         }
     }
 }
