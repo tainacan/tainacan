@@ -595,7 +595,7 @@
                         </div>
                         <div class="wp-block-button">
                             <button 
-                                    :disbuttonbled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
+                                    :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
                                     @click="onSubmit()"
                                     type="button"
                                     class="wp-block-button__link wp-element-button">
