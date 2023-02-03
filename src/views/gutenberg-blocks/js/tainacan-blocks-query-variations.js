@@ -12,6 +12,7 @@ Object.keys(POST_TYPES).forEach((postType) => {
         name: VARIATION_NAME,
         title: postName,
         icon: icon,
+        category: 'tainacan-blocks-variations',
         description: __('Displays a list of Tainacan itens', 'tainacan'),
         isActive: ( { namespace, query } ) => {
                 return (
@@ -20,7 +21,6 @@ Object.keys(POST_TYPES).forEach((postType) => {
                 );
         },
         attributes: {
-            category: 'tainacan-blocks-variations',
             namespace: VARIATION_NAME,
             query: {
                 postType: postType,
