@@ -72,7 +72,7 @@ export const eventBusItemMetadata = new Vue({
             } else {
 
                 if (values.length > 0 && values[0] != undefined && values[0].value) {
-                    let onlyValues = values.map((aValueObject) => aValueObject.value);
+                    const onlyValues = values.map((aValueObject) => aValueObject.value);
                     values = JSON.parse(JSON.stringify(onlyValues));
                 }
                 
@@ -83,16 +83,8 @@ export const eventBusItemMetadata = new Vue({
                     parent_id: parentId
                 });
 
-                let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
-                let messages = [];
-
-                if ( index >= 0) {
-                    Vue.set( this.errors, index, { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages });
-                    this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
-                } else {
-                    this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );
-                    this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[0]);
-                }
+                // In the item submission, we don't want to block submission or clear errors before a re-submission is performed,
+                // as the validation depends on a single server-side request. Thus, we do not update error arary here.
 
                 this.$emit('isUpdatingValue', false);
             }

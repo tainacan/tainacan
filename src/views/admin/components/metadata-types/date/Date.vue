@@ -3,7 +3,7 @@
         <b-input
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :disabled="disabled"
-                :class="{'is-danger': isInvalidDate && dateValue}"
+                :custom-class="{ 'is-danger': isInvalidDate && dateValue }"
                 type="text"
                 v-mask="dateMask"
                 v-model="dateValue"
@@ -51,6 +51,11 @@
                 isInvalidDate: false,
             }
         },
+        computed: {
+            isOnItemSubmissionForm() {
+                return !this.itemMetadatum.item || !this.itemMetadatum.item.id;
+            },
+        },
         created() {
             if (this.value)
                 this.dateValue = this.parseDateToNavigatorLanguage(this.value);
@@ -66,14 +71,20 @@
                     else if ($event.target.value && $event.target.value.length === this.dateMask.length)
                         dateISO = moment($event.target.value, this.dateFormat).toISOString(true) ? moment($event.target.value,  this.dateFormat).toISOString(true).split('T')[0] : false;
                     
-                    if (dateISO == false){
+                    if (dateISO == false) {
                         this.isInvalidDate = true;
-                        return;
+                        
+                        if (!this.isOnItemSubmissionForm)
+                            this.$emit('input', false);
+                        else
+                            this.$emit('input', this.dateValue) // On item submission form we keep the error here to allow the server to return the correct format.
+                            
                     } else {
                         this.isInvalidDate = false;
+                        this.$emit('input', dateISO);
                     }
 
-                    this.$emit('input', dateISO);
+                    
                 } else  {
                    this.$emit('input', ''); 
                 }
