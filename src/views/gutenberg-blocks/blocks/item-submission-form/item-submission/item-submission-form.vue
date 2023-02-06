@@ -400,7 +400,7 @@
                 </div>
 
                 <a
-                        v-if="!hideCollapses"
+                        v-if="!isLayoutSteps && !hideCollapses"
                         class="collapse-all"
                         @click="toggleCollapseAll()">
                     {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -417,88 +417,104 @@
                         class="item-submission-hook item-submission-hook-metadata-before"
                         v-html="getBeforeHook('metadata')" />
 
-                <div 
-                        v-for="(metadataSection, sectionIndex) of metadataSections"
-                        :key="sectionIndex"
-                        :class="'metadata-section-slug-' + metadataSection.slug"
-                        :id="'metadata-section-id-' + metadataSection.id">
-
-                    <div class="metadata-section-header section-label">
-                        <span   
-                                class="collapse-handle"
-                                @click="!hideCollapses ? toggleMetadataSectionCollapse(sectionIndex) : ''">
-                            <span 
-                                    v-if="!hideCollapses"
-                                    class="icon"
-                                    @click="toggleMetadataSectionCollapse(sectionIndex)">
-                                <i 
-                                        :class="{
-                                            'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || formErrorMessage,
-                                            'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage)
-                                        }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
-                            </span>
-                            <label>{{ metadataSection.name }}</label>
-                            <help-button
-                                    v-if="!hideHelpButtons &&
-                                            !helpInfoBellowLabel &&
-                                            metadataSection.description" 
-                                    :title="metadataSection.name"
-                                    :message="metadataSection.description" />
-                        </span>
-                    </div>
-                    <transition name="filter-item">
+                <component
+                        :is="isLayoutSteps ? 'b-steps' : 'div'" 
+                        v-model="activeSectionStep"
+                        :has-navigation="false"
+                        type="is-secondary"
+                        mobile-mode="compact"
+                        size="is-small"
+                        ref="item-submission-steps-layout">
+                    <component
+                            :is="isLayoutSteps ? 'b-step-item' : 'div'"
+                            v-for="(metadataSection, sectionIndex) of metadataSections"
+                            :key="sectionIndex"
+                            :step="sectionIndex + 1"
+                            :label="metadataSection.name"
+                            :label-position="'right'"
+                            :clickable="true"
+                            :class="'metadata-section-slug-' + metadataSection.slug"
+                            :id="'metadata-section-id-' + metadataSection.id">
                         <div 
-                                class="metadata-section-metadata-list"
-                                v-show="metadataSectionCollapses[sectionIndex]">
-
-                            <!-- JS-side hook for extra content -->
-                            <div 
-                                    v-if="hasBeforeHook('metadata_section')"
-                                    class="item-submission-hook item-submission-hook-metadata-section-before"
-                                    v-html="getBeforeHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
-
-                            <p
-                                    class="metadatum-description-help-info"
-                                    v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
-                                {{ metadataSection.description }}
-                            </p>
-                            <template v-if="itemMetadata && Array.isArray(itemMetadata)">
-                                <template v-for="(itemMetadatum, index) of itemMetadata.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
-                            
-                                    <!-- JS-side hook for extra content -->
-                                    <div 
-                                            :key="index"
-                                            v-if="hasBeforeHook('metadatum')"
-                                            class="item-submission-hook item-submission-hook-metadatum-before"
-                                            v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
-
-                                    <tainacan-form-item
-                                            :key="index"
-                                            v-if="enabledMetadata[index] == 'true'"
-                                            :item-metadatum="itemMetadatum"
-                                            :hide-collapses="hideCollapses"
-                                            :is-collapsed="metadataCollapses[index]"
-                                            @changeCollapse="onChangeCollapse($event, index)"/>
-
-                                    <!-- JS-side hook for extra content -->
-                                    <div 
-                                            :key="index"
-                                            v-if="hasAfterHook('metadatum')"
-                                            class="item-submission-hook item-submission-hook-metadatum-after"
-                                            v-html="getAfterHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
-                                </template>
-                            </template>
-                            <!-- JS-side hook for extra content -->
-                            <div 
-                                    v-if="hasAfterHook('metadata_section')"
-                                    class="item-submission-hook item-submission-hook-metadata-section-after"
-                                    v-html="getAfterHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
-
+                                    v-if="!isLayoutSteps"
+                                    class="metadata-section-header section-label">
+                            <span   
+                                    class="collapse-handle"
+                                    @click="!hideCollapses ? toggleMetadataSectionCollapse(sectionIndex) : ''">
+                                <span 
+                                        v-if="!hideCollapses"
+                                        class="icon"
+                                        @click="toggleMetadataSectionCollapse(sectionIndex)">
+                                    <i 
+                                            :class="{
+                                                'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || formErrorMessage,
+                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage)
+                                            }"
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                </span>
+                                <label>{{ metadataSection.name }}</label>
+                                <help-button
+                                        v-if="!hideHelpButtons &&
+                                                !helpInfoBellowLabel &&
+                                                metadataSection.description" 
+                                        :title="metadataSection.name"
+                                        :message="metadataSection.description" />
+                            </span>
                         </div>
-                    </transition>
+                        <transition name="filter-item">
+                            <div 
+                                    class="metadata-section-metadata-list"
+                                    v-show="metadataSectionCollapses[sectionIndex]">
 
-                </div>
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        v-if="hasBeforeHook('metadata_section')"
+                                        class="item-submission-hook item-submission-hook-metadata-section-before"
+                                        v-html="getBeforeHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
+                                <p
+                                        class="metadatum-description-help-info"
+                                        v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
+                                    {{ metadataSection.description }}
+                                </p>
+                                <template v-if="itemMetadata && Array.isArray(itemMetadata)">
+                                    <template v-for="(itemMetadatum, index) of itemMetadata.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
+                                
+                                        <!-- JS-side hook for extra content -->
+                                        <div 
+                                                :key="index"
+                                                v-if="hasBeforeHook('metadatum')"
+                                                class="item-submission-hook item-submission-hook-metadatum-before"
+                                                v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
+                                        <tainacan-form-item
+                                                :key="index"
+                                                v-if="enabledMetadata[index] == 'true'"
+                                                :item-metadatum="itemMetadatum"
+                                                :hide-collapses="hideCollapses"
+                                                :is-collapsed="metadataCollapses[index]"
+                                                @changeCollapse="onChangeCollapse($event, index)"/>
+
+                                        <!-- JS-side hook for extra content -->
+                                        <div 
+                                                :key="index"
+                                                v-if="hasAfterHook('metadatum')"
+                                                class="item-submission-hook item-submission-hook-metadatum-after"
+                                                v-html="getAfterHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+                                    </template>
+                                </template>
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        v-if="hasAfterHook('metadata_section')"
+                                        class="item-submission-hook item-submission-hook-metadata-section-after"
+                                        v-html="getAfterHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
+                            </div>
+                        </transition>
+
+                    </component>
+
+                </component>
 
                 <!-- JS-side hook for extra content -->
                 <div 
@@ -593,7 +609,29 @@
                                 {{ $i18n.get('cancel') }}
                             </button>
                         </div>
-                        <div class="wp-block-button">
+                        <div 
+                                v-if="isLayoutSteps && activeSectionStep > 0"
+                                class="wp-block-button">
+                            <button 
+                                    @click="onPreviousStep()"
+                                    type="button"
+                                    class="wp-block-button__link wp-element-button">
+                                {{ $i18n.get('previous') }}
+                            </button>
+                        </div>
+                        <div 
+                                v-if="isLayoutSteps && activeSectionStep < metadataSections.length - 1"
+                                class="wp-block-button">
+                            <button 
+                                    @click="onNextStep()"
+                                    type="button"
+                                    class="wp-block-button__link wp-element-button">
+                                {{ $i18n.get('next') }}
+                            </button>
+                        </div>
+                        <div 
+                                v-if="!isLayoutSteps || activeSectionStep == metadataSections.length - 1"
+                                class="wp-block-button">
                             <button 
                                     :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
                                     @click="onSubmit()"
@@ -724,7 +762,8 @@ export default {
         itemLinkButtonLabel: String,
         helpInfoBellowLabel: Boolean,
         showTermsAgreementCheckbox: Boolean,
-        termsAgreementMessage: String
+        termsAgreementMessage: String,
+        isLayoutSteps: Boolean
     },
     data(){
         return {
@@ -758,7 +797,8 @@ export default {
             captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key'],
             linkToCreatedItem: '',
             userHasAgreedToTerms: false,
-            metadataElements: {}
+            metadataElements: {},
+            activeSectionStep: undefined,
         }
     },
     computed: {
@@ -1095,6 +1135,14 @@ export default {
             this.formErrors.map((error) => {
                 this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')] = document.getElementById('tainacan-item-metadatum_id-' + error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : ''));
             });
+        },
+        onPreviousStep() {
+            if ( this.$refs['item-submission-steps-layout'] && typeof this.$refs['item-submission-steps-layout'].prev == 'function' )
+                this.$refs['item-submission-steps-layout'].prev();
+        },
+        onNextStep() {
+            if ( this.$refs['item-submission-steps-layout'] && typeof this.$refs['item-submission-steps-layout'].next == 'function' )
+                this.$refs['item-submission-steps-layout'].next();
         }
     }
 }
@@ -1310,6 +1358,15 @@ export default {
             font-size: 1.0em;
             margin-top: 0;
             margin-left: 24px;
+        }
+    }
+
+    .b-steps /deep/ .steps {
+        .step-item.is-active .step-title {
+            color: var(--tainacan-secondary);
+        }
+        .step-item:not(.is-active) .step-title {
+            color: var(--tainacan-label-color);
         }
     }
 

@@ -19,7 +19,8 @@ import {
     Input,
     Select,
     Taginput,
-    Snackbar
+    Snackbar,
+    Steps
 } from 'buefy';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
@@ -87,6 +88,7 @@ export default (element) => {
             Vue.use(Snackbar);
             Vue.use(Modal);
             Vue.use(Input);
+            Vue.use(Steps);
             Vue.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {
@@ -166,7 +168,8 @@ export default (element) => {
                     itemLinkButtonLabel: '',
                     helpInfoBellowLabel: false,
                     showItemLinkButton: false,
-                    termsAgreementMessage: ''
+                    termsAgreementMessage: '',
+                    isLayoutSteps: false
                 },
                 beforeMount () {
                     // Collection source settings
@@ -194,6 +197,8 @@ export default (element) => {
                         this.hideMetadataTypes = this.isParameterTrue('hide-metadata-types');
                     if (this.$el.attributes['help-info-bellow-label'] != undefined)
                         this.helpInfoBellowLabel = this.isParameterTrue('help-info-bellow-label');
+                    if (this.$el.attributes['is-layout-steps'] != undefined)
+                        this.isLayoutSteps = this.isParameterTrue('is-layout-steps');
 
                     // Form sections labels
                     if (this.$el.attributes['document-section-label'] != undefined)

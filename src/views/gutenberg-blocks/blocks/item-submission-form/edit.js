@@ -56,7 +56,8 @@ export default function ({ attributes, setAttributes, className }) {
         itemLinkButtonLabel,
         helpInfoBellowLabel,
         showTermsAgreementCheckbox,
-        termsAgreementMessage
+        termsAgreementMessage,
+        isLayoutSteps
     } = attributes;
 
     const blockProps = useBlockProps();
@@ -280,6 +281,16 @@ export default function ({ attributes, setAttributes, className }) {
                         <PanelBody
                                 title={__('Form elements', 'tainacan')}
                                 initialOpen={ true } >
+                            <ToggleControl
+                                    label={__('Show metadata sections as steps on the form.', 'tainacan')}
+                                    help={ isLayoutSteps ? __('Do not show the metadata sections as separate steps of the form.', 'tainacan') : __('Toggle to show the metadata sections as steps of the form.', 'tainacan')}
+                                    checked={ isLayoutSteps }
+                                    onChange={ ( isChecked ) => {
+                                            isLayoutSteps = isChecked;
+                                            setAttributes({ isLayoutSteps: isChecked });
+                                        }
+                                    }
+                                />
                             <ToggleControl
                                     label={__('Hide the Document type file button', 'tainacan')}
                                     help={ hideFileModalButton ? __('Do not show the button for uploading a file document', 'tainacan') : __('Toggle to show the button to upload a file document.', 'tainacan')}
