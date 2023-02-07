@@ -1287,6 +1287,8 @@ export default {
         margin-top: 1.25em;
 
         .field {
+            margin-left: 0;
+            margin-right: 0;
             padding: 0.75em 0.75em 0.5em 0.75em;
             border: 1px dashed var(--tainacan-input-border-color);
 
@@ -1377,12 +1379,27 @@ export default {
         }
     }
 
-    .b-steps /deep/ .steps {
-        .step-item.is-active .step-title {
-            color: var(--tainacan-secondary);
-        }
-        .step-item:not(.is-active) .step-title {
-            color: var(--tainacan-label-color);
+    .b-steps {
+        border: 1px solid var(--tainacan-input-border-color);
+        border-radius: 2px;
+        margin-top: 1em;
+
+        /deep/ .steps {
+
+            .step-items {
+                margin-top: -1em;
+                padding-right: 0px;
+                margin-right: 0px;
+                padding-left: 0px;
+                margin-left: 0px;
+
+                .step-item.is-active .step-title {
+                    color: var(--tainacan-secondary);
+                }
+                .step-item:not(.is-active) .step-title {
+                    color: var(--tainacan-label-color);
+                }
+            }
         }
     }
 
