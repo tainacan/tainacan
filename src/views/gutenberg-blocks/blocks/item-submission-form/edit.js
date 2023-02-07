@@ -657,8 +657,17 @@ export default function ({ attributes, setAttributes, className }) {
                                 <div style={{ flexGrow: '1' }}>
                                     { metadataSectionLabel ?
                                         <div class="fake-text section-label"></div>
-                                    :null }
-                                    { !hideCollapses ? <div class="fake-link"></div> : null }
+                                    : null }
+                                    { !hideCollapses && !isLayoutSteps ? 
+                                        <div class="fake-link"></div>
+                                    : null }
+                                    { isLayoutSteps ? 
+                                        <div class="fake-steps">
+                                            <div class="fake-step"/>
+                                            <div class="fake-step"/>
+                                            <div class="fake-step"/>
+                                        </div>
+                                    : null }
                                     <div class="metadata-section">
                                         { enabledMetadata.length ?
                                             enabledMetadata.map( (isEnabled) => {
