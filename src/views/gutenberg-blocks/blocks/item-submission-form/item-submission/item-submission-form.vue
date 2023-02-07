@@ -4,6 +4,7 @@
                 :is-full-page="false"
                 :active.sync="isLoading"
                 :can-cancel="false"/>
+
         <template v-if="couldLoadCollection && collecionAllowsItemSubmission">
             <form
                     v-if="!hasSentForm"
@@ -400,7 +401,7 @@
                 </div>
 
                 <a
-                        v-if="!isLayoutSteps && !hideCollapses"
+                        v-if="!showSteppedLayout && !hideCollapses"
                         class="collapse-all"
                         @click="toggleCollapseAll()">
                     {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -418,7 +419,8 @@
                         v-html="getBeforeHook('metadata')" />
 
                 <component
-                        :is="isLayoutSteps ? 'b-steps' : 'div'" 
+                        v-if="metadataSections.length"
+                        :is="showSteppedLayout ? 'b-steps' : 'div'" 
                         v-model="activeSectionStep"
                         :has-navigation="false"
                         type="is-secondary"
@@ -426,7 +428,7 @@
                         size="is-small"
                         ref="item-submission-steps-layout">
                     <component
-                            :is="isLayoutSteps ? 'b-step-item' : 'div'"
+                            :is="showSteppedLayout ? 'b-step-item' : 'div'"
                             v-for="(metadataSection, sectionIndex) of metadataSections"
                             :key="sectionIndex"
                             :step="sectionIndex + 1"
@@ -436,7 +438,7 @@
                             :class="'metadata-section-slug-' + metadataSection.slug"
                             :id="'metadata-section-id-' + metadataSection.id">
                         <div 
-                                    v-if="!isLayoutSteps"
+                                    v-if="!showSteppedLayout"
                                     class="metadata-section-header section-label">
                             <span   
                                     class="collapse-handle"
@@ -552,15 +554,9 @@
                                             v-if="error.errors.length"
                                             :key="index">
                                         <a 
-                                                v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id)"
+                                                v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id) || metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
                                                 class="has-text-danger"
-                                                @click="metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' })">
-                                            {{ getErrorMessage(error.errors) }}
-                                        </a>
-                                        <a 
-                                                v-else-if="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
-                                                class="has-text-danger"
-                                                @click="metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' })">
+                                                @click="goToErrorMetadatum(error)">
                                             {{ getErrorMessage(error.errors) }}
                                         </a>                           
                                         <p v-else>{{ getErrorMessage(error.errors) }}</p>
@@ -600,8 +596,12 @@
                             class="item-submission-hook item-submission-hook-footer-before"
                             v-html="getBeforeHook('footer')" />
 
-                    <div class="wp-block-buttons">
-                        <div class="wp-block-button is-style-outline">
+                    <div 
+                            class="wp-block-buttons"
+                            style="gap: 1rem;">
+                        <div
+                                class="wp-block-button is-style-outline"
+                                style="margin-right: auto;">
                             <button 
                                     @click="onDiscard()"
                                     type="button"
@@ -610,7 +610,7 @@
                             </button>
                         </div>
                         <div 
-                                v-if="isLayoutSteps && activeSectionStep > 0"
+                                v-if="showSteppedLayout && activeSectionStep > 0"
                                 class="wp-block-button">
                             <button 
                                     @click="onPreviousStep()"
@@ -620,7 +620,7 @@
                             </button>
                         </div>
                         <div 
-                                v-if="isLayoutSteps && activeSectionStep < metadataSections.length - 1"
+                                v-if="showSteppedLayout && activeSectionStep < metadataSections.length - 1"
                                 class="wp-block-button">
                             <button 
                                     @click="onNextStep()"
@@ -630,7 +630,7 @@
                             </button>
                         </div>
                         <div 
-                                v-if="!isLayoutSteps || activeSectionStep == metadataSections.length - 1"
+                                v-if="!showSteppedLayout || activeSectionStep == metadataSections.length - 1"
                                 class="wp-block-button">
                             <button 
                                     :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
@@ -798,10 +798,13 @@ export default {
             linkToCreatedItem: '',
             userHasAgreedToTerms: false,
             metadataElements: {},
-            activeSectionStep: undefined,
+            activeSectionStep: 0,
         }
     },
     computed: {
+        showSteppedLayout() {
+            return this.isLayoutSteps && this.metadataSections.length > 1;
+        },
         itemSubmission() {
             return this.getItemSubmission();
         },
@@ -1135,6 +1138,19 @@ export default {
             this.formErrors.map((error) => {
                 this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')] = document.getElementById('tainacan-item-metadatum_id-' + error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : ''));
             });
+        },
+        goToErrorMetadatum(error) {
+            if ( ['thumbnail', 'attachments', 'document'].includes(error.metadatum_id) )
+                this.metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            else if ( this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')] ) {
+
+                if ( this.showSteppedLayout ) {
+                    const stepWhereTheErrorIs = this.metadataSections.findIndex((aMetadataSection) => aMetadataSection.metadata_object_list.findIndex((aMetadatatum) => aMetadatatum.id == error.metadatum_id || aMetadatatum.id == error.parent_meta_id) >= 0);
+                    if (stepWhereTheErrorIs >= 0)
+                        this.activeSectionStep = stepWhereTheErrorIs;
+                }
+                this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         },
         onPreviousStep() {
             if ( this.$refs['item-submission-steps-layout'] && typeof this.$refs['item-submission-steps-layout'].prev == 'function' )
