@@ -31,7 +31,7 @@ class GeoCoordinate extends Metadata_Type {
 		$this->set_preview_template('
 			<div>
 				<div class="control">
-					!!POINT IN MAP!!
+					<img src="' . plugin_dir_url( __FILE__ ) . '/../../../../../../assets/images/geocoordinate_preview.png" alt="' . __('Image of a marker in a map.' , 'tainacan' ) . '" />
 				</div>
 			</div>
 		');
