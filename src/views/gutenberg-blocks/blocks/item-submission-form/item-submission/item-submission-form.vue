@@ -4,6 +4,7 @@
                 :is-full-page="false"
                 :active.sync="isLoading"
                 :can-cancel="false"/>
+
         <template v-if="couldLoadCollection && collecionAllowsItemSubmission">
             <form
                     v-if="!hasSentForm"
@@ -400,7 +401,7 @@
                 </div>
 
                 <a
-                        v-if="!hideCollapses"
+                        v-if="!showSteppedLayout && !hideCollapses"
                         class="collapse-all"
                         @click="toggleCollapseAll()">
                     {{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -417,88 +418,105 @@
                         class="item-submission-hook item-submission-hook-metadata-before"
                         v-html="getBeforeHook('metadata')" />
 
-                <div 
-                        v-for="(metadataSection, sectionIndex) of metadataSections"
-                        :key="sectionIndex"
-                        :class="'metadata-section-slug-' + metadataSection.slug"
-                        :id="'metadata-section-id-' + metadataSection.id">
-
-                    <div class="metadata-section-header section-label">
-                        <span   
-                                class="collapse-handle"
-                                @click="!hideCollapses ? toggleMetadataSectionCollapse(sectionIndex) : ''">
-                            <span 
-                                    v-if="!hideCollapses"
-                                    class="icon"
-                                    @click="toggleMetadataSectionCollapse(sectionIndex)">
-                                <i 
-                                        :class="{
-                                            'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || formErrorMessage,
-                                            'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage)
-                                        }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
-                            </span>
-                            <label>{{ metadataSection.name }}</label>
-                            <help-button
-                                    v-if="!hideHelpButtons &&
-                                            !helpInfoBellowLabel &&
-                                            metadataSection.description" 
-                                    :title="metadataSection.name"
-                                    :message="metadataSection.description" />
-                        </span>
-                    </div>
-                    <transition name="filter-item">
+                <component
+                        v-if="metadataSections.length"
+                        :is="showSteppedLayout ? 'b-steps' : 'div'" 
+                        v-model="activeSectionStep"
+                        :has-navigation="false"
+                        type="is-secondary"
+                        mobile-mode="compact"
+                        size="is-small"
+                        ref="item-submission-steps-layout">
+                    <component
+                            :is="showSteppedLayout ? 'b-step-item' : 'div'"
+                            v-for="(metadataSection, sectionIndex) of metadataSections"
+                            :key="sectionIndex"
+                            :step="sectionIndex + 1"
+                            :label="metadataSection.name"
+                            :label-position="'right'"
+                            :clickable="true"
+                            :class="'metadata-section-slug-' + metadataSection.slug"
+                            :id="'metadata-section-id-' + metadataSection.id">
                         <div 
-                                class="metadata-section-metadata-list"
-                                v-show="metadataSectionCollapses[sectionIndex]">
-
-                            <!-- JS-side hook for extra content -->
-                            <div 
-                                    v-if="hasBeforeHook('metadata_section')"
-                                    class="item-submission-hook item-submission-hook-metadata-section-before"
-                                    v-html="getBeforeHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
-
-                            <p
-                                    class="metadatum-description-help-info"
-                                    v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
-                                {{ metadataSection.description }}
-                            </p>
-                            <template v-if="itemMetadata && Array.isArray(itemMetadata)">
-                                <template v-for="(itemMetadatum, index) of itemMetadata.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
-                            
-                                    <!-- JS-side hook for extra content -->
-                                    <div 
-                                            :key="index"
-                                            v-if="hasBeforeHook('metadatum')"
-                                            class="item-submission-hook item-submission-hook-metadatum-before"
-                                            v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
-
-                                    <tainacan-form-item
-                                            :key="index"
-                                            v-if="enabledMetadata[index] == 'true'"
-                                            :item-metadatum="itemMetadatum"
-                                            :hide-collapses="hideCollapses"
-                                            :is-collapsed="metadataCollapses[index]"
-                                            @changeCollapse="onChangeCollapse($event, index)"/>
-
-                                    <!-- JS-side hook for extra content -->
-                                    <div 
-                                            :key="index"
-                                            v-if="hasAfterHook('metadatum')"
-                                            class="item-submission-hook item-submission-hook-metadatum-after"
-                                            v-html="getAfterHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
-                                </template>
-                            </template>
-                            <!-- JS-side hook for extra content -->
-                            <div 
-                                    v-if="hasAfterHook('metadata_section')"
-                                    class="item-submission-hook item-submission-hook-metadata-section-after"
-                                    v-html="getAfterHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
-
+                                    v-if="!showSteppedLayout"
+                                    class="metadata-section-header section-label">
+                            <span   
+                                    class="collapse-handle"
+                                    @click="!hideCollapses ? toggleMetadataSectionCollapse(sectionIndex) : ''">
+                                <span 
+                                        v-if="!hideCollapses"
+                                        class="icon"
+                                        @click="toggleMetadataSectionCollapse(sectionIndex)">
+                                    <i 
+                                            :class="{
+                                                'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || formErrorMessage,
+                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage)
+                                            }"
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                </span>
+                                <label>{{ metadataSection.name }}</label>
+                                <help-button
+                                        v-if="!hideHelpButtons &&
+                                                !helpInfoBellowLabel &&
+                                                metadataSection.description" 
+                                        :title="metadataSection.name"
+                                        :message="metadataSection.description" />
+                            </span>
                         </div>
-                    </transition>
+                        <transition name="filter-item">
+                            <div 
+                                    class="metadata-section-metadata-list"
+                                    v-show="metadataSectionCollapses[sectionIndex]">
 
-                </div>
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        v-if="hasBeforeHook('metadata_section')"
+                                        class="item-submission-hook item-submission-hook-metadata-section-before"
+                                        v-html="getBeforeHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
+                                <p
+                                        class="metadatum-description-help-info"
+                                        v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
+                                    {{ metadataSection.description }}
+                                </p>
+                                <template v-if="itemMetadata && Array.isArray(itemMetadata)">
+                                    <template v-for="(itemMetadatum, index) of itemMetadata.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
+                                
+                                        <!-- JS-side hook for extra content -->
+                                        <div 
+                                                :key="index"
+                                                v-if="hasBeforeHook('metadatum')"
+                                                class="item-submission-hook item-submission-hook-metadatum-before"
+                                                v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
+                                        <tainacan-form-item
+                                                :key="index"
+                                                v-if="enabledMetadata[index] == 'true'"
+                                                :item-metadatum="itemMetadatum"
+                                                :hide-collapses="hideCollapses"
+                                                :is-collapsed="metadataCollapses[index]"
+                                                @changeCollapse="onChangeCollapse($event, index)"/>
+
+                                        <!-- JS-side hook for extra content -->
+                                        <div 
+                                                :key="index"
+                                                v-if="hasAfterHook('metadatum')"
+                                                class="item-submission-hook item-submission-hook-metadatum-after"
+                                                v-html="getAfterHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+                                    </template>
+                                </template>
+                                <!-- JS-side hook for extra content -->
+                                <div 
+                                        v-if="hasAfterHook('metadata_section')"
+                                        class="item-submission-hook item-submission-hook-metadata-section-after"
+                                        v-html="getAfterHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
+
+                            </div>
+                        </transition>
+
+                    </component>
+
+                </component>
 
                 <!-- JS-side hook for extra content -->
                 <div 
@@ -513,6 +531,41 @@
                         class="form-hook-region"
                         v-html="getEndRightForm"/>
                 </template>
+
+
+                <!-- Form errors area -->
+                <div 
+                        v-if="formErrorMessage"
+                        class="form-error-area is-danger">
+                    <div class="form-error-area-icon">
+                        <a class="help-button has-text-danger">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-alertcircle" />
+                            </span>
+                        </a>
+                    </div>
+                    <div class="form-error-area-messages">
+                        <strong>{{ formErrorMessage }}</strong>
+                        <template v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length">
+                            <p>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</p>
+                            <ol>
+                                <template v-for="(error, index) of formErrors">
+                                    <li 
+                                            v-if="error.errors.length"
+                                            :key="index">
+                                        <a 
+                                                v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id) || metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
+                                                class="has-text-danger"
+                                                @click="goToErrorMetadatum(error)">
+                                            {{ getErrorMessage(error.errors) }}
+                                        </a>                           
+                                        <p v-else>{{ getErrorMessage(error.errors) }}</p>
+                                    </li>
+                                </template>
+                            </ol>
+                        </template>
+                    </div>
+                </div>
 
                 <!-- Google reCAPTCHA -->
                 <template v-if="useCaptcha == 'yes'">
@@ -543,29 +596,51 @@
                             class="item-submission-hook item-submission-hook-footer-before"
                             v-html="getBeforeHook('footer')" />
 
-                    <button
-                            @click="onDiscard()"
-                            type="button"
-                            class="button is-outlined">{{ $i18n.get('cancel') }}</button>
-
-                    <!-- Updated and Error Info -->
-                    <div class="update-info-section">
-                        <p class="footer-message">
-
-                            <span class="help is-danger">
-                                {{ formErrorMessage }}
-                                <item-metadatum-errors-tooltip
-                                        v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length"
-                                        :form-errors="formErrors" />
-                            </span>
-                        </p>
+                    <div 
+                            class="wp-block-buttons"
+                            style="gap: 1rem;">
+                        <div
+                                class="wp-block-button is-style-outline"
+                                style="margin-right: auto;">
+                            <button 
+                                    @click="onDiscard()"
+                                    type="button"
+                                    class="wp-block-button__link wp-element-button">
+                                {{ $i18n.get('cancel') }}
+                            </button>
+                        </div>
+                        <div 
+                                v-if="showSteppedLayout && activeSectionStep > 0"
+                                class="wp-block-button">
+                            <button 
+                                    @click="onPreviousStep()"
+                                    type="button"
+                                    class="wp-block-button__link wp-element-button">
+                                {{ $i18n.get('previous') }}
+                            </button>
+                        </div>
+                        <div 
+                                v-if="showSteppedLayout && activeSectionStep < metadataSections.length - 1"
+                                class="wp-block-button">
+                            <button 
+                                    @click="onNextStep()"
+                                    type="button"
+                                    class="wp-block-button__link wp-element-button">
+                                {{ $i18n.get('next') }}
+                            </button>
+                        </div>
+                        <div 
+                                v-if="!showSteppedLayout || activeSectionStep == metadataSections.length - 1"
+                                class="wp-block-button">
+                            <button 
+                                    :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
+                                    @click="onSubmit()"
+                                    type="button"
+                                    class="wp-block-button__link wp-element-button">
+                                {{ $i18n.get('label_submit') }}
+                            </button>
+                        </div>
                     </div>
-
-                    <button
-                            :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
-                            @click="onSubmit()"
-                            type="button"
-                            class="button is-secondary">{{ $i18n.get('label_submit') }}</button>
 
                     <!-- JS-side hook for extra content -->
                     <div 
@@ -661,13 +736,9 @@
 import { mapActions, mapGetters } from 'vuex';
 import { eventBusItemMetadata } from '../../../../admin/js/event-bus-item-metadata';
 import { formHooks } from '../../../../admin/js/mixins';
-import ItemMetadatumErrorsTooltip from '../../../../admin/components/other/item-metadatum-errors-tooltip.vue';
 
 export default {
     name: 'ItemSubmissionForm',
-    components: {
-        ItemMetadatumErrorsTooltip,
-    },
     mixins: [ formHooks ],
     props: {
         collectionId: String,
@@ -691,7 +762,8 @@ export default {
         itemLinkButtonLabel: String,
         helpInfoBellowLabel: Boolean,
         showTermsAgreementCheckbox: Boolean,
-        termsAgreementMessage: String
+        termsAgreementMessage: String,
+        isLayoutSteps: Boolean
     },
     data(){
         return {
@@ -724,10 +796,15 @@ export default {
             useCaptcha: 'no',
             captchaSiteKey: tainacan_plugin['item_submission_captcha_site_key'],
             linkToCreatedItem: '',
-            userHasAgreedToTerms: false
+            userHasAgreedToTerms: false,
+            metadataElements: {},
+            activeSectionStep: 0,
         }
     },
     computed: {
+        showSteppedLayout() {
+            return this.isLayoutSteps && this.metadataSections.length > 1;
+        },
         itemSubmission() {
             return this.getItemSubmission();
         },
@@ -824,6 +901,7 @@ export default {
                                 this.$set(this.metadataSectionCollapses, i, true);
                         }
                         this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
+                        this.loadMetadataElements();
                     } else
                         this.formErrorMessage = '';
                 });
@@ -1042,6 +1120,45 @@ export default {
         },
         toggleMetadataSectionCollapse(sectionIndex) {
             this.$set(this.metadataSectionCollapses, sectionIndex, (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]));
+        },
+        getErrorMessage(errors) {
+            let metadatumErrorMessage = '';
+            for (let singleError of errors) {
+                if (typeof singleError != 'string') {
+                    for (let index of Object.keys(singleError))
+                        metadatumErrorMessage += singleError[index] + '\n';
+                } else {
+                    metadatumErrorMessage += singleError;
+                }
+            }
+            return metadatumErrorMessage;
+        },
+        loadMetadataElements() {
+            this.metadataElements = {};
+            this.formErrors.map((error) => {
+                this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')] = document.getElementById('tainacan-item-metadatum_id-' + error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : ''));
+            });
+        },
+        goToErrorMetadatum(error) {
+            if ( ['thumbnail', 'attachments', 'document'].includes(error.metadatum_id) )
+                this.metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            else if ( this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')] ) {
+
+                if ( this.showSteppedLayout ) {
+                    const stepWhereTheErrorIs = this.metadataSections.findIndex((aMetadataSection) => aMetadataSection.metadata_object_list.findIndex((aMetadatatum) => aMetadatatum.id == error.metadatum_id || aMetadatatum.id == error.parent_meta_id) >= 0);
+                    if (stepWhereTheErrorIs >= 0)
+                        this.activeSectionStep = stepWhereTheErrorIs;
+                }
+                this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        },
+        onPreviousStep() {
+            if ( this.$refs['item-submission-steps-layout'] && typeof this.$refs['item-submission-steps-layout'].prev == 'function' )
+                this.$refs['item-submission-steps-layout'].prev();
+        },
+        onNextStep() {
+            if ( this.$refs['item-submission-steps-layout'] && typeof this.$refs['item-submission-steps-layout'].next == 'function' )
+                this.$refs['item-submission-steps-layout'].next();
         }
     }
 }
@@ -1067,9 +1184,11 @@ export default {
         .field {
             padding: 12px 0px 12px 34px;
             margin-left: 16px;
-
         }
-         .columns {
+        /deep/ input {
+            box-sizing: border-box;
+        }
+        .columns {
             flex-wrap: wrap;
             justify-content: space-between;
 
@@ -1168,6 +1287,8 @@ export default {
         margin-top: 1.25em;
 
         .field {
+            margin-left: 0;
+            margin-right: 0;
             padding: 0.75em 0.75em 0.5em 0.75em;
             border: 1px dashed var(--tainacan-input-border-color);
 
@@ -1178,6 +1299,35 @@ export default {
         /deep/ .control-label {
             white-space: normal !important;
             overflow: visible;
+        }
+    }
+    
+    .form-error-area {
+        font-size: 0.9375em;
+        margin-top: 1rem;
+        margin-bottom: 1.125rem;
+        padding: 0.875em;
+        display: flex;
+        flex-wrap: nowrap;
+        border: 1px solid var(--tainacan-red-2, #a23939);
+        color: var(--tainacan-red-2, #a23939);
+        background: var(--tainacan-red-1, #eadadc);
+
+        .form-error-area-icon {
+            font-size: 2rem;
+            padding-right: 0.75rem;
+        }
+
+        .form-error-area-messages > p {
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /deep/ ol {
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
         }
     }
 
@@ -1197,6 +1347,13 @@ export default {
         justify-content: space-between;
         align-items: center;
         font-size: 1em;
+
+        .wp-block-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
 
         @keyframes blink {
             from { color: var(--tainacan-blue5); }
@@ -1219,6 +1376,30 @@ export default {
             font-size: 1.0em;
             margin-top: 0;
             margin-left: 24px;
+        }
+    }
+
+    .b-steps {
+        border: 1px solid var(--tainacan-input-border-color);
+        border-radius: 2px;
+        margin-top: 1em;
+
+        /deep/ .steps {
+
+            .step-items {
+                margin-top: -1em;
+                padding-right: 0px;
+                margin-right: 0px;
+                padding-left: 0px;
+                margin-left: 0px;
+
+                .step-item.is-active .step-title {
+                    color: var(--tainacan-secondary);
+                }
+                .step-item:not(.is-active) .step-title {
+                    color: var(--tainacan-label-color);
+                }
+            }
         }
     }
 

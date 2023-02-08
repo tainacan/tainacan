@@ -390,7 +390,7 @@ export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissio
 export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId }) => {
     return new Promise((resolve, reject) => {
         let config = {
-            headers: { 'content-type': 'multipart/form-data' }
+            headers: { 'Content-Type': 'multipart/form-data' }
         }
         const formData = new FormData();
 

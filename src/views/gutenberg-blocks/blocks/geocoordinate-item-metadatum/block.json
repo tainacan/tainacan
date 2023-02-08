@@ -1,0 +1,55 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "name": "tainacan/geocoorinate-item-metadatum",
+    "title": "Tainacan Geo Coordinate Item Metadatum",
+    "apiVersion": 2,
+    "category": "tainacan-blocks",
+    "keywords": [ "item", "location", "geographic", "coordinates", "metadatum", "field", "value" ],
+    "description": "A single item geographic metadatum, containing location information.",
+    "textdomain": "tainacan",
+    "parent": [],
+    "example": {
+        "attributes": {
+            "content": "preview"
+        }
+    },
+    "attributes": {
+        "content": {
+            "type": "array",
+            "source": "query",
+            "selector": "div"
+        },
+        "dataSource": {
+            "type": "string",
+            "default": "selection"
+        },
+        "templateMode": {
+            "type": "boolean",
+            "default": false
+        },
+        "collectionId": {
+            "type": "integer"
+        },
+        "itemId": {
+            "type": "integer"
+        },
+        "metadatumId": {
+            "type": "integer"
+        },
+        "isModalOpen": {
+            "type": "boolean",
+            "default": false
+        }
+    },
+    "usesContext": [
+        "tainacan/itemId"
+    ],
+    "supports": {
+        "align": ["full", "wide"],
+        "multiple": true,
+        "html": true,
+        "anchor": true
+    },
+    "editorScript": "geocoordinate-item-metadatum",
+	"editorStyle": "geocoordinate-item-metadatum"
+}

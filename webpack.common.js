@@ -9,6 +9,7 @@ module.exports = {
         tainacan_pages_common_scripts: './src/views/tainacan-pages-common-scripts.js',
         tainacan_blocks_common_scripts: './src/views/gutenberg-blocks/tainacan-blocks-common-scripts.js',
         tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
+        tainacan_blocks_query_variations: './src/views/gutenberg-blocks/js/tainacan-blocks-query-variations.js',
 
         block_terms_list: './src/views/gutenberg-blocks/blocks/terms-list/index.js',
         block_items_list: './src/views/gutenberg-blocks/blocks/items-list/index.js',
@@ -27,6 +28,7 @@ module.exports = {
         block_item_metadata_section: './src/views/gutenberg-blocks/blocks/item-metadata-section/index.js',
         block_item_metadata: './src/views/gutenberg-blocks/blocks/item-metadata/index.js',
         block_item_metadatum: './src/views/gutenberg-blocks/blocks/item-metadatum/index.js',
+        block_geocoordinate_item_metadatum: './src/views/gutenberg-blocks/blocks/geocoordinate-item-metadatum/index.js',
         block_metadata_section_name: './src/views/gutenberg-blocks/blocks/metadata-section-name/index.js',
         block_metadata_section_description: './src/views/gutenberg-blocks/blocks/metadata-section-description/index.js'
     },
@@ -103,7 +105,7 @@ module.exports = {
             'PhotoSwipe': 'PhotoSwipe'
         }),
         new MomentLocalesPlugin({
-            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv'],
+            localesToKeep: ['en', 'en-ca', 'en-nz', 'en-gb', 'es-au', 'el', 'es-in', 'pt-br', 'pt', 'ca', 'es', 'es-us', 'es-mx', 'es-do', 'fr', 'fr-ch', 'fr-ca', 'sv', 'sq', 'sk', 'uk'],
         }),
         new ESLintPlugin({
             extensions: ['vue'],

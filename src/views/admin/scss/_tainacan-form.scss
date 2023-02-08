@@ -152,8 +152,10 @@
             color: var(--tainacan-input-color);
             background-color: var(--tainacan-input-background-color) !important;
             border: 1px solid var(--tainacan-input-border-color) !important;
-            &:focus>option:checked, &:focus>option:hover {
-                background-color: var(--tainacan-primary) !important;
+
+            option {
+                color: inherit;
+                background-color: inherit;
             }
             &[disabled=disabled] {
                 border: 1px solid var(--tainacan-gray1) !important;

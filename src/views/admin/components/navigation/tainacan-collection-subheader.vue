@@ -233,7 +233,7 @@ export default {
                 a { 
                     background-color: var(--tainacan-turquoise4);
                     transition: color 0.2s ease;
-                    color: var(--tainacan-white);
+                    color: var(--tainacan-white) !important;
                     text-decoration: none;
                 }
                 svg {
@@ -249,7 +249,7 @@ export default {
                 }
             }
             a {
-                color: var(--tainacan-white);
+                color: var(--tainacan-white) !important;;
                 text-align: center;
                 white-space: nowrap;
                 padding: 6px 11px;

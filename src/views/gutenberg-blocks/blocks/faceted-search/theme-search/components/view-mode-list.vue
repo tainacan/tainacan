@@ -124,7 +124,7 @@
 import { viewModesMixin } from '../js/view-modes-mixin.js';
 
 export default {
-    name: 'ViewModeRecords',
+    name: 'ViewModeList',
     mixins: [
         viewModesMixin
     ]

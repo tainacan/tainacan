@@ -162,10 +162,10 @@
         color: transparent !important;
     }
 
-    a,
-    a:hover,
-    a:focus,
-    a:hover:not([href]) {
+    a:not(.wp-element-button),
+    a:not(.wp-element-button):hover,
+    a:not(.wp-element-button):focus,
+    a:not(.wp-element-button):hover:not([href]) {
         color: var(--tainacan-secondary);
     }
     a:not([href]) 

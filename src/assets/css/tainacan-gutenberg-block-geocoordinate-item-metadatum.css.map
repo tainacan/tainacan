@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,+BAAgC;EAC5B,OAAO,EAAE,KAAK;EACd,MAAM,EAAE,KAAK;EACb,KAAK,EAAC,IAAI;EAEV;uDACsB;IAClB,OAAO,EAAE,CAAC",
+"sources": ["../../views/gutenberg-blocks/blocks/geocoordinate-item-metadatum/style.scss"],
+"names": [],
+"file": "tainacan-gutenberg-block-geocoordinate-item-metadatum.css"
+}
