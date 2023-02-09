@@ -1805,7 +1805,11 @@
                                                     v-for="(column, metadatumIndex) in displayedMetadata"
                                                     :key="metadatumIndex"
                                                     :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
-                                                    v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                                    v-if="renderMetadata(item.metadata, column) != '' &&
+                                                        column.display && column.slug != 'thumbnail' &&
+                                                        column.metadata_type_object != undefined && 
+                                                        (column.metadata_type_object.related_mapped_prop != 'title') &&
+                                                        (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate')">
                                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                                 <p
                                                         v-html="renderMetadata(item.metadata, column)"

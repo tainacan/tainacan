@@ -30,7 +30,7 @@
         /deep/ .leaflet-marker-pane {
             filter: hue-rotate(-22deg);
         }
-
+        /deep/ div.tainacan-metadatum.metadata-type-geocoordinate,
         /deep/ span[data-module="geocoordinate-item-metadatum"],
         /deep/ span[data-module="geocoordinate-item-metadatum"]+br {
             display: none;
