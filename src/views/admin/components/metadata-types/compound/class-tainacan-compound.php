@@ -234,7 +234,7 @@ class Compound extends Metadata_Type {
 		if ($meta instanceof Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
 			ob_start();
 			?>
-				<div class="tainacan-metadatum">
+				<div class="tainacan-metadatum metadata-type-<?php echo $meta->get_metadatum()->get_metadata_type_object()->get_slug() ?>">
 					<h4 class="label">
 						<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
 					</h4>
