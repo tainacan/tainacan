@@ -372,19 +372,25 @@
                                     <div 
                                             v-for="(metadataSection, sectionIndex) of metadataSections"
                                             :key="sectionIndex"
-                                            :class="'metadata-section-slug-' + metadataSection.slug"
-                                            :id="'metadata-section-id-' + metadataSection.id">
+                                            :class="'metadata-section-slug-' + metadataSection.slug + (conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide ? ' metadata-section-hidden' : '')"
+                                            :id="'metadata-section-id-' + metadataSection.id"
+                                            v-tooltip="{
+                                                content: conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide ? $i18n.get('info_metadata_section_hidden_conditional') : false,
+                                                autoHide: true,
+                                                placement: 'auto',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
+                                            }">
                                         <div class="metadata-section-header section-label">
                                             <span   
                                                     class="collapse-handle"
-                                                    @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses) ? null : toggleMetadataSectionCollapse(sectionIndex)">
+                                                    @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses || (conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide)) ? null : toggleMetadataSectionCollapse(sectionIndex)">
                                                 <span 
                                                         v-if="!$adminOptions.hideItemEditionCollapses && !isMetadataNavigation"
                                                         class="icon">
                                                     <i 
                                                             :class="{
-                                                                'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || errorMessage,
-                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage)
+                                                                'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || errorMessage) && !(conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide),
+                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage) || (conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide)
                                                             }"
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                                 </span>
@@ -409,7 +415,7 @@
                                         <transition name="filter-item">
                                             <div 
                                                     class="metadata-section-metadata-list"
-                                                    v-show="metadataSectionCollapses[sectionIndex] || isMetadataNavigation">
+                                                    v-show="(metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !(conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide)">
                                                 <p
                                                         class="metadatum-description-help-info"
                                                         v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'">
@@ -852,6 +858,9 @@ export default {
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
         },
+        conditionalSections() {
+            return eventBusItemMetadata && eventBusItemMetadata.conditionalSections ? eventBusItemMetadata.conditionalSections : [];
+        },
         isEditingItemMetadataInsideIframe() {
             return this.$route.query && this.$route.query.editingmetadata;
         },
@@ -1016,6 +1025,25 @@ export default {
             .then((metadataSections) => {
                 this.metadataSectionCollapses = Array(metadataSections.length).fill(true)
                 this.isLoadingMetadataSections = false;
+
+                /**
+                 * Creates the conditional metadata set to later watch values
+                 * of certain metadata that control sections visibility.
+                 */
+                eventBusItemMetadata.conditionalSections = {};
+                for (let metadataSection of metadataSections) {
+                    if ( metadataSection.is_conditional_section == 'yes') { 
+                        const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
+                        if ( conditionalSectionId.length ) {
+                            eventBusItemMetadata.conditionalSections[metadataSection.id] = {
+                                sectionId: metadataSection.id,
+                                metadatumId: conditionalSectionId[0],
+                                metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
+                                hide: true
+                            };
+                        }
+                    }
+                }
             })
             .catch((error) => {
                 this.isLoadingMetadataSections = false;
@@ -1283,6 +1311,13 @@ export default {
                             this.metadataCollapses.push(false);
                             this.metadataCollapses[i] = true;
                         }
+                    }
+                    
+                    /* Sets initial state for conditional sections based on metadatum values */
+                    for (let conditionalSectionId in this.conditionalSections) {
+                        const currentItemMetadatum = metadata.find(anItemMetadatum => anItemMetadatum.metadatum.id == this.conditionalSections[conditionalSectionId].metadatumId);
+                        if (currentItemMetadatum)
+                            eventBusItemMetadata.conditionalSections[conditionalSectionId].hide = !(JSON.stringify(currentItemMetadatum.value) == JSON.stringify(this.conditionalSections[conditionalSectionId].metadatumValues[0]));
                     }
 
                     this.isLoading = false;
@@ -2120,6 +2155,15 @@ export default {
         .metadata-section-header {
             padding: 0.75em 0em;
             border-bottom: 1px solid var(--tainacan-input-border-color);
+        }
+
+        .metadata-section-hidden {
+            opacity: 0.5;
+            filter: grayscale(1.0);
+
+            & > {
+                pointer-events: none;
+            }
         }
 
         .item-edition-tab-content {

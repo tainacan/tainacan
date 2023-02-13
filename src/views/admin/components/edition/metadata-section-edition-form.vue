@@ -121,6 +121,63 @@
                     </div>
                 </b-field>
 
+                <b-field 
+                        :addons="false"
+                        :label="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
+                        :type="formErrors['is_conditional_section'] != undefined ? 'is-danger' : ''"
+                        :message="formErrors['is_conditional_section'] != undefined ? formErrors['is_conditional_section'] : ''">
+                        &nbsp;
+                    <b-switch
+                            size="is-small"
+                            @input="clearErrors('is_conditional_section')"
+                            v-model="form.is_conditional_section"
+                            true-value="yes"
+                            false-value="no"
+                            name="is_conditional_section">
+                    <help-button
+                            :title="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
+                            :message="$i18n.getHelperMessage('metadata-sections', 'is_conditional_section')"
+                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                    </b-switch>
+                </b-field>
+                <div v-if="form.is_conditional_section && availableConditionalMetadata.length">
+                    <transition name="filter-item">
+                        <b-field
+                                :addons="false"
+                                :type="formErrors['conditional_section_rules'] != undefined ? 'is-danger' : ''"
+                                :message="formErrors['conditional_section_rules'] != undefined ? formErrors['conditional_section_rules'] : ''">
+                            <label class="label is-inline">
+                                {{ $i18n.getHelperTitle('metadata-sections', 'conditional_section_rules') }}
+                                <help-button
+                                        :title="$i18n.getHelperTitle('metadata-sections', 'conditional_section_rules')"
+                                        :message="$i18n.getHelperMessage('metadata-sections', 'conditional_section_rules')"
+                                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                            </label>
+                            <b-select 
+                                    v-model="selectedConditionalMetadatum"
+                                    :placeholder="$i18n.get('label_select_metadatum')">
+                                <option 
+                                        v-for="conditionalMetadatum of availableConditionalMetadata"
+                                        :key="conditionalMetadatum.id"
+                                        :value="conditionalMetadatum.id">
+                                    {{ conditionalMetadatum.name }}
+                                </option>
+                            </b-select>
+                            <b-select 
+                                    v-if="selectedConditionalMetadatum"
+                                    v-model="selectedConditionalValue"
+                                    :multiple="true"
+                                    :placeholder="$i18n.get('label_selectbox_init')">
+                                <option 
+                                        v-for="(conditionalValue, conditionalValueIndex) of availableConditionalMetadata.find((availableMetadatum) => availableMetadatum.id == selectedConditionalMetadatum).metadata_type_object.options.options.split('\n')"
+                                        :key="conditionalValueIndex"
+                                        :value="conditionalValue">
+                                    {{ conditionalValue }}
+                                </option>
+                            </b-select>
+                        </b-field>
+                    </transition>
+                </div>
             </div>
             
             <!-- Hook for extra Form options -->
@@ -156,7 +213,7 @@
 </template>
 
 <script>
-    import { mapActions } from 'vuex';
+    import { mapActions, mapGetters } from 'vuex';
     import { formHooks } from "../../js/mixins";
 
     export default {
@@ -175,7 +232,24 @@
                 formErrorMessage: '',
                 closedByForm: false,
                 entityName: 'metadataSection',
-                isUpdating: false
+                isUpdating: false,
+                selectedConditionalMetadatum: undefined,
+                selectedConditionalValue: undefined
+            }
+        },
+        computed: {
+            ...mapGetters('metadata', [
+                'getMetadataSections'
+            ]),
+            availableConditionalMetadata() {
+                if (this.getMetadataSections.length) {
+                    const otherMetadataSections = this.getMetadataSections.filter(aMetadataSection => aMetadataSection.id != this.form.id);
+                    const availableMetadata = [];
+                    for (let aMetadataSection of otherMetadataSections)
+                        availableMetadata.push.apply(availableMetadata, aMetadataSection.metadata_object_list);
+                    return availableMetadata.filter(aMetadatum => aMetadatum.metadata_type === 'Tainacan\\Metadata_Types\\Selectbox');
+                }
+                return {};
             }
         },
         created() {
@@ -183,6 +257,12 @@
 
             if (this.form.status == 'auto-draft')
                 this.form.status = 'publish';
+
+            if ( this.form.is_conditional_section == 'yes' && Object.keys(this.form.conditional_section_rules).length ) {
+                const conditionalMetadatum = Object.keys(this.form.conditional_section_rules)[0];
+                this.selectedConditionalMetadatum = conditionalMetadatum;
+                this.selectedConditionalValue = this.form.conditional_section_rules[conditionalMetadatum];
+            }
 
             this.formErrors = this.form.formErrors != undefined ? this.form.formErrors : {};
             this.formErrorMessage = this.form.formErrors != undefined ? this.form.formErrorMessage : '';
@@ -200,79 +280,40 @@
             ]),
             saveEdition(metadataSection) {
 
-                if ( (metadataSection.metadata_type_object && metadataSection.metadata_type_object.form_component) || metadataSection.edit_form == '') {
+                if ( this.form.is_conditional_section == 'yes' && this.selectedConditionalMetadatum && this.selectedConditionalValue ) {
+                    this.form.conditional_section_rules = {}
+                    this.form.conditional_section_rules[this.selectedConditionalMetadatum] = this.selectedConditionalValue;
+                } else
+                    this.form.conditional_section_rules = null;
 
-                    this.fillExtraFormData(this.form);
-                    this.isUpdating = true;
-                    this.updateMetadataSection({
-                        collectionId: this.collectionId,
-                        metadataSectionId: metadataSection.id,
-                        index: this.index,
-                        options: this.form
+                this.fillExtraFormData(this.form);
+                this.isUpdating = true;
+                this.updateMetadataSection({
+                    collectionId: this.collectionId,
+                    metadataSectionId: metadataSection.id,
+                    index: this.index,
+                    options: this.form
+                })
+                    .then(() => {
+                        this.form = {};
+                        this.formErrors = {};
+                        this.formErrorMessage = '';
+                        this.isUpdating = false;
+                        this.closedByForm = true;
+
+                        this.$emit('onEditionFinished');
                     })
-                        .then(() => {
-                            this.form = {};
-                            this.formErrors = {};
-                            this.formErrorMessage = '';
-                            this.isUpdating = false;
-                            this.closedByForm = true;
+                    .catch((errors) => {
+                        this.isUpdating = false;
+                        for (let error of errors.errors) {
+                            for (let attribute of Object.keys(error))
+                                this.formErrors[attribute] = error[attribute];
+                        }
+                        this.formErrorMessage = errors.error_message;
 
-                            this.$emit('onEditionFinished');
-                        })
-                        .catch((errors) => {
-                            this.isUpdating = false;
-                            for (let error of errors.errors) {
-                                for (let attribute of Object.keys(error))
-                                    this.formErrors[attribute] = error[attribute];
-                            }
-                            this.formErrorMessage = errors.error_message;
-
-                            this.form.formErrors = this.formErrors;
-                            this.form.formErrorMessage = this.formErrorMessage;
-                        });
-                } else {
-                    let formElement = document.getElementById('metadataSectionEditForm');
-                    let formData = new FormData(formElement);
-                    let formObj = {};
-
-                    for (let [key, value] of formData.entries()) {
-                        if (key === 'description_bellow_name')
-                            formObj[key] = value ? 'yes' : 'no';
-                        else
-                            formObj[key] = value;
-                    }
-
-                    this.fillExtraFormData(formObj);
-                    this.isUpdating = true;
-                    this.updateMetadataSection({
-                        collectionId: this.collectionId,
-                        metadataSectionId: metadataSection.id,
-                        index: this.index,
-                        options: formObj
-                    })
-                        .then(() => {
-                            this.form = {};
-                            this.formErrors = {};
-                            this.formErrorMessage = '';
-                            this.isUpdating = false;
-                            this.closedByForm = true;
-
-                            this.$emit('onEditionFinished');
-                        })
-                        .catch((errors) => {
-                            this.isUpdating = false;
-
-                            for (let error of errors.errors) {
-                                for (let attribute of Object.keys(error))
-                                    this.formErrors[attribute] = error[attribute];
-                            }
-                            this.formErrorMessage = errors.error_message;
-                            this.$emit('onErrorFound');
-
-                            this.form.formErrors = this.formErrors;
-                            this.form.formErrorMessage = this.formErrorMessage;
-                        });
-                }
+                        this.form.formErrors = this.formErrors;
+                        this.form.formErrorMessage = this.formErrorMessage;
+                    });
             },
             clearErrors(attribute) {
                 this.formErrors[attribute] = undefined;

@@ -1004,6 +1004,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_item_submission_draft_status'				 => __( 'Warning: draft items may be submitted even without filling all required metadata.', 'tainacan' ),
 	'info_empty_geocoordinate_metadata_list'		 => __( 'No geocoordinate metadata was found. Try enabling it in the "displayed metadata" dropdown.', 'tainacan' ),
 	'info_non_located_item'							 => __( 'This item does not have any location based on this metadata.', 'tainacan' ),
+	'info_metadata_section_hidden_conditional'		 => __( 'Section disabled due to a conditional metadatum value.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
