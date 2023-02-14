@@ -121,28 +121,47 @@
                     </div>
                 </b-field>
 
-                <b-field 
-                        :addons="false"
-                        :label="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
-                        :type="formErrors['is_conditional_section'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['is_conditional_section'] != undefined ? formErrors['is_conditional_section'] : ''">
-                        &nbsp;
-                    <b-switch
-                            size="is-small"
-                            @input="clearErrors('is_conditional_section')"
-                            v-model="form.is_conditional_section"
-                            true-value="yes"
-                            false-value="no"
-                            name="is_conditional_section">
-                    <help-button
-                            :title="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
-                            :message="$i18n.getHelperMessage('metadata-sections', 'is_conditional_section')"
-                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </b-switch>
-                </b-field>
-                <div v-if="form.is_conditional_section && availableConditionalMetadata.length">
+            </div>
+
+            <div 
+                    @click="hideConditionalSectionSettings = !hideConditionalSectionSettings;"
+                    class="metadata-form-section">
+                <span class="icon">
+                    <i 
+                            class="tainacan-icon"
+                            :class="!hideConditionalSectionSettings ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                </span>
+                <strong>{{ $i18n.get('label_advanced_metadata_options') }}</strong>
+                <hr>
+
+            </div>
+
+            <transition name="filter-item">
+                <div 
+                        v-show="!hideConditionalSectionSettings"
+                        class="options-columns">
+                    <b-field 
+                            :addons="false"
+                            :label="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
+                            :type="formErrors['is_conditional_section'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['is_conditional_section'] != undefined ? formErrors['is_conditional_section'] : ''">
+                            &nbsp;
+                        <b-switch
+                                size="is-small"
+                                @input="clearErrors('is_conditional_section')"
+                                v-model="form.is_conditional_section"
+                                true-value="yes"
+                                false-value="no"
+                                name="is_conditional_section">
+                        <help-button
+                                :title="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
+                                :message="$i18n.getHelperMessage('metadata-sections', 'is_conditional_section')"
+                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </b-switch>
+                    </b-field>
                     <transition name="filter-item">
                         <b-field
+                                v-if="isConditionalSection && availableConditionalMetadata.length"
                                 :addons="false"
                                 :type="formErrors['conditional_section_rules'] != undefined ? 'is-danger' : ''"
                                 :message="formErrors['conditional_section_rules'] != undefined ? formErrors['conditional_section_rules'] : ''">
@@ -163,22 +182,30 @@
                                     {{ conditionalMetadatum.name }}
                                 </option>
                             </b-select>
-                            <b-select 
-                                    v-if="selectedConditionalMetadatum"
-                                    v-model="selectedConditionalValue"
-                                    :multiple="true"
-                                    :placeholder="$i18n.get('label_selectbox_init')">
-                                <option 
+                        </b-field>
+                    </transition>
+                    <transition name="filter-item">
+                        <b-field
+                                v-if="selectedConditionalMetadatum"
+                                :addons="false"
+                                :type="formErrors['conditional_section_rules'] != undefined ? 'is-danger' : ''"
+                                :message="formErrors['conditional_section_rules'] != undefined ? formErrors['conditional_section_rules'] : ''">
+                            <label class="label is-inline">
+                                {{ availableConditionalMetadata.find((availableMetadatum) => availableMetadatum.id == selectedConditionalMetadatum).name }}
+                            </label>
+                            <div style="overflow-y: auto; overflow-x: hidden; max-height: 100px;">
+                                <b-checkbox
+                                        v-model="selectedConditionalValue"
                                         v-for="(conditionalValue, conditionalValueIndex) of availableConditionalMetadata.find((availableMetadatum) => availableMetadatum.id == selectedConditionalMetadatum).metadata_type_object.options.options.split('\n')"
                                         :key="conditionalValueIndex"
-                                        :value="conditionalValue">
+                                        :native-value="conditionalValue">
                                     {{ conditionalValue }}
-                                </option>
-                            </b-select>
+                                </b-checkbox>
+                            </div>
                         </b-field>
                     </transition>
                 </div>
-            </div>
+            </transition>
             
             <!-- Hook for extra Form options -->
             <template v-if="hasEndLeftForm" >  
@@ -223,7 +250,7 @@
             index: '',
             originalMetadataSection: Object,
             collectionId: '',
-            isInsideImporterFlow: false
+            isInsideImporterFlow: false,
         },
         data() {
             return {
@@ -234,7 +261,8 @@
                 entityName: 'metadataSection',
                 isUpdating: false,
                 selectedConditionalMetadatum: undefined,
-                selectedConditionalValue: undefined
+                selectedConditionalValue: undefined,
+                hideConditionalSectionSettings: false
             }
         },
         computed: {
@@ -250,6 +278,9 @@
                     return availableMetadata.filter(aMetadatum => aMetadatum.metadata_type === 'Tainacan\\Metadata_Types\\Selectbox');
                 }
                 return {};
+            },
+            isConditionalSection() {
+                return this.form.is_conditional_section == 'yes';
             }
         },
         created() {
