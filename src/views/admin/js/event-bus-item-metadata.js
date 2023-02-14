@@ -95,8 +95,10 @@ export const eventBusItemMetadata = new Vue({
              * metadata with values that affect the sections visibility.
              */
             for (let conditionalSectionId in this.conditionalSections) {
-                if ( this.conditionalSections[conditionalSectionId].metadatumId == metadatumId )
-                    this.conditionalSections[conditionalSectionId].hide = !(JSON.stringify(values) == JSON.stringify(this.conditionalSections[conditionalSectionId].metadatumValues));
+                if ( this.conditionalSections[conditionalSectionId].metadatumId == metadatumId ) {
+                    const conditionalValues = Array.isArray(this.conditionalSections[conditionalSectionId].metadatumValues) ? this.conditionalSections[conditionalSectionId].metadatumValues : [ this.conditionalSections[conditionalSectionId].metadatumValues ];
+                    this.conditionalSections[conditionalSectionId].hide = values.every(aValue => conditionalValues.indexOf(aValue) < 0);
+                }
             }
         },
         removeItemMetadataGroup({ itemId, metadatumId, parentMetaId, parentMetadatum }) {

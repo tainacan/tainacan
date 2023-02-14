@@ -1316,8 +1316,11 @@ export default {
                     /* Sets initial state for conditional sections based on metadatum values */
                     for (let conditionalSectionId in this.conditionalSections) {
                         const currentItemMetadatum = metadata.find(anItemMetadatum => anItemMetadatum.metadatum.id == this.conditionalSections[conditionalSectionId].metadatumId);
-                        if (currentItemMetadatum)
-                            eventBusItemMetadata.conditionalSections[conditionalSectionId].hide = !(JSON.stringify(currentItemMetadatum.value) == JSON.stringify(this.conditionalSections[conditionalSectionId].metadatumValues[0]));
+                        if (currentItemMetadatum) {
+                            const itemMetadatumValues = Array.isArray(currentItemMetadatum.value) ? currentItemMetadatum.value : [ currentItemMetadatum.value ];
+                            const conditionalValues = Array.isArray(eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues) ? eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues : [eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues];
+                            eventBusItemMetadata.conditionalSections[conditionalSectionId].hide = itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue) < 0);
+                        }
                     }
 
                     this.isLoading = false;
