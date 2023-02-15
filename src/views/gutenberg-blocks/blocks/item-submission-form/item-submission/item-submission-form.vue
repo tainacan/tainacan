@@ -434,10 +434,10 @@
                             :label="metadataSection.name"
                             :label-position="'right'"
                             :clickable="true"
-                            :class="'metadata-section-slug-' + metadataSection.slug + (isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')"
+                            :class="'metadata-section-slug-' + metadataSection.slug + (!showSteppedLayout && isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')"
                             :id="'metadata-section-id-' + metadataSection.id"
                             v-tooltip="{
-                                content: isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
+                                content: !showSteppedLayout && isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
                                 autoHide: true,
                                 placement: 'auto',
                                 popperClass: ['tainacan-tooltip', 'tooltip']
@@ -471,7 +471,7 @@
                         <transition name="filter-item">
                             <div 
                                     class="metadata-section-metadata-list"
-                                    v-show="metadataSectionCollapses[sectionIndex] && !isSectionHidden(metadataSection.id)">
+                                    v-show="metadataSectionCollapses[sectionIndex] && (showSteppedLayout || !isSectionHidden(metadataSection.id))">
 
                                 <!-- JS-side hook for extra content -->
                                 <div 
@@ -808,7 +808,7 @@ export default {
     },
     computed: {
         showSteppedLayout() {
-            return this.isLayoutSteps && this.metadataSections.length > 1;
+            return this.isLayoutSteps;
         },
         itemSubmission() {
             return this.getItemSubmission();
@@ -855,7 +855,7 @@ export default {
             return tweakedItemMetadata;
         },
         metadataSections() {
-            return this.getMetadataSections();
+            return this.showSteppedLayout ? this.getMetadataSections().filter(aMetadataSection => !this.isSectionHidden(aMetadataSection.id)) : this.getMetadataSections();
         },
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
