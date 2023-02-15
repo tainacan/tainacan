@@ -372,10 +372,10 @@
                                     <div 
                                             v-for="(metadataSection, sectionIndex) of metadataSections"
                                             :key="sectionIndex"
-                                            :class="'metadata-section-slug-' + metadataSection.slug + (conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide ? ' metadata-section-hidden' : '')"
+                                            :class="'metadata-section-slug-' + metadataSection.slug + (isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')"
                                             :id="'metadata-section-id-' + metadataSection.id"
                                             v-tooltip="{
-                                                content: conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide ? $i18n.get('info_metadata_section_hidden_conditional') : false,
+                                                content: isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
                                                 autoHide: true,
                                                 placement: 'auto',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
@@ -383,14 +383,14 @@
                                         <div class="metadata-section-header section-label">
                                             <span   
                                                     class="collapse-handle"
-                                                    @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses || (conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide)) ? null : toggleMetadataSectionCollapse(sectionIndex)">
+                                                    @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses || isSectionHidden(metadataSection.id)) ? null : toggleMetadataSectionCollapse(sectionIndex)">
                                                 <span 
                                                         v-if="!$adminOptions.hideItemEditionCollapses && !isMetadataNavigation"
                                                         class="icon">
                                                     <i 
                                                             :class="{
-                                                                'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || errorMessage) && !(conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide),
-                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage) || (conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide)
+                                                                'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || errorMessage) && !isSectionHidden(metadataSection.id),
+                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage) || isSectionHidden(metadataSection.id)
                                                             }"
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                                 </span>
@@ -415,7 +415,7 @@
                                         <transition name="filter-item">
                                             <div 
                                                     class="metadata-section-metadata-list"
-                                                    v-show="(metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !(conditionalSections[metadataSection.id] && conditionalSections[metadataSection.id].hide)">
+                                                    v-show="(metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !isSectionHidden(metadataSection.id)">
                                                 <p
                                                         class="metadatum-description-help-info"
                                                         v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'">
@@ -1838,6 +1838,9 @@ export default {
                 webkit.messageHandlers.cordova_iab
             )
                 webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'exited_from_navigation', 'item': this.item }));
+        },
+        isSectionHidden(sectionId) {
+            return this.conditionalSections[sectionId] && this.conditionalSections[sectionId].hide;
         }
     }
 }

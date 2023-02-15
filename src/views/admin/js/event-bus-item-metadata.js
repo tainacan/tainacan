@@ -94,12 +94,14 @@ export const eventBusItemMetadata = new Vue({
              * Updates conditionalSections set values if this is one of the
              * metadata with values that affect the sections visibility.
              */
-            for (let conditionalSectionId in this.conditionalSections) {
-                if ( this.conditionalSections[conditionalSectionId].metadatumId == metadatumId ) {
-                    const conditionalValues = Array.isArray(this.conditionalSections[conditionalSectionId].metadatumValues) ? this.conditionalSections[conditionalSectionId].metadatumValues : [ this.conditionalSections[conditionalSectionId].metadatumValues ];
-                    this.conditionalSections[conditionalSectionId].hide = values.every(aValue => conditionalValues.indexOf(aValue) < 0);
+            let updatedConditionalSections = JSON.parse(JSON.stringify(this.conditionalSections));
+            for (let conditionalSectionId in updatedConditionalSections) {
+                if ( updatedConditionalSections[conditionalSectionId].metadatumId == metadatumId ) {
+                    const conditionalValues = Array.isArray(updatedConditionalSections[conditionalSectionId].metadatumValues) ? updatedConditionalSections[conditionalSectionId].metadatumValues : [ this.conditionalSections[conditionalSectionId].metadatumValues ];
+                    updatedConditionalSections[conditionalSectionId].hide = values.every(aValue => conditionalValues.indexOf(aValue) < 0);
                 }
             }
+            this.conditionalSections = updatedConditionalSections;
         },
         removeItemMetadataGroup({ itemId, metadatumId, parentMetaId, parentMetadatum }) {
             
@@ -135,6 +137,6 @@ export const eventBusItemMetadata = new Vue({
         },
         fetchCompoundFirstParentMetaId({ itemId, metadatumId }) {
             return this.$store.dispatch('item/fetchCompoundFirstParentMetaId', { item_id: itemId, metadatum_id: metadatumId });
-        },
+        }
     }
 });

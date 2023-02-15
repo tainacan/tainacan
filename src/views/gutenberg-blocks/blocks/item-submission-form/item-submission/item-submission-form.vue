@@ -417,7 +417,6 @@
                         v-if="hasBeforeHook('metadata')"
                         class="item-submission-hook item-submission-hook-metadata-before"
                         v-html="getBeforeHook('metadata')" />
-
                 <component
                         v-if="metadataSections.length"
                         :is="showSteppedLayout ? 'b-steps' : 'div'" 
@@ -435,22 +434,28 @@
                             :label="metadataSection.name"
                             :label-position="'right'"
                             :clickable="true"
-                            :class="'metadata-section-slug-' + metadataSection.slug"
-                            :id="'metadata-section-id-' + metadataSection.id">
+                            :class="'metadata-section-slug-' + metadataSection.slug + (isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')"
+                            :id="'metadata-section-id-' + metadataSection.id"
+                            v-tooltip="{
+                                content: isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
+                                autoHide: true,
+                                placement: 'auto',
+                                popperClass: ['tainacan-tooltip', 'tooltip']
+                            }">
                         <div 
                                     v-if="!showSteppedLayout"
                                     class="metadata-section-header section-label">
                             <span   
                                     class="collapse-handle"
-                                    @click="!hideCollapses ? toggleMetadataSectionCollapse(sectionIndex) : ''">
+                                    @click="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''">
                                 <span 
                                         v-if="!hideCollapses"
                                         class="icon"
                                         @click="toggleMetadataSectionCollapse(sectionIndex)">
                                     <i 
                                             :class="{
-                                                'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || formErrorMessage,
-                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage)
+                                                'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || formErrorMessage) && !isSectionHidden(metadataSection.id),
+                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage) || isSectionHidden(metadataSection.id)
                                             }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
@@ -466,7 +471,7 @@
                         <transition name="filter-item">
                             <div 
                                     class="metadata-section-metadata-list"
-                                    v-show="metadataSectionCollapses[sectionIndex]">
+                                    v-show="metadataSectionCollapses[sectionIndex] && !isSectionHidden(metadataSection.id)">
 
                                 <!-- JS-side hook for extra content -->
                                 <div 
@@ -869,7 +874,10 @@ export default {
         thumbnailErrorMessage() {
             const existingError = this.formErrors.find(error => error.metadatum_id == 'thumbnail');
             return existingError ? existingError.errors : '';
-        }
+        },
+        conditionalSections() {
+            return eventBusItemMetadata && eventBusItemMetadata.conditionalSections ? eventBusItemMetadata.conditionalSections : [];
+        },
     },
     created() {
 
@@ -919,6 +927,25 @@ export default {
             .then((metadataSections) => {
                 this.metadataSectionCollapses = Array(metadataSections.length).fill(true);
                 this.isLoadingMetadataSections = false;
+
+                /**
+                 * Creates the conditional metadata set to later watch values
+                 * of certain metadata that control sections visibility.
+                 */
+                eventBusItemMetadata.conditionalSections = {};
+                for (let metadataSection of metadataSections) {
+                    if ( metadataSection.is_conditional_section == 'yes') { 
+                        const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
+                        if ( conditionalSectionId.length ) {
+                            eventBusItemMetadata.conditionalSections[metadataSection.id] = {
+                                sectionId: metadataSection.id,
+                                metadatumId: conditionalSectionId[0],
+                                metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
+                                hide: true
+                            };
+                        }
+                    }
+                }
             })
             .catch((error) => {
                 this.isLoadingMetadataSections = false;
@@ -1089,7 +1116,6 @@ export default {
                     }
                     this.setItemSubmissionMetadata( metadata.map((metadatum) => { return { metadatum_id: metadatum.id, value: null } }) );
                     this.couldLoadCollection = true;
-                    this.isLoading = false;
 
                     // Mounts grecapcha
                     if (this.useCaptcha == 'yes') {
@@ -1099,6 +1125,8 @@ export default {
                             this.$console.log(error);
                         }
                     }
+
+                    this.isLoading = false;
                 })
                 .catch(() => {
                     this.couldLoadCollection = false;
@@ -1159,6 +1187,9 @@ export default {
         onNextStep() {
             if ( this.$refs['item-submission-steps-layout'] && typeof this.$refs['item-submission-steps-layout'].next == 'function' )
                 this.$refs['item-submission-steps-layout'].next();
+        },
+        isSectionHidden(sectionId) {
+            return this.conditionalSections[sectionId] && this.conditionalSections[sectionId].hide;
         }
     }
 }
@@ -1205,6 +1236,14 @@ export default {
         }
     }
 
+    .metadata-section-hidden {
+        opacity: 0.5;
+        filter: grayscale(1.0);
+
+        & > {
+            pointer-events: none;
+        }
+    }
 
     .section-label {
         position: relative;
