@@ -1591,6 +1591,9 @@ export default {
 
         },
         onChangeCollapse(event, index) {
+            if (event && !this.metadataCollapses[index] && this.itemMetadata[index].metadatum && this.itemMetadata[index].metadatum['metadata_type'] === "Tainacan\\Metadata_Types\\GeoCoordinate")
+                eventBusItemMetadata.$emit('itemEditionFormResize');
+                
             this.metadataCollapses.splice(index, 1, event);
         },
         toggleMetadataSectionCollapse(sectionIndex) {

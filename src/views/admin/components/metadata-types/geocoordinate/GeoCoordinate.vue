@@ -175,22 +175,16 @@
             }
         },
         watch: {
-            selectedLatLng: {
-                handler(newValue) {
-                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                    
-                    this.$nextTick(() => {
-                        if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject && newValue.length != undefined) {
-                            setTimeout(() => {
-                                if (newValue.length == 1)
-                                    this.$refs[mapComponentRef].mapObject.panInsideBounds(newValue, { animate: true, maxZoom: this.maxZoom });
-                                else 
-                                    this.$refs[mapComponentRef].mapObject.flyToBounds(newValue, { animate: true, maxZoom: this.maxZoom });
-                            }, 750);
-                        }
-                    });
-                },
-                immediate: false
+            selectedLatLng() {
+                const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                this.$nextTick(() => {
+                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject && this.selectedLatLng.length != undefined) {
+                        if (this.selectedLatLng.length == 1)
+                            this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                        else 
+                            this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                    }
+                });
             }
         },
         created() {
@@ -204,12 +198,10 @@
             eventBusItemMetadata.$on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         mounted() {
-            setTimeout(() => {
-                this.$nextTick(() => {
-                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                    this.handleWindowResize(mapComponentRef);
-                });
-            }, 500);
+            this.$nextTick(() => {
+                const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                this.handleWindowResize(mapComponentRef);
+            });
         },
         beforeDestroy() {
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
@@ -321,8 +313,18 @@
                 this.$emit('input', this.selected);
             },
             handleWindowResize(mapComponentRef) {
-                if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
-                    this.$refs[mapComponentRef].mapObject.invalidateSize(true);
+                setTimeout(() => {
+                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject ) {
+                        this.$refs[mapComponentRef].mapObject.invalidateSize(true);
+
+                        if ( this.selectedLatLng.length != undefined) {
+                            if (this.selectedLatLng.length == 1)
+                                this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                            else 
+                                this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom }); 
+                        }
+                    }
+                }, 500);
             }
         }
     }
