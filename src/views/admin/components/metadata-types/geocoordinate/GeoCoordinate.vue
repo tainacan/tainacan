@@ -176,18 +176,21 @@
         },
         watch: {
             selectedLatLng: {
-                handler() {
+                handler(newValue) {
+                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                    
                     this.$nextTick(() => {
-                        const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                        if ( this.selectedLatLng.length && this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject ) {
-                            if (this.selectedLatLng.length == 1)
-                                this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng,  { animate: true, maxZoom: this.maxZoom });
-                            else 
-                                this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng,  { animate: true, maxZoom: this.maxZoom });
+                        if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject && newValue.length != undefined) {
+                            setTimeout(() => {
+                                if (newValue.length == 1)
+                                    this.$refs[mapComponentRef].mapObject.panInsideBounds(newValue, { animate: true, maxZoom: this.maxZoom });
+                                else 
+                                    this.$refs[mapComponentRef].mapObject.flyToBounds(newValue, { animate: true, maxZoom: this.maxZoom });
+                            }, 750);
                         }
                     });
                 },
-                immediate: true
+                immediate: false
             }
         },
         created() {
