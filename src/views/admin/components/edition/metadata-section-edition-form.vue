@@ -261,7 +261,7 @@
                 entityName: 'metadataSection',
                 isUpdating: false,
                 selectedConditionalMetadatum: undefined,
-                selectedConditionalValue: undefined,
+                selectedConditionalValue: [],
                 hideConditionalSectionSettings: false
             }
         },
