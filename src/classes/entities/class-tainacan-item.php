@@ -1130,7 +1130,7 @@ class Item extends Entity {
 	 *
 	 * This function expects a $metadata_section object. For a more generic approach, check the get_metadata_sections_as_html function
 	 *
-	 * @param object 	$metadata_section					The Metadata Section object
+	 * @param \Tainacan\Entities\Metadata_Section $metadata_section					The Metadata Section object
 	 * @param array|string $args {
 	 *     Optional. Array or string of arguments.
 	 * 
@@ -1168,6 +1168,17 @@ class Item extends Entity {
 	public function get_metadata_section_as_html($metadata_section, $args = array(), $section_index = null) {
 
 		$return = '';
+
+		if($metadata_section->is_conditional_section()) {
+			$rules = $metadata_section->get_conditional_section_rules();
+			$item_id = $this->get_id();
+			foreach($rules as $meta_id => $meta_values_conditional) {
+				$meta_values = get_post_meta( $item_id, $meta_id );
+				if (!array_intersect($meta_values, $meta_values_conditional)) {
+					return $return;
+				}
+			}
+		}
 
 		$defaults = array(
 			'hide_name' 					=> false,
