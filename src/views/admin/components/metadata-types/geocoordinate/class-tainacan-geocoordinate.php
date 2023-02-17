@@ -107,7 +107,7 @@ class GeoCoordinate extends Metadata_Type {
 
 		$metadatum = $item_metadata->get_metadatum();
 		$item_metadatum_id = $metadatum->get_id();
-		$item_metadatum_id .= ( $metadatum->get_parent() && $metadatum->get_parent_meta_id() ) ? ( '_parent_meta_id-' . $item_metadata->get_parent_meta_id() ) : '';
+		$item_metadatum_id .= ( $metadatum->get_parent() && $item_metadatum->get_parent_meta_id() ) ? ( '_parent_meta_id-' . $item_metadata->get_parent_meta_id() ) : '';
 		$zoom_geo_query = isset($options['initial_zoom']) ? ('z=' . $options['initial_zoom'] ) : '' ;
 
 		$return = '';
