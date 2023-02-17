@@ -839,9 +839,9 @@ export default {
 
                 // To find which is the section of this metadatum, we look for an intersection of the existeing sections
                 // in this collection and the list of section ids in the repository metadata
-                const intersectionOfSections = this.metadataSections.filter(
-                    (aMetadataSection) => metadatumSectionId.includes("" + aMetadataSection.id) && aMetadataSection.id !== 'default_section'
-                ); 
+                const intersectionOfSections = this.getMetadataSections() // We do not use the computed metadataSections here as we want to include every section, even those hidden by stepped layout
+                    .filter((aMetadataSection) => metadatumSectionId.includes("" + aMetadataSection.id) && aMetadataSection.id !== 'default_section');
+                     
                 if (intersectionOfSections.length === 1)
                     metadatum.metadata_section_id = intersectionOfSections[0].id;                          
                     
