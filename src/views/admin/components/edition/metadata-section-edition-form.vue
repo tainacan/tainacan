@@ -159,6 +159,9 @@
                                 :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </b-switch>
                     </b-field>
+                    <div v-if="isConditionalSection && !availableConditionalMetadata.length">
+                        <p style="break-inside: avoid;">{{ $i18n.get('info_create_select_metadatum_for_conditional_section') }}</p>
+                    </div>
                     <transition name="filter-item">
                         <b-field
                                 v-if="isConditionalSection && availableConditionalMetadata.length"
@@ -186,7 +189,7 @@
                     </transition>
                     <transition name="filter-item">
                         <b-field
-                                v-if="selectedConditionalMetadatum"
+                                v-if="isConditionalSection && selectedConditionalMetadatum"
                                 :addons="false"
                                 :type="formErrors['conditional_section_rules'] != undefined ? 'is-danger' : ''"
                                 :message="formErrors['conditional_section_rules'] != undefined ? formErrors['conditional_section_rules'] : ''">
