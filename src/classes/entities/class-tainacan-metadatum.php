@@ -533,6 +533,17 @@ class Metadatum extends Entity {
 				return false;
 			}
 		}
+
+		if( $this->is_required() ) {
+			$meta_section_id = $this->get_metadata_section_id();
+			if($meta_section_id != \Tainacan\Entities\Metadata_Section::$default_section_slug) {
+				$meta_section = new \Tainacan\Entities\Metadata_Section($meta_section_id);
+				if($meta_section->is_conditional_section()) {
+					$this->add_error($this->get_id(), __('Metadata cannot be required into conditional section', 'tainacan'));
+					return false;
+				}
+			}
+		}
 		
 		// You cant have a taxonomy metadatum inside a multiple compound metadatum
 		if ( $this->get_parent() > 0 && $this->get_metadata_type_object()->get_primitive_type() == 'term' ) {

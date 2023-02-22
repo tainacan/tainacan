@@ -13,140 +13,144 @@
     },
     "attributes": {
         "collectionId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "isCollectionModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideFileModalButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideTextModalButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideLinkModalButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideThumbnailSection": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideAttachmentsSection": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideHelpButtons": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideMetadataTypes": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "showAllowCommentsSection": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "hideCollapses": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "backgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "rgba(255,255,255,0)"
         },
         "baseFontSize": {
-            "type": "Number",
+            "type": "number",
             "default": 16
         },
         "inputColor": {
-            "type": "String",
+            "type": "string",
             "default": "#1d1d1d"
         },
         "inputBackgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#ffffff"
         },
         "inputBorderColor": {
-            "type": "String",
+            "type": "string",
             "default": "#dbdbdb"
         },
         "labelColor": {
-            "type": "String",
+            "type": "string",
             "default": "#454647"
         },
         "infoColor": {
-            "type": "String",
+            "type": "string",
             "default": "#555758"
         },
         "primaryColor": {
-            "type": "String",
+            "type": "string",
             "default": "#d9eced"
         },
         "secondaryColor": {
-            "type": "String",
+            "type": "string",
             "default": "#298596"
         },
         "enabledMetadata": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "collectionMetadata": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "isLoadingCollectionMetadata": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "sentFormHeading": {
-            "type": "String",
+            "type": "string",
             "default": "Form submitted!"
         },
         "sentFormMessage": {
-            "type": "String",
+            "type": "string",
             "default": "Thank you. Your item was submitted to the collection."
         },
         "documentSectionLabel": {
-            "type": "String",
+            "type": "string",
             "default": "Document"
         },
         "attachmentsSectionLabel": {
-            "type": "String",
+            "type": "string",
             "default": "Attachments"
         },
         "thumbnailSectionLabel": {
-            "type": "String",
+            "type": "string",
             "default": "Thumbnail"
         },
         "metadataSectionLabel": {
-            "type": "String",
+            "type": "string",
             "default": "Metadata"
         },
         "showItemLinkButton": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "itemLinkButtonLabel": {
-            "type": "String",
+            "type": "string",
             "default": "Go to the item page"
         },
         "helpInfoBellowLabel": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "showTermsAgreementCheckbox": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "termsAgreementMessage": {
-            "type": "String",
+            "type": "string",
             "default": "I agree to submit this item information."
+        },
+        "isLayoutSteps": {
+            "type": "boolean",
+            "default": false
         }
     },
     "supports": {
