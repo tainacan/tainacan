@@ -1264,9 +1264,10 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 		'order' => $current_args['order'],
 		'orderby' => $current_args['orderby'],
 		'hide_empty' => false,
-		'offset' => ($current_args['paged'] - 1) * $current_args['perpage'],
+		'offset' => ($current_args['termspaged'] - 1) * $current_args['perpage'],
 		'number' => $current_args['perpage']
 	);
+	
 	$terms_query_args = apply_filters('tainacan_single_taxonomy_terms_query', $terms_query_args, $post);
 	$terms = get_terms( $terms_query_args );
 
@@ -1366,8 +1367,9 @@ function tainacan_get_taxonomies_pagination($total_terms) {
 
 	return '<p class="tainacan-taxonomies-pagination-links">' .
 		paginate_links(array(
-			'format' => '?paged=%#%',
+			'format' => '?termspaged=%#%',
 			'total' => ceil( $total_terms / $current_args['perpage'] ),
+			'current' => max( 1, get_query_var('termspaged') ),
 			'add_args' => array(
 				'order' => $current_args['order'],
 				'orderby' => $current_args['orderby'],
