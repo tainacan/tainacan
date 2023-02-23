@@ -1257,12 +1257,16 @@ function tainacan_get_single_taxonomy_content($content, $post, $args = []) {
 		'after_term_description' => '</p>',
 	), $args);
 
+	/* Gets query arguments to build fetch params */
+	$current_args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
+
 	$terms_query_args = array(
 		'taxonomy' => 'tnc_tax_' . $post->ID,
-		'orderby' => 'name',
-		'order' => 'ASC',
+		'order' => $current_args['order'],
+		'orderby' => $current_args['orderby'],
 		'hide_empty' => false,
-		'number' => ''
+		'offset' => 0,
+		'number' => $current_args['perpage']
 	);
 	$terms_query_args = apply_filters('tainacan_single_taxonomy_terms_query', $terms_query_args, $post);
 	$terms = get_terms( $terms_query_args );
@@ -1315,4 +1319,50 @@ function tainacan_get_single_taxonomy_content($content, $post, $args = []) {
 	}
 
 	return apply_filters('tainacan_get_single_taxonomy_content', $content, $post);
+}
+
+function tainacan_get_taxonomies_orderby() {
+
+	$current_args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
+
+	?>
+	<form id="tainacan-taxonomy-sorting">
+		<div class="wp-block-group is-nowrap is-layout-flex" style="display: flex; flex-wrap: nowrap">
+			<label for="tainacan-taxonomy-order-select"><?php _e( 'Sort', 'tainacan' ); ?></label>
+			<select id="tainacan-taxonomy-order-select" name="order" onchange="location = this.value;">
+				<option value="<?php echo add_query_arg( 'order', 'ASC' ); ?>" <?php echo $current_args['order'] == 'ASC' ? 'selected' : ''; ?>>
+					<?php _e( 'Ascending', 'tainacan' ); ?>
+				</option>
+				<option value="<?php echo add_query_arg( 'order', 'DESC' ); ?>" <?php echo $current_args['order'] == 'DESC' ? 'selected' : ''; ?>>
+					<?php _e( 'Descending', 'tainacan' ); ?>
+				</option>
+			</select>
+			<label for="tainacan-taxonomy-orderby-select"><?php _e( 'by', 'tainacan' ); ?></label>
+			<select id="tainacan-taxonomy-orderby-select" name="orderby" onchange="location = this.value;">
+				<option value="<?php echo add_query_arg( 'orderby', 'name' ); ?>" <?php echo $current_args['orderby'] == 'name' ? 'selected' : ''; ?>>
+					<?php _e( 'Name', 'tainacan' ); ?>
+				</option>
+				<option value="<?php echo add_query_arg( 'orderby', 'count' ); ?>" <?php echo $current_args['orderby'] == 'count'? 'selected' : ''; ?>>
+					<?php _e( 'Amount of items', 'tainacan' ); ?>
+				</option>
+			</select>
+		</div>
+	</form>
+	<?php
+}
+
+function tainacan_get_taxonomies_pagination() {
+	
+	$current_args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
+
+	return paginate_links(array(
+		'format' => '?paged=%#%',
+		'current' => max( 1, get_query_var('paged', 1) ),
+		'total' => 3,
+		'add_args' => array(
+			'order' => $current_args['order'],
+			'orderby' => $current_args['orderby'],
+			'perpage' => $current_args['perpage']
+		)
+	));
 }

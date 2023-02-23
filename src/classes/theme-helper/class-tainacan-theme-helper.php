@@ -194,7 +194,10 @@ class Theme_Helper {
 			$content = apply_filters('tainacan_single_item_content', $content, $item);
 		
 		} else if ( $this->is_post_a_tainacan_taxonomy_postype($post) ) {
-			$content = tainacan_get_single_taxonomy_content($content, $post);
+			$content .= tainacan_get_taxonomies_orderby();
+			$content .= tainacan_get_single_taxonomy_content($content, $post);
+			$content .= tainacan_get_taxonomies_pagination();
+
 		}
 
 		return $content;
@@ -2073,5 +2076,20 @@ class Theme_Helper {
 			</ul>';
 
 		return '<div ' . $wrapper_attributes . '>' . $placeholder_content . '</div>';
+	}
+
+
+	function get_taxonomies_query_args() {
+		$current_order = get_query_var( 'order', 'DESC' );
+		$current_orderby = get_query_var( 'orderby', 'name' );
+		$current_paged = get_query_var( 'paged', 1 );
+		$current_perpage = get_query_var( 'perpage', 12 );
+
+		return array(
+			'order' => $current_order,
+			'orderby' => $current_orderby,
+			'paged' => $current_paged,
+			'perpage' => $current_perpage
+		);
 	}
 }
