@@ -76,6 +76,21 @@ class Metadata_Sections extends Repository {
 				'title'       => __( 'Collection', 'tainacan' ),
 				'type'        => ['integer', 'string'],
 				'description' => __( 'The collection ID', 'tainacan' ),
+			],
+			'is_conditional_section' => [
+				'map'         => 'meta',
+				'title'       => __( 'Enable conditional section', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Binds this section visibility to a set of rules related to some metadata values.', 'tainacan' ),
+				'on_error'    => __( 'Value should be "yes" or "no"', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
+				'default'     => 'no'
+			],
+			'conditional_section_rules' => [
+				'map'         => 'meta',
+				'title'       => __( 'Conditional section rules', 'tainacan' ),
+				'type'        => ['object', 'array'],
+				'description' => __( 'The conditions that will allow this section to be displayed, based on metadata values.', 'tainacan' ),
 			]
 		] );
 	}

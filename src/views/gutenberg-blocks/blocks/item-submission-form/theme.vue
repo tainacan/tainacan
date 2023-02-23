@@ -23,6 +23,7 @@
             :help-info-bellow-label="$root.helpInfoBellowLabel ? $root.helpInfoBellowLabel : false"
             :show-terms-agreement-checkbox="$root.showTermsAgreementCheckbox ? $root.showTermsAgreementCheckbox : false"
             :terms-agreement-message="$root.termsAgreementMessage"
+            :is-layout-steps="$root.isLayoutSteps"
              />
 </template>
 
@@ -55,6 +56,7 @@ export default {
     @import "../../../../../node_modules/buefy/src/scss/components/_dialog.scss";
     @import "../../../../../node_modules/buefy/src/scss/components/_notices.scss";
     @import "../../../../../node_modules/buefy/src/scss/components/_numberinput.scss";
+    @import "../../../../../node_modules/buefy/src/scss/components/_steps.scss";
 
     // Block level custom variables
     @import "../../../admin/scss/_custom_variables.scss";

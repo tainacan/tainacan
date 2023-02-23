@@ -4,7 +4,8 @@ import store from './store/store'
 export const eventBusItemMetadata = new Vue({
     store,
     data: {
-        errors : []
+        errors : [],
+        conditionalSections: {}
     },
     watch: {
         errors() {
@@ -88,6 +89,19 @@ export const eventBusItemMetadata = new Vue({
 
                 this.$emit('isUpdatingValue', false);
             }
+
+            /** 
+             * Updates conditionalSections set values if this is one of the
+             * metadata with values that affect the sections visibility.
+             */
+            let updatedConditionalSections = JSON.parse(JSON.stringify(this.conditionalSections));
+            for (let conditionalSectionId in updatedConditionalSections) {
+                if ( updatedConditionalSections[conditionalSectionId].metadatumId == metadatumId ) {
+                    const conditionalValues = Array.isArray(updatedConditionalSections[conditionalSectionId].metadatumValues) ? updatedConditionalSections[conditionalSectionId].metadatumValues : [ this.conditionalSections[conditionalSectionId].metadatumValues ];
+                    updatedConditionalSections[conditionalSectionId].hide = values.every(aValue => conditionalValues.indexOf(aValue) < 0);
+                }
+            }
+            this.conditionalSections = updatedConditionalSections;
         },
         removeItemMetadataGroup({ itemId, metadatumId, parentMetaId, parentMetadatum }) {
             
