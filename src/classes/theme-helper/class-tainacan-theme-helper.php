@@ -24,7 +24,7 @@ class Theme_Helper {
 	}
 
 	private function __construct() {
-
+		
 		add_filter( 'the_content', [$this, 'the_content_filter'] );
 
 		// Replace collections permalink to post type archive if cover not enabled
@@ -195,9 +195,9 @@ class Theme_Helper {
 		
 		} else if ( $this->is_post_a_tainacan_taxonomy_postype($post) ) {
 			$content .= tainacan_get_taxonomies_orderby();
-			$content .= tainacan_get_single_taxonomy_content($content, $post);
-			$content .= tainacan_get_taxonomies_pagination();
-
+			$taxonomy_terms_list = tainacan_get_single_taxonomy_content($post);
+			$content .= $taxonomy_terms_list['content'];
+			$content .= tainacan_get_taxonomies_pagination($taxonomy_terms_list['total_terms']);
 		}
 
 		return $content;
@@ -585,7 +585,6 @@ class Theme_Helper {
 	}
 	
 	function rewrite_rules( &$wp_rewrite ) {
-		
 		$items_base = $this->get_items_list_slug();
 		
 		$new_rules = array(

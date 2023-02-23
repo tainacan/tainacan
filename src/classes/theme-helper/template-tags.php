@@ -1207,7 +1207,6 @@ function tainacan_the_metadata_sections($args = array()) {
  * 
  * It should display the list of terms, and it is used in the the_content filter of the theme helper to override the cpt single.
  *
- * @param string $content		This is the original html string of the tainacan-taxonomy post content. It usually contains the Taxonomy description.
  * @param object $post			The original tainacan-taxonomy post object. It contains the $post->ID, which can be used to query the taxonomy of slug tnc_tax_<$post-id>
  * @param array|string $args {
 	*     Optional. Array or string of arguments.
@@ -1239,7 +1238,7 @@ function tainacan_the_metadata_sections($args = array()) {
 	*
 	* @return string        The HTML output
  */
-function tainacan_get_single_taxonomy_content($content, $post, $args = []) {
+function tainacan_get_single_taxonomy_content($post, $args = []) {
 
 	$args = array_merge(array(
 		'hide_term_thumbnail' => false,
@@ -1265,11 +1264,16 @@ function tainacan_get_single_taxonomy_content($content, $post, $args = []) {
 		'order' => $current_args['order'],
 		'orderby' => $current_args['orderby'],
 		'hide_empty' => false,
-		'offset' => 0,
+		'offset' => ($current_args['paged'] - 1) * $current_args['perpage'],
 		'number' => $current_args['perpage']
 	);
 	$terms_query_args = apply_filters('tainacan_single_taxonomy_terms_query', $terms_query_args, $post);
 	$terms = get_terms( $terms_query_args );
+
+	unset( $terms_query_args['number'], $terms_query_args['offset'] );
+	$total_terms = wp_count_terms( 'tnc_tax_' . $post->ID, $terms_query_args );
+	
+	$content = '';
 
 	if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
 
@@ -1318,13 +1322,13 @@ function tainacan_get_single_taxonomy_content($content, $post, $args = []) {
 		$content .= $args['after_terms_list'];
 	}
 
-	return apply_filters('tainacan_get_single_taxonomy_content', $content, $post);
+	return apply_filters('tainacan_get_single_taxonomy_content', ['content' => $content, 'total_terms' => $total_terms] , $post);
 }
 
 function tainacan_get_taxonomies_orderby() {
-
 	$current_args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
 
+	ob_start();
 	?>
 	<form id="tainacan-taxonomy-sorting">
 		<div class="wp-block-group is-nowrap is-layout-flex" style="display: flex; flex-wrap: nowrap">
@@ -1349,20 +1353,26 @@ function tainacan_get_taxonomies_orderby() {
 		</div>
 	</form>
 	<?php
+
+	$html = ob_get_contents();
+	ob_end_clean();
+
+	return $html;
 }
 
-function tainacan_get_taxonomies_pagination() {
+function tainacan_get_taxonomies_pagination($total_terms) {
 	
 	$current_args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
 
-	return paginate_links(array(
-		'format' => '?paged=%#%',
-		'current' => max( 1, get_query_var('paged', 1) ),
-		'total' => 3,
-		'add_args' => array(
-			'order' => $current_args['order'],
-			'orderby' => $current_args['orderby'],
-			'perpage' => $current_args['perpage']
-		)
-	));
+	return '<p class="tainacan-taxonomies-pagination-links">' .
+		paginate_links(array(
+			'format' => '?paged=%#%',
+			'total' => ceil( $total_terms / $current_args['perpage'] ),
+			'add_args' => array(
+				'order' => $current_args['order'],
+				'orderby' => $current_args['orderby'],
+				'perpage' => $current_args['perpage']
+			)
+		)) .
+	'</p>';
 }
