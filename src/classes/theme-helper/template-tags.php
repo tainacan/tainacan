@@ -1218,23 +1218,29 @@ function tainacan_the_metadata_sections($args = array()) {
 	*     @type bool		$hide_term_description		Do not display the Term description. Default true
 	*     @type bool		$hide_term_children_link	Do not display the Term children link. Default false
 	*     @type bool		$hide_term_items_link		Do not display the Term items list link. Default false
-	*
+	*	  @type bool		$hide_term_children_count	Do not display the Term children count. Default true
+	*     @type bool		$hide_term_items_count		Do not display the Term items count. Default true
+
+	*     @type string      $before_terms_list_container String to be added before the taxonomy terms list container
+	*                                                  	Default '<div class="wp-block-query tainacan-taxonomy-terms-list-container">'
+	*     @type string      $after_terms_list_container String to be added after the taxonomy terms list container
+	*                                                  	Default '</div>'
 	*     @type string      $before_terms_list         	String to be added before the taxonomy terms list
-	*                                                  	Default ''
+	*                                                  	Default '<ul class="wp-block-post-template is-layout-flow tainacan-taxonomy-terms-list" style="list-style: none; padding: 0;">'
 	*     @type string      $after_terms_list           String to be added after the taxonomy terms list
-	*                                                  	Default ''
+	*                                                  	Default '</ul>'
 	*     @type string      $before_term			    String to be added before each term inside the loop
-	*                                                  	Default '<article class="tainacan-term-single" id="term-id-$id">'
+	*                                                  	Default '<li class="wp-block-post tainacan-term-single" id="term-id-$id">'
 	*     @type string      $after_term			        String to be added after each term inside the loop
-	*                                                  	Default '</article>'	
+	*                                                  	Default '</li>'	
 	*     @type string      $before_term_thumbnail      String to be added before each term thumbnail
-	*                                                  	Default '<div class="term-thumbnail">'
+	*                                                  	Default '<figure class="term-thumbnail wp-block-post-featured-image">'
 	*     @type string      $after_term_thumbnail       String to be added after each term thumbnail
-	*                                                  	Default '</div>'	
+	*                                                  	Default '</figure>'	
 	* 	  @type string      $before_term_hierarchy_path String to be added before each term hierarchy path
-	*                                                  	Default '<span class="term-hierarchy-path">'
+	*                                                  	Default '<span class="term-hierarchy-path"><em>'
 	*     @type string      $after_term_hierarchy_path  String to be added after each term hierarchy path
-	*                                                  	Default '</span>'
+	*                                                  	Default '</em></span>'
 	*     @type string      $before_term_name           String to be added before each term name
 	*                                                  	Default '<h2 class="term-name">'
 	*     @type string      $after_term_name            String to be added after each term name
@@ -1260,23 +1266,27 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 	$args = array_merge(array(
 		'hide_hierarchy_header' => false,
 		'hide_term_thumbnail' => false,
-		'hide_term_hierarchy_path' => false,
+		'hide_term_hierarchy_path' => true,
 		'hide_term_name' => false,
 		'hide_term_description' => true,
 		'hide_term_children_link' => false,
 		'hide_term_items_link' => false,
-		'before_terms_list' => '',
-		'after_terms_list' => '',
-		'before_term' => '<article class="tainacan-term-single" id="term-id-$id">',
-		'after_term' => '</article>',
-		'before_term_thumbnail' => '<div class="term-thumbnail">',
-		'after_term_thumbnail' => '</div>',
-		'before_term_hierarchy_path' => '<span class="term-hierarchy-path">',
-		'after_term_hierarchy_path' => '</span>',
-		'before_term_name' => '<h2 class="term-name">',
+		'hide_term_children_count' => true,
+		'hide_term_items_count' => true,
+		'before_terms_list_container' => '<div class="wp-block-query tainacan-taxonomy-terms-list-container">',
+		'after_terms_list_container' => '</div>',
+		'before_terms_list' => '<ul class="wp-block-post-template is-layout-flow tainacan-taxonomy-terms-list" style="list-style: none; padding: 0;">',
+		'after_terms_list' => '</ul>',
+		'before_term' => '<li class="wp-block-post tainacan-term-single" id="term-id-$id">',
+		'after_term' => '</li>',
+		'before_term_thumbnail' => '<figure class="term-thumbnail wp-block-post-featured-image">',
+		'after_term_thumbnail' => '</figure>',
+		'before_term_hierarchy_path' => '<span class="term-hierarchy-path"><em>',
+		'after_term_hierarchy_path' => '</em></span>',
+		'before_term_name' => '<h2 class="term-name wp-block-post-title">',
 		'after_term_name' => '</h2>',
-		'before_term_description' => '<p class="term-description">',
-		'after_term_description' => '</p>',
+		'before_term_description' => '<div class="term-description wp-block-post-excerpt"><p class="wp-block-post-excerpt__excerpt">',
+		'after_term_description' => '</p></div>',
 		'before_term_children_link' => '<span class="term-children-link">',
 		'after_term_children_link' => '</span>',
 		'before_term_items_link' => '<span class="term-items-link">',
@@ -1304,15 +1314,31 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 	
 	$content = '';
 
+	$content = $args['before_terms_list_container'] . $content;
+
 	if ( !empty( $terms ) && !is_wp_error( $terms ) ) {
 
 		$separator = strip_tags(apply_filters('tainacan-terms-hierarchy-html-separator', '>'));
 
-		$content = $args['before_terms_list'] . $content;
+		if ( !$args['hide_hierarchy_header'] && isset($current_args['termsparent']) && $current_args['termsparent'] ) {
+			$content .= '<div class="terms-hierarachy-header"><p>' . __('Showing terms children of', 'tainacan') . '&nbsp;';
+			
+			$parent = get_term($current_args['termsparent']);
+			$tainacan_parent_term = new Entities\Term( $parent );
 
-		if ( !$args['hide_hierarchy_header'] && isset($current_args['termsparent']) && $current_args['termsparent'] )
-			$content .= '<p>' . __('Showing terms children of: ', 'tainacan') . '&nbsp;' . get_term_parents_list($current_args['termsparent'], 'tnc_tax_' . $post->ID, [ 'format' => 'name', 'separator' => $separator, 'link' => true, 'inclusive' => true ]) . '</p>';
+			$content .= '<em>' . $tainacan_parent_term->get_name() . '</em>.&nbsp;';
 
+			if ( $tainacan_parent_term->get_parent() ) {
+				$grandparent = get_term($tainacan_parent_term->get_parent());
+				$tainacan_grandparent_term = new Entities\Term( $grandparent );
+				
+				$content .= '<a href="' . add_query_arg( 'termsparent', $tainacan_parent_term->get_parent() ) . '">' . __('Return to the list of terms children of ', 'tainacan') . '<em>' . $tainacan_grandparent_term->get_name() . '</em>.</a>';
+			} else
+				$content .= '<a href="' . remove_query_arg( 'termsparent' ) . '">' . __('Return to the terms list.', 'tainacan') . '</a>';
+
+			$content .= '</p></div>';
+		}
+		$content .= $args['before_terms_list'];
 
 		foreach ( $terms as $term ) {
 			$tainacan_term = new Entities\Term( $term );
@@ -1336,7 +1362,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 				<?php 
 
 					if ( !$args['hide_term_hierarchy_path'] )
-						echo $args['before_term_hierarchy_path'] . get_term_parents_list($tainacan_term->get_id(), 'tnc_tax_' . $post->ID, [ 'format' => 'name', 'separator' => $separator, 'link' => true, 'inclusive' => false ]) . $args['after_term_hierarchy_path'];
+						echo $args['before_term_hierarchy_path'] . get_term_parents_list($tainacan_term->get_id(), 'tnc_tax_' . $post->ID, [ 'format' => 'name', 'separator' => $separator, 'link' => false, 'inclusive' => false ]) . $args['after_term_hierarchy_path'];
 
 					if ( !$args['hide_term_name'] )
 						echo $args['before_term_name'] . $tainacan_term->get_name() . $args['after_term_name'];
@@ -1345,10 +1371,10 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 						echo $args['before_term_description'] . $tainacan_term->get_description() . $args['after_term_description'];
 
 					if ( !$args['hide_term_children_link'] && $total_children )
-						echo $args['before_term_children_link'] . '<a href="' . add_query_arg( 'termsparent', $tainacan_term->get_id() ) . '">' . __('Children', 'tainacan') . '&nbsp;(' . $total_children . ')</a>' . $args['after_term_children_link'] . '&nbsp;&nbsp;';
+						echo $args['before_term_children_link'] . '<a href="' . add_query_arg( 'termsparent', $tainacan_term->get_id() ) . '">' . __('Children', 'tainacan') . (!$args['hide_term_children_count'] ? '&nbsp;<span class="term-children-count">(' . $total_children . ')</span>' : '') . '</a>' . $args['after_term_children_link'] . '&nbsp;&nbsp;';
 					
-					if ( !$args['hide_term_items_link'] && !$args['hide_term_children_link'] )
-						echo $args['before_term_items_link'] . '<a href="' . $tainacan_term->get_url() . '">' . __('Itens', 'tainacan') . '&nbsp;(' . $term->count . ')</a>' . $args['after_term_items_link'];
+					if ( !$args['hide_term_items_link'] && !$args['hide_term_children_link'] && $term->count )
+						echo $args['before_term_items_link'] . '<a href="' . $tainacan_term->get_url() . '">' . __('Itens', 'tainacan') . (!$args['hide_term_items_count'] ? '&nbsp;<span class="term-items-count">(' . $term->count . ')</span>' : '') . '</a>' . $args['after_term_items_link'];
 				?>
 				</div>
 			<?php
@@ -1366,14 +1392,16 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 		}
 
 		$content .= $args['after_terms_list'];
+
+		$content .= $args['after_terms_list_container'];
 	
 	} else {
 
-		$content = $args['before_terms_list'] . $content;
+		$content = $args['before_terms_list_container'] . $content;
 
 		$content .= '<p>' . __('No term was found.', 'tainacan') . '</p>';
 
-		$content .= $args['after_terms_list'];
+		$content .= $args['after_terms_list_container'];
 	}
 
 	return apply_filters('tainacan_get_single_taxonomy_content', ['content' => $content, 'total_terms' => $total_terms] , $post);
@@ -1424,9 +1452,8 @@ function tainacan_get_taxonomies_orderby() {
 	$html = ob_get_contents();
 	ob_end_clean();
 
-	return $html;
+	return apply_filters('tainacan_get_taxonomies_orderby', $html );
 }
-
 
 function tainacan_get_taxonomies_search() {
 	$current_args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
@@ -1458,34 +1485,49 @@ function tainacan_get_taxonomies_search() {
 				<?php echo __( 'Search', 'tainacan'); ?>
 			</button>
 		</div>
+		<?php foreach ($_GET as $key => $value) {
+			if ($key !== 'search' && $key !== 'termspaged') {
+				$key = htmlspecialchars($key);
+				$value = htmlspecialchars($value);
+				echo "<input type='hidden' name='$key' value='$value'/>";
+			}
+		} ?>
 	</form>
 	<?php
 
 	$html = ob_get_contents();
 	ob_end_clean();
 
-	return $html;
+	return apply_filters('tainacan_get_taxonomies_search', $html );
 }
 
-function tainacan_get_taxonomies_pagination($total_terms) {
+function tainacan_get_taxonomies_pagination($total_terms, $args = []) {
+
+	$args = array_merge(array(
+		'before_pagination' => '<p class="tainacan-taxonomies-pagination-links">',
+		'after_pagination' => '</p>',
+		'paginate_links_extra_args' => []
+	), $args);
 	
 	$current_args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
 
 	if ( $total_terms <= $current_args['perpage'] )
 		return '';
 
-	return '<p class="tainacan-taxonomies-pagination-links">' .
-		paginate_links(array(
-			'format' => '?termspaged=%#%',
-			'total' => ceil( $total_terms / $current_args['perpage'] ),
-			'current' => max( 1, get_query_var('termspaged') ),
-			'add_args' => array(
-				'order' => $current_args['order'],
-				'orderby' => $current_args['orderby'],
-				'perpage' => $current_args['perpage'],
-				'search' => $current_args['search'],
-				'termsparent' => $current_args['termsparent'],
-			)
-		)) .
-	'</p>';
+	$paginate_links_args = array_merge(array(
+		'format' => '?termspaged=%#%',
+		'total' => ceil( $total_terms / $current_args['perpage'] ),
+		'current' => max( 1, get_query_var('termspaged') ),
+		'add_args' => array(
+			'order' => $current_args['order'],
+			'orderby' => $current_args['orderby'],
+			'perpage' => $current_args['perpage'],
+			'search' => $current_args['search'],
+			'termsparent' => $current_args['termsparent'],
+		)
+	), $args['paginate_links_extra_args']);
+
+	$html = $args['before_pagination'] . paginate_links($paginate_links_args) . $args['after_pagination'];
+
+	return apply_filters('tainacan_get_taxonomies_pagination', $html );
 }

@@ -238,14 +238,24 @@ class Theme_Helper {
 	}
 	
 	function tax_archive_pre_get_posts($wp_query) {
-		
+
+		if ( is_single() && get_query_var('post_type') === 'tainacan-taxonomy' && $wp_query->is_main_query() ) {
+			if ( !isset($_GET['orderby']) )
+				$wp_query->set('orderby', 'name');
+			
+			if ( !isset($_GET['order']) )
+				$wp_query->set('order', 'ASC');
+				
+			return;
+		}
+
 		if (!$wp_query->is_tax() || !$wp_query->is_main_query())
 			return;
-		
+
 		$term = get_queried_object();
 		
 		if ($term instanceof \WP_Term && $this->is_term_a_tainacan_term($term)) {
-			
+		
 			$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
 			$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
 			
@@ -263,9 +273,7 @@ class Theme_Helper {
 				status_header( 404 );
 			}
 			
-			
 		}
-		
 	}
 	
 	function collection_single_redirect() {
