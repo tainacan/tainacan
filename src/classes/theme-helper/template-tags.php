@@ -1210,53 +1210,54 @@ function tainacan_the_metadata_sections($args = array()) {
  * @param object $post			The original tainacan-taxonomy post object. It contains the $post->ID, which can be used to query the taxonomy of slug tnc_tax_<$post-id>
  * @param array|string $args {
 	*     Optional. Array or string of arguments.
-	*	  @type bool		$hide_hierarchy_header		Do not display the Term hiearachy header before the list. Default false
+	*	  @type bool		$hide_hierarchy_header				Do not display the Term hiearachy header before the list. Default false
 
-	*	  @type bool		$hide_term_thumbnail		Do not display the Term thumbnail. Default false
-	*     @type bool		$hide_term_hierarchy_path	Do not display the Term hierarchy path. Default true
-	*     @type bool		$hide_term_name				Do not display the Term name. Default false
-	*     @type bool		$hide_term_description		Do not display the Term description. Default true
-	*     @type bool		$hide_term_children_link	Do not display the Term children link. Default false
-	*     @type bool		$hide_term_items_link		Do not display the Term items list link. Default false
-	*	  @type bool		$hide_term_children_count	Do not display the Term children count. Default true
-	*     @type bool		$hide_term_items_count		Do not display the Term items count. Default true
+	*	  @type bool		$hide_term_thumbnail				Do not display the Term thumbnail. Default false
+	*	  @type bool		$hide_term_thumbnail_placeholder 	Do not display the Term thumbnail placeholder (if no image is found). Default true
+	*     @type bool		$hide_term_hierarchy_path			Do not display the Term hierarchy path. Default true
+	*     @type bool		$hide_term_name						Do not display the Term name. Default false
+	*     @type bool		$hide_term_description				Do not display the Term description. Default true
+	*     @type bool		$hide_term_children_link			Do not display the Term children link. Default false
+	*     @type bool		$hide_term_items_link				Do not display the Term items list link. Default false
+	*	  @type bool		$hide_term_children_count			Do not display the Term children count. Default true
+	*     @type bool		$hide_term_items_count				Do not display the Term items count. Default true
 
-	*     @type string      $before_terms_list_container String to be added before the taxonomy terms list container
-	*                                                  	Default '<div class="wp-block-query tainacan-taxonomy-terms-list-container">'
-	*     @type string      $after_terms_list_container String to be added after the taxonomy terms list container
-	*                                                  	Default '</div>'
-	*     @type string      $before_terms_list         	String to be added before the taxonomy terms list
-	*                                                  	Default '<ul class="wp-block-post-template is-layout-flow tainacan-taxonomy-terms-list" style="list-style: none; padding: 0;">'
-	*     @type string      $after_terms_list           String to be added after the taxonomy terms list
-	*                                                  	Default '</ul>'
-	*     @type string      $before_term			    String to be added before each term inside the loop
-	*                                                  	Default '<li class="wp-block-post tainacan-term-single" id="term-id-$id">'
-	*     @type string      $after_term			        String to be added after each term inside the loop
-	*                                                  	Default '</li>'	
-	*     @type string      $before_term_thumbnail      String to be added before each term thumbnail
-	*                                                  	Default '<figure class="term-thumbnail wp-block-post-featured-image">'
-	*     @type string      $after_term_thumbnail       String to be added after each term thumbnail
-	*                                                  	Default '</figure>'	
-	* 	  @type string      $before_term_hierarchy_path String to be added before each term hierarchy path
-	*                                                  	Default '<span class="term-hierarchy-path"><em>'
-	*     @type string      $after_term_hierarchy_path  String to be added after each term hierarchy path
-	*                                                  	Default '</em></span>'
-	*     @type string      $before_term_name           String to be added before each term name
-	*                                                  	Default '<h2 class="term-name">'
-	*     @type string      $after_term_name            String to be added after each term name
-	*                                                  	Default '</h2>'
-	* 	  @type string      $before_term_description    String to be added before each term description
-	*                                                  	Default '<p class="term-description">'
-	*     @type string      $after_term_description     String to be added after each term description
-	*                                                  	Default '</p>'
-	* 	  @type string      $before_term_children_link  String to be added before each term children link
-	*                                                  	Default '<span class="term-children-link">'
-	*     @type string      $after_term_children_link   String to be added after each term children link
-	*                                                  	Default '</span>'
-	* 	  @type string      $before_term_items_link  	String to be added before each term items link
-	*                                                  	Default '<span class="term-items-link">'
-	*     @type string      $after_term_items_link   	String to be added after each term items link
-	*                                                  	Default '</span>'
+	*     @type string      $before_terms_list_container 		String to be added before the taxonomy terms list container
+	*                                                  			Default '<div class="wp-block-query tainacan-taxonomy-terms-list-container">'
+	*     @type string      $after_terms_list_container 		String to be added after the taxonomy terms list container
+	*                                                  			Default '</div>'
+	*     @type string      $before_terms_list         			String to be added before the taxonomy terms list
+	*                                                  			Default '<ul class="wp-block-post-template is-layout-flow tainacan-taxonomy-terms-list" style="list-style: none; padding: 0;">'
+	*     @type string      $after_terms_list           		String to be added after the taxonomy terms list
+	*                                                  			Default '</ul>'
+	*     @type string      $before_term			    		String to be added before each term inside the loop
+	*                                                  			Default '<li class="wp-block-post tainacan-term-single" id="term-id-$id">'
+	*     @type string      $after_term			        		String to be added after each term inside the loop
+	*                                                  			Default '</li>'	
+	*     @type string      $before_term_thumbnail      		String to be added before each term thumbnail
+	*                                                  			Default '<figure class="term-thumbnail wp-block-post-featured-image">'
+	*     @type string      $after_term_thumbnail       		String to be added after each term thumbnail
+	*                                                  			Default '</figure>'	
+	* 	  @type string      $before_term_hierarchy_path 		String to be added before each term hierarchy path
+	*                                                  			Default '<span class="term-hierarchy-path"><em>'
+	*     @type string      $after_term_hierarchy_path  		String to be added after each term hierarchy path
+	*                                                  			Default '</em></span>'
+	*     @type string      $before_term_name           		String to be added before each term name
+	*                                                  			Default '<h2 class="term-name">'
+	*     @type string      $after_term_name            		String to be added after each term name
+	*                                                  			Default '</h2>'
+	* 	  @type string      $before_term_description    		String to be added before each term description
+	*                                                  			Default '<p class="term-description">'
+	*     @type string      $after_term_description     		String to be added after each term description
+	*                                                  			Default '</p>'
+	* 	  @type string      $before_term_children_link  		String to be added before each term children link
+	*                                                  			Default '<span class="term-children-link">'
+	*     @type string      $after_term_children_link   		String to be added after each term children link
+	*                                                  			Default '</span>'
+	* 	  @type string      $before_term_items_link  			String to be added before each term items link
+	*                                                  			Default '<span class="term-items-link">'
+	*     @type string      $after_term_items_link   			String to be added after each term items link
+	*                                                  			Default '</span>'
 	* }
 	*
 	* @return string        The HTML output
@@ -1266,6 +1267,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 	$args = array_merge(array(
 		'hide_hierarchy_header' => false,
 		'hide_term_thumbnail' => false,
+		'hide_term_thumbnail_placeholder' => true,
 		'hide_term_hierarchy_path' => true,
 		'hide_term_name' => false,
 		'hide_term_description' => true,
@@ -1355,8 +1357,14 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 			if ( !$args['hide_term_items_link'] && $args['hide_term_children_link'] ) 
 				echo '<a href="' . $tainacan_term->get_url() .'">';
 
-			if ( !$args['hide_term_thumbnail'] )
-				echo $args['before_term_thumbnail'] . wp_get_attachment_image( $tainacan_term->get_header_image_id(), 'tainacan-large-full', false ) . $args['after_term_thumbnail'];
+			if ( !$args['hide_term_thumbnail'] ) {
+				$thumbnail =  wp_get_attachment_image( $tainacan_term->get_header_image_id(), 'tainacan-large-full', false );
+				
+				if ( !$thumbnail && !$args['hide_term_thumbnail_placeholder'] )
+					echo $args['before_term_thumbnail'] . '<img src="' . esc_url(tainacan_get_the_mime_type_icon('empty', 'tainacan-large-full')) . '">' . $args['after_term_thumbnail'];
+				else
+					echo $args['before_term_thumbnail'] . $thumbnail . $args['after_term_thumbnail'];
+			}
 			?>
 				<div>	
 				<?php 
