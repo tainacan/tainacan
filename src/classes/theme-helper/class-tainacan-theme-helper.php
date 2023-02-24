@@ -195,6 +195,7 @@ class Theme_Helper {
 		
 		} else if ( $this->is_post_a_tainacan_taxonomy_postype($post) ) {
 			$content .= tainacan_get_taxonomies_orderby();
+			$content .= tainacan_get_taxonomies_search();
 			$taxonomy_terms_list = tainacan_get_single_taxonomy_content($post);
 			$content .= $taxonomy_terms_list['content'];
 			$content .= tainacan_get_taxonomies_pagination($taxonomy_terms_list['total_terms']);
@@ -598,6 +599,7 @@ class Theme_Helper {
 	function rewrite_rules_query_vars( $public_query_vars ) {
 		$public_query_vars[] = "tainacan_repository_archive";
 		$public_query_vars[] = "termspaged";
+		$public_query_vars[] = "termsparent";
 		return $public_query_vars;
 	}
 
@@ -2083,13 +2085,17 @@ class Theme_Helper {
 		$current_order = get_query_var( 'order', 'ASC' );
 		$current_orderby = get_query_var( 'orderby', 'name' );
 		$current_paged = get_query_var( 'termspaged', 1 );
-		$current_perpage = get_query_var( 'perpage', 12 );
+		$current_perpage = get_query_var( 'perpage', 23 );
+		$current_search = get_query_var( 'search', '' );
+		$current_parent = get_query_var( 'termsparent', '' );
 
 		return array(
 			'order' => $current_order,
 			'orderby' => $current_orderby,
 			'termspaged' => $current_paged,
-			'perpage' => $current_perpage
+			'perpage' => $current_perpage,
+			'search' => $current_search,
+			'termsparent' => $current_parent
 		);
 	}
 }
