@@ -192,6 +192,15 @@
                                 {{ ($i18n.get('info_updated_at') + ' ' + updatedAt) }}
                             </p>
                             <div class="control">
+                                <a
+                                        target="_blank"
+                                        class="button link-button"
+                                        :href="themeTaxonomiesURL + taxonomy.slug">
+                                    <span class="icon is-large">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                                    </span>
+                                    <span>{{ $i18n.get('label_taxonomy_page_on_website') }}</span>
+                                </a>
                                 <button
                                         :class="{ 'is-loading': isLoadingTaxonomy, 'is-success': !isLoadingTaxonomy }"
                                         id="button-submit-taxonomy-creation"
@@ -222,6 +231,7 @@
                             :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'" 
                             @isEditingTermUpdate="isEditingTermUpdate"
                             :taxonomy-id="taxonomyId"
+                            :taxonomy-slug="taxonomySlug"
                             :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false"/>
                 </b-tab-item>
 
@@ -245,7 +255,7 @@
             TermsList
         },
         mixins: [ wpAjax, formHooks ],
-         beforeRouteLeave( to, from, next ) {
+        beforeRouteLeave( to, from, next ) {
             let formNotSaved = false;
 
             if (this.taxonomy) {
@@ -320,7 +330,8 @@
                 formErrorMessage: '',
                 entityName: 'taxonomy',
                 updatedAt: undefined,
-                shouldReloadTermsList: false
+                shouldReloadTermsList: false,
+                themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url
             }
         },
         mounted(){

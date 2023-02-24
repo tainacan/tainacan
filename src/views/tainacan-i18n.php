@@ -458,6 +458,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_urls_for_item_page'                 	 	 => __( 'URLs for Item Page', 'tainacan' ),
 	'label_item_page_on_website'                 	 => __( 'Item page on website', 'tainacan' ),
 	'label_items_list_on_website'                 	 => __( 'Items list on website', 'tainacan' ),
+	'label_taxonomy_page_on_website'                 => __( 'Taxonomy page on website', 'tainacan' ),
 	'label_copy_link_url'		                 	 => __( 'Copy link URL', 'tainacan' ),
 	'label_open_externally'		                 	 => __( 'Open externally', 'tainacan' ),
 	'label_no_output_info'			                 => __( 'No output info', 'tainacan' ),
