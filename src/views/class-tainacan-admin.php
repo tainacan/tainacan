@@ -319,6 +319,7 @@ class Admin {
 			'admin_url'              	=> admin_url(),
 			'theme_items_list_url' 		=> esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug(),
 			'theme_collection_list_url' => get_post_type_archive_link( 'tainacan-collection' ),
+			'theme_taxonomy_list_url' 	=> get_post_type_archive_link( 'tainacan-taxonomy' ),
 			'custom_header_support'  	=> get_theme_support('custom-header'),
 			'registered_view_modes'  	=> \Tainacan\Theme_Helper::get_instance()->get_registered_view_modes(),
 			'exposer_mapper_param'   	=> \Tainacan\Mappers_Handler::MAPPER_PARAM,

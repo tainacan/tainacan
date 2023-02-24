@@ -1258,6 +1258,8 @@ function tainacan_the_metadata_sections($args = array()) {
 	*                                                  			Default '<span class="term-items-link">'
 	*     @type string      $after_term_items_link   			String to be added after each term items link
 	*                                                  			Default '</span>'
+	*     @type string      $thumbnails_size 		  			String to be added after each term items link
+	*                                                  			Default 'tainacan-large-full'
 	* }
 	*
 	* @return string        The HTML output
@@ -1293,6 +1295,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 		'after_term_children_link' => '</span>',
 		'before_term_items_link' => '<span class="term-items-link">',
 		'after_term_items_link' => '</span>',
+		'thumbnails_size' => 'tainacan-large-full'
 	), $args);
 
 	/* Gets query arguments to build fetch params */
@@ -1358,10 +1361,10 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 				echo '<a href="' . $tainacan_term->get_url() .'">';
 
 			if ( !$args['hide_term_thumbnail'] ) {
-				$thumbnail =  wp_get_attachment_image( $tainacan_term->get_header_image_id(), 'tainacan-large-full', false );
+				$thumbnail =  wp_get_attachment_image( $tainacan_term->get_header_image_id(), $args['thumbnails_size'], false );
 				
 				if ( !$thumbnail && !$args['hide_term_thumbnail_placeholder'] )
-					echo $args['before_term_thumbnail'] . '<img src="' . esc_url(tainacan_get_the_mime_type_icon('empty', 'tainacan-large-full')) . '">' . $args['after_term_thumbnail'];
+					echo $args['before_term_thumbnail'] . '<img src="' . esc_url(tainacan_get_the_mime_type_icon('empty', $args['thumbnails_size'])) . '">' . $args['after_term_thumbnail'];
 				else
 					echo $args['before_term_thumbnail'] . $thumbnail . $args['after_term_thumbnail'];
 			}
