@@ -43,9 +43,10 @@ class Theme_Helper {
 		// make archive for terms work with items
 		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
 		
-		add_action('archive_template_hierarchy', array($this, 'items_template_hierachy'));
-		add_action('taxonomy_template_hierarchy', array($this, 'tax_template_hierachy'));
-		add_action('single_template_hierarchy', array($this, 'items_template_hierachy'));
+		add_action('archive_template_hierarchy', array($this, 'collection_items_template_hierarchy'));
+		add_action('taxonomy_template_hierarchy', array($this, 'taxonomy_term_items_template_hierarchy'));
+		add_action('single_template_hierarchy', array($this, 'item_template_hierarchy'));
+		add_action('single_template_hierarchy', array($this, 'taxonomy_terms_template_hierarchy'));
 		
 		add_filter('theme_mod_header_image', array($this, 'header_image'));
 
@@ -356,65 +357,115 @@ class Theme_Helper {
 		
 	}
 	
-	function items_template_hierachy($templates) {
+	/**
+	 * Allows themes to create a tainacan/single-items.php file which will
+	 * be used to represent all items single page.
+	 */
+	function item_template_hierarchy($templates) {
 		
-		if (is_post_type_archive() || is_single()) {
+		if ( !is_single() )
+			return $templates;
+
+		$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
+		$current_post_type = get_post_type();
+		
+		if ( in_array($current_post_type, $collections_post_types) ) {
 			
-			$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
-			$current_post_type = get_post_type();
+			$last_template = array_pop($templates);
 			
-			if (in_array($current_post_type, $collections_post_types)) {
-				
-				$last_template = array_pop($templates);
-				
-				if (is_post_type_archive()) {
-					array_push($templates, 'tainacan/archive-items.php');
-				} elseif (is_single()) {
-					array_push($templates, 'tainacan/single-items.php');
+			array_push($templates, 'tainacan/single-items.php');
+			
+			array_push($templates, $last_template);
+		}
+
+		return $templates;
+	}
+
+	/**
+	 * Allows themes to create a tainacan/archive-items.php file which will
+	 * be used to represent all collection items archive page (the list of items
+	 * of a collection).
+	 */
+	function collection_items_template_hierarchy($templates) {
+		
+		if ( !is_post_type_archive() )
+			return $templates;
+
+		$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
+		$current_post_type = get_post_type();
+		
+		if ( in_array($current_post_type, $collections_post_types) ) {
+			
+			$last_template = array_pop($templates);
+
+			array_push($templates, 'tainacan/archive-items.php');
+			
+			array_push($templates, $last_template);
+		}
+		
+		return $templates;
+	}
+	
+	/**
+	 * Allows themes to create a tainacan/taxonomy-items.php file which will
+	 * be used to represent all taxonomy term items archive page (the list of 
+	 * items of a taxonomy term).
+	 */
+	function taxonomy_term_items_template_hierarchy($templates) {
+		
+		if ( !is_tax() ) 
+			return $templates;
+			
+		$term = get_queried_object();
+		
+		if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
+			$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
+			$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
+			
+			if ( $tax ) {
+				$post_types = $tax->get_enabled_post_types();
+				if (sizeof($post_types)) {
+					// if taxonomy is enabled for other post types, we disable 
+					// custom template ans use default list
+					// TODO: This needs discussion
+					return $templates;
 				}
-				
-				array_push($templates, $last_template);
-				
 			}
+			
+			$last_template = array_pop($templates);
+			
+			array_push($templates, 'tainacan/archive-taxonomy.php');
+			
+			array_push($templates, $last_template);
 			
 		}
 		
 		return $templates;
 		
 	}
-	
-	function tax_template_hierachy($templates) {
+
+	/**
+	 * Allows themes to create a tainacan/archive-terms.php file which will
+	 * be used to represent all taxonomies single (the list or terms of a taxonomy)
+	 */
+	function taxonomy_terms_template_hierarchy($templates) {
 		
-		if (is_tax()) {
+		if ( !is_single() )
+			return $templates;
+		
+		$post = get_queried_object();
+		
+		// Is it a taxonomy-post-type post?
+		if ( $this->is_post_a_tainacan_taxonomy_postype($post) ) {
 			
-			$term = get_queried_object();
+			$last_template = array_pop($templates);
 			
-			if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
-				$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
-				$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
-				
-				if ( $tax ) {
-					$post_types = $tax->get_enabled_post_types();
-					if (sizeof($post_types)) {
-						// if taxonomy is enabled for other post types, we disable 
-						// custom template ans use default list
-						// TODO: This needs discussion
-						return $templates;
-					}
-				}
-				
-				$last_template = array_pop($templates);
-				
-				array_push($templates, 'tainacan/archive-taxonomy.php');
-				
-				array_push($templates, $last_template);
-				
-			}
+			array_push($templates, 'tainacan/archive-terms.php');
 			
+			array_push($templates, $last_template);
 		}
-		
+
 		return $templates;
-		
 	}
 	
 	function header_image($image) {
@@ -2143,7 +2194,7 @@ class Theme_Helper {
 		$current_order = get_query_var( 'order', 'ASC' );
 		$current_orderby = get_query_var( 'orderby', 'name' );
 		$current_paged = get_query_var( 'termspaged', 1 );
-		$current_perpage = get_query_var( 'perpage', 23 );
+		$current_perpage = get_query_var( 'perpage', 12 );
 		$current_search = get_query_var( 'search', '' );
 		$current_parent = get_query_var( 'termsparent', '' );
 

@@ -1366,7 +1366,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 				if ( !$thumbnail && !$args['hide_term_thumbnail_placeholder'] )
 					echo $args['before_term_thumbnail'] . '<img src="' . esc_url(tainacan_get_the_mime_type_icon('empty', $args['thumbnails_size'])) . '">' . $args['after_term_thumbnail'];
 				else
-					echo $args['before_term_thumbnail'] . $thumbnail . $args['after_term_thumbnail'];
+					echo $thumbnail ? ($args['before_term_thumbnail'] . $thumbnail . $args['after_term_thumbnail'] ) : '';
 			}
 			?>
 				<div>	
@@ -1466,6 +1466,10 @@ function tainacan_get_taxonomies_orderby() {
 	return apply_filters('tainacan_get_taxonomies_orderby', $html );
 }
 
+function tainacan_the_taxonomies_orderby($args = []) {
+	echo tainacan_get_taxonomies_orderby($args);
+}
+
 function tainacan_get_taxonomies_search() {
 	$current_args = \Tainacan\Theme_Helper::get_instance()->get_taxonomies_query_args();
 
@@ -1512,6 +1516,10 @@ function tainacan_get_taxonomies_search() {
 	return apply_filters('tainacan_get_taxonomies_search', $html );
 }
 
+function tainacan_the_taxonomies_search($args = []) {
+	echo tainacan_get_taxonomies_search($args);
+}
+
 function tainacan_get_taxonomies_pagination($total_terms, $args = []) {
 
 	$args = array_merge(array(
@@ -1541,4 +1549,8 @@ function tainacan_get_taxonomies_pagination($total_terms, $args = []) {
 	$html = $args['before_pagination'] . paginate_links($paginate_links_args) . $args['after_pagination'];
 
 	return apply_filters('tainacan_get_taxonomies_pagination', $html );
+}
+
+function tainacan_the_taxonomies_pagination($args = []) {
+	echo tainacan_get_taxonomies_pagination($args);
 }
