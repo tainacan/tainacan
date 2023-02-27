@@ -51,6 +51,7 @@ import ViewModeRecords from './theme-search/components/view-mode-records.vue';
 import ViewModeMasonry from './theme-search/components/view-mode-masonry.vue';
 import ViewModeSlideshow from './theme-search/components/view-mode-slideshow.vue';
 import ViewModeList from './theme-search/components/view-mode-list.vue';
+import ViewModeMap from './theme-search/components/view-mode-map.vue';
 
 // Remaining imports
 import store from '../../../admin/js/store/store';
@@ -160,6 +161,7 @@ export default (element) => {
             Vue.component('view-mode-masonry', ViewModeMasonry);
             Vue.component('view-mode-slideshow', ViewModeSlideshow);
             Vue.component('view-mode-list', ViewModeList);
+            Vue.component('view-mode-map', ViewModeMap);
 
             Vue.use(eventBusSearch, { store: store, router: routerTheme});
                 

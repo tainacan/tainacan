@@ -51,6 +51,7 @@ return apply_filters( 'tainacan-i18n', [
 	'import'                                         => __( 'Import', 'tainacan' ),
 	'export'                                         => __( 'Export', 'tainacan' ),
 	'cancel'                                         => __( 'Cancel', 'tainacan' ),
+	'remove_point'                                   => __( 'Remove point', 'tainacan' ),
 	'remove_value'                                   => __( 'Remove value', 'tainacan' ),
 	'remove_a_value'                                 => __( 'Remove a value', 'tainacan' ),
 	'clear_values'                                   => __( 'Clear values', 'tainacan' ),
@@ -662,6 +663,12 @@ return apply_filters( 'tainacan-i18n', [
 	'label_from_a_mapper'					 		 => __( 'From a metadata mapper', 'tainacan' ),
 	'label_using_a_preset'					 		 => __( 'Using a preset', 'tainacan' ),
 	'label_use_search_separated_words'				 => __( 'Search each word separatelly', 'tainacan' ),
+	'label_map'										 => __( 'Map', 'tainacan' ),
+	'label_show_item_location_on_map'				 => __( 'Show item location on map', 'tainacan' ),
+	/* translators: This appears before a select where you choose possible geocoorinate metadata */
+	'label_showing_locations_for'					 => __( 'Showing locations for:', 'tainacan' ),
+	'label_one_selected_location'                    => __( 'One selected location', 'tainacan' ),
+	'label_%s_selected_locations'                    => __( '%s selected locations', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -739,6 +746,9 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_edit_item_status'				 	 => __( 'To alter the item status, select a different update strategy in the footer below.', 'tainacan' ),
 	/* translators: At the end of this sentence there will be a search query typed by the user wrapped in quotes. */
 	'instruction_press_enter_to_search_for'			 => __( 'Press <kbd>ENTER</kbd> to search for', 'tainacan' ),
+	'instruction_type_geocoordinate'				 => __( 'Type a geo coordinate in the form of lat,lng', 'tainacan' ),
+	'instruction_click_to_add_a_point'				 => __( 'Drag to reposition or click to insert a marker', 'tainacan' ),
+	'instruction_select_geocoordinate_metadatum'	 => __( 'Select a geocoordinate metadatum', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),
@@ -993,6 +1003,10 @@ return apply_filters( 'tainacan-i18n', [
 	'info_try_disabling_search_by_word'				 => __( 'Try disabling the search by words, to search for the complete phrase.', 'tainacan' ),
 	'info_details_about_search_by_word'				 => __( 'They may be located on different metadata and order, but you will still be able to use quotes to group them.', 'tainacan' ),
 	'info_item_submission_draft_status'				 => __( 'Warning: draft items may be submitted even without filling all required metadata.', 'tainacan' ),
+	'info_empty_geocoordinate_metadata_list'		 => __( 'No geocoordinate metadata was found. Try enabling it in the "displayed metadata" dropdown.', 'tainacan' ),
+	'info_non_located_item'							 => __( 'This item does not have any location based on this metadata.', 'tainacan' ),
+	'info_metadata_section_hidden_conditional'		 => __( 'Section disabled due to a conditional metadatum value.', 'tainacan' ),
+	'info_create_select_metadatum_for_conditional_section' => __( 'For configuring conditional sections, first create one select type metadatum to use its values as rules for displaing this section. The metadatum should be inside another metadatum section.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

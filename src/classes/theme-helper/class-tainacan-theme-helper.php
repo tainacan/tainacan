@@ -24,8 +24,14 @@ class Theme_Helper {
 	}
 
 	private function __construct() {
-		
-		add_filter( 'the_content', [$this, 'the_content_filter'] );
+
+		if ( !defined('TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER') || true !== TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER ) {
+			add_filter( 'the_content', [$this, 'the_content_filter_item'] );
+		}
+
+		if ( !defined('TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER') || true !== TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER ) {
+			add_filter( 'the_content', [$this, 'the_content_filter_taxonomy'] );
+		}
 
 		// Replace collections permalink to post type archive if cover not enabled
 		add_filter('post_type_link', array($this, 'permalink_filter'), 10, 3);
@@ -113,6 +119,21 @@ class Theme_Helper {
 			'implements_skeleton' => true,
 			'requires_thumbnail' => false
 		]);
+		$this->register_view_mode('map', [
+			'label' => __('Map', 'tainacan'),
+			'dynamic_metadata' => true,
+			'description' => 'A map view, for displaying items that have geocoordinate metadata.',
+			'icon' => '<span class="icon">
+							<i>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--tainacan-info-color, #555758)" width="1.25em" height="1.25em">
+									<path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+								</svg>
+							</i>
+						</span>',
+			'type' => 'component',
+			'implements_skeleton' => true,
+			'requires_thumbnail' => false
+		]);
 	}
 	
 	public function is_post_an_item(\WP_Post $post) {
@@ -153,53 +174,77 @@ class Theme_Helper {
 		return $title;
 	}
 
-	public function the_content_filter($content) {
+	/**
+	 * Filters the post content to create Tainacan default 
+	 * item single, including its metadata sections and the
+	 * item media gallery.
+	 * 
+	 * @return string content tweaked to the item features
+	 */
+	public function the_content_filter_item($content) {
 		
 		if (!is_single())
 			return $content;
 
 		$post = get_queried_object();
 		
-		// Is it a collection Item or a taxonomy-post-type post?
-		if ( !$this->is_post_an_item($post) && !$this->is_post_a_tainacan_taxonomy_postype($post) )
+		// Is it a collection Item 
+		if ( !$this->is_post_an_item($post) )
+			return $content;
+	
+		$item = new Entities\Item($post);
+
+		$content = '';
+		
+		// document
+		$content .= '<section id="tainacan-default-document-section">';
+			$content .= '<h2>' . __( 'Document', 'tainacan' ) . '</h2>';
+			$content .= $this->get_tainacan_item_gallery(array(
+				'layoutElements' => array( 'main' => true, 'thumbnails' => false ),
+				'mediaSources' => 	array( 'document' => true, 'attachments' => false, 'metadata' => false),
+			));
+		$content .= '</section>';
+		
+		// metadata sections
+		$content .= $item->get_metadata_sections_as_html();
+
+		// attachments
+		$content .= '<section id="tainacan-default-attachments-section">';
+			$content .= '<h2>' . __( 'Attachments', 'tainacan' ) . '</h2>';
+			$content .= $this->get_tainacan_item_gallery(array(
+				'layoutElements' => array( 'main' => false, 'thumbnails' => true ),
+				'mediaSources' => 	array( 'document' => false, 'attachments' => true, 'metadata' => false),
+			));
+		$content .= '</section>';
+		
+		$content = apply_filters('tainacan_single_item_content', $content, $item);
+
+		return $content;
+		
+	}
+
+	/**
+	 * Filters the post content to create Tainacan default 
+	 * taxonomy single, which works as a "terms archive"
+	 * 
+	 * @return string content tweaked to show the taxonomy terms list
+	 */
+	public function the_content_filter_taxonomy($content) {
+		
+		if ( !is_single() )
+			return $content;
+
+		$post = get_queried_object();
+		
+		// Is it a taxonomy-post-type post?
+		if ( !$this->is_post_a_tainacan_taxonomy_postype($post) )
 			return $content;
 		
-		if ( $this->is_post_an_item($post) ) {
-		
-			$item = new Entities\Item($post);
-
-			$content = '';
-			
-			// document
-			$content .= '<section id="tainacan-default-document-section">';
-				$content .= '<h2>' . __( 'Document', 'tainacan' ) . '</h2>';
-				$content .= $this->get_tainacan_item_gallery(array(
-					'layoutElements' => array( 'main' => true, 'thumbnails' => false ),
-					'mediaSources' => 	array( 'document' => true, 'attachments' => false, 'metadata' => false),
-				));
-			$content .= '</section>';
-			
-			// metadata sections
-			$content .= $item->get_metadata_sections_as_html();
-
-			// attachments
-			$content .= '<section id="tainacan-default-attachments-section">';
-				$content .= '<h2>' . __( 'Attachments', 'tainacan' ) . '</h2>';
-				$content .= $this->get_tainacan_item_gallery(array(
-					'layoutElements' => array( 'main' => false, 'thumbnails' => true ),
-					'mediaSources' => 	array( 'document' => false, 'attachments' => true, 'metadata' => false),
-				));
-			$content .= '</section>';
-			
-			$content = apply_filters('tainacan_single_item_content', $content, $item);
-		
-		} else if ( $this->is_post_a_tainacan_taxonomy_postype($post) ) {
-			$content .= tainacan_get_taxonomies_orderby();
-			$content .= tainacan_get_taxonomies_search();
-			$taxonomy_terms_list = tainacan_get_single_taxonomy_content($post);
-			$content .= $taxonomy_terms_list['content'];
-			$content .= tainacan_get_taxonomies_pagination($taxonomy_terms_list['total_terms']);
-		}
+		$content .= tainacan_get_taxonomies_orderby();
+		$content .= tainacan_get_taxonomies_search();
+		$taxonomy_terms_list = tainacan_get_single_taxonomy_content($post);
+		$content .= $taxonomy_terms_list['content'];
+		$content .= tainacan_get_taxonomies_pagination($taxonomy_terms_list['total_terms']);
 
 		return $content;
 		
@@ -1091,7 +1136,8 @@ class Theme_Helper {
 		 *     Optional. Array of arguments.
 		 *     @type string  $item_id							The Item ID
 		 *     @type string  $items_list_layout					The type of list to be rendered. Accepts 'grid', 'list', 'mosaic' and 'carousel'. 
-		 * 	   @type string  $order								Sorting direction to the related items query. Either 'desc' or 'asc'.
+		 * 	   @type string  $order								Sorting direction to the related items query. Either 'desc' or 'asc'. 
+		 * 	   @type string  $orderby							Sortby metadata. By now we're accepting only 'title' and 'date'.
 		 *     @type string  $class_name						Extra class to add to the wrapper, besides the default wp-block-tainacan-carousel-related-items
 		 *     @type string  $collection_heading_class_name		Extra class to add to the collection name wrapper. Defaults to ''
 		 * 	   @type string  $collection_heading_tag			Tag to be used as wrapper of the collection name. Defaults to h2
@@ -1120,6 +1166,10 @@ class Theme_Helper {
 		
 		// Then fetches related ones
 		$related_items_query_args = [];
+
+		if ( isset($args['orderby']) )
+			$related_items_query_args['orderby'] = $args['orderby'];
+
 		if ( isset($args['order']) )
 			$related_items_query_args['order'] = $args['order'];
 

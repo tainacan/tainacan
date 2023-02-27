@@ -342,7 +342,7 @@
                 this.sendMetadatum({
                     collectionId: this.collectionId, 
                     name: newMetadatum.name, 
-                    metadatumType: newMetadatum.className, 
+                    metadatumType: newMetadatum.className ? newMetadatum.className : newMetadatum.metadata_type, 
                     status: 'auto-draft', 
                     isRepositoryLevel: this.isRepositoryLevel, 
                     newIndex: newIndex,
@@ -417,6 +417,9 @@
                 this.updateMetadataOrder();
             },
             isAvailableChildMetadata(to, from, item) {
+                if (from.el && from.el.className === 'active-metadata-area')
+                    return false;
+
                 return !['tainacan-compound', 'tainacan-taxonomy'].includes(item.id);
             },
             isCollapseOpen(metadatumId) {

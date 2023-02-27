@@ -49,6 +49,8 @@
     var g2 = el('g', { transform: 'translate(-85.490815,-209.14412)' });    
     var svgIcon = el( 'svg', { width: 20, height: 20, viewBox: '0 0 20 20'}, path4, path6, path8, path10, path12, path14, path16, path18, path20, g1, g2);
     
-    if (wp.blocks.updateCategory)
+    if (wp.blocks.updateCategory) {
         wp.blocks.updateCategory( 'tainacan-blocks', { icon: svgIcon } );
+        wp.blocks.updateCategory( 'tainacan-blocks-variations', { icon: svgIcon } );
+    }
 } )();

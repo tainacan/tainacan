@@ -26,6 +26,10 @@ class REST_Exporters_Controller extends REST_Controller {
 		add_action('init', array(&$this, 'init_objects'), 11);
 	}
 
+	public function __destruct() {
+		session_write_close();
+	}
+
 	/**
 	 * Initialize objects after post_type register
 	 */

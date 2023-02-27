@@ -100,6 +100,7 @@ export default {
             'getCollections'
         ]),
         onChangeTab(status) {
+            this.$eventBusSearch.resetPageOnStore();
             this.$eventBusSearch.setStatus(status);
         }
     }

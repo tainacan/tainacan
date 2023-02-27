@@ -630,6 +630,10 @@ class REST_Items_Controller extends REST_Controller {
 
 		$query_start = microtime(true);
 
+		if(isset($request['geoquery'])) {
+			$args['geoquery'] = $request['geoquery'];
+		}
+
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 
 		// Filter right after the ->fetch() method. Elastic Search integration relies on this on its 'last_aggregations' hook

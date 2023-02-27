@@ -22,282 +22,286 @@
                 class="tainacan-form" 
                 :class="'tainacan-metadatum-edition-form--type-' + form.metadata_type_object.component">
             <div class="options-columns">
-                <b-field
-                        :addons="false"
-                        :type="formErrors['name'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-                    <label class="label is-inline">
-                        {{ $i18n.get('label_name') }}
-                        <span
-                                class="required-metadatum-asterisk"
-                                :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span>
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata', 'name')"
-                                :message="$i18n.getHelperMessage('metadata', 'name')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </label>
-                    <b-input
-                            v-model="form.name"
-                            name="name"
-                            @focus="clearErrors('name')"/>
-                </b-field>
-
-                <!-- Hook for extra Form options -->
-                <template 
-                        v-if="hasBeginLeftForm">  
-                    <form 
-                        id="form-metadatum-begin-left"
-                        class="form-hook-region"
-                        v-html="getBeginLeftForm"/>
-                </template>
-
-                <b-field
-                        :addons="false"
-                        :type="formErrors['description'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-                    <label class="label is-inline">
-                        {{ $i18n.get('label_description') }}
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata', 'description')"
-                                :message="$i18n.getHelperMessage('metadata', 'description')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </label>
-                    <b-input
-                            type="textarea"
-                            name="description"
-                            rows="3"
-                            v-model="form.description"
-                            @focus="clearErrors('description')"/>
-                </b-field>
-
-                <b-field 
-                        :addons="false"
-                        :label="$i18n.getHelperTitle('metadata', 'description_bellow_name')"
-                        :type="formErrors['description_bellow_name'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['description_bellow_name'] != undefined ? formErrors['description_bellow_name'] : ''">
-                        &nbsp;
-                    <b-switch
-                            size="is-small"
-                            @input="clearErrors('description_bellow_name')"
-                            v-model="form.description_bellow_name"
-                            true-value="yes"
-                            false-value="no"
-                            name="description_bellow_name">
-                    <help-button
-                            :title="$i18n.getHelperTitle('metadata', 'description_bellow_name')"
-                            :message="$i18n.getHelperMessage('metadata', 'description_bellow_name')"
-                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </b-switch>
-                </b-field>
-
-                <b-field
-                        v-if="form.metadata_type_object.component != 'tainacan-compound'"
-                        :addons="false"
-                        :type="formErrors['placeholder'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['placeholder'] != undefined ? formErrors['placeholder'] : ''">
-                    <label class="label is-inline">
-                        {{ $i18n.getHelperTitle('metadata', 'placeholder') }}
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata', 'placeholder')"
-                                :message="$i18n.getHelperMessage('metadata', 'placeholder')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </label>
-                    <b-input
-                            v-model="form.placeholder"
-                            name="placeholder"
-                            @focus="clearErrors('placeholder')"/>
-                </b-field>
-
-                <b-field
-                        v-if="form.parent == 0"
-                        :addons="false"
-                        :type="formErrors['status'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-                    <label class="label is-inline">
-                        {{ $i18n.get('label_status') }}
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata', 'status')"
-                                :message="$i18n.getHelperMessage('metadata', 'status')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </label>
-                    <div class="is-flex is-justify-content-space-between">
-                        <b-radio
-                                @focus="clearErrors('label_status')"
-                                id="tainacan-select-status-publish"
-                                name="status"
-                                v-model="form.status"
-                                native-value="publish">
-                            <span class="icon has-text-gray3">
-                                <i class="tainacan-icon tainacan-icon-public"/>
-                            </span>
-                            {{ $i18n.get('status_public') }}
-                        </b-radio>
-                        <b-radio
-                                @focus="clearErrors('label_status')"
-                                id="tainacan-select-status-private"
-                                name="status"
-                                v-model="form.status"
-                                native-value="private">
-                            <span class="icon has-text-gray3">
-                                <i class="tainacan-icon tainacan-icon-private"/>
-                            </span>
-                            {{ $i18n.get('status_private') }}
-                        </b-radio>
-                    </div>
-                </b-field>
-
-                <!-- Display on listing -->
-                <b-field
-                        v-if="form.parent == 0"
-                        :type="formErrors['display'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
-                        :addons="false">
-                    <label class="label is-inline">
-                        {{ $i18n.get('label_display') }}
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata', 'display')"
-                                :message="$i18n.getHelperMessage('metadata', 'display')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </label>
-                    <b-select 
-                            expanded
-                            v-model="form.display"
-                            @input="clearErrors('display')">
-                        <option value="yes">
-                            {{ $i18n.get('label_display_default') }}
-                        </option>
-                        <option value="no">
-                            {{ $i18n.get('label_not_display') }}
-                        </option>
-                        <option value="never">
-                            {{ $i18n.get('label_display_never') }}
-                        </option>
-                    </b-select>
-                </b-field>
-
-                <b-field 
-                        :addons="false">
-                    <label class="label is-inline">{{ $i18n.get('label_insert_options') }}</label>
-                    
+                <section>
                     <b-field
-                            v-if="form.metadata_type_object.component != 'tainacan-compound' && (form.parent == 0 || (form.parent != 0 && !isParentMultiple))"
-                            :type="formErrors['required'] != undefined ? 'is-danger' : ''"
-                            :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
-                        <b-checkbox
-                                @input="clearErrors('required')"
-                                v-model="form.required"
+                            :addons="false"
+                            :type="formErrors['name'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
+                        <label class="label is-inline">
+                            {{ $i18n.get('label_name') }}
+                            <span
+                                    class="required-metadatum-asterisk"
+                                    :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span>
+                            <help-button
+                                    :title="$i18n.getHelperTitle('metadata', 'name')"
+                                    :message="$i18n.getHelperMessage('metadata', 'name')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </label>
+                        <b-input
+                                v-model="form.name"
+                                name="name"
+                                @focus="clearErrors('name')"/>
+                    </b-field>
+
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="hasBeginLeftForm">  
+                        <form 
+                            id="form-metadatum-begin-left"
+                            class="form-hook-region"
+                            v-html="getBeginLeftForm"/>
+                    </template>
+
+                    <b-field
+                            :addons="false"
+                            :type="formErrors['description'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
+                        <label class="label is-inline">
+                            {{ $i18n.get('label_description') }}
+                            <help-button
+                                    :title="$i18n.getHelperTitle('metadata', 'description')"
+                                    :message="$i18n.getHelperMessage('metadata', 'description')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </label>
+                        <b-input
+                                type="textarea"
+                                name="description"
+                                rows="3"
+                                v-model="form.description"
+                                @focus="clearErrors('description')"/>
+                    </b-field>
+
+                    <b-field 
+                            :addons="false"
+                            :label="$i18n.getHelperTitle('metadata', 'description_bellow_name')"
+                            :type="formErrors['description_bellow_name'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['description_bellow_name'] != undefined ? formErrors['description_bellow_name'] : ''">
+                            &nbsp;
+                        <b-switch
+                                size="is-small"
+                                @input="clearErrors('description_bellow_name')"
+                                v-model="form.description_bellow_name"
                                 true-value="yes"
                                 false-value="no"
-                                class="is-inline-block"
-                                name="required">
-                            {{ $i18n.get('label_required') }}
-                            <help-button
-                                    :title="$i18n.getHelperTitle('metadata', 'required')"
-                                    :message="$i18n.getHelperMessage('metadata', 'required')"
-                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                        </b-checkbox>
+                                name="description_bellow_name">
+                        <help-button
+                                :title="$i18n.getHelperTitle('metadata', 'description_bellow_name')"
+                                :message="$i18n.getHelperMessage('metadata', 'description_bellow_name')"
+                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </b-switch>
                     </b-field>
 
                     <b-field
                             v-if="form.metadata_type_object.component != 'tainacan-compound'"
-                            :type="formErrors['collection_key'] != undefined ? 'is-danger' : ''"
-                            :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
-                        <b-checkbox
-                                @input="clearErrors('collection_key')"
-                                v-model="form.collection_key"
-                                true-value="yes"
-                                false-value="no"
-                                class="is-inline-block"
-                                name="collection_key">
-                            {{ $i18n.get('label_unique_value') }}
+                            :addons="false"
+                            :type="formErrors['placeholder'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['placeholder'] != undefined ? formErrors['placeholder'] : ''">
+                        <label class="label is-inline">
+                            {{ $i18n.getHelperTitle('metadata', 'placeholder') }}
                             <help-button
-                                    :title="$i18n.getHelperTitle('metadata', 'collection_key')"
-                                    :message="$i18n.getHelperMessage('metadata', 'collection_key')"
+                                    :title="$i18n.getHelperTitle('metadata', 'placeholder')"
+                                    :message="$i18n.getHelperMessage('metadata', 'placeholder')"
                                     :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                        </b-checkbox>
+                        </label>
+                        <b-input
+                                v-model="form.placeholder"
+                                name="placeholder"
+                                @focus="clearErrors('placeholder')"/>
+                    </b-field>
+
+                    <b-field
+                            v-if="form.parent == 0"
+                            :addons="false"
+                            :type="formErrors['status'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
+                        <label class="label is-inline">
+                            {{ $i18n.get('label_status') }}
+                            <help-button
+                                    :title="$i18n.getHelperTitle('metadata', 'status')"
+                                    :message="$i18n.getHelperMessage('metadata', 'status')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </label>
+                        <div class="is-flex is-justify-content-space-between">
+                            <b-radio
+                                    @focus="clearErrors('label_status')"
+                                    id="tainacan-select-status-publish"
+                                    name="status"
+                                    v-model="form.status"
+                                    native-value="publish">
+                                <span class="icon has-text-gray3">
+                                    <i class="tainacan-icon tainacan-icon-public"/>
+                                </span>
+                                {{ $i18n.get('status_public') }}
+                            </b-radio>
+                            <b-radio
+                                    @focus="clearErrors('label_status')"
+                                    id="tainacan-select-status-private"
+                                    name="status"
+                                    v-model="form.status"
+                                    native-value="private">
+                                <span class="icon has-text-gray3">
+                                    <i class="tainacan-icon tainacan-icon-private"/>
+                                </span>
+                                {{ $i18n.get('status_private') }}
+                            </b-radio>
+                        </div>
+                    </b-field>
+
+                    <!-- Display on listing -->
+                    <b-field
+                            v-if="form.parent == 0"
+                            :type="formErrors['display'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['display'] != undefined ? formErrors['display'] : ''" 
+                            :addons="false">
+                        <label class="label is-inline">
+                            {{ $i18n.get('label_display') }}
+                            <help-button
+                                    :title="$i18n.getHelperTitle('metadata', 'display')"
+                                    :message="$i18n.getHelperMessage('metadata', 'display')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </label>
+                        <b-select 
+                                expanded
+                                v-model="form.display"
+                                @input="clearErrors('display')">
+                            <option value="yes">
+                                {{ $i18n.get('label_display_default') }}
+                            </option>
+                            <option value="no">
+                                {{ $i18n.get('label_not_display') }}
+                            </option>
+                            <option value="never">
+                                {{ $i18n.get('label_display_never') }}
+                            </option>
+                        </b-select>
+                    </b-field>
+
+                    <b-field 
+                            :addons="false">
+                        <label class="label is-inline">{{ $i18n.get('label_insert_options') }}</label>
+                        
+                        <b-field
+                                v-if="form.metadata_type_object.component != 'tainacan-compound' && (form.parent == 0 || (form.parent != 0 && !isParentMultiple))"
+                                :type="formErrors['required'] != undefined ? 'is-danger' : ''"
+                                :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
+                            <b-checkbox
+                                    @input="clearErrors('required')"
+                                    v-model="form.required"
+                                    true-value="yes"
+                                    false-value="no"
+                                    class="is-inline-block"
+                                    name="required">
+                                {{ $i18n.get('label_required') }}
+                                <help-button
+                                        :title="$i18n.getHelperTitle('metadata', 'required')"
+                                        :message="$i18n.getHelperMessage('metadata', 'required')"
+                                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                            </b-checkbox>
+                        </b-field>
+
+                        <b-field
+                                v-if="form.metadata_type_object.component != 'tainacan-compound'"
+                                :type="formErrors['collection_key'] != undefined ? 'is-danger' : ''"
+                                :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
+                            <b-checkbox
+                                    @input="clearErrors('collection_key')"
+                                    v-model="form.collection_key"
+                                    true-value="yes"
+                                    false-value="no"
+                                    class="is-inline-block"
+                                    name="collection_key">
+                                {{ $i18n.get('label_unique_value') }}
+                                <help-button
+                                        :title="$i18n.getHelperTitle('metadata', 'collection_key')"
+                                        :message="$i18n.getHelperMessage('metadata', 'collection_key')"
+                                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                            </b-checkbox>
+                        </b-field>
+
+                        <b-field
+                                v-if="!originalMetadatum.metadata_type_object.core && form.parent == 0"
+                                :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
+                                :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
+                            <b-checkbox
+                                    @input="clearErrors('multiple')"
+                                    v-model="form.multiple"
+                                    true-value="yes"
+                                    false-value="no"
+                                    class="is-inline-block"
+                                    name="multiple">
+                                {{ $i18n.get('label_allow_multiple') }}
+                                <help-button
+                                        :title="$i18n.getHelperTitle('metadata', 'multiple')"
+                                        :message="$i18n.getHelperMessage('metadata', 'multiple')"
+                                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                            </b-checkbox>
+                            
+                        </b-field>
+                    </b-field>
+
+                    <b-field
+                            v-if="!originalMetadatum.metadata_type_object.core && form.parent == 0" 
+                            :addons="false"
+                            :label="$i18n.get('label_limit_max_values')">
+                            &nbsp;
+                        <b-switch
+                                size="is-small"
+                                :disabled="form.multiple != 'yes'"
+                                v-model="showCardinalityOptions" />
                     </b-field>
 
                     <b-field
                             v-if="!originalMetadatum.metadata_type_object.core && form.parent == 0"
-                            :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
-                            :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
-                        <b-checkbox
-                                @input="clearErrors('multiple')"
-                                v-model="form.multiple"
-                                true-value="yes"
-                                false-value="no"
-                                class="is-inline-block"
-                                name="multiple">
-                            {{ $i18n.get('label_allow_multiple') }}
+                            :type="formErrors['cardinality'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['cardinality'] != undefined ? formErrors['cardinality'] : ''"
+                            :addons="false">
+                        <label class="label is-inline">
+                            {{ $i18n.getHelperTitle('metadata', 'cardinality') }}
                             <help-button
-                                    :title="$i18n.getHelperTitle('metadata', 'multiple')"
-                                    :message="$i18n.getHelperMessage('metadata', 'multiple')"
+                                    :title="$i18n.getHelperTitle('metadata', 'cardinality')"
+                                    :message="$i18n.getHelperMessage('metadata', 'cardinality')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </label>
+                        <b-numberinput
+                                :disabled="!showCardinalityOptions || form.multiple != 'yes'"
+                                name="cardinality"
+                                step="1"
+                                min="2"
+                                v-model="form.cardinality"/>
+                    </b-field>
+
+                    <b-field v-if="!isRepositoryLevel && isInsideImporterFlow">
+                        <b-checkbox
+                                class="is-inline-block"
+                                v-model="form.repository_level"
+                                @input="clearErrors('repository_level')"
+                                name="repository_level"
+                                true-value="yes"
+                                false-value="no">
+                            {{ $i18n.get('label_repository_metadata') }}
+                            <help-button
+                                    :title="$i18n.getHelperTitle('metadata', 'repository_level')"
+                                    :message="$i18n.getHelperMessage('metadata', 'repository_level')"
                                     :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </b-checkbox>
-                        
                     </b-field>
-                </b-field>
 
-                <b-field
-                        v-if="!originalMetadatum.metadata_type_object.core && form.parent == 0" 
-                        :addons="false"
-                        :label="$i18n.get('label_limit_max_values')">
-                        &nbsp;
-                    <b-switch
-                            size="is-small"
-                            :disabled="form.multiple != 'yes'"
-                            v-model="showCardinalityOptions" />
-                </b-field>
 
-                <b-field
-                        v-if="!originalMetadatum.metadata_type_object.core && form.parent == 0"
-                        :type="formErrors['cardinality'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['cardinality'] != undefined ? formErrors['cardinality'] : ''"
-                        :addons="false">
-                    <label class="label is-inline">
-                        {{ $i18n.getHelperTitle('metadata', 'cardinality') }}
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata', 'cardinality')"
-                                :message="$i18n.getHelperMessage('metadata', 'cardinality')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </label>
-                    <b-numberinput
-                            :disabled="!showCardinalityOptions || form.multiple != 'yes'"
-                            name="cardinality"
-                            step="1"
-                            min="2"
-                            v-model="form.cardinality"/>
-                </b-field>
+                    </section>
+                </div>
 
-                <b-field v-if="!isRepositoryLevel && isInsideImporterFlow">
-                    <b-checkbox
-                            class="is-inline-block"
-                            v-model="form.repository_level"
-                            @input="clearErrors('repository_level')"
-                            name="repository_level"
-                            true-value="yes"
-                            false-value="no">
-                        {{ $i18n.get('label_repository_metadata') }}
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata', 'repository_level')"
-                                :message="$i18n.getHelperMessage('metadata', 'repository_level')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </b-checkbox>
-                </b-field>
-            </div>
-
-            <div 
-                    v-if="(form.metadata_type_object && form.metadata_type_object.form_component && form.metadata_type_object.component != 'tainacan-compound') || form.edit_form != ''"
-                    class="metadata-form-section"
-                    @click="hideMetadataTypeOptions = !hideMetadataTypeOptions;">
-                <span class="icon">
-                    <i 
-                            class="tainacan-icon"
-                            :class="!hideMetadataTypeOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
-                </span>
-                <strong>{{ $i18n.getWithVariables('label_options_of_the_%s_metadata_type', [ form.metadata_type_object.name ]) }}</strong>
-                <hr>
-            </div>
+                <div 
+                        v-if="(form.metadata_type_object && form.metadata_type_object.form_component && form.metadata_type_object.component != 'tainacan-compound') || form.edit_form != ''"
+                        class="metadata-form-section"
+                        @click="hideMetadataTypeOptions = !hideMetadataTypeOptions;">
+                    <span class="icon">
+                        <i 
+                                class="tainacan-icon"
+                                :class="!hideMetadataTypeOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                    </span>
+                    <strong>{{ $i18n.getWithVariables('label_options_of_the_%s_metadata_type', [ form.metadata_type_object.name ]) }}</strong>
+                    <hr>
+                </div>
 
             <transition name="filter-item">
                 <div 
@@ -340,20 +344,22 @@
                 <div 
                         v-if="showAdvancedOptions"
                         class="options-columns">
-                    <b-field :addons="false">
-                        <label class="label is-inline">
-                            {{ $i18n.get('label_semantic_uri') }}
-                            <help-button
-                                    :title="$i18n.getHelperTitle('metadata', 'semantic_uri')"
-                                    :message="$i18n.getHelperMessage('metadata', 'semantic_uri')"
-                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                        </label>
-                        <b-input
-                                v-model="form.semantic_uri"
-                                name="semantic_uri"
-                                type="url"
-                                @focus="clearErrors('semantic_uri')"/>
-                    </b-field>
+                    <section>
+                        <b-field :addons="false">
+                            <label class="label is-inline">
+                                {{ $i18n.get('label_semantic_uri') }}
+                                <help-button
+                                        :title="$i18n.getHelperTitle('metadata', 'semantic_uri')"
+                                        :message="$i18n.getHelperMessage('metadata', 'semantic_uri')"
+                                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                            </label>
+                            <b-input
+                                    v-model="form.semantic_uri"
+                                    name="semantic_uri"
+                                    type="url"
+                                    @focus="clearErrors('semantic_uri')"/>
+                        </b-field>
+                    </section>
                 </div>
             </transition>
         </div>
@@ -410,7 +416,7 @@
         },
         watch: {
             showCardinalityOptions() {
-                this.form.cardinality = !this.showCardinalityOptions ? 1 : 2;
+                this.form.cardinality = !this.showCardinalityOptions ? 1 : Number(this.form.cardinality);
             }
         },
         created() {
@@ -419,7 +425,7 @@
             if (this.form.status == 'auto-draft')
                 this.form.status = 'publish';
 
-            if (this.form.cardinality && this.form.cardinality > 1)
+            if (this.form.cardinality && Number(this.form.cardinality) > 1)
                 this.showCardinalityOptions = true;
 
             this.formErrors = this.form.formErrors != undefined ? this.form.formErrors : {};
@@ -535,7 +541,7 @@
 
     form#metadatumEditForm {
 
-        .options-columns {
+        .options-columns>section {
             -moz-column-count: 2;
             -moz-column-gap: 0;
             -moz-column-rule: 1px solid var(--tainacan-gray1);

@@ -243,6 +243,9 @@ html.is-clipped .page-container-small:not(.is-filters-menu-open) {
         margin: 1em auto;
     }
 }
+.metadata-type-geocoordinate>div {
+    width: 100%;
+}
 .metadata-type-compound {
     padding-left: 15px;
     margin-left: 0px;
