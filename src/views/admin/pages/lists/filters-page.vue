@@ -707,7 +707,7 @@ export default {
                 }
             }
 
-            this.availableMetadata = availableMetadata.filter((aMetadatum) => aMetadatum.metadata_type_object.component != 'tainacan-compound');
+            this.availableMetadata = availableMetadata.filter((aMetadatum) => aMetadatum.metadata_type_object.component != 'tainacan-compound' && aMetadatum.metadata_type_object.component != 'tainacan-geocoordinate');
         },  
         onChangeEnable($event, index) {
             let filtersOrder = [];
