@@ -1258,6 +1258,10 @@ function tainacan_the_metadata_sections($args = array()) {
 	*                                                  			Default '<p class="term-description">'
 	*     @type string      $after_term_description     		String to be added after each term description
 	*                                                  			Default '</p>'
+	*     @type string      $before_term_links		     		String to be added before each term links area
+	*                                                  			Default ''
+	*     @type string      $after_term_links		     		String to be added after each term links area
+	*                                                  			Default ''
 	* 	  @type string      $before_term_children_link  		String to be added before each term children link
 	*                                                  			Default '<span class="term-children-link">'
 	*     @type string      $after_term_children_link   		String to be added after each term children link
@@ -1308,6 +1312,8 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 		'after_term_name' => '</h2>',
 		'before_term_description' => '<div class="term-description wp-block-post-excerpt"><p class="wp-block-post-excerpt__excerpt">',
 		'after_term_description' => '</p></div>',
+		'before_term_links' => '',
+		'after_term_links' => '',
 		'before_term_children_link' => '<span class="term-children-link">',
 		'after_term_children_link' => '</span>',
 		'before_term_items_link' => '<span class="term-items-link">',
@@ -1411,6 +1417,8 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 				}
 			}
 
+			echo $args['before_term_links'];
+
 			if ( !$args['hide_term_children_link'] ) {
 				$total_children = get_term_children( $tainacan_term->get_id(), 'tnc_tax_' . $post->ID );
 				$total_children = is_array($total_children) && count($total_children) ? count($total_children) : 0;
@@ -1428,6 +1436,8 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 				else if ( !$term->count && !$args['hide_term_empty_items_link'] )
 					echo $args['before_term_items_link'] . $args['term_empty_items_link_message'] . $args['after_term_items_link'];
 			}
+
+			echo $args['after_term_links'];
 
 			if ( !$args['hide_term_items_link'] && $args['hide_term_children_link'] )
 				echo '</a>';
