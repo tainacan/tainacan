@@ -182,6 +182,15 @@ class Item_Metadata_Entity extends Entity {
 	 * @return string
 	 */
 	public function get_value_as_string() {
+		$metadatum = $this->get_metadatum();
+		if (is_object($metadatum)) {
+			$fto = $metadatum->get_metadata_type_object();
+			if (is_object($fto)) {
+				if ( method_exists($fto, 'get_value_as_string') ) {
+					return $fto->get_value_as_string($this);
+				}
+			}
+		}
 		return strip_tags($this->get_value_as_html());
 	}
 	

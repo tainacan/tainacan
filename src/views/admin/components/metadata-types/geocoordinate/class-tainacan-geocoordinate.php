@@ -89,6 +89,36 @@ class GeoCoordinate extends Metadata_Type {
 		}
 		return true;
 	}
+
+	/**
+	 * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as a string
+	 * @param  Item_Metadata_Entity $item_metadata 
+	 * @return string The String representation of the value, containing one or multiple items names, linked to the item page
+	 */
+	public function get_value_as_string(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		$value = $item_metadata->get_value();
+
+		$return = '';
+		if ( $item_metadata->is_multiple() ) {
+			$prefix = $item_metadata->get_multivalue_prefix();
+			$suffix = $item_metadata->get_multivalue_suffix();
+			$separator = $item_metadata->get_multivalue_separator();
+			$total = count($value);
+			$count = 0;
+			foreach ($value as $v) {
+				$return .= $prefix;
+				$return .= (string) $v;
+				$return .= $suffix;
+				$count ++;
+				if ($count < $total)
+					$return .= $separator;
+			}
+		} else {
+			$return = (string) $value;
+		}
+		return $return;
+	}
+
 	
 	/**
 	 * Get the value as a HTML string with proper date format set in admin
