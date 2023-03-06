@@ -219,6 +219,7 @@ function tainacan_blocks_get_plugin_js_settings(){
 
 	$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 	$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
+	$cpts = [];
 	foreach ( $collections as $col ) {
 		$cpts[$col->get_db_identifier()] = $col->get_name();
 	}
