@@ -2191,20 +2191,13 @@ class Theme_Helper {
 
 
 	function get_taxonomies_query_args() {
-		$current_order = get_query_var( 'order', 'ASC' );
-		$current_orderby = get_query_var( 'orderby', 'name' );
-		$current_paged = get_query_var( 'termspaged', 1 );
-		$current_perpage = get_query_var( 'perpage', 12 );
-		$current_search = get_query_var( 'search', '' );
-		$current_parent = get_query_var( 'termsparent', '' );
-
 		return array(
-			'order' => $current_order,
-			'orderby' => $current_orderby,
-			'termspaged' => $current_paged,
-			'perpage' => $current_perpage,
-			'search' => $current_search,
-			'termsparent' => $current_parent
+			'order' => get_query_var( 'order', apply_filters('tainacan-default-taxonomy-terms-order', 'ASC') ),
+			'orderby' => get_query_var( 'orderby', apply_filters('tainacan-default-taxonomy-terms-orderby', 'name') ),
+			'termspaged' => get_query_var( 'termspaged', 1 ),
+			'perpage' => get_query_var( 'perpage', apply_filters('tainacan-default-taxonomy-terms-perpage', 12) ),
+			'search' => get_query_var( 'search', '' ),
+			'termsparent' => get_query_var( 'termsparent', '' )
 		);
 	}
 }
