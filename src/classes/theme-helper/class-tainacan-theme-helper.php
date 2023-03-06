@@ -528,7 +528,7 @@ class Theme_Helper {
 			// Gets hideItemsThumbnail info from collection setting
 			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 		}
-		var_dump($default_order);
+		
 		// If in a tainacan taxonomy
 		$term = tainacan_get_term($args);
 		if ($term) {
