@@ -609,7 +609,7 @@ class Theme_Helper {
 			$default_order = $args['default_order'];
 			unset($args['default_order']);
 		}
-
+		
 		$default_orderby = 'date';
 		if ( isset($args['default_orderby']) ) {
 			$default_orderby = $args['default_orderby'];
@@ -628,7 +628,7 @@ class Theme_Helper {
 			// Gets hideItemsThumbnail info from collection setting
 			$args['hide-items-thumbnail'] = $collection->get_hide_items_thumbnail_on_lists() == 'yes' ? true : false;
 		}
-
+		var_dump($default_order);
 		// If in a tainacan taxonomy
 		$term = tainacan_get_term($args);
 		if ($term) {
