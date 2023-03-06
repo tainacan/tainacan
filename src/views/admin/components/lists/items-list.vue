@@ -1426,7 +1426,7 @@
                                         v-for="(column, columnIndex) in displayedMetadata"
                                         :key="columnIndex"
                                         v-if="collectionId != undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                        v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : ''" />
+                                        v-html="item.metadata != undefined ? renderMetadata(item.metadata, column) : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <p
                                         v-tooltip="{
                                             delay: {
@@ -1442,7 +1442,7 @@
                                         v-for="(column, columnIndex) in displayedMetadata"
                                         :key="columnIndex"
                                         v-if="collectionId == undefined && column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                        v-html="item.title != undefined ? item.title : ''" />
+                                        v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <div class="tainacan-map-card-thumbnail">
                                     <blur-hash-image
                                             v-if="item.thumbnail != undefined"
