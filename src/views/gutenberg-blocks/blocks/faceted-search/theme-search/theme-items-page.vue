@@ -769,7 +769,7 @@
         },
         computed: {
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date' && this.orderBy != 'modified'); 
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified'); 
             },
             items() {
                 return this.getItems();
@@ -863,6 +863,7 @@
                     this.$eventBusSearch.setOrder(this.defaultOrder);
             }
             if (this.defaultOrderBy != undefined) {
+                
                 if (this.defaultOrderByMeta || this.defaultOrderByType) {
                     
                     let orderByObject = { orderby: this.defaultOrderBy }
@@ -1278,7 +1279,7 @@
                                                     display = true;
 
                                                 // Deciding display based on user prefs
-                                                if (prefsFetchOnlyMetaObject.length) {
+                                                if (prefsFetchOnlyMetaObject.length && metadatum.display != 'yes') {
                                                     let index = prefsFetchOnlyMetaObject.findIndex(metadatumId => metadatumId == metadatum.id);
 
                                                     display = index >= 0;
