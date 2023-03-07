@@ -158,6 +158,41 @@ class Term extends Entity {
 		return $url;
 	}
 
+	/**
+	 * Gets the thumbnail 
+	 * 
+	 * Each size is represented as an array in the format returned by
+	 * @see https://developer.wordpress.org/reference/functions/wp_get_attachment_image_src/
+	 *
+	 * @return array
+	 */
+	function get_thumbnail() {
+
+		$sizes = get_intermediate_image_sizes();
+		$blurhash = $this->get_thumbnail_blurhash();
+
+		array_unshift($sizes, 'full');
+
+		foreach ( $sizes as $size ) {
+			$thumbs[$size] = wp_get_attachment_image_src( $this->get_header_image_id(), $size );
+			if (is_array($thumbs[$size]) && count($thumbs[$size]) == 4) {
+				$thumbs[$size][] = $blurhash;
+			}
+		}
+		return apply_filters("tainacan-term-get-thumbnail", $thumbs, $this);
+	}
+
+	function get_thumbnail_blurhash() {
+		$attachment_metadata = wp_get_attachment_metadata($this->get_header_image_id());
+		if($attachment_metadata != false && isset($attachment_metadata['image_meta'])) {
+			$image_meta = $attachment_metadata['image_meta'];
+			if($image_meta != false && isset($image_meta['blurhash'])) {
+				return $image_meta['blurhash'];
+			}
+		}
+		return \Tainacan\Media::get_instance()->get_default_image_blurhash();
+	}
+
 	// Setters
 
 	/**
