@@ -1525,20 +1525,20 @@ function tainacan_get_taxonomies_search() {
 	ob_start();
 	?>
 	<form
-			id="tainacan-taxonomy-sorting-field"
+			id="tainacan-taxonomy-search-field"
 			role="search"
 			method="get"
 			action=""
 			class="wp-block-search__button-outside wp-block-search__text-button wp-block-search">
 		<label
-				for="tainacan-taxonomy-sorting-field--input"
+				for="tainacan-taxonomy-search-field--input"
 				class="wp-block-search__label">
 			<?php echo __( 'Search', 'tainacan'); ?>
 		</label>
 		<div class="wp-block-search__inside-wrapper">
 			<input
 					type="search"
-					id="tainacan-taxonomy-sorting-field--input"
+					id="tainacan-taxonomy-search-field--input"
 					class="wp-block-search__input wp-block-search__input"
 					name="search"
 					value="<?php echo $current_args['search']; ?>"
