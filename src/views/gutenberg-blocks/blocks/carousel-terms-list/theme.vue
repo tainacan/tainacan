@@ -39,8 +39,29 @@
                                 :id="isNaN(term.id) ? term.id : 'term-id-' + term.id"
                                 :href="term.url">
                             <img
-                                :src="term.header_image ? term.header_image : `${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                :alt="term.name ? term.name : $root.__('Thumbnail', 'tainacan')" >
+                                :src=" 
+                                    term.thumbnail && term.thumbnail[imageSize] && term.thumbnail[imageSize][0] 
+                                        ?
+                                    term.thumbnail[imageSize][0] 
+                                        :
+                                    (term.thumbnail && term.thumbnail['thumbnail'] && term.thumbnail['thumbnail'][0]
+                                        ?    
+                                    term.thumbnail['thumbnail'][0] 
+                                        : 
+                                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
+                                "
+                                :data-src=" 
+                                    term.thumbnail && term.thumbnail[imageSize] && term.thumbnail[imageSize][0] 
+                                        ?
+                                    term.thumbnail[imageSize][0] 
+                                        :
+                                    (term.thumbnail && term.thumbnail['thumbnail'] && term.thumbnail['thumbnail'][0]
+                                        ?    
+                                    term.thumbnail['thumbnail'][0] 
+                                        : 
+                                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
+                                "
+                                :alt="term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : $root.__('Thumbnail', 'tainacan'))" >
                             <span v-if="!hideName">{{ term.name ? term.name : '' }}</span>
                         </a>
                         <a 
@@ -152,6 +173,7 @@ export default {
         hideName: Boolean,
         largeArrows: Boolean,
         arrowsStyle: String,
+        imageSize: String,
         showTermThumbnail: Boolean,
         tainacanApiRoot: String,
         tainacanBaseUrl: String,

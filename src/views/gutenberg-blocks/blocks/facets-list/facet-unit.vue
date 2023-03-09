@@ -8,21 +8,10 @@
                 @click="() => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null }"
                 :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}">
             <img
-                v-if="isMetadatumTypeTaxonomy"
                 :src=" 
-                    facet.entity && facet.entity['header_image']
-                        ?    
-                    facet.entity['header_image']
-                        : 
-                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`
-                "
-                :alt="facet.label ? facet.label : $root.__('Thumbnail', 'tainacan')">
-            <img
-                v-if="isMetadatumTypeRelationship"
-                :src=" 
-                    facet.entity.thumbnail && facet.entity.thumbnail['tainacan-medium'][0] && facet.entity.thumbnail['tainacan-medium'][0] 
+                    facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
                         ?
-                    facet.entity.thumbnail['tainacan-medium'][0] 
+                    facet.entity.thumbnail[imageSize][0] 
                         :
                     (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
                         ?    
@@ -30,7 +19,7 @@
                         : 
                     `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
                 "
-                :alt="facet.label ? facet.label : $root.__('Thumbnail', 'tainacan')">
+                :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : $root.__('Thumbnail', 'tainacan'))">
             <div :class=" 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '')">
                 <span>{{ facet.label ? facet.label : '' }}</span>
                 <span 
@@ -143,7 +132,8 @@ export default {
         childFacetsObject: Object,
         isMetadatumTypeTaxonomy: Boolean,
         isMetadatumTypeRelationship: Boolean,
-        itemsCountStyle: String
+        itemsCountStyle: String,
+        imageSize: String
     },
     computed:{
         facetId() {

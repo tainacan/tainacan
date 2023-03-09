@@ -331,10 +331,6 @@ class REST_Terms_Controller extends REST_Controller {
 
 				$item_arr['total_children'] = count($children);
 				
-				$item_arr['thumbnail'] = $item->get_thumbnail();
-				$item_arr['thumbnail_alt'] = get_post_meta( $item->get_header_image_id(), '_wp_attachment_image_alt', true );
-				$item_arr['thumbnail_id'] = $item->get_header_image_id();
-				
 			} else {
 				$attributes_to_filter = $request['fetch_only'];
 				
@@ -344,11 +340,7 @@ class REST_Terms_Controller extends REST_Controller {
 					$attributes_to_filter = explode(',', $attributes_to_filter);
 
 				foreach ( $attributes_to_filter as $attribute ) {
-					if ( $attribute == 'thumbnail' ) {
-						$item_arr['thumbnail'] = $item->get_thumbnail();
-						$item_arr['thumbnail_alt'] = get_post_meta( $item->get_header_image_id(), '_wp_attachment_image_alt', true );
-						$item_arr['thumbnail_id'] = $item->get_header_image_id();
-					} else if ( $attribute == 'total_children' ) {
+					if ( $attribute == 'total_children' ) {
 						$children =  get_terms([
 							'taxonomy' => $item_arr['taxonomy'],
 							'parent' => $item_arr['id'],

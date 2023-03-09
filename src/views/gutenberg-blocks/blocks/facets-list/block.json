@@ -14,129 +14,133 @@
     },
     "attributes": {
         "content": {
-            "type": "Array",
+            "type": "array",
             "source": "children",
             "selector": "div"
         },
         "collectionId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "collectionSlug": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "facets": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "facetsObject": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "showImage": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": true
         },
         "nameInsideImage": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "showItemsCount": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": true
         },
         "showLoadMore": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "showSearchBar": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "layout": {
-            "type": "String",
+            "type": "string",
             "default": "grid"
         },
         "cloudRate": {
-            "type": "Number",
+            "type": "number",
             "default": 1
         },
         "isModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "gridMargin": {
-            "type": "Number",
+            "type": "number",
             "default": 24
         },
         "metadatumId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "metadatumType": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "facetsRequestSource": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "maxFacetsNumber": {
-            "type": "Number",
+            "type": "number",
             "value": 12
         },
         "isLoading": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "isLoadingCollection": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "collection": {
-            "type": "Object",
+            "type": "object",
             "value": {}
         },
-        "searchString": {
-            "type": "String",
+        "searchstring": {
+            "type": "string",
             "default": ""
         },
         "blockId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "parentTerm": {
-            "type": "Number",
+            "type": "number",
             "default": null
         },
         "isParentTermModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "maxColumnsCount": {
-            "type": "Number",
+            "type": "number",
             "default": 5
         },
         "appendChildTerms": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "childFacetsObject": {
-            "type": "Object",
+            "type": "object",
             "default": {}
         },
         "linkTermFacetsToTermPage": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": true
         },
         "isLoadingChildTerms": {
-            "type": "Number",
+            "type": "number",
             "default": null
         },
         "itemsCountStyle": {
-            "type": "String",
+            "type": "string",
             "default": "default"
+        },
+        "imageSize": {
+            "type": "string",
+            "default": "tainacan-medium"
         }
     },
     "supports": {

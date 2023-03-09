@@ -2,6 +2,7 @@ const { registerBlockVariation } = wp.blocks;
 const { __ } = wp.i18n;
 import itemsIcon from '../blocks/items-list/icon';
 import collectionsIcon from '../blocks/collections-list/icon';
+import taxonomiesIcon from '../blocks/terms-list/icon';
 
 /**
  * Adds Tainacan Collections as a query loop variation
@@ -91,3 +92,46 @@ Object.keys(POST_TYPES).forEach((postType) => {
         ]
     } );
 });
+
+
+/**
+ * Adds Tainacan Taxonomies as a query loop variation
+ */
+registerBlockVariation( 'core/query', {
+    name: 'tainacan-taxonomies',
+    title: __( 'Tainacan taxonomies', 'tainacan'),
+    icon: taxonomiesIcon,
+    category: 'tainacan-blocks-variations',
+    description: __('Displays a list of Tainacan taxonomies', 'tainacan'),
+    isActive: ( { namespace, query } ) => {
+            return (
+                namespace === 'tainacan-taxonomy'
+                && query.postType === 'tainacan-taxonomy'
+            );
+    },
+    attributes: {
+        namespace: 'tainacan-taxonomy',
+        query: {
+            postType: 'tainacan-taxonomy',
+            perPage: 12,
+            offset: 0
+        },
+        align: 'wide',
+        displayLayout: {
+            type: 'flex',
+            columns: 4
+        }
+    },
+    allowedControls: [ 'inherit', 'order', 'search' ],
+    innerBlocks: [
+        [
+            'core/post-template',
+            {},
+            [
+                // [ 'core/post-featured-image' ],
+                [ 'core/post-title' ]
+            ],
+        ]
+    ]
+} );
+

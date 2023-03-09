@@ -90,6 +90,7 @@
                         :child-facets-object="childFacetsObject"
                         :append-child-terms="appendChildTerms"
                         :facet="facet"
+                        :image-size="imageSize"
                         :cloud-rate="cloudRate"
                         :items-count-style="itemsCountStyle"
                         :tainacan-base-url="tainacanBaseUrl"
@@ -121,6 +122,7 @@
                             :child-facets-object="childFacetsObject"
                             :append-child-terms="appendChildTerms"
                             :facet="facet"
+                            :image-size="imageSize"
                             :cloud-rate="cloudRate"
                             :items-count-style="itemsCountStyle"
                             :tainacan-base-url="tainacanBaseUrl"
@@ -194,7 +196,8 @@ export default {
         tainacanBaseUrl: String,
         tainacanSiteUrl: String,
         className: String,
-        customStyle: String
+        customStyle: String,
+        imageSize: String
     },
     data() {
         return {

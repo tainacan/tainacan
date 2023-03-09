@@ -65,9 +65,12 @@ class Term extends Entity {
 		unset($term_array['term_id']);
 		unset($term_array['status']);
 
-		$term_array['id']           = $term_id;
-		$term_array['header_image'] = $this->get_header_image();
-		$term_array['url']          = get_term_link( $this->get_id() );
+		$term_array['id']             = $term_id;
+		$term_array['thumbnail']	  = $this->get_thumbnail();
+		$term_array['thumbnail_alt']  = get_post_meta( $this->get_header_image_id(), '_wp_attachment_image_alt', true );
+		$term_array['thumbnail_id']	  = $this->get_header_image_id();
+		$term_array['header_image']   = $this->get_header_image();
+		$term_array['url']            = get_term_link( $this->get_id() );
 		$term_array['hierarchy_path'] = get_term_parents_list($term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false]);
 
 		return apply_filters('tainacan-term-to-array', $term_array, $this);

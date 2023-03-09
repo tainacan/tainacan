@@ -2,13 +2,18 @@ const { __ } = wp.i18n;
 
 const { BaseControl, RangeControl, Spinner, SelectControl, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
+const { useSelect } = wp.data;
+
+import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
+import pick from 'lodash/pick';
 import MetadataModal from './metadata-modal.js';
 import ParentTermModal from './parent-term-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
+import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }) {
@@ -40,7 +45,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         childFacetsObject,
         linkTermFacetsToTermPage,
         isLoadingChildTerms,
-        itemsCountStyle
+        itemsCountStyle,
+        imageSize
     } = attributes;
 
     // Gets blocks props from hook
@@ -87,7 +93,30 @@ export default function({ attributes, setAttributes, className, isSelected, clie
     if (metadatumType == __('Relationship', 'tainacan')) {
         metadatumType = 'Tainacan\\Metadata_Types\\Relationship';
         setAttributes({ metadatumType: metadatumType });
+    } if (imageSize === undefined) {
+        imageSize = 'tainacan-medium';
+        setAttributes({ imageSize: imageSize });
     }
+
+    const thumbHelper = ThumbnailHelperFunctions();
+
+    // Get available image sizes
+    const {	imageSizes } = useSelect(
+		( select ) => {
+			const {	getSettings	} = select( store );
+
+			const settings = pick( getSettings(), [
+                'imageSizes'
+			] );
+            return settings
+        },
+		[ clientId ]
+	);
+    const imageSizeOptions = map(
+		imageSizes,
+		( { name, slug } ) => ( { value: slug, label: name } )
+	);
+
     
     function prepareFacet(facet) {
         const facetId = facet.id != undefined ? facet.id : facet.value; 
@@ -96,38 +125,23 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                 key={ facetId }
                 className={ 'facet-list-item' + (!showImage ? ' facet-without-image' : '') + (nameInsideImage ? ' facet-with-name-inside-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')}>
                 <a 
-                    id={ isNaN(facetId) ? facetId : 'facet-id-' + facetId }
-                    href={ !appendChildTerms ? ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy(metadatumType)) ? facet.term_url : facet.url) : (facet.total_children > 0 ? null : (linkTermFacetsToTermPage ? facet.term_url : facet.url)) }
-                    onClick={ () => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null } } 
-                    style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}}>
-                    { isMetadatumTypeTaxonomy(metadatumType) ? 
-                        <img
-                            src={ 
-                                facet.entity && facet.entity['header_image']
-                                    ?    
-                                facet.entity['header_image']
-                                    : 
-                                `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`
-                            }
-                            alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
-                    : null 
-                    }
-                    { isMetadatumTypeRelationship(metadatumType) ? 
-                        <img
-                            src={ 
-                                facet.entity.thumbnail && facet.entity.thumbnail['tainacan-medium'][0] && facet.entity.thumbnail['tainacan-medium'][0] 
-                                    ?
-                                facet.entity.thumbnail['tainacan-medium'][0] 
-                                    :
-                                (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
-                                    ?    
-                                facet.entity.thumbnail['thumbnail'][0] 
-                                    : 
-                                `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
-                            }
-                            alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
-                    : null 
-                    }
+                        id={ isNaN(facetId) ? facetId : 'facet-id-' + facetId }
+                        href={ !appendChildTerms ? ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy(metadatumType)) ? facet.term_url : facet.url) : (facet.total_children > 0 ? null : (linkTermFacetsToTermPage ? facet.term_url : facet.url)) }
+                        onClick={ () => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null } } 
+                        style={{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}}>
+                    <img
+                        src={ 
+                            facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
+                                ?
+                            facet.entity.thumbnail[imageSize][0] 
+                                :
+                            (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
+                                ?    
+                            facet.entity.thumbnail['thumbnail'][0] 
+                                : 
+                            `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
+                        }
+                        alt={ facet.label ? facet.label : __( 'Thumbnail', 'tainacan' ) }/>
                     <div className={ 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '') }>
                         <span>{ facet.label ? facet.label : '' }</span>
                         {
@@ -592,6 +606,17 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             >
                             <div>
                                 { (isMetadatumTypeTaxonomy(metadatumType) || isMetadatumTypeRelationship(metadatumType)) ? 
+                                <>
+                                    <SelectControl
+                                        label={__('Image size', 'tainacan')}
+                                        value={ imageSize }
+                                        options={ imageSizeOptions }
+                                        onChange={ ( anImageSize ) => { 
+                                            imageSize = anImageSize;
+                                            setAttributes({ imageSize: imageSize });
+                                            setContent();
+                                        }}
+                                    />
                                     <ToggleControl
                                         label={__('Name inside image', 'tainacan')}
                                         help={ nameInsideImage ? __("Toggle to show facet's name inside the image", 'tainacan') : __("Do not show facet's name image", 'tainacan')}
@@ -602,7 +627,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                                 updateContent();
                                             } 
                                         }
-                                    /> : null
+                                    />
+                                </> : null
                                 }
                                 <div style={{ marginTop: '16px'}}>
                                     <RangeControl
@@ -642,6 +668,17 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             >
                             <div>
                                 { (isMetadatumTypeTaxonomy(metadatumType) || isMetadatumTypeRelationship(metadatumType)) ? 
+                                <>
+                                    <SelectControl
+                                        label={__('Image size', 'tainacan')}
+                                        value={ imageSize }
+                                        options={ imageSizeOptions }
+                                        onChange={ ( anImageSize ) => { 
+                                            imageSize = anImageSize;
+                                            setAttributes({ imageSize: imageSize });
+                                            setContent();
+                                        }}
+                                    />
                                     <ToggleControl
                                         label={__('Image', 'tainacan')}
                                         help={ showImage ? __("Toggle to show facet's image", 'tainacan') : __("Do not show facet's image", 'tainacan')}
@@ -653,6 +690,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             } 
                                         }
                                     /> 
+                                </>
                                 : null }
                                 <div style={{ marginTop: '16px'}}>
                                     <RangeControl
@@ -706,7 +744,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             existingMetadatumId={ metadatumId } 
                             existingMetadatumType={ metadatumType } 
                             onSelectCollection={ (selectedCollection) => {
-                                collectionId = selectedCollection.id;
+                                collectionId = selectedCollection.id + "";
                                 collectionSlug = selectedCollection.slug;
 
                                 setAttributes({ 
@@ -715,7 +753,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 });
                             }}
                             onSelectMetadatum={ (selectedFacet) =>{
-                                metadatumId = selectedFacet.metadatumId;
+                                metadatumId = selectedFacet.metadatumId + "";
                                 metadatumType = selectedFacet.metadatumType;
                                 setAttributes({
                                     metadatumId: metadatumId,

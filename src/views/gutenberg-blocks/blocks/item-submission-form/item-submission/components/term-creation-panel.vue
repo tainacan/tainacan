@@ -71,7 +71,7 @@
                                     class="media-left">
                                 <img 
                                         width="28"
-                                        :src="props.option.header_image">
+                                        :src="props.option.thumbnail && props.option.thumbnail['tainacan-small'] && props.option.thumbnail['tainacan-small'][0] ? props.option.thumbnail['tainacan-small'][0] : props.option.header_image">
                             </div>
                             <div class="media-content">
                                 {{ props.option.name }}

@@ -1398,7 +1398,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 				echo '<a href="' . $tainacan_term->get_url() .'">';
 
 			if ( !$args['hide_term_thumbnail'] ) {
-				$thumbnail =  wp_get_attachment_image( $tainacan_term->get_header_image_id(), $args['thumbnails_size'], false );
+				$thumbnail = wp_get_attachment_image( $tainacan_term->get_header_image_id(), $args['thumbnails_size'], false );
 				
 				if ( !$thumbnail && !$args['hide_term_thumbnail_placeholder'] )
 					echo $args['before_term_thumbnail'] . '<img src="' . esc_url(tainacan_get_the_mime_type_icon('empty', $args['thumbnails_size'])) . '">' . $args['after_term_thumbnail'];
