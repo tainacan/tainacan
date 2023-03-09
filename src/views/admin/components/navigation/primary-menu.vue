@@ -201,7 +201,7 @@ export default {
         li {
             height: $subheader-height;
             a { 
-                color: var(--tainacan-white);
+                color: var(--tainacan-white) !important;
                 white-space: nowrap;
                 overflow: hidden;
                 padding: 8px 15px;

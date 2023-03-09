@@ -1,0 +1,9 @@
+.tainacan-leaflet-map-container {
+  display: block;
+  height: 320px;
+  width: 100%; }
+  .tainacan-leaflet-map-container .tainacan-coordinates,
+  .tainacan-leaflet-map-container .multivalue-separator {
+    opacity: 0; }
+
+/*# sourceMappingURL=tainacan-gutenberg-block-geocoordinate-item-metadatum.css.map */

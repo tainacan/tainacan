@@ -257,7 +257,7 @@ export default {
             color: #25a189 !important;
         }
         .tainacan-icon-delete {
-            color: #e69810 !important;
+            color: #bb7700 !important;
         }
     }
     &.number-block--items,
@@ -301,7 +301,7 @@ export default {
             background-color: #25a189;
         }
         &:nth-child(5) {
-            background-color: #e69810;
+            background-color: #bb7700;
         }
         &:nth-child(6) {
             opacity: 0.35;

@@ -28,7 +28,7 @@ performWhenDocumentIsLoaded(() => {
         moduleImport: name => import(
             /* webpackMode: "lazy" */
             /* webpackInclude: /main\.js$/ */
-            /* webpackChunkName: "tainacan-chunks-" */
+            /* webpackChunkName: "tainacan-chunks-[request]" */
             `${name}`
         )
             .catch((error) => {

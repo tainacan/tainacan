@@ -372,19 +372,25 @@
                                     <div 
                                             v-for="(metadataSection, sectionIndex) of metadataSections"
                                             :key="sectionIndex"
-                                            :class="'metadata-section-slug-' + metadataSection.slug"
-                                            :id="'metadata-section-id-' + metadataSection.id">
+                                            :class="'metadata-section-slug-' + metadataSection.slug + (isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')"
+                                            :id="'metadata-section-id-' + metadataSection.id"
+                                            v-tooltip="{
+                                                content: isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
+                                                autoHide: true,
+                                                placement: 'auto',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
+                                            }">
                                         <div class="metadata-section-header section-label">
                                             <span   
                                                     class="collapse-handle"
-                                                    @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses) ? null : toggleMetadataSectionCollapse(sectionIndex)">
+                                                    @click="(isMetadataNavigation || $adminOptions.hideItemEditionCollapses || isSectionHidden(metadataSection.id)) ? null : toggleMetadataSectionCollapse(sectionIndex)">
                                                 <span 
                                                         v-if="!$adminOptions.hideItemEditionCollapses && !isMetadataNavigation"
                                                         class="icon">
                                                     <i 
                                                             :class="{
-                                                                'tainacan-icon-arrowdown' : metadataSectionCollapses[sectionIndex] || errorMessage,
-                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage)
+                                                                'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || errorMessage) && !isSectionHidden(metadataSection.id),
+                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage) || isSectionHidden(metadataSection.id)
                                                             }"
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                                 </span>
@@ -409,7 +415,7 @@
                                         <transition name="filter-item">
                                             <div 
                                                     class="metadata-section-metadata-list"
-                                                    v-show="metadataSectionCollapses[sectionIndex] || isMetadataNavigation">
+                                                    v-show="(metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !isSectionHidden(metadataSection.id)">
                                                 <p
                                                         class="metadatum-description-help-info"
                                                         v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'">
@@ -852,6 +858,9 @@ export default {
         formErrors() {
            return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
         },
+        conditionalSections() {
+            return eventBusItemMetadata && eventBusItemMetadata.conditionalSections ? eventBusItemMetadata.conditionalSections : [];
+        },
         isEditingItemMetadataInsideIframe() {
             return this.$route.query && this.$route.query.editingmetadata;
         },
@@ -1016,6 +1025,25 @@ export default {
             .then((metadataSections) => {
                 this.metadataSectionCollapses = Array(metadataSections.length).fill(true)
                 this.isLoadingMetadataSections = false;
+
+                /**
+                 * Creates the conditional metadata set to later watch values
+                 * of certain metadata that control sections visibility.
+                 */
+                eventBusItemMetadata.conditionalSections = {};
+                for (let metadataSection of metadataSections) {
+                    if ( metadataSection.is_conditional_section == 'yes') { 
+                        const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
+                        if ( conditionalSectionId.length ) {
+                            eventBusItemMetadata.conditionalSections[metadataSection.id] = {
+                                sectionId: metadataSection.id,
+                                metadatumId: conditionalSectionId[0],
+                                metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
+                                hide: true
+                            };
+                        }
+                    }
+                }
             })
             .catch((error) => {
                 this.isLoadingMetadataSections = false;
@@ -1282,6 +1310,16 @@ export default {
                         for (let i = 0; i < metadata.length; i++) {
                             this.metadataCollapses.push(false);
                             this.metadataCollapses[i] = true;
+                        }
+                    }
+                    
+                    /* Sets initial state for conditional sections based on metadatum values */
+                    for (let conditionalSectionId in this.conditionalSections) {
+                        const currentItemMetadatum = metadata.find(anItemMetadatum => anItemMetadatum.metadatum.id == this.conditionalSections[conditionalSectionId].metadatumId);
+                        if (currentItemMetadatum) {
+                            const itemMetadatumValues = Array.isArray(currentItemMetadatum.value) ? currentItemMetadatum.value : [ currentItemMetadatum.value ];
+                            const conditionalValues = Array.isArray(eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues) ? eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues : [eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues];
+                            eventBusItemMetadata.conditionalSections[conditionalSectionId].hide = itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue) < 0);
                         }
                     }
 
@@ -1591,6 +1629,9 @@ export default {
 
         },
         onChangeCollapse(event, index) {
+            if (event && !this.metadataCollapses[index] && this.itemMetadata[index].metadatum && this.itemMetadata[index].metadatum['metadata_type'] === "Tainacan\\Metadata_Types\\GeoCoordinate")
+                eventBusItemMetadata.$emit('itemEditionFormResize');
+                
             this.metadataCollapses.splice(index, 1, event);
         },
         toggleMetadataSectionCollapse(sectionIndex) {
@@ -1729,6 +1770,7 @@ export default {
         },
         handleWindowResize: _.debounce( function() {
             this.$nextTick(() => {
+                eventBusItemMetadata.$emit('itemEditionFormResize');
                 if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
                     this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
             });
@@ -1799,6 +1841,9 @@ export default {
                 webkit.messageHandlers.cordova_iab
             )
                 webkit.messageHandlers.cordova_iab.postMessage(JSON.stringify({ 'type': 'exited_from_navigation', 'item': this.item }));
+        },
+        isSectionHidden(sectionId) {
+            return this.conditionalSections[sectionId] && this.conditionalSections[sectionId].hide;
         }
     }
 }
@@ -2119,6 +2164,15 @@ export default {
         .metadata-section-header {
             padding: 0.75em 0em;
             border-bottom: 1px solid var(--tainacan-input-border-color);
+        }
+
+        .metadata-section-hidden {
+            opacity: 0.5;
+            filter: grayscale(1.0);
+
+            & > {
+                pointer-events: none;
+            }
         }
 
         .item-edition-tab-content {

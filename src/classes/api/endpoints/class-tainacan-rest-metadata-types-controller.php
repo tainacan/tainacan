@@ -55,6 +55,9 @@ class REST_Metadata_Types_Controller extends REST_Controller {
 								'preview_template'    => [
 									'type' => 'string'
 								],
+								'sortable'    => [
+									'type' => 'boolean'
+								],
 							]
 						]
 					]

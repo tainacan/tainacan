@@ -45,7 +45,7 @@ export default (element) => {
                 '#298596', // Tainacan Turquoise
                 '#01295c', // Tainacan Blue
                 '#25a189', // Tainacan Green
-                '#e69810', // Tainacan Yellow
+                '#bb7700', // Tainacan Yellow
                 '#a23939', // Tainacan Red
                 '#592570', // Tainacan Purple
                 '#ed4f63', // Tainacan Pink

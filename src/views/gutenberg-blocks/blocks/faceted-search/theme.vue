@@ -9,6 +9,8 @@
             :is-forced-view-mode="$root.isForcedViewMode"
             :default-order="$root.defaultOrder"
             :default-order-by="$root.defaultOrderBy"
+            :default-order-by-meta="$root.defaultOrderByMeta"
+            :default-order-by-type="$root.defaultOrderByType"
             :default-items-per-page="$root.defaultItemsPerPage"
             :hide-filters="$root.hideFilters ? $root.hideFilters : false"
             :hide-hide-filters-button="$root.hideHideFiltersButton ? $root.hideHideFiltersButton : false"

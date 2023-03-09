@@ -13,17 +13,25 @@ export default class CollectionModal extends React.Component {
 
         // Initialize state
         this.state = {
+            collectionDefaultOrderBy: 'date',
+            collectionDefaultOrder: 'ASC',
+            collectionDefaultOrderByMeta: '',
+            collectionDefaultOrderByType: '',
             collectionViewModes: [],
             collectionsPerPage: 24,
             collectionId: undefined,  
             isLoadingCollections: false, 
             modalCollections: [],
             totalModalCollections: 0, 
-            collectionPage: 1,
-            collectionOrderBy: 'date-desc',
+            collectionsPage: 1,
+            collectionsOrderBy: 'date-desc',
             temporaryCollectionId: '',
             temporaryCollectionDefaultViewMode: '',
             temporaryCollectionEnabledViewModes: [],
+            temporaryCollectionDefaultOrderBy: 'date',
+            temporaryCollectionDefaultOrderByMeta: '',
+            temporaryCollectionDefaultOrderByType: '',
+            temporaryCollectionDefaultOrder: 'ASC',
             searchCollectionName: '',
             collections: [],
             collectionsRequestSource: undefined
@@ -43,7 +51,11 @@ export default class CollectionModal extends React.Component {
             temporaryCollectionId: this.props.existingCollectionId,
             temporaryCollectionDefaultViewMode: this.props.existingCollectionDefaultViewMode,
             temporaryCollectionEnabledViewModes: this.props.existingCollectionEnabledViewModes,
-            collectionPage: 1
+            temporaryCollectionDefaultOrder: this.props.existingCollectionDefaultOrder,
+            temporaryCollectionDefaultOrderBy: this.props.existingCollectionDefaultOrderBy,
+            temporaryCollectionDefaultOrderByMeta: this.props.existingCollectionDefaultOrderByMeta,
+            temporaryCollectionDefaultOrderByType: this.props.existingCollectionDefaultOrderByType,
+            collectionsPage: 1
         });
 
         this.fetchModalCollections();
@@ -62,12 +74,12 @@ export default class CollectionModal extends React.Component {
     fetchModalCollections() {
 
         let someModalCollections = this.state.modalCollections;
-        if (this.state.collectionPage <= 1)
+        if (this.state.collectionsPage <= 1)
             someModalCollections = [];
 
         let query = {
             perpage: this.state.collectionsPerPage,
-            paged: this.state.collectionPage
+            paged: this.state.collectionsPage
         }
 
         if (this.props.filterOptionsBy && Object.keys(this.props.filterOptionsBy).length !== 0) {
@@ -84,18 +96,18 @@ export default class CollectionModal extends React.Component {
             
         let endpoint = '/collections/?' + qs.stringify(query); 
 
-        if (this.state.collectionOrderBy == 'date')
+        if (this.state.collectionsOrderBy == 'date')
             endpoint += '&orderby=date&order=asc';
-        else if (this.state.collectionOrderBy == 'date-desc')
+        else if (this.state.collectionsOrderBy == 'date-desc')
             endpoint += '&orderby=date&order=desc';
-        else if (this.state.collectionOrderBy == 'title')
+        else if (this.state.collectionsOrderBy == 'title')
             endpoint += '&orderby=title&order=asc';
-        else if (this.state.collectionOrderBy == 'title-desc')
+        else if (this.state.collectionsOrderBy == 'title-desc')
             endpoint += '&orderby=title&order=desc';
 
         this.setState({ 
             isLoadingCollections: true,
-            collectionPage: this.state.collectionPage + 1, 
+            collectionsPage: this.state.collectionsPage + 1, 
             modalCollections: someModalCollections
         });
 
@@ -108,7 +120,9 @@ export default class CollectionModal extends React.Component {
                         name: collection.name, 
                         id: collection.id,
                         default_view_mode: collection.default_view_mode,
-                        enabled_view_modes: collection.enabled_view_modes
+                        enabled_view_modes: collection.enabled_view_modes,
+                        default_orderby: collection.default_orderby,
+                        default_order: collection.default_order
                     });
                 }
 
@@ -125,10 +139,10 @@ export default class CollectionModal extends React.Component {
             });
     }
 
-    selectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes }) {
+    selectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes, collectionDefaultOrder, collectionDefaultOrderBy, collectionDefaultOrderByMeta, collectionDefaultOrderByType }) {
         collectionId = collectionId;
         this.setState({ collectionId: collectionId });
-        this.props.onSelectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes });
+        this.props.onSelectCollection({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes, collectionDefaultOrder, collectionDefaultOrderBy, collectionDefaultOrderByMeta, collectionDefaultOrderByType });
     }
 
     fetchCollections(name) {
@@ -146,7 +160,7 @@ export default class CollectionModal extends React.Component {
 
         let query = {
             perpage: this.state.collectionsPerPage,
-            paged: this.state.collectionPage
+            paged: this.state.collectionsPage
         }
 
         if (this.props.filterOptionsBy && Object.keys(this.props.filterOptionsBy).length !== 0) {
@@ -166,13 +180,13 @@ export default class CollectionModal extends React.Component {
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
         
-        if (this.state.collectionOrderBy == 'date')
+        if (this.state.collectionsOrderBy == 'date')
             endpoint += '&orderby=date&order=asc';
-        else if (this.state.collectionOrderBy == 'date-desc')
+        else if (this.state.collectionsOrderBy == 'date-desc')
             endpoint += '&orderby=date&order=desc';
-        else if (this.state.collectionOrderBy == 'title')
+        else if (this.state.collectionsOrderBy == 'title')
             endpoint += '&orderby=title&order=asc';
-        else if (this.state.collectionOrderBy == 'title-desc')
+        else if (this.state.collectionsOrderBy == 'title-desc')
             endpoint += '&orderby=title&order=desc';
 
         tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
@@ -181,7 +195,9 @@ export default class CollectionModal extends React.Component {
                     name: collection.name, 
                     id: collection.id + '',
                     default_view_mode: collection.default_view_mode,
-                    enabled_view_modes: collection.enabled_view_modes
+                    enabled_view_modes: collection.enabled_view_modes,
+                    default_orderby: collection.default_orderby,
+                    default_order: collection.default_order
                 }));
 
                 this.setState({ 
@@ -200,7 +216,7 @@ export default class CollectionModal extends React.Component {
 
         this.setState({
             collectionId: null,
-            collectionPage: 1,
+            collectionsPage: 1,
             modalCollections: []
         });
         this.fetchModalCollections(); 
@@ -227,19 +243,19 @@ export default class CollectionModal extends React.Component {
                                 }}/>
                         <SelectControl
                                 label={__('Order by', 'tainacan')}
-                                value={ this.state.collectionOrderBy }
+                                value={ this.state.collectionsOrderBy }
                                 options={ [
                                     { label: __('Latest', 'tainacan'), value: 'date-desc' },
                                     { label: __('Oldest', 'tainacan'), value: 'date' },
                                     { label: __('Name (A-Z)', 'tainacan'), value: 'title' },
                                     { label: __('Name (Z-A)', 'tainacan'), value: 'title-desc' }
                                 ] }
-                                onChange={ ( aCollectionOrderBy ) => { 
-                                    this.state.collectionOrderBy = aCollectionOrderBy;
-                                    this.state.collectionPage = 1;
+                                onChange={ ( acollectionsOrderBy ) => { 
+                                    this.state.collectionsOrderBy = acollectionsOrderBy;
+                                    this.state.collectionsPage = 1;
                                     this.setState({ 
-                                        collectionOrderBy: this.state.collectionOrderBy,
-                                        collectionPage: this.state.collectionPage 
+                                        collectionsOrderBy: this.state.collectionsOrderBy,
+                                        collectionsPage: this.state.collectionsPage 
                                     });
                                     if (this.state.searchCollectionName && this.state.searchCollectionName != '') {
                                         this.fetchCollections(this.state.searchCollectionName);
@@ -267,9 +283,17 @@ export default class CollectionModal extends React.Component {
                                             this.state.temporaryCollectionId = aCollectionId;
                                             this.state.temporaryCollectionDefaultViewMode = selectedCollection.default_view_mode;
                                             this.state.temporaryCollectionEnabledViewModes = selectedCollection.enabled_view_modes;
+                                            this.state.temporaryCollectionDefaultOrder = selectedCollection.default_order;
+                                            this.state.temporaryCollectionDefaultOrderBy = selectedCollection.default_orderby.orderby ? selectedCollection.default_orderby.orderby : selectedCollection.default_orderby;
+                                            this.state.temporaryCollectionDefaultOrderByMeta = selectedCollection.default_orderby.metakey ? selectedCollection.default_orderby.metakey : '';
+                                            this.state.temporaryCollectionDefaultOrderByType = selectedCollection.default_orderby.metatype ? selectedCollection.default_orderby.metatype : '';
                                             this.setState({ temporaryCollectionId: aCollectionId });
                                             this.setState({ temporaryCollectionDefaultViewMode: selectedCollection.default_view_mode });
                                             this.setState({ temporaryCollectionEnabledViewModes: selectedCollection.enabled_view_modes });
+                                            this.setState({ temporaryCollectionDefaultOrder: selectedCollection.default_order });
+                                            this.setState({ temporaryCollectionDefaultOrderBy: selectedCollection.default_orderby.orderby ? selectedCollection.default_orderby.orderby : selectedCollection.default_orderby });
+                                            this.setState({ temporaryCollectionDefaultOrderByMeta: selectedCollection.default_orderby.metakey ? selectedCollection.default_orderby.metakey : '' });
+                                            this.setState({ temporaryCollectionDefaultOrderByType: selectedCollection.default_orderby.metatype ? selectedCollection.default_orderby.metatype : '' });
                                         } } />
                                     }                                      
                                 </div>
@@ -299,9 +323,19 @@ export default class CollectionModal extends React.Component {
                                         this.state.temporaryCollectionId = aCollectionId;
                                         this.state.temporaryCollectionDefaultViewMode = selectedCollection.default_view_mode;
                                         this.state.temporaryCollectionEnabledViewModes = selectedCollection.enabled_view_modes;
+                                        this.state.temporaryCollectionDefaultOrder = selectedCollection.default_order;
+                                        this.state.temporaryCollectionDefaultOrderBy = selectedCollection.default_orderby;
+                                        this.state.temporaryCollectionDefaultOrderBy = selectedCollection.default_orderby.orderby ? selectedCollection.default_orderby.orderby : selectedCollection.default_orderby;
+                                        this.state.temporaryCollectionDefaultOrderByMeta = selectedCollection.default_orderby.metakey ? selectedCollection.default_orderby.metakey : '';
+                                        this.state.temporaryCollectionDefaultOrderByType = selectedCollection.default_orderby.metatype ? selectedCollection.default_orderby.metatype : '';
                                         this.setState({ temporaryCollectionId: aCollectionId });
                                         this.setState({ temporaryCollectionDefaultViewMode: selectedCollection.default_view_mode });
                                         this.setState({ temporaryCollectionEnabledViewModes: selectedCollection.enabled_view_modes });
+                                        this.setState({ temporaryCollectionDefaultOrder: selectedCollection.default_order });
+                                        this.setState({ temporaryCollectionDefaultOrderBy: selectedCollection.default_orderby });
+                                        this.setState({ temporaryCollectionDefaultOrderBy: selectedCollection.default_orderby.orderby ? selectedCollection.default_orderby.orderby : selectedCollection.default_orderby });
+                                        this.setState({ temporaryCollectionDefaultOrderByMeta: selectedCollection.default_orderby.metakey ? selectedCollection.default_orderby.metakey : '' });
+                                        this.setState({ temporaryCollectionDefaultOrderByType: selectedCollection.default_orderby.metatype ? selectedCollection.default_orderby.metatype : '' });
                                     } } />
                                 }                                     
                             </div>
@@ -336,7 +370,11 @@ export default class CollectionModal extends React.Component {
                         onClick={ () => this.selectCollection({ 
                             collectionId: this.state.temporaryCollectionId,
                             collectionDefaultViewMode: this.state.temporaryCollectionDefaultViewMode,
-                            collectionEnabledViewModes: this.state.temporaryCollectionEnabledViewModes
+                            collectionEnabledViewModes: this.state.temporaryCollectionEnabledViewModes,
+                            collectionDefaultOrder: this.state.temporaryCollectionDefaultOrder,
+                            collectionDefaultOrderBy: this.state.temporaryCollectionDefaultOrderBy,
+                            collectionDefaultOrderByMeta: this.state.temporaryCollectionDefaultOrderByMeta,
+                            collectionDefaultOrderByType: this.state.temporaryCollectionDefaultOrderByType
                         }) }>
                         {__('Use selected Collection', 'tainacan')}
                     </Button>

@@ -728,6 +728,8 @@
             // Other Tweaks
             defaultOrder: 'ASC',
             defaultOrderBy: 'date',
+            defaultOrderByMeta: '',
+            defaultOrderByType: '',
             defaultItemsPerPage: Number,
             showFiltersButtonInsideSearchControl: false,
             startWithFiltersHidden: false,
@@ -767,7 +769,7 @@
         },
         computed: {
             isSortingByCustomMetadata() {
-                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'date'); 
+                return (this.orderBy != undefined && this.orderBy != '' && this.orderBy != 'title' && this.orderBy != 'creation_date' && this.orderBy != 'date' && this.orderBy != 'modified'); 
             },
             items() {
                 return this.getItems();
@@ -855,10 +857,34 @@
                 this.$eventBusSearch.setCollectionId(this.collectionId);
             if (this.termId != undefined && this.termId != null)
                 this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
-            if (this.defaultOrder != undefined)
+            if (this.defaultOrder != undefined) {
                 this.$eventBusSearch.setDefaultOrder(this.defaultOrder);
+                if (!this.$route.query.order)
+                    this.$eventBusSearch.setOrder(this.defaultOrder);
+            }
             if (this.defaultOrderBy != undefined) {
-                this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
+                
+                if (this.defaultOrderByMeta || this.defaultOrderByType) {
+                    
+                    let orderByObject = { orderby: this.defaultOrderBy }
+                    
+                    if (this.defaultOrderByMeta)
+                        orderByObject['metakey'] = this.defaultOrderByMeta;
+                    
+                    if (this.defaultOrderByType)
+                        orderByObject['metatype'] = this.defaultOrderByType;
+                    
+                    this.$eventBusSearch.setDefaultOrderBy(orderByObject);
+
+                    if (!this.$route.query.orderby)
+                        this.$eventBusSearch.setOrderBy(orderByObject);
+                
+                } else {                    
+                    this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
+
+                    if (!this.$route.query.orderby)
+                        this.$eventBusSearch.setOrderBy(this.defaultOrderBy);
+                }
             }
             
             this.$eventBusSearch.updateStoreFromURL();
@@ -999,6 +1025,7 @@
         },
         methods: {
             ...mapGetters('collection', [
+                'getCollection',
                 'getItems',
                 'getItemsListTemplate'
             ]),
@@ -1062,10 +1089,10 @@
                     if (filterTagsAfterFiltersCollection)
                         this.hooks['filter_tags_after'] = filterTagsAfterFiltersCollection;
 
-                    const itemsListAreaBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_area_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_area_list_before`, '');
-                    const itemsListAreaBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_before`) || itemsListAreaBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_before`, itemsListAreaBeforeFilters);
+                    const itemsListAreaBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_area_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_area_before`, '');
+                    const itemsListAreaBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_area_before`) || itemsListAreaBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_area_before`, itemsListAreaBeforeFilters);
                     if (itemsListAreaBeforeFiltersCollection)
-                        this.hooks['items_area_list_before'] = itemsListAreaBeforeFiltersCollection;
+                        this.hooks['items_list_area_before'] = itemsListAreaBeforeFiltersCollection;
 
                     const itemsListBeforeFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_before`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_before`, '');
                     const itemsListBeforeFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`) || itemsListBeforeFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_before`, itemsListBeforeFilters);
@@ -1087,10 +1114,10 @@
                     if (paginationAfterFiltersCollection)
                         this.hooks['pagination_after'] = paginationAfterFiltersCollection; 
 
-                    const itemsListAreaAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_area_list_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_area_list_after`, '');
-                    const itemsListAreaAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_after`) || itemsListAreaAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_area_list_after`, itemsListAreaAfterFilters);
+                    const itemsListAreaAfterFilters = wp.hooks.hasFilter(`tainacan_faceted_search_items_list_area_after`) && wp.hooks.applyFilters(`tainacan_faceted_search_items_list_area_after`, '');
+                    const itemsListAreaAfterFiltersCollection = (wp.hooks.hasFilter(`tainacan_faceted_search_collection_${this.collectionId}_items_list_area_after`) || itemsListAreaAfterFilters) && wp.hooks.applyFilters(`tainacan_faceted_search_collection_${this.collectionId}_items_list_area_after`, itemsListAreaAfterFilters);
                     if (itemsListAreaAfterFiltersCollection)
-                        this.hooks['items_area_list_after'] = itemsListAreaAfterFiltersCollection;
+                        this.hooks['items_list_area_after'] = itemsListAreaAfterFiltersCollection;
                 }
             },
             openExposersModal() {
@@ -1252,7 +1279,7 @@
                                                     display = true;
 
                                                 // Deciding display based on user prefs
-                                                if (prefsFetchOnlyMetaObject.length) {
+                                                if (prefsFetchOnlyMetaObject.length && metadatum.display != 'yes') {
                                                     let index = prefsFetchOnlyMetaObject.findIndex(metadatumId => metadatumId == metadatum.id);
 
                                                     display = index >= 0;
@@ -1275,15 +1302,8 @@
                                                     fetchOnlyMetadatumIds.push(metadatum.id);
                                             }
 
-                                            if (
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound' &&
-                                                metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
-                                            ) {
+                                            if ( metadatum.metadata_type_object.sortable )
                                                 this.sortingMetadata.push(metadatum);
-                                            }
 
                                         }
                                         
@@ -1339,15 +1359,8 @@
                                     }
                                     
                                     for (let metadatum of this.metadata) {
-                                        if ((metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Core_Description' &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Taxonomy' &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Relationship' &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\Compound' &&
-                                            metadatum.metadata_type != 'Tainacan\\Metadata_Types\\User'
-                                            ) {
-                                                this.sortingMetadata.push(metadatum);
-                                        }
+                                        if ( (metadatum.display !== 'never' || metadatum.metadata_type == 'Tainacan\\Metadata_Types\\Control') && metadatum.metadata_type_object.sortable )
+                                            this.sortingMetadata.push(metadatum);
                                     }
                                     
                                     this.sortingMetadata.push({

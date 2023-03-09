@@ -6,6 +6,7 @@ import {
     Switch,
     Tabs,
     Tag,
+    Modal,
     Checkbox,
     Collapse,
     Radio,
@@ -18,7 +19,8 @@ import {
     Input,
     Select,
     Taginput,
-    Snackbar
+    Snackbar,
+    Steps
 } from 'buefy';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
@@ -34,6 +36,7 @@ import Relationship from '../../../admin/components/metadata-types/relationship/
 import Taxonomy from '../../../admin/components/metadata-types/taxonomy/Taxonomy.vue';
 import Compound from '../../../admin/components/metadata-types/compound/Compound.vue';
 import User from '../../../admin/components/metadata-types/user/User.vue';
+import GeoCoordinate from '../../../admin/components/metadata-types/geocoordinate/GeoCoordinate.vue';
 
 // Main components
 import ItemSubmissionForm from './item-submission/item-submission-form.vue';
@@ -83,7 +86,9 @@ export default (element) => {
             Vue.use(Autocomplete);
             Vue.use(Collapse);
             Vue.use(Snackbar);
+            Vue.use(Modal);
             Vue.use(Input);
+            Vue.use(Steps);
             Vue.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {
@@ -128,6 +133,7 @@ export default (element) => {
             Vue.component('tainacan-taxonomy', Taxonomy);
             Vue.component('tainacan-compound', Compound);
             Vue.component('tainacan-user', User);
+            Vue.component('tainacan-geocoordinate', GeoCoordinate);
 
             /* Main page component */
             Vue.component('item-submission-form', ItemSubmissionForm);
@@ -162,7 +168,8 @@ export default (element) => {
                     itemLinkButtonLabel: '',
                     helpInfoBellowLabel: false,
                     showItemLinkButton: false,
-                    termsAgreementMessage: ''
+                    termsAgreementMessage: '',
+                    isLayoutSteps: false
                 },
                 beforeMount () {
                     // Collection source settings
@@ -190,6 +197,8 @@ export default (element) => {
                         this.hideMetadataTypes = this.isParameterTrue('hide-metadata-types');
                     if (this.$el.attributes['help-info-bellow-label'] != undefined)
                         this.helpInfoBellowLabel = this.isParameterTrue('help-info-bellow-label');
+                    if (this.$el.attributes['is-layout-steps'] != undefined)
+                        this.isLayoutSteps = this.isParameterTrue('is-layout-steps');
 
                     // Form sections labels
                     if (this.$el.attributes['document-section-label'] != undefined)

@@ -45,6 +45,7 @@ import Relationship from '../components/metadata-types/relationship/Relationship
 import Taxonomy from '../components/metadata-types/taxonomy/Taxonomy.vue';
 import Compound from '../components/metadata-types/compound/Compound.vue';
 import User from '../components/metadata-types/user/User.vue';
+import GeoCoordinate from '../components/metadata-types/geocoordinate/GeoCoordinate.vue'
 
 import FormText from '../components/metadata-types/text/FormText.vue';
 import FormRelationship from '../components/metadata-types/relationship/FormRelationship.vue';
@@ -52,6 +53,8 @@ import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue
 import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.vue';
 import FormNumeric from '../components/metadata-types/numeric/FormNumeric.vue';
 import FormUser from '../components/metadata-types/user/FormUser.vue';
+import FormGeoCoordinate from '../components/metadata-types/geocoordinate/FormGeoCoordinate.vue';
+
 
 import FilterNumeric from '../components/filter-types/numeric/Numeric.vue';
 import FilterDate from '../components/filter-types/date/Date.vue';
@@ -212,6 +215,8 @@ export default (element) => {
             Vue.component('tainacan-taxonomy', Taxonomy);
             Vue.component('tainacan-compound', Compound);
             Vue.component('tainacan-user', User);
+            Vue.component('tainacan-geocoordinate', GeoCoordinate);
+            
 
             /* Metadata Option forms */
             Vue.component('tainacan-form-text', FormText);
@@ -221,6 +226,8 @@ export default (element) => {
             Vue.component('tainacan-form-numeric', FormNumeric);
             Vue.component('tainacan-form-user', FormUser);
             Vue.component('term-edition-form', TermEditionForm);
+            Vue.component('tainacan-form-geocoordinate', FormGeoCoordinate);
+            
 
             /* Filters */
             Vue.component('tainacan-filter-numeric', FilterNumeric);

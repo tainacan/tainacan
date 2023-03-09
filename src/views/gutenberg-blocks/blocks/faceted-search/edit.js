@@ -2,7 +2,6 @@ const { __ } = wp.i18n;
 
 const { 
     Button,
-    ColorPalette,
     BaseControl,
     CheckboxControl,
     RangeControl,
@@ -70,7 +69,14 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         itemHoverBackgroundColor,
         itemHeadingHoverBackgroundColor,
         primaryColor,
-        secondaryColor
+        secondaryColor,
+        order,
+        orderBy,
+        orderByMeta,
+        orderByType,
+        collectionOrderBy,
+        collectionOrderByMeta,
+        collectionOrderByType
     } = attributes;
 
     let registeredViewModesEntries = [];
@@ -410,6 +416,50 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 } 
                             }
                         />
+
+                        <BaseControl
+                                id="defaulOrder"
+                                label={ __('Default order', 'tainacan')}
+                                help={ __('The default sorting direction', 'tainacan') }>
+                            <SelectControl
+                                    label={ __('Default order', 'tainacan') }
+                                    hideLabelFromVision
+                                    value={ order }
+                                    options={
+                                        [
+                                            { value: 'ASC', label: __('Ascending', 'tainacan') },
+                                            { value: 'DESC', label: __('Descending', 'tainacan') }
+                                        ]
+                                    }
+                                    onChange={ (anOrder) => {
+                                        order = anOrder;
+                                        setAttributes({ order: anOrder });
+                                    } }
+                                />
+                        </BaseControl>
+
+                        { listType != 'collection' ?
+                            <BaseControl
+                                    id="defaulOrderBy"
+                                    label={ __('Default order by', 'tainacan')}
+                                    help={ __('The default metadata by which the sorting will be applied', 'tainacan') }>
+                                <SelectControl
+                                        label={ __('Default order by', 'tainacan') }
+                                        hideLabelFromVision
+                                        value={ orderBy }
+                                        options={
+                                            [
+                                                { value: 'date', label: __('Creation date', 'tainacan') },
+                                                { value: 'title', label: __('Title', 'tainacan') }
+                                            ]
+                                        }
+                                        onChange={ (anOrderBy) => {
+                                            orderBy = anOrderBy;
+                                            setAttributes({ orderBy: anOrderBy });
+                                        } }
+                                    />
+                            </BaseControl>
+                        : null }
 
                         <BaseControl
                                 id="defaultViewModeSelect"
@@ -976,18 +1026,31 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             { isCollectionModalOpen ? 
                 <CollectionModal
                     existingCollectionId={ collectionId }  
+                    existingCollectionDefaultOrder={ order } 
+                    existingCollectionDefaultOrderBy={ collectionOrderBy }
+                    existingCollectionDefaultOrderByMeta={ collectionOrderByMeta }
+                    existingCollectionDefaultOrderByType={ collectionOrderByType } 
                     existingCollectionDefaultViewMode={ collectionDefaultViewMode } 
                     existingCollectionEnabledViewModes={ collectionEnabledViewModes }
-                    onSelectCollection={ ({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes }) => {
+                    onSelectCollection={ ({ collectionId, collectionDefaultViewMode, collectionEnabledViewModes, collectionDefaultOrder, collectionDefaultOrderBy, collectionDefaultOrderByMeta, collectionDefaultOrderByType }) => {
                         collectionId = collectionId;
                         collectionDefaultViewMode = collectionDefaultViewMode ? collectionDefaultViewMode : defaultViewMode;
                         collectionEnabledViewModes = collectionEnabledViewModes && collectionEnabledViewModes.length ? collectionEnabledViewModes : enabledViewModes;
+                        order = collectionDefaultOrder ? collectionDefaultOrder : 'ASC';
+                        collectionOrderBy = collectionDefaultOrderBy ? collectionDefaultOrderBy : 'date';
+                        collectionOrderByMeta = collectionDefaultOrderByMeta ? collectionDefaultOrderByMeta : '';
+                        collectionOrderByType = collectionDefaultOrderByType ? collectionDefaultOrderByType : '';
+                        console.log(collectionDefaultOrderByMeta)
                         setAttributes({
                             collectionId: collectionId, 
                             collectionDefaultViewMode: collectionDefaultViewMode,
                             defaultViewMode: collectionDefaultViewMode,
                             collectionEnabledViewModes: collectionEnabledViewModes,
                             enabledViewModes: collectionEnabledViewModes,
+                            order: order,
+                            collectionOrderBy, collectionOrderBy,
+                            collectionOrderByMeta: collectionOrderByMeta,
+                            collectionOrderByType: collectionOrderByType,
                             isCollectionModalOpen: false
                         });
                     }}

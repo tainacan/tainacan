@@ -14,7 +14,7 @@
                 </span>
             </a>
             <template #popper>
-                <h5>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</h5>
+                <p><strong>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</strong></p>
                 <ol>
                     <template v-for="(error, index) of formErrors">
                         <li 

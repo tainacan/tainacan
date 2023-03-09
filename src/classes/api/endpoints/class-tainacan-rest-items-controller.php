@@ -423,6 +423,9 @@ class REST_Items_Controller extends REST_Controller {
 
 		foreach($tax_query as $tax) {
 
+			if ( !isset($tax['taxonomy']) || !isset($tax['terms']) )
+				continue;
+
 			$taxonomy = $tax['taxonomy'];
 			$taxonomy_id = $this->taxonomies_repository->get_id_by_db_identifier($taxonomy);
 			$terms_id = is_array($tax['terms']) ? $tax['terms']: [$tax['terms']];
@@ -626,6 +629,10 @@ class REST_Items_Controller extends REST_Controller {
 		$response['template'] = '';
 
 		$query_start = microtime(true);
+
+		if(isset($request['geoquery'])) {
+			$args['geoquery'] = $request['geoquery'];
+		}
 
 		$items = $this->items_repository->fetch($args, $collection_id, 'WP_Query');
 
@@ -1381,6 +1388,7 @@ class REST_Items_Controller extends REST_Controller {
 		if (empty($entities_erros) & $item->validate()) {
 			$item = $this->items_repository->insert( $item );
 			delete_transient('tnc_transient_submission_' . $submission_id);
+			do_action('tainacan-submission-item-finish', $item, $request);
 			return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
 		} else {
 			$this->submission_rollback_new_terms();

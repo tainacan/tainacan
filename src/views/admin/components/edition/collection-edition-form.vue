@@ -302,6 +302,13 @@
                                         {{ statusOption.name }}
                                     </b-radio>
                                 </div>
+                                <transition name="filter-item">
+                                    <p 
+                                            class="help"
+                                            v-if="form.submission_default_status == 'draft'">
+                                        {{ $i18n.get('info_item_submission_draft_status') }}
+                                    </p>
+                                </transition>
                             </b-field>
 
                             <!-- Submission process uses reCAPTCHA ------------------------ --> 
@@ -712,7 +719,7 @@ export default {
                 enabled_view_modes: [],
                 default_view_mode: [],
                 default_order: 'ASC',
-                default_orderby: 'creation_date',
+                default_orderby: 'date',
                 allow_comments: 'closed',
                 allows_submission: 'no',
                 submission_default_status: 'draft',
@@ -749,7 +756,7 @@ export default {
             metadataSearchCancel: undefined,
             isLoadingMetadata: true,
             sortingMetadata: [],
-            localDefaultOrderBy: 'creation_date'
+            localDefaultOrderBy: 'date'
         }
     },
     computed: {
@@ -1231,7 +1238,8 @@ export default {
                         'Tainacan\\Metadata_Types\\Taxonomy',
                         'Tainacan\\Metadata_Types\\Relationship',
                         'Tainacan\\Metadata_Types\\Compound',
-                        'Tainacan\\Metadata_Types\\User'
+                        'Tainacan\\Metadata_Types\\User',
+                        'Tainacan\\Metadata_Types\\GeoCoordinate'
                     ]
                 }]
             }).then((resp) => {
@@ -1244,8 +1252,8 @@ export default {
                             this.sortingMetadata.push({
                                 name: this.$i18n.get('label_creation_date'),
                                 metadata_type: undefined,
-                                slug: 'creation_date',
-                                id: 'creation_date'
+                                slug: 'date',
+                                id: 'date'
                             });       
                             
                             // Updates localDefaultOrder variable that needs only the ID of the metadata

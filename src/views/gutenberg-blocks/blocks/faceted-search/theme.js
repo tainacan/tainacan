@@ -51,6 +51,7 @@ import ViewModeRecords from './theme-search/components/view-mode-records.vue';
 import ViewModeMasonry from './theme-search/components/view-mode-masonry.vue';
 import ViewModeSlideshow from './theme-search/components/view-mode-slideshow.vue';
 import ViewModeList from './theme-search/components/view-mode-list.vue';
+import ViewModeMap from './theme-search/components/view-mode-map.vue';
 
 // Remaining imports
 import store from '../../../admin/js/store/store';
@@ -160,6 +161,7 @@ export default (element) => {
             Vue.component('view-mode-masonry', ViewModeMasonry);
             Vue.component('view-mode-slideshow', ViewModeSlideshow);
             Vue.component('view-mode-list', ViewModeList);
+            Vue.component('view-mode-map', ViewModeMap);
 
             Vue.use(eventBusSearch, { store: store, router: routerTheme});
                 
@@ -173,6 +175,8 @@ export default (element) => {
                     defaultViewMode: '',
                     defaultOrder: 'ASC',
                     defaultOrderBy: 'date',
+                    defaultOrderByMeta: '',
+                    defaultOrderByType: '',
                     isForcedViewMode: false,
                     enabledViewModes: {},
                     defaultItemsPerPage: '',
@@ -222,13 +226,19 @@ export default (element) => {
 
                     if (this.$el.attributes['enabled-view-modes'] != undefined)
                         this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
-                
+                    
                     // Sorting options
                     if (this.$el.attributes['default-order'] != undefined)
                         this.defaultOrder = this.$el.attributes['default-order'].value;
-                    if (this.$el.attributes['default-orderby'] != undefined)
+                    if (this.$el.attributes['default-orderby'] != undefined) {
                         this.defaultOrderBy = this.maybeConvertFromJSON(this.$el.attributes['default-orderby'].value);
-                    
+                        this.defaultOrderBy === 'creation_date' ? 'date' : this.defaultOrderBy;
+                    }
+                    if (this.$el.attributes['default-orderby-meta'] != undefined)
+                        this.defaultOrderByMeta = this.$el.attributes['default-orderby-meta'].value;
+                    if (this.$el.attributes['default-orderby-type'] != undefined)
+                        this.defaultOrderByType = this.maybeConvertFromJSON(this.$el.attributes['default-orderby-type'].value);
+
                     // Options related to hidding elements
                     if (this.$el.attributes['hide-filters'] != undefined)
                         this.hideFilters = this.isParameterTrue('hide-filters');
