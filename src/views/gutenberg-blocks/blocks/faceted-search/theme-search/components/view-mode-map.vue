@@ -154,9 +154,18 @@
                                     v-else
                                     class="section">
                                 <div class="content has-text-grey has-text-centered">
-                                    <p>
+                                    <p style="margin-bottom: 0px">
                                         <span class="icon is-large">
-                                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-public" />
+                                            <i>
+                                                <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24"
+                                                        fill="var(--tainacan-info-color, #555758)"
+                                                        width="2.875em"
+                                                        height="2.875em">
+                                                    <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+                                                </svg>
+                                            </i>
                                         </span>
                                     </p>
                                     <p>{{ $i18n.get('info_empty_geocoordinate_metadata_list') }}</p>
@@ -291,7 +300,11 @@
                                                     v-for="(column, metadatumIndex) in displayedMetadata"
                                                     :key="metadatumIndex"
                                                     :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
-                                                    v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                                    v-if="renderMetadata(item, column) != '' &&
+                                                        column.display && column.slug != 'thumbnail' &&
+                                                        column.metadata_type_object != undefined &&
+                                                        (column.metadata_type_object.related_mapped_prop != 'title') &&
+                                                        (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate') ">
                                                 <h3 class="metadata-label">{{ column.name }}</h3>
                                                 <p      
                                                         v-html="renderMetadata(item, column)"

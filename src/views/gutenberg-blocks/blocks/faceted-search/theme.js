@@ -226,12 +226,14 @@ export default (element) => {
 
                     if (this.$el.attributes['enabled-view-modes'] != undefined)
                         this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
-                
+                    
                     // Sorting options
                     if (this.$el.attributes['default-order'] != undefined)
                         this.defaultOrder = this.$el.attributes['default-order'].value;
-                    if (this.$el.attributes['default-orderby'] != undefined)
+                    if (this.$el.attributes['default-orderby'] != undefined) {
                         this.defaultOrderBy = this.maybeConvertFromJSON(this.$el.attributes['default-orderby'].value);
+                        this.defaultOrderBy === 'creation_date' ? 'date' : this.defaultOrderBy;
+                    }
                     if (this.$el.attributes['default-orderby-meta'] != undefined)
                         this.defaultOrderByMeta = this.$el.attributes['default-orderby-meta'].value;
                     if (this.$el.attributes['default-orderby-type'] != undefined)

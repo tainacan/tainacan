@@ -410,6 +410,9 @@ class Flickr_Importer extends Importer {
 					case 'type':
 						$value = $this->get_image_mime_type( $url_image );
 						break;
+
+					default:
+						continue 2;
 				}
 
 				$metadatum = new \Tainacan\Entities\Metadatum($metadatum_id);
@@ -543,8 +546,8 @@ class Flickr_Importer extends Importer {
 			IMAGETYPE_ICO => "image/ico");
 		
 		if (function_exists('exif_imagetype')) {
-			if ( $image_type = exif_imagetype($image_path)
-				&& array_key_exists($image_type ,$mimes) ) {	
+			$image_type = exif_imagetype($image_path);
+			if ( $image_type && array_key_exists($image_type ,$mimes) ) {	
 				return $mimes[$image_type];
 			}
 		}

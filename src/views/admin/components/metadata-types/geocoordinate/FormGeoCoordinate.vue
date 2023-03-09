@@ -46,7 +46,7 @@
                         v-model="initialZoom"
                         @input="emitValues()"
                         :step="1"
-                        :max="21"
+                        :max="19"
                         :min="1" />
         </b-field>
 
@@ -64,7 +64,7 @@
                         v-model="maximumZoom"
                         @input="emitValues()"
                         :step="1"
-                        :max="21"
+                        :max="19"
                         :min="1" />
         </b-field>
 

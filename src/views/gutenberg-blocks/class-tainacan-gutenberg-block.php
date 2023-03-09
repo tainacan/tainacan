@@ -67,7 +67,11 @@ function tainacan_blocks_register_categories($categories, $editor_context) {
 		array(
 			array(
 				'slug' => 'tainacan-blocks',
-				'title' => __( 'Tainacan', 'tainacan' ),
+				'title' => __( 'Tainacan Blocks', 'tainacan' ),
+			),
+			array(
+				'slug' => 'tainacan-blocks-variations',
+				'title' => __( 'Tainacan Query Loop Variations', 'tainacan' ),
 			),
 		)
 	);
@@ -82,6 +86,7 @@ function tainacan_blocks_register_and_enqueue_all_blocks() {
 	if ( is_admin() ) {
 		tainacan_blocks_get_category_icon_script();
 		tainacan_blocks_get_common_editor_styles();
+		tainacan_blocks_get_variations_script();
 	}
 	// May be needed outside the editor, if server side render is used
 	foreach(TAINACAN_BLOCKS as $block_slug => $block_options) {
@@ -212,6 +217,13 @@ function tainacan_blocks_get_plugin_js_settings(){
 	global $TAINACAN_BASE_URL;
 	global $wp_version;
 
+	$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
+	$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
+	$cpts = [];
+	foreach ( $collections as $col ) {
+		$cpts[$col->get_db_identifier()] = $col->get_name();
+	}
+
 	$settings = [
 		'wp_version' => $wp_version,
 		'root'     	 => esc_url_raw( rest_url() ) . 'tainacan/v2',
@@ -219,7 +231,8 @@ function tainacan_blocks_get_plugin_js_settings(){
 		'base_url' 	 => $TAINACAN_BASE_URL,
 		'admin_url'  => admin_url(),
 		'site_url'	 => site_url(),
-		'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug()
+		'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug(),
+		'collections_post_types' => $cpts
 	];
 	
 	return $settings;
@@ -286,3 +299,22 @@ function tainacan_blocks_get_category_icon_script() {
 		$TAINACAN_VERSION
 	);
 }
+
+/** 
+ * Registers the script that inserts the Query Loop Block variations
+ */
+function tainacan_blocks_get_variations_script() {
+	global $TAINACAN_BASE_URL;
+	global $TAINACAN_VERSION;
+
+	wp_enqueue_script(
+		'tainacan-blocks-query-variations',
+		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_query_variations.js',
+		array('wp-blocks', 'wp-components'),
+		$TAINACAN_VERSION
+	);
+
+	$block_settings = tainacan_blocks_get_plugin_js_settings();
+	wp_localize_script( 'tainacan-blocks-query-variations', 'tainacan_blocks', $block_settings );
+}
+

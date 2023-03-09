@@ -10,7 +10,6 @@ const i18nGet = function (key) {
 };
 
 export const tainacanErrorHandler = function(error) {
-    console.error(error)
     if (error.response && error.response.status) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx

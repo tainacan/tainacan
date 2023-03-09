@@ -175,19 +175,16 @@
             }
         },
         watch: {
-            selectedLatLng: {
-                handler() {
-                    this.$nextTick(() => {
-                        const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                        if ( this.selectedLatLng.length && this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject ) {
-                            if (this.selectedLatLng.length == 1)
-                                this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng,  { animate: true, maxZoom: this.maxZoom });
-                            else 
-                                this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng,  { animate: true, maxZoom: this.maxZoom });
-                        }
-                    });
-                },
-                immediate: true
+            selectedLatLng() {
+                const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                this.$nextTick(() => {
+                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject && this.selectedLatLng.length != undefined) {
+                        if (this.selectedLatLng.length == 1)
+                            this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                        else 
+                            this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                    }
+                });
             }
         },
         created() {
@@ -201,12 +198,10 @@
             eventBusItemMetadata.$on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         mounted() {
-            setTimeout(() => {
-                this.$nextTick(() => {
-                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                    this.handleWindowResize(mapComponentRef);
-                });
-            }, 500);
+            this.$nextTick(() => {
+                const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                this.handleWindowResize(mapComponentRef);
+            });
         },
         beforeDestroy() {
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
@@ -318,8 +313,18 @@
                 this.$emit('input', this.selected);
             },
             handleWindowResize(mapComponentRef) {
-                if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject )
-                    this.$refs[mapComponentRef].mapObject.invalidateSize(true);
+                setTimeout(() => {
+                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject ) {
+                        this.$refs[mapComponentRef].mapObject.invalidateSize(true);
+
+                        if ( this.selectedLatLng.length != undefined) {
+                            if (this.selectedLatLng.length == 1)
+                                this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                            else 
+                                this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom }); 
+                        }
+                    }
+                }, 500);
             }
         }
     }
@@ -366,7 +371,7 @@
             border-radius: 0px !important;
             height: 100% !important;
             line-height: 1.7rem;
-            background-color: var(--tainacan-background-color, #fff) !important;
+            background-color: var(--tainacan-input-background-color, #fff) !important;
         }
     }
 }

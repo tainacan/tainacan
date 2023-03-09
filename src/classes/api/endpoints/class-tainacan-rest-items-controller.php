@@ -1388,6 +1388,7 @@ class REST_Items_Controller extends REST_Controller {
 		if (empty($entities_erros) & $item->validate()) {
 			$item = $this->items_repository->insert( $item );
 			delete_transient('tnc_transient_submission_' . $submission_id);
+			do_action('tainacan-submission-item-finish', $item, $request);
 			return new \WP_REST_Response($this->prepare_item_for_response($item, $request), 201 );
 		} else {
 			$this->submission_rollback_new_terms();

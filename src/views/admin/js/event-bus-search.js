@@ -75,14 +75,14 @@ export default {
                                 this.$userPrefs.set(orderKey, 'DESC');
                             }
                         }
-
+                        
                         // Order By (required extra work to deal with custom metadata ordering)
-                        if (this.$route.query.orderby == undefined || to.params.collectionId != from.params.collectionId) {
+                        if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
                             let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
-                            
+                          
                             if (orderBy && orderBy != 'name') {
-                                
+                               
                                 // Previously was stored as a metadata object, now it is a orderby object
                                 if (orderBy.slug || typeof orderBy == 'string')
                                     orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
@@ -101,6 +101,8 @@ export default {
                                     name: this.$i18n.get('label_creation_date')
                                 }).catch(() => { });
                             }
+                        } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
+                            this.$route.query.orderby = 'date'
                         }
 
                         // Theme View Modes

@@ -18,7 +18,9 @@ class Metadata_Section extends Entity {
 		$name,
 		$slug,
 		$description,
-		$description_bellow_name;
+		$description_bellow_name,
+		$is_conditional_section,
+		$conditional_section_rules;
 
 	/**
 	 * {@inheritDoc}
@@ -95,6 +97,34 @@ class Metadata_Section extends Entity {
 	}
 
 	/**
+	 * Get if section is conditional.
+	 *
+	 * @return string "yes"|"no"
+	 */
+	function get_is_conditional_section() {
+		return $this->get_mapped_property( 'is_conditional_section' );
+	}
+
+	/**
+	 * get the rules of the conditional section
+	 *
+	 * @return array|object
+	 */
+	function get_conditional_section_rules() {
+		return $this->get_mapped_property( 'conditional_section_rules' );
+	}
+
+	/**
+	 * Checks if section is conditional
+	 *
+	 * @return boolean
+	 */
+	function is_conditional_section() {
+		return $this->get_is_conditional_section() == 'yes';
+	}
+
+
+	/**
 	 * Set the metadata section name
 	 *
 	 * @param [string] $value
@@ -142,6 +172,25 @@ class Metadata_Section extends Entity {
 
 
 	/**
+	 * set if section is conditional.
+	 *
+	 * @return void
+	 */
+	function set_is_conditional_section($value) {
+		return $this->set_mapped_property( 'is_conditional_section', $value );
+	}
+
+	/**
+	 * set the rules of the conditional section
+	 *
+	 * @return void
+	 */
+	function set_conditional_section_rules($value) {
+		return $this->set_mapped_property( 'conditional_section_rules', $value );
+	}
+
+
+	/**
 	 * Transient property used to store the status of the metadatum section for a particular collection
 	 *
 	 * Used by the API to tell front end when a metadatum section is disabled
@@ -167,6 +216,25 @@ class Metadata_Section extends Entity {
 		$no_errors = true;
 		$name = $this->get_name();
 		$collection = $this->get_collection();
+
+		if ($this->is_conditional_section()) {
+			$metadata_section_id = $this->get_id();
+			if ($metadata_section_id == static::$default_section_slug) {
+				$this->add_error($this->get_id(), __("conditional section cannot be enabled in default section", 'tainacan'));
+				$no_errors = false;
+			} else {
+				$metadata_list = $this->get_metadata_object_list();
+				$required_metadata_list = array_filter($metadata_list, function($m) {
+					return $m->is_required();
+				});
+				if ( count($required_metadata_list) ) {
+					$no_errors = false;
+					foreach($required_metadata_list as $metadata) {
+						$this->add_error($metadata->get_id(), __("metadata cannot be required", 'tainacan'));
+					}
+				}
+			}
+		}
 
 		if( empty($collection) ) {
 			$this->add_error($this->get_id(), __("collection is required", 'tainacan'));

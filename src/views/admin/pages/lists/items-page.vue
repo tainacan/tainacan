@@ -1099,7 +1099,7 @@
                                                     display = true;
 
                                                 // Deciding display based on user prefs
-                                                if (prefsFetchOnlyMetaObject.length) {
+                                                if (prefsFetchOnlyMetaObject.length && metadatum.display != 'yes') {
                                                     let index = prefsFetchOnlyMetaObject.findIndex(metadatumId => metadatumId == metadatum.id);
 
                                                     display = index >= 0;

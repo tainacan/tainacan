@@ -9,6 +9,7 @@ module.exports = {
         tainacan_pages_common_scripts: './src/views/tainacan-pages-common-scripts.js',
         tainacan_blocks_common_scripts: './src/views/gutenberg-blocks/tainacan-blocks-common-scripts.js',
         tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
+        tainacan_blocks_query_variations: './src/views/gutenberg-blocks/js/tainacan-blocks-query-variations.js',
 
         block_terms_list: './src/views/gutenberg-blocks/blocks/terms-list/index.js',
         block_items_list: './src/views/gutenberg-blocks/blocks/items-list/index.js',
