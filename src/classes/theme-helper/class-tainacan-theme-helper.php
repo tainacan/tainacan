@@ -885,6 +885,8 @@ class Theme_Helper {
 					$excerpt = strip_tags(tainacan_get_the_collection_description());
 				} elseif ( is_post_type_archive('tainacan-collection') ) {
 					$title = __('Collections', 'tainacan');
+				} elseif ( is_post_type_archive('tainacan-taxonomy') ) {
+					$title = __('Taxonomies', 'tainacan');
 				} else {
 					$title = get_the_archive_title();
 				}
