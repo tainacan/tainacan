@@ -46,7 +46,7 @@ import ItemSubmission from './theme.vue';
 import TainacanFormItem from '../../../admin/components/metadata-types/tainacan-form-item.vue';
 import TermCreationPanel from './item-submission/components/term-creation-panel.vue';
 import HelpButton from '../../../admin/components/other/help-button.vue';
-import store from '../../../admin/js/store/store';
+import { store } from '../../../admin/js/store/store';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin, AdminOptionsHelperPlugin } from '../../../admin/js/admin-utilities';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities';
 
