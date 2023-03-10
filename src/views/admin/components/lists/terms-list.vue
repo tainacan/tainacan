@@ -5,11 +5,14 @@
             class="terms-list-header">
         <button
                 v-if="currentUserCanEditTaxonomy"
-                class="button is-secondary"
+                class="is-inline-block add-link link-style"
                 type="button"
                 @click="addNewTerm(0)"
                 :disabled="isEditingTerm && isLoadingTerms">
-            {{ $i18n.get('label_new_term') }}
+            <span class="icon is-small">
+                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+            </span>
+            &nbsp;{{ $i18n.get('label_new_term') }}
         </button>
         <b-field class="order-area">
             <label class="label">{{ $i18n.get('label_sort') }}</label>
@@ -21,6 +24,7 @@
                     trap-focus>
                 <button
                             :aria-label="$i18n.get('label_sorting_direction')"
+                            type="button"
                             class="button is-white"
                             slot="trigger">
                     <span 
@@ -76,74 +80,79 @@
                     :disabled="isEditingTerm"/>
         </div>
     </div>
-    <div class="columns">
-        <b-loading 
-                :is-full-page="false"
-                :active.sync="isLoadingTerms" 
-                :can-cancel="false"/>
-        <div 
-                style="font-size: 0.875em;"
-                :class="{ 'is-12': !isEditingTerm, 'is-8-fullhd is-7-fullscreen is-6-desktop is-5-tablet': isEditingTerm }"
-                class="column">
-            <br>
 
-            <!-- Basic list, without hierarchy, used during search -->
-            <template v-if="isSearching">
-                <div 
-                        v-for="(term, index) in localTerms"
-                        :key="term.id">
-                    <basic-term-item
-                            :term="term"
-                            :index="index"
-                            :taxonomy-id="taxonomyId"
-                            :order="order"
-                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
-                            @onUpdateTermOpenedState="(state) => term.opened = state"/>
-                </div>
-            </template>
-            <a 
-                    class="view-more-terms-level-0"
-                    :class="{'is-disabled': isEditingTerm}"
-                    @click="offset = offset + maxTerms; searchTerms(offset)"
-                    v-if="(isSearching) && totalTerms > localTerms.length">
-                {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
-            </a>
+    <b-loading 
+            :is-full-page="false"
+            :active.sync="isLoadingTerms" 
+            :can-cancel="false"/>
 
-            <!-- Recursive list for hierarchy -->
-            <template v-if="!isSearching">
-                <div    
-                        v-for="(term, index) in localTerms"
-                        :key="term.id"
-                        class="parent-term">
-                    <recursive-term-item 
-                            :term="term"
-                            :index="index"
-                            :taxonomy-id="taxonomyId"
-                            :order="order" 
-                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
-                            @onUpdateTermOpenedState="(state) => term.opened = state"/>
-                </div>
-            </template>
-            <a 
-                    class="view-more-terms-level-0"
-                    :class="{'is-disabled': isEditingTerm}"
-                    @click="offset = offset + maxTerms; loadTerms(0)"
-                    v-if="(!isSearching) && totalTerms > localTerms.length">
-                {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
-            </a>
-        </div>
-        <div 
-                class="column is-4-fullhd is-5-fullscreen is-6-desktop is-7-tablet edit-forms-list"
-                v-if="isEditingTerm">
-            <term-edition-form 
-                    :style="{ 'top': termEditionFormTop + 'px'}"
-                    :taxonomy-id="taxonomyId"
-                    @onEditionFinished="onTermEditionFinished($event)"
-                    @onEditionCanceled="onTermEditionCanceled($event)"
-                    @onErrorFound="formWithErrors = editTerm.id"
-                    :original-form="editTerm"/>
-        </div>
+    <div style="font-size: 0.875em; padding: 0px;">
+
+        <!-- Basic list, without hierarchy, used during search -->
+        <template v-if="isSearching">
+            <div 
+                    v-for="(term, index) in localTerms"
+                    :key="term.id">
+                <basic-term-item
+                        :term="term"
+                        :index="index"
+                        :taxonomy-id="taxonomyId"
+                        :order="order"
+                        :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
+                        @onUpdateTermOpenedState="(state) => term.opened = state"/>
+            </div>
+        </template>
+        <a 
+                class="view-more-terms-level-0"
+                :class="{'is-disabled': isEditingTerm}"
+                @click="offset = offset + maxTerms; searchTerms(offset)"
+                v-if="(isSearching) && totalTerms > localTerms.length">
+            {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
+        </a>
+
+        <!-- Recursive list for hierarchy -->
+        <template v-if="!isSearching">
+            <div    
+                    v-for="(term, index) in localTerms"
+                    :key="term.id"
+                    class="parent-term">
+                <recursive-term-item 
+                        :term="term"
+                        :index="index"
+                        :taxonomy-id="taxonomyId"
+                        :order="order" 
+                        :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
+                        @onUpdateTermOpenedState="(state) => term.opened = state"/>
+            </div>
+        </template>
+        <a 
+                class="view-more-terms-level-0"
+                :class="{'is-disabled': isEditingTerm}"
+                @click="offset = offset + maxTerms; loadTerms(0)"
+                v-if="(!isSearching) && totalTerms > localTerms.length">
+            {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
+        </a>
     </div>
+
+    <b-modal
+            v-model="isEditingTerm"
+            :width="768"
+            trap-focus
+            aria-role="dialog"
+            aria-modal
+            :can-cancel="['outside', 'escape']"
+            custom-class="tainacan-modal"
+            :close-button-aria-label="$i18n.get('close')">
+        <term-edition-form 
+                :style="{ 'top': termEditionFormTop + 'px'}"
+                :taxonomy-id="taxonomyId"
+                :is-modal="true"
+                @onEditionFinished="onTermEditionFinished($event)"
+                @onEditionCanceled="onTermEditionCanceled($event)"
+                @onErrorFound="formWithErrors = editTerm.id"
+                :original-form="editTerm" />
+    </b-modal>
+
     <!-- Empty state image -->
     <div v-if="termsList.length <= 0 && !isLoadingTerms && !isEditingTerm">
         <section class="section">
@@ -583,10 +592,6 @@ export default {
         padding: 0.5em 0 0.5em 1.75em;
         display: flex;
         border-top: 1px solid var(--tainacan-gray1);
-    }
-
-    .edit-forms-list {
-        padding-left: 0;
     }
 
 </style>

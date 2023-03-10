@@ -1007,6 +1007,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_non_located_item'							 => __( 'This item does not have any location based on this metadata.', 'tainacan' ),
 	'info_metadata_section_hidden_conditional'		 => __( 'Section disabled due to a conditional metadatum value.', 'tainacan' ),
 	'info_create_select_metadatum_for_conditional_section' => __( 'For configuring conditional sections, first create one select type metadatum to use its values as rules for displaing this section. The metadatum should be inside another metadatum section.', 'tainacan' ),
+	'info_taxonomy_terms_list' 						 => __( 'The list of terms that are managed by this taxonomy. They will be used as values for the taxonomy metadata.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

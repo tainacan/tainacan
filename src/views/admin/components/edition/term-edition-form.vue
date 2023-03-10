@@ -12,7 +12,7 @@
                 :is="isModal ? 'header' : 'div'"
                 class="tainacan-page-title"
                 :class="{ 'tainacan-modal-title': isModal }">
-            <h2>{{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h2>
+            <h2 style="width: 60%">{{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h2>
             <a
                     v-if="form && form.url != undefined && form.url!= ''"
                     target="_blank"
