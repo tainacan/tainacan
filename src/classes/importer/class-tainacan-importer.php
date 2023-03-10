@@ -933,18 +933,19 @@ abstract class Importer {
 		$type = $properties[1];
 
 		$supported_types = \Tainacan\Repositories\Metadata::get_instance()->fetch_metadata_types('NAME');
-		$supported_types = array_map('strtolower', $supported_types);
+		$supported_types_index_of = array_search(strtolower($type), array_map('strtolower', $supported_types));
 
-		if ( ! \in_array($type, $supported_types) ) {
+		if ( $supported_types_index_of === false ) {
 			// translators: Warning on import logs. Invalid metadata type passed, using text type as fallback. 1 is the invalid type; 2 the name of the metadata. Ex: Unknown Metadata type "Hexadecimal" for Color. Considering text type.
 			$this->add_log( sprintf(__('Unknown Metadata type "%1$s" for %2$s. Considering text type.', 'tainacan'), $type, $name) );
 			$type = 'text';
+		} else {
+			$type = $supported_types[$supported_types_index_of];
 		}
 
 		$newMetadatum = new Entities\Metadatum();
 		$newMetadatum->set_name($name);
 
-		$type = ucfirst($type);
 		$newMetadatum->set_metadata_type('Tainacan\Metadata_Types\\'.$type);
 		$newMetadatum->set_collection_id( (isset($collection_id)) ? $collection_id : 'default');
 		$newMetadatum->set_status('auto-draft');
