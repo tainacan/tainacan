@@ -86,7 +86,7 @@ export default function({ attributes, className }) {
                 terms-agreement-message={ termsAgreementMessageHTML }
                 item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
                 help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' }
-                is-layout-steps={ isLayoutSteps.toString() } >
+                is-layout-steps={ isLayoutSteps !== undefined ? isLayoutSteps.toString() : 'false' } >
         </div>
     </div>
 };

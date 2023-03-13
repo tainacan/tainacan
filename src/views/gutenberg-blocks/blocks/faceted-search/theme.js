@@ -54,7 +54,7 @@ import ViewModeList from './theme-search/components/view-mode-list.vue';
 import ViewModeMap from './theme-search/components/view-mode-map.vue';
 
 // Remaining imports
-import { store } from '../../../admin/js/store/store';
+import store from '../../../admin/js/store/store';
 import routerTheme from './theme-search/js/theme-router.js';
 import eventBusSearch from '../../../admin/js/event-bus-search';
 import { 

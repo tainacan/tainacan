@@ -97,6 +97,12 @@ export default function ({ attributes, setAttributes, className }) {
             backgroundColor = 'rgb(' + backgroundColor.rgb.r + ',' + backgroundColor.rgb.g + ',' + backgroundColor.rgb.b + ')';
     }
 
+    // Sets some defaults that were not working
+    if (isLayoutSteps === undefined) {
+        isLayoutSteps = false;
+        setAttributes({ isLayoutSteps: isLayoutSteps });
+    }
+
     function openCollectionModal() {
         isCollectionModalOpen = true;
         setAttributes( {

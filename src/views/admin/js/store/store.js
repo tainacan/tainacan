@@ -1,4 +1,5 @@
-import { createStore } from 'vuex';
+import Vue from 'vue';
+import Vuex from 'vuex';
 
 import item from './modules/item';
 import collection from './modules/collection';
@@ -15,7 +16,11 @@ import exposer from './modules/exposer';
 import capability from './modules/capability';
 import report from './modules/report';
 
-export const store = new createStore({
+// Vue Dev Tools!
+Vue.config.devtools = TAINACAN_ENV === 'development';
+Vue.use(Vuex);
+
+export default new Vuex.Store({
     /*
         In strict mode, whenever Vuex state is mutated outside of mutation handlers, an error will be thrown
 
@@ -40,4 +45,4 @@ export const store = new createStore({
         capability,
         report
     }
-});
+})

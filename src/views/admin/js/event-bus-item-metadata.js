@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { store } from './store/store'
+import store from './store/store'
 
 export const eventBusItemMetadata = new Vue({
     store,
