@@ -86,7 +86,7 @@
             :active.sync="isLoadingTerms" 
             :can-cancel="false"/>
 
-    <div style="font-size: 0.875em; padding: 0px;">
+    <div class="terms-list-container">
 
         <!-- Basic list, without hierarchy, used during search -->
         <template v-if="isSearching">
@@ -499,12 +499,13 @@ export default {
     .terms-list-header {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
+        align-items: center;
 
         .order-area {
-            padding: 4px;
-            margin-top: -4px;
+           padding: 4px;
+            margin-top: 0;
             margin-left: auto;
+            margin-bottom: 0 !important;
 
             .label {
                 font-size: 0.875em;
@@ -550,6 +551,13 @@ export default {
                 white-space: nowrap; 
             }
         }
+    }
+
+    .terms-list-container {
+        font-size: 0.875em;
+        padding: 0px;
+        overflow-y: auto;
+        max-height: calc(100vh - 424px);
     }
 
     .parent-term>div>.term-item:first-child:hover {
