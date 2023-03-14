@@ -11,11 +11,11 @@ src/vendor
 node_modules
 npm-debug.log
 src/assets/js/*.js
+src/assets/js/*.png
 src/assets/js/*.js.LICENSE
 src/assets/js/*.js.LICENSE.txt
 src/assets/js/*.js.map
 src/assets/*.js
-src/assets/*.png
 last-js-build.md5
 last-sass-build.md5
 last-composer-build.md5
