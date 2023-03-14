@@ -851,7 +851,9 @@
         },
         created() {
             this.isRepositoryLevel = (this.collectionId == undefined || this.collectionId == '' || this.collectionId == null);
-           
+            
+            this.$eventBusSearch.updateStoreFromURL();
+
             // Sets initial variables important to searchbus
             if (this.collectionId != undefined)
                 this.$eventBusSearch.setCollectionId(this.collectionId);
@@ -886,8 +888,6 @@
                         this.$eventBusSearch.setOrderBy(this.defaultOrderBy);
                 }
             }
-            
-            this.$eventBusSearch.updateStoreFromURL();
 
             this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
 
