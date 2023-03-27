@@ -420,3 +420,8 @@
         }
     }
 }
+
+/* This makes sure dropdown autocomplete inside a modal that is appended to body appears in front of the modal. */
+.modal.tainacan-modal.is-active+.control.autocomplete {
+    z-index: 9999999;
+}

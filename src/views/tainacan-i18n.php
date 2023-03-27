@@ -311,6 +311,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_select_all_items_page'                    => __( 'Select all items on page', 'tainacan' ),
 	'label_select_all_taxonomies_page'               => __( 'Select all taxonomies on page', 'tainacan' ),
 	'label_select_all_processes_page'                => __( 'Select all processes on page', 'tainacan' ),
+	'label_select_all_terms'                    	 => __( 'Select all taxonomy terms', 'tainacan' ),
+	'label_all_terms_selected'     		             => __( 'All terms selected', 'tainacan' ),
 	'label_add_or_update_attachments'                => __( 'Add or update attachments', 'tainacan' ),
 	'label_blank_collection'                         => __( 'Blank collection', 'tainacan' ),
 	/* translators: the metadata scheme https://dublincore.org/ */
@@ -667,9 +669,25 @@ return apply_filters( 'tainacan-i18n', [
 	'label_show_item_location_on_map'				 => __( 'Show item location on map', 'tainacan' ),
 	/* translators: This appears before a select where you choose possible geocoorinate metadata */
 	'label_showing_locations_for'					 => __( 'Showing locations for:', 'tainacan' ),
-	'label_one_selected_location'                    => __( 'One selected location', 'tainacan' ),
-	'label_%s_selected_locations'                    => __( '%s selected locations', 'tainacan' ),
-
+	'label_one_selected_location'                    => __( 'One location selected', 'tainacan' ),
+	'label_%s_selected_locations'                    => __( '%s locations selected', 'tainacan' ),
+	'label_update_parent'		                     => __( 'Change parent term', 'tainacan' ),
+	'label_select_child_terms_long'					 => __( 'Select all child terms', 'tainacan' ),
+	/* translators: This relates to taxonomy terms selections. It is a shorter version of "select all child terms" */
+	'label_select_child_terms_short'				 => __( 'All children', 'tainacan' ),
+	'label_select_root_terms_long'					 => __( 'Select all root terms', 'tainacan' ),
+	/* translators: This relates to taxonomy terms selections. It is a shorter version of "select all root terms" */
+	'label_select_root_terms_short'				 	 => __( 'All root terms', 'tainacan' ),
+	'label_all_root_terms_selected'					 => __( 'All root terms selected', 'tainacan' ),
+	'label_terms_child_of_%s_selected'				 => __( 'Terms child of %s selected', 'tainacan' ),
+	'label_remove_selected_term'					 => __( 'Remove only the selected term', 'tainacan' ),
+	'label_remove_term_and_descendants'				 => __( 'Remove term and its descendants', 'tainacan' ),
+	'label_remove_selected_terms'					 => __( 'Remove only selected terms', 'tainacan' ),
+	'label_remove_terms_and_descendants'			 => __( 'Remove terms and their descendants', 'tainacan' ),
+	'label_%s_selected_terms'	                     => __( '%s terms selected', 'tainacan' ),
+	'label_one_selected_term'	                     => __( 'One term selected', 'tainacan' ),
+	'label_no_parent_root_term'						 => __( 'No parent (set as root term)', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -826,7 +844,6 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_selected_collections_delete'       => __( 'Do you really want to permanently delete the selected collections?', 'tainacan' ),
 	'info_warning_selected_collections_trash'        => __( 'Do you really want to trash the selected collections?', 'tainacan' ),
 	'info_warning_selected_items_delete'             => __( 'Do you really want to permanently delete the selected items?', 'tainacan' ),
-	'info_warning_selected_term_delete'              => __( 'Do you really want to permanently delete the selected term?', 'tainacan' ),
 	'info_warning_selected_items_trash'              => __( 'Do you really want to trash the selected items?', 'tainacan' ),
 	'info_warning_selected_taxonomies_delete'        => __( 'Do you really want to delete the selected taxonomies?', 'tainacan' ),
 	'info_warning_collection_related'                => __( 'The metadata Collection related is required', 'tainacan' ),
@@ -860,7 +877,6 @@ return apply_filters( 'tainacan-i18n', [
 	'info_no_description_provided'                   => __( 'No description provided.', 'tainacan' ),
 	'info_warning_taxonomy_not_saved'                => __( 'Are you sure? The taxonomy is not saved, changes will be lost.', 'tainacan' ),
 	'info_warning_terms_not_saved'                   => __( 'Are you sure? There are terms not saved, changes will be lost.', 'tainacan' ),
-	'info_warning_orphan_terms'                      => __( 'Are you sure? This term is parent of other terms. These will be converted to root terms.', 'tainacan' ),
 	'info_no_activities'                             => __( 'No activities found.', 'tainacan' ),
 	'info_logs_before'                               => __( 'Before', 'tainacan' ),
 	'info_logs_after'                                => __( 'After', 'tainacan' ),
@@ -1008,6 +1024,10 @@ return apply_filters( 'tainacan-i18n', [
 	'info_metadata_section_hidden_conditional'		 => __( 'Section disabled due to a conditional metadatum value.', 'tainacan' ),
 	'info_create_select_metadatum_for_conditional_section' => __( 'For configuring conditional sections, first create one select type metadatum to use its values as rules for displaing this section. The metadatum should be inside another metadatum section.', 'tainacan' ),
 	'info_taxonomy_terms_list' 						 => __( 'The list of terms that are managed by this taxonomy. They will be used as values for the taxonomy metadata.', 'tainacan' ),
+	'info_no_child_term_of_%s_found'				 => __( 'No child term of %s was found.', 'tainacan' ),
+	'info_warning_term_with_child'					 => __( 'This term has child terms. Per default, if you remove a parent term, its child terms will be moved one level up in the hierarchy.', 'tainacan' ),
+	'info_warning_selected_term_delete'              => __( 'Do you really want to permanently delete the selected term?', 'tainacan' ),
+	'info_warning_some_terms_with_child'			 => __( 'When removing multiple terms at once, it is possible that some of the terms contain child terms. Per default, if you remove a parent term, its child terms will be moved one level up in the hierarchy.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

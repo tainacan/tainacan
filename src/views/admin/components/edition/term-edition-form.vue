@@ -225,7 +225,7 @@
 
 <script>
     import { formHooks } from "../../js/mixins";
-    import { mapActions, mapGetters } from 'vuex';
+    import { mapActions } from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
 
     export default {
@@ -251,7 +251,8 @@
                 isLoading: false,
                 parentTermSearchQuery: '',
                 parentTermSearchOffset: 0,
-                form: {}
+                form: {},
+                totalTerms: undefined
             }
         },
         created() {
@@ -294,9 +295,6 @@
                 'fetchParentName',
                 'fetchPossibleParentTerms'
             ]),
-            ...mapGetters('taxonomy', [
-                'getTerms'
-            ]),
             saveEdition(term) {
 
                 if (term.id === 'new') {
@@ -314,7 +312,7 @@
                         term: data
                     })
                         .then((term) => {
-                            this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent });
+                            this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
                             this.form = {};
                             this.formErrors = {};
                             this.isLoading = false;
@@ -341,6 +339,7 @@
                         parent: this.hasParent ? this.form.parent : 0,
                         header_image_id: this.form.header_image_id,
                         header_image: this.form.header_image,
+                        total_children:	this.form.total_children ? this.form.total_children : 0
                     }
                     this.fillExtraFormData(data);
                     this.isLoading = true;
@@ -350,7 +349,7 @@
                     })
                         .then((term) => {
                             this.formErrors = {};
-                            this.$emit('onEditionFinished', { term: term, hasChangedParent: this.hasChangedParent });
+                            this.$emit('onEditionFinished', { term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
                             if (this.isModal)
                                 this.$parent.close();
                         })
@@ -366,7 +365,6 @@
                 }
             },
             cancelEdition() {
-                this.$emit('onEditionCanceled', this.form);
                 if (this.isModal)
                     this.$parent.close();
             },
@@ -426,8 +424,8 @@
                 }
 
                 // No need to load more
-                if (this.parentTermSearchOffset > 0 && this.parentTerms.length >= this.totalTerms)
-                    return
+                if (this.parentTermSearchOffset > 0 && this.totalTerms !== undefined && this.parentTerms.length >= this.totalTerms)
+                    return;
 
 
                 this.isFetchingParentTerms = true;
@@ -465,11 +463,13 @@
                 this.clearErrors('parent');
             },
             onSelectParentTerm(selectedParentTerm) {
-                this.hasChangedParent = this.initialParentId != selectedParentTerm.id;
-                this.form.parent = selectedParentTerm.id;
-                this.selectedParentTerm = selectedParentTerm;
-                this.parentTermName = selectedParentTerm.name;
-                this.showCheckboxesWarning = true;
+                if ( selectedParentTerm ) {
+                    this.hasChangedParent = this.initialParentId != selectedParentTerm.id;
+                    this.form.parent = selectedParentTerm.id;
+                    this.selectedParentTerm = selectedParentTerm;
+                    this.parentTermName = selectedParentTerm.name;
+                    this.showCheckboxesWarning = true;
+                }
             }
         }
     }

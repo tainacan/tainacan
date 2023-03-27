@@ -12,7 +12,8 @@
                     class="tainacan-form" 
                     label-width="120px">
                 <div class="columns">
-                    <div class="column">
+                    <div class="column is-3">
+
                         <!-- Name -------------------------------- -->
                         <b-field
                                 :addons="false"
@@ -54,6 +55,7 @@
                             <b-input
                                     id="tainacan-text-description"
                                     type="textarea"
+                                    rows="3"
                                     v-model="form.description"
                                     @focus="clearErrors('description')"/>
                         </b-field>
@@ -104,24 +106,26 @@
                                 :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"
                                 extra-classes="tainacan-repository-tooltip"/>
 
-                            <div 
-                                    v-for="wpPostType in wpPostTypes"
-                                    :key="wpPostType.slug"
-                                    class="field">
-                                <b-checkbox
-                                    :native-value="wpPostType.slug"
-                                    :true-value="wpPostType.slug"
-                                    false-value=""
-                                    v-model="form.enabledPostTypes"
-                                    name="enabled_post_types" >
-                                    {{ wpPostType.label }}  
-                                </b-checkbox>
-                            </div>    
+                            <div class="two-columns-fields">
+                                <div 
+                                        v-for="wpPostType in wpPostTypes"
+                                        :key="wpPostType.slug"
+                                        class="field">
+                                    <b-checkbox
+                                        :native-value="wpPostType.slug"
+                                        :true-value="wpPostType.slug"
+                                        false-value=""
+                                        v-model="form.enabledPostTypes"
+                                        name="enabled_post_types" >
+                                        {{ wpPostType.label }}  
+                                    </b-checkbox>
+                                </div>    
+                            </div>
                         </b-field>
 
                     </div>
 
-                    <div class="column">
+                    <div class="column is-9">
 
                         <!-- Status -------------------------------- --> 
                         <b-field
@@ -157,12 +161,9 @@
                                 :title="$i18n.get('terms')" 
                                 :message="$i18n.get('info_taxonomy_terms_list')"
                                 extra-classes="tainacan-repository-tooltip"/>
-    
-                            <terms-list
-                                    :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'" 
-                                    @isEditingTermUpdate="isEditingTermUpdate"
+                            <new-terms-list
+                                    :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'"
                                     :taxonomy-id="taxonomyId"
-                                    :taxonomy-slug="taxonomySlug"
                                     :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false"/>
                         </b-field>
 
@@ -249,13 +250,13 @@
 <script>
     import { wpAjax, formHooks } from "../../js/mixins";
     import { mapActions, mapGetters } from 'vuex';
-    import TermsList from '../lists/terms-list.vue';
+    import NewTermsList from '../lists/new-terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
         name: 'TaxonomyEditionForm',
         components: {
-            TermsList
+            NewTermsList
         },
         mixins: [ wpAjax, formHooks ],
         beforeRouteLeave( to, from, next ) {
@@ -291,23 +292,7 @@
                     trapFocus: true,
                     customClass: 'tainacan-modal',
                     closeButtonAriaLabel: this.$i18n.get('close')
-                });  
-            } else if (this.isEditingTerm) {
-                this.$buefy.modal.open({
-                    parent: this,
-                    component: CustomDialog,
-                    props: {
-                        icon: 'alert',
-                        title: this.$i18n.get('label_warning'),
-                        message: this.$i18n.get('info_warning_terms_not_saved'),
-                        onConfirm: () => {
-                            next();
-                        }
-                    },
-                    trapFocus: true,
-                    customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
-                });  
+                });   
             } else {
                 next();
             }  
@@ -319,7 +304,6 @@
                 taxonomy: null,
                 isLoadingTaxonomy: false,
                 isUpdatingSlug: false,
-                isEditingTerm: false,
                 form: {
                     name: String,
                     status: String,
@@ -513,16 +497,12 @@
             labelNewTerms(){
                 return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
             },
-            isEditingTermUpdate (value) {
-                this.isEditingTerm = value;
-            },
             goToCreateAnotherTaxonomy() {
                 this.$router.push(this.$routerHelper.getNewTaxonomyPath());                            
                 
                 this.taxonomyId = undefined;
                 this.taxonomy = null;
                 this.isUpdatingSlug = false;
-                this.isEditingTerm = false,
                 this.form = {
                     name: String,
                     status: String,
@@ -558,11 +538,15 @@
     .tainacan-form>.columns {
         margin-bottom: var(--tainacan-container-padding);
     }
-    .tainacan-form .column {
-        padding: 1em var(--tainacan-one-column);
-    }
     .tainacan-form .column:last-of-type {
-        padding-left: 0;
+        padding-left: var(--tainacan-one-column) !important;
+    }
+    .two-columns-fields {
+        column-width: 180px;
+
+        .field {
+            margin-bottom: 0px;
+        }
     }
     .form-submit {
         align-items: center;

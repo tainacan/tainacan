@@ -2542,7 +2542,6 @@ export default {
 
         .select-all {
             color: var(--tainacan-info-color);
-            font-size: 0.875em;
             margin-right: auto;
             margin-bottom: 0;
 
