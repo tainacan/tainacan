@@ -388,12 +388,7 @@
         },
         mounted() {
             this.prepareFilters();
-            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
-                /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
-                 * at collection level to items page at repository level
-                 */
-                this.prepareFilters();
-            });
+
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$on('isLoadingItems', this.updateIsLoadingItems);
         },
@@ -409,8 +404,6 @@
             // Cancels previous Filters Request
             if (this.filtersSearchCancel != undefined)
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
-
-            this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
 
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$off('isLoadingItems', this.updateIsLoadingItems);
