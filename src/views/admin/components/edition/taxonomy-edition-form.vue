@@ -594,6 +594,11 @@
             }
         }
 
+        .link-button {
+            background-color: transparent;
+            border: none;
+        }
+
         @media screen and (max-width: 769px) {
             padding: 13px 0.5em;
             width: 100%;

@@ -5,13 +5,10 @@
             tabindex="-1"
             aria-modal
             id="termEditForm"
-            class="tainacan-form"
-            :class="{ 'tainacan-modal-content': isModal }"
+            class="tainacan-form tainacan-modal-content"
             @submit.prevent="saveEdition(form)">
-        <component 
-                :is="isModal ? 'header' : 'div'"
-                class="tainacan-page-title"
-                :class="{ 'tainacan-modal-title': isModal }">
+        <header
+                class="tainacan-page-title tainacan-modal-title">
             <h2 style="width: 60%">{{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h2>
             <a
                     v-if="form && form.url != undefined && form.url!= ''"
@@ -20,12 +17,12 @@
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
                 </span>
-                <span class="menu-text">{{ $i18n.get('label_view_on_theme') }}</span>
+                <span class="menu-text">{{ $i18n.get('label_term_page_on_website') }}</span>
             </a>
             <hr>
-        </component>
+        </header>
     
-        <div :class="isModal ? 'modal-card-body' : ''">
+        <div class="modal-card-body">
             <b-loading
                     :is-full-page="false"
                     :active.sync="isLoading" />
@@ -186,7 +183,7 @@
                 <transition name="fade">
                     <p
                             class="checkboxes-warning"
-                            v-show="isModal != true && showCheckboxesWarning == true">
+                            v-show="isTermInsertionFlow != true && showCheckboxesWarning == true">
                         {{ $i18n.get('info_warning_changing_parent_term') }}
                     </p>
                 </transition>
@@ -215,7 +212,7 @@
                     <button
                             class="button is-success"
                             type="submit">
-                        {{ isModal ? $i18n.get('label_create_and_select') : $i18n.get('save') }}
+                        {{ isTermInsertionFlow ? $i18n.get('label_create_and_select') : $i18n.get('save') }}
                     </button>
                 </div>
             </div>
@@ -234,7 +231,7 @@
         props: {
             originalForm: Object,
             taxonomyId: '',
-            isModal: false
+            isTermInsertionFlow: false
         },
         data() {
             return {
@@ -316,8 +313,7 @@
                             this.form = {};
                             this.formErrors = {};
                             this.isLoading = false;
-                            if (this.isModal)
-                                this.$parent.close();
+                            this.$parent.close();
                         })
                         .catch((errors) => {
                             this.isLoading = false;
@@ -350,8 +346,7 @@
                         .then((term) => {
                             this.formErrors = {};
                             this.$emit('onEditionFinished', { term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
-                            if (this.isModal)
-                                this.$parent.close();
+                            this.$parent.close();
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -365,8 +360,7 @@
                 }
             },
             cancelEdition() {
-                if (this.isModal)
-                    this.$parent.close();
+                this.$parent.close();
             },
             deleteHeaderImage() {
                 this.form = Object.assign({},

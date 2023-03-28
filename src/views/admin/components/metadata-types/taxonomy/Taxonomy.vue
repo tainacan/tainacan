@@ -61,7 +61,7 @@
             <term-edition-form
                     :taxonomy-id="taxonomyId"
                     :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
-                    :is-modal="true"
+                    :is-term-insertion-flow="true"
                     @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
                     @onEditionCanceled="() => $console.log('Editing canceled')"
                     @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
