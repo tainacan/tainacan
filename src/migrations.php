@@ -497,6 +497,18 @@ class Migrations {
 		);
 	}
 
+	static function update_default_collections_orderby() {
+		global $wpdb;
+		// update default order by "creation_date" to "date"
+		$wpdb->query(
+			"UPDATE $wpdb->postmeta SET meta_value = 'date'
+			WHERE meta_key='default_orderby'
+				AND meta_value='creation_date'
+				AND post_id IN (SELECT ID from $wpdb->posts WHERE post_type='tainacan-collection')
+			"
+		);
+	}
+
 }
 
 

@@ -21,7 +21,7 @@
                         v-for="metadatumMapper in metadatumMappers"
                         :key="metadatumMapper.slug"
                         :value="metadatumMapper">
-                    {{ $i18n.get(metadatumMapper.name) }}
+                    {{ metadatumMapper.name }}
                 </option>
             </b-select>
         </b-field>

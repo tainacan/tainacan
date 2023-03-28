@@ -375,9 +375,8 @@ export default {
                 loadItems() {
 
                     // Forces fetch_only to be filled before any search happens
-                    if (this.$store.getters['search/getPostQuery']['fetch_only'] == undefined) {  
-                        this.$emit( 'hasToPrepareMetadataAndFilters');
-                    } else {  
+                    if (this.$store.getters['search/getPostQuery']['fetch_only'] != undefined) {  
+
                         this.$emit( 'isLoadingItems', true);
                         // Cancels previous Request
                         if (this.searchCancel != undefined)
@@ -401,9 +400,7 @@ export default {
                             this.searchCancel = resp.source;
                         });
 
-                        
-                    }
-                    
+                    }  
                 },
                 setCollectionId(collectionId) {
                     this.setTotalItems(null);

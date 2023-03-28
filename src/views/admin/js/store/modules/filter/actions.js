@@ -176,7 +176,7 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
 
                             let promises = [];
 
-                            // First, we add reporitory level filters
+                            // First, we add repository level filters
                             promises.push(
                                 axios.tainacan.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false')
                                     .then((resp) => { return { filters: resp.data, collectionId: 'default' } }) 
@@ -199,8 +199,12 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
                             // Process it all
                             axios.all(promises)
                                 .then((results) => {
+                                    let futureRepositoryCollectionFilters = {};
+                                    
                                     for (let resp of results)
-                                        commit('setRepositoryCollectionFilters', { collectionName: (resp.collectionId != 'default' ? resp.collectionId : undefined), repositoryCollectionFilters: resp.filters });
+                                        futureRepositoryCollectionFilters[resp.collectionId != 'default' ? resp.collectionId : 'repository-filters'] = resp.filters;
+
+                                    commit('setRepositoryCollectionFilters', futureRepositoryCollectionFilters);
 
                                     resolve();
                                 })  
@@ -258,13 +262,16 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, { taxonomyId, collect
                     // Process it all
                     axios.all(promises)
                         .then((results) => {
+                            let futureTaxonomyFilters = {};
+
                             for (let resp of results) {
                                 let taxonomyFilters = resp.filters.filter((filter) => {
                                     return filter.metadatum.metadata_type_object.options.taxonomy_id != taxonomyId
                                 });
-                                commit('setTaxonomyFiltersForCollection', { collectionName: (resp.collectionId != 'default' ? resp.collectionId : undefined), taxonomyFilters: taxonomyFilters });
+                                futureTaxonomyFilters[resp.collectionId != 'default' ? resp.collectionId : 'repository-filters'] = taxonomyFilters;
                             }
 
+                            commit('setTaxonomyFilters', futureTaxonomyFilters);
                             resolve();
                         }) 
                         .catch((error) => {

@@ -918,10 +918,6 @@
                 });
             }
 
-            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
-                this.prepareMetadata();
-            });
-
             this.$eventBusSearch.$on('start-slideshow-from-item', (index) => {
                 let currentQuery = this.$route.query;
                 delete currentQuery['slideshow-from'];
@@ -1458,7 +1454,6 @@
                 // $eventBusSearch
                 this.$eventBusSearch.$off('isLoadingItems');
                 this.$eventBusSearch.$off('hasFiltered');
-                this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
 
             },
         }
