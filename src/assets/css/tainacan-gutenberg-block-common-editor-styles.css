@@ -65,6 +65,8 @@
       .wp-block-tainacan-modal.dynamic-modal .components-modal__content .components-modal__header {
         margin-left: 0;
         margin-right: 0; }
+      .wp-block-tainacan-modal.dynamic-modal .components-modal__content .components-modal__header + div {
+        height: 100%; }
   .wp-block-tainacan-modal .spinner-container {
     min-height: 56px;
     padding: 1em;

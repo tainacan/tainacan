@@ -30,7 +30,7 @@
         },
         "enabledViewModes": {
             "type": "array",
-            "default": null
+            "default": []
         },
         "collectionDefaultViewMode": {
             "type": "string",

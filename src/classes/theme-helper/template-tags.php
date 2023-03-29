@@ -349,7 +349,7 @@ function tainacan_get_the_media_component(
 	if (!function_exists('tainacan_get_default_allowed_styles')) {
 		function tainacan_get_default_allowed_styles ( $styles ) {
 			$styles[] = 'display';
-			$styles[] = 'position';
+			$styles[] = 'position';		// Adding position to this list will not be necessary anymore from WP 6.2 on... but lets keep for backwards.
 			$styles[] = 'visibility';
 			return $styles;
 		}
