@@ -434,27 +434,34 @@ class REST_Items_Controller extends REST_Controller {
 				return $t != false ? $t->name : '--';
 			}, $terms_id);
 
-			$metas = $this->metadatum_repository->fetch(array(
-				'meta_query' => [
-					[
-						'key'     => 'collection_id',
-						'value'   => empty($collection_id) ? 'default' : $collection_id,
-						'compare' => '='
-					],
-					[
-						'key'     => '_option_taxonomy_id',
-						'value'   => $taxonomy_id,
-						'compate' => '='
-					]
+			$meta_query_params = [
+				[
+					'key'     => '_option_taxonomy_id',
+					'value'   => $taxonomy_id,
+					'compate' => '='
 				]
+			];
+
+			if ( !empty($collection_id) && $collection_id !== 'default' ) {
+				$meta_query_params[] = [
+					'key'     => 'collection_id',
+					'value'   => $collection_id,
+					'compare' => '='
+				];	
+			}
+
+			$metas = $this->metadatum_repository->fetch(array(
+				'meta_query' => $meta_query_params
 			), 'OBJECT' );
 
-			if( !empty($metas) ) {
-				$meta_query[] = array(
-					'key' => $metas[0]->get_id(),
-					'value' => $terms_id,
-					'label' => $terms_name,
-				);
+			if ( !empty($metas) ) {
+				foreach( $metas as $meta ) {
+					$meta_query[] = array(
+						'key' => $meta->get_id(),
+						'value' => $terms_id,
+						'label' => $terms_name,
+					);
+				}
 			}
 		}
 
