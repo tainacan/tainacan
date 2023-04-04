@@ -363,6 +363,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_remove_value'                             => __( 'Remove value', 'tainacan' ),
 	'label_create_new_page'                          => __( 'Create new page', 'tainacan' ),
 	'label_total_items'                              => __( 'Total items', 'tainacan' ),
+	'label_total_terms'                              => __( 'Total terms', 'tainacan' ),
 	'label_view_all'                                 => __( 'View all', 'tainacan' ),
 	'label_until'                                    => __( 'until', 'tainacan' ),
 	'label_visibility'                               => __( 'Visibility', 'tainacan' ),
@@ -402,6 +403,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_semantic_uri'                             => __( 'Semantic Uri', 'tainacan' ),
 	'label_view_collection_on_website'               => __( 'View collection on website', 'tainacan' ),
 	'label_view_collections_on_website'              => __( 'View collections on website', 'tainacan' ),
+	'label_view_taxonomies_on_website'               => __( 'View taxonomies on website', 'tainacan' ),
 	'label_view_more'                                => __( 'View more', 'tainacan' ),
 	'label_log_file'                                 => __( 'Log file', 'tainacan' ),
 	'label_error_log_file'                           => __( 'Error Log file', 'tainacan' ),
@@ -688,6 +690,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_%s_selected_terms'	                     => __( '%s terms selected', 'tainacan' ),
 	'label_one_selected_term'	                     => __( 'One term selected', 'tainacan' ),
 	'label_no_parent_root_term'						 => __( 'No parent (set as root term)', 'tainacan' ),
+	/* translators: This relates to terms that are in use by some item via a taxonomy. */
+	'label_used_by_items'							 => __( 'In use by some item', 'tainacan' ),
 	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

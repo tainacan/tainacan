@@ -251,9 +251,9 @@ class REST_Collections_Controller extends REST_Controller {
 	 * @return mixed|string|void|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response($item, $request){
-		if(!empty($item)){
+		if ( !empty($item) ) {
 
-			if(!isset($request['fetch_only'])) {
+			if( !isset($request['fetch_only']) ) {
 
 				$item_arr = $item->_toArray();
 
@@ -305,16 +305,16 @@ class REST_Collections_Controller extends REST_Controller {
 				$item_arr['url'] = get_permalink( $item_arr['id'] );
 			}
 
-			if(isset($request['fetch_preview_image_items']) && $request['fetch_preview_image_items'] != 0) {
+			if ( isset($request['fetch_preview_image_items']) && $request['fetch_preview_image_items'] != 0 ) {
 				$item_arr['preview_image_items'] = $this->get_preview_image_items($item, $request['fetch_preview_image_items']);
 			}
 
 			$total_items = wp_count_posts( $item->get_db_identifier(), 'readable' );
 
 			if (isset($total_items->publish) ||
-			 isset($total_items->private) ||
-			  isset($total_items->trash) ||
-			   isset($total_items->draft)) {
+				isset($total_items->private) ||
+			  	isset($total_items->trash) ||
+			   	isset($total_items->draft)) {
 
 				$item_arr['total_items']['trash'] = $total_items->trash;
 				$item_arr['total_items']['publish'] = $total_items->publish;
