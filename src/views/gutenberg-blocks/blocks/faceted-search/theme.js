@@ -44,15 +44,6 @@ import TaincanFiltersList from '../../../admin/components/filter-types/tainacan-
 import ThemeItemsPage from './theme-search/theme-items-page.vue';
 import ThemeSearch from './theme.vue';
 
-// View Modes
-import ViewModeTable from './theme-search/components/view-mode-table.vue';
-import ViewModeCards from './theme-search/components/view-mode-cards.vue';
-import ViewModeRecords from './theme-search/components/view-mode-records.vue';
-import ViewModeMasonry from './theme-search/components/view-mode-masonry.vue';
-import ViewModeSlideshow from './theme-search/components/view-mode-slideshow.vue';
-import ViewModeList from './theme-search/components/view-mode-list.vue';
-import ViewModeMap from './theme-search/components/view-mode-map.vue';
-
 // Remaining imports
 import store from '../../../admin/js/store/store';
 import routerTheme from './theme-search/js/theme-router.js';
@@ -154,14 +145,32 @@ export default (element) => {
             Vue.component('theme-items-page', ThemeItemsPage);
             Vue.component('theme-search', ThemeSearch);
 
-            // Oficial view modes
-            Vue.component('view-mode-table', ViewModeTable);
-            Vue.component('view-mode-cards', ViewModeCards);
-            Vue.component('view-mode-records', ViewModeRecords);
-            Vue.component('view-mode-masonry', ViewModeMasonry);
-            Vue.component('view-mode-slideshow', ViewModeSlideshow);
-            Vue.component('view-mode-list', ViewModeList);
-            Vue.component('view-mode-map', ViewModeMap);
+            // View Modes Logic
+            const registeredViewModes =
+                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.lenght ) ?
+                tainacan_plugin.registered_view_modes :
+                [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
+
+            // At first, we consider that all registered view modes are included.
+            let possibleViewModes = registeredViewModes;
+            if ( blockElement.attributes['enabled-view-modes'] != undefined )
+                possibleViewModes = blockElement.attributes['enabled-view-modes'].value.split(',');
+
+            // View Mode settings
+            let possibleDefaultViewMode = 'masonry';
+            if ( blockElement.attributes['default-view-mode'] != undefined)
+                possibleDefaultViewMode = blockElement.attributes['default-view-mode'].value;
+        
+            if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
+                possibleViewModes.push(possibleDefaultViewMode);
+
+            // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
+            possibleViewModes.forEach(viewModeSlug => {
+                if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
+                    import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')
+                        .then(importedModule => Vue.component('view-mode-' + viewModeSlug, importedModule.default) )
+                        .catch(error => console.log(error)); 
+            });
 
             Vue.use(eventBusSearch, { store: store, router: routerTheme});
                 
@@ -215,18 +224,6 @@ export default (element) => {
                     if (this.$el.attributes['taxonomy'] != undefined)
                         this.taxonomy = this.$el.attributes['taxonomy'].value;
 
-                    // View Mode settings
-                    if (this.$el.attributes['default-view-mode'] != undefined)
-                        this.defaultViewMode = this.$el.attributes['default-view-mode'].value;
-                    else
-                        this.defaultViewMode = 'cards';
-                        
-                    if (this.$el.attributes['is-forced-view-mode'] != undefined)
-                        this.isForcedViewMode = new Boolean(this.$el.attributes['is-forced-view-mode'].value);
-
-                    if (this.$el.attributes['enabled-view-modes'] != undefined)
-                        this.enabledViewModes = this.$el.attributes['enabled-view-modes'].value.split(',');
-                    
                     // Sorting options
                     if (this.$el.attributes['default-order'] != undefined)
                         this.defaultOrder = this.$el.attributes['default-order'].value;
@@ -238,6 +235,13 @@ export default (element) => {
                         this.defaultOrderByMeta = this.$el.attributes['default-orderby-meta'].value;
                     if (this.$el.attributes['default-orderby-type'] != undefined)
                         this.defaultOrderByType = this.maybeConvertFromJSON(this.$el.attributes['default-orderby-type'].value);
+
+                    // View modes settings
+                    if (this.$el.attributes['is-forced-view-mode'] != undefined)
+                        this.isForcedViewMode = new Boolean(this.$el.attributes['is-forced-view-mode'].value);
+                    
+                    this.defaultViewMode = possibleDefaultViewMode;
+                    this.enabledViewModes = possibleViewModes;
 
                     // Options related to hidding elements
                     if (this.$el.attributes['hide-filters'] != undefined)
