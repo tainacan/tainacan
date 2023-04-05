@@ -316,7 +316,7 @@
                                     placement: 'auto-start',
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"  
-                                class="ellipsed-text">
+                                class="ellipsed-name">
                             {{ metadatum.name }}
                         </span>
                     </label>
