@@ -86,8 +86,33 @@
 </template>
 
 <script>
+    import TainacanFilterNumeric from './numeric/Numeric.vue';
+    import TainacanFilterDate from './date/Date.vue';
+    import TainacanFilterSelectbox from './selectbox/Selectbox.vue';
+    import TainacanFilterAutocomplete from './autocomplete/Autocomplete.vue';
+    import TainacanFilterCheckbox from './checkbox/Checkbox.vue';
+    import TainacanFilterTaginput from './taginput/Taginput.vue';
+    import TainacanFilterTaxonomyCheckbox from './taxonomy/Checkbox.vue';
+    import TainacanFilterTaxonomyTaginput from './taxonomy/Taginput.vue';
+    import TainacanFilterDateInterval from './date-interval/DateInterval.vue';
+    import TainacanFilterNumericInterval from './numeric-interval/NumericInterval.vue';
+    import TainacanFilterNumericListInterval from './numeric-list-interval/NumericListInterval.vue';
+
     export default {
         name: 'TainacanFilterItem',
+         components: {
+            TainacanFilterNumeric,
+            TainacanFilterDate,
+            TainacanFilterSelectbox,
+            TainacanFilterAutocomplete,
+            TainacanFilterCheckbox,
+            TainacanFilterTaginput,
+            TainacanFilterTaxonomyCheckbox,
+            TainacanFilterTaxonomyTaginput,
+            TainacanFilterDateInterval,
+            TainacanFilterNumericInterval,
+            TainacanFilterNumericListInterval
+        },
         props: {
             filter: Object,
             query: Object,

@@ -687,7 +687,6 @@
 
 <script>
     import FiltersTagsList from '../../../../admin/components/search/filters-tags-list.vue';
-    import FiltersItemsList from '../../../../admin/components/search/filters-items-list.vue';
     import Pagination from '../../../../admin/components/search/pagination.vue'
     import AdvancedSearch from '../../../../admin/components/search/advanced-search.vue';
     import ExposersModal from '../../../../admin/components/modals/exposers-modal.vue';
@@ -698,7 +697,6 @@
         name: 'ThemeItemsPage',
         components: {
             FiltersTagsList,
-            FiltersItemsList,
             Pagination,
             AdvancedSearch,
             ExposersModal

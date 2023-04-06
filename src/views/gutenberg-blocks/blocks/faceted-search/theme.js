@@ -27,20 +27,6 @@ import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';
 import VueBlurHash from 'vue-blurhash';
 
-// Filters
-import FilterNumeric from '../../../admin/components/filter-types/numeric/Numeric.vue';
-import FilterDate from '../../../admin/components/filter-types/date/Date.vue';
-import FilterSelectbox from '../../../admin/components/filter-types/selectbox/Selectbox.vue';
-import FilterAutocomplete from '../../../admin/components/filter-types/autocomplete/Autocomplete.vue';
-import FilterCheckbox from '../../../admin/components/filter-types/checkbox/Checkbox.vue';
-import FilterTaginput from '../../../admin/components/filter-types/taginput/Taginput.vue';
-import FilterTaxonomyCheckbox from '../../../admin/components/filter-types/taxonomy/Checkbox.vue';
-import FilterTaxonomyTaginput from '../../../admin/components/filter-types/taxonomy/Taginput.vue';
-import FilterDateInterval from '../../../admin/components/filter-types/date-interval/DateInterval.vue';
-import FilterNumericInterval from '../../../admin/components/filter-types/numeric-interval/NumericInterval.vue';
-import FilterNumericListInterval from '../../../admin/components/filter-types/numeric-list-interval/NumericListInterval.vue';
-
-import TaincanFiltersList from '../../../admin/components/filter-types/tainacan-filter-item.vue';
 import ThemeItemsPage from './theme-search/theme-items-page.vue';
 import ThemeSearch from './theme.vue';
 
@@ -126,20 +112,18 @@ export default (element) => {
                 }
             }
 
-            Vue.component('tainacan-filter-item', TaincanFiltersList);
+            // Filters logic
+            let possibleHideFilters = false;
+            if ( blockElement.attributes['hide-filters'] != undefined ) {
+                const hideFiltersValue = blockElement.attributes['hide-filters'].value;
+                possibleHideFilters = ( hideFiltersValue == true || hideFiltersValue == 'true' || hideFiltersValue == '1' || hideFiltersValue == 1 ) ? true : false;
+            }
 
-            /* Filters */
-            Vue.component('tainacan-filter-numeric', FilterNumeric);
-            Vue.component('tainacan-filter-date', FilterDate);
-            Vue.component('tainacan-filter-selectbox', FilterSelectbox);
-            Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
-            Vue.component('tainacan-filter-checkbox', FilterCheckbox);
-            Vue.component('tainacan-filter-taginput', FilterTaginput);
-            Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
-            Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
-            Vue.component('tainacan-filter-date-interval', FilterDateInterval);
-            Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
-            Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval);
+            if ( !possibleHideFilters ) {
+                import('../../../admin/components/search/filters-items-list.vue')
+                    .then(importedModule => Vue.component('filters-items-list', importedModule.default))
+                    .catch(error => console.log(error));
+            }
 
             /* Main page component */
             Vue.component('theme-items-page', ThemeItemsPage);
@@ -244,8 +228,7 @@ export default (element) => {
                     this.enabledViewModes = possibleViewModes;
 
                     // Options related to hidding elements
-                    if (this.$el.attributes['hide-filters'] != undefined)
-                        this.hideFilters = this.isParameterTrue('hide-filters');
+                    this.hideFilters = possibleHideFilters;
                     if (this.$el.attributes['hide-hide-filters-button'] != undefined)
                         this.hideHideFiltersButton = this.isParameterTrue('hide-hide-filters-button');
                     if (this.$el.attributes['hide-search'] != undefined)
