@@ -83,7 +83,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
     let registeredViewModesKeys = [];
     updateAvailableViewModes(hideItemsThumbnail);
 
-    if (enabledViewModes === null)
+    if ( enabledViewModes === null || !enabledViewModes.length )
         enabledViewModes = Object.keys(tainacan_plugin.registered_view_modes);
 
     const fontSizes = [
@@ -612,10 +612,11 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             max={ tainacan_plugin.api_max_items_per_page ? tainacan_plugin.api_max_items_per_page : 96 }
                         />
                     </PanelBody>
-
+                </InspectorControls>
+                <InspectorControls group="styles">
                     <PanelBody
-                            title={__('Colors and Sizes', 'tainacan')}
-                            initialOpen={ false }
+                            title={__('Dimensions', 'tainacan')}
+                            initialOpen={ true }
                         >
                         <FontSizePicker
                             fontSizes={ fontSizes }
@@ -632,7 +633,11 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                             min={ 10 }
                             max={ 40 }
                         />
-                        <HorizontalRule />
+                    </PanelBody>
+                    <PanelBody
+                            title={__('Colors', 'tainacan')}
+                            initialOpen={ true }
+                        >
                         <BaseControl
                                 id="backgroundColorPicker"
                                 label={ __('Background color', 'tainacan')}

@@ -19,15 +19,8 @@ class REST_Exporters_Controller extends REST_Controller {
 	*/
 	public function __construct() {
 		$this->rest_base = 'exporters';
-		if (session_status() == PHP_SESSION_NONE) {
-			@session_start(); // @ avoids Warnings when running phpunit tests
-		}
 		parent::__construct();
 		add_action('init', array(&$this, 'init_objects'), 11);
-	}
-
-	public function __destruct() {
-		session_write_close();
 	}
 
 	/**
@@ -95,24 +88,24 @@ class REST_Exporters_Controller extends REST_Controller {
 
 	}
 
-    /**
-     *
-     * @param \WP_REST_Request $request
-     *
-     * @return bool|\WP_Error
-     * @throws \Exception
-     */
-    public function  export_permissions_check($request) {
-        return true;
-    }
+	/**
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 * @throws \Exception
+	 */
+	public function  export_permissions_check($request) {
+		return true;
+	}
 
-    public function get_registered_exporters() {
-        global $Tainacan_Exporter_Handler;
-        $exporters = $Tainacan_Exporter_Handler->get_registered_exporters();
-        return new \WP_REST_Response( $exporters, 200 );
-    }
+	public function get_registered_exporters() {
+		global $Tainacan_Exporter_Handler;
+		$exporters = $Tainacan_Exporter_Handler->get_registered_exporters();
+		return new \WP_REST_Response( $exporters, 200 );
+	}
 
-    /**
+	/**
 	 * Creates a new instance of the desired exporter and returns its ID
 	 *
 	 * @param \WP_REST_Request $request

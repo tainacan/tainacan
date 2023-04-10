@@ -413,9 +413,11 @@ export default function ({ attributes, setAttributes, className }) {
                                     }
                                 />
                         </PanelBody>
+                    </InspectorControls>
+                    <InspectorControls group="styles">
                         <PanelBody
-                                    title={__('Colors and Sizes', 'tainacan')}
-                                    initialOpen={ false }
+                                    title={__('Dimensions', 'tainacan')}
+                                    initialOpen={ true }
                                 >
                             <FontSizePicker
                                 fontSizes={ fontSizes }
@@ -425,7 +427,11 @@ export default function ({ attributes, setAttributes, className }) {
                                     setAttributes( { baseFontSize: newFontSize } );
                                 } }
                             />
-                            <HorizontalRule />
+                        </PanelBody>
+                        <PanelBody
+                                    title={__('Colors', 'tainacan')}
+                                    initialOpen={ true }
+                                >
                             <BaseControl
                                     id="backgroundColorPicker"
                                     label={ __('Background color', 'tainacan')}

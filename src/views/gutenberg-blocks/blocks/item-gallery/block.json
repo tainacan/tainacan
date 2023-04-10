@@ -133,6 +133,9 @@
         },
         "spacing": {
             "padding": true
+        },
+        "position": {
+            "sticky": true
         }
     },
     "editorScript": "item-gallery",

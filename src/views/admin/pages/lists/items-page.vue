@@ -838,10 +838,6 @@
             this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
             });
-
-            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
-                this.prepareMetadata();
-            });
             
             if (this.$route.query && this.$route.query.advancedSearch) {
                 this.openAdvancedSearch = this.$route.query.advancedSearch;
@@ -1379,7 +1375,6 @@
                 // $eventBusSearch
                 this.$eventBusSearch.$off('isLoadingItems');
                 this.$eventBusSearch.$off('hasFiltered');
-                this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
             }
         }
     }

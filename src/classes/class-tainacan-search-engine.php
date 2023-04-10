@@ -125,7 +125,8 @@ class Search_Engine {
 		foreach ( $terms as $term ) {
 			$esc_term = $wpdb->prepare("%s", $not_exact ? "%".$term."%" : $term);
 			if ( !empty( $this->relationships ) ) {
-				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term} OR p2.post_title LIKE {$esc_term} OR p2.post_content LIKE {$esc_term})";
+				$relation_content =  (defined('TAINACAN_DISABLE_CONTENT_RELATIONSHIP_SEARCH') && TAINACAN_DISABLE_CONTENT_RELATIONSHIP_SEARCH === true) ? "" : "OR p2.post_content LIKE {$esc_term}";
+				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term} OR p2.post_title LIKE {$esc_term} $relation_content)";
 			} else {
 				$searchQuery .= "{$seperator}($wpdb->posts.post_title LIKE {$esc_term} OR $wpdb->posts.post_content LIKE {$esc_term})";
 			}

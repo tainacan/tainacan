@@ -47,7 +47,7 @@
                     ((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
                 class="filters-components-list">
 
-            <!-- TERM ITEMS PAGE FILTERS -->
+            <!--  TAXONOMY TERM ITEMS FILTERS -->
             <template v-if="taxonomy && taxonomyFilters">
                 <div 
                         v-if="key == 'repository-filters'"
@@ -149,7 +149,7 @@
                 </div>
             </template>
 
-            <!-- REPOSITORY ITEMS PAGE FILTERS -->
+            <!-- REPOSITORY ITEMS FILTERS -->
             <template v-else-if="isRepositoryLevel && !taxonomy">
                 <div 
                         v-if="key == 'repository-filters'"
@@ -251,7 +251,7 @@
                 </div>
             </template>
 
-            <!-- COLLECTION ITEMS PAGE FILTERS -->
+            <!-- COLLECTION ITEMS FILTERS -->
             <template v-else>
                 <tainacan-filter-item
                         :is-loading-items="isLoadingItems"
@@ -292,10 +292,12 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
+    import TainacanFilterItem from '../filter-types/tainacan-filter-item.vue';
     import FiltersTagsList from './filters-tags-list.vue';
 
     export default {
         components: {
+            TainacanFilterItem,
             FiltersTagsList
         },
         props: {
@@ -342,17 +344,16 @@
         },
         watch: {
             taxonomyFilters() {
-                if (this.taxonomyFilters != undefined) {
+                if ( this.taxonomyFilters != undefined && Object.keys(this.taxonomyFilters).length ) {
                     
                     this.$set(this.taxonomyFiltersCollectionNames, 'repository-filters', this.$i18n.get('repository'));
                                                     
                     // Cancels previous collection name Request
                     if (this.collectionNameSearchCancel != undefined)
                         this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-                    const collectionIds = JSON.parse(JSON.stringify(Object.keys(this.taxonomyFilters)));
-                    delete collectionIds['repository-filters'];
-
-                    this.fetchAllCollectionNames(collectionIds)
+                    let collectionIds = JSON.parse(JSON.stringify(Object.keys(this.taxonomyFilters)));
+    
+                    this.fetchAllCollectionNames( collectionIds.filter(aCollectionId => aCollectionId !== 'repository-filters') )
                         .then((resp) => {
                             resp.request
                                 .then((collections) => {
@@ -365,35 +366,18 @@
                 }
             },
             repositoryCollectionFilters() {
-                if (this.repositoryCollectionFilters != undefined) {
+                if ( this.repositoryCollectionFilters != undefined && Object.keys(this.repositoryCollectionFilters).length ) {
                     
                     this.$set(this.repositoryCollectionNames, 'repository-filters', this.$i18n.get('repository'));
                     
-                    // Cancels previous collection name Request
-                    if (this.collectionNameSearchCancel != undefined)
-                        this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-
-                    this.fetchAllCollectionNames()
-                        .then((resp) => {
-                            resp.request
-                                .then((collections) => {
-                                    for (let collection of collections)
-                                        this.$set(this.repositoryCollectionNames, '' + collection.id, collection.name);
-                                });
-                            // Search Request Token for cancelling
-                            this.collectionNameSearchCancel = resp.source;
-                        });
+                    for ( let collection of this.getCollections() )
+                        this.$set(this.repositoryCollectionNames, '' + collection.id, collection.name);
                 }                
             }
         },
         mounted() {
             this.prepareFilters();
-            this.$eventBusSearch.$on('hasToPrepareMetadataAndFilters', () => {
-                /* This condition is to prevent an incorrect fetch by filter or metadata when we come from items
-                 * at collection level to items page at repository level
-                 */
-                this.prepareFilters();
-            });
+
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$on('isLoadingItems', this.updateIsLoadingItems);
         },
@@ -410,8 +394,6 @@
             if (this.filtersSearchCancel != undefined)
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
 
-            this.$eventBusSearch.$off('hasToPrepareMetadataAndFilters');
-
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$off('isLoadingItems', this.updateIsLoadingItems);
      
@@ -421,7 +403,8 @@
                 'getPostQuery'
             ]),
             ...mapGetters('collection',[
-                'getCollection'
+                'getCollection',
+                'getCollections'
             ]),
             ...mapActions('collection',[
                 'fetchAllCollectionNames'
@@ -482,12 +465,12 @@
                 }
 
                 // On repository level we also fetch collection filters
-                if (!this.taxonomy && this.isRepositoryLevel) {
+                if ( !this.taxonomy && this.isRepositoryLevel ) {
                     
                     // Cancels previous Request
                     if (this.repositoryFiltersSearchCancel != undefined)
                         this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
-
+     
                     this.fetchRepositoryCollectionFilters()
                         .then((source) => {
                             this.repositoryFiltersSearchCancel = source;

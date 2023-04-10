@@ -55,19 +55,6 @@ import FormNumeric from '../components/metadata-types/numeric/FormNumeric.vue';
 import FormUser from '../components/metadata-types/user/FormUser.vue';
 import FormGeoCoordinate from '../components/metadata-types/geocoordinate/FormGeoCoordinate.vue';
 
-
-import FilterNumeric from '../components/filter-types/numeric/Numeric.vue';
-import FilterDate from '../components/filter-types/date/Date.vue';
-import FilterSelectbox from '../components/filter-types/selectbox/Selectbox.vue';
-import FilterAutocomplete from '../components/filter-types/autocomplete/Autocomplete.vue';
-import FilterCheckbox from '../components/filter-types/checkbox/Checkbox.vue';
-import FilterTaginput from '../components/filter-types/taginput/Taginput.vue';
-import FilterNumericInterval from '../components/filter-types/numeric-interval/NumericInterval.vue';
-import FilterDateInterval from '../components/filter-types/date-interval/DateInterval.vue';
-import FilterNumericListInterval from '../components/filter-types/numeric-list-interval/NumericListInterval.vue';
-import FilterTaxonomyCheckbox from '../components/filter-types/taxonomy/Checkbox.vue';
-import FilterTaxonomyTaginput from '../components/filter-types/taxonomy/Taginput.vue';
-
 // Term edition form must be imported here so that it is not necessary on item-submission bundle
 import TermEditionForm from '../components/edition/term-edition-form.vue';
 
@@ -80,7 +67,6 @@ import FormFilterNumericListInterval from '../components/filter-types/numeric-li
 // import FormDate from '../../../classes/filter-types/date/FormDate.vue';
 
 import TainacanFormItem from '../components/metadata-types/tainacan-form-item.vue';
-import TainacanFiltersList from '../components/filter-types/tainacan-filter-item.vue';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
@@ -227,20 +213,6 @@ export default (element) => {
             Vue.component('tainacan-form-user', FormUser);
             Vue.component('term-edition-form', TermEditionForm);
             Vue.component('tainacan-form-geocoordinate', FormGeoCoordinate);
-            
-
-            /* Filters */
-            Vue.component('tainacan-filter-numeric', FilterNumeric);
-            Vue.component('tainacan-filter-date', FilterDate);
-            Vue.component('tainacan-filter-selectbox', FilterSelectbox);
-            Vue.component('tainacan-filter-autocomplete', FilterAutocomplete);
-            Vue.component('tainacan-filter-checkbox', FilterCheckbox);
-            Vue.component('tainacan-filter-taginput', FilterTaginput);
-            Vue.component('tainacan-filter-taxonomy-checkbox', FilterTaxonomyCheckbox);
-            Vue.component('tainacan-filter-taxonomy-taginput', FilterTaxonomyTaginput);
-            Vue.component('tainacan-filter-numeric-interval', FilterNumericInterval);
-            Vue.component('tainacan-filter-numeric-list-interval', FilterNumericListInterval);
-            Vue.component('tainacan-filter-date-interval', FilterDateInterval);
 
             /* Filter Metadata Option forms */
             Vue.component('tainacan-filter-form-numeric', FormFilterNumeric);
@@ -248,9 +220,8 @@ export default (element) => {
             Vue.component('tainacan-filter-form-numeric-list-interval', FormFilterNumericListInterval);
             // Vue.component('tainacan-filter-form-date', FormDate);
 
-            // Filter and Metadadum parent containers
+            // Metadadum parent containers
             Vue.component('tainacan-form-item', TainacanFormItem);
-            Vue.component('tainacan-filter-item', TainacanFiltersList);
 
             /* Others */
             Vue.component('recursive-term-item', RecursiveTermItem);
