@@ -30,6 +30,15 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 		this->assertEquals( $collection->get_id(),  $_SESSION['tainacan_importer'][$id]->collection->get_id() );
 	}*/
 
+	public function __construct(){
+		parent::__construct();
+		@session_start();
+	}
+
+	public function __destruct() {
+		session_write_close();
+	}
+
 	public function test_automapping_old_tainacan()
 	{
 		//$Tainacan_Items = \Tainacan\Repositories\Items::get_instance();
