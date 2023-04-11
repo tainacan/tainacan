@@ -292,10 +292,12 @@
 
 <script>
     import { mapGetters, mapActions } from 'vuex';
+    import TainacanFilterItem from '../filter-types/tainacan-filter-item.vue';
     import FiltersTagsList from './filters-tags-list.vue';
 
     export default {
         components: {
+            TainacanFilterItem,
             FiltersTagsList
         },
         props: {

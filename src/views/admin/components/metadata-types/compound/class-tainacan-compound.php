@@ -64,27 +64,27 @@ class Compound extends Metadata_Type {
 	}
 
 	/**
-     * @inheritdoc
-     */
-    public function get_form_labels(){
-        return [
-            'children' => [
-                'title' => __( 'Child Metadata', 'tainacan' ),
-                'description' => __( 'The list of inner metadata that compose this compound metadata.', 'tainacan' ),
-            ]
-        ];
-    }
+	 * @inheritdoc
+	 */
+	public function get_form_labels(){
+		return [
+			'children' => [
+				'title' => __( 'Child Metadata', 'tainacan' ),
+				'description' => __( 'The list of inner metadata that compose this compound metadata.', 'tainacan' ),
+			]
+		];
+	}
 	
 	/**
-     * Gets print-ready version of the options list in html
-     *
-     * Checks if at least one option exists, otherwise return an empty string
-     * 
-     * @return string An html content with labels and values for the options or an empty string
-     */
-    public function get_options_as_html() {
-        return '';
-    }
+	 * Gets print-ready version of the options list in html
+	 *
+	 * Checks if at least one option exists, otherwise return an empty string
+	 * 
+	 * @return string An html content with labels and values for the options or an empty string
+	 */
+	public function get_options_as_html() {
+		return '';
+	}
 
 	/**
 	 * save options and remove old children
@@ -227,6 +227,35 @@ class Compound extends Metadata_Type {
 		}
 		
 		return "<div class='tainacan-compound-group'> {$return} </div>";
+	}
+
+	// /**
+	//  * Return the value of an Item_Metadata_Entity using a metadatum of this metadatum type as a string
+	//  * @param  Item_Metadata_Entity $item_metadata 
+	//  * @return string The String representation of the value, containing one or multiple items names, linked to the item page
+	//  */
+	public function get_value_as_string(\Tainacan\Entities\Item_Metadata_Entity $item_metadata) {
+		$value = $item_metadata->get_value();
+		$return = '';
+
+		if ( empty($value) )
+			return $return;
+
+		if ( $item_metadata->is_multiple() ) {
+			foreach ( $value as $compound_element ) {
+				if ( !empty($compound_element) ) {
+					foreach ( $compound_element as $meta_id => $meta ) {
+						$return .= $meta->get_value_as_string() . " ";
+					}
+				}
+				$return .= "\n";
+			}
+		} else {
+			foreach ( $value as $meta_id => $meta ) {
+				$return .= $meta->get_value_as_string() . " ";
+			}
+		}
+		return $return;
 	}
 
 	private function get_meta_html(Item_Metadata_Entity $meta) {

@@ -73,16 +73,29 @@
                         margin-right: 0.5em;
                         display: flex;
                     }
+                   
                     .media-content {
+                        width: 100%;
                         display: flex;
-                        width: 80%;
 
                         .ellipsed-text {
                             overflow-x: hidden;
                             text-overflow: ellipsis;
                             white-space: nowrap;
                             margin-right: 3px;
+                            transition: white-space .3s ease, overflow .3s ease;
                         }
+                    }
+                    .media-left+.media-content {
+                        width: calc(100% - 32px);
+                    }
+                }
+
+                &:hover {
+                    .ellipsed-text {
+                        overflow-x: visible !important;
+                        white-space: normal !important;
+                        word-wrap: break-word;
                     }
                 }
             }
