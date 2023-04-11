@@ -1,11 +1,11 @@
 <template>
     <li 
             class="facet-list-item"
-            :class="(!showImage ? 'facet-without-image' : '') + (nameInsideImage ? ' facet-with-name-inside-image' : '') + ((appendChildTerms && facet.total_children > 0) ? ' facet-term-with-children': '')">
+            :class="(!showImage ? 'facet-without-image' : '') + (nameInsideImage ? ' facet-with-name-inside-image' : '') + (isCollapseInsteadOfLink(facet) ? ' facet-term-with-children': '')">
         <a 
                 :id="isNaN(facetId) ? facetId : 'facet-id-' + facetId"
-                :href="(appendChildTerms && facet.total_children > 0) ? null : ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy) ? facet.term_url : facet.url)"
-                @click="() => { (appendChildTerms && facet.total_children > 0) ? displayChildTerms(facetId) : null }"
+                :href="isCollapseInsteadOfLink(facet) ? null : ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy) ? facet.term_url : facet.url)"
+                @click="() => { isCollapseInsteadOfLink(facet) ? displayChildTerms(facetId) : null }"
                 :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}">
             <img
                 :src=" 
@@ -34,7 +34,7 @@
                     </template>
                 </span>
             </div>
-            <template v-if="appendChildTerms && facet.total_children > 0">
+            <template v-if="appendChildTerms && facet.total_children > 0 && (!childFacetsObject[facet.id != undefined ? facet.id : facet.value] || childFacetsObject[facet.id != undefined ? facet.id : facet.value].facets.length)">
                 <svg 
                         v-if="childFacetsObject[facetId] && childFacetsObject[facetId].visible"
                         xmlns="http://www.w3.org/2000/svg"
@@ -143,6 +143,9 @@ export default {
     methods: {
         displayChildTerms(facetId) {
             this.$emit('on-display-child-terms', facetId)
+        },
+        isCollapseInsteadOfLink(facet) {
+            return (this.appendChildTerms && facet.total_children > 0 && (!this.childFacetsObject[facet.id != undefined ? facet.id : facet.value] || this.childFacetsObject[facet.id != undefined ? facet.id : facet.value].facets.length) );
         },
         getSkeletonHeight() {
             switch(this.layout) {

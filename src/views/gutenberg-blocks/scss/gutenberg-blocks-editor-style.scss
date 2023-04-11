@@ -89,6 +89,9 @@
                 margin-left: 0;
                 margin-right: 0;
             }
+            .components-modal__header+div {
+                height: 100%;
+            }
         }
     }
 

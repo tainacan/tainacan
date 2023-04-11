@@ -260,7 +260,7 @@ export default [
                         collection-id={ updatedListType == 'collection' ? collectionId : null }  
                         default-view-mode={ defaultViewMode != 'none' ? defaultViewMode : (updatedListType == 'collection' ? collectionDefaultViewMode : (hideItemsThumbnail ? 'table' : 'masonry') ) }
                         is-forced-view-mode={ defaultViewMode == 'none' ? 'true' : 'false' }
-                        enabled-view-modes={ enabledViewModes.toString() }  
+                        enabled-view-modes={ enabledViewModes ? enabledViewModes.toString() : '' }  
                         hide-filters = { hideFilters.toString() }
                         hide-hide-filters-button= { hideHideFiltersButton.toString() }
                         hide-search = { hideSearch.toString() }

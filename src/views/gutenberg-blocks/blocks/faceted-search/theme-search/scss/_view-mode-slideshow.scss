@@ -126,11 +126,11 @@
 
             color: var(--tainacan-white);
 
-            span:not(.ellipsed-text) {
+            span:not(.ellipsed-name) {
                 margin-right: 5px;
                 margin-left: -5px;
             }
-            .ellipsed-text {
+            .ellipsed-name {
                 text-overflow: ellipsis;
                 overflow: hidden;
                 white-space: nowrap;
