@@ -1,7 +1,8 @@
-const { registerBlockVariation } = wp.blocks;
-const { __ } = wp.i18n;
 import itemsIcon from '../blocks/items-list/icon';
 import collectionsIcon from '../blocks/collections-list/icon';
+
+const { registerBlockVariation } = wp.blocks;
+const { __ } = wp.i18n;
 
 /**
  * Adds Tainacan Collections as a query loop variation

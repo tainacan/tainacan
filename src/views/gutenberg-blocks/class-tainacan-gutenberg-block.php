@@ -310,7 +310,7 @@ function tainacan_blocks_get_variations_script() {
 	wp_enqueue_script(
 		'tainacan-blocks-query-variations',
 		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_query_variations.js',
-		array('wp-blocks', 'wp-components'),
+		array('wp-blocks', 'wp-components', 'wp-i18n'),
 		$TAINACAN_VERSION
 	);
 
