@@ -250,6 +250,30 @@ class Terms extends Repository {
 	}
 
 	/**
+	 * @param Entities\Term $parentTerm
+	 * @param bool $permanent this parameter is not used by Terms repository. Delete is always permanent
+	 *
+	 * @return bool|int|mixed|\WP_Error
+	 */
+	public function delete_child_terms(Entities\Entity $parentTerm, $permanent = true) {
+		$parent_id = $parentTerm->get_id();
+		$taxonomy = $parentTerm->get_taxonomy();
+		$args = [
+			"taxonomy"   => $taxonomy ,
+			"hide_empty" => false, 
+			"offset"     => 0,
+			"number"     => 100,
+			"child_of"     => $parent_id
+		];
+		do {
+			$terms = get_terms($args);
+			foreach($terms as $term) {
+				$this->delete($term, $permanent);
+			}
+		} while(!empty($terms) && !$terms instanceof \WP_Error);
+	}
+
+	/**
 	 * @param Entities\Term $term
 	 * @param bool $permanent this parameter is not used by Terms repository. Delete is always permanent
 	 *
