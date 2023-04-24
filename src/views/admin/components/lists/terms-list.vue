@@ -429,6 +429,7 @@
             ...mapActions('taxonomy', [
                 'updateChildTerm',
                 'deleteChildTerm',
+                'deleteChildTerms',
                 'updateChildTermLocal'
             ]),
             shouldShowMoreButton(key) {
@@ -799,16 +800,16 @@
                         onConfirm: (typeOfDelete) => { 
                             console.log(typeOfDelete);
                             // If all checks passed, term can be deleted   
-                            // this.deleteChildTerm({
-                            //         taxonomyId: this.taxonomyId, 
-                            //         termId: term.id, 
-                            //         parent: term.parent })
-                            //     .then(() => {
-                            //         this.onTermRemovalFinished(term);
-                            //     })
-                            //     .catch((error) => {
-                            //         this.$console.log(error);
-                            //     });
+                            this.deleteChildTerms({
+                                    taxonomyId: this.taxonomyId, 
+                                    terms: this.selected, 
+                                    parent: term.parent })
+                                .then(() => {
+                                    this.onTermRemovalFinished(term);
+                                })
+                                .catch((error) => {
+                                    this.$console.log(error);
+                                });
 
                             // // Updates parent IDs for orphans
                             // if (term.children != undefined && term.children.length > 0) {

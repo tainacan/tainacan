@@ -249,11 +249,30 @@ export const updateChildTermLocal = ({ commit }, { term, parent, oldParent }) =>
 };
 
 export const deleteChildTerm = ({ commit }, { taxonomyId, termId, parent, deleteChildTerms = false }) => {
+    let query = 'permanently=1';
+
+    if ( deleteChildTerms )
+        query += `&delete_child_terms=${deleteChildTerms}`;
+
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/${termId}?${query}`)
+            .then(res => {
+                const term = res.data;
+                resolve( term );
+            })
+            .catch(error => {
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+    });
+};
+
+
+export const deleteChildTerms = ({ commit }, { taxonomyId, terms, parent, deleteChildTerms = false }) => {
+
     return new Promise(( resolve, reject ) => {
         axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/${termId}?permanently=1&delete_child_terms=${deleteChildTerms}`)
             .then(res => {
-                let term = res.data;
-                commit('deleteChildTerm', { termId: termId, parent: parent });
+                const term = res.data;
                 resolve( term );
             })
             .catch(error => {
