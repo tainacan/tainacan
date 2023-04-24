@@ -68,7 +68,7 @@ class REST_Terms_Controller extends REST_Controller {
 							'default'     => '1'
 						],
 						'delete_child_terms' => [
-							'description' => __('Delete all childs term.'),
+							'description' => __('Delete all child terms.'),
 							'default'     => false
 						],
 					]

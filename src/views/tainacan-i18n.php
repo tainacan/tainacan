@@ -983,6 +983,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_no_value_compound_metadata'			 	 => __( 'No value has been added to this compound metadata.', 'tainacan' ),
 	/* translators: Refers to the hierarchy of compound metadata. Like in 'Metadata X (child of Metadata Y) */
 	'info_child_of'			 	 					 => __( 'child of', 'tainacan' ),
+	/* translators: Refers to the hierarchy of taxonomy terms. Like in 'Macro (child of Photography) */
+	'info_children_of_%s'			 	 			 => __( 'Children of %s', 'tainacan' ),
 	'info_slides_help_introduction'				 	 => __( 'Use the following commands to navigate through the items', 'tainacan' ),
 	'info_slides_previous_item'					 	 => __( 'to go to the previous item', 'tainacan' ),
 	'info_slides_next_item'						 	 => __( 'to go to the next item', 'tainacan' ),

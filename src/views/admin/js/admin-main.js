@@ -58,9 +58,6 @@ import FormGeoCoordinate from '../components/metadata-types/geocoordinate/FormGe
 // Term edition form must be imported here so that it is not necessary on item-submission bundle
 import TermEditionForm from '../components/edition/term-edition-form.vue';
 
-// Term Recursive item component needs to be imported here, otherwise would cause ciruclar dependency
-import RecursiveTermItem from '../components/lists/recursive-term-item.vue';
-
 import FormFilterNumeric from '../components/filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../components/filter-types/numeric-interval/FormNumericInterval.vue';
 import FormFilterNumericListInterval from '../components/filter-types/numeric-list-interval/FormNumericListInterval.vue';
@@ -224,7 +221,6 @@ export default (element) => {
             Vue.component('tainacan-form-item', TainacanFormItem);
 
             /* Others */
-            Vue.component('recursive-term-item', RecursiveTermItem);
             Vue.component('help-button', HelpButton);
             Vue.component('draggable', draggable);
             Vue.component('tainacan-title', TainacanTitle);

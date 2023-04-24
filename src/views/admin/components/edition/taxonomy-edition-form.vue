@@ -161,7 +161,7 @@
                                 :title="$i18n.get('terms')" 
                                 :message="$i18n.get('info_taxonomy_terms_list')"
                                 extra-classes="tainacan-repository-tooltip"/>
-                            <new-terms-list
+                            <terms-list
                                     :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'"
                                     :taxonomy-id="taxonomyId"
                                     :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false"/>
@@ -250,13 +250,13 @@
 <script>
     import { wpAjax, formHooks } from "../../js/mixins";
     import { mapActions, mapGetters } from 'vuex';
-    import NewTermsList from '../lists/new-terms-list.vue';
+    import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
         name: 'TaxonomyEditionForm',
         components: {
-            NewTermsList
+           TermsList
         },
         mixins: [ wpAjax, formHooks ],
         beforeRouteLeave( to, from, next ) {
