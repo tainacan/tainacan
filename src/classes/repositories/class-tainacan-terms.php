@@ -268,7 +268,8 @@ class Terms extends Repository {
 		do {
 			$terms = get_terms($args);
 			foreach($terms as $term) {
-				$this->delete($term, $permanent);
+				$tainacan_term = new Entities\Term($term);
+				$this->delete($tainacan_term, $permanent);
 			}
 		} while(!empty($terms) && !$terms instanceof \WP_Error);
 	}
