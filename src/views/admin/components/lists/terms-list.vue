@@ -235,7 +235,7 @@
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                             </span>
-                            &nbsp;{{ $i18n.get('label_new_term') }}
+                            &nbsp;{{ $i18n.get('label_create_term') }}
                         </a>
                     </p>
                 </div>
@@ -332,7 +332,7 @@
                             <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
                         </span>
                     </p>
-                    <p>{{ $i18n.getWithVariables('info_no_child_term_of_%s_found', [ column.name ]) }}</p>
+                    <p>{{ column.name ? $i18n.getWithVariables('info_no_child_term_of_%s_found', [ column.name ]) : $i18n.get('info_no_terms_found') }}</p>
                     <p>
                         <a 
                                 @click="onAddNewChildTerm(column.id)"
@@ -340,7 +340,7 @@
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                             </span>
-                            &nbsp;{{ $i18n.get('label_new_term') }}
+                            &nbsp;{{ $i18n.get('label_create_term') }}
                         </a>
                     </p>
                 </div>
@@ -357,6 +357,16 @@
                     </span>
                 </p>
                 <p>{{ $i18n.get('info_no_terms_found') }}</p>
+                <p>
+                    <a 
+                            @click="onAddNewChildTerm(0)"
+                            class="add-link">
+                        <span class="icon is-small">
+                            <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                        </span>
+                        &nbsp;{{ $i18n.get('label_create_term') }}
+                    </a>
+                </p>
             </div>
         </section>
         
@@ -392,16 +402,6 @@
             taxonomyId: Number,
             currentUserCanEditTaxonomy: Boolean
         },
-        computed: {
-            amountOfTermsSelected() {
-                if ( this.selectedColumnIndex >= 0 )
-                   return this.termColumns[this.selectedColumnIndex].total_children;
-                else if ( this.selected.length )
-                    return this.selected.length;
-                else
-                    return 0;
-            }
-        },
         data() {
             return {
                 termColumns: [],
@@ -422,6 +422,16 @@
                 editTerm: null,
                 selected: [],
                 selectedColumnIndex: -1
+            }
+        },
+        computed: {
+            amountOfTermsSelected() {
+                if ( this.selectedColumnIndex >= 0 )
+                   return this.termColumns[this.selectedColumnIndex].total_children;
+                else if ( this.selected.length )
+                    return this.selected.length;
+                else
+                    return 0;
             }
         },
         watch: {
@@ -531,18 +541,18 @@
                     setTimeout(() => {
                         if (
                             this.$refs &&
-                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`] &&
-                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0] &&
-                            this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el &&
+                            this.$refs[`${column}.0-tainacan-li-checkbox-model`] &&
+                            this.$refs[`${column}.0-tainacan-li-checkbox-model`][0] &&
+                            this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el &&
                             this.$refs['tainacan-finder-scrolling-container'] &&
                             this.$refs['tainacan-finder-scrolling-container'].$el) {
             
                             // Scroll Into does not solve as it would scroll vertically as well...
-                            //this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
+                            //this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
 
                             this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
                                 top: 0,
-                                left: first != undefined ? 0 : this.$refs[`${column + 1}.0-tainacan-li-checkbox-model`][0].$el.offsetLeft,
+                                left: first != undefined ? 0 : this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el.offsetLeft,
                                 behavior: 'smooth'
                             });
                         }
@@ -715,8 +725,16 @@
                         const removedTermIndex = this.termColumns[removedTermParentColumn].children.findIndex((aTerm) => aTerm.id == term.id);
                         
                         if ( removedTermIndex >= 0 ) {
-                            this.termColumns[removedTermParentColumn].children.splice(removedTermIndex, 1);
                             this.totalRemaining[removedTermParentColumn].remaining = Number(this.totalRemaining[removedTermParentColumn].remaining) - 1;
+
+                            this.termColumns[removedTermParentColumn].children.splice(removedTermIndex, 1);
+                            this.termColumns[removedTermParentColumn].total_children = Number(this.termColumns[removedTermParentColumn].total_children) - 1;
+                            
+                            if ( this.termColumns[removedTermParentColumn - 1] ) {
+                                const parentTermIndex = this.termColumns[removedTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id== term.parent);
+                                if ( parentTermIndex >= 0)
+                                    this.termColumns[removedTermParentColumn - 1].children[parentTermIndex].total_children = Number(this.termColumns[removedTermParentColumn].total_children);
+                            }
 
                             this.removeLevelsAfter(removedTermParentColumn);
                         }
@@ -740,9 +758,18 @@
                             
                             if ( term.total_children > 0 && this.termColumns[updatedTermParentColumn + 1] )
                                 this.termColumns[updatedTermParentColumn + 1].name = term.name;
+
                         } else {
+                    
                             const immediateFollowingTermNameIndex = this.termColumns[updatedTermParentColumn].children.findIndex((aTerm) => aTerm.name.toLowerCase() > term.name.toLowerCase());
                             this.termColumns[updatedTermParentColumn].children.splice(immediateFollowingTermNameIndex, 0, term);
+                            this.termColumns[updatedTermParentColumn].total_children = Number(this.termColumns[updatedTermParentColumn].total_children) + 1;
+                            
+                            if ( this.termColumns[updatedTermParentColumn - 1] ) {
+                                const parentTermIndex = this.termColumns[updatedTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id== term.parent);
+                                if ( parentTermIndex >= 0)
+                                    this.termColumns[updatedTermParentColumn - 1].children[parentTermIndex].total_children = Number(this.termColumns[updatedTermParentColumn].total_children);
+                            }
                         }
                     }
 

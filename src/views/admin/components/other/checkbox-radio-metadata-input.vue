@@ -95,7 +95,7 @@
                        <template v-if="!isLoadingSearch && allowNew && !searchResults.length">
                             <li class="tainacan-li-checkbox-list result-info">
                                 <a @click="$emit('showAddNewTerm', { name: optionName })">
-                                    {{ $i18n.get('label_new_term') + ' "' + optionName + '"' }}
+                                    {{ $i18n.get('label_create_new_term') + ' "' + optionName + '"' }}
                                 </a>
                             </li>
                         </template>

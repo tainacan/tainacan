@@ -41,7 +41,7 @@
                 v-if="allowNew"
                 slot="footer">
                 <a @click="$emit('showAddNewTerm', { name: searchName })">
-                {{ $i18n.get('label_new_term') + ' "' + searchName + '"' }}
+                {{ $i18n.get('label_create_new_term') + ' "' + searchName + '"' }}
             </a>
         </template>
     </b-taginput>

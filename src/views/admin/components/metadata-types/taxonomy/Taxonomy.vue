@@ -44,7 +44,7 @@
                 <span class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                 </span>
-                &nbsp;{{ $i18n.get('label_new_term') }}
+                &nbsp;{{ $i18n.get('label_create_new_term') }}
             </a>
         </div>
 
