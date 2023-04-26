@@ -74,7 +74,7 @@
                 <b-dropdown
                         :mobile-modal="true"
                         position="is-bottom-left"
-                        :disabled="selected.length <= 1"
+                        :disabled="amountOfTermsSelected <= 1"
                         id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
@@ -392,6 +392,16 @@
             taxonomyId: Number,
             currentUserCanEditTaxonomy: Boolean
         },
+        computed: {
+            amountOfTermsSelected() {
+                if ( this.selectedColumnIndex >= 0 )
+                   return this.termColumns[this.selectedColumnIndex].total_children;
+                else if ( this.selected.length )
+                    return this.selected.length;
+                else
+                    return 0;
+            }
+        },
         data() {
             return {
                 termColumns: [],
@@ -428,8 +438,8 @@
         methods: {
             ...mapActions('taxonomy', [
                 'updateChildTerm',
-                'deleteChildTerm',
-                'deleteChildTerms',
+                'deleteTerm',
+                'deleteTerms',
                 'updateChildTermLocal'
             ]),
             shouldShowMoreButton(key) {
@@ -651,7 +661,7 @@
                             
                             // If all checks passed, term can be deleted  
                             if ( typeOfDelete == 'descendants' ) { 
-                                this.deleteChildTerm({
+                                this.deleteTerm({
                                         taxonomyId: this.taxonomyId, 
                                         termId: term.id, 
                                         parent: term.parent,
@@ -663,7 +673,7 @@
                                         this.$console.log(error);
                                     });
                             } else { 
-                                this.deleteChildTerm({
+                                this.deleteTerm({
                                         taxonomyId: this.taxonomyId, 
                                         termId: term.id, 
                                         parent: term.parent })
@@ -782,13 +792,6 @@
                 this.onEditTerm(newTerm);
             },
             deleteSelectedTerms() {
-                let amountOfTerms = 0;
-
-                if ( this.selectedColumnIndex >= 0 ) {
-                    amountOfTerms = this.termColumns[this.selectedColumnIndex].total_children;
-                } else if ( this.selected.length ) {
-                    amountOfTerms = this.selected.length;
-                }
 
                 this.$buefy.modal.open({
                     parent: this,
@@ -796,32 +799,21 @@
                     props: {
                         message: this.$i18n.get('info_warning_some_terms_with_child'),
                         showDescendantsDeleteButton: true,
-                        amountOfTerms: amountOfTerms,
+                        amountOfTerms: this.amountOfTermsSelected,
                         onConfirm: (typeOfDelete) => { 
-                            console.log(typeOfDelete);
-                            // If all checks passed, term can be deleted   
-                            this.deleteChildTerms({
+                            // If all checks passed, term can be deleted 
+                            this.deleteTerms({
                                     taxonomyId: this.taxonomyId, 
-                                    terms: this.selected, 
-                                    parent: term.parent })
+                                    terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                                    parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                                    deleteChildTerms: typeOfDelete === 'descendants'
+                                })
                                 .then(() => {
-                                    this.onTermRemovalFinished(term);
+                                    this.resetTermsListUI();
                                 })
                                 .catch((error) => {
                                     this.$console.log(error);
                                 });
-
-                            // // Updates parent IDs for orphans
-                            // if (term.children != undefined && term.children.length > 0) {
-                            //     for (let orphanTerm of term.children) { 
-                            //         this.updateChildTermLocal({ 
-                            //             term: orphanTerm, 
-                            //             parent: term.parent, 
-                            //             oldParent: term.id
-                            //         });                     
-                            //     } 
-                            // }
-                            this.resetTermsListUI();
                         }
                     },
                     trapFocus: true,
@@ -830,25 +822,18 @@
                 });  
             },
             updateSelectedTermsParent() {
-                let amountOfTerms = 0;
-
-                if ( this.selectedColumnIndex >= 0 ) {
-                    amountOfTerms = this.termColumns[this.selectedColumnIndex].total_children;
-                } else if ( this.selected.length ) {
-                    amountOfTerms = this.selected.length;
-                }
 
                 this.$buefy.modal.open({
                     parent: this,
                     component: TermParentSelectionDialog,
                     props: {
-                        amountOfTerms: amountOfTerms,
+                        amountOfTerms: this.amountOfTermsSelected,
                         excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
                         taxonomyId: this.taxonomyId,
                         onConfirm: (selectedParentTerm) => { 
                             console.log(selectedParentTerm);
                             // If all checks passed, term can be deleted   
-                            // this.deleteChildTerm({
+                            // this.deleteTerm({
                             //         taxonomyId: this.taxonomyId, 
                             //         termId: term.id, 
                             //         parent: term.parent })
@@ -883,7 +868,7 @@
             resetTermsListUI() {
                 this.clearSelectedTerms();
                 this.selectedColumnIndex = -1;
-                this.removeLevelsAfter(0);
+                this.removeLevelsAfter(-1);
                 
                 if ( this.isSearching )
                     this.autoComplete();

@@ -143,20 +143,6 @@ export const sendTerm = ({commit}, { taxonomyId, name, description, parent, head
     });
 };
 
-export const deleteTerm = ({ commit }, { taxonomyId, termId }) => {
-    return new Promise(( resolve, reject ) => {
-        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/${termId}?permanently=1`)
-            .then(res => {
-                let term = res.data;
-                commit('deleteTerm', termId);
-                resolve( term );
-            })
-            .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
-            });
-    });
-};
-
 export const updateTerm = ({ commit }, { taxonomyId, id, name, description, parent, headerImageId, headerImage }) => {
 
     return new Promise(( resolve, reject ) => {
@@ -248,8 +234,8 @@ export const updateChildTermLocal = ({ commit }, { term, parent, oldParent }) =>
     commit('updateChildTerm', { term: term, parent: parent, oldParent: oldParent });
 };
 
-export const deleteChildTerm = ({ commit }, { taxonomyId, termId, parent, deleteChildTerms = false }) => {
-    let query = 'permanently=1';
+export const deleteTerm = ({ commit }, { taxonomyId, termId, deleteChildTerms = false }) => {
+    let query = 'permanently=1&hideempty=0';
 
     if ( deleteChildTerms )
         query += `&delete_child_terms=${deleteChildTerms}`;
@@ -267,13 +253,23 @@ export const deleteChildTerm = ({ commit }, { taxonomyId, termId, parent, delete
 };
 
 
-export const deleteChildTerms = ({ commit }, { taxonomyId, terms, parent, deleteChildTerms = false }) => {
+export const deleteTerms = ({ commit }, { taxonomyId, terms, parent, deleteChildTerms = false }) => {
+    let query = `permanently=1&hideempty=0&number=0`;
+
+    if ( parent !== undefined )
+        query += `&parent=${parent}`;
+
+    if ( terms.lenght )
+        query += `&include=${terms}`;
+
+    if ( deleteChildTerms )
+        query += `&delete_child_terms=${deleteChildTerms}`;
 
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/${termId}?permanently=1&delete_child_terms=${deleteChildTerms}`)
+        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/?${query}`)
             .then(res => {
-                const term = res.data;
-                resolve( term );
+                const terms = res.data;
+                resolve( terms );
             })
             .catch(error => {
                 reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
