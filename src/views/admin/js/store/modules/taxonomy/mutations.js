@@ -1,5 +1,3 @@
-import Vue from 'vue';
-
 export const setRepositoryTotalTaxonomies = (state, repositoryTotalTaxonomies) => {
     state.repositoryTotalTaxonomies = repositoryTotalTaxonomies;
 };
@@ -23,26 +21,4 @@ export const deleteTaxonomy = ( state, taxonomy ) => {
     if (index >= 0) {
         state.taxonomies.splice(index, 1);
     }
-};
-
-// TAXONOMY TERMS
-export const setSingleTerm = (state, term) => {
-
-    let index = state.terms.findIndex(updatedTerm => updatedTerm.id === term.id);
-    if ( index >= 0 )
-        Vue.set( state.terms, index, term );
-    else
-        state.terms.push( term );
-};
-
-export const setTerms = (state, terms) => {
-
-    for (let term of terms) {
-        let existingTermIndex = state.terms.findIndex(aTerm => aTerm.id == term.id);
-        if (existingTermIndex >= 0)
-            Vue.set(state.terms, existingTermIndex, term);
-        else
-            state.terms.push(term);
-    }
-
 };

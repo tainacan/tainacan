@@ -87,9 +87,6 @@
             ...mapActions('taxonomy', [
                 'fetchTerms'
             ]),
-            ...mapGetters('taxonomy', [
-                'getTerms'
-            ]),
             loadTerms: _.debounce( function(value) {                
 
                 // String update

@@ -106,8 +106,7 @@
         <!-- Search Results -->
         <div
                 v-if="isSearching"
-                style="auto"
-                class="modal-card-body tainacan-checkbox-list-container">
+                class="tainacan-checkbox-list-container">
             <a
                     v-if="checkboxListOffset"
                     role="button"
@@ -189,163 +188,178 @@
             </button>
         </div>
 
-        <b-loading
-                :is-full-page="false"
-                :active.sync="isColumnLoading"/>
-
-        <!-- Hierarchical lists -->
-        <transition-group
+        <div 
                 v-if="!isSearching"
-                class="modal-card-body tainacan-finder-columns-container"
-                name="page-left"
-                ref="tainacan-finder-scrolling-container">
-            <div 
-                    v-for="(column, key) in termColumns"
-                    class="tainacan-finder-column"
-                    :key="column.name + '-' + key">
-                <div class="column-header">
-                    <p class="column-name">
-                        <span>{{ column.name ? $i18n.getWithVariables('info_children_of_%s', [ column.name ]) : $i18n.get('label_root_terms') }}</span>
-                    </p>
-                    <p class="column-subheader">
-                        <label 
-                                :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : ''"
-                                class="b-checkbox checkbox">
-                            <input
-                                    type="checkbox"
-                                    @input="selectColumn(key)"
-                                    :checked="selectedColumnIndex == key"
-                                    :value="key"> 
-                            <span class="check" /> 
-                            <span 
-                                    v-if="column.id"
-                                    class="control-label">
-                                {{ termColumns.length <= 2 ? $i18n.get('label_select_child_terms_long') : $i18n.get('label_select_child_terms_short') }}
+                class="tainacan-hierarchical-list-container">
+
+            <b-loading
+                    :is-full-page="false"
+                    :active.sync="isColumnLoading"/>
+
+            <transition name="appear-from-top">
+                <button
+                        v-if="termColumns.length > 3"
+                        type="button"
+                        class="scroll-back-to-root-button"
+                        @click="scrollBackToRoot()">
+                   {{ $i18n.get('label_root_terms') }}
+                </button>
+            </transition>
+
+            <!-- Hierarchical lists -->
+            <transition-group
+                    class="tainacan-finder-columns-container"
+                    name="page-left"
+                    ref="tainacan-finder-scrolling-container">
+                <div 
+                        v-for="(column, key) in termColumns"
+                        class="tainacan-finder-column"
+                        :key="column.name + '-' + key">
+                    <div class="column-header">
+                        <p class="column-name">
+                            <span>{{ column.name ? $i18n.getWithVariables('info_children_of_%s', [ column.name ]) : $i18n.get('label_root_terms') }}</span>
+                        </p>
+                        <p class="column-subheader">
+                            <label 
+                                    :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : ''"
+                                    class="b-checkbox checkbox">
+                                <input
+                                        type="checkbox"
+                                        @input="selectColumn(key)"
+                                        :checked="selectedColumnIndex == key"
+                                        :value="key"> 
+                                <span class="check" /> 
+                                <span 
+                                        v-if="column.id"
+                                        class="control-label">
+                                    {{ termColumns.length <= 2 ? $i18n.get('label_select_child_terms_long') : $i18n.get('label_select_child_terms_short') }}
+                                </span>
+                                <span 
+                                        v-else
+                                        class="control-label">
+                                    {{ termColumns.length <= 2 ? $i18n.get('label_select_root_terms_long') : $i18n.get('label_select_root_terms_short') }}
+                                </span>
+                            </label>
+                            <a 
+                                    :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : ''"
+                                    @click="onAddNewChildTerm(column.id)"
+                                    class="add-link">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                                </span>
+                                &nbsp;{{ $i18n.get('label_create_term') }}
+                            </a>
+                        </p>
+                    </div>
+                    <ul v-if="column.children.length">
+                        <b-field
+                                :addons="false"
+                                class="tainacan-li-checkbox-modal"
+                                :class="{ 'tainacan-li-checkbox-parent-active': termColumns[key + 1] && termColumns[key + 1].id == term.id }"
+                                v-for="(term, index) in column.children"
+                                :id="`${key}.${index}-tainacan-li-checkbox-model`"
+                                :ref="`${key}.${index}-tainacan-li-checkbox-model`"
+                                :key="term.id">
+                            <label class="b-checkbox checkbox" >
+                                <input 
+                                        @input="updateSelectedTerms(term)"
+                                        :checked="selectedColumnIndex >= 0 ? selectedColumnIndex == key : isTermSelected(term.id)"
+                                        :disabled="selectedColumnIndex >= 0"
+                                        :value="term.id"
+                                        type="checkbox"> 
+                                <span class="check" /> 
+                                <span class="control-label">{{ term.name }}</span>
+                            </label>
+                            <button 
+                                    v-if="currentUserCanEditTaxonomy"
+                                    type="button"
+                                    @click.prevent="onEditTerm(term)">
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('edit'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                            placement: 'bottom'
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                </span>
+                            </button>
+                            <button 
+                                    v-if="currentUserCanEditTaxonomy"
+                                    type="button"
+                                    @click.prevent="removeTerm(term)">
+                                <span
+                                        v-tooltip="{
+                                            content: $i18n.get('delete'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                            placement: 'bottom'
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                </span>
+                            </button>
+                            <button
+                                    class="load-children-button"
+                                    type="button"
+                                    @click="getTermChildren(term, key)">
+                                <span 
+                                        style="margin-right: 0.25rem; opacity: 1.0;"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel"/>
+                                </span>
+                                <span 
+                                        class="is-hidden-mobile"
+                                        v-if="termColumns.length <= 1 ">
+                                    {{ term.total_children + ' ' + $i18n.get('label_children_terms') }}
+                                </span>
+                                <span 
+                                        v-tooltip="{
+                                            content: term.total_children + ' ' + $i18n.get('label_children_terms'),
+                                            autoHide: false,
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                        }" 
+                                        v-else>
+                                    {{ term.total_children }}
+                                </span>
+                            </button>
+                        </b-field>
+                        <li v-if="column.children.length">
+                            <div
+                                    v-if="shouldShowMoreButton(key)"
+                                    @click="getMoreTerms(column, key)"
+                                    class="tainacan-show-more">
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                    <div
+                            v-else
+                            class="warning-no-more-terms">
+                        <p>
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
                             </span>
-                            <span 
-                                    v-else
-                                    class="control-label">
-                                {{ termColumns.length <= 2 ? $i18n.get('label_select_root_terms_long') : $i18n.get('label_select_root_terms_short') }}
-                            </span>
-                        </label>
-                        <a 
-                                :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : ''"
-                                @click="onAddNewChildTerm(column.id)"
-                                class="add-link">
-                            <span class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
-                            </span>
-                            &nbsp;{{ $i18n.get('label_create_term') }}
-                        </a>
-                    </p>
+                        </p>
+                        <p>{{ column.name ? $i18n.getWithVariables('info_no_child_term_of_%s_found', [ column.name ]) : $i18n.get('info_no_terms_found') }}</p>
+                        <p>
+                            <a 
+                                    @click="onAddNewChildTerm(column.id)"
+                                    class="add-link">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                                </span>
+                                &nbsp;{{ $i18n.get('label_create_term') }}
+                            </a>
+                        </p>
+                    </div>
                 </div>
-                <ul v-if="column.children.length">
-                    <b-field
-                            :addons="false"
-                            class="tainacan-li-checkbox-modal"
-                            :class="{ 'tainacan-li-checkbox-parent-active': termColumns[key + 1] && termColumns[key + 1].id == term.id }"
-                            v-for="(term, index) in column.children"
-                            :id="`${key}.${index}-tainacan-li-checkbox-model`"
-                            :ref="`${key}.${index}-tainacan-li-checkbox-model`"
-                            :key="term.id">
-                        <label class="b-checkbox checkbox" >
-                            <input 
-                                    @input="updateSelectedTerms(term)"
-                                    :checked="selectedColumnIndex >= 0 ? selectedColumnIndex == key : isTermSelected(term.id)"
-                                    :disabled="selectedColumnIndex >= 0"
-                                    :value="term.id"
-                                    type="checkbox"> 
-                            <span class="check" /> 
-                            <span class="control-label">{{ term.name }}</span>
-                        </label>
-                        <button 
-                                v-if="currentUserCanEditTaxonomy"
-                                type="button"
-                                @click.prevent="onEditTerm(term)">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('edit'),
-                                        autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                        placement: 'bottom'
-                                    }"
-                                    class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
-                            </span>
-                        </button>
-                        <button 
-                                v-if="currentUserCanEditTaxonomy"
-                                type="button"
-                                @click.prevent="removeTerm(term)">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('delete'),
-                                        autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                        placement: 'bottom'
-                                    }"
-                                    class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
-                            </span>
-                        </button>
-                        <button
-                                class="load-children-button"
-                                type="button"
-                                @click="getTermChildren(term, key, index)">
-                            <span 
-                                    style="margin-right: 0.25rem; opacity: 1.0;"
-                                    class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel"/>
-                            </span>
-                            <span 
-                                    class="is-hidden-mobile"
-                                    v-if="termColumns.length <= 1 ">
-                                {{ term.total_children + ' ' + $i18n.get('label_children_terms') }}
-                            </span>
-                            <span 
-                                    v-tooltip="{
-                                        content: term.total_children + ' ' + $i18n.get('label_children_terms'),
-                                        autoHide: false,
-                                        popperClass: ['tainacan-tooltip', 'tooltip']
-                                    }" 
-                                    v-else>
-                                {{ term.total_children }}
-                            </span>
-                        </button>
-                    </b-field>
-                    <li v-if="column.children.length">
-                        <div
-                                v-if="shouldShowMoreButton(key)"
-                                @click="getMoreTerms(column, key)"
-                                class="tainacan-show-more">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
-                            </span>
-                        </div>
-                    </li>
-                </ul>
-                <div
-                        v-else
-                        class="warning-no-more-terms">
-                    <p>
-                        <span class="icon is-medium">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
-                        </span>
-                    </p>
-                    <p>{{ column.name ? $i18n.getWithVariables('info_no_child_term_of_%s_found', [ column.name ]) : $i18n.get('info_no_terms_found') }}</p>
-                    <p>
-                        <a 
-                                @click="onAddNewChildTerm(column.id)"
-                                class="add-link">
-                            <span class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
-                            </span>
-                            &nbsp;{{ $i18n.get('label_create_term') }}
-                        </a>
-                    </p>
-                </div>
-            </div>
-        </transition-group>
+            </transition-group>
+
+        </div>
 
         <section 
                 v-if="( termColumns instanceof Array ? termColumns.length <= 0 : !termColumns ) && !isSearching && !isLoadingSearch && !isColumnLoading"
@@ -447,10 +461,9 @@
         },
         methods: {
             ...mapActions('taxonomy', [
-                'updateChildTerm',
+                'updateTerm',
                 'deleteTerm',
                 'deleteTerms',
-                'updateChildTermLocal'
             ]),
             shouldShowMoreButton(key) {
                 return this.totalRemaining[key].remaining === true || (this.termColumns[key].children.length < this.totalRemaining[key].remaining);
@@ -545,8 +558,8 @@
                             this.$refs[`${column}.0-tainacan-li-checkbox-model`][0] &&
                             this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el &&
                             this.$refs['tainacan-finder-scrolling-container'] &&
-                            this.$refs['tainacan-finder-scrolling-container'].$el) {
-            
+                            this.$refs['tainacan-finder-scrolling-container'].$el
+                        ) {
                             // Scroll Into does not solve as it would scroll vertically as well...
                             //this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
 
@@ -558,6 +571,19 @@
                         }
                     }, 500);
                 }); 
+            },
+            scrollBackToRoot() {
+                if (
+                    this.$refs &&
+                    this.$refs['tainacan-finder-scrolling-container'] &&
+                    this.$refs['tainacan-finder-scrolling-container'].$el
+                ) {
+                    this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: 'smooth'
+                    });
+                }
             },
             appendMoreTermsToColumn(terms, columnIndex) {
                 for (let term of terms)
@@ -693,17 +719,6 @@
                                     .catch((error) => {
                                         this.$console.log(error);
                                     });
-
-                                // Updates parent IDs for orphans
-                                if (term.children != undefined && term.children.length > 0) {
-                                    for (let orphanTerm of term.children) { 
-                                        this.updateChildTermLocal({ 
-                                            term: orphanTerm, 
-                                            parent: term.parent, 
-                                            oldParent: term.id
-                                        });                     
-                                    } 
-                                }    
                             }
                         }
                     },
@@ -772,7 +787,7 @@
                             }
                         }
                     }
-
+                    
                     if ( hasChangedParent ) {
                         const previousTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == initialParent);
                         
@@ -785,18 +800,21 @@
                                     this.totalRemaining[previousTermParentColumn].remaining = Number(this.totalRemaining[previousTermParentColumn].remaining) - 1;
                                 }
                             }
-                        
+                            
                             if ( this.termColumns[previousTermParentColumn - 1] ) {
                                 
                                 const newParentIndex = this.termColumns[previousTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id == term.parent);
                                 if ( newParentIndex >= 0 )
-                                    this.termColumns[previousTermParentColumn - 1].children[newParentIndex].total_children++;
+                                    this.termColumns[previousTermParentColumn - 1].children[newParentIndex].total_children = Number(this.termColumns[previousTermParentColumn - 1].children[newParentIndex].total_children) + 1;
 
                                 const oldParentIndex = this.termColumns[previousTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id == initialParent);
                                 if ( oldParentIndex >= 0 )
-                                    this.termColumns[previousTermParentColumn - 1].children[oldParentIndex].total_children--;
+                                    this.termColumns[previousTermParentColumn - 1].children[oldParentIndex].total_children = Number(this.termColumns[previousTermParentColumn - 1].children[oldParentIndex].total_children) - 1;
+                                console.log(oldParentIndex, previousTermParentColumn, this.termColumns[previousTermParentColumn - 1])
                             }
+
                         } else {
+                            
                             for (let i = 0; i < this.termColumns.length; i++) {
                                 if ( this.termColumns[i].id == term.id ) {
                                     this.removeLevelsAfter(i);
@@ -870,17 +888,6 @@
                             //     .catch((error) => {
                             //         this.$console.log(error);
                             //     });
-
-                            // // Updates parent IDs for orphans
-                            // if (term.children != undefined && term.children.length > 0) {
-                            //     for (let orphanTerm of term.children) { 
-                            //         this.updateChildTermLocal({ 
-                            //             term: orphanTerm, 
-                            //             parent: term.parent, 
-                            //             oldParent: term.id
-                            //         });                     
-                            //     } 
-                            // }  
                             this.resetTermsListUI();  
                         }
                     },
@@ -889,11 +896,8 @@
                     closeButtonAriaLabel: this.$i18n.get('close')
                 });  
             },
-            clearSelectedTerms() {
-                this.selected = [];
-            },
             resetTermsListUI() {
-                this.clearSelectedTerms();
+                this.selected = [];
                 this.selectedColumnIndex = -1;
                 this.removeLevelsAfter(-1);
                 
@@ -1127,7 +1131,7 @@
     }
 
     .tainacan-finder-columns-container {
-        background-color: var(--tainacan-white);
+        background-color: var(--tainacan-background-color);
         border: 1px solid var(--tainacan-gray2);
         border-radius: 2px;
         margin-top: 0px;
@@ -1145,11 +1149,34 @@
         }
     }
 
+    .tainacan-hierarchical-list-container {
+        position: relative;
+
+        .scroll-back-to-root-button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9;
+            background-color: var(--tainacan-background-color);
+            border: 1px solid var(--tainacan-gray2);
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 4px;
+            padding: 0.55rem 0.8rem;
+            white-space: nowrap;
+            display: block;
+            font-weight: bold;
+            color: var(--tainacan-label-color);
+            font-size: 0.8rem;
+        }
+    }
+
     .tainacan-finder-column {
         border-right: solid 1px var(--tainacan-gray2);        
         flex-basis: auto;
         flex-grow: 1;
-        max-width: 720px;
+       // max-width: 720px;
         min-width: 268px;
         margin: 0;
         padding: 0em;
@@ -1215,7 +1242,7 @@
         }
 
         .column-header {
-            color: var(--tainacan-name-color);
+            color: var(--tainacan-label-color);
             padding: 0.45em 0.75em;
             margin: 0;
             position: relative;

@@ -123,63 +123,21 @@ export const fetchTaxonomyName = ({ commit }, taxonomyId) => {
 };
 
 // TAXONOMY TERMS
-export const sendTerm = ({commit}, { taxonomyId, name, description, parent, headerImageId, headerImage }) => {
-    return new Promise(( resolve, reject ) => {
-        axios.tainacan.post('/taxonomy/' + taxonomyId + '/terms/', {
-            name: name,
-            description: description,
-            parent: parent,
-            header_image_id: headerImageId,
-            header_image: headerImage
-        })
-            .then( res => {
-                let term = res.data;
-                commit('setSingleTerm', term);
-                resolve( term );
-            })
-            .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
-            });
-    });
-};
-
-export const updateTerm = ({ commit }, { taxonomyId, id, name, description, parent, headerImageId, headerImage }) => {
-
-    return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${id}`, {
-            name: name,
-            description: description,
-            parent: parent,
-            header_image_id: headerImageId,
-            header_image: headerImage,
-        })
-            .then( res => {
-                let term = res.data;
-                commit('setSingleTerm', term);
-                resolve( term );
-            })
-            .catch(error => {
-                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
-            });
-    });
-};
-
-export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, order, offset, number, exclude }) => {
+export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offset, number, exclude }) => {
 
     let query = '';
 
     if (order == undefined)
         order = 'asc';
 
-    if(fetchOnly && search && !all ){
+    if (fetchOnly && search && !all )
         query = `?order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
-    } else if(fetchOnly && search && all ){
+    else if (fetchOnly && search && all )
         query = `?hideempty=0&order=${order}&${qs.stringify(fetchOnly)}&${qs.stringify(search)}`;
-    } else if(search && !all && !fetchOnly){
+    else if (search && !all && !fetchOnly)
         query = `?hideempty=0&order=${order}&${qs.stringify(search)}`;
-    } else {
+    else
         query =`?hideempty=0&order=${order}`;
-    }
 
     if (number != undefined)
         query += '&number=' + number;
@@ -193,9 +151,7 @@ export const fetchTerms = ({ commit }, {taxonomyId, fetchOnly, search, all, orde
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {
-                const terms = res.data;
-                commit('setTerms', terms);
-                resolve({ terms: terms, total: res.headers['x-wp-total'] });
+                resolve({ terms: res.data, total: res.headers['x-wp-total'] });
             })
             .catch(error => {
                 reject( error );
@@ -216,7 +172,7 @@ export const sendChildTerm = ({ commit }, { taxonomyId, term }) => {
     });
 };
 
-export const updateChildTerm = ({ commit }, { taxonomyId, term }) => {
+export const updateTerm = ({}, { taxonomyId, term }) => {
     return new Promise(( resolve, reject ) => {
         axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${term.id}`, term)
             .then( res => {
@@ -229,12 +185,7 @@ export const updateChildTerm = ({ commit }, { taxonomyId, term }) => {
     });
 };
 
-// Used to update parent changes after deletion only locally
-export const updateChildTermLocal = ({ commit }, { term, parent, oldParent }) => {
-    commit('updateChildTerm', { term: term, parent: parent, oldParent: oldParent });
-};
-
-export const deleteTerm = ({ commit }, { taxonomyId, termId, deleteChildTerms = false }) => {
+export const deleteTerm = ({}, { taxonomyId, termId, deleteChildTerms = false }) => {
     let query = 'permanently=1&hideempty=0';
 
     if ( deleteChildTerms )
@@ -253,13 +204,13 @@ export const deleteTerm = ({ commit }, { taxonomyId, termId, deleteChildTerms = 
 };
 
 
-export const deleteTerms = ({ commit }, { taxonomyId, terms, parent, deleteChildTerms = false }) => {
+export const deleteTerms = ({}, { taxonomyId, terms, parent, deleteChildTerms = false }) => {
     let query = `permanently=1&hideempty=0&number=0`;
 
     if ( parent !== undefined )
         query += `&parent=${parent}`;
 
-    if ( terms.lenght )
+    if ( terms.length )
         query += `&include=${terms}`;
 
     if ( deleteChildTerms )

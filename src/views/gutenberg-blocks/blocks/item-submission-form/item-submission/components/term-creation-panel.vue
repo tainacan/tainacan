@@ -157,12 +157,9 @@
         methods: {
             ...mapActions('taxonomy', [
                 'sendChildTerm',
-                'updateChildTerm',
+                'updateTerm',
                 'fetchParentName',
                 'fetchPossibleParentTerms'
-            ]),
-            ...mapGetters('taxonomy', [
-                'getTerms'
             ]),
             saveEdition(term) {
 

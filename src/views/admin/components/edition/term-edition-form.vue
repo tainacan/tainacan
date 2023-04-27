@@ -288,7 +288,7 @@
         methods: {
             ...mapActions('taxonomy', [
                 'sendChildTerm',
-                'updateChildTerm',
+                'updateTerm',
                 'fetchParentName',
                 'fetchPossibleParentTerms'
             ]),
@@ -339,7 +339,7 @@
                     }
                     this.fillExtraFormData(data);
                     this.isLoading = true;
-                    this.updateChildTerm({
+                    this.updateTerm({
                         taxonomyId: this.taxonomyId,
                         term: data
                     })
