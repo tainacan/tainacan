@@ -323,7 +323,6 @@
                                     this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
                                 }
                             }
-                            this.$emit('onErrorFound');
                         });
 
                 } else {
@@ -355,7 +354,6 @@
                                 }
                             }
                             this.isLoading = false;
-                            this.$emit('onErrorFound');
                         });
                 }
             },

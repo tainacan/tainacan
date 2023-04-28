@@ -10,7 +10,7 @@
                         autocomplete="on"
                         :placeholder="$i18n.get('instruction_search')"
                         :aria-name="$i18n.get('instruction_search')"
-                        v-model="termsSearchString"
+                        v-model="searchString"
                         @input="autoComplete"
                         icon-right="magnify"
                         type="search" />
@@ -108,7 +108,7 @@
                 v-if="isSearching"
                 class="tainacan-checkbox-list-container">
             <a
-                    v-if="checkboxListOffset"
+                    v-if="searchResultsOffset"
                     role="button"
                     class="tainacan-checkbox-list-page-changer"
                     @click="previousSearchPage">
@@ -120,8 +120,8 @@
                 <template v-if="searchResults.length">
                     <li
                             class="tainacan-li-checkbox-list"
-                            v-for="(term, key) in searchResults"
-                            :key="key">
+                            v-for="(term, index) in searchResults"
+                            :key="index">
                         <label class="b-checkbox checkbox">
                             <input
                                     @input="updateSelectedTerms(term)"
@@ -178,7 +178,7 @@
                         :active.sync="isLoadingSearch"/>
             </ul>
             <button
-                    v-if="!noMoreSearchPage"
+                    v-if="hasMoreSearchPages"
                     type="button"
                     class="tainacan-checkbox-list-page-changer"
                     @click="nextSearchPage">
@@ -212,9 +212,9 @@
                     name="page-left"
                     ref="tainacan-finder-scrolling-container">
                 <div 
-                        v-for="(column, key) in termColumns"
+                        v-for="(column, columnIndex) in termColumns"
                         class="tainacan-finder-column"
-                        :key="column.name + '-' + key">
+                        :key="column.name + '-' + columnIndex">
                     <div class="column-header">
                         <p class="column-name">
                             <span>{{ column.name ? $i18n.getWithVariables('info_children_of_%s', [ column.name ]) : $i18n.get('label_root_terms') }}</span>
@@ -225,9 +225,9 @@
                                     class="b-checkbox checkbox">
                                 <input
                                         type="checkbox"
-                                        @input="selectColumn(key)"
-                                        :checked="selectedColumnIndex == key"
-                                        :value="key"> 
+                                        @input="selectColumn(columnIndex)"
+                                        :checked="selectedColumnIndex == columnIndex"
+                                        :value="columnIndex"> 
                                 <span class="check" /> 
                                 <span 
                                         v-if="column.id"
@@ -255,15 +255,15 @@
                         <b-field
                                 :addons="false"
                                 class="tainacan-li-checkbox-modal"
-                                :class="{ 'tainacan-li-checkbox-parent-active': termColumns[key + 1] && termColumns[key + 1].id == term.id }"
+                                :class="{ 'tainacan-li-checkbox-parent-active': termColumns[columnIndex + 1] && termColumns[columnIndex + 1].id == term.id }"
                                 v-for="(term, index) in column.children"
-                                :id="`${key}.${index}-tainacan-li-checkbox-model`"
-                                :ref="`${key}.${index}-tainacan-li-checkbox-model`"
+                                :id="`${columnIndex}.${index}-tainacan-li-checkbox-model`"
+                                :ref="`${columnIndex}.${index}-tainacan-li-checkbox-model`"
                                 :key="term.id">
                             <label class="b-checkbox checkbox" >
                                 <input 
                                         @input="updateSelectedTerms(term)"
-                                        :checked="selectedColumnIndex >= 0 ? selectedColumnIndex == key : isTermSelected(term.id)"
+                                        :checked="selectedColumnIndex >= 0 ? selectedColumnIndex == columnIndex : isTermSelected(term.id)"
                                         :disabled="selectedColumnIndex >= 0"
                                         :value="term.id"
                                         type="checkbox"> 
@@ -303,7 +303,7 @@
                             <button
                                     class="load-children-button"
                                     type="button"
-                                    @click="getTermChildren(term, key)">
+                                    @click="fetchTerms(term, columnIndex)">
                                 <span 
                                         style="margin-right: 0.25rem; opacity: 1.0;"
                                         class="icon">
@@ -327,8 +327,8 @@
                         </b-field>
                         <li v-if="column.children.length">
                             <div
-                                    v-if="shouldShowMoreButton(key)"
-                                    @click="getMoreTerms(column, key)"
+                                    v-if="shouldShowMoreButton(columnIndex)"
+                                    @click="fetchMoreTerms(column, columnIndex)"
                                     class="tainacan-show-more">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
@@ -398,7 +398,6 @@
                     :taxonomy-id="taxonomyId"
                     :is-modal="true"
                     @onEditionFinished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)"
-                    @onErrorFound="formWithErrors = editTerm.id"
                     :original-form="editTerm" />
         </b-modal>
     </div>
@@ -422,17 +421,14 @@
                 isColumnLoading: false,
                 totalRemaining: {},
                 searchResults: [],
-                termsSearchString: '',
+                searchString: '',
                 isSearching: false,
-                maxNumSearchResultsShow: 20,
-                maxNumTermsPerColumn: 100,
-                checkboxListOffset: 0,
-                isCheckboxListLoading: false,
+                maxSearchResultsPerPage: 20,
+                maxTermsPerColumn: 100,
+                searchResultsOffset: 0,
                 isLoadingSearch: false,
-                noMorePage: false,
-                noMoreSearchPage: false,
+                hasMoreSearchPages: true,
                 isEditingTerm: false,
-                formWithErrors: '',
                 editTerm: null,
                 selected: [],
                 selectedColumnIndex: -1
@@ -449,15 +445,15 @@
             }
         },
         watch: {
-            termsSearchString(newValue, oldValue) {
+            searchString(newValue, oldValue) {
                 if (newValue != oldValue) {
-                    this.noMoreSearchPage = false;
-                    this.checkboxListOffset = 0;
+                    this.hasMoreSearchPages = true;
+                    this.searchResultsOffset = 0;
                 }
             },
         },
         created() {
-            this.getTermChildren();
+            this.fetchTerms();
         },
         methods: {
             ...mapActions('taxonomy', [
@@ -465,55 +461,50 @@
                 'deleteTerm',
                 'deleteTerms',
             ]),
-            shouldShowMoreButton(key) {
-                return this.totalRemaining[key].remaining === true || (this.termColumns[key].children.length < this.totalRemaining[key].remaining);
+            shouldShowMoreButton(columnIndex) {
+                return this.totalRemaining[columnIndex].remaining === true || (this.termColumns[columnIndex].children.length < this.totalRemaining[columnIndex].remaining);
             },
             previousSearchPage() {
 
-                this.noMoreSearchPage = false;
-                this.isCheckboxListLoading = true;
+                this.hasMoreSearchPages = true;
 
-                this.checkboxListOffset -= this.maxNumSearchResultsShow;
-                if (this.checkboxListOffset < 0)
-                    this.checkboxListOffset = 0;
+                this.searchResultsOffset -= this.maxSearchResultsPerPage;
+                if ( this.searchResultsOffset < 0 )
+                    this.searchResultsOffset = 0;
 
                 this.autoComplete();
                 
             },
             nextSearchPage() {
 
-                if (!this.noMoreSearchPage) {
-                    // LIMIT 0, 20 / LIMIT 19, 20 / LIMIT 39, 20 / LIMIT 59, 20
-                    if (this.checkboxListOffset === this.maxNumSearchResultsShow)
-                        this.checkboxListOffset += this.maxNumSearchResultsShow - 1;
+                if ( this.hasMoreSearchPages ) {
+                    if ( this.searchResultsOffset === this.maxSearchResultsPerPage )
+                        this.searchResultsOffset += this.maxSearchResultsPerPage - 1;
                     else
-                        this.checkboxListOffset += this.maxNumSearchResultsShow;
+                        this.searchResultsOffset += this.maxSearchResultsPerPage;
                 }
                 
-                this.isCheckboxListLoading = true;
-
                 this.autoComplete();
             },
             autoComplete: _.debounce( function () {
                 
-                this.isSearching = !!this.termsSearchString.length;
+                this.isSearching = !!this.searchString.length;
                 
                 if (!this.isSearching)
                     return;
 
                 this.isLoadingSearch = true;
 
-                const query = `?order=asc&number=${this.maxNumSearchResultsShow}&searchterm=${this.termsSearchString}&hideempty=0&offset=${this.checkboxListOffset}`;
+                const query = `?order=asc&number=${this.maxSearchResultsPerPage}&searchterm=${this.searchString}&hideempty=0&offset=${this.searchResultsOffset}`;
 
                 const route = `/taxonomy/${this.taxonomyId}/terms/${query}`;
-
                 axios.get(route)
                     .then((res) => {
                         this.searchResults = res.data;
                         this.isLoadingSearch = false;
-
+                        
                         if (res.headers && res.headers['x-wp-total'])
-                            this.noMoreSearchPage = res.headers['x-wp-total'] <= this.checkboxListOffset + this.searchResults.length;
+                            this.hasMoreSearchPages = res.headers['x-wp-total'] > (this.searchResultsOffset + this.searchResults.length);
 
                     })
                     .catch((error) => {
@@ -521,19 +512,12 @@
                     });
                 
             }, 500),
-            removeLevelsAfter(key){
-                if (key != undefined)
-                    this.termColumns.length = key + 1;
+            removeLevelsAfter(parentColumnIndex){
+                if (parentColumnIndex != undefined)
+                    this.termColumns.length = parentColumnIndex + 1;
             },
             createColumn(res, column, name, id) {
                 let children = res.data;
-
-                this.totalRemaining = Object.assign({}, this.totalRemaining, {
-                    [`${column == undefined ? 0 : column + 1}`]: {
-                        remaining: res.headers['x-wp-total'],
-                    }
-                });
-
                 let first = undefined;
 
                 if (children.length > 0) {
@@ -589,50 +573,52 @@
                 for (let term of terms)
                     this.termColumns[columnIndex].children.push(term);
             },
-            getTermChildren(term, key) {
-
-                let parent = 0;
-
-                if (term)
-                    parent = term.id;
+            fetchTerms(parentTerm, parentColumnIndex) {
 
                 this.isColumnLoading = true;
 
-                const route = `/taxonomy/${this.taxonomyId}/terms?order=asc&parent=${parent}&number=${this.maxNumTermsPerColumn}&offset=0&hideempty=0`;
+                const parentId = parentTerm ? parentTerm.id : 0;
+                const route = `/taxonomy/${this.taxonomyId}/terms?order=asc&parent=${parentId}&number=${this.maxTermsPerColumn}&offset=0&hideempty=0`;
                 axios.get(route)
                     .then(res => {
                         
-                        this.removeLevelsAfter(key);
-                        this.createColumn(res, key, term ? term.name : null, term ? term.id : 0);
+                        this.totalRemaining = Object.assign({}, this.totalRemaining, {
+                            [`${parentColumnIndex == undefined ? 0 : parentColumnIndex + 1}`]: {
+                                remaining: res.headers['x-wp-total'],
+                            }
+                        });
+
+                        this.removeLevelsAfter(parentColumnIndex);
+                        this.createColumn(res, parentColumnIndex, parentTerm ? parentTerm.name : null, parentId);
 
                         this.isColumnLoading = false;
                     })
                     .catch(error => {
                         this.$console.log(error);
-
                         this.isColumnLoading = false;
                     });
 
             },
-            getMoreTerms(column, key) {
-
+            fetchMoreTerms(column, parentColumnIndex) {
                 if (column.children && column.children.length > 0) {
 
-                    let parent = column.children[0].parent;
-                    let offset = column.children.length;
+                    const parentId = column.children[0].parent;
+                    const offset = column.children.length;
 
                     this.isColumnLoading = true;
 
-                    const route = `/taxonomy/${this.taxonomyId}/terms/?order=asc&parent=${parent}&number=${this.maxNumTermsPerColumn}&offset=${offset}&hideempty=`;
+                    const route = `/taxonomy/${this.taxonomyId}/terms/?order=asc&parent=${parentId}&number=${this.maxTermsPerColumn}&offset=${offset}&hideempty=`;
                     axios.get(route)
                         .then(res => {
-                            this.appendMoreTermsToColumn(res.data, key);
 
                             this.totalRemaining = Object.assign({}, this.totalRemaining, {
-                                [`${key}`]: {
+                                [`${parentColumnIndex}`]: {
                                     remaining: res.headers['x-wp-total'],
                                 }
                             });
+
+                            this.appendMoreTermsToColumn(res.data, parentColumnIndex);
+                            
                             this.isColumnLoading = false;
                         })
                         .catch(error => {
@@ -907,7 +893,7 @@
                 if ( this.isSearching )
                     this.autoComplete();
                 else
-                    this.getTermChildren();
+                    this.fetchTerms();
             }
         }
     }
