@@ -775,9 +775,12 @@
                                 this.termColumns[updatedTermParentColumn + 1].name = term.name;
 
                         } else {
-                    
                             const immediateFollowingTermNameIndex = this.termColumns[updatedTermParentColumn].children.findIndex((aTerm) => aTerm.name.toLowerCase() > term.name.toLowerCase());
-                            this.termColumns[updatedTermParentColumn].children.splice(immediateFollowingTermNameIndex, 0, term);
+                            if ( immediateFollowingTermNameIndex >= 0 )
+                                this.termColumns[updatedTermParentColumn].children.splice(immediateFollowingTermNameIndex, 0, term);
+                            else
+                                this.termColumns[updatedTermParentColumn].children.push(term);
+
                             this.termColumns[updatedTermParentColumn].total_children = Number(this.termColumns[updatedTermParentColumn].total_children) + 1;
                             
                             if ( this.termColumns[updatedTermParentColumn - 1] ) {
