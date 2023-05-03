@@ -84,6 +84,7 @@
                 <button 
                         type="submit"
                         class="button is-success"
+                        :disabled="hasParent ? !selectedParentTerm : false"
                         @click="onConfirm(hasParent ? selectedParentTerm : 0); $parent.close();">
                     {{ $i18n.get('continue') }}
                 </button>
@@ -177,6 +178,9 @@
                 if ( selectedParentTerm ) {
                     this.selectedParentTerm = selectedParentTerm.id;
                     this.parentTermName = selectedParentTerm.name;
+                } else {
+                    this.selectedParentTerm = undefined;
+                    this.parentTermName = '';
                 }
             }
         }
