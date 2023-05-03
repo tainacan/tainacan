@@ -404,7 +404,7 @@
             border-left: 1px dashed var(--tainacan-gray1);
         }
         button .tainacan-icon {
-            color: var(--tainacan-blue1);
+            color: var(--tainacan-blue5);
         }
         &:hover:not(.result-info) {
             background-color: var(--tainacan-gray1);
