@@ -99,256 +99,181 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../js/axios';
-    import { mapActions } from 'vuex';
-    import TermDeletionDialog from '../other/term-deletion-dialog.vue';
-    import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
+import { tainacan as axios } from '../../js/axios';
+import TermDeletionDialog from '../other/term-deletion-dialog.vue';
+import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
+import { termsListMixin } from '../../js/terms-list-mixin';
 
-    export default {
-        name: 'TermsListLinear',
-        props: {
-            taxonomyId: Number,
-            currentUserCanEditTaxonomy: Boolean,
-            selected: Array,
-            searchString: String
-        },
-        data() {
-            return {
-                totalRemaining: {},
-                searchResults: [],
-                maxSearchResultsPerPage: 20,
-                searchResultsOffset: 0,
-                isLoadingSearch: false,
-                hasMoreSearchPages: true,
-                isEditingTerm: false,
-                editTerm: null,
-            }
-        },
-        watch: {
-            searchString: {
-                handler(newValue, oldValue) {
-                    if (newValue != oldValue) {
-                        this.hasMoreSearchPages = true;
-                        this.searchResultsOffset = 0;
-
-                        this.autoComplete();
-                    }
-                },
-                immediate: true
-            },
-        },
-        created() {
-            this.$parent.$on('deleteSelectedTerms', this.deleteSelectedTerms);
-            this.$parent.$on('updateSelectedTermsParent', this.updateSelectedTermsParent);
-        },
-        beforeDestroy() {
-            this.$parent.$off('deleteSelectedTerms', this.deleteSelectedTerms);
-            this.$parent.$off('updateSelectedTermsParent', this.updateSelectedTermsParent);
-        },
-        methods: {
-            ...mapActions('taxonomy', [
-                'updateTerm',
-                'deleteTerm',
-                'deleteTerms',
-            ]),
-            shouldShowMoreButton(columnIndex) {
-                return this.totalRemaining[columnIndex].remaining === true || (this.termColumns[columnIndex].children.length < this.totalRemaining[columnIndex].remaining);
-            },
-            previousSearchPage() {
-
-                this.hasMoreSearchPages = true;
-
-                this.searchResultsOffset -= this.maxSearchResultsPerPage;
-                if ( this.searchResultsOffset < 0 )
+export default {
+    name: 'TermsListLinear',
+    mixins: [
+        termsListMixin
+    ],
+    props: {
+        searchString: String
+    },
+    data() {
+        return {
+            searchResults: [],
+            maxSearchResultsPerPage: 20,
+            searchResultsOffset: 0,
+            isLoadingSearch: false,
+            hasMoreSearchPages: true,
+        }
+    },
+    watch: {
+        searchString: {
+            handler(newValue, oldValue) {
+                console.log(newValue, oldValue)
+                if (newValue != oldValue) {
+                    this.hasMoreSearchPages = true;
                     this.searchResultsOffset = 0;
 
-                this.autoComplete();
-                
-            },
-            nextSearchPage() {
-
-                if ( this.hasMoreSearchPages ) {
-                    if ( this.searchResultsOffset === this.maxSearchResultsPerPage )
-                        this.searchResultsOffset += this.maxSearchResultsPerPage - 1;
-                    else
-                        this.searchResultsOffset += this.maxSearchResultsPerPage;
+                    this.fetchTerms();
                 }
-                
-                this.autoComplete();
             },
-            autoComplete: _.debounce( function () {
-                
-                if (!this.searchString.length)
-                    return;
+            immediate: true
+        },
+    },
+    methods: {
+        previousSearchPage() {
 
-                this.isLoadingSearch = true;
+            this.hasMoreSearchPages = true;
 
-                const query = `?order=asc&number=${this.maxSearchResultsPerPage}&searchterm=${this.searchString}&hideempty=0&offset=${this.searchResultsOffset}`;
+            this.searchResultsOffset -= this.maxSearchResultsPerPage;
+            if ( this.searchResultsOffset < 0 )
+                this.searchResultsOffset = 0;
 
-                const route = `/taxonomy/${this.taxonomyId}/terms/${query}`;
-                axios.get(route)
-                    .then((res) => {
-                        this.searchResults = res.data;
-                        this.isLoadingSearch = false;
-                        
-                        if (res.headers && res.headers['x-wp-total'])
-                            this.hasMoreSearchPages = res.headers['x-wp-total'] > (this.searchResultsOffset + this.searchResults.length);
+            this.fetchTerms();
+            
+        },
+        nextSearchPage() {
 
-                    })
-                    .catch((error) => {
-                        this.$console.log(error);
-                    });
-                
-            }, 500),
-            renderTermHierarchyLabel(term) {
-                if ( term.hierarchy_path ) 
-                    return '<span style="color: var(--tainacan-info-color);">' + term.hierarchy_path.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + term.name;
-
-                return term.name;
-            }, 
-            isTermSelected(termId) {
-                return this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == termId) >= 0;
-            },
-            getTermIdAsNumber(termId) {
-                return isNaN(Number(termId)) ? termId : Number(termId)
-            },
-            updateSelectedTerms(selectedTerm) {
-
-                let currentSelected = JSON.parse(JSON.stringify(this.selected));
-                
-                const existingValueIndex = this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == selectedTerm.id);
-                
-                if (existingValueIndex >= 0)
-                    currentSelected.splice(existingValueIndex, 1);
+            if ( this.hasMoreSearchPages ) {
+                if ( this.searchResultsOffset === this.maxSearchResultsPerPage )
+                    this.searchResultsOffset += this.maxSearchResultsPerPage - 1;
                 else
-                    currentSelected.push(selectedTerm);
-
-                this.$emit('onUpdateSelectedTerms', currentSelected);
-            },
-            onEditTerm(term) {
-                this.editTerm = term;
-                this.isEditingTerm = true;
-            },
-            removeTerm(term) {
-
-                this.$buefy.modal.open({
-                    parent: this,
-                    component: TermDeletionDialog,
-                    props: {
-                        message: term.total_children && term.total_children != '0' ?  this.$i18n.get('info_warning_term_with_child') : this.$i18n.get('info_warning_selected_term_delete'),
-                        showDescendantsDeleteButton: term.total_children && term.total_children != '0',
-                        amountOfTerms: 1,
-                        onConfirm: (typeOfDelete) => { 
-                            
-                            // If all checks passed, term can be deleted  
-                            if ( typeOfDelete == 'descendants' ) { 
-                                this.deleteTerm({
-                                        taxonomyId: this.taxonomyId, 
-                                        termId: term.id, 
-                                        parent: term.parent,
-                                        deleteChildTerms: true })
-                                    .then(() => {
-                                        this.onTermRemovalFinished(term);
-                                    })
-                                    .catch((error) => {
-                                        this.$console.log(error);
-                                    });
-                            } else { 
-                                this.deleteTerm({
-                                        taxonomyId: this.taxonomyId, 
-                                        termId: term.id, 
-                                        parent: term.parent })
-                                    .then(() => {
-                                        this.onTermRemovalFinished(term);
-                                    })
-                                    .catch((error) => {
-                                        this.$console.log(error);
-                                    });
-                            }
-                        }
-                    },
-                    trapFocus: true,
-                    customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
-                });  
-            },
-            onTermRemovalFinished(term) {
-                const removedTermIndex = this.searchResults.findIndex((aTerm) => aTerm.id == term.id);
-
-                if ( removedTermIndex >= 0 )
-                    this.searchResults.splice(removedTermIndex, 1);
-            },
-            onTermEditionFinished(term) {
-                const updatedTermIndex = this.searchResults.findIndex((aTerm) => aTerm.id == term.id);
-
-                if ( updatedTermIndex >= 0 )
-                    this.searchResults.splice(updatedTermIndex, 1, term);
-            },
-            deleteSelectedTerms() {
-
-                this.$buefy.modal.open({
-                    parent: this,
-                    component: TermDeletionDialog,
-                    props: {
-                        message: this.$i18n.get('info_warning_some_terms_with_child'),
-                        showDescendantsDeleteButton: true,
-                        amountOfTerms: this.amountOfTermsSelected,
-                        onConfirm: (typeOfDelete) => { 
-                            // If all checks passed, term can be deleted 
-                            this.deleteTerms({
-                                    taxonomyId: this.taxonomyId, 
-                                    terms: this.selected.map((aTerm) => aTerm.id),
-                                    deleteChildTerms: typeOfDelete === 'descendants'
-                                })
-                                .then(() => {
-                                    this.resetTermsListUI();
-                                })
-                                .catch((error) => {
-                                    this.$console.log(error);
-                                });
-                        }
-                    },
-                    trapFocus: true,
-                    customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
-                });  
-            },
-            updateSelectedTermsParent() {
-
-                this.$buefy.modal.open({
-                    parent: this,
-                    component: TermParentSelectionDialog,
-                    props: {
-                        amountOfTerms: this.amountOfTermsSelected,
-                        excludeTree: this.selected.map((aTerm) => aTerm.id), 
-                        taxonomyId: this.taxonomyId,
-                        onConfirm: (selectedParentTerm) => { 
-                            console.log(selectedParentTerm);
-                            // If all checks passed, term can be deleted   
-                            // this.deleteTerm({
-                            //         taxonomyId: this.taxonomyId, 
-                            //         termId: term.id, 
-                            //         parent: term.parent })
-                            //     .then(() => {
-                            //         this.onTermRemovalFinished(term);
-                            //     })
-                            //     .catch((error) => {
-                            //         this.$console.log(error);
-                            //     });
-                            this.resetTermsListUI();  
-                        }
-                    },
-                    trapFocus: true,
-                    customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
-                });  
-            },
-            resetTermsListUI() {
-                this.$emit('onUpdateSelectedTerms', []);
-                this.autoComplete();
+                    this.searchResultsOffset += this.maxSearchResultsPerPage;
             }
+            
+            this.fetchTerms();
+        },
+        fetchTerms: _.debounce( function () {
+            
+            if (!this.searchString.length)
+                return;
+
+            this.isLoadingSearch = true;
+
+            const query = `?order=asc&number=${this.maxSearchResultsPerPage}&searchterm=${this.searchString}&hideempty=0&offset=${this.searchResultsOffset}`;
+
+            const route = `/taxonomy/${this.taxonomyId}/terms/${query}`;
+            axios.get(route)
+                .then((res) => {
+                    this.searchResults = res.data;
+                    this.isLoadingSearch = false;
+                    
+                    if (res.headers && res.headers['x-wp-total'])
+                        this.hasMoreSearchPages = res.headers['x-wp-total'] > (this.searchResultsOffset + this.searchResults.length);
+
+                })
+                .catch((error) => {
+                    this.$console.log(error);
+                });
+            
+        }, 500),
+        updateSelectedTerms(selectedTerm) {
+
+            let currentSelected = JSON.parse(JSON.stringify(this.selected));
+            
+            const existingValueIndex = this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == selectedTerm.id);
+            
+            if (existingValueIndex >= 0)
+                currentSelected.splice(existingValueIndex, 1);
+            else
+                currentSelected.push(selectedTerm);
+
+            this.$emit('onUpdateSelectedTerms', currentSelected);
+        },
+        onEditTerm(term) {
+            this.editTerm = term;
+            this.isEditingTerm = true;
+        },
+        onTermRemovalFinished(term) {
+            const removedTermIndex = this.searchResults.findIndex((aTerm) => aTerm.id == term.id);
+
+            if ( removedTermIndex >= 0 )
+                this.searchResults.splice(removedTermIndex, 1);
+        },
+        onTermEditionFinished(term) {
+            const updatedTermIndex = this.searchResults.findIndex((aTerm) => aTerm.id == term.id);
+
+            if ( updatedTermIndex >= 0 )
+                this.searchResults.splice(updatedTermIndex, 1, term);
+        },
+        deleteSelectedTerms() {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermDeletionDialog,
+                props: {
+                    message: this.$i18n.get('info_warning_some_terms_with_child'),
+                    showDescendantsDeleteButton: true,
+                    amountOfTerms: this.amountOfTermsSelected,
+                    onConfirm: (typeOfDelete) => { 
+                        // If all checks passed, term can be deleted 
+                        this.deleteTerms({
+                                taxonomyId: this.taxonomyId, 
+                                terms: this.selected.map((aTerm) => aTerm.id),
+                                deleteChildTerms: typeOfDelete === 'descendants'
+                            })
+                            .then(() => {
+                                this.resetTermsListUI();
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                            });
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        },
+        updateSelectedTermsParent() {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermParentSelectionDialog,
+                props: {
+                    amountOfTerms: this.amountOfTermsSelected,
+                    excludeTree: this.selected.map((aTerm) => aTerm.id), 
+                    taxonomyId: this.taxonomyId,
+                    onConfirm: (selectedParentTerm) => { 
+                        this.changeTermsParent({
+                            taxonomyId: this.taxonomyId, 
+                            terms: this.selected.map((aTerm) => aTerm.id),
+                            newParentTerm: selectedParentTerm
+                        })
+                        .then(() => {  
+                            this.resetTermsListUI(); 
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        }); 
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        },
+        resetTermsListUI() {
+            this.$emit('onUpdateSelectedTerms', []);
+            this.fetchTerms();
         }
     }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -399,12 +324,17 @@
             opacity: 0.0;
             transition: opacity 0.2s ease;       
         }
-        button.load-children-button {
-            opacity: 0.95;
-            border-left: 1px dashed var(--tainacan-gray1);
-        }
-        button .tainacan-icon {
-            color: var(--tainacan-blue5);
+        
+        button {
+            cursor: pointer;
+
+            &.load-children-button {
+                opacity: 0.95;
+                border-left: 1px dashed var(--tainacan-gray1);
+            }
+            .tainacan-icon {
+                color: var(--tainacan-blue5);
+            }
         }
         &:hover:not(.result-info) {
             background-color: var(--tainacan-gray1);

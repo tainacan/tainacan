@@ -210,424 +210,351 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../js/axios';
-    import { mapActions } from 'vuex';
-    import TermDeletionDialog from '../other/term-deletion-dialog.vue';
-    import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
+import { tainacan as axios } from '../../js/axios';
+import TermDeletionDialog from '../other/term-deletion-dialog.vue';
+import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
+import { termsListMixin } from '../../js/terms-list-mixin';
 
-    export default {
-        name: 'TermsListHierarchical',
-        props: {
-            taxonomyId: Number,
-            currentUserCanEditTaxonomy: Boolean,
-            selected: Array,
-            selectedColumnIndex: Number
+export default {
+    name: 'TermsListHierarchical',
+    mixins: [
+        termsListMixin
+    ],
+    data() {
+        return {
+            termColumns: [],
+            isColumnLoading: false,
+            maxTermsPerColumn: 100,
+        }
+    },
+    computed: {
+        amountOfTermsSelected() {
+            if ( this.selectedColumnIndex >= 0 )
+                return this.termColumns[this.selectedColumnIndex].total_children;
+            else if ( this.selected.length )
+                return this.selected.length;
+            else
+                return 0;
+        }
+    },
+    created() {
+        this.fetchTerms();
+    },
+    methods: {
+        shouldShowMoreButton(columnIndex) {
+            return this.totalRemaining[columnIndex].remaining === true || (this.termColumns[columnIndex].children.length < this.totalRemaining[columnIndex].remaining);
         },
-        data() {
-            return {
-                termColumns: [],
-                isColumnLoading: false,
-                totalRemaining: {},
-                maxTermsPerColumn: 100,
-                isEditingTerm: false,
-                editTerm: null
-            }
+        removeLevelsAfter(parentColumnIndex){
+            if (parentColumnIndex != undefined)
+                this.termColumns.length = parentColumnIndex + 1;
         },
-        computed: {
-            amountOfTermsSelected() {
-                if ( this.selectedColumnIndex >= 0 )
-                   return this.termColumns[this.selectedColumnIndex].total_children;
-                else if ( this.selected.length )
-                    return this.selected.length;
-                else
-                    return 0;
-            }
-        },
-        created() {
-            this.fetchTerms();
-            this.$parent.$on('deleteSelectedTerms', this.deleteSelectedTerms);
-            this.$parent.$on('updateSelectedTermsParent', this.updateSelectedTermsParent);
-        },
-        beforeDestroy() {
-            this.$parent.$off('deleteSelectedTerms', this.deleteSelectedTerms);
-            this.$parent.$off('updateSelectedTermsParent', this.updateSelectedTermsParent);
-        },
-        methods: {
-            ...mapActions('taxonomy', [
-                'updateTerm',
-                'deleteTerm',
-                'deleteTerms',
-            ]),
-            shouldShowMoreButton(columnIndex) {
-                return this.totalRemaining[columnIndex].remaining === true || (this.termColumns[columnIndex].children.length < this.totalRemaining[columnIndex].remaining);
-            },
-            removeLevelsAfter(parentColumnIndex){
-                if (parentColumnIndex != undefined)
-                    this.termColumns.length = parentColumnIndex + 1;
-            },
-            createColumn(res, column, name, id) {
-                let children = res.data;
-                let first = undefined;
+        createColumn(res, column, name, id) {
+            let children = res.data;
+            let first = undefined;
 
-                if (children.length > 0) {
-                    for (let column in this.termColumns) {
-                        if (this.termColumns[column].children[0].id == children[0].id) {
-                            first = column;
-                            break;
-                        }
+            if (children.length > 0) {
+                for (let column in this.termColumns) {
+                    if (this.termColumns[column].children[0].id == children[0].id) {
+                        first = column;
+                        break;
                     }
                 }
-                
-                if (first != undefined)
-                    this.termColumns.splice(first, 1, { name: name, id: id, children: children, total_children: res.headers['x-wp-total'] });
-                else
-                    this.termColumns.push({ name: name, id: id, children: children, total_children: res.headers['x-wp-total'] });
+            }
+            
+            if (first != undefined)
+                this.termColumns.splice(first, 1, { name: name, id: id, children: children, total_children: res.headers['x-wp-total'] });
+            else
+                this.termColumns.push({ name: name, id: id, children: children, total_children: res.headers['x-wp-total'] });
 
-                this.$nextTick(() => {
-                    setTimeout(() => {
-                        if (
-                            this.$refs &&
-                            this.$refs[`${column}.0-tainacan-li-checkbox-model`] &&
-                            this.$refs[`${column}.0-tainacan-li-checkbox-model`][0] &&
-                            this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el &&
-                            this.$refs['tainacan-finder-scrolling-container'] &&
-                            this.$refs['tainacan-finder-scrolling-container'].$el
-                        ) {
-                            // Scroll Into does not solve as it would scroll vertically as well...
-                            //this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
+            this.$nextTick(() => {
+                setTimeout(() => {
+                    if (
+                        this.$refs &&
+                        this.$refs[`${column}.0-tainacan-li-checkbox-model`] &&
+                        this.$refs[`${column}.0-tainacan-li-checkbox-model`][0] &&
+                        this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el &&
+                        this.$refs['tainacan-finder-scrolling-container'] &&
+                        this.$refs['tainacan-finder-scrolling-container'].$el
+                    ) {
+                        // Scroll Into does not solve as it would scroll vertically as well...
+                        //this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el.scrollIntoView({ behavior: "smooth", inline: "start" });
 
-                            this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
-                                top: 0,
-                                left: first != undefined ? 0 : this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el.offsetLeft,
-                                behavior: 'smooth'
-                            });
+                        this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
+                            top: 0,
+                            left: first != undefined ? 0 : this.$refs[`${column}.0-tainacan-li-checkbox-model`][0].$el.offsetLeft,
+                            behavior: 'smooth'
+                        });
+                    }
+                }, 500);
+            }); 
+        },
+        scrollBackToRoot() {
+            if (
+                this.$refs &&
+                this.$refs['tainacan-finder-scrolling-container'] &&
+                this.$refs['tainacan-finder-scrolling-container'].$el
+            ) {
+                this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            }
+        },
+        appendMoreTermsToColumn(terms, columnIndex) {
+            for (let term of terms)
+                this.termColumns[columnIndex].children.push(term);
+        },
+        fetchTerms(parentTerm, parentColumnIndex) {
+
+            this.isColumnLoading = true;
+
+            const parentId = parentTerm ? parentTerm.id : 0;
+            const route = `/taxonomy/${this.taxonomyId}/terms?order=asc&parent=${parentId}&number=${this.maxTermsPerColumn}&offset=0&hideempty=0`;
+            axios.get(route)
+                .then(res => {
+                    
+                    this.totalRemaining = Object.assign({}, this.totalRemaining, {
+                        [`${parentColumnIndex == undefined ? 0 : parentColumnIndex + 1}`]: {
+                            remaining: res.headers['x-wp-total'],
                         }
-                    }, 500);
-                }); 
-            },
-            scrollBackToRoot() {
-                if (
-                    this.$refs &&
-                    this.$refs['tainacan-finder-scrolling-container'] &&
-                    this.$refs['tainacan-finder-scrolling-container'].$el
-                ) {
-                    this.$refs['tainacan-finder-scrolling-container'].$el.scrollTo({
-                        top: 0,
-                        left: 0,
-                        behavior: 'smooth'
                     });
-                }
-            },
-            appendMoreTermsToColumn(terms, columnIndex) {
-                for (let term of terms)
-                    this.termColumns[columnIndex].children.push(term);
-            },
-            fetchTerms(parentTerm, parentColumnIndex) {
+
+                    this.removeLevelsAfter(parentColumnIndex);
+                    this.createColumn(res, parentColumnIndex, parentTerm ? parentTerm.name : null, parentId);
+
+                    this.isColumnLoading = false;
+                })
+                .catch(error => {
+                    this.$console.log(error);
+                    this.isColumnLoading = false;
+                });
+
+        },
+        fetchMoreTerms(column, parentColumnIndex) {
+            if (column.children && column.children.length > 0) {
+
+                const parentId = column.children[0].parent;
+                const offset = column.children.length;
 
                 this.isColumnLoading = true;
 
-                const parentId = parentTerm ? parentTerm.id : 0;
-                const route = `/taxonomy/${this.taxonomyId}/terms?order=asc&parent=${parentId}&number=${this.maxTermsPerColumn}&offset=0&hideempty=0`;
+                const route = `/taxonomy/${this.taxonomyId}/terms/?order=asc&parent=${parentId}&number=${this.maxTermsPerColumn}&offset=${offset}&hideempty=`;
                 axios.get(route)
                     .then(res => {
-                        
+
                         this.totalRemaining = Object.assign({}, this.totalRemaining, {
-                            [`${parentColumnIndex == undefined ? 0 : parentColumnIndex + 1}`]: {
+                            [`${parentColumnIndex}`]: {
                                 remaining: res.headers['x-wp-total'],
                             }
                         });
 
-                        this.removeLevelsAfter(parentColumnIndex);
-                        this.createColumn(res, parentColumnIndex, parentTerm ? parentTerm.name : null, parentId);
-
+                        this.appendMoreTermsToColumn(res.data, parentColumnIndex);
+                        
                         this.isColumnLoading = false;
                     })
                     .catch(error => {
                         this.$console.log(error);
+
                         this.isColumnLoading = false;
                     });
-
-            },
-            fetchMoreTerms(column, parentColumnIndex) {
-                if (column.children && column.children.length > 0) {
-
-                    const parentId = column.children[0].parent;
-                    const offset = column.children.length;
-
-                    this.isColumnLoading = true;
-
-                    const route = `/taxonomy/${this.taxonomyId}/terms/?order=asc&parent=${parentId}&number=${this.maxTermsPerColumn}&offset=${offset}&hideempty=`;
-                    axios.get(route)
-                        .then(res => {
-
-                            this.totalRemaining = Object.assign({}, this.totalRemaining, {
-                                [`${parentColumnIndex}`]: {
-                                    remaining: res.headers['x-wp-total'],
-                                }
-                            });
-
-                            this.appendMoreTermsToColumn(res.data, parentColumnIndex);
-                            
-                            this.isColumnLoading = false;
-                        })
-                        .catch(error => {
-                            this.$console.log(error);
-
-                            this.isColumnLoading = false;
-                        });
-                }
-            },
-            renderTermHierarchyLabel(term) {
-                if ( term.hierarchy_path ) 
-                    return '<span style="color: var(--tainacan-info-color);">' + term.hierarchy_path.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + term.name;
-
-                return term.name;
-            }, 
-            selectColumn(index) {
-                const newIndex = this.selectedColumnIndex != index ? index : -1;
-                this.$emit('onUpdateSelectedColumnIndex', { index: newIndex, object: this.termColumns[newIndex] ? this.termColumns[newIndex] : null });
-            },
-            isTermSelected(termId) {
-                return this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == termId) >= 0;
-            },
-            getTermIdAsNumber(termId) {
-                return isNaN(Number(termId)) ? termId : Number(termId)
-            },
-            updateSelectedTerms(selectedTerm) {
-                this.$emit('onUpdateSelectedColumnIndex', { index: -1, object: null });
-
-                let currentSelected = JSON.parse(JSON.stringify(this.selected));
-                
-                const existingValueIndex = this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == selectedTerm.id);
-                
-                if (existingValueIndex >= 0)
-                    currentSelected.splice(existingValueIndex, 1);
-                else
-                    currentSelected.push(selectedTerm);
-
-                this.$emit('onUpdateSelectedTerms', currentSelected);
-            },
-            onEditTerm(term) {
-                this.editTerm = term;
-                this.isEditingTerm = true;
-
-                for (let i = 0; i < this.termColumns.length; i++) {
-                    if ( this.termColumns[i].id == this.editTerm.id ) {
-                        this.termColumns.splice(i, this.termColumns.length - i);
-                        break;
-                    }
-                }
-            },
-            removeTerm(term) {
-
-                this.$buefy.modal.open({
-                    parent: this,
-                    component: TermDeletionDialog,
-                    props: {
-                        message: term.total_children && term.total_children != '0' ?  this.$i18n.get('info_warning_term_with_child') : this.$i18n.get('info_warning_selected_term_delete'),
-                        showDescendantsDeleteButton: term.total_children && term.total_children != '0',
-                        amountOfTerms: 1,
-                        onConfirm: (typeOfDelete) => { 
-                            
-                            // If all checks passed, term can be deleted  
-                            if ( typeOfDelete == 'descendants' ) { 
-                                this.deleteTerm({
-                                        taxonomyId: this.taxonomyId, 
-                                        termId: term.id, 
-                                        parent: term.parent,
-                                        deleteChildTerms: true })
-                                    .then(() => {
-                                        this.onTermRemovalFinished(term);
-                                    })
-                                    .catch((error) => {
-                                        this.$console.log(error);
-                                    });
-                            } else { 
-                                this.deleteTerm({
-                                        taxonomyId: this.taxonomyId, 
-                                        termId: term.id, 
-                                        parent: term.parent })
-                                    .then(() => {
-                                        this.onTermRemovalFinished(term);
-                                    })
-                                    .catch((error) => {
-                                        this.$console.log(error);
-                                    });
-                            }
-                        }
-                    },
-                    trapFocus: true,
-                    customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
-                });  
-            },
-            onTermRemovalFinished(term) {
-                const removedTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == term.parent);
-                
-                if ( removedTermParentColumn >= 0 ) {
-                    const removedTermIndex = this.termColumns[removedTermParentColumn].children.findIndex((aTerm) => aTerm.id == term.id);
-                    
-                    if ( removedTermIndex >= 0 ) {
-                        this.totalRemaining[removedTermParentColumn].remaining = Number(this.totalRemaining[removedTermParentColumn].remaining) - 1;
-
-                        this.termColumns[removedTermParentColumn].children.splice(removedTermIndex, 1);
-                        this.termColumns[removedTermParentColumn].total_children = Number(this.termColumns[removedTermParentColumn].total_children) - 1;
-                        
-                        if ( this.termColumns[removedTermParentColumn - 1] ) {
-                            const parentTermIndex = this.termColumns[removedTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id== term.parent);
-                            if ( parentTermIndex >= 0)
-                                this.termColumns[removedTermParentColumn - 1].children[parentTermIndex].total_children = Number(this.termColumns[removedTermParentColumn].total_children);
-                        }
-
-                        this.removeLevelsAfter(removedTermParentColumn);
-                    }
-                }
-            },
-            onTermEditionFinished(term, hasChangedParent, initialParent) {
-                const updatedTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == term.parent);
-                
-                if ( updatedTermParentColumn >= 0 ) {
-                    const updatedTermIndex = this.termColumns[updatedTermParentColumn].children.findIndex((aTerm) => aTerm.id == term.id);
-                    
-                    if ( updatedTermIndex >= 0 ) {
-                        this.termColumns[updatedTermParentColumn].children.splice(updatedTermIndex, 1, term);
-                        
-                        if ( term.total_children > 0 && this.termColumns[updatedTermParentColumn + 1] )
-                            this.termColumns[updatedTermParentColumn + 1].name = term.name;
-
-                    } else {
-                        const immediateFollowingTermNameIndex = this.termColumns[updatedTermParentColumn].children.findIndex((aTerm) => aTerm.name.toLowerCase() > term.name.toLowerCase());
-                        if ( immediateFollowingTermNameIndex >= 0 )
-                            this.termColumns[updatedTermParentColumn].children.splice(immediateFollowingTermNameIndex, 0, term);
-                        else
-                            this.termColumns[updatedTermParentColumn].children.push(term);
-
-                        this.termColumns[updatedTermParentColumn].total_children = Number(this.termColumns[updatedTermParentColumn].total_children) + 1;
-                        
-                        if ( this.termColumns[updatedTermParentColumn - 1] ) {
-                            const parentTermIndex = this.termColumns[updatedTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id== term.parent);
-                            if ( parentTermIndex >= 0)
-                                this.termColumns[updatedTermParentColumn - 1].children[parentTermIndex].total_children = Number(this.termColumns[updatedTermParentColumn].total_children);
-                        }
-                    }
-                }
-                
-                if ( hasChangedParent ) {
-                    const previousTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == initialParent);
-                    
-                    if ( previousTermParentColumn >= updatedTermParentColumn ) {
-                        if ( previousTermParentColumn >= 0 ) {
-                            const previousTermIndex = this.termColumns[previousTermParentColumn].children.findIndex((aTerm) => aTerm.id == term.id);
-                            
-                            if ( previousTermIndex >= 0 ) {
-                                this.termColumns[previousTermParentColumn].children.splice(previousTermIndex, 1);
-                                this.totalRemaining[previousTermParentColumn].remaining = Number(this.totalRemaining[previousTermParentColumn].remaining) - 1;
-                            }
-                        }
-                        
-                        if ( this.termColumns[previousTermParentColumn - 1] ) {
-                            
-                            const newParentIndex = this.termColumns[previousTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id == term.parent);
-                            if ( newParentIndex >= 0 )
-                                this.termColumns[previousTermParentColumn - 1].children[newParentIndex].total_children = Number(this.termColumns[previousTermParentColumn - 1].children[newParentIndex].total_children) + 1;
-
-                            const oldParentIndex = this.termColumns[previousTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id == initialParent);
-                            if ( oldParentIndex >= 0 )
-                                this.termColumns[previousTermParentColumn - 1].children[oldParentIndex].total_children = Number(this.termColumns[previousTermParentColumn - 1].children[oldParentIndex].total_children) - 1;
-                            console.log(oldParentIndex, previousTermParentColumn, this.termColumns[previousTermParentColumn - 1])
-                        }
-
-                    } else {
-                        
-                        for (let i = 0; i < this.termColumns.length; i++) {
-                            if ( this.termColumns[i].id == term.id ) {
-                                this.removeLevelsAfter(i);
-                                break;
-                            }
-                        }
-                    }
-                }
-            },
-            onAddNewChildTerm(parent) {
-                let newTerm = {
-                    taxonomyId: this.taxonomyId,
-                    name: '',
-                    description: '',
-                    parent: parent,
-                    id: 'new',
-                    saved: false
-                }
-                this.onEditTerm(newTerm);
-            },
-            deleteSelectedTerms() {
-
-                this.$buefy.modal.open({
-                    parent: this,
-                    component: TermDeletionDialog,
-                    props: {
-                        message: this.$i18n.get('info_warning_some_terms_with_child'),
-                        showDescendantsDeleteButton: true,
-                        amountOfTerms: this.amountOfTermsSelected,
-                        onConfirm: (typeOfDelete) => { 
-                            // If all checks passed, term can be deleted 
-                            this.deleteTerms({
-                                    taxonomyId: this.taxonomyId, 
-                                    terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
-                                    parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
-                                    deleteChildTerms: typeOfDelete === 'descendants'
-                                })
-                                .then(() => {
-                                    this.resetTermsListUI();
-                                })
-                                .catch((error) => {
-                                    this.$console.log(error);
-                                });
-                        }
-                    },
-                    trapFocus: true,
-                    customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
-                });  
-            },
-            updateSelectedTermsParent() {
-
-                this.$buefy.modal.open({
-                    parent: this,
-                    component: TermParentSelectionDialog,
-                    props: {
-                        amountOfTerms: this.amountOfTermsSelected,
-                        excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
-                        taxonomyId: this.taxonomyId,
-                        onConfirm: (selectedParentTerm) => { 
-                            console.log(selectedParentTerm);
-                            // If all checks passed, term can be deleted   
-                            // this.deleteTerm({
-                            //         taxonomyId: this.taxonomyId, 
-                            //         termId: term.id, 
-                            //         parent: term.parent })
-                            //     .then(() => {
-                            //         this.onTermRemovalFinished(term);
-                            //     })
-                            //     .catch((error) => {
-                            //         this.$console.log(error);
-                            //     });
-                            this.resetTermsListUI();  
-                        }
-                    },
-                    trapFocus: true,
-                    customClass: 'tainacan-modal',
-                    closeButtonAriaLabel: this.$i18n.get('close')
-                });  
-            },
-            resetTermsListUI() {
-                this.$emit('onUpdateSelectedTerms', []);
-                this.$emit('onUpdateSelectedColumnIndex', { index: -1, object: null });
-                this.removeLevelsAfter(-1);
-            
-                this.fetchTerms();
             }
+        },
+        selectColumn(index) {
+            const newIndex = this.selectedColumnIndex != index ? index : -1;
+            this.$emit('onUpdateSelectedColumnIndex', { index: newIndex, object: this.termColumns[newIndex] ? this.termColumns[newIndex] : null });
+        },
+        updateSelectedTerms(selectedTerm) {
+            this.$emit('onUpdateSelectedColumnIndex', { index: -1, object: null });
+
+            let currentSelected = JSON.parse(JSON.stringify(this.selected));
+            
+            const existingValueIndex = this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == selectedTerm.id);
+            
+            if (existingValueIndex >= 0)
+                currentSelected.splice(existingValueIndex, 1);
+            else
+                currentSelected.push(selectedTerm);
+
+            this.$emit('onUpdateSelectedTerms', currentSelected);
+        },
+        onEditTerm(term) {
+            this.editTerm = term;
+            this.isEditingTerm = true;
+
+            for (let i = 0; i < this.termColumns.length; i++) {
+                if ( this.termColumns[i].id == this.editTerm.id ) {
+                    this.termColumns.splice(i, this.termColumns.length - i);
+                    break;
+                }
+            }
+        },
+        onTermRemovalFinished(term) {
+            const removedTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == term.parent);
+            
+            if ( removedTermParentColumn >= 0 ) {
+                const removedTermIndex = this.termColumns[removedTermParentColumn].children.findIndex((aTerm) => aTerm.id == term.id);
+                
+                if ( removedTermIndex >= 0 ) {
+                    this.totalRemaining[removedTermParentColumn].remaining = Number(this.totalRemaining[removedTermParentColumn].remaining) - 1;
+
+                    this.termColumns[removedTermParentColumn].children.splice(removedTermIndex, 1);
+                    this.termColumns[removedTermParentColumn].total_children = Number(this.termColumns[removedTermParentColumn].total_children) - 1;
+                    
+                    if ( this.termColumns[removedTermParentColumn - 1] ) {
+                        const parentTermIndex = this.termColumns[removedTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id== term.parent);
+                        if ( parentTermIndex >= 0)
+                            this.termColumns[removedTermParentColumn - 1].children[parentTermIndex].total_children = Number(this.termColumns[removedTermParentColumn].total_children);
+                    }
+
+                    this.removeLevelsAfter(removedTermParentColumn);
+                }
+            }
+        },
+        onTermEditionFinished(term, hasChangedParent, initialParent) {
+            const updatedTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == term.parent);
+            
+            if ( updatedTermParentColumn >= 0 ) {
+                const updatedTermIndex = this.termColumns[updatedTermParentColumn].children.findIndex((aTerm) => aTerm.id == term.id);
+                
+                if ( updatedTermIndex >= 0 ) {
+                    this.termColumns[updatedTermParentColumn].children.splice(updatedTermIndex, 1, term);
+                    
+                    if ( term.total_children > 0 && this.termColumns[updatedTermParentColumn + 1] )
+                        this.termColumns[updatedTermParentColumn + 1].name = term.name;
+
+                } else {
+                    const immediateFollowingTermNameIndex = this.termColumns[updatedTermParentColumn].children.findIndex((aTerm) => aTerm.name.toLowerCase() > term.name.toLowerCase());
+                    if ( immediateFollowingTermNameIndex >= 0 )
+                        this.termColumns[updatedTermParentColumn].children.splice(immediateFollowingTermNameIndex, 0, term);
+                    else
+                        this.termColumns[updatedTermParentColumn].children.push(term);
+
+                    this.termColumns[updatedTermParentColumn].total_children = Number(this.termColumns[updatedTermParentColumn].total_children) + 1;
+                    
+                    if ( this.termColumns[updatedTermParentColumn - 1] ) {
+                        const parentTermIndex = this.termColumns[updatedTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id== term.parent);
+                        if ( parentTermIndex >= 0)
+                            this.termColumns[updatedTermParentColumn - 1].children[parentTermIndex].total_children = Number(this.termColumns[updatedTermParentColumn].total_children);
+                    }
+                }
+            }
+            
+            if ( hasChangedParent ) {
+                const previousTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == initialParent);
+                
+                if ( previousTermParentColumn >= updatedTermParentColumn ) {
+                    if ( previousTermParentColumn >= 0 ) {
+                        const previousTermIndex = this.termColumns[previousTermParentColumn].children.findIndex((aTerm) => aTerm.id == term.id);
+                        
+                        if ( previousTermIndex >= 0 ) {
+                            this.termColumns[previousTermParentColumn].children.splice(previousTermIndex, 1);
+                            this.totalRemaining[previousTermParentColumn].remaining = Number(this.totalRemaining[previousTermParentColumn].remaining) - 1;
+                        }
+                    }
+                    
+                    if ( this.termColumns[previousTermParentColumn - 1] ) {
+                        
+                        const newParentIndex = this.termColumns[previousTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id == term.parent);
+                        if ( newParentIndex >= 0 )
+                            this.termColumns[previousTermParentColumn - 1].children[newParentIndex].total_children = Number(this.termColumns[previousTermParentColumn - 1].children[newParentIndex].total_children) + 1;
+
+                        const oldParentIndex = this.termColumns[previousTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id == initialParent);
+                        if ( oldParentIndex >= 0 )
+                            this.termColumns[previousTermParentColumn - 1].children[oldParentIndex].total_children = Number(this.termColumns[previousTermParentColumn - 1].children[oldParentIndex].total_children) - 1;
+                        console.log(oldParentIndex, previousTermParentColumn, this.termColumns[previousTermParentColumn - 1])
+                    }
+
+                } else {
+                    
+                    for (let i = 0; i < this.termColumns.length; i++) {
+                        if ( this.termColumns[i].id == term.id ) {
+                            this.removeLevelsAfter(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        },
+        onAddNewChildTerm(parent) {
+            let newTerm = {
+                taxonomyId: this.taxonomyId,
+                name: '',
+                description: '',
+                parent: parent,
+                id: 'new',
+                saved: false
+            }
+            this.onEditTerm(newTerm);
+        },
+        deleteSelectedTerms() {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermDeletionDialog,
+                props: {
+                    message: this.$i18n.get('info_warning_some_terms_with_child'),
+                    showDescendantsDeleteButton: true,
+                    amountOfTerms: this.amountOfTermsSelected,
+                    onConfirm: (typeOfDelete) => { 
+                        // If all checks passed, term can be deleted 
+                        this.deleteTerms({
+                                taxonomyId: this.taxonomyId, 
+                                terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                                parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                                deleteChildTerms: typeOfDelete === 'descendants'
+                            })
+                            .then(() => {
+                                this.resetTermsListUI();
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                            });
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        },
+        updateSelectedTermsParent() {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermParentSelectionDialog,
+                props: {
+                    amountOfTerms: this.amountOfTermsSelected,
+                    excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
+                    taxonomyId: this.taxonomyId,
+                    onConfirm: (selectedParentTerm) => { 
+                        this.changeTermsParent({
+                            taxonomyId: this.taxonomyId, 
+                            terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                            parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                            newParentTerm: selectedParentTerm
+                        })
+                        .then(() => {  
+                            this.resetTermsListUI(); 
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        }); 
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        },
+        resetTermsListUI() {
+            this.$emit('onUpdateSelectedTerms', []);
+            this.$emit('onUpdateSelectedColumnIndex', { index: -1, object: null });
+            this.removeLevelsAfter(-1);
+        
+            this.fetchTerms();
         }
     }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -690,8 +617,11 @@
             }
         }
 
-        button .tainacan-icon {
-            color: var(--tainacan-blue5);
+        button {
+            cursor: pointer;
+            .tainacan-icon {
+                color: var(--tainacan-blue5);
+            }
         }
 
         &:hover {

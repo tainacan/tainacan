@@ -162,6 +162,7 @@
                         @input="fetchParentTerms"
                         @focus="clearErrors('parent');"
                         :disabled="!hasParent"
+                        :append-to-body="true"
                         check-infinite-scroll
                         @infinite-scroll="fetchMoreParentTerms">
                     <template slot-scope="props">

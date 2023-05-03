@@ -72,7 +72,6 @@ import TainacanTitle from '../components/navigation/tainacan-title.vue';
 import store from './store/store';
 import router from './router';
 import eventBusSearch from './event-bus-search';
-import eventBusTermsList from './event-bus-terms-list.js';
 import eventBusMetadataList from './event-bus-metadata-list.js';
 import { 
     I18NPlugin,
@@ -226,7 +225,6 @@ export default (element) => {
             Vue.component('tainacan-title', TainacanTitle);
 
             // Event bus are needed to facilate comunication between child-parent-child components
-            Vue.use(eventBusTermsList, {});
             Vue.use(eventBusMetadataList, {});
             Vue.use(eventBusSearch, { store: store, router: router});
 
