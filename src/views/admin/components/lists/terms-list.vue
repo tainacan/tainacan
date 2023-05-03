@@ -460,6 +460,7 @@
                 'updateTerm',
                 'deleteTerm',
                 'deleteTerms',
+                'changeTermsParent'
             ]),
             shouldShowMoreButton(columnIndex) {
                 return this.totalRemaining[columnIndex].remaining === true || (this.termColumns[columnIndex].children.length < this.totalRemaining[columnIndex].remaining);
@@ -865,19 +866,18 @@
                         excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
                         taxonomyId: this.taxonomyId,
                         onConfirm: (selectedParentTerm) => { 
-                            console.log(selectedParentTerm);
-                            // If all checks passed, term can be deleted   
-                            // this.deleteTerm({
-                            //         taxonomyId: this.taxonomyId, 
-                            //         termId: term.id, 
-                            //         parent: term.parent })
-                            //     .then(() => {
-                            //         this.onTermRemovalFinished(term);
-                            //     })
-                            //     .catch((error) => {
-                            //         this.$console.log(error);
-                            //     });
-                            this.resetTermsListUI();  
+                            this.changeTermsParent({
+                                taxonomyId: this.taxonomyId, 
+                                terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                                parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                                newParentTerm: selectedParentTerm
+                            })
+                            .then(() => {  
+                                this.resetTermsListUI(); 
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                            }); 
                         }
                     },
                     trapFocus: true,

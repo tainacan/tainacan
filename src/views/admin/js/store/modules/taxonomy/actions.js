@@ -203,7 +203,6 @@ export const deleteTerm = ({}, { taxonomyId, termId, deleteChildTerms = false })
     });
 };
 
-
 export const deleteTerms = ({}, { taxonomyId, terms, parent, deleteChildTerms = false }) => {
     let query = `permanently=1&hideempty=0&number=0`;
 
@@ -218,6 +217,27 @@ export const deleteTerms = ({}, { taxonomyId, terms, parent, deleteChildTerms = 
 
     return new Promise(( resolve, reject ) => {
         axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/?${query}`)
+            .then(res => {
+                const terms = res.data;
+                resolve( terms );
+            })
+            .catch(error => {
+                reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
+            });
+    });
+};
+
+export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent }) => {
+    let query = `hideempty=0&number=0`;
+
+    if ( parent !== undefined )
+        query += `&parent=${parent}`;
+
+    if ( terms.length )
+        query += `&include=${terms}`;
+
+    return new Promise(( resolve, reject ) => {
+        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/newparent/${newParentTerm}?${query}`)
             .then(res => {
                 const terms = res.data;
                 resolve( terms );
