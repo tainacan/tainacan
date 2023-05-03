@@ -237,7 +237,7 @@ export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent
         query += `&include=${terms}`;
 
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/newparent/${newParentTerm}?${query}`)
+        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/newparent/${newParentTerm}?${query}`)
             .then(res => {
                 const terms = res.data;
                 resolve( terms );
