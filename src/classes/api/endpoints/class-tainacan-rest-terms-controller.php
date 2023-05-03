@@ -88,6 +88,17 @@ class REST_Terms_Controller extends REST_Controller {
 				'schema'                  => [$this, 'get_schema']
 			)
 		);
+		register_rest_route($this->namespace, '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base . '/newparent/(?P<new_parent_id>[\d]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_parent_terms'),
+					'permission_callback' => array($this, 'update_parent_terms_permissions_check'),
+					'args'                => $this->get_wp_query_params()
+				),
+				'schema'                  => [$this, 'get_schema']
+			)
+		);	
 	}
 
 	/**
@@ -176,7 +187,6 @@ class REST_Terms_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public function delete_items_permissions_check( $request ) {
-		$term_id = $request['term_id'];
 		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
 
 		$args = $this->prepare_filters($request);
@@ -262,6 +272,54 @@ class REST_Terms_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 */
+	public function update_parent_terms_permissions_check( $request ) {
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+
+		$args = $this->prepare_filters($request);
+
+		$terms = $this->terms_repository->fetch($args, $taxonomy);
+		foreach ($terms as $term) {
+			if (!$term instanceof Entities\Term || !$term->can_edit()) {
+				return false ;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
+	 */
+	public function update_parent_terms($request)
+	{
+		$taxonomy_id = $request['taxonomy_id'];
+		$new_parent_id = $request['new_parent_id'];
+
+		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+		$tax_name = $taxonomy->get_db_identifier();
+		$args = $this->prepare_filters($request);
+
+		$terms = $this->terms_repository->fetch($args, $taxonomy);
+
+		$response = [];
+		foreach ($terms as $term) {
+			$term->set_parent($new_parent_id);
+			if ($term->validate()) {
+				$updated_term = $this->terms_repository->update($term, $tax_name);
+				$response[] = $this->prepare_item_for_response($updated_term, $request);
+			}
+		}
+		$response = new \WP_REST_Response($response, 200);
+		return $response;
 	}
 
 	/**
