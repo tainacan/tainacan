@@ -390,7 +390,7 @@ abstract class Repository {
 					'map'         => 'post_status',
 					'title'       => __( 'Status', 'tainacan' ),
 					'type'        => 'string',
-					'description' => __( 'Status', 'tainacan' ),
+					'description' => __( 'Status for control of visibility', 'tainacan' ),
 					//'validation'	=> v::stringType(),
 				),
 				'id'     => array(

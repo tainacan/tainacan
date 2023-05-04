@@ -27,37 +27,40 @@
                                     class="checkbox-name-text"
                                     v-html="renderTermHierarchyLabel(term)" /> 
                         </span>
+                        <div class="actions-container">
+                        <button 
+                                v-if="currentUserCanEditTaxonomy"
+                                type="button"
+                                @click.prevent="onEditTerm(term)">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('edit'),
+                                        autoHide: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        placement: 'bottom'
+                                    }"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                            </span>
+                        </button>
+                        <button
+                                v-if="currentUserCanEditTaxonomy"
+                                type="button"
+                                @click.prevent="removeTerm(term)">
+                            <span
+                                    v-tooltip="{
+                                        content: $i18n.get('delete'),
+                                        autoHide: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        placement: 'bottom'
+                                    }"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                            </span>
+                        </button> 
+                    </div>      
                     </label>
-                    <button 
-                            v-if="currentUserCanEditTaxonomy"
-                            type="button"
-                            @click.prevent="onEditTerm(term)">
-                        <span
-                                v-tooltip="{
-                                    content: $i18n.get('edit'),
-                                    autoHide: true,
-                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                    placement: 'bottom'
-                                }"
-                                class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
-                        </span>
-                    </button>
-                    <button
-                            v-if="currentUserCanEditTaxonomy"
-                            type="button"
-                            @click.prevent="removeTerm(term)">
-                        <span
-                                v-tooltip="{
-                                    content: $i18n.get('delete'),
-                                    autoHide: true,
-                                    popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                    placement: 'bottom'
-                                }"
-                                class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
-                        </span>
-                    </button>                             
+                                          
                 </li>
             </template>
             <template v-if="!isLoadingSearch && !searchResults.length">
@@ -100,8 +103,6 @@
 
 <script>
 import { tainacan as axios } from '../../js/axios';
-import TermDeletionDialog from '../other/term-deletion-dialog.vue';
-import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
 import { termsListMixin } from '../../js/terms-list-mixin';
 
 export default {
@@ -124,7 +125,6 @@ export default {
     watch: {
         searchString: {
             handler(newValue, oldValue) {
-                console.log(newValue, oldValue)
                 if (newValue != oldValue) {
                     this.hasMoreSearchPages = true;
                     this.searchResultsOffset = 0;
@@ -195,10 +195,6 @@ export default {
 
             this.$emit('onUpdateSelectedTerms', currentSelected);
         },
-        onEditTerm(term) {
-            this.editTerm = term;
-            this.isEditingTerm = true;
-        },
         onTermRemovalFinished(term) {
             const removedTermIndex = this.searchResults.findIndex((aTerm) => aTerm.id == term.id);
 
@@ -210,63 +206,6 @@ export default {
 
             if ( updatedTermIndex >= 0 )
                 this.searchResults.splice(updatedTermIndex, 1, term);
-        },
-        deleteSelectedTerms() {
-
-            this.$buefy.modal.open({
-                parent: this,
-                component: TermDeletionDialog,
-                props: {
-                    message: this.$i18n.get('info_warning_some_terms_with_child'),
-                    showDescendantsDeleteButton: true,
-                    amountOfTerms: this.amountOfTermsSelected,
-                    onConfirm: (typeOfDelete) => { 
-                        // If all checks passed, term can be deleted 
-                        this.deleteTerms({
-                                taxonomyId: this.taxonomyId, 
-                                terms: this.selected.map((aTerm) => aTerm.id),
-                                deleteChildTerms: typeOfDelete === 'descendants'
-                            })
-                            .then(() => {
-                                this.resetTermsListUI();
-                            })
-                            .catch((error) => {
-                                this.$console.log(error);
-                            });
-                    }
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });  
-        },
-        updateSelectedTermsParent() {
-
-            this.$buefy.modal.open({
-                parent: this,
-                component: TermParentSelectionDialog,
-                props: {
-                    amountOfTerms: this.amountOfTermsSelected,
-                    excludeTree: this.selected.map((aTerm) => aTerm.id), 
-                    taxonomyId: this.taxonomyId,
-                    onConfirm: (selectedParentTerm) => { 
-                        this.changeTermsParent({
-                            taxonomyId: this.taxonomyId, 
-                            terms: this.selected.map((aTerm) => aTerm.id),
-                            newParentTerm: selectedParentTerm
-                        })
-                        .then(() => {  
-                            this.resetTermsListUI(); 
-                        })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        }); 
-                    }
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });  
         },
         resetTermsListUI() {
             this.$emit('onUpdateSelectedTerms', []);
@@ -336,11 +275,21 @@ export default {
                 color: var(--tainacan-blue5);
             }
         }
+
+        .actions-container {
+            position: absolute;
+            display: flex;
+            right: -0.5em;
+            opacity: 0.0;
+            height: 100%;
+        }
+
         &:hover:not(.result-info) {
             background-color: var(--tainacan-gray1);
 
             &>a:not(.add-link),
-            &>button:not(.add-link) {
+            &>button:not(.add-link),
+            .actions-container {
                 opacity: 1.0;
                 background-color: var(--tainacan-gray2);
             }

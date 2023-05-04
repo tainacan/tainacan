@@ -42,6 +42,10 @@ export const termsListMixin = {
         getTermIdAsNumber(termId) {
             return isNaN(Number(termId)) ? termId : Number(termId)
         },
+        onEditTerm(term) {
+            this.editTerm = term;
+            this.isEditingTerm = true;
+        },
         removeTerm(term) {
 
             this.$buefy.modal.open({
@@ -84,6 +88,65 @@ export const termsListMixin = {
                 customClass: 'tainacan-modal',
                 closeButtonAriaLabel: this.$i18n.get('close')
             });  
-        }
+        },
+        deleteSelectedTerms() {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermDeletionDialog,
+                props: {
+                    message: this.$i18n.get('info_warning_some_terms_with_child'),
+                    showDescendantsDeleteButton: true,
+                    amountOfTerms: this.amountOfTermsSelected,
+                    onConfirm: (typeOfDelete) => { 
+                        // If all checks passed, term can be deleted 
+                        this.deleteTerms({
+                                taxonomyId: this.taxonomyId, 
+                                terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                                parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                                deleteChildTerms: typeOfDelete === 'descendants'
+                            })
+                            .then(() => {
+                                this.resetTermsListUI();
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                            });
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        },
+        updateSelectedTermsParent() {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermParentSelectionDialog,
+                props: {
+                    amountOfTerms: this.amountOfTermsSelected,
+                    excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
+                    taxonomyId: this.taxonomyId,
+                    onConfirm: (selectedParentTerm) => { 
+                        this.changeTermsParent({
+                            taxonomyId: this.taxonomyId, 
+                            terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                            parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                            newParentTerm: selectedParentTerm
+                        })
+                        .then(() => {  
+                            this.resetTermsListUI(); 
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        }); 
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        },
     }
 };

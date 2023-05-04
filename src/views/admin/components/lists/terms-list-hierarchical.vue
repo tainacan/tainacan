@@ -78,37 +78,39 @@
                                     type="checkbox"> 
                             <span class="check" /> 
                             <span class="control-label">{{ term.name }}</span>
+                            <div class="actions-container">
+                                <button 
+                                        v-if="currentUserCanEditTaxonomy"
+                                        type="button"
+                                        @click.prevent="() => { onEditTerm(term); removeLevelsAfterTerm(term); }">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                    </span>
+                                </button>
+                                <button 
+                                        v-if="currentUserCanEditTaxonomy"
+                                        type="button"
+                                        @click.prevent="removeTerm(term)">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('delete'),
+                                                autoHide: true,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                    </span>
+                                </button>
+                            </div>
                         </label>
-                        <button 
-                                v-if="currentUserCanEditTaxonomy"
-                                type="button"
-                                @click.prevent="onEditTerm(term)">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('edit'),
-                                        autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                        placement: 'bottom'
-                                    }"
-                                    class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
-                            </span>
-                        </button>
-                        <button 
-                                v-if="currentUserCanEditTaxonomy"
-                                type="button"
-                                @click.prevent="removeTerm(term)">
-                            <span
-                                    v-tooltip="{
-                                        content: $i18n.get('delete'),
-                                        autoHide: true,
-                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                        placement: 'bottom'
-                                    }"
-                                    class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
-                            </span>
-                        </button>
                         <button
                                 class="load-children-button"
                                 type="button"
@@ -211,8 +213,6 @@
 
 <script>
 import { tainacan as axios } from '../../js/axios';
-import TermDeletionDialog from '../other/term-deletion-dialog.vue';
-import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
 import { termsListMixin } from '../../js/terms-list-mixin';
 
 export default {
@@ -244,9 +244,17 @@ export default {
         shouldShowMoreButton(columnIndex) {
             return this.totalRemaining[columnIndex].remaining === true || (this.termColumns[columnIndex].children.length < this.totalRemaining[columnIndex].remaining);
         },
-        removeLevelsAfter(parentColumnIndex){
+        removeLevelsAfterIndex(parentColumnIndex){
             if (parentColumnIndex != undefined)
                 this.termColumns.length = parentColumnIndex + 1;
+        },
+        removeLevelsAfterTerm(term) {
+            for (let i = 0; i < this.termColumns.length; i++) {
+                if ( this.termColumns[i].id == term.id ) {
+                    this.termColumns.splice(i, this.termColumns.length - i);
+                    break;
+                }
+            }
         },
         createColumn(res, column, name, id) {
             let children = res.data;
@@ -320,7 +328,7 @@ export default {
                         }
                     });
 
-                    this.removeLevelsAfter(parentColumnIndex);
+                    this.removeLevelsAfterIndex(parentColumnIndex);
                     this.createColumn(res, parentColumnIndex, parentTerm ? parentTerm.name : null, parentId);
 
                     this.isColumnLoading = false;
@@ -378,17 +386,6 @@ export default {
 
             this.$emit('onUpdateSelectedTerms', currentSelected);
         },
-        onEditTerm(term) {
-            this.editTerm = term;
-            this.isEditingTerm = true;
-
-            for (let i = 0; i < this.termColumns.length; i++) {
-                if ( this.termColumns[i].id == this.editTerm.id ) {
-                    this.termColumns.splice(i, this.termColumns.length - i);
-                    break;
-                }
-            }
-        },
         onTermRemovalFinished(term) {
             const removedTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == term.parent);
             
@@ -407,7 +404,7 @@ export default {
                             this.termColumns[removedTermParentColumn - 1].children[parentTermIndex].total_children = Number(this.termColumns[removedTermParentColumn].total_children);
                     }
 
-                    this.removeLevelsAfter(removedTermParentColumn);
+                    this.removeLevelsAfterIndex(removedTermParentColumn);
                 }
             }
         },
@@ -462,14 +459,13 @@ export default {
                         const oldParentIndex = this.termColumns[previousTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id == initialParent);
                         if ( oldParentIndex >= 0 )
                             this.termColumns[previousTermParentColumn - 1].children[oldParentIndex].total_children = Number(this.termColumns[previousTermParentColumn - 1].children[oldParentIndex].total_children) - 1;
-                        console.log(oldParentIndex, previousTermParentColumn, this.termColumns[previousTermParentColumn - 1])
                     }
 
                 } else {
                     
                     for (let i = 0; i < this.termColumns.length; i++) {
                         if ( this.termColumns[i].id == term.id ) {
-                            this.removeLevelsAfter(i);
+                            this.removeLevelsAfterIndex(i);
                             break;
                         }
                     }
@@ -486,70 +482,12 @@ export default {
                 saved: false
             }
             this.onEditTerm(newTerm);
-        },
-        deleteSelectedTerms() {
-
-            this.$buefy.modal.open({
-                parent: this,
-                component: TermDeletionDialog,
-                props: {
-                    message: this.$i18n.get('info_warning_some_terms_with_child'),
-                    showDescendantsDeleteButton: true,
-                    amountOfTerms: this.amountOfTermsSelected,
-                    onConfirm: (typeOfDelete) => { 
-                        // If all checks passed, term can be deleted 
-                        this.deleteTerms({
-                                taxonomyId: this.taxonomyId, 
-                                terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
-                                parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
-                                deleteChildTerms: typeOfDelete === 'descendants'
-                            })
-                            .then(() => {
-                                this.resetTermsListUI();
-                            })
-                            .catch((error) => {
-                                this.$console.log(error);
-                            });
-                    }
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });  
-        },
-        updateSelectedTermsParent() {
-
-            this.$buefy.modal.open({
-                parent: this,
-                component: TermParentSelectionDialog,
-                props: {
-                    amountOfTerms: this.amountOfTermsSelected,
-                    excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
-                    taxonomyId: this.taxonomyId,
-                    onConfirm: (selectedParentTerm) => { 
-                        this.changeTermsParent({
-                            taxonomyId: this.taxonomyId, 
-                            terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
-                            parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
-                            newParentTerm: selectedParentTerm
-                        })
-                        .then(() => {  
-                            this.resetTermsListUI(); 
-                        })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        }); 
-                    }
-                },
-                trapFocus: true,
-                customClass: 'tainacan-modal',
-                closeButtonAriaLabel: this.$i18n.get('close')
-            });  
+            this.removeLevelsAfterTerm(newTerm);
         },
         resetTermsListUI() {
             this.$emit('onUpdateSelectedTerms', []);
             this.$emit('onUpdateSelectedColumnIndex', { index: -1, object: null });
-            this.removeLevelsAfter(-1);
+            this.removeLevelsAfterIndex(-1);
         
             this.fetchTerms();
         }
@@ -624,11 +562,20 @@ export default {
             }
         }
 
+        .actions-container {
+            position: absolute;
+            display: flex;
+            right: -0.5em;
+            opacity: 0.0;
+            height: 100%;
+        }
+
         &:hover {
             background-color: var(--tainacan-gray1);
 
             &>a:not(.add-link),
-            &>button:not(.add-link) {
+            &>button:not(.add-link),
+            .actions-container {
                 opacity: 1.0;
                 background-color: var(--tainacan-gray2);
             }
@@ -716,7 +663,6 @@ export default {
             display: flex;
             align-items: center;
             padding: 8px 0.5rem;
-            opacity: 0.0;
             transition: opacity 0.2s ease;     
 
             .tainacan-icon {
