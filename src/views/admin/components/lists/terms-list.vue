@@ -94,6 +94,7 @@
                         {{ $i18n.get('label_delete_permanently') }}
                     </b-dropdown-item>
                     <b-dropdown-item
+                            v-if="isHierarchical"
                             @click="$emit('updateSelectedTermsParent')"
                             id="item-update-selected-terms"
                             aria-role="listitem">
@@ -105,6 +106,7 @@
 
         <!-- Terms list with hierarchy -->
         <terms-list-hierarchical 
+                :is-hierarchical="isHierarchical"
                 :search-string="searchString"
                 :taxonomy-id="taxonomyId"
                 :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
@@ -126,7 +128,8 @@ export default {
     },
     props: {
         taxonomyId: Number,
-        currentUserCanEditTaxonomy: Boolean
+        currentUserCanEditTaxonomy: Boolean,
+        isHierarchical: Boolean
     },
     data() {
         return {

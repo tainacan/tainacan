@@ -44,11 +44,13 @@
                                     v-if="column.id"
                                     class="control-label">
                                 {{ termColumns.length <= 2 ? $i18n.get('label_select_child_terms_long') : $i18n.get('label_select_child_terms_short') }}
+                                &nbsp;({{ totalRemaining[columnIndex]['remaining'] }})
                             </span>
                             <span 
                                     v-else
                                     class="control-label">
                                 {{ termColumns.length <= 2 ? $i18n.get('label_select_root_terms_long') : $i18n.get('label_select_root_terms_short') }}
+                                &nbsp;({{ totalRemaining[columnIndex]['remaining'] }})
                             </span>
                         </label>
                         <a 
@@ -81,7 +83,7 @@
                             <span class="check" /> 
                             <span class="control-label">
                                 <span
-                                        v-if="isHierarchical && !searchString.length" 
+                                        v-if="!isHierarchical || (isHierarchical && !searchString.length)" 
                                         class="checkbox-name-text">
                                     {{ term.name }}
                                  </span> 
@@ -89,7 +91,7 @@
                                         v-else
                                         class="checkbox-name-text"
                                         v-html="renderTermHierarchyLabel(term)" /> 
-                               </span>
+                            </span>
                             <div class="actions-container">
                                 <button 
                                         v-if="currentUserCanEditTaxonomy"
@@ -215,7 +217,8 @@
                 :can-cancel="['outside', 'escape']"
                 custom-class="tainacan-modal"
                 :close-button-aria-label="$i18n.get('close')">
-            <term-edition-form 
+            <term-edition-form
+                    :is-hierarchical="isHierarchical"
                     :taxonomy-id="taxonomyId"
                     :is-modal="true"
                     @onEditionFinished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)"
@@ -237,14 +240,14 @@ export default {
         currentUserCanEditTaxonomy: Boolean,
         selected: Array,
         selectedColumnIndex: Number,
-        searchString: String
+        searchString: String,
+        isHierarchical: Boolean
     },
     data() {
         return {
             termColumns: [],
             isColumnLoading: false,
             maxTermsPerColumn: 100,
-            isHierarchical: true,
             totalRemaining: {},
             isEditingTerm: false,
             editTerm: null
@@ -263,12 +266,16 @@ export default {
     watch: {
         searchString: {
             handler(newValue, oldValue) {
-                if (newValue != oldValue) {
+                if (newValue != oldValue) 
                     this.resetTermsListUI();
-                }
+                
             },
             immediate: true
         },
+        isHierarchical(newValue, oldValue) {
+            if (newValue != oldValue)
+                this.resetTermsListUI();
+        }
     },
     created() {
         this.fetchTerms();
@@ -460,32 +467,19 @@ export default {
                     showDescendantsDeleteButton: term.total_children && term.total_children != '0',
                     amountOfTerms: 1,
                     onConfirm: (typeOfDelete) => { 
-                        
-                        // If all checks passed, term can be deleted  
-                        if ( typeOfDelete == 'descendants' ) { 
-                            this.deleteTerm({
-                                    taxonomyId: this.taxonomyId, 
-                                    termId: term.id, 
-                                    parent: term.parent,
-                                    deleteChildTerms: true })
-                                .then(() => {
-                                    this.onTermRemovalFinished(term);
-                                })
-                                .catch((error) => {
-                                    this.$console.log(error);
-                                });
-                        } else { 
-                            this.deleteTerm({
-                                    taxonomyId: this.taxonomyId, 
-                                    termId: term.id, 
-                                    parent: term.parent })
-                                .then(() => {
-                                    this.onTermRemovalFinished(term);
-                                })
-                                .catch((error) => {
-                                    this.$console.log(error);
-                                });
-                        }
+
+                        this.deleteTerm({
+                            taxonomyId: this.taxonomyId, 
+                            termId: term.id, 
+                            parent: term.parent,
+                            deleteChildTerms: typeOfDelete == 'descendants' || !this.isHierarchical
+                        })
+                        .then(() => {
+                            this.onTermRemovalFinished(term);
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        });
                     }
                 },
                 trapFocus: true,
@@ -503,19 +497,19 @@ export default {
                     showDescendantsDeleteButton: true,
                     amountOfTerms: this.amountOfTermsSelected,
                     onConfirm: (typeOfDelete) => { 
-                        // If all checks passed, term can be deleted 
+                        
                         this.deleteTerms({
-                                taxonomyId: this.taxonomyId, 
-                                terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
-                                parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
-                                deleteChildTerms: typeOfDelete === 'descendants'
-                            })
-                            .then(() => {
-                                this.resetTermsListUI();
-                            })
-                            .catch((error) => {
-                                this.$console.log(error);
-                            });
+                            taxonomyId: this.taxonomyId, 
+                            terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                            parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                            deleteChildTerms: typeOfDelete === 'descendants' || !this.isHierarchical
+                        })
+                        .then(() => {
+                            this.resetTermsListUI();
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        });
                     }
                 },
                 trapFocus: true,

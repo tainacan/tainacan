@@ -65,6 +65,15 @@ class Taxonomies extends Repository {
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'yes'
 			],
+			'hierarchical'    => [
+				'map'         => 'meta',
+				'title'       => __( 'Allow terms hierarchy', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Allow/Deny the existence of terms children to build a hierarchy', 'tainacan' ),
+				'on_error'    => __( 'Invalid insertion, allowed values are ( yes/no )', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'default'     => 'yes'
+			],
 			'enabled_post_types'    => [
 				'map'         => 'meta_multi',
 				'title'       => __( 'Enabled for post types', 'tainacan' ),

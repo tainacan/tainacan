@@ -106,7 +106,6 @@
                                     </span>
                                 </a>
                             </div>
-                            <br>
                         </div>
                     </b-field>
                 </div>
@@ -135,6 +134,7 @@
 
             <!-- Parent -------------- -->
             <b-field
+                    v-if="isHierarchical"
                     :addons="false"
                     :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
                     :message="formErrors.parent ? formErrors : formErrors.repeated">
@@ -232,6 +232,7 @@
         props: {
             originalForm: Object,
             taxonomyId: '',
+            isHierarchical: Boolean,
             isTermInsertionFlow: false
         },
         data() {
@@ -501,17 +502,20 @@
         &.tainacan-modal-content {
             overflow: hidden;
 
+            .field {
+                padding-left: 0;
+                margin-left: 0;
+            }
+
             .tainacan-modal-title {
-                margin-bottom: 0;
+                margin: 0;
+                padding: 0 12px;
             }
             .thumbnail-field {
                 max-width: 120px;
             }
             .image-placeholder {
                 left: 2px;
-            }
-            .form-submit {
-                padding-top: 0px !important;
             }
         }
 
@@ -538,7 +542,6 @@
 
         .image-and-description-area {
             margin-bottom: 0px;
-            margin-top: 24px;
 
             .column:first-of-type {
                 margin-right: 24px;

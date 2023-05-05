@@ -36,6 +36,7 @@
 
             <!-- Parent -------------- -->
             <b-field
+                    v-if="isHierarchical"
                     :addons="false"
                     :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
                     :message="formErrors.parent ? formErrors : formErrors.repeated">
@@ -83,19 +84,23 @@
             </b-field>
 
             <!-- Submit buttons -------------- -->
-            <div class="field is-grouped form-submit">
-                <div class="control">
+            <div 
+                    class="wp-block-buttons form-submit"
+                    style="gap: 1rem;">
+                <div
+                        class="wp-block-button is-style-outline"
+                        style="margin-right: auto;">
                     <button
                             type="button"
-                            class="button is-outlined"
+                            class="wp-block-button__link wp-element-button"
                             @click.prevent="cancelEdition()"
                             slot="trigger">
                         {{ $i18n.get('cancel') }}
                     </button>
                 </div>
-                <div class="control">
+                <div class="wp-block-button">
                     <button
-                            class="button is-success"
+                            class="wp-block-button__link wp-element-button"
                             type="submit">
                         {{ $i18n.get('label_create_and_select') }}
                     </button>
@@ -107,14 +112,15 @@
 
 <script>
     import { formHooks } from "../../../../../admin/js/mixins";
-    import { mapActions, mapGetters } from 'vuex';
+    import { mapActions } from 'vuex';
 
     export default {
         name: 'TermEditionForm',
         mixins: [ formHooks ],
         props: {
             originalForm: Object,
-            taxonomyId: ''
+            taxonomyId: '',
+            isHierarchical: Boolean
         },
         data() {
             return {
@@ -257,7 +263,7 @@
         border-left: 1px solid var(--tainacan-input-border-color, #dbdbdb);
         border-bottom: 1px solid var(--tainacan-input-border-color, #dbdbdb);
         column-count: 2;
-
+    
         @media screen and (max-width: 1024px) {
             column-count: 1;
         }
@@ -266,9 +272,10 @@
             break-inside: avoid;
         }
         .form-submit {
-            padding-top: 0;
+            padding-top: 1rem;
             padding-bottom: 0;
             column-span: all;
+            display: flex;
         }
     }
 }
