@@ -59,6 +59,7 @@
                 custom-class="tainacan-modal"
                 :close-button-aria-label="$i18n.get('close')">
             <term-edition-form
+                    :is-hierarchical="isHierarchical"
                     :taxonomy-id="taxonomyId"
                     :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                     :is-term-insertion-flow="true"
@@ -70,6 +71,7 @@
         <!-- Term creation panel, used on item submission block for a simpler term creation -->
         <transition name="filter-item">
             <term-creation-panel
+                    :is-hierarchical="isHierarchical"
                     v-if="isTermCreationPanelOpen"
                     :taxonomy-id="taxonomyId"
                     :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
@@ -139,6 +141,14 @@
                     !isNaN(this.itemMetadatum.metadatum.cardinality) &&
                     this.itemMetadatum.metadatum.cardinality > 1
                 ) ? this.itemMetadatum.metadatum.cardinality : undefined;
+            },
+            isHierarchical() {
+                return (
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.metadata_type_object && 
+                    this.itemMetadatum.metadatum.metadata_type_object.options &&
+                    this.itemMetadatum.metadatum.metadata_type_object.options.hierarchical
+                ) ? this.itemMetadatum.metadatum.metadata_type_object.options.hierarchical !== 'no' : true;
             }
         },
         watch: {

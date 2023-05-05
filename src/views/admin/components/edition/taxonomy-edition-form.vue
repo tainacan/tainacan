@@ -76,6 +76,23 @@
                                         extra-classes="tainacan-repository-tooltip"/>
                                 </label>
                         </b-field>
+
+                        <!-- Allow Insert -->
+                        <b-field :addons="false">
+                            <label class="label is-inline">
+                                    {{ $i18n.getHelperTitle('taxonomies', 'hierarchical') }}
+                                    <b-switch
+                                            id="tainacan-checkbox-allow-insert" 
+                                            size="is-small"
+                                            v-model="form.hierarchical"
+                                            true-value="yes"
+                                            false-value="no" />
+                                    <help-button 
+                                        :title="$i18n.getHelperTitle('taxonomies', 'hierarchical')" 
+                                        :message="$i18n.getHelperMessage('taxonomies', 'hierarchical')"
+                                        extra-classes="tainacan-repository-tooltip"/>
+                                </label>
+                        </b-field>
                         
                         <!-- Slug -------------------------------- -->
                         <b-field
@@ -162,6 +179,7 @@
                                 :message="$i18n.get('info_taxonomy_terms_list')"
                                 extra-classes="tainacan-repository-tooltip"/>
                             <terms-list
+                                    :is-hierarchical="form.hierarchical !== 'no'"
                                     :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'"
                                     :taxonomy-id="taxonomyId"
                                     :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false"/>
@@ -271,6 +289,8 @@
                     formNotSaved = true;
                 if (this.taxonomy.allow_insert != this.form.allowInsert)
                     formNotSaved = true;
+                if (this.taxonomy.hierarchical != this.form.hierarchical)
+                    formNotSaved = true;
                 if (this.taxonomy.status != this.form.status)
                     formNotSaved = true;
                 if (this.taxonomy.enabled_post_types != this.form.enabledPostTypes)
@@ -310,6 +330,7 @@
                     description: String,
                     slug: String,
                     allowInsert: String,
+                    hierarchical: String,
                     enabledPostTypes: Array
                 },
                 wpPostTypes: tainacan_plugin.wp_post_types,
@@ -352,6 +373,7 @@
                         this.form.slug = this.taxonomy.slug;
                         this.form.status = this.taxonomy.status;
                         this.form.allowInsert = this.taxonomy.allow_insert;
+                        this.form.hierarchical = this.taxonomy.hierarchical;
                         this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
 
                         this.isLoadingTaxonomy = false;
@@ -388,6 +410,7 @@
                     slug: this.form.slug ? this.form.slug : '',
                     status: this.form.status,
                     allow_insert: this.form.allowInsert,
+                    hierarchical: this.form.hierarchical,
                     enabled_post_types: this.form.enabledPostTypes,
                     context: 'edit'
                 };
@@ -405,6 +428,7 @@
                         this.form.description = this.taxonomy.description;
                         this.form.status = this.taxonomy.status;
                         this.form.allowInsert = this.taxonomy.allow_insert;
+                        this.form.hierarchical = this.taxonomy.hierarchical;
                         this.form.enabledPostTypes = this.taxonomy.enabled_post_types;
 
                         this.isLoadingTaxonomy = false;
@@ -461,7 +485,8 @@
                     description: '',
                     status: 'auto-draft',
                     slug: '',
-                    allow_insert: '',
+                    allow_insert: 'yes',
+                    hierarchical: 'yes'
                 };
                 this.fillExtraFormData(data);
                 this.createTaxonomy(data)
@@ -475,6 +500,7 @@
                         this.form.description = this.taxonomy.description;
                         this.form.slug = this.taxonomy.slug;
                         this.form.allowInsert = this.taxonomy.allow_insert;
+                        this.form.hierarchical = this.taxonomy.hierarchical;
 
                         // Pre-fill status with publish to incentivate it
                         this.form.status = 'publish';
@@ -494,9 +520,6 @@
             cancelBack(){
                 this.$router.go(-1);
             },
-            labelNewTerms(){
-                return ( this.form.allowInsert === 'yes' ) ? this.$i18n.get('label_yes') : this.$i18n.get('label_no');
-            },
             goToCreateAnotherTaxonomy() {
                 this.$router.push(this.$routerHelper.getNewTaxonomyPath());                            
                 
@@ -509,6 +532,7 @@
                     description: String,
                     slug: String,
                     allowInsert: String,
+                    hierarchical: String,
                     enabledPostTypes: Array
                 };
                 this.editFormErrors = {};
