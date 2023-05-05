@@ -35,7 +35,8 @@
                         :mobile-modal="true"
                         id="selected-terms-dropdown"
                         aria-role="list"
-                        trap-focus>
+                        trap-focus
+                        position="is-bottom-left">
                     <button
                             type="button"
                             class="button is-white"
@@ -102,19 +103,9 @@
             </div>
         </div>
 
-        <!-- Search Results -->
-        <terms-list-linear
-                v-if="isSearching"
-                :search-string="searchString"
-                :taxonomy-id="taxonomyId"
-                :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
-                :selected="selected"
-                @onUpdateSelectedTerms="(newSelected) => selected = newSelected" 
-                />
-        
         <!-- Terms list with hierarchy -->
         <terms-list-hierarchical 
-                v-else
+                :search-string="searchString"
                 :taxonomy-id="taxonomyId"
                 :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
                 :selected="selected"
@@ -127,13 +118,11 @@
 
 <script>
 import TermsListHierarchical from './terms-list-hierarchical.vue';
-import TermsListLinear from './terms-list-linear.vue';
 
 export default {
     name: 'TermsList',
     components: {
-        TermsListHierarchical,
-        TermsListLinear
+        TermsListHierarchical
     },
     props: {
         taxonomyId: Number,
@@ -155,9 +144,6 @@ export default {
                 return this.selected.length;
             else
                 return 0;
-        },
-        isSearching() {
-            return !!this.searchString;
         }
     },
     methods: {
@@ -249,9 +235,18 @@ export default {
                 /deep/ .dropdown-trigger {
                     font-size: 1.125em !important;
                 }
+                /deep/ .dropdown-menu {
+                    width: max-content;
+                    max-width: 380px;
+                }
                 .checkbox-name-text {
                     font-size: 1.375em !important;
                 }
+            }
+
+            &:not(.field) {
+                border: 1px solid var(--tainacan-input-border-color);
+                padding: 0.2rem 0.5rem;
             }
         }
     }

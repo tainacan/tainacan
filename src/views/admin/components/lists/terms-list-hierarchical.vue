@@ -24,7 +24,9 @@
                     v-for="(column, columnIndex) in termColumns"
                     class="tainacan-hierarchical-list-column"
                     :key="column.name + '-' + columnIndex">
-                <div class="column-header">
+                <div 
+                        v-if="!searchString.length"
+                        class="column-header">
                     <p class="column-name">
                         <span>{{ column.name ? $i18n.getWithVariables('info_children_of_%s', [ column.name ]) : $i18n.get('label_root_terms') }}</span>
                     </p>
@@ -77,7 +79,17 @@
                                     :value="term.id"
                                     type="checkbox"> 
                             <span class="check" /> 
-                            <span class="control-label">{{ term.name }}</span>
+                            <span class="control-label">
+                                <span
+                                        v-if="isHierarchical && !searchString.length" 
+                                        class="checkbox-name-text">
+                                    {{ term.name }}
+                                 </span> 
+                                <span
+                                        v-else
+                                        class="checkbox-name-text"
+                                        v-html="renderTermHierarchyLabel(term)" /> 
+                               </span>
                             <div class="actions-container">
                                 <button 
                                         v-if="currentUserCanEditTaxonomy"
@@ -112,6 +124,7 @@
                             </div>
                         </label>
                         <button
+                                v-if="isHierarchical && !searchString.length"
                                 class="load-children-button"
                                 type="button"
                                 @click="fetchTerms(term, columnIndex)">
@@ -212,19 +225,29 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import TermDeletionDialog from '../other/term-deletion-dialog.vue';
+import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
 import { tainacan as axios } from '../../js/axios';
-import { termsListMixin } from '../../js/terms-list-mixin';
 
 export default {
     name: 'TermsListHierarchical',
-    mixins: [
-        termsListMixin
-    ],
+    props: {
+        taxonomyId: Number,
+        currentUserCanEditTaxonomy: Boolean,
+        selected: Array,
+        selectedColumnIndex: Number,
+        searchString: String
+    },
     data() {
         return {
             termColumns: [],
             isColumnLoading: false,
             maxTermsPerColumn: 100,
+            isHierarchical: true,
+            totalRemaining: {},
+            isEditingTerm: false,
+            editTerm: null
         }
     },
     computed: {
@@ -237,16 +260,56 @@ export default {
                 return 0;
         }
     },
+    watch: {
+        searchString: {
+            handler(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    this.resetTermsListUI();
+                }
+            },
+            immediate: true
+        },
+    },
     created() {
         this.fetchTerms();
+        this.$parent.$on('deleteSelectedTerms', this.deleteSelectedTerms);
+        this.$parent.$on('updateSelectedTermsParent', this.updateSelectedTermsParent);
+    },
+    beforeDestroy() {
+        this.$parent.$off('deleteSelectedTerms', this.deleteSelectedTerms);
+        this.$parent.$off('updateSelectedTermsParent', this.updateSelectedTermsParent);
     },
     methods: {
+        ...mapActions('taxonomy', [
+            'updateTerm',
+            'deleteTerm',
+            'deleteTerms',
+            'changeTermsParent'
+        ]),
+        renderTermHierarchyLabel(term) {
+            if ( term.hierarchy_path ) 
+                return '<span style="color: var(--tainacan-info-color);">' + term.hierarchy_path.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + term.name;
+
+            return term.name;
+        }, 
+        isTermSelected(termId) {
+            return this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == termId) >= 0;
+        },
+        getTermIdAsNumber(termId) {
+            return isNaN(Number(termId)) ? termId : Number(termId)
+        },
+        onEditTerm(term) {
+            this.editTerm = term;
+            this.isEditingTerm = true;
+        },
         shouldShowMoreButton(columnIndex) {
             return this.totalRemaining[columnIndex].remaining === true || (this.termColumns[columnIndex].children.length < this.totalRemaining[columnIndex].remaining);
         },
         removeLevelsAfterIndex(parentColumnIndex){
             if (parentColumnIndex != undefined)
                 this.termColumns.length = parentColumnIndex + 1;
+            else
+                this.termColumns.length = 0;
         },
         removeLevelsAfterTerm(term) {
             for (let i = 0; i < this.termColumns.length; i++) {
@@ -318,7 +381,15 @@ export default {
             this.isColumnLoading = true;
 
             const parentId = parentTerm ? parentTerm.id : 0;
-            const route = `/taxonomy/${this.taxonomyId}/terms?order=asc&parent=${parentId}&number=${this.maxTermsPerColumn}&offset=0&hideempty=0`;
+            
+            let route = `/taxonomy/${this.taxonomyId}/terms?order=asc&number=${this.maxTermsPerColumn}&offset=0&hideempty=0`;
+            
+            if ( this.isHierarchical && !this.searchString.length)
+                route += '&parent=' + parentId;
+
+            if ( this.searchString.length )
+                route += '&searchterm=' + this.searchString;
+
             axios.get(route)
                 .then(res => {
                     
@@ -327,7 +398,7 @@ export default {
                             remaining: res.headers['x-wp-total'],
                         }
                     });
-
+                    
                     this.removeLevelsAfterIndex(parentColumnIndex);
                     this.createColumn(res, parentColumnIndex, parentTerm ? parentTerm.name : null, parentId);
 
@@ -347,7 +418,14 @@ export default {
 
                 this.isColumnLoading = true;
 
-                const route = `/taxonomy/${this.taxonomyId}/terms/?order=asc&parent=${parentId}&number=${this.maxTermsPerColumn}&offset=${offset}&hideempty=`;
+                let route = `/taxonomy/${this.taxonomyId}/terms/?order=asc&number=${this.maxTermsPerColumn}&offset=${offset}&hideempty=`;
+                
+                if ( this.isHierarchical && !this.searchString.length)
+                    route += '&parent=' + parentId;
+
+                if (this.searchString.length)
+                    route += '&searchterm=' + this.searchString;
+
                 axios.get(route)
                     .then(res => {
 
@@ -371,6 +449,108 @@ export default {
         selectColumn(index) {
             const newIndex = this.selectedColumnIndex != index ? index : -1;
             this.$emit('onUpdateSelectedColumnIndex', { index: newIndex, object: this.termColumns[newIndex] ? this.termColumns[newIndex] : null });
+        },
+        removeTerm(term) {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermDeletionDialog,
+                props: {
+                    message: term.total_children && term.total_children != '0' ?  this.$i18n.get('info_warning_term_with_child') : this.$i18n.get('info_warning_selected_term_delete'),
+                    showDescendantsDeleteButton: term.total_children && term.total_children != '0',
+                    amountOfTerms: 1,
+                    onConfirm: (typeOfDelete) => { 
+                        
+                        // If all checks passed, term can be deleted  
+                        if ( typeOfDelete == 'descendants' ) { 
+                            this.deleteTerm({
+                                    taxonomyId: this.taxonomyId, 
+                                    termId: term.id, 
+                                    parent: term.parent,
+                                    deleteChildTerms: true })
+                                .then(() => {
+                                    this.onTermRemovalFinished(term);
+                                })
+                                .catch((error) => {
+                                    this.$console.log(error);
+                                });
+                        } else { 
+                            this.deleteTerm({
+                                    taxonomyId: this.taxonomyId, 
+                                    termId: term.id, 
+                                    parent: term.parent })
+                                .then(() => {
+                                    this.onTermRemovalFinished(term);
+                                })
+                                .catch((error) => {
+                                    this.$console.log(error);
+                                });
+                        }
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        },
+        deleteSelectedTerms() {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermDeletionDialog,
+                props: {
+                    message: this.$i18n.get('info_warning_some_terms_with_child'),
+                    showDescendantsDeleteButton: true,
+                    amountOfTerms: this.amountOfTermsSelected,
+                    onConfirm: (typeOfDelete) => { 
+                        // If all checks passed, term can be deleted 
+                        this.deleteTerms({
+                                taxonomyId: this.taxonomyId, 
+                                terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                                parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                                deleteChildTerms: typeOfDelete === 'descendants'
+                            })
+                            .then(() => {
+                                this.resetTermsListUI();
+                            })
+                            .catch((error) => {
+                                this.$console.log(error);
+                            });
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
+        },
+        updateSelectedTermsParent() {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermParentSelectionDialog,
+                props: {
+                    amountOfTerms: this.amountOfTermsSelected,
+                    excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
+                    taxonomyId: this.taxonomyId,
+                    onConfirm: (selectedParentTerm) => { 
+                        this.changeTermsParent({
+                            taxonomyId: this.taxonomyId, 
+                            terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                            parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                            newParentTerm: selectedParentTerm
+                        })
+                        .then(() => {  
+                            this.resetTermsListUI(); 
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        }); 
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });  
         },
         updateSelectedTerms(selectedTerm) {
             this.$emit('onUpdateSelectedColumnIndex', { index: -1, object: null });
@@ -517,19 +697,15 @@ export default {
         align-items: stretch;
         margin-left: 0px !important;
         padding: 0 !important;
-        -webkit-break-inside: avoid;
-        break-inside: avoid;
 
         /deep/ .b-checkbox, /deep/ .b-radio {
             max-width: 100%;
-            min-height: 1.5em;
+            min-height: 1.875em;
             margin-left: 0.7em;
             margin-bottom: 0px !important;
             height: auto;
             padding-top: 0px;
             padding-bottom: 0px;
-            -webkit-break-inside: avoid;
-            break-inside: avoid;
 
             .control-label {
                 white-space: normal;
@@ -538,7 +714,10 @@ export default {
                 padding-bottom: 0.125em;
                 word-break: break-word;
             }
-
+            input:disabled+.check {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
             @media screen and (max-width: 768px) {
                 .control-label {
                     padding-top: 0.8125em;
