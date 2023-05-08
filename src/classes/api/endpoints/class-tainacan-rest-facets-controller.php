@@ -155,6 +155,7 @@ class REST_Facets_Controller extends REST_Controller {
 						remove_filter( 'tainacan-item-to-array', $add_attt_item, 10);
 
 						return $val;
+						
 					}, $all_values['values']);
 				}
 

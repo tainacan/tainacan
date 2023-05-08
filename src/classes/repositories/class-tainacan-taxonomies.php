@@ -65,6 +65,15 @@ class Taxonomies extends Repository {
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'yes'
 			],
+			'hierarchical'    => [
+				'map'         => 'meta',
+				'title'       => __( 'Allow terms hierarchy', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'Allow/Deny the existence of terms children to build a hierarchy', 'tainacan' ),
+				'on_error'    => __( 'Invalid insertion, allowed values are ( yes/no )', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'default'     => 'yes'
+			],
 			'enabled_post_types'    => [
 				'map'         => 'meta_multi',
 				'title'       => __( 'Enabled for post types', 'tainacan' ),
@@ -117,15 +126,17 @@ class Taxonomies extends Repository {
 			'public'              => true,
 			'show_ui'             => tnc_enable_dev_wp_interface(),
 			'show_in_menu'        => tnc_enable_dev_wp_interface(),
-			'publicly_queryable'  => false,
+			'publicly_queryable'  => true,
 			'exclude_from_search' => true,
-			'has_archive'         => false,
+			'has_archive'         => true,
 			'query_var'           => true,
 			'can_export'          => true,
-			'rewrite'             => true,
-			'map_meta_cap'        => true,
-			'show_in_nav_menus'   => false,
+			/* Translators: The Taxonomies slug - will be the URL for the collections archive */
+			'rewrite'             => ['slug' => sanitize_title(_x('taxonomies', 'Slug: the string that will be used to build the URL', 'tainacan'))],
 			'capabilities'        => (array) $this->get_capabilities(),
+			'map_meta_cap'        => true,
+			'show_in_rest'        => true,
+			'show_in_nav_menus'   => true,
 			'supports'            => [
 				'title',
 				'editor',

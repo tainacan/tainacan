@@ -328,15 +328,18 @@
             font-size: 1em;
             color: var(--tainacan-media-metadata-color, #454647);
             opacity: 0.75;
+            word-break: break-word;
         }
         .swiper-slide-metadata__caption {
             font-size: 0.9375em;
             color: var(--tainacan-media-metadata-color, #454647);
+            word-break: break-word;
         }
         .swiper-slide-metadata__caption {
             font-size: 0.875em;
             color: var(---tainacan-media-metadata-color, #454647);
             opacity: 0.85;
+            word-break: break-word;
         }
         .swiper-slide-metadata {
             text-align: center;

@@ -131,7 +131,7 @@ export default (element) => {
 
             // View Modes Logic
             const registeredViewModes =
-                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.lenght ) ?
+                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
                 tainacan_plugin.registered_view_modes :
                 [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
 

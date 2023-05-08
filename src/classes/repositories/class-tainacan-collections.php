@@ -298,6 +298,7 @@ class Collections extends Repository {
 			'capabilities'        => (array) $this->get_capabilities(),
 			'map_meta_cap'        => true,
 			'show_in_rest'        => true,
+			'show_in_nav_menus'	  => true,
 			'supports'            => [
 				'title',
 				'editor',

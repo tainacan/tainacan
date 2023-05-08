@@ -47,6 +47,12 @@ class REST_Terms_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_wp_query_params()
 				),
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array($this, 'delete_items'),
+					'permission_callback' => array($this, 'delete_items_permissions_check'),
+					'args'                => $this->get_wp_query_params()
+				),
 				'schema'                  => [$this, 'get_schema']
 			)
 		);
@@ -60,7 +66,11 @@ class REST_Terms_Controller extends REST_Controller {
 						'permanently' => [
 							'description' => __('Delete term permanently.'),
 							'default'     => '1'
-						]
+						],
+						'delete_child_terms' => [
+							'description' => __('Delete all child terms.'),
+							'default'     => false
+						],
 					]
 				),
 				array(
@@ -78,6 +88,17 @@ class REST_Terms_Controller extends REST_Controller {
 				'schema'                  => [$this, 'get_schema']
 			)
 		);
+		register_rest_route($this->namespace, '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base . '/newparent/(?P<new_parent_id>[\d]+)',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'update_parent_terms'),
+					'permission_callback' => array($this, 'update_parent_terms_permissions_check'),
+					'args'                => $this->get_wp_query_params()
+				),
+				'schema'                  => [$this, 'get_schema']
+			)
+		);	
 	}
 
 	/**
@@ -163,6 +184,52 @@ class REST_Terms_Controller extends REST_Controller {
 	/**
 	 * @param \WP_REST_Request $request
 	 *
+	 * @return bool|\WP_Error
+	 */
+	public function delete_items_permissions_check( $request ) {
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+
+		$args = $this->prepare_filters($request);
+
+		$terms = $this->terms_repository->fetch($args, $taxonomy);
+		foreach ($terms as $term) {
+			if (!$term instanceof Entities\Term || !$term->can_delete()) {
+				return false ;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
+	 */
+	public function delete_items( $request ) {
+		$taxonomy_id = $request['taxonomy_id'];
+		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+		$delete_child_terms = isset($request['delete_child_terms']) && $request['delete_child_terms'] == true;
+
+		$args = $this->prepare_filters($request);
+
+		$terms = $this->terms_repository->fetch($args, $taxonomy);
+
+		$response = [];
+		foreach ($terms as $term) {
+			if($delete_child_terms) {
+				$this->terms_repository->delete_child_terms($term);
+			}
+			$response[] = $this->terms_repository->delete($term);
+		}
+
+		$response = new \WP_REST_Response($response, 200);
+		return $response;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function delete_item( $request ) {
@@ -179,6 +246,10 @@ class REST_Terms_Controller extends REST_Controller {
 				'taxonomy_id'   => $taxonomy_id,
 				'term_id'   => $term_id
 			], 400);
+		}
+
+		if( isset($request['delete_child_terms']) && $request['delete_child_terms'] == true  ) {
+			$this->terms_repository->delete_child_terms($term);
 		}
 
 		$is_deleted = $this->terms_repository->delete($term);
@@ -201,6 +272,54 @@ class REST_Terms_Controller extends REST_Controller {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return bool|\WP_Error
+	 */
+	public function update_parent_terms_permissions_check( $request ) {
+		$taxonomy = $this->taxonomy_repository->fetch($request['taxonomy_id']);
+
+		$args = $this->prepare_filters($request);
+
+		$terms = $this->terms_repository->fetch($args, $taxonomy);
+		foreach ($terms as $term) {
+			if (!$term instanceof Entities\Term || !$term->can_edit()) {
+				return false ;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 * @throws \Exception
+	 */
+	public function update_parent_terms($request)
+	{
+		$taxonomy_id = $request['taxonomy_id'];
+		$new_parent_id = $request['new_parent_id'];
+
+		$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+		$tax_name = $taxonomy->get_db_identifier();
+		$args = $this->prepare_filters($request);
+
+		$terms = $this->terms_repository->fetch($args, $taxonomy);
+
+		$response = [];
+		foreach ($terms as $term) {
+			$term->set_parent($new_parent_id);
+			if ($term->validate()) {
+				$updated_term = $this->terms_repository->update($term, $tax_name);
+				$response[] = $this->prepare_item_for_response($updated_term, $request);
+			}
+		}
+		$response = new \WP_REST_Response($response, 200);
+		return $response;
 	}
 
 	/**
@@ -314,7 +433,7 @@ class REST_Terms_Controller extends REST_Controller {
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		if(!empty($item)){
-			if(!isset($request['fetch_only'])) {
+			if (!isset($request['fetch_only'])) {
 				$item_arr = $item->_toArray();
 
 				if ( $request['context'] === 'edit' ) {
@@ -333,8 +452,24 @@ class REST_Terms_Controller extends REST_Controller {
 				
 			} else {
 				$attributes_to_filter = $request['fetch_only'];
-
+				
 				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
+
+				if ( !is_array($attributes_to_filter) )
+					$attributes_to_filter = explode(',', $attributes_to_filter);
+
+				foreach ( $attributes_to_filter as $attribute ) {
+					if ( $attribute == 'total_children' ) {
+						$children =  get_terms([
+							'taxonomy' => $item_arr['taxonomy'],
+							'parent' => $item_arr['id'],
+							'fields' => 'ids',
+							'hide_empty' => false,
+						]);
+		
+						$item_arr['total_children'] = count($children);
+					}
+				}
 			}
 
 			if(isset($request['fetch_preview_image_items']) && $request['fetch_preview_image_items'] != 0) {

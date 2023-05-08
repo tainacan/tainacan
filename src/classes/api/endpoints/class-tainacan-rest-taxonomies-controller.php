@@ -111,8 +111,8 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 * @return array|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		if(!empty($item)) {
-			if(!isset($request['fetch_only'])) {
+		if ( !empty($item) ) {
+			if ( !isset($request['fetch_only']) ) {
 				$item_arr = $item->_toArray();
 
 				if ( $request['context'] === 'edit' ) {
@@ -160,6 +160,24 @@ class REST_Taxonomies_Controller extends REST_Controller {
 
 				$item_arr = $this->filter_object_by_attributes($item, $attributes_to_filter);
 			}
+
+			$total_terms = wp_count_terms( array(
+				'taxonomy' => $item->get_db_identifier(),
+				'hide_empty' => false
+			), 'readable' );
+			$total_root_terms = wp_count_terms( array(
+				'taxonomy' => $item->get_db_identifier(),
+				'parent' => 0,
+				'hide_empty' => false
+			), 'readable' );
+			$total_not_empty = wp_count_terms( array(
+				'taxonomy' => $item->get_db_identifier(),
+				'hide_empty' => true
+			), 'readable' );
+
+			$item_arr['total_terms']['total'] = $total_terms;
+			$item_arr['total_terms']['root'] = $total_root_terms;
+			$item_arr['total_terms']['not_empty'] = $total_not_empty;
 
 			/**
 			 * Use this filter to add additional post_meta to the api response

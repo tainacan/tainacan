@@ -26,7 +26,11 @@ class Theme_Helper {
 	private function __construct() {
 
 		if ( !defined('TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER') || true !== TAINACAN_DISABLE_ITEM_THE_CONTENT_FILTER ) {
-			add_filter( 'the_content', [$this, 'the_content_filter'] );
+			add_filter( 'the_content', [$this, 'the_content_filter_item'] );
+		}
+
+		if ( !defined('TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER') || true !== TAINACAN_DISABLE_TAXONOMY_THE_CONTENT_FILTER ) {
+			add_filter( 'the_content', [$this, 'the_content_filter_taxonomy'] );
 		}
 
 		// Replace collections permalink to post type archive if cover not enabled
@@ -39,9 +43,10 @@ class Theme_Helper {
 		// make archive for terms work with items
 		add_action('pre_get_posts', array($this, 'tax_archive_pre_get_posts'));
 		
-		add_action('archive_template_hierarchy', array($this, 'items_template_hierachy'));
-		add_action('taxonomy_template_hierarchy', array($this, 'tax_template_hierachy'));
-		add_action('single_template_hierarchy', array($this, 'items_template_hierachy'));
+		add_action('archive_template_hierarchy', array($this, 'collection_items_template_hierarchy'));
+		add_action('taxonomy_template_hierarchy', array($this, 'taxonomy_term_items_template_hierarchy'));
+		add_action('single_template_hierarchy', array($this, 'item_template_hierarchy'));
+		add_action('single_template_hierarchy', array($this, 'taxonomy_terms_template_hierarchy'));
 		
 		add_filter('theme_mod_header_image', array($this, 'header_image'));
 
@@ -137,6 +142,11 @@ class Theme_Helper {
 		$prefix = substr( $post_type, 0, strlen( Entities\Collection::$db_identifier_prefix ) );
 		return $prefix == Entities\Collection::$db_identifier_prefix;
 	}
+
+	public function is_post_a_tainacan_taxonomy_postype(\WP_Post $post) {
+		$post_type = $post->post_type;
+		return $post_type == Entities\Taxonomy::$post_type;
+	}
 	
 	public function is_taxonomy_a_tainacan_tax($tax_slug) {
 		$prefix = substr( $tax_slug, 0, strlen( Entities\Taxonomy::$db_identifier_prefix ) );
@@ -165,18 +175,24 @@ class Theme_Helper {
 		return $title;
 	}
 
-	public function the_content_filter($content) {
+	/**
+	 * Filters the post content to create Tainacan default 
+	 * item single, including its metadata sections and the
+	 * item media gallery.
+	 * 
+	 * @return string content tweaked to the item features
+	 */
+	public function the_content_filter_item($content) {
 		
 		if (!is_single())
 			return $content;
 
 		$post = get_queried_object();
 		
-		// Is it a collection Item?
-		if ( !$this->is_post_an_item($post) ) {
+		// Is it a collection Item 
+		if ( !$this->is_post_an_item($post) )
 			return $content;
-		}
-		
+	
 		$item = new Entities\Item($post);
 
 		$content = '';
@@ -203,6 +219,33 @@ class Theme_Helper {
 		$content .= '</section>';
 		
 		$content = apply_filters('tainacan_single_item_content', $content, $item);
+
+		return $content;
+		
+	}
+
+	/**
+	 * Filters the post content to create Tainacan default 
+	 * taxonomy single, which works as a "terms archive"
+	 * 
+	 * @return string content tweaked to show the taxonomy terms list
+	 */
+	public function the_content_filter_taxonomy($content) {
+		
+		if ( !is_single() )
+			return $content;
+
+		$post = get_queried_object();
+		
+		// Is it a taxonomy-post-type post?
+		if ( !$this->is_post_a_tainacan_taxonomy_postype($post) )
+			return $content;
+		
+		$content .= tainacan_get_taxonomies_orderby();
+		$content .= tainacan_get_taxonomies_search();
+		$taxonomy_terms_list = tainacan_get_single_taxonomy_content($post);
+		$content .= $taxonomy_terms_list['content'];
+		$content .= tainacan_get_taxonomies_pagination($taxonomy_terms_list['total_terms']);
 
 		return $content;
 		
@@ -241,14 +284,24 @@ class Theme_Helper {
 	}
 	
 	function tax_archive_pre_get_posts($wp_query) {
-		
+
+		if ( is_single() && get_query_var('post_type') === 'tainacan-taxonomy' && $wp_query->is_main_query() ) {
+			if ( !isset($_GET['orderby']) )
+				$wp_query->set('orderby', 'name');
+			
+			if ( !isset($_GET['order']) )
+				$wp_query->set('order', 'ASC');
+				
+			return;
+		}
+
 		if (!$wp_query->is_tax() || !$wp_query->is_main_query())
 			return;
-		
+
 		$term = get_queried_object();
 		
 		if ($term instanceof \WP_Term && $this->is_term_a_tainacan_term($term)) {
-			
+		
 			$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
 			$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
 			
@@ -266,9 +319,7 @@ class Theme_Helper {
 				status_header( 404 );
 			}
 			
-			
 		}
-		
 	}
 	
 	function collection_single_redirect() {
@@ -304,68 +355,117 @@ class Theme_Helper {
 			
 		}
 		
-		
 	}
 	
-	function items_template_hierachy($templates) {
+	/**
+	 * Allows themes to create a tainacan/single-items.php file which will
+	 * be used to represent all items single page.
+	 */
+	function item_template_hierarchy($templates) {
 		
-		if (is_post_type_archive() || is_single()) {
+		if ( !is_single() )
+			return $templates;
+
+		$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
+		$current_post_type = get_post_type();
+		
+		if ( in_array($current_post_type, $collections_post_types) ) {
 			
-			$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
-			$current_post_type = get_post_type();
+			$last_template = array_pop($templates);
 			
-			if (in_array($current_post_type, $collections_post_types)) {
-				
-				$last_template = array_pop($templates);
-				
-				if (is_post_type_archive()) {
-					array_push($templates, 'tainacan/archive-items.php');
-				} elseif (is_single()) {
-					array_push($templates, 'tainacan/single-items.php');
+			array_push($templates, 'tainacan/single-items.php');
+			
+			array_push($templates, $last_template);
+		}
+
+		return $templates;
+	}
+
+	/**
+	 * Allows themes to create a tainacan/archive-items.php file which will
+	 * be used to represent all collection items archive page (the list of items
+	 * of a collection).
+	 */
+	function collection_items_template_hierarchy($templates) {
+		
+		if ( !is_post_type_archive() )
+			return $templates;
+
+		$collections_post_types = \Tainacan\Repositories\Repository::get_collections_db_identifiers();
+		$current_post_type = get_post_type();
+		
+		if ( in_array($current_post_type, $collections_post_types) ) {
+			
+			$last_template = array_pop($templates);
+
+			array_push($templates, 'tainacan/archive-items.php');
+			
+			array_push($templates, $last_template);
+		}
+		
+		return $templates;
+	}
+	
+	/**
+	 * Allows themes to create a tainacan/taxonomy-items.php file which will
+	 * be used to represent all taxonomy term items archive page (the list of 
+	 * items of a taxonomy term).
+	 */
+	function taxonomy_term_items_template_hierarchy($templates) {
+		
+		if ( !is_tax() ) 
+			return $templates;
+			
+		$term = get_queried_object();
+		
+		if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
+			$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
+			$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
+			
+			if ( $tax ) {
+				$post_types = $tax->get_enabled_post_types();
+				if (sizeof($post_types)) {
+					// if taxonomy is enabled for other post types, we disable 
+					// custom template ans use default list
+					// TODO: This needs discussion
+					return $templates;
 				}
-				
-				array_push($templates, $last_template);
-				
 			}
+			
+			$last_template = array_pop($templates);
+			
+			array_push($templates, 'tainacan/archive-taxonomy.php');
+			
+			array_push($templates, $last_template);
 			
 		}
 		
 		return $templates;
 		
 	}
-	
-	function tax_template_hierachy($templates) {
+
+	/**
+	 * Allows themes to create a tainacan/archive-terms.php file which will
+	 * be used to represent all taxonomies single (the list or terms of a taxonomy)
+	 */
+	function taxonomy_terms_template_hierarchy($templates) {
 		
-		if (is_tax()) {
+		if ( !is_single() )
+			return $templates;
+		
+		$post = get_queried_object();
+		
+		// Is it a taxonomy-post-type post?
+		if ( $this->is_post_a_tainacan_taxonomy_postype($post) ) {
 			
-			$term = get_queried_object();
+			$last_template = array_pop($templates);
 			
-			if ( isset($term->taxonomy) && $this->is_taxonomy_a_tainacan_tax($term->taxonomy)) {
-				$tax_id = \Tainacan\Repositories\Taxonomies::get_instance()->get_id_by_db_identifier($term->taxonomy);
-				$tax = \Tainacan\Repositories\Taxonomies::get_instance()->fetch($tax_id);
-				
-				if ( $tax ) {
-					$post_types = $tax->get_enabled_post_types();
-					if (sizeof($post_types)) {
-						// if taxonomy is enabled for other post types, we disable 
-						// custom template ans use default list
-						// TODO: This needs discussion
-						return $templates;
-					}
-				}
-				
-				$last_template = array_pop($templates);
-				
-				array_push($templates, 'tainacan/archive-taxonomy.php');
-				
-				array_push($templates, $last_template);
-				
-			}
+			array_push($templates, 'tainacan/archive-terms.php');
 			
+			array_push($templates, $last_template);
 		}
-		
+
 		return $templates;
-		
 	}
 	
 	function header_image($image) {
@@ -590,7 +690,6 @@ class Theme_Helper {
 	}
 	
 	function rewrite_rules( &$wp_rewrite ) {
-		
 		$items_base = $this->get_items_list_slug();
 		
 		$new_rules = array(
@@ -603,6 +702,8 @@ class Theme_Helper {
 
 	function rewrite_rules_query_vars( $public_query_vars ) {
 		$public_query_vars[] = "tainacan_repository_archive";
+		$public_query_vars[] = "termspaged";
+		$public_query_vars[] = "termsparent";
 		return $public_query_vars;
 	}
 
@@ -784,6 +885,8 @@ class Theme_Helper {
 					$excerpt = strip_tags(tainacan_get_the_collection_description());
 				} elseif ( is_post_type_archive('tainacan-collection') ) {
 					$title = __('Collections', 'tainacan');
+				} elseif ( is_post_type_archive('tainacan-taxonomy') ) {
+					$title = __('Taxonomies', 'tainacan');
 				} else {
 					$title = get_the_archive_title();
 				}
@@ -2087,5 +2190,17 @@ class Theme_Helper {
 			</ul>';
 
 		return '<div ' . $wrapper_attributes . '>' . $placeholder_content . '</div>';
+	}
+
+
+	function get_taxonomies_query_args() {
+		return array(
+			'order' => get_query_var( 'order', apply_filters('tainacan-default-taxonomy-terms-order', 'ASC') ),
+			'orderby' => get_query_var( 'orderby', apply_filters('tainacan-default-taxonomy-terms-orderby', 'name') ),
+			'termspaged' => get_query_var( 'termspaged', 1 ),
+			'perpage' => get_query_var( 'perpage', apply_filters('tainacan-default-taxonomy-terms-perpage', 12) ),
+			'search' => get_query_var( 'search', '' ),
+			'termsparent' => get_query_var( 'termsparent', '' )
+		);
 	}
 }

@@ -1,594 +1,559 @@
 <template>
-<div>
-    <div 
-            v-if="(termsList.length > 0 || searchQuery != '')"
-            class="terms-list-header">
-        <button
-                v-if="currentUserCanEditTaxonomy"
-                class="button is-secondary"
-                type="button"
-                @click="addNewTerm(0)"
-                :disabled="isEditingTerm && isLoadingTerms">
-            {{ $i18n.get('label_new_term') }}
-        </button>
-        <b-field class="order-area">
-            <label class="label">{{ $i18n.get('label_sort') }}</label>
-            <b-dropdown
-                    :mobile-modal="true"
-                    :disabled="localTerms.length <= 0 || isLoadingTerms || isEditingTerm"
-                    @input="onChangeOrder"
-                    aria-role="list"
-                    trap-focus>
+    <div class="tainacan-form">
+
+        <div class="search-and-selection-control"> 
+
+            <!-- Search input -->
+            <b-field class="is-clearfix terms-search">
+                <b-input
+                        expanded
+                        autocomplete="on"
+                        :placeholder="$i18n.get('instruction_search')"
+                        :aria-name="$i18n.get('instruction_search')"
+                        v-model="searchString"
+                        icon-right="magnify"
+                        type="search" />
+            </b-field>
+            
+            <span
+                    class="selected-terms-info"
+                    v-if="selectedColumnIndex >= 0 && currentUserCanEditTaxonomy">
+                {{ selectedColumnIndex == 0 ? $i18n.get('label_all_root_terms_selected') : $i18n.getWithVariables('label_terms_child_of_%s_selected', [ selectedColumnObject.name ]) }}
                 <button
-                            :aria-label="$i18n.get('label_sorting_direction')"
+                        type="button"
+                        class="link-style"
+                        @click="selectedColumnIndex = -1">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-close" />
+                    </span>
+                </button>
+            </span>
+            <div 
+                    v-if="selected.length && selectedColumnIndex < 0"
+                    class="field selected-terms-info">
+                <b-dropdown
+                        :mobile-modal="true"
+                        id="selected-terms-dropdown"
+                        aria-role="list"
+                        trap-focus
+                        position="is-bottom-left">
+                    <button
+                            type="button"
                             class="button is-white"
                             slot="trigger">
-                    <span 
-                            style="margin-top: -2px;"
-                            class="icon is-small gray-icon">
-                        <i 
-                                :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                class="tainacan-icon tainacan-icon-1-25em"/>
-                    </span>
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                    </span>
-                </button>
-                <b-dropdown-item
-                        aria-controls="items-list-results"
-                        role="button"
-                        :class="{ 'is-active': order == 'desc' }"
-                        :value="'desc'"
-                        aria-role="listitem"
-                        style="padding-bottom: 0.45em">
-                    <span class="icon is-small gray-icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-sortdescending"/>
-                    </span>
-                    {{ $i18n.get('label_descending') }}
-                </b-dropdown-item>
-                <b-dropdown-item
-                        aria-controls="items-list-results"
-                        role="button"
-                        :class="{ 'is-active': order == 'asc' }"
-                        :value="'asc'"
-                        aria-role="listitem"
-                        style="padding-bottom: 0.45em">
-                    <span class="icon is-small gray-icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-sortascending"/>
-                    </span>
-                    {{ $i18n.get('label_ascending') }}
-                </b-dropdown-item>
-            </b-dropdown>
-        </b-field>
-        <div class="search-area is-hidden-mobile">
-            <b-input 
-                    :placeholder="$i18n.get('instruction_search')"
-                    size="is-small"
-                    type="search"
-                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('terms')"
-                    autocomplete="on"
-                    v-model="searchQuery"
-                    icon-right="magnify"
-                    icon-right-clickable
-                    @input="performTermSearch"
-                    @icon-right-click="searchTerms(0)"
-                    @keyup.enter.native="searchTerms(0)"
-                    :disabled="isEditingTerm"/>
-        </div>
-    </div>
-    <div class="columns">
-        <b-loading 
-                :is-full-page="false"
-                :active.sync="isLoadingTerms" 
-                :can-cancel="false"/>
-        <div 
-                style="font-size: 0.875em;"
-                :class="{ 'is-12': !isEditingTerm, 'is-8-fullhd is-7-fullscreen is-6-desktop is-5-tablet': isEditingTerm }"
-                class="column">
-            <br>
-
-            <!-- Basic list, without hierarchy, used during search -->
-            <template v-if="isSearching">
-                <div 
-                        v-for="(term, index) in localTerms"
-                        :key="term.id">
-                    <basic-term-item
-                            :term="term"
-                            :index="index"
-                            :taxonomy-id="taxonomyId"
-                            :order="order"
-                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
-                            @onUpdateTermOpenedState="(state) => term.opened = state"/>
-                </div>
-            </template>
-            <a 
-                    class="view-more-terms-level-0"
-                    :class="{'is-disabled': isEditingTerm}"
-                    @click="offset = offset + maxTerms; searchTerms(offset)"
-                    v-if="(isSearching) && totalTerms > localTerms.length">
-                {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
-            </a>
-
-            <!-- Recursive list for hierarchy -->
-            <template v-if="!isSearching">
-                <div    
-                        v-for="(term, index) in localTerms"
-                        :key="term.id"
-                        class="parent-term">
-                    <recursive-term-item 
-                            :term="term"
-                            :index="index"
-                            :taxonomy-id="taxonomyId"
-                            :order="order" 
-                            :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
-                            @onUpdateTermOpenedState="(state) => term.opened = state"/>
-                </div>
-            </template>
-            <a 
-                    class="view-more-terms-level-0"
-                    :class="{'is-disabled': isEditingTerm}"
-                    @click="offset = offset + maxTerms; loadTerms(0)"
-                    v-if="(!isSearching) && totalTerms > localTerms.length">
-                {{ $i18n.get('label_view_more') + ' (' + Number(totalTerms - localTerms.length) + ' ' + $i18n.get('terms') + ')' }}
-            </a>
-        </div>
-        <div 
-                class="column is-4-fullhd is-5-fullscreen is-6-desktop is-7-tablet edit-forms-list"
-                v-if="isEditingTerm">
-            <term-edition-form 
-                    :style="{ 'top': termEditionFormTop + 'px'}"
-                    :taxonomy-id="taxonomyId"
-                    @onEditionFinished="onTermEditionFinished($event)"
-                    @onEditionCanceled="onTermEditionCanceled($event)"
-                    @onErrorFound="formWithErrors = editTerm.id"
-                    :original-form="editTerm"/>
-        </div>
-    </div>
-    <!-- Empty state image -->
-    <div v-if="termsList.length <= 0 && !isLoadingTerms && !isEditingTerm">
-        <section class="section">
-            <div class="content has-text-grey has-text-centered">
-                <p>
-                    <span class="icon is-medium">
-                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
-                    </span>
-                </p>
-                <p>{{ searchQuery != '' ? $i18n.get('info_no_terms_found') : $i18n.get('info_no_terms_created_on_taxonomy') }}</p>
-                <button
-                        v-if="searchQuery == '' && currentUserCanEditTaxonomy"
-                        id="button-create-term"
-                        class="button is-secondary"
-                        @click="addNewTerm(0)">
-                    {{ $i18n.get('label_new_term') }}
-                </button>
-                <button
-                        v-if="searchQuery != ''"
-                        id="button-clear-search"
-                        class="button is-outlined"
-                        @click="searchQuery = ''; searchTerms(0);">
-                    {{ $i18n.get('clear_search') }}
-                </button>
+                        <span>{{ selected.length == 1 ? $i18n.get('label_one_selected_term') : $i18n.getWithVariables('label_%s_selected_terms', [ selected.length ]) }}</span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                        </span>
+                    </button>
+                    <b-dropdown-item
+                            custom
+                            v-for="term of selected"
+                            :key="term.id"
+                            aria-role="list-item">
+                        <label class="b-checkbox checkbox">
+                            <input
+                                type="checkbox"
+                                @input="updateSelectedTerms(term)"
+                                :checked="isTermSelected(term.id)"
+                                :value="getTermIdAsNumber(term.id)">
+                            <span class="check" /> 
+                            <span class="control-label">
+                                <span 
+                                        class="checkbox-name-text"
+                                        v-html="renderTermHierarchyLabel(term)" /> 
+                            </span>
+                        </label>
+                    </b-dropdown-item>
+                </b-dropdown>
             </div>
-        </section>
-    </div>       
-</div>
+
+            <div 
+                    v-if="currentUserCanEditTaxonomy"
+                    class="field">
+                <b-dropdown
+                        :mobile-modal="true"
+                        position="is-bottom-left"
+                        :disabled="amountOfTermsSelected <= 1"
+                        id="bulk-actions-dropdown"
+                        aria-role="list"
+                        trap-focus>
+                    <button
+                            type="button"
+                            class="button is-white"
+                            slot="trigger">
+                        <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                        </span>
+                    </button>
+                    <b-dropdown-item
+                            @click="$emit('deleteSelectedTerms')"
+                            id="item-delete-selected-terms"
+                            aria-role="listitem">
+                        {{ $i18n.get('label_delete_permanently') }}
+                    </b-dropdown-item>
+                    <b-dropdown-item
+                            v-if="isHierarchical"
+                            @click="$emit('updateSelectedTermsParent')"
+                            id="item-update-selected-terms"
+                            aria-role="listitem">
+                        {{ $i18n.get('label_update_parent') }}
+                    </b-dropdown-item>
+                </b-dropdown>
+            </div>
+        </div>
+
+        <!-- Terms list with hierarchy -->
+        <terms-list-hierarchical 
+                :is-hierarchical="isHierarchical"
+                :search-string="searchString"
+                :taxonomy-id="taxonomyId"
+                :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
+                :selected="selected"
+                :selected-column-index="selectedColumnIndex"
+                @onUpdateSelectedTerms="(newSelected) => selected = newSelected"
+                @onUpdateSelectedColumnIndex="(newColumnSelected) => { selectedColumnIndex = newColumnSelected.index; selectedColumnObject = newColumnSelected.object; }"
+         />
+    </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import TermEditionForm from '../edition/term-edition-form.vue';
-import BasicTermItem from './basic-term-item.vue'
-import t from 't';
+import TermsListHierarchical from './terms-list-hierarchical.vue';
 
 export default {
     name: 'TermsList',
     components: {
-        BasicTermItem,
-        TermEditionForm
+        TermsListHierarchical
     },
     props: {
-        taxonomyId: String,
-        currentUserCanEditTaxonomy: Boolean
+        taxonomyId: Number,
+        currentUserCanEditTaxonomy: Boolean,
+        isHierarchical: Boolean
     },
-    data(){
+    data() {
         return {
-            isLoadingTerms: false,
-            isEditingTerm: false,
-            formWithErrors: '',
-            order: 'asc',
-            termEditionFormTop: 0,
-            searchQuery: '',
-            localTerms: [],
-            editTerm: null,
-            maxTerms: 100,
-            offset: 0,
-            totalTerms: 0
+            searchString: '',
+            selected: [],
+            selectedColumnIndex: -1,
+            selectedColumnObject: null
         }
     },
     computed: {
-        termsList() {
-            return this.getTerms();
-        },
-        isSearching() {
-            return this.searchQuery != undefined && this.searchQuery != '';
+        amountOfTermsSelected() {
+            if ( this.selectedColumnIndex >= 0 )
+                return this.selectedColumnObject.total_children;
+            else if ( this.selected.length )
+                return this.selected.length;
+            else
+                return 0;
         }
-    },
-    watch: {
-        termsList: {
-            handler() { 
-                this.localTerms = JSON.parse(JSON.stringify(this.termsList));
-                for (let aTerm of this.localTerms) {
-                    t.dfs(aTerm, [], (node) => { 
-                        node.opened = false; 
-                    });
-                }
-            },
-            deep: true
-        },
-        taxonomyId() {
-            this.loadTerms(0);
-        },
-        isEditingTerm(value) {
-            this.$emit('isEditingTermUpdate', value);
-        }
-    },
-    created() {
-        if (this.taxonomyId != undefined && this.taxonomyId !== String) {
-            this.loadTerms(0);
-        }
-        this.$root.$on('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$eventBusTermsList.$on('editTerm', this.eventOnEditTerm);
-        this.$eventBusTermsList.$on('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$eventBusTermsList.$on('termEditionCanceled', this.eventOnTermEditionCanceled);
-        this.$eventBusTermsList.$on('addNewChildTerm', this.addNewTerm);
-        this.$eventBusTermsList.$on('deleteBasicTermItem', this.deleteBasicTerm);
-    },
-    beforeDestroy() {
-        this.$root.$off('onChildTermDeleted', this.eventOnChildTermDeleted);
-        this.$eventBusTermsList.$off('editTerm', this.eventOnEditTerm);
-        this.$eventBusTermsList.$off('termEditionSaved', this.eventOnTermEditionSaved);
-        this.$eventBusTermsList.$off('termEditionCanceled', this.eventOnTermEditionCanceled);
-        this.$eventBusTermsList.$off('addNewChildTerm', this.addNewTerm);
-        this.$eventBusTermsList.$off('deleteBasicTermItem', this.deleteBasicTerm);
     },
     methods: {
-        ...mapActions('taxonomy', [
-            'deleteTerm',
-            'fetchChildTerms',
-            'clearTerms',
-            'fetchTerms',
-            'updateTerm'
-        ]),
-        ...mapGetters('taxonomy',[
-            'getTerms'
-        ]),
-        onChangeOrder(newOrder) {
-            if (this.order != newOrder) {
-                this.offset = 0;
-                this.order = newOrder;
-                this.clearTerms();
-                this.searchTerms(0);
-            }
+        renderTermHierarchyLabel(term) {
+            if ( term.hierarchy_path ) 
+                return '<span style="color: var(--tainacan-info-color);">' + term.hierarchy_path.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + term.name;
+
+            return term.name;
+        }, 
+        isTermSelected(termId) {
+            return this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == termId) >= 0;
         },
-        addNewTerm(parent) {
-
-            let newTerm = {
-                taxonomyId: this.taxonomyId,
-                name: '',
-                description: '',
-                parent: parent,
-                id: 'new',
-                saved: false,
-                opened: true
-            }
-            if (parent == 0) {
-                this.localTerms.unshift(newTerm);
-            } else {
-                for (let term of this.localTerms) {
-                    let parentTerm = t.find(term, [], (node) => { return node.id == parent; });
-                    if (parentTerm != undefined) {
-                        if (parentTerm['children'] == undefined) {
-                            this.$set(parentTerm, 'children', []);
-                            parentTerm.total_children = 1;
-                        }
-                        parentTerm['children'].unshift(newTerm); 
-                    }
-                }
-            }
-            this.$eventBusTermsList.onEditTerm(newTerm);
+        getTermIdAsNumber(termId) {
+            return isNaN(Number(termId)) ? termId : Number(termId)
         },
-        onTermEditionFinished($event) {
-            this.$eventBusTermsList.onTermEditionSaved($event);
+        updateSelectedTerms(selectedTerm) {
+            this.selectedColumnIndex = -1;
 
-            for (let i = 0; i < this.termsList.length; i++) {
-                if (this.termsList[i].id == $event.term.id) {
-                    this.$set(this.termsList[i], 'description', $event.term.description);
-                    this.$set(this.termsList[i], 'header_image', $event.term.header_image);
-                    this.$set(this.termsList[i], 'header_image_id', $event.term.header_image_id);
-                    this.$set(this.termsList[i], 'name', $event.term.name);
-                    this.$set(this.termsList[i], 'parent', $event.term.parent);
-                    this.$set(this.termsList[i], 'id', $event.term.id);
-                } 
-                else if (this.termsList[i].children != undefined) {
-                    for (let j = 0; j < this.termsList[i].children.length; j++) {
-                        if (this.termsList[i].children[j].id == $event.term.id) {
-                            this.$set(this.termsList[i].children[j], 'description', $event.term.description);
-                            this.$set(this.termsList[i].children[j], 'header_image', $event.term.header_image);
-                            this.$set(this.termsList[i].children[j], 'header_image_id', $event.term.header_image_id);
-                            this.$set(this.termsList[i].children[j], 'name', $event.term.name);
-                            this.$set(this.termsList[i].children[j], 'parent', $event.term.parent);
-                            this.$set(this.termsList[i].children[j], 'id', $event.term.id);
-                        } 
-                    }
-                }
-            } 
-        },
-        onTermEditionCanceled($event) {
-
-            let term = $event;
-
-            if (term.id == 'new') { 
-                for (let i = 0; i < this.localTerms.length; i++) {
-                    if (this.localTerms[i].id == term.id) {
-                        this.localTerms.splice(i, 1);
-                        break;
-                    } else { 
-                        let canceledParent = t.find(this.localTerms[i], [], (node) => { return node.id == term.parent }); 
-                        if (canceledParent != undefined) {
-                            for (let j = 0; j < canceledParent['children'].length; j++){
-                                if (canceledParent['children'][j].id == term.id) {
-                                    canceledParent['children'].splice(j, 1);
-                                    break;
-                                }
-                            }
-                            break;              
-                        }          
-                    }
-                }
-            } else {
-
-                let originalTerm;
-                for (let aTerm of this.termsList) {
-                    if (aTerm.id == term.id)
-                        originalTerm = aTerm;
-                    else {
-                        let childOriginalTerm = t.find(aTerm, [], (node) => { return node.id == term.id} );
-                        if (childOriginalTerm != undefined)
-                            originalTerm = childOriginalTerm;
-                    }
-                }
-
-                if (originalTerm != undefined) {
-                    for (let i = 0; i < this.localTerms.length; i++) {
-                        if (this.localTerms[i].id == term.id) {
-                            this.$set(this.localTerms, i, JSON.parse(JSON.stringify(originalTerm)));
-                            break;
-                        } else { 
-                            let canceledParent = t.find(this.localTerms[i], [], (node) => { return node.id == originalTerm.parent }); 
-                            if (canceledParent != undefined) {
-                                for (let j = 0; j < canceledParent['children'].length; j++){
-                                    if (canceledParent['children'][j].id == originalTerm.id) {
-                                        this.$set(canceledParent['children'], j, JSON.parse(JSON.stringify(originalTerm)));
-                                        break;
-                                    }
-                                }
-                                break;              
-                            }          
-                        }
-                    }
-                }
-            }
-            this.$eventBusTermsList.onTermEditionCanceled(term);
-        },
-        loadTerms(parentId) {
-
-            if (this.offset == 0)
-                this.clearTerms();
-
-            this.isLoadingTerms = true;
-            let search = (this.searchQuery != undefined && this.searchQuery != '') ? { searchterm: this.searchQuery } : '';
-            this.fetchChildTerms({ 
-                    parentId: parentId, 
-                    taxonomyId: this.taxonomyId, 
-                    fetchOnly: '', 
-                    search: search, 
-                    all: '', 
-                    order: this.order,
-                    offset: this.offset,
-                    number: this.maxTerms })
-                .then((resp) => {
-                    this.isLoadingTerms = false;   
-                    this.totalTerms = resp.total;
-                })
-                .catch((error) => {
-                    this.isLoadingTerms = false;   
-                    this.$console.log(error);
-                });
-        },
-        searchTerms(offset) {
+            let currentSelected = JSON.parse(JSON.stringify(this.selected));
             
-            if (this.searchQuery == undefined || this.searchQuery == '') {
-                this.offset = 0;
-                this.loadTerms(0);
-            } else {
-                this.offset = offset;
-                if (this.offset == 0)
-                    this.clearTerms();
-
-                this.isLoadingTerms = true;
-                let search = { searchterm: this.searchQuery };
-                this.fetchTerms({ 
-                        taxonomyId: this.taxonomyId, 
-                        fetchOnly: '', 
-                        search: search, 
-                        all: '', 
-                        order: this.order,
-                        offset: this.offset,
-                        number: this.maxTerms })
-                    .then((resp) => {
-                        this.isLoadingTerms = false;   
-                        this.totalTerms = resp.total;
-                    })
-                    .catch((error) => {
-                        this.isLoadingTerms = false;   
-                        this.$console.log(error);
-                    });
-            }
-        },
-        performTermSearch: _.debounce(function() {
-            this.searchTerms(0);
-        }, 600),
-        // When searching, term deletion is perfomed by list as it has control of it's children
-        deleteBasicTerm(term) {
-            this.deleteTerm({taxonomyId: this.taxonomyId, termId: term.id })
-                .then(() => {
-                    this.searchTerms(this.offset);
-                    this.totalTerms--;
-                })
-                .catch((error) => {
-                    this.$console.log(error);
-                });
-        },
-        eventOnChildTermDeleted(parentTermId) {
-            if ((parentTermId == 0 || parentTermId == undefined ) && this.totalTerms > 0) {
-                this.totalTerms--;
-                this.loadTerms(parentTermId);
-            }
-        },
-        eventOnEditTerm(term) {
-            // Position edit form in a visible area
-            let container = document.getElementsByClassName('repository-level-page')[0];
-            if (container && container.scrollTop && container.scrollTop > 80)
-                this.termEditionFormTop = container.scrollTop - 80;
+            const existingValueIndex = this.selected.findIndex(aSelectedTerm => aSelectedTerm.id == selectedTerm.id);
+            
+            if (existingValueIndex >= 0)
+                currentSelected.splice(existingValueIndex, 1);
             else
-                this.termEditionFormTop = 0;
+                currentSelected.push(selectedTerm);
 
-            this.editTerm = term;
-            this.isEditingTerm = true;
-        },
-        eventOnTermEditionSaved({hasChangedParent}) {
-            this.isEditingTerm = false;
-            this.editTerm = null;
-
-            if (hasChangedParent)
-                this.loadTerms(0);
-        },
-        eventOnTermEditionCanceled() {
-            this.isEditingTerm = false;
-            this.editTerm = null;
-        }
-    }    
+            this.selected = currentSelected;
+        } 
+    }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
-    .columns {
-        position: relative;
+    .search-and-selection-control {
+        margin: 0.25em 0 0.5em 0;
+        padding: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .terms-search {
+            margin: 0px 0.5em 0px 0px !important;
+            padding: 0px !important;
+
+            .control {
+                margin: 0;
+            }
+            /deep/ .input {
+                height: 0.875em;
+            }
+            .input .icon .mdi::before {
+                color: var(--tainacan-input-color);
+            }
+            .button {
+                border-radius: 0 !important;
+                min-height: 100%;
+                background-color: var(--tainacan-input-background-color);
+                border: 1px solid var(--tainacan-input-border-color);
+                transition: background 0.2s ease;
+            }
+            .button.is-active {
+                background-color: var(--tainacan-blue5);
+
+                .tainacan-icon::before {
+                    color: var(--tainacan-secondary)
+                }
+            } 
+            /deep/ .field-body>.field {
+                padding: 0px !important;
+                margin-left: 0px !important;
+            }
+        }
+
+        .selected-terms-info {
+            margin: 0 0.5em 0 auto;
+            font-size: 0.875em;
+            color: var(--tainacan-info-color);
+
+            .link-style {
+                border-radius: 36px;
+                &:hover {
+                    background-color: var(--tainacan-gray1) !important;
+                }
+            }
+
+            #selected-terms-dropdown {
+                /deep/ .dropdown-trigger {
+                    font-size: 1.125em !important;
+                }
+                /deep/ .dropdown-menu {
+                    width: max-content;
+                    max-width: 380px;
+                }
+                .checkbox-name-text {
+                    font-size: 1.375em !important;
+                }
+            }
+
+            &:not(.field) {
+                border: 1px solid var(--tainacan-input-border-color);
+                padding: 0.2rem 0.5rem;
+            }
+        }
     }
 
-    .terms-list-header {
+    .tainacan-form {
+        margin-top: 0px;
+        max-width: 100%;
+
+        a:not(:disabled),
+        button:not(:disabled) {
+            color: var(--tainacan-blue5);
+            cursor: pointer;
+        }
+
+        .form-submit {
+            padding-top: 16px !important;
+        }
+    }
+
+    .tainacan-li-checkbox-list {
+        flex-grow: 0;
+        flex-shrink: 1;
+        max-width: 100%;
+        padding-left: 0.5em;
+        margin: 0;
+        -webkit-break-inside: avoid;
+        break-inside: avoid;
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
+        align-items: stretch;
+        min-height: 1.5em;
 
-        .order-area {
-            padding: 4px;
-            margin-top: -4px;
-            margin-left: auto;
+        /deep/ .b-checkbox, /deep/ .b-radio {
+            margin-right: 0px;
+            margin-bottom: 0;
+            -webkit-break-inside: avoid;
+            break-inside: avoid;
 
-            .label {
-                font-size: 0.875em;
-                font-weight: normal;
-                margin-top: 3px;
-                margin-bottom: 2px;
-                cursor: default;
+            .control-label {
+                white-space: normal;
+                overflow: visible;
+                padding-top: 0.125em;
+                padding-bottom: 0.125em;
+                word-break: break-word;
             }
-
-            .button {
-                display: flex;
-                align-items: center;
+            input:disabled+.check {
+                cursor: not-allowed;
+                opacity: 0.5;
             }
-            
-            .field {
-                align-items: center;
-            }
-
-            .gray-icon, 
-            .gray-icon .icon {
-                color: var(--tainacan-info-color) !important;
-                padding-right: 10px;
-                height: 1.125em !important;
-            }
-            .gray-icon .icon i::before, 
-            .gray-icon i::before {
-                max-width: 1.25em;
+            @media screen and (max-width: 768px) {
+                .control-label {
+                    padding-top: 0.8125em;
+                    padding-bottom: 0.8125em;
+                    padding-left: calc(0.875em - 1px);
+                    width: 100%;
+                    border-bottom: 1px solid var(--tainacan-gray1);
+                }
             }
         }
 
-        .search-area {
-            display: inline-flex;
-            align-items: center;
+        &>a:not(.add-link),
+        &>button:not(.add-link) {
+            opacity: 0.0;
+            transition: opacity 0.2s ease;       
+        }
+        button.load-children-button {
+            opacity: 0.95;
+            border-left: 1px dashed var(--tainacan-gray1);
+        }
+        &:hover:not(.result-info) {
+            background-color: var(--tainacan-gray1);
 
-            .input {
-                border: 1px solid var(--tainacan-gray2);
-            }
-            .control {
-                width: 100%;
-            }
-            a {
-                margin-left: 12px;
-                white-space: nowrap; 
+            &>a:not(.add-link),
+            &>button:not(.add-link) {
+                opacity: 1.0;
+                background-color: var(--tainacan-gray2);
             }
         }
-    }
-
-    .parent-term>div>.term-item:first-child:hover {
-        background-color: var(--tainacan-gray1) !important;
-        .controls {
-            visibility: visible;
-            opacity: 1.0;
-        }
-        &::before {
-            border-color: transparent transparent transparent var(--tainacan-gray2) !important;
-        }
-    }
-    .parent-term>div>.opened-term.term-item:first-child {
-        cursor: default;
-        background-color: var(--tainacan-gray1) !important;
-
-        &:before {
-            content: '';
-            display: block;
-            position: absolute;
-            left: 100%;
-            right: -20px;
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-color: transparent transparent transparent var(--tainacan-gray1);
-            border-left-width: 24px;
-            border-top-width: 1.55em;
-            border-bottom-width: 1.55em;
-            top: 0;
-        }
-        &:hover:before {
-            border-color: transparent transparent transparent var(--tainacan-gray1);
+        &.result-info {
+            padding: 0.5rem 0.25rem 0.25rem 0.25rem;
+            width: 100%;
+            max-width: 100%;
+            column-span: all;
+            font-size: 0.75em;
+            color: var(--tainacan-info-color);
+            text-align: center;
         }
     }
 
-    .view-more-terms-level-0 {
-        font-size: 0.875em;
-        margin: 0;
-        padding: 0.5em 0 0.5em 1.75em;
+    .tainacan-hierarchical-list-columns-container {
+        background-color: var(--tainacan-background-color);
+        border: 1px solid var(--tainacan-gray2);
+        border-radius: 2px;
+        margin-top: 0px;
         display: flex;
-        border-top: 1px solid var(--tainacan-gray1);
+        height: auto;
+        overflow: auto;
+        scroll-snap-type: x mandatory;
+        scroll-snap-align: start;
+        padding: 0 !important;
+        //max-height: 42vh;
+        transition: heigth 0.5s ease, min-height 0.5s ease;
+
+        &:focus {
+            outline: none;
+        }
     }
 
-    .edit-forms-list {
-        padding-left: 0;
+    .tainacan-hierarchical-list-container {
+        position: relative;
+
+        .scroll-back-to-root-button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 9;
+            background-color: var(--tainacan-background-color);
+            border: 1px solid var(--tainacan-gray2);
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 4px;
+            padding: 0.55rem 0.8rem;
+            white-space: nowrap;
+            display: block;
+            font-weight: bold;
+            color: var(--tainacan-label-color);
+            font-size: 0.8rem;
+        }
+    }
+
+    .tainacan-hierarchical-list-column {
+        border-right: solid 1px var(--tainacan-gray2);        
+        flex-basis: auto;
+        flex-grow: 1;
+       // max-width: 720px;
+        min-width: 268px;
+        margin: 0;
+        padding: 0em;
+        transition: width 0.2s ease;
+
+        &:only-child {
+            max-width: 100%;
+            border-right: none;
+        }
+
+        &:last-child {
+            border-right: none;
+        }
+
+        &.has-only-one-column {
+            max-width: 100%;
+            border-right: none;
+
+            ul {
+                -moz-column-count: 2;
+                -moz-column-gap: 0;
+                -moz-column-rule: none;
+                -webkit-column-count: 2;
+                -webkit-column-gap: 0;
+                -webkit-column-rule: none;
+                column-count: 2;
+                column-gap: 2em;
+                column-rule: none;
+                overflow-y: hidden;
+                overflow-x: auto;
+            }
+        }
+
+        ul {
+            max-height: calc(42vh - 20px - 0.7em);
+            min-height: inherit;
+            overflow-y: auto;
+            overflow-x: hidden;
+            list-style: none;
+            margin: 0;
+            padding-left: 0;
+            box-shadow: inset 0px 4px 10px -12px #000;
+        }
+        a:not(.add-link),
+        button:not(.add-link) {
+            border: none;
+            background: transparent;
+            font-size: 0.75em;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            padding: 8px 0.5rem;
+            opacity: 0.0;
+            transition: opacity 0.2s ease;     
+
+            .tainacan-icon {
+                font-size: 1.5em;
+            }
+        }
+        button.load-children-button {
+            opacity: 0.95;
+            border-left: 1px solid var(--tainacan-gray2);
+        }
+
+        .column-header {
+            color: var(--tainacan-label-color);
+            padding: 0.45em 0.75em;
+            margin: 0;
+            position: relative;
+            border-bottom: 1px solid var(--tainacan-gray2);
+            display: flex;
+            flex-direction: column;
+
+            .column-name {
+                display: flex;
+                font-weight: bold;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                align-items: baseline;
+                margin-bottom: 0.5em;
+            }
+
+            .add-link {
+                font-weight: normal;
+                margin: 0 0 auto 0;
+                font-size: 0.9375em;
+                overflow: initial;
+            }
+
+            .column-subheader {
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+
+                .checkbox {
+                    margin-bottom: 0;
+                    margin-top: 0.25;
+                    font-size: 1.25em;
+                    width: auto;
+                }
+            }
+        }
+
+        &:not(:first-child) .column-header {
+
+            .column-name {
+                padding-left: calc(0.75em + 12px);
+            }
+
+            &::after,
+            &::before {
+                content: '';
+                display: block;
+                position: absolute;
+                right: 100%;
+                width: 0;
+                height: 0;
+                border-style: solid;
+            }
+            &::after {
+                top: 0px;
+                border-color: transparent transparent transparent white;
+                border-left-width: 12px;
+                border-top-width: calc(1em + 1px);
+                border-bottom-width: calc(1em + 0px);
+                left: -2px;
+            }
+            &::before {
+                top: 0px;
+                border-color: transparent transparent transparent var(--tainacan-gray2);
+                border-left-width: 12px;
+                border-top-width: calc(1em + 1px);
+                border-bottom-width: calc(1em + 0px);
+                left: -1px;
+            }
+        }
+        
+    }
+
+    ul {
+        // For Safari
+        -webkit-margin-after: 0;
+        -webkit-margin-start: 0;
+        -webkit-margin-end: 0;
+        -webkit-padding-start: 0;
+        -webkit-margin-before: 0;
+    }
+
+    .field:not(:last-child) {
+        margin-bottom: 0 !important;
+    }
+
+    .b-checkbox .control-label {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        width: 100%;
+        overflow: visible !important;
+        white-space: normal !important;
+
+        .checkbox-name-text {
+            line-height: 1.25em;
+            padding-right: 3px;
+            break-inside: avoid;
+        }
     }
 
 </style>
 
 
+ 

@@ -68,6 +68,10 @@
                         <th>
                             <div class="th-wrap">{{ $i18n.get('label_collections_using') }}</div>
                         </th>
+                        <!-- Total Items -->
+                        <th v-if="!isOnTrash">
+                            <div class="th-wrap total-terms-header">{{ $i18n.get('label_total_terms') }}</div>
+                        </th>
                         <!-- Actions -->
                         <th 
                                 v-if="taxonomies.findIndex((taxonomy) => taxonomy.current_user_can_edit || taxonomy.current_user_can_delete) >= 0"
@@ -162,10 +166,32 @@
                                         },
                                         content: (taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy'),
                                         autoHide: false,
+                                        html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
                                     v-html="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy')" />
+                        </td>
+                        <!-- Total terms -->
+                        <td
+                                @click.self="onClickTaxonomy($event, taxonomy.id, index)"
+                                class="column-small-width column-align-right" 
+                                :label="$i18n.get('label_total_terms')" 
+                                v-if="taxonomy.total_terms != undefined"
+                                :aria-label="$i18n.get('label_total_terms') + ': ' + taxonomy.total_terms['total']">
+                            <p
+                                    v-tooltip="{
+                                        delay: {
+                                            shown: 500,
+                                            hide: 300,
+                                        },
+                                        content: getTotalTermsDetailed(taxonomy.total_terms),
+                                        autoHide: false,
+                                        html: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                        placement: 'auto-start'
+                                    }" 
+                                    v-html="taxonomy.total_terms['total']" />
                         </td>
                         <!-- Actions -->
                         <td 
@@ -275,6 +301,9 @@
             selectAllOnPage() {
                 for (let i = 0; i < this.selected.length; i++) 
                     this.selected.splice(i, 1, !this.allOnPageSelected);
+            },
+            getTotalTermsDetailed(total_terms) {
+                return this.$i18n.get('label_total_terms') + ': ' + total_terms['total'] + '<br> ' + this.$i18n.get('label_root_terms') + ': ' + total_terms['root'] + '<br> ' + this.$i18n.get('label_used_by_items') + ': ' + total_terms['not_empty'];
             },
             deleteOneTaxonomy(taxonomyId) {
                 this.$buefy.modal.open({
@@ -399,6 +428,10 @@
                 color: var(--tainacan-info-color);
             }
         }
+    }
+
+    .total-terms-header {
+        text-align: right;
     }
 
 </style>

@@ -255,14 +255,17 @@
     .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__name {
       font-size: 1em;
       color: var(--tainacan-media-metadata-color, #454647);
-      opacity: 0.75; }
+      opacity: 0.75;
+      word-break: break-word; }
     .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__caption {
       font-size: 0.9375em;
-      color: var(--tainacan-media-metadata-color, #454647); }
+      color: var(--tainacan-media-metadata-color, #454647);
+      word-break: break-word; }
     .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata__caption {
       font-size: 0.875em;
       color: var(---tainacan-media-metadata-color, #454647);
-      opacity: 0.85; }
+      opacity: 0.85;
+      word-break: break-word; }
     .tainacan-media-component__swiper-thumbs li.swiper-slide .swiper-slide-metadata {
       text-align: center;
       display: block;

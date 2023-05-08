@@ -14,6 +14,7 @@ class Taxonomy extends Entity {
         $name,
         $description,
         $allow_insert,
+		$hierarchical,
         $slug;
 
     /**
@@ -74,7 +75,7 @@ class Taxonomy extends Entity {
 		$show_ui = is_array($enabled_post_types) ? true : false;
 
         $args = array(
-            'hierarchical'      => true,
+            'hierarchical'      => $this->get_hierarchical() !== 'no',
             'labels'            => $labels,
             'show_ui'           => $show_ui,
             'show_in_rest'      => $show_ui,
@@ -153,6 +154,15 @@ class Taxonomy extends Entity {
     }
 
 	/**
+	 * Return 'yes' if terms hierarchy is allowd and 'no' otherwise
+	 *
+	 * @return boolean
+	 */
+	function get_hierarchical() {
+        return $this->get_mapped_property('hierarchical');
+    }
+
+	/**
 	 * Return the slug
 	 *
 	 * @return string
@@ -214,10 +224,19 @@ class Taxonomy extends Entity {
 	/**
 	 * Define if allow insert or not
 	 *
-	 * @param [boolean] $value
+	 * @param [String] $value
 	 */
 	function set_allow_insert($value) {
         $this->set_mapped_property('allow_insert', $value);
+    }
+
+	/**
+	 * Define if hierarchical is 'yes' or 'no'
+	 *
+	 * @param [String] $value
+	 */
+	function set_hierarchical($value) {
+        $this->set_mapped_property('hierarchical', $value);
     }
 
     /**

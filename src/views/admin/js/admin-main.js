@@ -58,9 +58,6 @@ import FormGeoCoordinate from '../components/metadata-types/geocoordinate/FormGe
 // Term edition form must be imported here so that it is not necessary on item-submission bundle
 import TermEditionForm from '../components/edition/term-edition-form.vue';
 
-// Term Recursive item component needs to be imported here, otherwise would cause ciruclar dependency
-import RecursiveTermItem from '../components/lists/recursive-term-item.vue';
-
 import FormFilterNumeric from '../components/filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../components/filter-types/numeric-interval/FormNumericInterval.vue';
 import FormFilterNumericListInterval from '../components/filter-types/numeric-list-interval/FormNumericListInterval.vue';
@@ -72,10 +69,9 @@ import TainacanFormItem from '../components/metadata-types/tainacan-form-item.vu
 import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
 import TainacanTitle from '../components/navigation/tainacan-title.vue';
-import store from './store/store'
-import router from './router'
+import store from './store/store';
+import router from './router';
 import eventBusSearch from './event-bus-search';
-import eventBusTermsList from './event-bus-terms-list.js';
 import eventBusMetadataList from './event-bus-metadata-list.js';
 import { 
     I18NPlugin,
@@ -224,13 +220,11 @@ export default (element) => {
             Vue.component('tainacan-form-item', TainacanFormItem);
 
             /* Others */
-            Vue.component('recursive-term-item', RecursiveTermItem);
             Vue.component('help-button', HelpButton);
             Vue.component('draggable', draggable);
             Vue.component('tainacan-title', TainacanTitle);
 
             // Event bus are needed to facilate comunication between child-parent-child components
-            Vue.use(eventBusTermsList, {});
             Vue.use(eventBusMetadataList, {});
             Vue.use(eventBusSearch, { store: store, router: router});
 

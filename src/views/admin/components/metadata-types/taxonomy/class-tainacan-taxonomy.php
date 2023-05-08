@@ -435,9 +435,11 @@ class Taxonomy extends Metadata_Type {
 		$array = parent::_toArray();
 
 		if ( isset($array['options']['taxonomy_id']) ) {
-			$array['options']['taxonomy'] = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $array['options']['taxonomy_id'] );
-		}
+			$term_taxonomy = $this->get_taxonomy();
 
+			$array['options']['taxonomy'] = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $array['options']['taxonomy_id'] );
+			$array['options']['hierarchical'] = $term_taxonomy->get_hierarchical();
+		}
 		return $array;
 
 	}
