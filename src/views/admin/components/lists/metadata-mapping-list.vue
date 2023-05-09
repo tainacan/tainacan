@@ -297,7 +297,7 @@ export default {
             this.isMapperMetadataLoading = true;
             this.mapper = metadatumMapper; //TODO try to use v-model again
             this.mapperMetadata = [];
-            console.log(this.activeMetadatumList)
+            
             if (metadatumMapper != '') {
                 for (var k in metadatumMapper.metadata) {
                     var item = metadatumMapper.metadata[k];

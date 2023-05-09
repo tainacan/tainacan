@@ -224,7 +224,7 @@
   .tainacan-media-component__swiper-thumbs li.swiper-slide {
     text-align: center;
     vertical-align: top;
-    word-break: break-all;
+    word-break: break-word;
     font-size: 0.875em;
     max-width: calc(var(--tainacan-media-thumbs-carousel-item-size, 136px) + 17px); }
     @media only screen and (max-width: 380px) {

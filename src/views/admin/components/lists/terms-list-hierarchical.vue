@@ -602,6 +602,7 @@ export default {
                         this.termColumns[updatedTermParentColumn].children.push(term);
 
                     this.termColumns[updatedTermParentColumn].total_children = Number(this.termColumns[updatedTermParentColumn].total_children) + 1;
+                    this.totalRemaining[updatedTermParentColumn].remaining = Number(this.totalRemaining[updatedTermParentColumn].remaining) + 1;
                     
                     if ( this.termColumns[updatedTermParentColumn - 1] ) {
                         const parentTermIndex = this.termColumns[updatedTermParentColumn - 1].children.findIndex((aTerm) => aTerm.id== term.parent);
