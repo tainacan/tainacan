@@ -124,6 +124,7 @@
             </div>
 
             <div 
+                    v-if="form.id !== 'default_section'"
                     @click="hideConditionalSectionSettings = !hideConditionalSectionSettings;"
                     class="metadata-form-section">
                 <span class="icon">
@@ -136,7 +137,9 @@
 
             </div>
 
-            <transition name="filter-item">
+            <transition 
+                    v-if="form.id !== 'default_section'"
+                    name="filter-item">
                 <div 
                         v-show="!hideConditionalSectionSettings"
                         class="options-columns">
