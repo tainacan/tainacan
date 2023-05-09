@@ -271,7 +271,7 @@
                                 <option value="12">12</option>
                                 <option value="24">24</option>
                                 <option value="48">48</option>
-                                <option value="96">96</option>
+                                <option :value="maxActivitiesPerPage">{{ maxActivitiesPerPage }}</option>
                             </b-select>
                         </b-field>
                     </div>
@@ -312,7 +312,7 @@
                                 <option value="12">12</option>
                                 <option value="24">24</option>
                                 <option value="48">48</option>
-                                <option value="96">96</option>
+                                <option :value="maxActivitiesPerPage">{{ maxActivitiesPerPage }}</option>
                             </b-select>
                         </b-field>
                     </div>
@@ -367,7 +367,8 @@
                 userIdForFiltering: null,
                 usersForFilteringSearchQuery: '',
                 usersForFilteringSearchPage: 1,
-                totalUsers: 0
+                totalUsers: 0,
+                maxActivitiesPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
             }
         },
         computed: {

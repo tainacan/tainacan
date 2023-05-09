@@ -212,7 +212,7 @@
                                     <option value="12">12</option>
                                     <option value="24">24</option>
                                     <option value="48">48</option>
-                                    <option value="96">96</option>
+                                    <option :value="maxTaxonomiesPerPage">{{ maxTaxonomiesPerPage }}</option>
                                 </b-select>
                             </b-field>
                         </div>
@@ -259,7 +259,8 @@
                 sortingOptions: [
                     { label: this.$i18n.get('label_title'), value: 'title' },
                     { label: this.$i18n.get('label_creation_date'), value: 'date' },
-                ]
+                ],
+                maxTaxonomiesPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
             }
         },
         computed: {

@@ -70,21 +70,6 @@
                     $i18n.get('info_of') + totalAttachments + '.'
                 }}
             </div>
-            <!-- <div class="items-per-page">
-                <b-field 
-                        horizontal 
-                        :label="$i18n.get('label_attachments_per_page')">
-                    <b-select
-                            :value="attachmentsPerPage"
-                            @input="onChangeAttachmentsPerPage"
-                            :disabled="attachments.length <= 0">
-                        <option value="12">12</option>
-                        <option value="24">24</option>
-                        <option value="48">48</option>
-                        <option value="96">96</option>
-                    </b-select>
-                </b-field>
-            </div> -->
             <div class="pagination">
                 <b-pagination
                         @change="onPageChange"
