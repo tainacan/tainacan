@@ -289,3 +289,22 @@ export const fetchParentName = ({ commit }, { taxonomyId, parentId } ) => {
         });
     });
 };
+
+export const multipleTermsInsertion = ({}, { taxonomyId, parent, termNames } ) => {
+    const terms = termNames.map(aTermName => {
+        return {
+            parent: parent,
+            name: aTermName
+        }
+    });
+
+    return new Promise((resolve, reject) => {
+        axios.tainacan.post('/taxonomy/' + taxonomyId + '/terms/', terms )
+        .then(res => {
+            resolve( res.data );
+        })
+        .catch(error => {
+            reject( error );
+        });
+    });
+};

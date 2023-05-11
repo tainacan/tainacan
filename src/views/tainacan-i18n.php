@@ -241,7 +241,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_collection_filters'                       => __( 'Collection Filters', 'tainacan' ),
 	'label_parent_term'                              => __( 'Parent Term', 'tainacan' ),
 	'label_children_terms'                           => __( 'children terms', 'tainacan' ),
-	'label_create_term'                              => __( 'Create Term', 'tainacan' ),
+	'label_new_term'                              	 => __( 'New Term', 'tainacan' ),
 	'label_create_new_term'                          => __( 'Create New Term', 'tainacan' ),
 	'label_create_and_select'                        => __( 'Create and Select', 'tainacan' ),
 	'label_new_child'                                => __( 'New Child', 'tainacan' ),
@@ -693,7 +693,11 @@ return apply_filters( 'tainacan-i18n', [
 	'label_no_parent_root_term'						 => __( 'No parent (set as root term)', 'tainacan' ),
 	/* translators: This relates to terms that are in use by some item via a taxonomy. */
 	'label_used_by_items'							 => __( 'In use by some item', 'tainacan' ),
-	
+	'label_multiple_terms_insertion'				 => __( 'Multiple terms insertion', 'tainacan' ),
+	'label_multiple_terms'							 => __( 'Multiple terms', 'tainacan' ),
+	'label_multiple'								 => __( 'Multiple', 'tainacan' ),
+	'label_separator'								 => __( 'Separator', 'tainacan' ),
+
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),
@@ -773,6 +777,7 @@ return apply_filters( 'tainacan-i18n', [
 	'instruction_type_geocoordinate'				 => __( 'Type a geo coordinate in the form of lat,lng', 'tainacan' ),
 	'instruction_click_to_add_a_point'				 => __( 'Drag to reposition or click to insert a marker', 'tainacan' ),
 	'instruction_select_geocoordinate_metadatum'	 => __( 'Select a geocoordinate metadatum', 'tainacan' ),
+	'instruction_multiple_terms_insertion'			 => __( 'Type or paste here a list of names using a separator to create multiple terms at once.', 'tainacan' ),
 
 	// Info. Other feedback to user.
 	'info_items_tab_all'                			 => __( 'Every item, except by those sent to trash.', 'tainacan' ),

@@ -60,7 +60,23 @@
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                             </span>
-                            &nbsp;{{ $i18n.get('label_create_term') }}
+                            &nbsp;{{ $i18n.get('label_new_term') }}
+                        </a>
+                         <a 
+                                :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : ''"
+                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                class="add-link">
+                            <span 
+                                    style="position: absolute;margin-left: -5px;margin-top: 5px;"
+                                    class="icon is-small">
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                            </span>
+                            <span 
+                                    style="margin-top: -5px;"
+                                    class="icon is-small">
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                            </span>
+                            &nbsp;{{ termColumns.length <= 1 ? $i18n.get('label_multiple_terms') : $i18n.get('label_multiple') }}
                         </a>
                     </p>
                 </div>
@@ -137,7 +153,7 @@
                             </span>
                             <span 
                                     class="is-hidden-mobile"
-                                    v-if="termColumns.length <= 1 ">
+                                    v-if="termColumns.length <= 1">
                                 {{ term.total_children + ' ' + $i18n.get('label_children_terms') }}
                             </span>
                             <span 
@@ -178,7 +194,24 @@
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                             </span>
-                            &nbsp;{{ $i18n.get('label_create_term') }}
+                            &nbsp;{{ $i18n.get('label_new_term') }}
+                        </a>
+                    </p>
+                    <p>
+                        <a 
+                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
+                                class="add-link">
+                            <span 
+                                    style="position: absolute;margin-left: -5px;margin-top: 5px;"
+                                    class="icon is-small">
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                            </span>
+                            <span 
+                                    style="margin-top: -5px;"
+                                    class="icon is-small">
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                            </span>
+                            &nbsp;{{ $i18n.get('label_multiple_terms_insertion') }}
                         </a>
                     </p>
                 </div>
@@ -202,7 +235,7 @@
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                         </span>
-                        &nbsp;{{ $i18n.get('label_create_term') }}
+                        &nbsp;{{ $i18n.get('label_new_term') }}
                     </a>
                 </p>
             </div>
@@ -231,6 +264,7 @@
 import { mapActions } from 'vuex';
 import TermDeletionDialog from '../other/term-deletion-dialog.vue';
 import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
+import TermMultipleInsertionDialog from '../other/term-multiple-insertion-dialog.vue';
 import { tainacan as axios } from '../../js/axios';
 
 export default {
@@ -291,7 +325,8 @@ export default {
             'updateTerm',
             'deleteTerm',
             'deleteTerms',
-            'changeTermsParent'
+            'changeTermsParent',
+            'multipleTermsInsertion'
         ]),
         renderTermHierarchyLabel(term) {
             if ( term.hierarchy_path ) 
@@ -527,18 +562,7 @@ export default {
                     excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
                     taxonomyId: this.taxonomyId,
                     onConfirm: (selectedParentTerm) => { 
-                        this.changeTermsParent({
-                            taxonomyId: this.taxonomyId, 
-                            terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
-                            parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
-                            newParentTerm: selectedParentTerm
-                        })
-                        .then(() => {  
-                            this.resetTermsListUI(); 
-                        })
-                        .catch((error) => {
-                            this.$console.log(error);
-                        }); 
+                        
                     }
                 },
                 trapFocus: true,
@@ -658,6 +682,37 @@ export default {
             }
             this.onEditTerm(newTerm);
             this.removeLevelsAfterTerm(newTerm);
+        },
+        multipleInsertion({ parentId, parentName }) {
+
+            this.$buefy.modal.open({
+                parent: this,
+                component: TermMultipleInsertionDialog,
+                props: {
+                    amountOfTerms: this.amountOfTermsSelected,
+                    excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
+                    taxonomyId: this.taxonomyId,
+                    isHierarchical: this.isHierarchical,
+                    initialTermParent: parentId,
+                    initialTermParentName: parentName,
+                    onConfirm: ({ parent, termNames }) => { 
+                        this.multipleTermsInsertion({
+                            taxonomyId: this.taxonomyId, 
+                            parent: parent,
+                            termNames: termNames
+                        })
+                        .then(() => {  
+                            this.resetTermsListUI(); 
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        }); 
+                    }
+                },
+                trapFocus: true,
+                customClass: 'tainacan-modal',
+                closeButtonAriaLabel: this.$i18n.get('close')
+            });      
         },
         resetTermsListUI() {
             this.$emit('onUpdateSelectedTerms', []);
@@ -803,8 +858,7 @@ export default {
         border-right: solid 1px var(--tainacan-gray2);        
         flex-basis: auto;
         flex-grow: 1;
-       // max-width: 720px;
-        min-width: 268px;
+        min-width: 290px;
         margin: 0;
         padding: 0em;
         transition: width 0.2s ease;
@@ -871,6 +925,11 @@ export default {
                 margin: 0 0 auto 0;
                 font-size: 0.9375em;
                 overflow: initial;
+
+                &:not(:last-child) {
+                    margin-left: auto;
+                    margin-right: 1em;
+                }
             }
 
             .column-subheader {
