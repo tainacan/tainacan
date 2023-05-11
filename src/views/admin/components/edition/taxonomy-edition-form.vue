@@ -560,7 +560,7 @@
         align-items: center;
     }
     .tainacan-form>.columns {
-        margin-bottom: var(--tainacan-container-padding);
+        margin-bottom: 48px;
     }
     .tainacan-form .column:last-of-type {
         padding-left: var(--tainacan-one-column) !important;

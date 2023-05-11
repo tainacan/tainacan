@@ -923,6 +923,7 @@ export default {
             .add-link {
                 font-weight: normal;
                 margin: 0 0 auto 0;
+                white-space: nowrap;
                 font-size: 0.9375em;
                 overflow: initial;
 
