@@ -82,8 +82,12 @@ export const updateCollectionMetadataOrder = (state, { metadataOrder, metadataSe
         const existingSectionIndex = state.metadataSections.findIndex((aMetadataSection) => aMetadataSection.id == metadataSectionId);
         if (existingSectionIndex >= 0) {   
             const updatedMetadatumIndexInsideSection = state.metadataSections[existingSectionIndex]['metadata_object_list'].findIndex((aMetadatum) => { return !!aMetadatum['id'] && (aMetadatum.id == metadataOrder[i]['id']) });
-            if (updatedMetadatumIndexInsideSection >= 0)
-                state.metadataSections[existingSectionIndex]['metadata_object_list'][updatedMetadatumIndexInsideSection].enabled = metadataOrder[i].enabled;
+            if (updatedMetadatumIndexInsideSection >= 0) {
+                
+                let metadataObjectList = state.metadataSections[existingSectionIndex]['metadata_object_list'];
+                metadataObjectList[updatedMetadatumIndexInsideSection].enabled = metadataOrder[i].enabled;
+                Vue.set(state.metadataSections[existingSectionIndex], 'metadata_object_list', metadataObjectList); 
+            }
         }
     }
 }
