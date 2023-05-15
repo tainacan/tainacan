@@ -601,8 +601,8 @@ export default {
                         if ( parentTermIndex >= 0)
                             this.termColumns[removedTermParentColumn - 1].children[parentTermIndex].total_children = Number(this.termColumns[removedTermParentColumn].total_children);
                     }
-
-                    this.removeLevelsAfterIndex(removedTermParentColumn);
+                    
+                    this.removeLevelsAfterIndex(removedTermParentColumn - 1);
                 }
             }
         },
