@@ -499,6 +499,9 @@
                                                 v-if="enabledMetadata[index] == 'true'"
                                                 :item-metadatum="itemMetadatum"
                                                 :hide-collapses="hideCollapses"
+                                                :hide-metadata-types="hideMetadataTypes"
+                                                :hide-help-buttons="hideHelpButtons"
+                                                :help-info-bellow-label="helpInfoBellowLabel"
                                                 :is-collapsed="metadataCollapses[index]"
                                                 @changeCollapse="onChangeCollapse($event, index)"/>
 
@@ -880,7 +883,7 @@ export default {
         },
     },
     created() {
-
+        
         // Puts loading on form
         this.isLoading = true;
 
@@ -953,7 +956,6 @@ export default {
             });
     },
     mounted() {
-
         // Checks if only one type of document is allowed. In this case we preset document type
         if (!this.hideFileModalButton && this.hideTextModalButton && this.hideLinkModalButton)
             this.form.document_type = 'attachment';
