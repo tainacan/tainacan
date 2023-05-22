@@ -9,7 +9,7 @@ use Tainacan\Repositories;
 class REST_Terms_Controller extends REST_Controller {
 	private $term;
 	private $terms_repository;
-	private $taxonomy;
+	private $items_repository;
 	private $taxonomy_repository;
 
 	/**
@@ -27,12 +27,22 @@ class REST_Terms_Controller extends REST_Controller {
 	public function init_objects() {
 		$this->term = new Entities\Term();
 		$this->terms_repository = Repositories\Terms::get_instance();
-		$this->taxonomy = new Entities\Taxonomy();
 		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
 		$this->items_repository = Repositories\Items::get_instance();
 	}
-
+	
 	public function register_routes() {
+		register_rest_route($this->namespace,  '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base . '/bulkinsert',
+			array(
+				array(
+					'methods'             => \WP_REST_Server::CREATABLE,
+					'callback'            => array($this, 'create_multiples_items'),
+					'permission_callback' => array($this, 'create_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
+				),
+				'schema'                  => [$this, 'get_schema']
+			)
+		);
 		register_rest_route($this->namespace,  '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base,
 			array(
 				array(
@@ -115,6 +125,50 @@ class REST_Terms_Controller extends REST_Controller {
 		}
 
 		$this->term->set_taxonomy($taxonomy);
+	}
+
+		/**
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public function create_multiples_items( $request ) {
+		$taxonomy_id = $request['taxonomy_id'];
+		$body = json_decode($request->get_body(), true);
+		if(is_array($body)){
+			$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
+			$taxonomy_db_identifier = $taxonomy->get_db_identifier();
+			$terms_erros = [];
+			$to_insert_terms = [];
+			$new_terms = [];
+			foreach($body as $item) {
+				$term = new Entities\Term();
+				$term->set_taxonomy($taxonomy_db_identifier);
+				foreach ($item as $attribute => $value){
+					$term->set($attribute, $value);
+				}
+				if(!$term->validate()) {
+					$term_erros[] = [
+						'error_message' => 'One or more attributes are invalid.',
+						'errors'        => $term->get_errors(),
+					];
+				} else {
+					$to_insert_terms[] = $term;
+				}
+			}
+			if ( count($terms_erros) > 0 ) {
+				return new \WP_REST_Response($term_erros, 400);
+			}
+			foreach($to_insert_terms as $new_term) {
+				$new = $this->terms_repository->insert($new_term);
+				$new_terms[] = $this->prepare_item_for_response($new, $request);
+			}
+			return new \WP_REST_Response($new_terms, 200);
+		}
+		return new \WP_REST_Response([
+			'error_message' => 'The body couldn\'t be empty.',
+			'body'          => $body,
+		], 400);
 	}
 
 	/**

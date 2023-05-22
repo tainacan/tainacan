@@ -561,9 +561,7 @@ export default {
                     amountOfTerms: this.amountOfTermsSelected,
                     excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
                     taxonomyId: this.taxonomyId,
-                    onConfirm: (selectedParentTerm) => { 
-                        
-                    }
+                    // onConfirm: (selectedParentTerm) => { }
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',

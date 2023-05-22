@@ -299,7 +299,7 @@ export const multipleTermsInsertion = ({}, { taxonomyId, parent, termNames } ) =
     });
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.post('/taxonomy/' + taxonomyId + '/terms/', terms )
+        axios.tainacan.post('/taxonomy/' + taxonomyId + '/terms/bulkinsert', terms )
         .then(res => {
             resolve( res.data );
         })
