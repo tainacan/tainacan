@@ -705,15 +705,30 @@ export default {
                             this.resetTermsListUI(); 
 
                             this.$buefy.snackbar.open({
-                                message: this.$i18n.getWithVariables('info_%1$s_of_%2$s_terms_created', [ createdTerms.length, termNames.length ]),
+                                message: this.$i18n.getWithVariables('info_%s_terms_created', [ createdTerms.length ]),
                                 type: 'is-warning',
                                 position: 'is-bottom-right',
                                 pauseOnHover: true,
                                 queue: false
                             });
                         })
-                        .catch((error) => {
-                            this.$console.log(error);
+                        .catch((errors) => {
+                            let wrongValues = '';
+                            for (let i = 0; i < errors.length; i++) {
+                                wrongValues += errors[i].term_name;
+                                if ( i < errors.length - 1 )
+                                    wrongValues += ', ';
+                            }
+
+                            let errorMessage = errors.length > 1 ? this.$i18n.getWithVariables('info_terms_creation_failed_due_to_values_%s', [ wrongValues ]) : this.$i18n.getWithVariables('info_terms_creation_failed_due_to_value_%s', [ wrongValues ]); 
+                            errorMessage += ' ' + errors[0]['errors'][0]['name'];
+                            this.$buefy.snackbar.open({
+                                message: errorMessage,
+                                type: 'is-danger',
+                                position: 'is-bottom-right',
+                                pauseOnHover: true,
+                                queue: false
+                            });
                         }); 
                     }
                 },

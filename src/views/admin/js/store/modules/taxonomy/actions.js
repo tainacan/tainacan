@@ -304,7 +304,7 @@ export const multipleTermsInsertion = ({}, { taxonomyId, parent, termNames } ) =
             resolve( res.data );
         })
         .catch(error => {
-            reject( error );
+            reject(error['response']['data']);
         });
     });
 };

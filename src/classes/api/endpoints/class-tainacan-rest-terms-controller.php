@@ -135,34 +135,41 @@ class REST_Terms_Controller extends REST_Controller {
 	public function create_multiples_items( $request ) {
 		$taxonomy_id = $request['taxonomy_id'];
 		$body = json_decode($request->get_body(), true);
-		if(is_array($body)){
+
+		if( is_array($body) ){
 			$taxonomy = $this->taxonomy_repository->fetch($taxonomy_id);
 			$taxonomy_db_identifier = $taxonomy->get_db_identifier();
-			$terms_erros = [];
+			$terms_errors = [];
 			$to_insert_terms = [];
 			$new_terms = [];
+
 			foreach($body as $item) {
 				$term = new Entities\Term();
 				$term->set_taxonomy($taxonomy_db_identifier);
+
 				foreach ($item as $attribute => $value){
 					$term->set($attribute, $value);
 				}
-				if(!$term->validate()) {
-					$term_erros[] = [
+
+				if ( !$term->validate() ) {
+					$terms_errors[] = [
 						'error_message' => 'One or more attributes are invalid.',
 						'errors'        => $term->get_errors(),
+						'term_name'		=> $term->get_name()
 					];
 				} else {
 					$to_insert_terms[] = $term;
 				}
 			}
-			if ( count($terms_erros) > 0 ) {
-				return new \WP_REST_Response($term_erros, 400);
-			}
+
+			if ( count($terms_errors) > 0 )
+				return new \WP_REST_Response($terms_errors, 400);
+			
 			foreach($to_insert_terms as $new_term) {
 				$new = $this->terms_repository->insert($new_term);
 				$new_terms[] = $this->prepare_item_for_response($new, $request);
 			}
+
 			return new \WP_REST_Response($new_terms, 200);
 		}
 		return new \WP_REST_Response([

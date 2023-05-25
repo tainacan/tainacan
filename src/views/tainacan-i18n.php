@@ -1041,7 +1041,9 @@ return apply_filters( 'tainacan-i18n', [
 	'info_warning_term_with_child'					 => __( 'This term has child terms. Per default, if you remove a parent term, its child terms will be moved one level up in the hierarchy.', 'tainacan' ),
 	'info_warning_selected_term_delete'              => __( 'Do you really want to permanently delete the selected term?', 'tainacan' ),
 	'info_warning_some_terms_with_child'			 => __( 'When removing multiple terms at once, it is possible that some of the terms contain child terms. Per default, if you remove a parent term, its child terms will be moved one level up in the hierarchy.', 'tainacan' ),
-	'info_%1$s_of_%2$s_terms_created'				 => __( '%1$s of %2$s terms created with success.', 'tainacan' ),
+	'info_%s_terms_created'							 => __( '%s terms created with success.', 'tainacan' ),
+	'info_terms_creation_failed_due_to_value_%s'	 => __( 'Terms creation failed due to value: %s.', 'tainacan' ),
+	'info_terms_creation_failed_due_to_values_%s'	 => __( 'Terms creation failed due to values: %s.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),
