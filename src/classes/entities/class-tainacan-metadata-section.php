@@ -220,7 +220,7 @@ class Metadata_Section extends Entity {
 		if ($this->is_conditional_section()) {
 			$metadata_section_id = $this->get_id();
 			if ($metadata_section_id == static::$default_section_slug) {
-				$this->add_error($this->get_id(), __("conditional section cannot be enabled in default section", 'tainacan'));
+				$this->add_error('is_conditional_section', __("conditional section cannot be enabled in default section", 'tainacan'));
 				$no_errors = false;
 			} else {
 				$metadata_list = $this->get_metadata_object_list();
@@ -230,19 +230,19 @@ class Metadata_Section extends Entity {
 				if ( count($required_metadata_list) ) {
 					$no_errors = false;
 					foreach($required_metadata_list as $metadata) {
-						$this->add_error($metadata->get_id(), __("metadata cannot be required", 'tainacan'));
+						$this->add_error('is_conditional_section', sprintf(__("metadata %s cannot be required", 'tainacan'), $metadata->get_name()));
 					}
 				}
 			}
 		}
 
 		if( empty($collection) ) {
-			$this->add_error($this->get_id(), __("collection is required", 'tainacan'));
+			$this->add_error('required', __("collection is required", 'tainacan'));
 			$no_errors = false;
 		}
 
 		if ( !isset($name) ) {
-			$this->add_error($this->get_id(), __("name is required", 'tainacan'));
+			$this->add_error('required', __("name is required", 'tainacan'));
 			$no_errors = false;
 		}
 		if($no_errors) {
