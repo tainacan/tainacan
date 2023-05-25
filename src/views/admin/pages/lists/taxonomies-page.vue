@@ -254,7 +254,7 @@
                 taxonomiesPerPage: 12,
                 status: '',
                 order: 'asc',
-                ordeBy: 'date',
+                orderBy: 'date',
                 searchQuery: '',
                 sortingOptions: [
                     { label: this.$i18n.get('label_title'), value: 'title' },

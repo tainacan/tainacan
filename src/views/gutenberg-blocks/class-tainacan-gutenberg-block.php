@@ -153,7 +153,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	wp_register_style(
 		$block_slug,
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . $block_slug . '.css',
-		array('tainacan-blocks-common-editor-styles'),
+		array(),
 		$TAINACAN_VERSION
 	);
 	$register_params['style'] = $block_slug;

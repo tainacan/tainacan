@@ -561,7 +561,7 @@ export default {
                     amountOfTerms: this.amountOfTermsSelected,
                     excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
                     taxonomyId: this.taxonomyId,
-                    // onConfirm: (selectedParentTerm) => { }
+                    onConfirm: () => {}
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
@@ -600,7 +600,10 @@ export default {
                             this.termColumns[removedTermParentColumn - 1].children[parentTermIndex].total_children = Number(this.termColumns[removedTermParentColumn].total_children);
                     }
                     
-                    this.removeLevelsAfterIndex(removedTermParentColumn - 1);
+                    if (removedTermParentColumn > 1)
+                        this.removeLevelsAfterIndex(removedTermParentColumn - 1);
+                    else
+                        this.resetTermsListUI();
                 }
             }
         },
@@ -687,8 +690,7 @@ export default {
                 parent: this,
                 component: TermMultipleInsertionDialog,
                 props: {
-                    amountOfTerms: this.amountOfTermsSelected,
-                    excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
+                    excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : false, 
                     taxonomyId: this.taxonomyId,
                     isHierarchical: this.isHierarchical,
                     initialTermParent: parentId,
@@ -699,8 +701,16 @@ export default {
                             parent: parent,
                             termNames: termNames
                         })
-                        .then(() => {  
+                        .then((createdTerms) => {
                             this.resetTermsListUI(); 
+
+                            this.$buefy.snackbar.open({
+                                message: this.$i18n.getWithVariables('info_%1$s_of_%2$s_terms_created', [ createdTerms.length, termNames.length ]),
+                                type: 'is-warning',
+                                position: 'is-bottom-right',
+                                pauseOnHover: true,
+                                queue: false
+                            });
                         })
                         .catch((error) => {
                             this.$console.log(error);
