@@ -562,7 +562,20 @@ export default {
                     amountOfTerms: this.amountOfTermsSelected,
                     excludeTree: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : this.selected.map((aTerm) => aTerm.id), 
                     taxonomyId: this.taxonomyId,
-                    onConfirm: () => {}
+                    onConfirm: (selectedParentTerm) => {
+                        this.changeTermsParent({
+                            taxonomyId: this.taxonomyId,
+                            newParentTerm: selectedParentTerm,
+                            terms: this.selectedColumnIndex >= 0 ? [] : this.selected.map((aTerm) => aTerm.id),
+                            parent: this.selectedColumnIndex >= 0 ? this.termColumns[this.selectedColumnIndex].id : undefined,
+                        })
+                        .then(() => {
+                            this.resetTermsListUI();
+                        })
+                        .catch((error) => {
+                            this.$console.log(error);
+                        });
+                    }
                 },
                 trapFocus: true,
                 customClass: 'tainacan-modal',
