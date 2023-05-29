@@ -57,6 +57,9 @@
                         :ref="'tainacan-form-item--' + groupIndex + '-' + childIndex"
                         :item-metadatum="childItemMetadatum"
                         :hide-collapses="hideCollapses"
+                        :hide-metadata-types="hideMetadataTypes"
+                        :hide-help-buttons="hideHelpButtons"
+                        :help-info-bellow-label="helpInfoBellowLabel"
                         :is-collapsed="childItemMetadatum.collapse"
                         :is-mobile-screen="isMobileScreen"
                         @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
@@ -120,6 +123,9 @@
             value: [String, Number, Array],
             disabled: false,
             hideCollapses: false,
+            hideMetadataTypes: Boolean,
+            hideHelpButtons: Boolean,
+            helpInfoBellowLabel: Boolean,
             metadataNameFilterString: '',
             isMobileScreen: false,
             isMetadataNavigation: false,
