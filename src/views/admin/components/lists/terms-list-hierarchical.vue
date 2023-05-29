@@ -63,7 +63,7 @@
                             &nbsp;{{ $i18n.get('label_new_term') }}
                         </a>
                          <a 
-                                :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : ''"
+                                :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : 'position: relative;'"
                                 @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
                                 class="add-link">
                             <span 
@@ -200,7 +200,8 @@
                     <p>
                         <a 
                                 @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
-                                class="add-link">
+                                class="add-link"
+                                style="position: relative;">
                             <span 
                                     style="position: absolute;margin-left: -5px;margin-top: 5px;"
                                     class="icon is-small">
