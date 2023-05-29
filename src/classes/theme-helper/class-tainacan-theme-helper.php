@@ -2200,7 +2200,7 @@ class Theme_Helper {
 			'termspaged' => get_query_var( 'termspaged', 1 ),
 			'perpage' => get_query_var( 'perpage', apply_filters('tainacan-default-taxonomy-terms-perpage', 12) ),
 			'search' => get_query_var( 'search', '' ),
-			'termsparent' => get_query_var( 'termsparent', '' )
+			'termsparent' => get_query_var( 'termsparent', '0' )
 		);
 	}
 }
