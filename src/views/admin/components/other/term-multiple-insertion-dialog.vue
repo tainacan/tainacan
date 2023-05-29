@@ -49,7 +49,7 @@
                     <div class="separator-term-names">
                         <label class="label is-inline">{{ $i18n.get('label_separator') }}:</label>
                         <b-checkbox
-                                v-for="separator of ['Enter', 'Tab', ',', ';', '|']"
+                                v-for="separator of ['Enter', ',', ';', '|']"
                                 :key="separator"
                                 name="term-multiple-insertion-separator"
                                 v-model="termNamesSeparator"
@@ -147,7 +147,7 @@
             return {
                 hasParent: false,
                 termNames: [],
-                termNamesSeparator: [",", "Tab", "Enter"],
+                termNamesSeparator: [",", "Enter"],
                 parentTerms: [],
                 isFetchingParentTerms: false,
                 parentTermSearchQuery: '',
@@ -262,6 +262,7 @@
         border: 1px solid var(--tainacan-gray1, #f2f2f2);
         border-bottom-right-radius: 2px;
         border-bottom-left-radius: 2px;
+        font-size: 1.25em;
     }
     .separator-term-names .b-checkbox {
         width: auto;
@@ -275,7 +276,7 @@
         margin-bottom: 0;
     }
     .separator-term-names > label.is-inline {
-        margin-top: 6px;
+        margin-top: 2px;
     }
 
     .tainacan-multiple-term-insertion--taginput /deep/ .tag,
