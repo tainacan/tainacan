@@ -581,7 +581,8 @@ class Item extends Entity {
 			'before_title' 			=> '<h3>',
 			'after_title' 			=> '</h3>',
 			'before_value' 			=> '<p>',
-			'after_value' 			=> '</p>'
+			'after_value' 			=> '</p>',
+			'metadatum_index'		=> null
 		);
 		$args = wp_parse_args($args, $defaults);
 		$item_metadata = array();
@@ -669,7 +670,7 @@ class Item extends Entity {
 		}
 		
 		// Loop item metadata to print their "values" as html
-		$metadatum_index = 0;
+		$metadatum_index = is_numeric($args['metadatum_index']) && count($item_metadata) === 1 ? $args['metadatum_index'] : 0;
 		foreach ( $item_metadata as $item_metadatum ) {
 
 			// Gets the metadata type object to perform some checks
@@ -688,7 +689,6 @@ class Item extends Entity {
 
 			// Get the metadatum representation in html, with its label and value
 			$return .= $this->get_item_metadatum_as_html($item_metadatum, $args, $metadatum_index);
-
 			$metadatum_index++;
 		}
 
@@ -1169,14 +1169,16 @@ class Item extends Entity {
 
 		$return = '';
 
-		if($metadata_section->is_conditional_section()) {
+		if ( $metadata_section->is_conditional_section() ) {
+
 			$rules = $metadata_section->get_conditional_section_rules();
 			$item_id = $this->get_id();
-			foreach($rules as $meta_id => $meta_values_conditional) {
+
+			foreach ( $rules as $meta_id => $meta_values_conditional ) {
+
 				$meta_values = get_post_meta( $item_id, $meta_id );
-				if (!array_intersect($meta_values, $meta_values_conditional)) {
+				if (!array_intersect($meta_values, $meta_values_conditional))
 					return $return;
-				}
 			}
 		}
 
@@ -1268,19 +1270,20 @@ class Item extends Entity {
 			}
 
 			// Renders the section metadata list wrapper
-			$return .= $before_metadata_list;
+			$return .= $before_metadata_list . $before_description;
 
 			// Renders the section metadata list, using Items' get_metadata_as_html()
 			// Note that this is already escaped in the calling function
 			if ($has_metadata_list) {
 				$has_some_metadata_value = false;
-
+				$metadatum_index = 0;
 				foreach( $metadata_section_metadata_list as $metadata_object) {
-					$the_metadata_list = $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object ]) );
+					$the_metadata_list = $this->get_metadata_as_html( wp_parse_args($args['metadata_list_args'], [ 'metadata' => $metadata_object, 'metadatum_index' => $metadatum_index ]) );
 					if (!$has_some_metadata_value && !empty($the_metadata_list))
 						$has_some_metadata_value = true;
 
 					$return .= $the_metadata_list;
+					$metadatum_index++;
 				}
 
 				// If no metadata value was found, this section may not be necessary
@@ -1302,7 +1305,7 @@ class Item extends Entity {
 			}
 			
 			// Renders the section metadata list wrapper
-			$return .= $after_metadata_list;
+			$return .= $after_description . $after_metadata_list;
 
 			// Gets the wrapper closer
 			$after = $args['after'];

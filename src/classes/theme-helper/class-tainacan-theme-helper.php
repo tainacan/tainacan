@@ -1996,7 +1996,7 @@ class Theme_Helper {
 			}
 
 			// Renders the section metadata list wrapper
-			$return .= $before_metadata_list;
+			$return .= $before_metadata_list . $before_description;
 
 			// Renders the section metadata list, using get_tainacan_item_metadata_template
 			if ($has_metadata_list) {
@@ -2028,7 +2028,7 @@ class Theme_Helper {
 			}
 			
 			// Renders the section metadata list wrapper
-			$return .= $after_metadata_list;
+			$return .= $after_description . $after_metadata_list;
 
 			// Gets the wrapper closer
 			$after = $args['after'];
