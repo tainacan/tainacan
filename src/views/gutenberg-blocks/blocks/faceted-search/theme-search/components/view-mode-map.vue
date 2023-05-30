@@ -48,13 +48,26 @@
                                             content: item.metadata != undefined ? renderMetadata(item, column) : '',
                                             html: true,
                                             autoHide: false,
-                                            placement: 'auto-start',
+                                            placement: 'top-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         v-for="(column, metadatumIndex) in displayedMetadata"
                                         :key="metadatumIndex"
                                         v-if="column.display && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop == 'title')"
-                                        v-html="item.metadata != undefined && collectionId ? renderMetadata(item, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
+                                        v-html="item.metadata != undefined && collectionId && renderMetadata(item, column) ? renderMetadata(item, column) : (item.title ? item.title :`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
+                                <div class="tainacan-map-card-thumbnail">
+                                    <blur-hash-image
+                                            v-if="item.thumbnail != undefined"
+                                            class="tainacan-map-card-item-thumbnail"
+                                            :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
+                                            :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-small', 40)"
+                                            :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-small')"
+                                            :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
+                                            :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
+                                            :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
+                                            :transition-duration="500"
+                                        />
+                                </div>
                                 <span 
                                         v-if="isSlideshowViewModeEnabled"
                                         v-tooltip="{

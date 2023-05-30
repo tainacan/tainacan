@@ -16,6 +16,7 @@ export default function({ attributes, className }) {
         autoPlaySpeed,
         loopSlides,
         hideName,
+        imageSize,
         showTermThumbnail,
         taxonomyId
     } = attributes;
@@ -33,6 +34,7 @@ export default function({ attributes, className }) {
                 hide-name={ '' + hideName }
                 large-arrows={ '' + largeArrows }
                 arrows-style={ arrowsStyle }
+                image-size={ imageSize }
                 max-terms-number={ maxTermsNumber }
                 max-terms-per-screen={ maxTermsPerScreen }
                 space-between-terms={ spaceBetweenTerms }

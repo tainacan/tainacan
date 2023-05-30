@@ -36,6 +36,7 @@ export default (element) => {
                         maxTermsPerScreen: 6,
                         spaceBetweenTerms: 32,
                         spaceAroundCarousel: 50,
+                        imageSize: 'tainacan-medium',
                         loopSlides: false,
                         hideName: true,
                         showTermThumbnail: false,
@@ -57,6 +58,7 @@ export default (element) => {
                                 loopSlides: this.loopSlides,
                                 largeArrows: this.largeArrows,
                                 arrowsStyle: this.arrowsStyle,
+                                imageSize: this.imageSize,
                                 maxTermsPerScreen: this.maxTermsPerScreen,
                                 spaceBetweenTerms: this.spaceBetweenTerms,
                                 spaceAroundCarousel: this.spaceAroundCarousel,
@@ -83,6 +85,7 @@ export default (element) => {
                         this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
                         this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;
                         this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
+                        this.imageSize = this.$el.attributes['image-size'] != undefined ? this.$el.attributes['image-size'].value : 'tainacan-medium';
                         this.hideName = this.$el.attributes['hide-name'] != undefined ? this.$el.attributes['hide-name'].value == 'true' : false;
                         this.taxonomyId = this.$el.attributes['taxonomy-id'] != undefined ? this.$el.attributes['taxonomy-id'].value : undefined;
                         this.showTermThumbnail = this.$el.attributes['show-term-thumbnail'] != undefined ? this.$el.attributes['show-term-thumbnail'].value == 'true' : false;

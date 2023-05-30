@@ -90,6 +90,7 @@
                         :child-facets-object="childFacetsObject"
                         :append-child-terms="appendChildTerms"
                         :facet="facet"
+                        :image-size="imageSize"
                         :cloud-rate="cloudRate"
                         :items-count-style="itemsCountStyle"
                         :tainacan-base-url="tainacanBaseUrl"
@@ -121,6 +122,7 @@
                             :child-facets-object="childFacetsObject"
                             :append-child-terms="appendChildTerms"
                             :facet="facet"
+                            :image-size="imageSize"
                             :cloud-rate="cloudRate"
                             :items-count-style="itemsCountStyle"
                             :tainacan-base-url="tainacanBaseUrl"
@@ -194,7 +196,8 @@ export default {
         tainacanBaseUrl: String,
         tainacanSiteUrl: String,
         className: String,
-        customStyle: String
+        customStyle: String,
+        imageSize: String
     },
     data() {
         return {
@@ -211,6 +214,7 @@ export default {
             tainacanAxios: undefined,
             offset: undefined,
             totalFacets: 0,
+            apiRoot: '',
             lastTerm: undefined,
             localParentTermId: ''
         }
@@ -224,7 +228,9 @@ export default {
         }
     },
     created() {
-        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        this.apiRoot = (tainacan_blocks && tainacan_blocks.root && !this.tainacanApiRoot) ? tainacan_blocks.root : this.tainacanApiRoot;
+            
+        this.tainacanAxios = axios.create({ baseURL: this.apiRoot });
         
         if (tainacan_blocks && tainacan_blocks.nonce)
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;

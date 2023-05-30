@@ -5,7 +5,7 @@
     "apiVersion": 2,
     "category": "tainacan-blocks",
     "keywords": [ "item", "location", "geographic", "coordinates", "metadatum", "field", "value" ],
-    "description": "A single item geographic metadatum, containing location information.",
+    "description": "A single item geocoordinate metadatum, containing location information.",
     "textdomain": "tainacan",
     "parent": [],
     "example": {

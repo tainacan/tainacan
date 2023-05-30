@@ -171,6 +171,26 @@ class CSV extends Exporter {
 		$meta_type =  explode('\\', $meta->get_metadata_type()) ;
 		$meta_type = strtolower($meta_type[sizeof($meta_type)-1]);
 
+		$meta_section_name = '';
+		if ($this->get_option('add_section_name') == 'yes' && $current_collection = $this->get_current_collection_object()) {
+			$meta_section_id = $meta->get_metadata_section_id();
+			$collection_id = $current_collection->get_id();
+			
+			if($meta->is_repository_level()) {
+				foreach($meta_section_id as $section_id ) {
+					if($collection_id == get_post_meta($section_id, 'collection_id', true)) {
+						$meta_section_name = '(' . get_the_title($section_id) . ')';
+						continue;
+					}
+				}
+			} else {
+				if($meta_section_id != \Tainacan\Entities\Metadata_Section::$default_section_slug) {
+					$meta_section_name = '(' . get_the_title($meta_section_id) . ')';
+				}
+			}
+		}
+		
+
 		if($meta_type == 'compound') {
 			$enclosure = $this->get_option('enclosure');
 			$delimiter = $this->get_option('delimiter');
@@ -185,12 +205,14 @@ class CSV extends Exporter {
 			$meta_type .= "(" .  implode($delimiter, $desc_childrens)  . ")";
 			$desc_title_meta = 
 				$meta->get_name() .
+				$meta_section_name .
 				('|' . $meta_type) .
 				($meta->is_multiple() ? '|multiple': '') .
 				('|display_' . $meta->get_display());
 		} else {
 			$desc_title_meta = 
 				$meta->get_name() .
+				$meta_section_name .
 				('|' . $meta_type) .
 				($meta->is_multiple() ? '|multiple': '') .
 				($meta->is_required() ? '|required': '') .
@@ -266,7 +288,7 @@ class CSV extends Exporter {
 			$message = __('target collections:', 'tainacan');
 			$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
 			$message .= __('Exported by:', 'tainacan');
-			$message .= " <b> ${author_name} </b><br/>";
+			$message .= " <b> $author_name </b><br/>";
 			$message .= __('Your CSV file is ready! Access it in the link below:', 'tainacan');
 			$message .= '<br/><br/>';
 			$message .= '<a href="' . $file['url'] . '">Download</a>';
@@ -357,6 +379,34 @@ class CSV extends Exporter {
 			</span>
 			<div class="control is-clearfix">
 				<input class="input" type="text" name="enclosure" value="<?php echo esc_attr($this->get_option('enclosure')); ?>">
+			</div>
+		</div>
+
+		<div class="field">
+			<label class="label"><?php _e('Include metadata section name', 'tainacan'); ?></label>
+			<span class="help-wrapper">
+					<a class="help-button has-text-secondary">
+						<span class="icon is-small">
+							<i class="tainacan-icon tainacan-icon-help" ></i>
+						</span>
+					</a>
+					<div class="help-tooltip">
+						<div class="help-tooltip-header">
+							<h5><?php _e('Include metadata section name', 'tainacan'); ?></h5>
+						</div>
+						<div class="help-tooltip-body">
+							<p><?php _e('Include metadatum section name after the metadatum name. Metadata inside the default section are not modified', 'tainacan'); ?></p>
+						</div>
+					</div> 
+			</span>
+			<div class="control is-clearfix">
+				<label class="checkbox">
+					<input
+						type="checkbox" 
+						name="add_section_name" checked value="yes"
+						>
+					<?php _e('Yes', 'tainacan'); ?>
+				</label>
 			</div>
 		</div>
 

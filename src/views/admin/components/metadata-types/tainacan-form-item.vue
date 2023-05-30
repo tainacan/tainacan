@@ -29,13 +29,13 @@
                 *
             </span>
             <span 
-                    v-if="!$parent.hideMetadataTypes"
+                    v-if="!hideMetadataTypes"
                     class="metadata-type">
                 ({{ itemMetadatum.metadatum.metadata_type_object.name }})
             </span>
             <help-button
-                    v-if="!$parent.hideHelpButtons &&
-                        !$parent.helpInfoBellowLabel &&
+                    v-if="!hideHelpButtons &&
+                        !helpInfoBellowLabel &&
                         itemMetadatum.metadatum &&
                         itemMetadatum.metadatum.description_bellow_name !== 'yes' &&
                         itemMetadatum.metadatum.description" 
@@ -51,7 +51,7 @@
                         v-if="itemMetadatum.metadatum &&
                             itemMetadatum.metadatum.description &&
                             (
-                                (!$parent.hideHelpButtons && $parent.helpInfoBellowLabel) ||
+                                (!hideHelpButtons && helpInfoBellowLabel) ||
                                 (itemMetadatum.metadatum.description_bellow_name === 'yes')
                             )">
                     {{ itemMetadatum.metadatum.description }}
@@ -64,6 +64,9 @@
                         @blur="performValueChange"
                         :metadata-name-filter-string="metadataNameFilterString"
                         :hide-collapses="hideCollapses"
+                        :hide-metadata-types="hideMetadataTypes"
+                        :hide-help-buttons="hideHelpButtons"
+                        :help-info-bellow-label="helpInfoBellowLabel"
                         :is-mobile-screen="isMobileScreen"
                         @mobileSpecialFocus="onMobileSpecialFocus"
                         :is-focused="isFocused"
@@ -83,6 +86,9 @@
                                     @blur="performValueChange"
                                     :metadata-name-filter-string="metadataNameFilterString"
                                     :hide-collapses="hideCollapses"
+                                    :hide-metadata-types="hideMetadataTypes"
+                                    :hide-help-buttons="hideHelpButtons"
+                                    :help-info-bellow-label="helpInfoBellowLabel"
                                     :is-mobile-screen="isMobileScreen"
                                     @mobileSpecialFocus="onMobileSpecialFocus"
                                     :is-focused="isFocused"
@@ -121,7 +127,7 @@
                         v-if="itemMetadatum.metadatum &&
                             itemMetadatum.metadatum.description &&
                             (
-                                (!$parent.hideHelpButtons && $parent.helpInfoBellowLabel) ||
+                                (!hideHelpButtons && helpInfoBellowLabel) ||
                                 (itemMetadatum.metadatum.description_bellow_name === 'yes')
                             )">
                     {{ itemMetadatum.metadatum.description }}
@@ -134,6 +140,9 @@
                         @blur="performValueChange"
                         :is-last-metadatum="isLastMetadatum"
                         :hide-collapses="hideCollapses"
+                        :hide-metadata-types="hideMetadataTypes"
+                        :hide-help-buttons="hideHelpButtons"
+                        :help-info-bellow-label="helpInfoBellowLabel"
                         :is-mobile-screen="isMobileScreen"
                         :metadata-name-filter-string="metadataNameFilterString"
                         @mobileSpecialFocus="onMobileSpecialFocus"
@@ -153,6 +162,9 @@
             itemMetadatum: Object,
             isCollapsed: true,
             hideCollapses: false,
+            hideMetadataTypes: Boolean,
+            hideHelpButtons: Boolean,
+            helpInfoBellowLabel: Boolean,
             isLastMetadatum: false,
             metadataNameFilterString: '',
             isMobileScreen: false,

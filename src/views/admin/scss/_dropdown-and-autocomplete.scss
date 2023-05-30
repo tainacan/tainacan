@@ -96,6 +96,7 @@
                         overflow-x: visible !important;
                         white-space: normal !important;
                         word-wrap: break-word;
+                        word-break: break-word;
                     }
                 }
             }
@@ -432,4 +433,9 @@
             max-height: inherit !important;
         }
     }
+}
+
+/* This makes sure dropdown autocomplete inside a modal that is appended to body appears in front of the modal. */
+body.tainacan-admin-page>.control.autocomplete {
+    z-index: 9999999;
 }

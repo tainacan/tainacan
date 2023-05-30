@@ -239,9 +239,9 @@ export default {
         }
     },
     mounted() {
-
+        
         /* If we're in a collection list, the metadata won't exist as they are read inside sections */        
-        if (!this.isRepositoryLevel) {
+        if ( !this.isRepositoryLevel ) {
             this.collectionId = this.$route.params.collectionId;
 
             this.isLoadingMetadata = true;
@@ -253,14 +253,17 @@ export default {
                 isContextEdit: true, 
                 includeDisabled: true,
                 includeOptionsAsHtml: false
+            }).then((resp) => {
+                resp.request
+                    .then(() => {
+                        this.loadMetadataMappers();
+                        this.isLoadingMetadata = false;
+                    })
+                    .catch(() => {
+                        this.isLoadingMetadata = false;
+                    });
             })
-                .then(() => {
-                    this.loadMetadataMappers();
-                    this.isLoadingMetadata = false;
-                })
-                .catch(() => {
-                    this.isLoadingMetadata = false;
-                });
+            .catch(() => this.isLoadingMetadata = false); 
         } else {
             this.loadMetadataMappers();
         }
@@ -281,7 +284,7 @@ export default {
             this.fetchMetadatumMappers()
                 .then(() => {
                     this.isLoadingMetadatumMappers = false;
-
+                    
                     if (this.metadatumMappers.length >= 1)
                         this.onSelectMetadataMapper(this.metadatumMappers[0])
                 })
@@ -294,7 +297,7 @@ export default {
             this.isMapperMetadataLoading = true;
             this.mapper = metadatumMapper; //TODO try to use v-model again
             this.mapperMetadata = [];
-
+            
             if (metadatumMapper != '') {
                 for (var k in metadatumMapper.metadata) {
                     var item = metadatumMapper.metadata[k];
@@ -376,8 +379,6 @@ export default {
                     metadataMapperMetadata: metadataMapperMetadata,
                     mapper: this.mapper.slug
             }).then(() => {
-                this.isLoadingMetadata = true;
-                this.refreshMetadata();
                 this.isMapperMetadataLoading = false;
             })
             .catch(() => {

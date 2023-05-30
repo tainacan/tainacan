@@ -2,8 +2,12 @@ const { __ } = wp.i18n;
 
 const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
+const { useSelect } = wp.data;
+
+import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
+import pick from 'lodash/pick';
 import TermsModal from '../terms-list/terms-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
@@ -34,7 +38,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         loopSlides,
         hideName,
         showTermThumbnail,
-        taxonomyId
+        taxonomyId,
+        imageSize
     } = attributes;
 
     // Gets blocks props from hook
@@ -48,8 +53,29 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         maxTermsPerScreen = 6;
         setAttributes({ maxTermsPerScreen: maxTermsPerScreen });
     }
+    if (imageSize === undefined) {
+        imageSize = 'tainacan-medium';
+        setAttributes({ imageSize: imageSize });
+    }
 
     const thumbHelper = ThumbnailHelperFunctions();
+
+    // Get available image sizes
+    const {	imageSizes } = useSelect(
+		( select ) => {
+			const {	getSettings	} = select( store );
+
+			const settings = pick( getSettings(), [
+                'imageSizes'
+			] );
+            return settings
+        },
+		[ clientId ]
+	);
+    const imageSizeOptions = map(
+		imageSizes,
+		( { name, slug } ) => ( { value: slug, label: name } )
+	);
 
     function prepareItem(term, termItems) {
         return (
@@ -87,8 +113,18 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         </div>
                         :
                         <img
-                            src={ term.header_image ? term.header_image : `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`}
-                            alt={ term.name ? term.name : __( 'Thumbnail', 'tainacan' )}/>
+                            src={
+                                term.thumbnail && term.thumbnail[imageSize] && term.thumbnail[imageSize][0]
+                                    ?
+                                term.thumbnail[imageSize][0]
+                                    :
+                                (term.thumbnail && term.thumbnail['thumbnail'][0] && term.thumbnail['thumbnail'][0]
+                                    ?
+                                term.thumbnail['thumbnail'][0]
+                                    :
+                                `${tainacan_blocks.base_url}/assets/images/placeholder_square.png`)
+                            }
+                            alt={ term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : __( 'Thumbnail', 'tainacan' ) ) }/>
                     }
                     { !hideName ? <span>{ term.name ? term.name : '' }</span> : null }
                 </a>
@@ -233,6 +269,16 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                     min={ 1 }
                                     max={ 9 }
                                 />
+                            <SelectControl
+                                label={__('Image size', 'tainacan')}
+                                value={ imageSize }
+                                options={ imageSizeOptions }
+                                onChange={ ( anImageSize ) => { 
+                                    imageSize = anImageSize;
+                                    setAttributes({ imageSize: imageSize });
+                                    setContent();
+                                }}
+                            />
                             <RangeControl
                                     label={ __('Space between each term', 'tainacan') }
                                     value={ !isNaN(spaceBetweenTerms) ? spaceBetweenTerms : 32 }

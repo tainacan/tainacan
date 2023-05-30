@@ -499,6 +499,9 @@
                                                 v-if="enabledMetadata[index] == 'true'"
                                                 :item-metadatum="itemMetadatum"
                                                 :hide-collapses="hideCollapses"
+                                                :hide-metadata-types="hideMetadataTypes"
+                                                :hide-help-buttons="hideHelpButtons"
+                                                :help-info-bellow-label="helpInfoBellowLabel"
                                                 :is-collapsed="metadataCollapses[index]"
                                                 @changeCollapse="onChangeCollapse($event, index)"/>
 
@@ -609,6 +612,7 @@
                                 style="margin-right: auto;">
                             <button 
                                     @click="onDiscard()"
+                                    id="tainacan-item-submission-block-button--cancel"
                                     type="button"
                                     class="wp-block-button__link wp-element-button">
                                 {{ $i18n.get('cancel') }}
@@ -619,6 +623,7 @@
                                 class="wp-block-button">
                             <button 
                                     @click="onPreviousStep()"
+                                    id="tainacan-item-submission-block-button--previous"
                                     type="button"
                                     class="wp-block-button__link wp-element-button">
                                 {{ $i18n.get('previous') }}
@@ -629,6 +634,7 @@
                                 class="wp-block-button">
                             <button 
                                     @click="onNextStep()"
+                                    id="tainacan-item-submission-block-button--next"
                                     type="button"
                                     class="wp-block-button__link wp-element-button">
                                 {{ $i18n.get('next') }}
@@ -639,6 +645,7 @@
                                 class="wp-block-button">
                             <button 
                                     :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
+                                    id="tainacan-item-submission-block-button--submit"
                                     @click="onSubmit()"
                                     type="button"
                                     class="wp-block-button__link wp-element-button">
@@ -880,7 +887,7 @@ export default {
         },
     },
     created() {
-
+        
         // Puts loading on form
         this.isLoading = true;
 
@@ -953,7 +960,6 @@ export default {
             });
     },
     mounted() {
-
         // Checks if only one type of document is allowed. In this case we preset document type
         if (!this.hideFileModalButton && this.hideTextModalButton && this.hideLinkModalButton)
             this.form.document_type = 'attachment';

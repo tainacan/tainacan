@@ -93,6 +93,7 @@ class REST_Controller extends \WP_REST_Controller {
 			'hierarchical' => 'hierarchical',
 			'exclude'      => 'post__not_in',
 			'excludetree'  => 'exclude_tree',
+			'exclude_tree' => 'exclude_tree',
 			'include'      => 'include',
 			'sentence'     => 'sentence'
 		];

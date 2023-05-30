@@ -14,100 +14,104 @@
     },
     "attributes": {
         "content": {
-            "type": "Array",
+            "type": "array",
             "source": "children",
             "selector": "div"
         },
         "terms": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "isModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "selectedTerms": {
-            "type": "Array",
+            "type": "array",
             "default": []
         },
         "itemsRequestSource": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
-        "maxTermsNumber": {
-            "type": "Number",
+        "maxTermsnumber": {
+            "type": "number",
             "value": 12
         },
         "maxTermsPerScreen": {
-            "type": "Number",
+            "type": "number",
             "value": 6
         },
         "spaceBetweenTerms": {
-            "type": "Number",
+            "type": "number",
             "value": 32
         },
         "spaceAroundCarousel": {
-            "type": "Number",
+            "type": "number",
             "value": 50
         },
         "isLoading": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "isLoadingTerm": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "arrowsPosition": {
-            "type": "String",
+            "type": "string",
             "value": "around"
         },
         "largeArrows": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "arrowsStyle": {
-            "type": "String",
+            "type": "string",
             "value": "type-1"
         },
         "autoPlay": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "autoPlaySpeed": {
-            "type": "Number",
+            "type": "number",
             "value": 3
         },
         "loopSlides": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "hideName": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": true
         },
         "showTermThumbnail": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "term": {
-            "type": "Object",
+            "type": "object",
             "value": {}
         },
+        "imageSize": {
+            "type": "string",
+            "default": "tainacan-medium"
+        },
         "blockId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "termBackgroundColor": {
-            "type": "String",
+            "type": "string",
             "default": "#454647"
         },
         "termTextColor": {
-            "type": "String",
+            "type": "string",
             "default": "#ffffff"
         },
         "taxonomyId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         }
     },

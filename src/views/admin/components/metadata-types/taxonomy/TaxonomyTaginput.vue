@@ -41,14 +41,14 @@
                 v-if="allowNew"
                 slot="footer">
                 <a @click="$emit('showAddNewTerm', { name: searchName })">
-                {{ $i18n.get('label_new_term') + ' "' + searchName + '"' }}
+                {{ $i18n.get('label_create_new_term') + ' "' + searchName + '"' }}
             </a>
         </template>
     </b-taginput>
 </template>
 
 <script>
-    import { mapActions, mapGetters } from 'vuex';
+    import { mapActions } from 'vuex';
 
     export default {
         props: {
@@ -86,9 +86,6 @@
         methods: {
             ...mapActions('taxonomy', [
                 'fetchTerms'
-            ]),
-            ...mapGetters('taxonomy', [
-                'getTerms'
             ]),
             loadTerms: _.debounce( function(value) {                
 

@@ -526,7 +526,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                         setContent();
                                     }}
                                     min={ 1 }
-                                    max={ 96 }
+                                    max={ tainacan_blocks.api_max_items_per_page ? Number(tainacan_blocks.api_max_items_per_page) : 96 }
                                 />
                             </div>
                         </PanelBody>

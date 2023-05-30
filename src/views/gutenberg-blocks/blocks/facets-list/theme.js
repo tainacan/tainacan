@@ -38,6 +38,7 @@ export default (element) => {
                         nameInsideImage: false,
                         linkTermFacetsToTermPage: true,
                         appendChildTerms: false,
+                        imageSize: 'tainacan-medium',
                         layout: 'grid',
                         itemsCountStyle: 'default',
                         cloudRate: 1,
@@ -67,6 +68,7 @@ export default (element) => {
                                 itemsCountStyle: this.itemsCountStyle,
                                 cloudRate: this.cloudRate,
                                 gridMargin: this.gridMargin,
+                                imageSize: this.imageSize,
                                 linkTermFacetsToTermPage: this.linkTermFacetsToTermPage,
                                 appendChildTerms: this.appendChildTerms,
                                 maxFacetsNumber: this.maxFacetsNumber,
@@ -95,6 +97,7 @@ export default (element) => {
                         this.itemsCountStyle = this.$el.attributes['items-count-style'] != undefined ? this.$el.attributes['items-count-style'].value : undefined;
                         this.cloudRate = this.$el.attributes['cloud-rate'] != undefined ? Number(this.$el.attributes['cloud-rate'].value) : undefined;
                         this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
+                        this.imageSize = this.$el.attributes['image-size'] != undefined ? this.$el.attributes['image-size'].value : 'tainacan-medium';
                         this.linkTermFacetsToTermPage = this.$el.attributes['link-term-facets-to-term-page'] != undefined ? this.$el.attributes['link-term-facets-to-term-page'].value == 'true' : true;
                         this.maxFacetsNumber = this.$el.attributes['max-facets-number'] != undefined ? this.$el.attributes['max-facets-number'].value : undefined;
                         this.maxColumnsCount = this.$el.attributes['max-columns-count'] != undefined ? this.$el.attributes['max-columns-count'].value : 5;

@@ -37,6 +37,7 @@ do
     case $i in
         --prod)
             is_prod_build=true
+            rm -r ./src/assets/js/*
         ;;
     esac
 done

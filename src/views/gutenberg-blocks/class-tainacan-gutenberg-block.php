@@ -153,7 +153,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	wp_register_style(
 		$block_slug,
 		$TAINACAN_BASE_URL . '/assets/css/tainacan-gutenberg-block-' . $block_slug . '.css',
-		array('tainacan-blocks-common-editor-styles'),
+		array(),
 		$TAINACAN_VERSION
 	);
 	$register_params['style'] = $block_slug;
@@ -215,6 +215,7 @@ function tainacan_blocks_get_common_editor_styles() {
  */
 function tainacan_blocks_get_plugin_js_settings(){
 	global $TAINACAN_BASE_URL;
+	global $TAINACAN_API_MAX_ITEMS_PER_PAGE;
 	global $wp_version;
 
 	$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
@@ -229,6 +230,7 @@ function tainacan_blocks_get_plugin_js_settings(){
 		'root'     	 => esc_url_raw( rest_url() ) . 'tainacan/v2',
 		'nonce'   	 => is_user_logged_in() ? wp_create_nonce( 'wp_rest' ) : false,
 		'base_url' 	 => $TAINACAN_BASE_URL,
+		'api_max_items_per_page'    => $TAINACAN_API_MAX_ITEMS_PER_PAGE,
 		'admin_url'  => admin_url(),
 		'site_url'	 => site_url(),
 		'theme_items_list_url' => esc_url_raw( get_site_url() ) . '/' . \Tainacan\Theme_Helper::get_instance()->get_items_list_slug(),
@@ -310,7 +312,7 @@ function tainacan_blocks_get_variations_script() {
 	wp_enqueue_script(
 		'tainacan-blocks-query-variations',
 		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_query_variations.js',
-		array('wp-blocks', 'wp-components'),
+		array('wp-blocks', 'wp-components', 'wp-i18n'),
 		$TAINACAN_VERSION
 	);
 

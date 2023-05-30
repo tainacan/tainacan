@@ -116,7 +116,7 @@ export default {
     },
     data() {
         return {
-            maxItemsPerPage: tainacan_plugin.api_max_items_per_page
+            maxItemsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
         }
     },
     computed: {
@@ -133,7 +133,7 @@ export default {
             return Math.ceil(Number(this.totalItems)/Number(this.itemsPerPage));    
         },
         itemsPerPageOptions() {
-            const defaultItemsPerPageOptions = [12, 24, 48, 96];
+            const defaultItemsPerPageOptions = [12, 24, 48, this.maxItemsPerPage];
             if (!isNaN(this.itemsPerPage) && !defaultItemsPerPageOptions.includes(this.itemsPerPage))
                 defaultItemsPerPageOptions.push(this.itemsPerPage);
             

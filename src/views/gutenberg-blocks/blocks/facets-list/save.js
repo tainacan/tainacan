@@ -21,7 +21,8 @@ export default function({ attributes, className }) {
         showSearchBar,
         linkTermFacetsToTermPage,
         appendChildTerms,
-        itemsCountStyle
+        itemsCountStyle,
+        imageSize
     } = attributes;
 
     // Gets attributes such as style, that are automatically added by the editor hook
@@ -39,6 +40,7 @@ export default function({ attributes, className }) {
                 show-items-count={ '' + showItemsCount }
                 show-search-bar={ '' + showSearchBar }
                 show-load-more={ '' + showLoadMore }
+                image-size={ imageSize }
                 append-child-terms={ (appendChildTerms === true ? 'true' : 'false') }
                 link-term-facets-to-term-page={ linkTermFacetsToTermPage === false ? 'false' : 'true' }
                 layout={ layout }

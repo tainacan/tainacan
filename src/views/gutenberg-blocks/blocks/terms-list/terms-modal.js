@@ -135,8 +135,8 @@ export default class TermsModal extends React.Component {
                     id: term.id,
                     url: term.url,
                     header_image: [{
-                        src: term.header_image,
-                        alt: term.name
+                        src: term.thumbnail && term.thumbnail['tainacan-medium'] && term.thumbnail['tainacan-medium'][0] ? term.thumbnail['tainacan-medium'][0] : term.header_image,
+                        alt: term.thumbnail_alt ? term.thumbnail_alt : term.name
                     }]
                 }));
 
@@ -176,8 +176,8 @@ export default class TermsModal extends React.Component {
                         id: term.id,
                         url: term.url,
                         header_image: [{
-                            src: term.header_image,
-                            alt: term.name
+                            src: term.thumbnail && term.thumbnail['tainacan-medium'] && term.thumbnail['tainacan-medium'][0] ? term.thumbnail['tainacan-medium'][0] : term.header_image,
+                            alt: term.thumbnail_alt ? term.thumbnail_alt : term.name
                         }]
                     });
                 }

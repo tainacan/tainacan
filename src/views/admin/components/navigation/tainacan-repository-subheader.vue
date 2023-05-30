@@ -79,6 +79,19 @@
             </li>
             <li>
                 <a
+                        :href="repositoryTaxonomiesURL"
+                        target="_blank"
+                        v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewTaxonomiesButton"
+                        class="button"
+                        id="view-repository-button--taxonomies">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                    </span>
+                    <span class="is-hidden-mobile">{{ $i18n.get('label_view_taxonomies_on_website') }}</span>
+                </a>
+            </li>
+            <li>
+                <a
                         :href="repositoryURL"
                         target="_blank"
                         v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewCollectionsButton"
@@ -109,6 +122,7 @@ export default {
         return {
             repositoryName: tainacan_plugin.repository_name,
             repositoryURL: tainacan_plugin.theme_collection_list_url,
+            repositoryTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url,
             collectionId: ''
         }
     },
@@ -255,7 +269,8 @@ export default {
                     background-color: var(--tainacan-turquoise5) !important;
                 }
             }
-            #view-repository-button {
+            #view-repository-button,
+            #view-repository-button--taxonomies {
                 font-size: 0.9375em !important;
                 border: none;
                 border-radius: 0px !important;

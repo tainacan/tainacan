@@ -333,7 +333,7 @@
                                 <option value="12">12</option>
                                 <option value="24">24</option>
                                 <option value="48">48</option>
-                                <option value="96">96</option>
+                                <option :value="maxCollectionsPerPage">{{ maxCollectionsPerPage }}</option>
                             </b-select>
                         </b-field>
                     </div>
@@ -377,13 +377,14 @@ export default {
             isLoadingCollectionTaxonomies: false,
             status: '',
             order: 'desc',
-            ordeBy: 'date',
+            orderBy: 'date',
             searchQuery: '',
             sortingOptions: [
                 { label: this.$i18n.get('label_title'), value: 'title' },
                 { label: this.$i18n.get('label_creation_date'), value: 'date' },
                 { label: this.$i18n.get('label_modification_date'), value: 'modified' }
-            ]
+            ],
+            maxCollectionsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
         }
     },
     computed: {

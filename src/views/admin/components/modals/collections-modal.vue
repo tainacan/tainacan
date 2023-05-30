@@ -59,17 +59,18 @@ import { mapActions } from 'vuex';
 
 export default {
     name: 'CollectionsModal',
-    data(){
+    data() {
         return {
             collections: [],
-            isLoading: false
+            isLoading: false,
+            maxCollectionsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
         }
     },
     mounted() {
         this.isLoading = true;
         this.fetchCollections({ 
                 page: 1, 
-                collectionsPerPage: 96, 
+                collectionsPerPage: this.maxCollectionsPerPage, 
                 contextEdit: true
             })
             .then((res) => {

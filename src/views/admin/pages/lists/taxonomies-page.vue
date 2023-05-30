@@ -125,7 +125,7 @@
                             </a>
                         </li>
                         <li 
-                                v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                                v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                                 :key="index"
                                 v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_taxonomies'))"
                                 @click="onChangeTab(statusOption.slug)"
@@ -212,7 +212,7 @@
                                     <option value="12">12</option>
                                     <option value="24">24</option>
                                     <option value="48">48</option>
-                                    <option value="96">96</option>
+                                    <option :value="maxTaxonomiesPerPage">{{ maxTaxonomiesPerPage }}</option>
                                 </b-select>
                             </b-field>
                         </div>
@@ -254,12 +254,13 @@
                 taxonomiesPerPage: 12,
                 status: '',
                 order: 'asc',
-                ordeBy: 'date',
+                orderBy: 'date',
                 searchQuery: '',
                 sortingOptions: [
                     { label: this.$i18n.get('label_title'), value: 'title' },
                     { label: this.$i18n.get('label_creation_date'), value: 'date' },
-                ]
+                ],
+                maxTaxonomiesPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
             }
         },
         computed: {
