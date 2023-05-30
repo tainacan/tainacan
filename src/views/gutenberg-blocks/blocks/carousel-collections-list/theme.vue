@@ -191,12 +191,16 @@ export default {
             tainacanAxios: undefined,
             paged: undefined,
             totalCollections: 0,
+            apiRoot: '',
             errorMessage: 'No collections found.',
             swiper: {}
         }
     },
     created() {
-        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        
+        this.apiRoot = (tainacan_blocks && tainacan_blocks.root && !this.tainacanApiRoot) ? tainacan_blocks.root : this.tainacanApiRoot;
+            
+        this.tainacanAxios = axios.create({ baseURL: this.apiRoot });
         if (tainacan_blocks && tainacan_blocks.nonce)
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
 

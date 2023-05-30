@@ -214,6 +214,7 @@ export default {
             tainacanAxios: undefined,
             offset: undefined,
             totalFacets: 0,
+            apiRoot: '',
             lastTerm: undefined,
             localParentTermId: ''
         }
@@ -227,7 +228,9 @@ export default {
         }
     },
     created() {
-        this.tainacanAxios = axios.create({ baseURL: this.tainacanApiRoot });
+        this.apiRoot = (tainacan_blocks && tainacan_blocks.root && !this.tainacanApiRoot) ? tainacan_blocks.root : this.tainacanApiRoot;
+            
+        this.tainacanAxios = axios.create({ baseURL: this.apiRoot });
         
         if (tainacan_blocks && tainacan_blocks.nonce)
             this.tainacanAxios.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
