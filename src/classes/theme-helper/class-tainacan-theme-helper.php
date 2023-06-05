@@ -1167,7 +1167,7 @@ class Theme_Helper {
 		// Always pass the class needed by Vue to mount the component;
 		$args['class'] = $args['class_name'] . ' wp-block-tainacan-dynamic-items-list';
 		unset($args['class_name']);
-		
+
 		// Builds parameters to the html div rendered by Vue
 		foreach ($args as $key => $value) {
 			if (is_bool($value))
@@ -1226,6 +1226,9 @@ class Theme_Helper {
 		if ( isset($args['order']) )
 			$related_items_query_args['order'] = $args['order'];
 
+		if ( isset($args['max_items_number']) )
+			$related_items_query_args['posts_per_page'] = $args['max_items_number'];
+		
 		$related_items = $item->get_related_items($related_items_query_args);
 		if (!count($related_items))
 			return;
