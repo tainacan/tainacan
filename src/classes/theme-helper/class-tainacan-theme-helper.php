@@ -1230,6 +1230,7 @@ class Theme_Helper {
 			$related_items_query_args['posts_per_page'] = $args['max_items_number'];
 		
 		$related_items = $item->get_related_items($related_items_query_args);
+
 		if (!count($related_items))
 			return;
 
@@ -1264,12 +1265,9 @@ class Theme_Helper {
 						? $block_args['image_size']
 						: ($no_crop_images_to_square ? 'tainacan-medium-full' : 'tainacan-medium');
 
-					// Remove attribute description and unused thumbnails image sizes, to avoid poluting HTML
+					// Remove attribute description to avoid poluting HTML
 					$related_group['items'] = array_map(
 						function($el) use ($image_size) {
-							$el['thumbnail'] = array_filter($el['thumbnail'], function($key) use ($image_size) {
-								return $key == $image_size;
-							}, ARRAY_FILTER_USE_KEY);
 							unset($el['description']);
 							return $el;
 						}, $related_group['items']
