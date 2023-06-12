@@ -96,6 +96,21 @@
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'allow_new_terms')"
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')"/>
         </b-field>
+        <b-field
+                v-if="taxonomy_id && taxonomies.length" 
+                :addons="false"
+                :label="$i18n.getHelperTitle('tainacan-taxonomy', 'do_not_dispaly_term_as_link')">
+                &nbsp;
+            <b-switch
+                    size="is-small" 
+                    v-model="do_not_dispaly_term_as_link"
+                    @input="emitValues()"
+                    true-value="yes"
+                    false-value="no" />
+            <help-button
+                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'do_not_dispaly_term_as_link')"
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'do_not_dispaly_term_as_link')"/>
+        </b-field>
         <b-field :addons="false">
             <label class="label">
                 {{ $i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections') }}
@@ -112,6 +127,7 @@
                     @input="updateSelectedCollections"
                     @focus="clear()"
                     attached
+                    :disabled="do_not_dispaly_term_as_link == 'yes'"
                     :remove-on-keys="[]"
                     :aria-close-label="$i18n.get('remove_value')"
                     :class="{'has-selected': link_filtered_by_collections != undefined && link_filtered_by_collections != []}"
@@ -174,6 +190,7 @@
                 loading: false,
                 allow_new_terms: 'yes',
                 hide_hierarchy_path: 'no',
+                do_not_dispaly_term_as_link: 'no',
                 link_filtered_by_collections: [],
                 visible_options_list: false, 
                 input_type: 'tainacan-taxonomy-radio',
@@ -188,7 +205,7 @@
         },
         computed: {
             listInputType() {
-                if ( this.metadatum && this.metadatum.multiple === 'no' ){
+                if ( this.metadatum && this.metadatum.multiple === 'no' ) {
                     let types = Object.keys( this.single_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
                     
@@ -233,7 +250,7 @@
                 }
             }
         },
-        created(){
+        created() {
             this.fetchTaxonomies();
             this.fetchCollections();
 
@@ -246,6 +263,7 @@
                 this.taxonomy_id = this.value.taxonomy_id;
                 this.allow_new_terms = ( this.value.allow_new_terms ) ? this.value.allow_new_terms : 'no';
                 this.hide_hierarchy_path = ( this.value.hide_hierarchy_path ) ? this.value.hide_hierarchy_path : 'no';
+                this.do_not_dispaly_term_as_link = ( this.value.do_not_dispaly_term_as_link ) ? this.value.do_not_dispaly_term_as_link : 'no';
                 
                 if (this.metadatum && this.metadatum.multiple === 'no') {
                     let types = Object.keys( this.single_types );
@@ -265,10 +283,10 @@
             this.isReady = true;
         },
         methods: {
-            setInputType( input ){
+            setInputType( input ) {
                 this.input_type = input;
             },
-            setErrorsAttributes( type, message ){
+            setErrorsAttributes( type, message ) {
                 this.taxonomyType = type;
                 this.taxonomyMessage = message;
             },
@@ -313,6 +331,7 @@
                     visible_options_list: this.visible_options_list,
                     link_filtered_by_collections: this.link_filtered_by_collections,
                     hide_hierarchy_path: this.hide_hierarchy_path,
+                    do_not_dispaly_term_as_link: this.do_not_dispaly_term_as_link,
                     taxonomy: this.taxonomy
                 })
             },
@@ -321,7 +340,7 @@
                this.emitValues();
             },
             getSelectedTaxonomyCollections() {
-                if (this.link_filtered_by_collections && this.link_filtered_by_collections.length)
+                if ( this.link_filtered_by_collections && this.link_filtered_by_collections.length )
                     return this.collections.filter((collection) => this.link_filtered_by_collections.includes(collection.id));
                 return [];
             },
