@@ -1295,7 +1295,7 @@ class Theme_Helper {
 					}
 				}
 				
-				$output .= '<div class="wp-block-group">
+				$output .= '<div class="wp-block-group" data-related-collection-id="' . $related_group['collection_id'] . '" data-related-metadata-id="' . $related_group['metadata_id'] . '">
 					<div class="wp-block-group__inner-container">' .
 						/**
 						 * Note to code reviewers: This lines doesn't need to be escaped.
