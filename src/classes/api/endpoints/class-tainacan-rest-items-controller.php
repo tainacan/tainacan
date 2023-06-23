@@ -61,6 +61,7 @@ class REST_Items_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
+				'schema'                => [$this, 'get_list_schema'],
 			)
 		);
 		register_rest_route(
@@ -89,6 +90,7 @@ class REST_Items_Controller extends REST_Controller {
 						),
 					)
 				),
+				'schema'                => [$this, 'get_schema'],
 			)
 		);
 		register_rest_route(
@@ -112,6 +114,7 @@ class REST_Items_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_wp_query_params(),
 				),
+				'schema'                => [$this, 'get_list_schema'],
 			)
 		);
 		register_rest_route(
@@ -1501,6 +1504,10 @@ class REST_Items_Controller extends REST_Controller {
 		return $query_params;
 	}
 
+	function process_request_filters($args) {
+		return $this->prepare_filters($args);
+	}
+
 	function get_attachments_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
@@ -1508,7 +1515,7 @@ class REST_Items_Controller extends REST_Controller {
 			'type' => 'object'
 		];
 
-		$schema = [
+		$properties = [
 			'title' => [
 				'description' => esc_html__('The attachment title', 'tainacan'),
 				'type' => 'string'
@@ -1554,16 +1561,42 @@ class REST_Items_Controller extends REST_Controller {
 
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
-			$schema
+			$properties
 		);
 
 		return $schema;
 
 	}
 
-	function process_request_filters($args) {
-		return $this->prepare_filters($args);
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'item',
+			'type' => 'object'
+		];
+
+		$main_schema = parent::get_repository_schema( $this->items_repository );
+		$permissions_schema = parent::get_permissions_schema();
+
+		$schema['properties'] = array_merge(
+			parent::get_base_properties_schema(),
+			$main_schema,
+			$permissions_schema
+		);
+
+		return $schema;
 	}
+
+	function get_list_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'items',
+			'type' => 'array',
+			'items' => $this->get_schema()
+		];
+		return $schema;
+	}
+
 }
 
 ?>
