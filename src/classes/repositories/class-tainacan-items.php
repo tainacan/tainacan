@@ -141,7 +141,8 @@ class Items extends Repository {
 			'_thumbnail_id'     => [
 				'map'         => 'meta',
 				'title'       => __( 'Thumbnail', 'tainacan' ),
-				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' )
+				'description' => __( 'Squared reduced-size version of a picture that helps recognizing and organizing files', 'tainacan' ),
+				'type'        => ['integer', 'string'],
 			],
 			'comment_status'  => [
 				'map'         => 'comment_status',
