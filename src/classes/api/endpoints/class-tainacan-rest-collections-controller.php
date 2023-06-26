@@ -87,11 +87,11 @@ class REST_Collections_Controller extends REST_Controller {
 				'callback'            => array($this, 'update_metadata_section_order'),
 				'permission_callback' => array($this, 'update_metadata_section_order_permissions_check'),
 				'args'                => [
-					'metadata_section_order' => [
-						'description' => __( 'The order of the metadata section in the collection, an array of objects with integer ID and bool enabled.', 'tainacan' ),
+					'collection_id' => [
+						'description' => 'ID da coleção',
 						'required' => true,
-						'validate_callback' => [$this, 'validate_metadata_section_order']
-					]
+					],
+					'metadata_section_order' => $this->collections_repository->get_map()['metadata_section_order']
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
@@ -889,7 +889,8 @@ class REST_Collections_Controller extends REST_Controller {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'collection',
-			'type' => 'object'
+			'type' => 'object',
+			'tags' => ['collection'],
 		];
 
 		$main_schema = parent::get_repository_schema( $this->collections_repository );

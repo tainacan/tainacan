@@ -134,8 +134,24 @@ class Collections extends Repository {
 			'metadata_section_order'             => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata order', 'tainacan' ),
-				'type'        => ['array', 'object', 'string'],
-				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
+				'type'        => 'array',
+				'items'       => [
+					'type' => 'object',
+					"properties" => [
+						"id" => [
+							"description" => "IDs.",
+							"type" => "integer",
+						],
+						"enabled" => [
+							"description" => "enabled.",
+							"type" => "boolean",
+						],
+						"metadata_order" => [
+							"description" => "metadata_order.",
+							"type" => "array",
+						],
+					]
+				],
 				'description' => __( 'The order of the metadata section in the collection', 'tainacan' ),
 			],
 			'metadata_order'             => [

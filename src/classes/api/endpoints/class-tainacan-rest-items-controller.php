@@ -1572,7 +1572,8 @@ class REST_Items_Controller extends REST_Controller {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'item',
-			'type' => 'object'
+			'type' => 'object',
+			'tags' => ['item'],
 		];
 
 		$main_schema = parent::get_repository_schema( $this->items_repository );
@@ -1592,7 +1593,8 @@ class REST_Items_Controller extends REST_Controller {
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'items',
 			'type' => 'array',
-			'items' => $this->get_schema()
+			'items' => $this->get_schema(),
+			'tags' => ['item'],
 		];
 		return $schema;
 	}
