@@ -137,18 +137,32 @@ class Collections extends Repository {
 				'type'        => 'array',
 				'items'       => [
 					'type' => 'object',
-					"properties" => [
+					'properties' => [
 						"id" => [
-							"description" => "IDs.",
+							"description" => "ID of metadata section",
 							"type" => "integer",
 						],
 						"enabled" => [
-							"description" => "enabled.",
+							"description" => "If metadata section is enabled.",
 							"type" => "boolean",
 						],
 						"metadata_order" => [
-							"description" => "metadata_order.",
-							"type" => "array",
+							'type'        => 'array',
+							'description' => 'Array with order of the metadata inside section',
+							'items' => [
+								'type' => 'object', 
+								'properties' => [
+									"id" => [
+										"description" => "ID of metadata.",
+										"type" => "integer"
+									],
+									"enabled" => [
+										"description" => "If metadata is enabled.",
+										"type" => "boolean"
+									]
+
+								]
+							]
 						],
 					]
 				],
