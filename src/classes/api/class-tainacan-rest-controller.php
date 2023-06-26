@@ -627,6 +627,9 @@ class REST_Controller extends \WP_REST_Controller {
 				'description' => $value['description'],
 				'type' => $value['type']
 			];
+			if( isset($value['items'])) {
+				$schema[$mapped]['items'] = $value['items'];
+			}
 		}
 
 		return $schema;
