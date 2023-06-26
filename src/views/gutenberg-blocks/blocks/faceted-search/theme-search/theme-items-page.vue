@@ -99,6 +99,8 @@
                                 :focusable="false">
                             <b-checkbox 
                                     :value="sentenceMode"
+                                    :true-value="false"
+                                    :false-value="true"
                                     @input="$eventBusSearch.setSentenceMode($event)">
                                 {{ $i18n.get('label_use_search_separated_words') }}
                             </b-checkbox>
@@ -627,6 +629,8 @@
                                 <br>
                                 <b-checkbox 
                                         :value="sentenceMode"
+                                        :true-value="false"
+                                        :false-value="true"
                                         @input="$eventBusSearch.setSentenceMode($event); updateSearch();">
                                     {{ $i18n.get('label_use_search_separated_words') }}
                                 </b-checkbox>
