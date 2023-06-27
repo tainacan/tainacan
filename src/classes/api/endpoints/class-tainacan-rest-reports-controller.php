@@ -7,6 +7,9 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 
 class REST_Reports_Controller extends REST_Controller {
+	protected function get_schema() {
+        return "TODO:get_schema";
+    }
 
 	public function __construct() {
 		$this->rest_base = 'reports';

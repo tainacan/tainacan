@@ -5,6 +5,9 @@ namespace Tainacan\API\EndPoints;
 use \Tainacan\API\REST_Controller;
 
 class REST_Metadata_Types_Controller extends REST_Controller {
+	protected function get_schema() {
+        return "TODO:get_schema";
+    }
 
 	/**
 	 * REST_Metadata_Types_Controller constructor.

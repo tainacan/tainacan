@@ -7,6 +7,9 @@ use Tainacan\Entities;
 use \Tainacan\API\REST_Controller;
 
 class REST_Facets_Controller extends REST_Controller {
+	protected function get_schema() {
+        return "TODO:get_schema";
+    }
 
 
 	private $metadatum_repository;

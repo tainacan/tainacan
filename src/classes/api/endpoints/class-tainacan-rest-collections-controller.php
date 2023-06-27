@@ -59,8 +59,12 @@ class REST_Collections_Controller extends REST_Controller {
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_item'),
 				'permission_callback' => array($this, 'get_item_permissions_check'),
-				'args'                => $this->get_wp_query_params(),
-
+				'args'                => [
+					'collection_id' => [
+						'description' => __( 'Collection ID', 'tainacan' ),
+						'required' => true,
+					]
+				],
 			),
 			array(
 				'methods'             => \WP_REST_Server::EDITABLE,
@@ -73,6 +77,10 @@ class REST_Collections_Controller extends REST_Controller {
 				'callback'            => array($this, 'delete_item'),
 				'permission_callback' => array($this, 'delete_item_permissions_check'),
 				'args'                => array(
+					'collection_id' => [
+						'description' => __( 'Collection ID', 'tainacan' ),
+						'required' => true,
+					],
 					'permanently' => array(
 						'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
 						'default'     => '0',
@@ -91,12 +99,7 @@ class REST_Collections_Controller extends REST_Controller {
 						'description' => __( 'Collection ID', 'tainacan' ),
 						'required' => true,
 					],
-					'metadata_section_order' => array_merge(
-						array(
-							'required' => true,
-						),
-						$this->collections_repository->get_map()['metadata_section_order']
-					)
+					'metadata_section_order' => $this->get_endpoint_arg_for_schema('metadata_section_order', ['required' => true])
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
@@ -107,13 +110,10 @@ class REST_Collections_Controller extends REST_Controller {
 				'callback'            => array($this, 'update_metadata_order'),
 				'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
 				'args'                => [
-					'metadata_order' => array_merge(
-						array(
-							'required' => true,
-							'validate_callback' => [$this, 'validate_filters_metadata_order']
-						),
-						$this->collections_repository->get_map()['metadata_order']
-					)
+					'metadata_order' => $this->get_endpoint_arg_for_schema('metadata_order', [
+						'required' => true,
+						'validate_callback' => [$this, 'validate_filters_metadata_order']
+					])
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
@@ -124,13 +124,10 @@ class REST_Collections_Controller extends REST_Controller {
 				'callback'            => array($this, 'update_metadata_order'),
 				'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
 				'args'                => [
-					'metadata_order' => array_merge(
-						array(
-							'required' => true,
-							'validate_callback' => [$this, 'validate_filters_metadata_order']
-						),
-						$this->collections_repository->get_map()['metadata_order']
-					)
+					'metadata_order' => $this->get_endpoint_arg_for_schema('metadata_order', [
+						'required' => true,
+						'validate_callback' => [$this, 'validate_filters_metadata_order']
+					])
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
@@ -141,13 +138,10 @@ class REST_Collections_Controller extends REST_Controller {
 				'callback'            => array($this, 'update_filters_order'),
 				'permission_callback' => array($this, 'update_filters_order_permissions_check'),
 				'args'                => [
-					'filters_order' => array_merge(
-						array(
-							'required' => true,
-							'validate_callback' => [$this, 'validate_filters_metadata_order']
-						),
-						$this->collections_repository->get_map()['filters_order']
-					)
+					'filters_order' => $this->get_endpoint_arg_for_schema('filters_order', [
+						'required' => true,
+						'validate_callback' => [$this, 'validate_filters_metadata_order']
+					])
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
@@ -896,12 +890,29 @@ class REST_Collections_Controller extends REST_Controller {
 		return $endpoint_args;
 	}
 
+	function get_endpoint_arg_for_schema($name, $properties = [], $repository = null) {
+		if ( $repository == null)
+			$repository = $this->collections_repository;
+
+		if ( !isset( $repository ) ) {
+			return ['title' => $name, 'description' => $name, 'type' => 'string'];
+		}
+
+		$map = $repository->get_map();
+		if( !isset( $map[$name] ) ) {
+			return ['title' => $name, 'description' => $name, 'type' => 'string'];
+		}
+
+		$arg = array_merge($map[$name], $properties);
+		return $arg;
+	}
+
 	function get_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'collection',
 			'type' => 'object',
-			'tags' => [ 'collection' ],
+			'tags' => [ $this->rest_base ],
 		];
 
 		$main_schema = parent::get_repository_schema( $this->collections_repository );
@@ -916,17 +927,6 @@ class REST_Collections_Controller extends REST_Controller {
 		return $schema;
 	}
 
-
-	function get_list_schema() {
-		$schema = [
-			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => 'collections',
-			'type' => 'array',
-			'items' => $this->get_schema(),
-			'tags' => ['collection'],
-		];
-		return $schema;
-	}
 }
 
 ?>

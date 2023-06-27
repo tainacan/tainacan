@@ -141,7 +141,7 @@ class Collections extends Repository {
 					'properties' => [
 						'id' => [
 							'description' => __( 'Metadata Section ID', 'tainacan' ),
-							'type' => 'integer',
+							'type' => ['integer', 'string'],
 						],
 						'enabled' => [
 							'description' => __( 'Whether the metadata section is enabled or not.', 'tainacan' ),

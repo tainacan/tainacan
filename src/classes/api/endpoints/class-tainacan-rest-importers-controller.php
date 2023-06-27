@@ -11,6 +11,9 @@ use Tainacan\Entities;
  *
  * */
 class REST_Importers_Controller extends REST_Controller {
+	protected function get_schema() {
+        return "TODO:get_schema";
+    }
 
 	/**
 	 * REST_Importers_Controller constructor.

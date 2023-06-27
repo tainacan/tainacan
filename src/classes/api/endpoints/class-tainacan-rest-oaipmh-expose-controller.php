@@ -6,6 +6,9 @@ use Tainacan\OAIPMHExpose;
 use \Tainacan\API\REST_Controller;
 
 class REST_Oaipmh_Expose_Controller extends REST_Controller {
+    protected function get_schema() {
+        return "TODO:get_schema";
+    }
 
     /**
      * REST_Facets_Controller constructor.

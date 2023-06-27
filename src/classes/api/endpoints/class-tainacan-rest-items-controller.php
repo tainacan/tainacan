@@ -1511,8 +1511,9 @@ class REST_Items_Controller extends REST_Controller {
 	function get_attachments_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => 'collection',
-			'type' => 'object'
+			'title' => 'attachments',
+			'type' => 'object',
+			'tags' => ['attachment', 'item']
 		];
 
 		$properties = [
@@ -1573,7 +1574,7 @@ class REST_Items_Controller extends REST_Controller {
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'item',
 			'type' => 'object',
-			'tags' => ['item'],
+			'tags' => [ $this->rest_base ],
 		];
 
 		$main_schema = parent::get_repository_schema( $this->items_repository );
@@ -1587,18 +1588,6 @@ class REST_Items_Controller extends REST_Controller {
 
 		return $schema;
 	}
-
-	function get_list_schema() {
-		$schema = [
-			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => 'items',
-			'type' => 'array',
-			'items' => $this->get_schema(),
-			'tags' => ['item'],
-		];
-		return $schema;
-	}
-
 }
 
 ?>

@@ -14,6 +14,10 @@ class REST_Background_Processes_Controller extends REST_Controller {
     private $collections_repository;
     private $collection;
 
+    protected function get_schema() {
+        return "TODO:get_schema";
+    }
+
 	/**
 	 * REST_Background_Processes_Controller constructor.
 	 * Define the namespace, rest base and instantiate your attributes.

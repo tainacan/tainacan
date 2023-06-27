@@ -8,6 +8,9 @@ use Tainacan\Repositories;
 use Tainacan\Entities\Entity;
 
 class REST_Sequence_Edit_Controller extends REST_Controller {
+	protected function get_schema() {
+        return "TODO:get_schema";
+    }
 
 	public function __construct() {
 		$this->rest_base = 'sequence-edit';

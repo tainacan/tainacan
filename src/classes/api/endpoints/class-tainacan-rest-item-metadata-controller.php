@@ -7,6 +7,9 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 
 class REST_Item_Metadata_Controller extends REST_Controller {
+	protected function get_schema() {
+        return "TODO:get_schema";
+    }
 	private $metadatum;
 	private $item_metadata_repository;
 	private $item_repository;

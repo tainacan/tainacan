@@ -6,6 +6,9 @@ use \Tainacan\API\REST_Controller;
 use Tainacan\Entities\Metadatum;
 
 class REST_Metadatum_Mappers_Controller extends REST_Controller {
+	protected function get_schema() {
+        return "TODO:get_schema";
+    }
 
 	/**
 	 * REST_Metadatum_Mappers_Controller constructor.
