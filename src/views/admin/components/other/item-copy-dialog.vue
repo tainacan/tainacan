@@ -214,6 +214,14 @@
         align-items: flex-end;
     }
 
+    .field.is-horizontal /deep/ .label {
+        white-space: nowrap;
+    }
+
+    .field.is-horizontal /deep/ .has-numberinput {
+        margin-top: 0;
+    }
+
     .modal-card-foot {
         margin-top: 12px;
     }

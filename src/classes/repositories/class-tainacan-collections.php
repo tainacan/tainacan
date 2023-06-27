@@ -258,7 +258,7 @@ class Collections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'If this option is enabled, items of this collection can be set to enable a comments section on their page. "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 				'default'     => 'closed',
-				'enum'  => [ 'open', 'close' ],
+				'enum'  => [ 'open', 'closed' ],
 				'validation'  => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
 			'submission_anonymous_user'  => [

@@ -86,6 +86,7 @@ class Items extends Repository {
 				'title'       => __( 'Term IDs', 'tainacan' ),
 				'type'        => 'array',
 				'description' => __( 'The item term IDs', 'tainacan' ),
+				'items'       => [ 'type' => ['string', 'integer']	],
 			],
 			'document_type'     => [
 				'map'         => 'meta',
@@ -93,6 +94,7 @@ class Items extends Repository {
 				'type'        => 'string',
 				'description' => __( 'The document type, can be a local attachment, an external URL or a text', 'tainacan' ),
 				'on_error'    => __( 'Invalid document type', 'tainacan' ),
+				'enum'		  => [ 'attachment', 'url', 'text', 'empty' ],
 				'validation'  => v::stringType()->in( [ 'attachment', 'url', 'text', 'empty' ] ),
 				'default'     => 'empty'
 			],
@@ -150,6 +152,7 @@ class Items extends Repository {
 				'type'        => 'string',
 				'description' => __( 'Item comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 				'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
+				'enum'        => [ 'open', 'closed' ],
 				'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
 		] );

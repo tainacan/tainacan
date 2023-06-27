@@ -291,7 +291,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 
-		if($method === \WP_REST_Server::READABLE) {
+		if ($method === \WP_REST_Server::READABLE) {
 			$endpoint_args = array_merge(
 				$endpoint_args,
 				$this->get_wp_query_params()

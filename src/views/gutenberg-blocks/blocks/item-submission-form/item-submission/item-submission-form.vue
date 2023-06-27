@@ -790,8 +790,8 @@ export default {
             form: {
                 collection_id: Number,
                 document: '',
-                document_type: '',
-                comment_status: '',
+                document_type: 'empty',
+                comment_status: 'closed',
                 attachments: [],
                 thumbnail: '',
                 document_options: {
@@ -1022,7 +1022,7 @@ export default {
 
             // Puts loading on Item edit
             this.isSubmitting = true;
-
+            
             let data = this.form;
             this.fillExtraFormData(data);
             this.updateExtraFormData(data);
