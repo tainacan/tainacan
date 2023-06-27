@@ -28,53 +28,53 @@ class Collections extends Repository {
 	 */
 	protected function _get_map() {
 		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
-			'name'                       => [
+			'name' => [
 				'map'         => 'post_title',
 				'title'       => __( 'Name', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The title of the collection', 'tainacan' ),
 				'validation'  => v::stringType()->notEmpty(),
 			],
-			'status'                     => [
+			'status' => [
 				'map'         => 'post_status',
 				'title'       => __( 'Status', 'tainacan' ),
 				'type'        => 'string',
 				'default'     => '',
 				'description' => __( 'The current situation of the collection. It also affects the visibility of the collection items, as public items from private collections do not appear in the site.', 'tainacan' )
 			],
-			'author_id'                  => [
+			'author_id' => [
 				'map'         => 'post_author',
 				'title'       => __( 'Author ID', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The collection author\'s user ID (numeric string)', 'tainacan' )
 			],
-			'creation_date'              => [
+			'creation_date' => [
 				'map'         => 'post_date',
 				'title'       => __( 'Creation Date', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The collection creation date', 'tainacan' )
 			],
-			'modification_date'          => [
+			'modification_date' => [
 				'map'         => 'post_modified',
 				'title'       => __( 'Modification Date', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'The collection modification date', 'tainacan' )
 			],
-			'order'                      => [
+			'order' => [
 				'map'         => 'order',
 				'title'       => __( 'Order', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'Collection order. This metadata is used if collections are manually ordered.', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'parent'                     => [
+			'parent' => [
 				'map'         => 'post_parent',
 				'title'       => __( 'Parent Collection', 'tainacan' ),
 				'type'        => 'integer',
 				'description' => __( 'Original collection from which features are inherited', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'description'                => [
+			'description' => [
 				'map'         => 'post_content',
 				'title'       => __( 'Description', 'tainacan' ),
 				'type'        => 'string',
@@ -82,14 +82,14 @@ class Collections extends Repository {
 				'default'     => '',
 				//'validation' => v::stringType(),
 			],
-			'slug'                       => [
+			'slug' => [
 				'map'         => 'post_name',
 				'title'       => __( 'Slug', 'tainacan' ),
 				'type'        => 'string',
 				'description' => __( 'An unique and sanitized string representation of the collection, used to build the collection URL. It must not contain any special characters or spaces.', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'default_orderby'            => [
+			'default_orderby' => [
 				'map'         => 'meta',
 				'title'       => __( 'Default order metadata', 'tainacan' ),
 				'type'        => ['string', 'array', 'object'],
@@ -97,12 +97,13 @@ class Collections extends Repository {
 				'default'     => 'date',
 				//'validation' => v::stringType(),
 			],
-			'default_order'              => [
+			'default_order' => [
 				'map'         => 'meta',
 				'title'       => __( 'Default order', 'tainacan' ),
 				'description' => __( 'Default order for items in this collection. ASC or DESC', 'tainacan' ),
 				'type'        => 'string',
 				'default'     => 'ASC',
+				'enum'  => [ 'ASC', 'DESC' ],
 				'validation'  => v::stringType()->in( [ 'ASC', 'DESC' ] ),
 			],
 			'default_displayed_metadata' => [
@@ -114,7 +115,7 @@ class Collections extends Repository {
 				'description' => __( 'List of collection properties that will be displayed in the table view', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'default_view_mode'          => [
+			'default_view_mode' => [
 				'map'         => 'meta',
 				'title'       => __( 'Default view mode', 'tainacan' ),
 				'type'        => 'string',
@@ -122,7 +123,7 @@ class Collections extends Repository {
 				'default'     => 'table',
 				//'validation' => v::stringType(),
 			],
-			'enabled_view_modes'         => [
+			'enabled_view_modes' => [
 				'map'         => 'meta',
 				'title'       => __( 'Enabled view modes', 'tainacan' ),
 				'type'        => 'array',
@@ -131,39 +132,39 @@ class Collections extends Repository {
 				'items'       => [ 'type' => 'string' ],
 				//'validation' => v::stringType(),
 			],
-			'metadata_section_order'             => [
+			'metadata_section_order' => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata order', 'tainacan' ),
 				'type'        => 'array',
 				'items'       => [
 					'type' => 'object',
 					'properties' => [
-						"id" => [
-							"description" => "ID of metadata section",
-							"type" => "integer",
+						'id' => [
+							'description' => __( 'Metadata Section ID', 'tainacan' ),
+							'type' => 'integer',
 						],
-						"enabled" => [
-							"description" => "If metadata section is enabled.",
-							"type" => "boolean",
+						'enabled' => [
+							'description' => __( 'Whether the metadata section is enabled or not.', 'tainacan' ),
+							'type' => 'boolean',
 						],
-						"metadata_order" => [
+						'metadata_order' => [
 							'type'        => 'array',
-							'description' => 'Array with order of the metadata inside section',
+							'description' => __( 'Array containing the metadata order inside the section', 'tainacan' ),
 							'items' => [
 								'type' => 'object', 
 								'properties' => [
-									"id" => [
-										"description" => "ID of metadata.",
-										"type" => "integer"
+									'id' => [
+										'description' => __( 'Metadata ID', 'tainacan' ),
+										'type' => 'integer'
 									],
-									"enabled" => [
-										"description" => "If metadata is enabled.",
-										"type" => "boolean"
+									'enabled' => [
+										'description' => __( 'Whether the metadata is enabled or not.', 'tainacan' ),
+										'type' => 'boolean'
 									]
 
 								]
 							]
-						],
+						]
 					]
 				],
 				'description' => __( 'The order of the metadata section in the collection', 'tainacan' ),
@@ -171,17 +172,41 @@ class Collections extends Repository {
 			'metadata_order'             => [
 				'map'         => 'meta',
 				'title'       => __( 'Metadata order', 'tainacan' ),
-				'type'        => ['array', 'object', 'string'],
-				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
+				'type'        => 'array',
 				'description' => __( 'The order of the metadata in the collection', 'tainacan' ),
+				'items' => [
+					'type' => 'object', 
+					'properties' => [
+						'id' => [
+							'description' => __( 'Metadata ID', 'tainacan' ),
+							'type' => 'integer'
+						],
+						'enabled' => [
+							'description' => __( 'Whether the metadata is enabled or not.', 'tainacan' ),
+							'type' => 'boolean'
+						]
+					]
+				]
 				//'validation' => v::stringType(),
 			],
 			'filters_order'              => [
 				'map'         => 'meta',
 				'title'       => __( 'Filters order', 'tainacan' ),
-				'type'        => ['array', 'object', 'string'],
-				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
+				'type'        => 'array',
 				'description' => __( 'The order of the filters in the collection', 'tainacan' ),
+				'items' => [
+					'type' => 'object', 
+					'properties' => [
+						'id' => [
+							'description' => __( 'Filter ID', 'tainacan' ),
+							'type' => 'integer'
+						],
+						'enabled' => [
+							'description' => __( 'Whether the filter is enabled or not.', 'tainacan' ),
+							'type' => 'boolean'
+						]
+					]
+				]
 				//'validation' => v::stringType(),
 			],
 			'enable_cover_page'          => [
@@ -190,6 +215,7 @@ class Collections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'To use this page as the home page of this collection', 'tainacan' ),
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'no'
 			],
@@ -223,7 +249,8 @@ class Collections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'Collection comment status: "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 				'default'     => get_default_comment_status(Entities\Collection::get_post_type()),
-				'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
+				'enum'  => [ 'open', 'closed' ],
+				'validation'  => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
 			'allow_comments'  => [
 				'map'         => 'meta',
@@ -231,30 +258,33 @@ class Collections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'If this option is enabled, items of this collection can be set to enable a comments section on their page. "open" means comments are allowed, "closed" means comments are not allowed.', 'tainacan' ),
 				'default'     => 'closed',
-				'validation' => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
+				'enum'  => [ 'open', 'close' ],
+				'validation'  => v::optional(v::stringType()->in( [ 'open', 'closed' ] )),
 			],
 			'submission_anonymous_user'  => [
-				'map'                    => 'meta',
-				'title'                  => __( 'Allows submission by anonymous user', 'tainacan' ),
-				'type'                   => 'string',
-				'description'            => __( 'If enabled, allows submission by anonymous users, whose does not have to be logged in with permissions on the WordPress system.', 'tainacan' ),
-				'default'                => 'no',
+				'map'         => 'meta',
+				'title'       => __( 'Allows submission by anonymous user', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, allows submission by anonymous users, whose does not have to be logged in with permissions on the WordPress system.', 'tainacan' ),
+				'default'     => 'no',
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			],
 			'submission_default_status'  => [
-				'map'                    => 'meta',
-				'title'                  => __( 'Default submission item status', 'tainacan' ),
-				'type'                   => 'string',
-				'description'            => __( 'The default status of the item that will be created in the collection after submission.', 'tainacan' ),
-				'default'                => 'draft'
+				'map'         => 'meta',
+				'title'       => __( 'Default submission item status', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The default status of the item that will be created in the collection after submission.', 'tainacan' ),
+				'default'     => 'draft'
 			],
 			'allows_submission' => [
-				'map'                    => 'meta',
-				'title'                  => __( 'Allows item submission', 'tainacan' ),
-				'type'                   => 'string',
-				'description'            => __( 'If enabled, the collection allows item submission, for example via the Item Submission block.', 'tainacan' ),
-				'default'                => 'no',
+				'map'         => 'meta',
+				'title'       => __( 'Allows item submission', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, the collection allows item submission, for example via the Item Submission block.', 'tainacan' ),
+				'default'     => 'no',
+				'enum'  => [ 'yes', 'no' ],
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			],
@@ -264,24 +294,40 @@ class Collections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'Enable this option to never display the item thumbnail on the items list. This is ment for collections made of mainly textual content.', 'tainacan' ),
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'no'
 			],
 			'submission_use_recaptcha' => [
-				'map'                    => 'meta',
-				'title'                  => __( 'Use reCAPTCHA verification on submission form', 'tainacan' ),
-				'type'                   => 'string',
-				'description'            => __( 'If enabled, the collection allows item submission using a reCAPTCHA', 'tainacan' ),
-				'default'                => 'no',
+				'map'         => 'meta',
+				'title'       => __( 'Use reCAPTCHA verification on submission form', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, the collection allows item submission using a reCAPTCHA', 'tainacan' ),
+				'default'     => 'no',
 				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			],
-			'default_metadata_section_properties'              => [
+			'default_metadata_section_properties' => [
 				'map'         => 'meta',
 				'title'       => __( 'Default metadata section properties', 'tainacan' ),
 				'type'        => 'object',
-				'items'       => [ 'name' => 'string', 'description' => 'string', 'description_bellow_name' => 'string' ],
 				'description' => __( 'The default metadata section properties', 'tainacan' ),
+				'properties'  => [
+					'name' => [
+						'type'        => 'string',
+						'description' => __( 'The name of the default metadata section', 'tainacan' ),
+					],
+					'description' => [
+						'type'        => 'string',
+						'description' => __( 'The description of the default metadata section', 'tainacan' ),
+					],
+					'description_bellow_name' => [
+						'type'        => 'string',
+						'description' => __( 'Whether the description should appear bellow the metadata section.', 'tainacan' ),
+						'enum'  => [ 'yes', 'no' ]
+					]
+				]
 			],
 		] );
 	}

@@ -52,7 +52,7 @@ class REST_Collections_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'create_item_permissions_check'),
 				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 			),
-			'schema'                => [$this, 'get_schema'],
+			'schema'                => [$this, 'get_list_schema'],
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<collection_id>[\d]+)', array(
 			array(
@@ -88,10 +88,15 @@ class REST_Collections_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'update_metadata_section_order_permissions_check'),
 				'args'                => [
 					'collection_id' => [
-						'description' => 'ID da coleção',
+						'description' => __( 'Collection ID', 'tainacan' ),
 						'required' => true,
 					],
-					'metadata_section_order' => $this->collections_repository->get_map()['metadata_section_order']
+					'metadata_section_order' => array_merge(
+						array(
+							'required' => true,
+						),
+						$this->collections_repository->get_map()['metadata_section_order']
+					)
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
@@ -102,11 +107,13 @@ class REST_Collections_Controller extends REST_Controller {
 				'callback'            => array($this, 'update_metadata_order'),
 				'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
 				'args'                => [
-					'metadata_order' => [
-						'description' => __( 'The order of the metadata in the section, an array of objects with integer ID and bool enabled.', 'tainacan' ),
-						'required' => true,
-						'validate_callback' => [$this, 'validate_filters_metadata_order']
-					]
+					'metadata_order' => array_merge(
+						array(
+							'required' => true,
+							'validate_callback' => [$this, 'validate_filters_metadata_order']
+						),
+						$this->collections_repository->get_map()['metadata_order']
+					)
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
@@ -117,11 +124,13 @@ class REST_Collections_Controller extends REST_Controller {
 				'callback'            => array($this, 'update_metadata_order'),
 				'permission_callback' => array($this, 'update_metadata_order_permissions_check'),
 				'args'                => [
-					'metadata_order' => [
-						'description' => __( 'The order of the metadata in the section, an array of objects with integer ID and bool enabled.', 'tainacan' ),
-						'required' => true,
-						'validate_callback' => [$this, 'validate_filters_metadata_order']
-					]
+					'metadata_order' => array_merge(
+						array(
+							'required' => true,
+							'validate_callback' => [$this, 'validate_filters_metadata_order']
+						),
+						$this->collections_repository->get_map()['metadata_order']
+					)
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
@@ -132,11 +141,13 @@ class REST_Collections_Controller extends REST_Controller {
 				'callback'            => array($this, 'update_filters_order'),
 				'permission_callback' => array($this, 'update_filters_order_permissions_check'),
 				'args'                => [
-					'filters_order' => [
-						'description' => __( 'The order of the filters in the collection, an array of objects with integer ID and bool enabled.', 'tainacan' ),
-						'required' => true,
-						'validate_callback' => [$this, 'validate_filters_metadata_order']
-					]
+					'filters_order' => array_merge(
+						array(
+							'required' => true,
+							'validate_callback' => [$this, 'validate_filters_metadata_order']
+						),
+						$this->collections_repository->get_map()['filters_order']
+					)
 				],
 			),
 			'schema'                => [$this, 'get_schema'],
@@ -890,7 +901,7 @@ class REST_Collections_Controller extends REST_Controller {
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'collection',
 			'type' => 'object',
-			'tags' => ['collection'],
+			'tags' => [ 'collection' ],
 		];
 
 		$main_schema = parent::get_repository_schema( $this->collections_repository );
@@ -903,7 +914,18 @@ class REST_Collections_Controller extends REST_Controller {
 		);
 
 		return $schema;
+	}
 
+
+	function get_list_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'collections',
+			'type' => 'array',
+			'items' => $this->get_schema(),
+			'tags' => ['collection'],
+		];
+		return $schema;
 	}
 }
 
