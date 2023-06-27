@@ -9,6 +9,7 @@ use Tainacan\Repositories;
 class REST_Taxonomies_Controller extends REST_Controller {
 	private $taxonomy;
 	private $taxonomy_repository;
+	private $collections_repository;
 
 	/**
 	 * REST_Taxonomies_Controller constructor.

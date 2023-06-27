@@ -15,6 +15,7 @@ use Tainacan\Entities\Collection;
 class REST_Collections_Controller extends REST_Controller {
 	private $collections_repository;
 	private $collection;
+	private $items_repository;
 
 	/**
 	 * REST_Collections_Controller constructor.

@@ -7,12 +7,14 @@ use Tainacan\Mappers_Handler;
 use \Tainacan\API\REST_Controller;
 
 class REST_Exposers_Controller extends REST_Controller {
+	
+	private $metadatum_repository;
+	private $exposers;
+	private $mappers;
+
 	protected function get_schema() {
         return "TODO:get_schema";
     }
-
-
-	private $metadatum_repository;
 
 	/**
 	 * REST_Facets_Controller constructor.

@@ -8,7 +8,9 @@ use Tainacan\Repositories;
 use Tainacan\Entities\Entity;
 
 class REST_Bulkedit_Controller extends REST_Controller {
-	
+	private $metadatum_repository;
+	private $collections_repository;
+
     protected function get_schema() {
         return "TODO:get_schema";
     }

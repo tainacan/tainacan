@@ -7,6 +7,11 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 
 class REST_Metadata_Sections_Controller extends REST_Controller {
+
+	private $metadata_sections_repository;
+	private $metadata_repository;
+	private $collection_repository;
+
 	public function __construct() {
 		parent::__construct();
 		$this->rest_base = 'metadata-sections';

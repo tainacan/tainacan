@@ -8,6 +8,10 @@ use Tainacan\Repositories;
 use Tainacan\Entities\Entity;
 
 class REST_Sequence_Edit_Controller extends REST_Controller {
+
+	private $items_repository;
+	private $collections_repository;
+	
 	protected function get_schema() {
         return "TODO:get_schema";
     }

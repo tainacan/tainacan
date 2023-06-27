@@ -17,6 +17,9 @@ class REST_Items_Controller extends REST_Controller {
 	private $item_metadata;
 	private $collections_repository;
 	private $metadatum_repository;
+	private $terms_repository;
+	private $filters_repository;
+	private $taxonomy_repository;
 
 	/**
 	 * REST_Items_Controller constructor.

@@ -12,6 +12,8 @@ use \Tainacan\Exposers\Mappers\Value;
  *
  * */
 class REST_Exporters_Controller extends REST_Controller {
+	private $collections_repository;
+
 	protected function get_schema() {
         return "TODO:get_schema";
     }
