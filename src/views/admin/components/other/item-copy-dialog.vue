@@ -226,5 +226,11 @@
         margin-top: 12px;
     }
 
+    @media screen and (min-width: 769px) { 
+        .modal-card {
+            max-width: 640px;
+        }
+    }
+
 </style>
 
