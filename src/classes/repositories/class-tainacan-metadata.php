@@ -70,7 +70,7 @@ class Metadata extends Repository {
 			'order'                 => [
 				'map'         => 'menu_order',
 				'title'       => __( 'Order', 'tainacan' ),
-				'type'        => 'string/integer',
+				'type'        => ['string', 'integer'],
 				'description' => __( 'Metadata order. This metadata will be used if collections were manually ordered.', 'tainacan' ),
 				'on_error'    => __( 'The menu order should be a numeric value', 'tainacan' ),
 				//'validation' => v::numeric(),
@@ -100,6 +100,7 @@ class Metadata extends Repository {
 				'description' => __( 'Whether the metadatum description should be displayed below the input label instead of inside a tooltip.', 'tainacan' ),
 				'on_error'    => __( 'Please set the "Description below name" value as "yes" or "no"', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'enum'		  => [ 'yes', 'no' ],
 				'default'     => 'no'
 			],
 			'placeholder'     => [
@@ -124,6 +125,7 @@ class Metadata extends Repository {
 				'description' => __( 'The metadata is required. All items in this collection must fill this field', 'tainacan' ),
 				'on_error'    => __( 'The metadata content is invalid', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'enum'		  => [ 'yes', 'no' ],
 				'default'     => 'no'
 			],
 			'collection_key'        => [
@@ -133,6 +135,7 @@ class Metadata extends Repository {
 				'description' => __( 'Metadata value should be unique accross all items in this collection', 'tainacan' ),
 				'on_error'    => __( 'You cannot have two items with the same value for this metadatum', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'enum'		  => [ 'yes', 'no' ],
 				'default'     => 'no'
 			],
 			'multiple'              => [
@@ -143,6 +146,7 @@ class Metadata extends Repository {
 				'on_error'    => __( 'Invalid multiple metadata', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
 				// yes or no. It cant be multiple if its collection_key
+				'enum'		  => [ 'yes', 'no' ],
 				'default'     => 'no'
 			],
 			'cardinality'           => [
@@ -153,14 +157,6 @@ class Metadata extends Repository {
 				'on_error'    => __( 'This number of multiple metadata is not allowed', 'tainacan' ),
 				//'validation'  => v::numeric()->positive(),
 			],
-			'mask'                  => [
-				'map'         => 'meta',
-				'title'       => __( 'Mask', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The mask to be used in the metadata', 'tainacan' ),
-				//'on_error'   => __('Mask is invalid', 'tainacan'),
-				//'validation' => ''
-			],
 			'default_value'         => [
 				'map'         => 'meta',
 				'title'       => __( 'Default value', 'tainacan' ),
@@ -170,7 +166,7 @@ class Metadata extends Repository {
 			'metadata_type_options' => [ // not showed in form
 				'map'         => 'meta',
 				'title'       => __( 'Metadata type options', 'tainacan' ),
-				'type'        => ['array', 'object', 'string'],
+				'type'        => ['array', 'object'],
 				'items'       => [ 'type' => ['array', 'string', 'integer', 'object'] ],
 				'description' => __( 'Specific options for metadata type', 'tainacan' ),
 				// 'validation' => ''
@@ -205,6 +201,7 @@ class Metadata extends Repository {
 				'title'       => __( 'Display', 'tainacan' ),
 				'type'        => 'string',
 				'validation'  => v::stringType()->in( [ 'yes', 'no', 'never' ] ),
+				'enum'		  => [ 'yes', 'no', 'never' ],
 				'description' => __( 'Display by default on listing or do not display or never display.', 'tainacan' ),
 				'default'     => 'no'
 			],
@@ -223,6 +220,7 @@ class Metadata extends Repository {
 				'description' => __( 'Makes this metadatum a repository level metadatum instead of collection metadatum', 'tainacan' ),
 				'on_error'    => __( 'Invalid value for repository metadata', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
+				'enum'		  => [ 'yes', 'no' ],
 				// yes or no. It cant be multiple if its collection_key
 				'default'     => 'no'
 			],

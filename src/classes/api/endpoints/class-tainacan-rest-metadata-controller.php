@@ -48,28 +48,28 @@ class REST_Metadata_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
-					'args'                => array(
-						'context' => array(
-							'type'    	  => 'string',
-							'default' 	  => 'view',
-							'description' => 'The context in which the request is made.',
-							'enum'    	  => array(
-								'view',
-								'edit'
-							)
-						),
-					),
+					'args'                => [
+						'collection_id' => [
+							'description' => __( 'Collection ID', 'tainacan' ),
+							'required' => true,
+						],
+						'metadatum_id' => [
+							'description' => __( 'Metadatum ID', 'tainacan' ),
+							'required' => true,
+						],
+					],
 				),
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE, true)
 				),
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::DELETABLE, true)
 				),
 				'schema'                  => [$this, 'get_schema']
 			)
@@ -80,15 +80,23 @@ class REST_Metadata_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_wp_query_params(),
+					'args'                => array_merge(
+						array(
+							'collection_id' => [
+								'description' => __( 'Collection ID', 'tainacan' ),
+								'required' => true,
+							],
+						),
+						$this->get_wp_query_params()
+					),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'create_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE, true),
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/' . $this->rest_base,
@@ -105,7 +113,7 @@ class REST_Metadata_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
-				'schema'                  => [$this, 'get_schema'],
+				'schema'                  => [$this, 'get_list_schema'],
 			)
 		);
 		register_rest_route($this->namespace, '/'. $this->rest_base . '/(?P<metadatum_id>[\d]+)',
@@ -114,17 +122,12 @@ class REST_Metadata_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
-					'args'                => array(
-						'context' => array(
-							'type'    	  => 'string',
-							'default' 	  => 'view',
-							'description' => 'The context in which the request is made.',
-							'enum'    	  => array(
-								'view',
-								'edit'
-							)
-						),
-					),
+					'args'                => [
+						'metadatum_id' => [
+							'description' => __( 'Metadatum ID', 'tainacan' ),
+							'required' => true,
+						],
+					],
 				),
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -135,7 +138,8 @@ class REST_Metadata_Controller extends REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
-					'permission_callback' => array($this, 'delete_item_permissions_check')
+					'permission_callback' => array($this, 'delete_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::DELETABLE)
 				),
 				'schema'                  => [$this, 'get_schema'],
 			)
@@ -582,9 +586,30 @@ class REST_Metadata_Controller extends REST_Controller {
 	 * @return array
 	 * @throws \Exception
 	 */
-	public function get_endpoint_args_for_item_schema( $method = null ) {
-		$endpoint_args = [];
-		if($method === \WP_REST_Server::READABLE) {
+	public function get_endpoint_args_for_item_schema( $method = null, $is_collection_level = false ) {
+		$endpoint_args = [
+			'metadatum_id' => [
+				'description' => __( 'Metadatum ID', 'tainacan' ),
+				'required' => true,
+			]
+		];
+
+		if ( $is_collection_level )
+			$endpoint_args['collection_id'] = [
+				'description' => __( 'Collection ID', 'tainacan' ),
+				'required' => true,
+			];
+		
+		if ($method === \WP_REST_Server::READABLE) {
+			$endpoint_args['context'] = array(
+				'type'    	  => 'string',
+				'default' 	  => 'view',
+				'description' => 'The context in which the request is made.',
+				'enum'    	  => array(
+					'view',
+					'edit'
+				),
+			);
 			$endpoint_args = array_merge(
 				$endpoint_args,
 				parent::get_wp_query_params()
@@ -596,12 +621,18 @@ class REST_Metadata_Controller extends REST_Controller {
 				$set_ = 'set_'. $mapped;
 
 				// Show only args that has a method set
-				if( !method_exists(new Entities\Metadatum(), "$set_") ){
+				if ( !method_exists(new Entities\Metadatum(), "$set_") ){
 					unset($map[$mapped]);
 				}
 			}
 
-			$endpoint_args = $map;
+			$endpoint_args = array_merge(
+				$endpoint_args,
+				$map
+			);
+
+			if ( $method === \WP_REST_Server::CREATABLE )
+				unset($endpoint_args['metadatum_id']);
 		}
 
 		return $endpoint_args;
@@ -611,23 +642,17 @@ class REST_Metadata_Controller extends REST_Controller {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'metadatum',
-			'type' => 'object'
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
 		];
 
 		$main_schema = parent::get_repository_schema( $this->metadatum_repository );
 		$permissions_schema = parent::get_permissions_schema();
 
-		// $item_metadata_scheme = parent::get_repository_schema( $this->item_metadata_repository );
-		// $item_scheme = parent::get_repository_schema( $this->item_repository );
-		// $collection_scheme = parent::get_repository_schema( $this->collection_repository );
-
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
 			$permissions_schema
-			// $item_metadata_scheme,
-			// $item_scheme,
-			// $collection_scheme
 		);
 
 		return $schema;

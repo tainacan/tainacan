@@ -859,8 +859,8 @@ class REST_Collections_Controller extends REST_Controller {
 	 */
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
-		if($method === \WP_REST_Server::READABLE) {
 
+		if ($method === \WP_REST_Server::READABLE) {
 			$endpoint_args['name'] = array(
 				'description' => __('Limits the result set to collections with a specific name'),
 				'type'        => 'string',

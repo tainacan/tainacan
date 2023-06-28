@@ -642,24 +642,18 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	function get_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => 'metadatum',
-			'type' => 'object'
+			'title' => 'metadata-section',
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
 		];
 
 		$main_schema = parent::get_repository_schema( $this->metadata_sections_repository );
 		$permissions_schema = parent::get_permissions_schema();
 
-		// $item_metadata_scheme = parent::get_repository_schema( $this->item_metadata_repository );
-		// $item_scheme = parent::get_repository_schema( $this->item_repository );
-		// $collection_scheme = parent::get_repository_schema( $this->collection_repository );
-
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
 			$permissions_schema
-			// $item_metadata_scheme,
-			// $item_scheme,
-			// $collection_scheme
 		);
 
 		return $schema;
