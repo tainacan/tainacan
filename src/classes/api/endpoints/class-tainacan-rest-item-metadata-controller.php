@@ -7,9 +7,7 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 
 class REST_Item_Metadata_Controller extends REST_Controller {
-	protected function get_schema() {
-        return "TODO:get_schema";
-    }
+	
 	private $metadatum;
 	private $item_metadata_repository;
 	private $item_repository;
@@ -49,6 +47,16 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item_metadatum_value'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'				  => array(
+						'item_id' => array(
+							'description' => __( 'Item ID', 'tainacan' ),
+							'required' => true,
+						),
+						'metadatum_id' => array(
+							'description' => __( 'Metadatum ID', 'tainacan' ),
+							'required' => true,
+						)
+					)
 				),
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -59,8 +67,10 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
-					'permission_callback' => array($this, 'delete_item_permissions_check')
+					'permission_callback' => array($this, 'delete_item_permissions_check'),
+					'args' 				  => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::DELETABLE)
 				),
+				'schema'                => [$this, 'get_schema'],
 			)
 		);
 		register_rest_route($this->namespace,  '/' . $this->rest_base . '/(?P<item_id>[\d]+)/metadata',
@@ -70,18 +80,29 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE),
-				)
+				),
+				'schema'                => [$this, 'get_list_schema'],
 			)
 		);
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<item_id>[\d]+)/metadata-sections/(?P<metadata_section_id>[\d|default_section]+)',
-		array(
 			array(
-				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array($this, 'get_items'),
-				'permission_callback' => array($this, 'get_items_permissions_check'),
-			),
-		)
-	);
+				array(
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_items'),
+					'permission_callback' => array($this, 'get_items_permissions_check'),
+					'args'                => array_merge(
+						array(
+							'metadata_section_id' => array(
+								'description' => __( 'Metadata Section ID', 'tainacan' ),
+								'required' => true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
+					),
+				),
+				'schema' => [$this, 'get_list_schema'],
+			)
+		);
 	}
 
 	/**
@@ -289,7 +310,12 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	 * @return array|mixed
 	 */
 	public function get_endpoint_args_for_item_schema( $method = null ) {
-		$endpoint_args = [];
+		$endpoint_args = [
+			'item_id' => [
+				'description' => __( 'Item ID', 'tainacan' ),
+				'required' => true,
+			]
+		];
 
 		if ($method === \WP_REST_Server::READABLE) {
 			$endpoint_args = array_merge(
@@ -297,17 +323,24 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 				$this->get_wp_query_params()
 			);
 		} elseif ($method === \WP_REST_Server::EDITABLE) {
+			$endpoint_args['metadatum_id'] = [
+				'description' => __( 'Item ID', 'tainacan' ),
+				'required' => true,
+			];
 			$endpoint_args['values'] = [
 				'type'        => ['array', 'string', 'object', 'integer'],
-				'items'       => [
-					'type' => ['array', 'string', 'object', 'integer']
-				],
+				'items'       => [ 'type' => ['array', 'string', 'object', 'integer'] ],
 				'description' => __('The value(s) of item metadata')
 			];
 			$endpoint_args['parent_meta_id'] = [
 				'type'        => ['array', 'string', 'object', 'integer'],
-				'items'       => ['type' => ['array', 'string', 'object', 'integer'] ],
+				'items'       => ['type' => ['string', 'integer'] ],
 				'description' => __('The parent meta ID for the item metadata children group')
+			];
+		} elseif ($method === \WP_REST_Server::DELETABLE) {
+			$endpoint_args['metadatum_id'] = [
+				'description' => __( 'Item ID', 'tainacan' ),
+				'required' => true,
 			];
 		}
 
@@ -395,11 +428,48 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	}
 
 	private function get_metadata_value($is_multiple, $value) {
-		if ($is_multiple) {
+		if ( $is_multiple )
 			return $value;
-		} elseif (is_array($value)) {
+		elseif ( is_array($value) )
 			return implode(' ', $value);
-		}
+		
 		return $value;
 	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => $this->rest_base,
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
+			'properties' => array(
+				'value' => array(
+					'type' => ['array', 'string', 'integer', 'boolean', 'object'],
+					'description' => __( 'Value', 'tainacan' ),
+				),
+				'value_as_string' => array(
+					'type' => 'string',
+					'description' => __( 'Value as String', 'tainacan' ),
+				),
+				'value_as_html' => array(
+					'type' => 'string',
+					'description' => __( 'Value as HTML', 'tainacan' ),
+				),
+				'parent_meta_id' => array(
+					'type' => 'string',
+					'description' => __( 'The parent meta ID for the item metadata children group', 'tainacan' ),
+				),
+				'item' => array(
+					'type' => 'object',
+					'properties' => parent::get_repository_schema($this->item_repository),
+				),
+				'metadatum' => array(
+					'type' => 'object',
+					'properties' => parent::get_repository_schema($this->metadatum_repository),
+				)
+			)
+		];
+
+		return $schema;
+    }
 }
