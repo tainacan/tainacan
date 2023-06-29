@@ -68,6 +68,7 @@ class Metadata_Sections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'Whether the section metadata description should be displayed below the name instead of inside a tooltip.', 'tainacan' ),
 				'on_error'    => __( 'Please set the "Description below name" value as "yes" or "no"', 'tainacan' ),
+				'enum'        => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'no'
 			],
@@ -83,6 +84,7 @@ class Metadata_Sections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'Binds this section visibility to a set of rules related to some metadata values.', 'tainacan' ),
 				'on_error'    => __( 'Value should be "yes" or "no"', 'tainacan' ),
+				'enum'        => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
 				'default'     => 'no'
 			],
