@@ -1492,45 +1492,49 @@ class REST_Items_Controller extends REST_Controller {
 			]
 		];
 
-		if ($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['context'] = array(
-				'type'    	  => 'string',
-				'default' 	  => 'view',
-				'description' => 'The context in which the request is made.',
-				'enum'    	  => array(
-					'view',
-					'edit'
-				),
-			);
-			$endpoint_args = array_merge(
-				$endpoint_args,
-				parent::get_fetch_only_param()
-			);
-		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
-			$map = $this->items_repository->get_map();
+		switch ( $method ) {
+			case \WP_REST_Server::READABLE:
+				$endpoint_args['context'] = array(
+					'type'    	  => 'string',
+					'default' 	  => 'view',
+					'description' => __( 'Scope under which the request is made; determines fields present in response.', 'tainacan' ),
+					'enum'    	  => array(
+						'view',
+						'edit'
+					),
+				);
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					parent::get_fetch_only_param()
+				);
+			break;
+			case \WP_REST_Server::CREATABLE:
+			case \WP_REST_Server::EDITABLE:
+				$map = $this->items_repository->get_map();
 
-			foreach ($map as $mapped => $value){
-				$set_ = 'set_'. $mapped;
-
-				// Show only args that has a method set
-				if( !method_exists($this->item, "$set_") ){
-					unset($map[$mapped]);
+				foreach ($map as $mapped => $value){
+					$set_ = 'set_'. $mapped;
+	
+					// Show only args that has a method set
+					if( !method_exists($this->item, "$set_") ){
+						unset($map[$mapped]);
+					}
 				}
-			}
-
-			$endpoint_args = array_merge(
-				$endpoint_args,
-				$map
-			);
-
-			if ( $method === \WP_REST_Server::CREATABLE )
-				unset($endpoint_args['item_id']);
-
-		} else if (	$method === \WP_REST_Server::DELETABLE) {
-			$endpoint_args['permanently'] = array(
-				'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection', 'tainacan'),
-				'default'     => '0'
-			);
+	
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					$map
+				);
+	
+				if ( $method === \WP_REST_Server::CREATABLE )
+					unset($endpoint_args['item_id']);
+			break;
+			case \WP_REST_Server::DELETABLE:
+				$endpoint_args['permanently'] = array(
+					'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection', 'tainacan'),
+					'default'     => '0'
+				);
+			break;
 		}
 
 		return $endpoint_args;

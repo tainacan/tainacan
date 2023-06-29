@@ -41,7 +41,7 @@ class Filters extends Repository {
 			'order'               => [
 				'map'         => 'menu_order',
 				'title'       => __( 'Order', 'tainacan' ),
-				'type'        => 'string/integer',
+				'type'        => ['string', 'integer'],
 				'description' => __( 'Filter order. This metadata is used if filters were manually ordered.', 'tainacan' ),
 				'validation'  => ''
 			],
@@ -75,6 +75,7 @@ class Filters extends Repository {
 				'description' => __( 'With this option enabled, the filter will appear as a button with an add icon, that should be pressed prior to loading any facet information.', 'tainacan' ),
 				'on_error'    => __( 'Please set the "Begin with filter collapsed" value as "yes" or "no"', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'enum'		  => [ 'yes', 'no' ],
 				'default'     => 'no'
 			],
 			'collection_id'       => [
@@ -82,13 +83,6 @@ class Filters extends Repository {
 				'title'       => __( 'Collection', 'tainacan' ),
 				'type'        => ['integer', 'string'],
 				'description' => __( 'The collection ID', 'tainacan' ),
-				'validation'  => ''
-			],
-			'color'               => [
-				'map'         => 'meta',
-				'title'       => __( 'Color', 'tainacan' ),
-				'type'        => ['integer', 'string'],
-				'description' => __( 'Filter color', 'tainacan' ),
 				'validation'  => ''
 			],
 			'metadatum_id'           => [

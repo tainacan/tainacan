@@ -600,39 +600,43 @@ class REST_Metadata_Controller extends REST_Controller {
 				'required' => true,
 			];
 		
-		if ($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['context'] = array(
-				'type'    	  => 'string',
-				'default' 	  => 'view',
-				'description' => 'The context in which the request is made.',
-				'enum'    	  => array(
-					'view',
-					'edit'
-				),
-			);
-			$endpoint_args = array_merge(
-				$endpoint_args,
-				parent::get_wp_query_params()
-			);
-		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
-			$map = $this->metadatum_repository->get_map();
+		switch ( $method ) {
+			case \WP_REST_Server::READABLE:
+				$endpoint_args['context'] = array(
+					'description' => __( 'Scope under which the request is made; determines fields present in response.', 'tainacan' ),
+					'type'        => 'string',
+					'default'     => 'view',
+					'enum'        => array(
+						'view',
+						'edit',
+					),
+				);
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					parent::get_wp_query_params()
+				);
+			break;
+			case \WP_REST_Server::CREATABLE:
+			case \WP_REST_Server::EDITABLE:
+				$map = $this->metadatum_repository->get_map();
 
-			foreach ($map as $mapped => $value){
-				$set_ = 'set_'. $mapped;
-
-				// Show only args that has a method set
-				if ( !method_exists(new Entities\Metadatum(), "$set_") ){
-					unset($map[$mapped]);
+				foreach ($map as $mapped => $value){
+					$set_ = 'set_'. $mapped;
+	
+					// Show only args that has a method set
+					if ( !method_exists(new Entities\Metadatum(), "$set_") ){
+						unset($map[$mapped]);
+					}
 				}
-			}
-
-			$endpoint_args = array_merge(
-				$endpoint_args,
-				$map
-			);
-
-			if ( $method === \WP_REST_Server::CREATABLE )
-				unset($endpoint_args['metadatum_id']);
+	
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					$map
+				);
+	
+				if ( $method === \WP_REST_Server::CREATABLE )
+					unset($endpoint_args['metadatum_id']);
+			break;
 		}
 
 		return $endpoint_args;

@@ -860,32 +860,35 @@ class REST_Collections_Controller extends REST_Controller {
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
 
-		if ($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['name'] = array(
-				'description' => __('Limits the result set to collections with a specific name'),
-				'type'        => 'string',
-			);
+		switch ( $method ) {
+			case \WP_REST_Server::READABLE:
+				$endpoint_args['name'] = array(
+					'description' => __('Limits the result set to collections with a specific name'),
+					'type'        => 'string',
+				);
+	
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					parent::get_wp_query_params(),
+					parent::get_fetch_only_param(),
+					parent::get_meta_queries_params()
+				);
+			break;
+			case \WP_REST_Server::CREATABLE:
+			case \WP_REST_Server::EDITABLE:
+				$map = $this->collections_repository->get_map();
 
-			$endpoint_args = array_merge(
-				$endpoint_args,
-				parent::get_wp_query_params(),
-				parent::get_fetch_only_param(),
-				parent::get_meta_queries_params()
-			);
+				foreach ($map as $mapped => $value){
+					$set_ = 'set_'. $mapped;
 
-		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
-			$map = $this->collections_repository->get_map();
-
-			foreach ($map as $mapped => $value){
-				$set_ = 'set_'. $mapped;
-
-				// Show only args that has a method set
-				if( !method_exists($this->collection, "$set_") ){
-					unset($map[$mapped]);
+					// Show only args that has a method set
+					if( !method_exists($this->collection, "$set_") ){
+						unset($map[$mapped]);
+					}
 				}
-			}
 
-			$endpoint_args = $map;
+				$endpoint_args = $map;
+			break;
 		}
 
 		return $endpoint_args;
