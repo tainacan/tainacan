@@ -78,11 +78,11 @@
         },
         "labelColor": {
             "type": "string",
-            "default": "#454647"
+            "default": "#373839"
         },
         "infoColor": {
             "type": "string",
-            "default": "#555758"
+            "default": "#505253"
         },
         "primaryColor": {
             "type": "string",
@@ -90,7 +90,7 @@
         },
         "secondaryColor": {
             "type": "string",
-            "default": "#298596"
+            "default": "#187181"
         },
         "enabledMetadata": {
             "type": "array",

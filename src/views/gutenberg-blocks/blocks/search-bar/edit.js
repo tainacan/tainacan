@@ -368,7 +368,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                                 collectionSlug = selectedCollection.slug;
                                 collectionName = selectedCollection.name;
                                 collectionHeaderImage = selectedCollection.header_image;
-                                collectionBackgroundColor = selectedCollection.tainacan_theme_collection_background_color ? selectedCollection.tainacan_theme_collection_background_color : '#454647'
+                                collectionBackgroundColor = selectedCollection.tainacan_theme_collection_background_color ? selectedCollection.tainacan_theme_collection_background_color : '#373839'
                                 collectionTextColor = selectedCollection.tainacan_theme_collection_color ? selectedCollection.tainacan_theme_collection_color : '#ffffff';
                                 setAttributes({ 
                                     collectionId: collectionId, 

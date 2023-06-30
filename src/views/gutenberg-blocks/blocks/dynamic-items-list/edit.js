@@ -411,7 +411,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                     if (collection.tainacan_theme_collection_background_color)
                         collectionBackgroundColor = collection.tainacan_theme_collection_background_color;
                     else
-                        collectionBackgroundColor = '#454647';
+                        collectionBackgroundColor = '#373839';
 
                     if (collection.tainacan_theme_collection_color)
                         collectionTextColor = collection.tainacan_theme_collection_color;

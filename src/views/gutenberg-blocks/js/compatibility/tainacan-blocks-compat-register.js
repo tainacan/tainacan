@@ -27,7 +27,7 @@ export default function({ metadata, icon, edit, save, deprecated, transforms }) 
     let attributes = {
         icon: {
             src: icon,
-            foreground: '#298596',
+            foreground: '#187181',
         },
         edit,
         deprecated,

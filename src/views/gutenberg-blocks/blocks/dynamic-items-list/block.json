@@ -112,7 +112,7 @@
         },
         "collectionBackgroundColor": {
             "type": "string",
-            "default": "#454647"
+            "default": "#373839"
         },
         "collectionTextColor": {
             "type": "string",

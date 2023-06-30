@@ -1354,9 +1354,9 @@ export default {
         padding: 0.875em;
         display: flex;
         flex-wrap: nowrap;
-        border: 1px solid var(--tainacan-red-2, #a23939);
-        color: var(--tainacan-red-2, #a23939);
-        background: var(--tainacan-red-1, #eadadc);
+        border: 1px solid var(--tainacan-red-2, #9b3636);
+        color: var(--tainacan-red-2, #9b3636);
+        background: var(--tainacan-red-1, #f8f2f3);
 
         .form-error-area-icon {
             font-size: 2rem;

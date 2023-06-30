@@ -8,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--tainacan-block-gray4, #555758); }
+    color: var(--tainacan-block-gray4, #505253); }
 @-webkit-keyframes skeleton-animation {
   0% {
     opacity: 1.0; }
@@ -63,7 +63,7 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      background-color: var(--tainacan-block-gray5, #454647); }
+      background-color: var(--tainacan-block-gray5, #373839); }
       .wp-block-tainacan-carousel-items-list .carousel-items-collection-header .collection-name h3 {
         color: white;
         text-decoration: none;
@@ -172,7 +172,7 @@
     margin: 0; }
     .wp-block-tainacan-carousel-items-list .swiper-button-prev svg, .wp-block-tainacan-carousel-items-list .swiper-button-next svg {
       border-radius: 100%;
-      fill: var(--tainacan-block-primary, #298596); }
+      fill: var(--tainacan-block-primary, #187181); }
     .wp-block-tainacan-carousel-items-list .swiper-button-prev::after, .wp-block-tainacan-carousel-items-list .swiper-button-prev::before, .wp-block-tainacan-carousel-items-list .swiper-button-next::after, .wp-block-tainacan-carousel-items-list .swiper-button-next::before {
       content: none !important; }
   .wp-block-tainacan-carousel-items-list .swiper-button-next.swiper-button-disabled,
@@ -283,7 +283,7 @@
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item button {
         position: absolute !important;
         background-color: rgba(255, 255, 255, 0.75);
-        color: var(--tainacan-block-gray5, #454647);
+        color: var(--tainacan-block-gray5, #373839);
         padding: 2px;
         margin-left: 5px;
         min-width: 14px;
@@ -303,12 +303,12 @@
         opacity: 1;
         right: -8px;
         top: -8px;
-        border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+        border: 1px solid var(--tainacan-block-gray3, #a5a5a5);
         border-radius: 12px;
         transition: opacity linear 0.15s, right linear 0.15s; }
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item:hover button:hover {
         background-color: white !important;
-        border: 1px solid var(--tainacan-block-gray3, #cbcbcb) !important; }
+        border: 1px solid var(--tainacan-block-gray3, #a5a5a5) !important; }
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-itens-per-screen-9 {
         width: calc((100% / 9) - var(--spaceBetweenItems, 32px) );
         min-width: calc((100% / 9) - var(--spaceBetweenItems, 32px) ); }
@@ -456,6 +456,6 @@
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-items-list .swiper a:hover > span,
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-items-list li.item-list-item a > span,
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-items-list li.item-list-item a:hover > span {
-  color: var(--tainacan-block-gray5, #454647); }
+  color: var(--tainacan-block-gray5, #373839); }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-carousel-items-list.css.map */

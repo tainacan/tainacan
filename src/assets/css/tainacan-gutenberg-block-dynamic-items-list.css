@@ -10,7 +10,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--tainacan-block-gray4, #555758); }
+    color: var(--tainacan-block-gray4, #505253); }
   .wp-block-tainacan-dynamic-items-list:hover .components-resizable-box__handle {
     display: block; }
 @-webkit-keyframes skeleton-animation {
@@ -66,7 +66,7 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      background-color: var(--tainacan-block-gray5, #454647); }
+      background-color: var(--tainacan-block-gray5, #373839); }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-collection-header .collection-name h3 {
         color: white;
         text-decoration: none;
@@ -127,7 +127,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+    border-bottom: 1px solid var(--tainacan-block-gray3, #a5a5a5);
     padding: 1.00em 0.5em 0.75em 0.5em;
     position: relative;
     box-sizing: border-box; }
@@ -155,7 +155,7 @@
       background: transparent;
       cursor: pointer; }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button svg {
-        fill: var(--tainacan-block-gray3, #cbcbcb);
+        fill: var(--tainacan-block-gray3, #a5a5a5);
         transition: fill 0.4s ease; }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button:hover svg {
         fill: #545758; }
@@ -168,13 +168,13 @@
         margin-right: 0em;
         padding: 0; }
         .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button.next-button svg {
-          fill: var(--tainacan-block-primary, #298596); }
+          fill: var(--tainacan-block-primary, #187181); }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button.previous-button {
         margin-left: auto;
         margin-right: 1em;
         padding: 0; }
         .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button.previous-button svg {
-          fill: var(--tainacan-block-primary, #298596); }
+          fill: var(--tainacan-block-primary, #187181); }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar button[disabled] svg {
         fill: var(--tainacan-block-gray1, #f2f2f2);
         cursor: not-allowed; }
@@ -188,7 +188,7 @@
       transition: border-color 0.7s ease, width 0.5s ease-in; }
       .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar input:focus, .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar input:active, .wp-block-tainacan-dynamic-items-list .dynamic-items-search-bar input:hover {
         width: 100%;
-        border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+        border: 1px solid var(--tainacan-block-gray3, #a5a5a5);
         box-shadow: none; }
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item {
     display: flex;
@@ -197,7 +197,7 @@
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item button {
       position: absolute !important;
       background-color: rgba(255, 255, 255, 0.75);
-      color: var(--tainacan-block-gray5, #454647);
+      color: var(--tainacan-block-gray5, #373839);
       padding: 2px;
       margin-left: 5px;
       min-width: 14px;
@@ -215,12 +215,12 @@
       opacity: 1;
       right: -8px;
       top: -8px;
-      border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+      border: 1px solid var(--tainacan-block-gray3, #a5a5a5);
       border-radius: 12px;
       transition: opacity linear 0.15s, right linear 0.15s; }
     .wp-block-tainacan-dynamic-items-list ul.items-list-edit li.item-list-item:hover button:hover {
       background-color: white !important;
-      border: 1px solid var(--tainacan-block-gray3, #cbcbcb) !important; }
+      border: 1px solid var(--tainacan-block-gray3, #a5a5a5) !important; }
   .wp-block-tainacan-dynamic-items-list ul.items-list.items-layout-grid,
   .wp-block-tainacan-dynamic-items-list ul.items-list-edit.items-layout-grid {
     padding: 0;
@@ -987,6 +987,6 @@
 
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-dynamic-items-list li.item-list-item a > span,
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-dynamic-items-list li.item-list-item a:hover > span {
-  color: var(--tainacan-block-gray5, #454647); }
+  color: var(--tainacan-block-gray5, #373839); }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-dynamic-items-list.css.map */

@@ -20,63 +20,63 @@
             "selector": "div"
         },
         "collectionId": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "collectionSlug": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "alignment": {
-            "type": "String",
+            "type": "string",
             "default": "center"
         },
         "isModalOpen": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
         },
         "maxWidth": {
-            "type": "Number",
+            "type": "number",
             "value": 80
         },
         "placeholderText": {
-            "type": "String",
+            "type": "string",
             "default": "Search"
         },
         "searchQuery": {
-            "type": "String",
+            "type": "string",
             "default": "search"
         },
         "showCollectionHeader": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "showCollectionLabel": {
-            "type": "Boolean",
+            "type": "boolean",
             "value": false
         },
         "collectionHeaderHeight": {
-            "type": "Number",
+            "type": "number",
             "value": 165
         },
         "collectionBackgroundColor": {
-            "type": "String",
-            "default": "#454647"
+            "type": "string",
+            "default": "#373839"
         },
         "collectionTextColor": {
-            "type": "String",
+            "type": "string",
             "default": "#ffffff"
         },
         "collectionHeaderImage": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "collectionName": {
-            "type": "String",
+            "type": "string",
             "default": ""
         },
         "collectionTextSize": {
-            "type": "Number",
+            "type": "number",
             "default": 2
         }
     },

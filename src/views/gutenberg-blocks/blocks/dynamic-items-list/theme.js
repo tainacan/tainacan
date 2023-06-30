@@ -49,7 +49,7 @@ export default (element) => {
                         showSearchBar: false,
                         showCollectionHeader: false,
                         showCollectionLabel: false,
-                        collectionBackgroundColor: '#454647',
+                        collectionBackgroundColor: '#373839',
                         collectionTextColor: '#ffffff',
                         tainacanApiRoot: '',
                         tainacanBaseUrl: '',

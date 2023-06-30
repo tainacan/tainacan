@@ -25,11 +25,11 @@
         display: flex;
         align-items: center;
         margin: 6px 0px 36px 0px;
-        color: var(--tainacan-block-gray4, #555758);
+        color: var(--tainacan-block-gray4, #505253);
 
         .tainacan-reports-subheader-box:not(:first-child) {
             padding-left: 14px;
-            border-left: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+            border-left: 1px solid var(--tainacan-block-gray3, #a5a5a5);
         }
 
         .tainacan-reports-subheader-box__title {
@@ -69,13 +69,13 @@
             flex-basis: 100%;
         }
         .icon svg {
-            fill: var(--tainacan-block-gray4, #555758);
+            fill: var(--tainacan-block-gray4, #505253);
             margin-left: -0.5rem;
             cursor: default;
         }
         .apexcharts-pan-icon svg {
             fill: transparent;
-            stroke: var(--tainacan-block-gray4, #555758);
+            stroke: var(--tainacan-block-gray4, #505253);
         }
         .apexcharts-reset-icon {
             margin-left: 0;
@@ -103,7 +103,7 @@
                 display: inline-block;
                 padding: 0px 10px;
                 background-color: var(--tainacan-block-gray2, #dbdbdb);
-                color: var(--tainacan-block-gray4, #555758);
+                color: var(--tainacan-block-gray4, #505253);
                 font-size: 0.875em;
                 border-top-left-radius: 3px;
                 opacity: 0.0;
@@ -162,7 +162,7 @@
         opacity: 0.75;
     
         p {
-            color: var(--tainacan-block-gray4, #555758);
+            color: var(--tainacan-block-gray4, #505253);
         }
     }
     
