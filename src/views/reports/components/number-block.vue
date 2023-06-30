@@ -254,7 +254,7 @@ export default {
             color: #062a57 !important; 
         }
         .tainacan-icon-draft {
-            color: #25a189 !important;
+            color: #1a745c !important;
         }
         .tainacan-icon-delete {
             color: #a06522 !important;
@@ -298,7 +298,7 @@ export default {
             background-color: #062a57;
         }
         &:nth-child(4) {
-            background-color: #25a189;
+            background-color: #1a745c;
         }
         &:nth-child(5) {
             background-color: #a06522;

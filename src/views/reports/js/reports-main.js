@@ -44,7 +44,7 @@ export default (element) => {
             Apex.colors = [
                 '#187181', // Tainacan Turquoise
                 '#062a57', // Tainacan Blue
-                '#25a189', // Tainacan Green
+                '#1a745c', // Tainacan Green
                 '#a06522', // Tainacan Yellow
                 '#9b3636', // Tainacan Red
                 '#592570', // Tainacan Purple
