@@ -156,17 +156,6 @@
 
     @import "../../scss/_variables.scss";
 
-    .repository-header-tooltips .tooltip-inner {
-        color: var(--tainacan-white);
-        background-color: var(--tainacan-blue3);
-        font-size: 0.75em;
-        font-weight: 400;
-        padding: 10px 14px;
-    }
-    .repository-header-tooltips .tooltip-arrow {
-        border-color: var(--tainacan-blue3);
-    }
-
     // Tainacan Header
     #tainacan-header {
         background-color: var(--tainacan-white);

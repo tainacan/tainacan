@@ -105,13 +105,13 @@ export default {
                             },
                             tooltip: { enabled: true }
                         },
-                        colors: ['#298596', '#dbdbdb'],
+                        colors: ['#187181', '#dbdbdb'],
                         fill: {
-                            colors: ['#298596', '#dbdbdb']
+                            colors: ['#187181', '#dbdbdb']
                         },
                         dataLabels: {
                             style: {
-                                colors: ['#ffffff', '#454647']
+                                colors: ['#ffffff', '#373839']
                             },
                             formatter(val) {
                                 return (!Number.isNaN(val) && val > 0) ? (val.toFixed(2) + '%') : ''

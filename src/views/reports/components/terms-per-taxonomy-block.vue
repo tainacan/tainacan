@@ -101,13 +101,13 @@ export default {
                             text: this.$i18n.get('label_number_of_terms')
                         }
                     },
-                    colors: ['#298596', '#dbdbdb'],
+                    colors: ['#187181', '#dbdbdb'],
                     fill: {
-                        colors: ['#298596', '#dbdbdb']
+                        colors: ['#187181', '#dbdbdb']
                     },
                     dataLabels: {
                         style: {
-                            colors: ['#ffffff', '#454647']
+                            colors: ['#ffffff', '#373839']
                         }
                     },
                     states: {

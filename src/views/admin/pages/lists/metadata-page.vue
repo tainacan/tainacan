@@ -342,7 +342,7 @@ export default {
                 &.active-metadata-sections-item {
                     padding-left: 0;
                     margin-top: 1rem;
-                    border-bottom: 1px solid var(--tainacan-gray3);
+                    border-bottom: 1px solid var(--tainacan-gray2);
 
                     .metadatum-name {
                         h3 {

@@ -49,7 +49,7 @@
           .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block button .icon svg {
             transform: scale(1);
             height: 100%;
-            fill: var(--tainacan-block-primary, #298596); }
+            fill: var(--tainacan-block-primary, #187181); }
       @media only screen and (max-width: 768px) {
         .wp-block-tainacan-search-bar .tainacan-search-container #tainacan-search-bar-block {
           margin-left: 0px;
@@ -89,11 +89,11 @@
       transition: border-color 0.4s ease, width 0.5s ease-in, background-color 0.3s ease, color 0.3s ease; }
       .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block input#tainacan-search-bar-block_input:focus, .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block input#tainacan-search-bar-block_input:active, .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block input#tainacan-search-bar-block_input:hover {
         width: 100%;
-        border-color: var(--tainacan-block-gray3, #cbcbcb);
+        border-color: var(--tainacan-block-gray3, #a5a5a5);
         background: #fafafa;
         box-shadow: none; }
       .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block input#tainacan-search-bar-block_input::placeholder {
-        color: var(--tainacan-block-gray3, #cbcbcb); }
+        color: var(--tainacan-block-gray3, #a5a5a5); }
     .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block button {
       margin-right: 12px;
       padding: 0 0.35em;
@@ -103,7 +103,7 @@
       background: transparent !important;
       cursor: pointer; }
       .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block button .icon svg {
-        fill: var(--tainacan-block-gray3, #cbcbcb);
+        fill: var(--tainacan-block-gray3, #a5a5a5);
         transition: fill 0.4s ease; }
       .wp-block-tainacan-search-bar.is-style-alternate #tainacan-search-bar-block button:hover {
         background: transparent; }
@@ -118,14 +118,14 @@
   .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block:focus input::placeholder, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block:active input,
   .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block:active input::placeholder, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block:hover input,
   .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block:hover input::placeholder {
-    color: var(--tainacan-block-gray5, #454647);
+    color: var(--tainacan-block-gray5, #373839);
     border-width: 0; }
   .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block:focus button .icon svg, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block:active button .icon svg, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block:hover button .icon svg {
-    fill: var(--tainacan-block-gray3, #cbcbcb) !important; }
+    fill: var(--tainacan-block-gray3, #a5a5a5) !important; }
   .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input {
     color: white; }
     .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input:focus, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input:active, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input:hover, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input:focus::placeholder, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input:active::placeholder, .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block input#tainacan-search-bar-block_input:hover::placeholder {
-      color: var(--tainacan-block-gray5, #454647); }
+      color: var(--tainacan-block-gray5, #373839); }
   .wp-block-tainacan-search-bar.is-style-alternate .search-bar-collection-header-container .tainacan-search-container #tainacan-search-bar-block button .icon svg {
     fill: var(--tainacan-block-gray2, #dbdbdb) !important; }
   .wp-block-tainacan-search-bar.is-style-stylish #tainacan-search-bar-block {

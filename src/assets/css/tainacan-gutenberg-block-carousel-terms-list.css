@@ -3,7 +3,7 @@
   margin: 12px 0 24px 0; }
   .components-panel__body .term-carousel-view-modes button {
     background: transparent;
-    border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+    border: 1px solid var(--tainacan-block-gray3, #a5a5a5);
     border-radius: 5px;
     padding: 2px;
     margin: 0;
@@ -41,7 +41,7 @@
           flex-basis: 50%;
           width: 100%;
           height: 100%;
-          background: var(--tainacan-block-gray4, #555758);
+          background: var(--tainacan-block-gray4, #505253);
           transition: background-color ease 0.5s; }
     .components-panel__body .term-carousel-view-modes button.term-carousel-view-mode-thumbnail {
       margin-left: 6px; }
@@ -49,16 +49,16 @@
         display: block;
         height: 40px;
         width: 40px;
-        background: var(--tainacan-block-gray4, #555758);
+        background: var(--tainacan-block-gray4, #505253);
         margin: 4px auto 8px auto;
         transition: background-color ease 0.5s; }
     .components-panel__body .term-carousel-view-modes button label {
       font-size: 0.75em;
-      color: var(--tainacan-block-gray4, #555758); }
+      color: var(--tainacan-block-gray4, #505253); }
     .components-panel__body .term-carousel-view-modes button.is-active {
-      border: 2px solid var(--tainacan-block-primary, #298596); }
+      border: 2px solid var(--tainacan-block-primary, #187181); }
       .components-panel__body .term-carousel-view-modes button.is-active.term-carousel-view-mode-thumbnail div, .components-panel__body .term-carousel-view-modes button.is-active.term-carousel-view-mode-grid div > div {
-        background-color: var(--tainacan-block-primary, #298596); }
+        background-color: var(--tainacan-block-primary, #187181); }
     .components-panel__body .term-carousel-view-modes button:hover {
       opacity: 0.9;
       border-width: 2px; }
@@ -75,7 +75,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--tainacan-block-gray4, #555758); }
+    color: var(--tainacan-block-gray4, #505253); }
 @-webkit-keyframes skeleton-animation {
   0% {
     opacity: 1.0; }
@@ -193,7 +193,7 @@
     margin: 0; }
     .wp-block-tainacan-carousel-terms-list .swiper-button-prev svg, .wp-block-tainacan-carousel-terms-list .swiper-button-next svg {
       border-radius: 100%;
-      fill: var(--tainacan-block-primary, #298596); }
+      fill: var(--tainacan-block-primary, #187181); }
     .wp-block-tainacan-carousel-terms-list .swiper-button-prev::after, .wp-block-tainacan-carousel-terms-list .swiper-button-prev::before, .wp-block-tainacan-carousel-terms-list .swiper-button-next::after, .wp-block-tainacan-carousel-terms-list .swiper-button-next::before {
       content: none !important; }
   .wp-block-tainacan-carousel-terms-list .swiper-button-next.swiper-button-disabled,
@@ -291,7 +291,7 @@
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item button {
         position: absolute !important;
         background-color: rgba(255, 255, 255, 0.75);
-        color: var(--tainacan-block-gray5, #454647);
+        color: var(--tainacan-block-gray5, #373839);
         padding: 2px;
         margin-left: 5px;
         min-width: 14px;
@@ -311,12 +311,12 @@
         opacity: 1;
         right: -8px;
         top: -8px;
-        border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+        border: 1px solid var(--tainacan-block-gray3, #a5a5a5);
         border-radius: 12px;
         transition: opacity linear 0.15s, right linear 0.15s; }
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item:hover button:hover {
         background-color: white !important;
-        border: 1px solid var(--tainacan-block-gray3, #cbcbcb) !important; }
+        border: 1px solid var(--tainacan-block-gray3, #a5a5a5) !important; }
       .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item.max-terms-per-screen-9 {
         width: calc((100% / 9) - var(--spaceBetweenTerms, 32px));
         min-width: calc((100% / 9) - var(--spaceBetweenTerms, 32px)); }
@@ -483,6 +483,6 @@
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-terms-list .swiper a:hover > span,
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-terms-list li.term-list-item a > span,
 .block-editor-block-list__block:not(.has-text-color) > .wp-block-tainacan-carousel-terms-list li.term-list-item a:hover > span {
-  color: var(--tainacan-block-gray5, #454647); }
+  color: var(--tainacan-block-gray5, #373839); }
 
 /*# sourceMappingURL=tainacan-gutenberg-block-carousel-terms-list.css.map */

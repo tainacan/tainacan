@@ -42,17 +42,17 @@ export default (element) => {
         if ( pageElement && pageElement.classList && !pageElement.classList.contains('has-mounted') ) {
 
             Apex.colors = [
-                '#298596', // Tainacan Turquoise
-                '#01295c', // Tainacan Blue
-                '#25a189', // Tainacan Green
-                '#bb7700', // Tainacan Yellow
-                '#a23939', // Tainacan Red
+                '#187181', // Tainacan Turquoise
+                '#062a57', // Tainacan Blue
+                '#1a745c', // Tainacan Green
+                '#a06522', // Tainacan Yellow
+                '#9b3636', // Tainacan Red
                 '#592570', // Tainacan Purple
                 '#ed4f63', // Tainacan Pink
                 '#b46659',  // Tainacan Brown
                 '#e5721c',  // Tainacan Orange
                 '#04a5ff',  // Tainacan Other Blue
-                '#454647'  // Tainacan Dark Gray
+                '#373839'  // Tainacan Dark Gray
             ];
             const availableLocales = ['en', 'es', 'fr', 'pt-br'];
             const browserLanguage = navigator.language.toLocaleLowerCase();

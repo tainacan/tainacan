@@ -1,6 +1,217 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
+    /* Deprecated on 0.20.4 to replace collectionBackgroundColor */
+    {
+        attributes: {
+            "content": {
+                "type": "array",
+                "source": "children",
+                "selector": "div"
+            },
+            "collectionId": {
+                "type": "string",
+                "default": ""
+            },
+            "items": {
+                "type": "array",
+                "default": []
+            },
+            "showImage": {
+                "type": "boolean",
+                "default": true
+            },
+            "showName": {
+                "type": "boolean",
+                "default": true
+            },
+            "layout": {
+                "type": "string",
+                "default": "grid"
+            },
+            "isModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "gridMargin": {
+                "type": "number",
+                "default": 0
+            },
+            "searchURL": {
+                "type": "string",
+                "default": ""
+            },
+            "itemsRequestSource": {
+                "type": "string",
+                "default": ""
+            },
+            "maxItemsNumber": {
+                "type": "number",
+                "default": 12
+            },
+            "isLoading": {
+                "type": "boolean",
+                "default": false
+            },
+            "isLoadingCollection": {
+                "type": "boolean",
+                "default": false
+            },
+            "showSearchBar": {
+                "type": "boolean",
+                "default": false
+            },
+            "showCollectionHeader": {
+                "type": "boolean",
+                "default": false
+            },
+            "showCollectionLabel": {
+                "type": "boolean",
+                "default": false
+            },
+            "collection": {
+                "type": "object",
+                "default": {}
+            },
+            "searchString": {
+                "type": "string",
+                "default": ""
+            },
+            "selectedItems": {
+                "type": "array",
+                "default": []
+            },
+            "loadStrategy": {
+                "type": "string",
+                "default": "search"
+            },
+            "order": {
+                "type": "string",
+                "default": ""
+            },
+            "orderBy": {
+                "type": "string",
+                "default": "date"
+            },
+            "orderByMetaKey": {
+                "type": "string",
+                "default": ""
+            },
+            "blockId": {
+                "type": "string",
+                "default": ""
+            },
+            "collectionBackgroundColor": {
+                "type": "string",
+                "default": "#454647"
+            },
+            "collectionTextColor": {
+                "type": "string",
+                "default": "#ffffff"
+            },
+            "mosaicHeight": {
+                "type": "number",
+                "default": 280
+            },
+            "mosaicGridColumns": {
+                "type": "number",
+                "default": 3
+            },
+            "mosaicGridRows": {
+                "type": "number",
+                "default": 3
+            },
+            "sampleBackgroundImage": {
+                "type": "string",
+                "default": ""
+            },
+            "mosaicItemFocalPoint": {
+                "type": "object",
+                "default": {
+                    "x": 0.5,
+                    "y": 0.5
+                }
+            },
+            "mosaicDensity": {
+                "type": "number",
+                "default": 5
+            },
+            "maxColumnsCount": {
+                "type": "number",
+                "default": 4
+            },
+            "imageSize": {
+                "type": "string",
+                "default": "tainacan-medium"
+            }
+        },
+        save: function({ attributes, className }) {
+            const {
+                content, 
+                blockId,
+                collectionId,
+                loadStrategy,
+                selectedItems,
+                showImage,
+                showName,
+                layout,
+                gridMargin,
+                searchURL,
+                maxItemsNumber,
+                order,
+                orderBy,
+                orderByMetaKey,
+                showSearchBar,
+                showCollectionHeader,
+                showCollectionLabel,
+                collectionBackgroundColor,
+                collectionTextColor,
+                mosaicHeight,
+                mosaicGridRows,
+                mosaicGridColumns,
+                mosaicItemFocalPoint,
+                mosaicDensity,
+                maxColumnsCount,
+                imageSize
+            } = attributes;
+            
+            // Gets attributes such as style, that are automatically added by the editor hook
+            const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps.save();
+            return <div
+                        { ...blockProps }
+                        data-module="dynamic-items-list"
+                        search-url={ searchURL }
+                        selected-items={ JSON.stringify(selectedItems) }
+                        collection-id={ collectionId }
+                        show-image={ '' + showImage }
+                        show-name={ '' + showName }
+                        show-search-bar={ '' + showSearchBar }
+                        show-collection-header={ '' + showCollectionHeader }
+                        show-collection-label={ '' + showCollectionLabel }
+                        image-size={ imageSize }
+                        layout={ layout }
+                        load-strategy={ loadStrategy }
+                        mosaic-height={ mosaicHeight }
+                        mosaic-density={ mosaicDensity }
+                        mosaic-grid-rows={ mosaicGridRows } 
+                        mosaic-grid-columns={ mosaicGridColumns }
+                        mosaic-item-focal-point-x={ (mosaicItemFocalPoint && mosaicItemFocalPoint.x ? mosaicItemFocalPoint.x : 0.5) } 
+                        mosaic-item-focal-point-y={ (mosaicItemFocalPoint && mosaicItemFocalPoint.y ? mosaicItemFocalPoint.y : 0.5) } 
+                        max-columns-count={ maxColumnsCount }
+                        collection-background-color={ collectionBackgroundColor }
+                        collection-text-color={ collectionTextColor }
+                        grid-margin={ gridMargin }
+                        max-items-number={ maxItemsNumber }
+                        order={ order }
+                        orderBy={ orderBy }
+                        orderByMetaKey={ orderByMetaKey }
+                        tainacan-api-root={ tainacan_blocks.root }
+                        tainacan-base-url={ tainacan_blocks.base_url }
+                        id={ 'wp-block-tainacan-dynamic-items-list_' + blockId }>
+                            { content }
+                    </div>
+        }
+    },
     /* Deprecated on 0.19.3 due to the introduction of orderBy and orderByMetaKey */
     {
         attributes: {

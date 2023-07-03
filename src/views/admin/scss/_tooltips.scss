@@ -292,17 +292,17 @@
         i, i::before { font-size: 0.875em !important }
     }
     &:hover .help-tooltip {
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         margin-left: -37px;
         visibility: visible;
         opacity: 1; 
     }
     .help-tooltip {
         z-index: 99999999999999999999;
-        background-color: var(--tainacan-primary);
+        background-color: var(--tainacan-blue1);
         border: none;
         display: block;
-        border-radius: 5px;
+        border-radius: 3px;
         min-width: 280px;
         max-width: 100%;
         transition: margin-bottom 0.2s ease, opacity 0.3s ease;
@@ -312,45 +312,31 @@
         margin-bottom: -27px;
         visibility: hidden;
         opacity: 0;
+        font-size: 0.875em;
+
         .help-tooltip-header {
             padding: 0.8em 0.8em 0em 0.8em;
             h5 {
                 font-size: 0.875em !important;
                 font-weight: bold;
-                color: var(--tainacan-secondary);
+                color: var(--tainacan-blue5);
                 margin-bottom: 0;
                 margin-top: 0;
                 white-space: normal;
             }
         }
         .help-tooltip-body {
-            padding: 0.5em 1.0em 1.0em 1.0em;
+            padding: 0.5em 0.8em 0.75em 0.8em;
             p {
                 margin: 0 0 0.125em 0;
-                font-size: 0.875em !important;
+                font-size: 0.9375em !important;
                 font-weight: normal !important;
                 white-space: normal !important;
                 overflow: visible !important;
                 max-height: 100% !important;
                 line-height: normal;
-                color: var(--tainacan-secondary);
+                color: var(--tainacan-blue5);
             }
-        }
-        &:before {
-            content: "";
-            display: block;
-            position: absolute;
-            left: 30px;
-            width: 0;
-            height: 0;
-            border-style: solid;
-        }
-        &:before {
-            border-color: var(--tainacan-primary) transparent transparent transparent;
-            border-right-width: 15px;
-            border-top-width: 12px;
-            border-left-width: 15px;
-            bottom: -15px;
         }
     }
 }

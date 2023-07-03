@@ -157,27 +157,6 @@ export default {
 <style lang="scss">
 
     @import "../../scss/_variables.scss";
-    
-    .header-tooltips .tooltip-inner {
-        color: var(--tainacan-white);
-        text-shadow: 1px 1px var(--tainacan-turquoise4);
-        background-color: var(--tainacan-turquoise3);
-        font-weight: 400;
-        padding: 10px 14px;
-    }
-    .header-tooltips .tooltip-arrow {
-        border-color: var(--tainacan-turquoise3);
-    }
-
-    .repository-header-tooltips .tooltip-inner {
-        color: var(--tainacan-white);
-        background-color: var(--tainacan-blue3);
-        font-weight: 400;
-        padding: 10px 14px;
-    }
-    .repository-header-tooltips .tooltip-arrow {
-        border-color: var(--tainacan-blue3);
-    }
 
     // Tainacan Header
     #tainacan-repository-subheader {

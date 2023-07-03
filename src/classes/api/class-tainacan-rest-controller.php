@@ -315,7 +315,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['sentence'] = array(
-			'description'        => __( 'Whether to search by phrase. Default false.', 'tainacan' ),
+			'description'        => __( 'Whether to search by phrase. Default true.', 'tainacan' ),
 			'type'               => 'boolean',
 			'default'     => true,
 		);
