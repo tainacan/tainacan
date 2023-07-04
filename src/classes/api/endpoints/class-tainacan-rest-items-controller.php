@@ -1565,12 +1565,6 @@ class REST_Items_Controller extends REST_Controller {
 	}
 
 	function get_attachments_schema() {
-		$schema = [
-			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => 'attachments',
-			'type' => 'object',
-			'tags' => ['attachments', $this->rest_base],
-		];
 
 		$properties = [
 			'title' => [
@@ -1616,13 +1610,21 @@ class REST_Items_Controller extends REST_Controller {
 			],
 		];
 
-		$schema['properties'] = array_merge(
-			parent::get_base_properties_schema(),
-			$properties
-		);
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'attachments',
+			'type' => 'array',
+			'tags' => ['attachments', $this->rest_base],
+			'items' => array(
+				'type' => 'object',
+				'properties' => array_merge(
+					parent::get_base_properties_schema(),
+					$properties
+				)
+			)
+		];
 
 		return $schema;
-
 	}
 
 	function get_schema() {

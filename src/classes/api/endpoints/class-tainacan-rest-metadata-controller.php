@@ -7,8 +7,6 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 
 class REST_Metadata_Controller extends REST_Controller {
-	private $item_metadata_repository;
-	private $item_repository;
 	private $collection_repository;
 	private $metadatum_repository;
 
@@ -25,8 +23,6 @@ class REST_Metadata_Controller extends REST_Controller {
 	 */
 	public function init_objects() {
 		$this->metadatum_repository = Repositories\Metadata::get_instance();
-		$this->item_metadata_repository = Repositories\Item_Metadata::get_instance();
-		$this->item_repository = Repositories\Items::get_instance();
 		$this->collection_repository = Repositories\Collections::get_instance();
 	}
 
@@ -57,6 +53,15 @@ class REST_Metadata_Controller extends REST_Controller {
 							'description' => __( 'Metadatum ID', 'tainacan' ),
 							'required' => true,
 						],
+						'context' => array(
+							'type'    	  => 'string',
+							'default' 	  => 'view',
+							'description' => 'The context in which the request is made.',
+							'enum'    	  => array(
+								'view',
+								'edit'
+							)
+						),
 					],
 				),
 				array(
