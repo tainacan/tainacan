@@ -40,7 +40,7 @@ class REST_Terms_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace,  '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base,
@@ -63,25 +63,27 @@ class REST_Terms_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'delete_items_permissions_check'),
 					'args'                => $this->get_wp_query_params()
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace,'/taxonomy/(?P<taxonomy_id>[\d]+)/'. $this->rest_base . '/(?P<term_id>[\d]+)' ,
 			array(
 				array(
-					'methods'             => \WP_REST_Server::DELETABLE,
-					'callback'            => array($this, 'delete_item'),
-					'permission_callback' => array($this, 'delete_item_permissions_check'),
-					'args'                => [
-						'permanently' => [
-							'description' => __('Delete term permanently.'),
-							'default'     => '1'
-						],
-						'delete_child_terms' => [
-							'description' => __('Delete all child terms.'),
-							'default'     => false
-						],
-					]
+					'methods'             => \WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_item'),
+					'permission_callback' => array($this, 'get_item_permissions_check'),
+					'args'                => array(
+						'taxonomy_id' => array(
+							'description' => __( 'Taxonomy ID', 'tainacan' ),
+							'required' => true,
+							'type'              => ['integer', 'string'],
+						),
+						'term_id' => array(
+							'description' => __( 'Term ID', 'tainacan' ),
+							'type'              => ['integer', 'string'],
+							'required' => true,
+						)
+					)
 				),
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -90,10 +92,10 @@ class REST_Terms_Controller extends REST_Controller {
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
 				),
 				array(
-					'methods'             => \WP_REST_Server::READABLE,
-					'callback'            => array($this, 'get_item'),
-					'permission_callback' => array($this, 'get_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array($this, 'delete_item'),
+					'permission_callback' => array($this, 'delete_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::DELETABLE)
 				),
 				'schema'                  => [$this, 'get_schema']
 			)
@@ -104,9 +106,18 @@ class REST_Terms_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_parent_terms'),
 					'permission_callback' => array($this, 'update_parent_terms_permissions_check'),
-					'args'                => $this->get_wp_query_params()
+					'args'                => array_merge(
+						array(
+							'new_parent_id' => array(
+								'description'       => __('The new parent term ID.'),
+								'type'              => ['integer', 'string'],
+								'required'          => true
+							),
+						),
+						$this->get_wp_query_params()
+					)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);	
 	}
@@ -662,39 +673,71 @@ class REST_Terms_Controller extends REST_Controller {
 	 * @return array|mixed
 	 */
 	public function get_endpoint_args_for_item_schema( $method = null ) {
-		$endpoint_args = [];
-		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args = array_merge(
-				$endpoint_args,
-				parent::get_wp_query_params()
-			);
-		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
-			$map = $this->terms_repository->get_map();
+		$endpoint_args = [
+			'taxonomy_id' => [
+				'description' => __( 'Taxonomy ID', 'tainacan' ),
+				'required' => true,
+				'type'              => ['integer', 'string'],
+			],
+			'term_id' => [
+				'description' => __( 'Term ID', 'tainacan' ),
+				'type'              => ['integer', 'string'],
+				'required' => true,
+			]
+		];
 
-			foreach ($map as $mapped => $value){
-				$set_ = 'set_'. $mapped;
+		switch ( $method ) {
+			case \WP_REST_Server::READABLE:
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					parent::get_wp_query_params()
+				);
+			break;
+			case \WP_REST_Server::CREATABLE:
+			case \WP_REST_Server::EDITABLE:
 
-				// Show only args that has a method set
-				if( !method_exists($this->term, "$set_") ){
-					unset($map[$mapped]);
+				$map = $this->terms_repository->get_map();
+
+				foreach ($map as $mapped => $value){
+					$set_ = 'set_'. $mapped;
+
+					// Show only args that has a method set
+					if( !method_exists($this->term, "$set_") ){
+						unset($map[$mapped]);
+					}
 				}
-			}
 
-			$endpoint_args = $map;
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					$map
+				);
 
-			if ($method === \WP_REST_Server::CREATABLE) {
-				$endpoint_args['metadatum_id'] = [
-					'required' => false,
-					'type' => 'integer',
-					'description' => __('If term is being created in the context of a Taxonomy metadatum, specify its ID')
+				if ( $method === \WP_REST_Server::CREATABLE ) {
+					
+					unset($endpoint_args['term_id']);
+
+					$endpoint_args['metadatum_id'] = [
+						'required' => false,
+						'type' => 'integer',
+						'description' => __('If term is being created in the context of a Taxonomy metadatum, specify its ID')
+					];
+					$endpoint_args['item_id'] = [
+						'required' => false,
+						'type' => 'integer',
+						'description' => __('If term is being created in the context of a Taxonomy metadatum, specify the ID of the item being edited')
+					];
+				}
+			break;
+			case \WP_REST_Server::DELETABLE:
+				$endpoint_args['permanently'] = [
+					'description' => __('Delete term permanently.'),
+					'default'     => '1'
 				];
-				$endpoint_args['item_id'] = [
-					'required' => false,
-					'type' => 'integer',
-					'description' => __('If term is being created in the context of a Taxonomy metadatum, specify the ID of the item being edited')
+				$endpoint_args['delete_child_terms'] = [
+					'description' => __('Delete all child terms.'),
+					'default'     => false
 				];
-			}
-
+			break;
 		}
 
 		return $endpoint_args;
@@ -709,6 +752,12 @@ class REST_Terms_Controller extends REST_Controller {
 	 * @return array
 	 */
 	public function get_wp_query_params() {
+		$query_params['taxonomy_id'] = array(
+			'description'       => __('Taxonomy ID.'),
+			'type'              => ['integer', 'string'],
+			'required'          => true
+		);
+
 		$query_params['context']['default'] = 'view';
 
 		$query_params = array_merge($query_params, parent::get_wp_query_params());
@@ -727,19 +776,17 @@ class REST_Terms_Controller extends REST_Controller {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'term',
-			'type' => 'object'
+			'type' => 'object',
+			'tags' => [ $this->rest_base ]
 		];
 
 		$main_schema = parent::get_repository_schema( $this->terms_repository );
 		$permissions_schema = parent::get_permissions_schema();
 
-		// $taxonomy_scheme = parent::get_repository_schema( $this->taxonomy_repository );
-
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
 			$permissions_schema
-			// $taxonomy_scheme
 		);
 
 		return $schema;

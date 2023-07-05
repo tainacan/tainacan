@@ -506,7 +506,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 			]
 		];
 		
-		switch( $method ) {
+		switch ( $method ) {
 			case \WP_REST_Server::READABLE:
 
 				$endpoint_args['fetch_only'] = array(
@@ -601,7 +601,6 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		);
 
 		return $schema;
-
 	}
 }
 
