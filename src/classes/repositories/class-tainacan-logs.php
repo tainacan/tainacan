@@ -59,7 +59,7 @@ class Logs extends Repository {
 				'map'         => 'post_date',
 				'title'       => __( 'Log date', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The log date', 'tainacan' ),
+				'description' => __( 'The moment when the log was registered', 'tainacan' ),
 			],
 			'description'    => [
 				'map'         => 'post_content',
@@ -123,19 +123,19 @@ class Logs extends Repository {
 			'old_value' => [
 				'map'         => 'meta',
 				'title'       => __( 'Old value', 'tainacan' ),
-				'description' => __( 'Old value', 'tainacan' ),
+				'description' => __( 'Value of the field previous to the edition registered by the log.', 'tainacan' ),
 				'type'        => 'string',
 			],
 			'new_value' => [
 				'map'         => 'meta',
 				'title'       => __( 'New value', 'tainacan' ),
-				'description'       => __( 'New value', 'tainacan' ),
+				'description'       => __( 'Value of the field after the edition registered by the log.', 'tainacan' ),
 				'type'        => 'string',
 			],
 			'action' => [
 				'map'         => 'meta',
 				'title'       => __( 'Action', 'tainacan' ),
-				'description' => __( 'Action', 'tainacan' ),
+				'description' => __( 'Type of action registered by the log.', 'tainacan' ),
 				'type'        => 'string',
 			]
 		] );
