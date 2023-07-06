@@ -296,7 +296,7 @@ abstract class Metadata_Type  {
 
         $attributes['name']                = $this->get_name();
         $attributes['description']         = $this->get_description();
-        $attributes['errors']              = $this->get_errors();
+        // $attributes['errors']              = $this->get_errors(); // Does it make sense to show errors in the API?
 	    $attributes['related_mapped_prop'] = $this->get_related_mapped_prop();
 	    $attributes['options']             = $this->get_options();
         $attributes['className']           = get_class($this);
