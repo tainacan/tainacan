@@ -90,7 +90,7 @@ class REST_Metadata_Types_Controller extends REST_Controller {
 				],
 				'component'           => [
 					'type' => 'string',
-					'description' => __('The name of the web component used by this metadatum type, for example "tainacan-taxonomy".', 'tainacan')
+					'description' => __('The name of the web component used by this metadata type, for example "tainacan-taxonomy".', 'tainacan')
 				],
 				'primitive_type'      => [
 					'type'  => ['array','string'],
