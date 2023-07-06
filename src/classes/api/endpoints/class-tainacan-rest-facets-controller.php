@@ -8,10 +8,6 @@ use \Tainacan\API\REST_Controller;
 
 class REST_Facets_Controller extends REST_Controller {
 	private $metadatum_repository;
-	
-	protected function get_schema() {
-        return "TODO:get_schema";
-    }
 
 	/**
 	 * REST_Facets_Controller constructor.
@@ -36,16 +32,34 @@ class REST_Facets_Controller extends REST_Controller {
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
-				'permission_callback' => array($this, 'get_items_permissions_check')
-			)
+				'permission_callback' => array($this, 'get_items_permissions_check'),
+				'args'				  => array(
+					'collection_id' => array(
+						'description'       => __('Collection ID.', 'tainacan'),
+						'required' 			=> true,
+					),
+					'metadatum_id' => array(
+						'description'       => __('Metadatum ID.', 'tainacan'),
+						'required' 			=> true,
+					)
+				)
+			),
+			'schema' =>	[$this, 'get_schema']
 		));
 
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<metadatum_id>[\d]+)', array(
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
-				'permission_callback' => array($this, 'get_items_permissions_check')
-			)
+				'permission_callback' => array($this, 'get_items_permissions_check'),
+				'args'				  => array(
+					'metadatum_id' => array(
+						'description'       => __('Metadatum ID.', 'tainacan'),
+						'required' 			=> true,
+					)
+				)
+			),
+			'schema' =>	[$this, 'get_schema']
 		));
 	}
 
@@ -195,6 +209,68 @@ class REST_Facets_Controller extends REST_Controller {
 		return false;
 
 	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => $this->rest_base,
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
+			'properties' => array(
+				'values' => array(
+					'type' => 'array',
+					'description' => __( 'Values for the facet', 'tainacan' ),
+					'items' => [
+						'type' => 'object',
+						'properties' => [
+							'value' => [
+								'type' => 'string',
+								'description' => __( 'Value of the facet', 'tainacan' ),
+							],
+							'label' => [
+								'type' => 'string',
+								'description' => __( 'Label of the facet', 'tainacan' ),
+							],
+							'total_children' => [
+								'type' => 'string',
+								'description' => __( 'Total of children of the facet', 'tainacan' ),
+							],
+							'taxonomy' => [
+								'type' => 'string',
+								'description' => __( 'Taxonomy associated with the facet, if coming from a Taxonomy metadata type. This will be the id of the taxonomy with the prefix "tnc_col_"', 'tainacan' ),
+							],
+							'taxonomy_id' => [
+								'type' => 'integer',
+								'description' => __( 'Taxonomy associated with the facet, if coming from a Taxonomy metadata type.', 'tainacan' ),
+							],
+							'parent' => [
+								'type' => 'string',
+								'description' => __( 'Parent metadatum id, if the metadtumof the facet', 'tainacan' ),
+							],
+							'total_items' => [
+								'type' => 'integer',
+								'description' => __( 'Total of items of the facet', 'tainacan' ),
+							],
+							'type' => [
+								'type' => 'string',
+								'description' => __( 'Type of the metadatum related to the facet', 'tainacan' ),
+							],
+							'hierarchy_path' => [
+								'type' => 'string',
+								'description' => __( 'Hierarchy path to be appended to the facet label if it is related to a Taxonomy metadata and it has terms with hierarchy.', 'tainacan' ),
+							]
+						]
+					]
+				),
+				'last_term' => array(
+					'type' => 'string',
+					'description' => __( 'Last term passed for pagination when Elastic Search is used.', 'tainacan' ),
+				),
+			)
+		];
+
+		return $schema;
+    }
 
 }
 
