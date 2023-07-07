@@ -23,7 +23,7 @@ module.exports = {
         'vue/multiline-html-element-content-newline': 'off',
         'vue/prop-name-casing': 'off',
         'vue/no-confusing-v-for-v-if': 'off',
-        'vue/no-use-v-if-with-v-for': 'off',
+        'vue/no-use-v-if-with-v-for': 'warn',
         'vue/multi-word-component-names': 'off',
         'vue/require-default-prop': 'off',
         'vue/no-v-text-v-html-on-component': 'off'

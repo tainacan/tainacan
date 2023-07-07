@@ -109,10 +109,9 @@
                               {{ $i18n.get('label_create_repository_metadata') }}
                             </option>
                             <option
-                                    v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
+                                    v-for="(collectionMetadatum, metadatumIndex) of collectionNonChildMetadata"
                                     :key="metadatumIndex"
                                     :value="collectionMetadatum.id"
-                                    v-if="!checkIfMetadatumIsChild(collectionMetadatum)"
                                     :disabled="checkIfMetadatumIsAvailable(collectionMetadatum.id)">
                                 <span class="metadatum-name">
                                     {{ collectionMetadatum.name }}
@@ -141,10 +140,9 @@
                                 {{ $i18n.get('label_create_metadatum') }}
                             </option>
                             <option
-                                    v-for="(collectionMetadatum, metadatumIndex) of collectionMetadata"
+                                    v-for="(collectionMetadatum, metadatumIndex) of collectionNonChildMetadata"
                                     :key="metadatumIndex"
                                     :value="collectionMetadatum.id"
-                                    v-if="!checkIfMetadatumIsChild(collectionMetadatum)"
                                     :disabled="!checkIfMetadatumIsCompound(collectionMetadatum) || checkIfMetadatumIsAvailable(collectionMetadatum.id)">
                                 <span class="metadatum-name">
                                     {{ collectionMetadatum.name }}
@@ -191,15 +189,15 @@
                     </template>
                     <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
                 </div>
-                <div
-                        v-if="importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0"
-                        class="source-metadatum"
-                        :key="specialFieldIndex"
-                        v-for="(specialField, specialFieldIndex) of importerSourceInfo.source_special_fields">
-                    <p style="font-style: italic">{{ specialField }}</p>
-                    <p>{{ $i18n.get('info_special_fields_mapped_default') }}</p>
-                </div>
-                
+                <template v-if="importerSourceInfo.source_special_fields">
+                    <div
+                            v-for="(specialField, specialFieldIndex) of importerSourceInfo.source_special_fields"
+                            :key="specialFieldIndex"
+                            class="source-metadatum">
+                        <p style="font-style: italic">{{ specialField }}</p>
+                        <p>{{ $i18n.get('info_special_fields_mapped_default') }}</p>
+                    </div>
+                </template>                
                 <p v-if="importerSourceInfo.source_metadata.length <= 0">{{ $i18n.get('info_no_metadata_source_file') }}<br></p>
                 
                 <p v-if="(!importerSourceInfo.source_special_fields || importerSourceInfo.source_special_fields.length <= 0)">{{ $i18n.get('info_no_special_fields_available') }}<br></p>
@@ -419,6 +417,9 @@ export default {
     computed: {
         metadatumTypes() {
             return this.getMetadatumTypes();
+        },
+        collectionNonChildMetadata() {
+            return Array.isArray(this.collectionMetadata) ? this.collectionMetadata.filter((metadatum) => !this.checkIfMetadatumIsChild(metadatum)) : [];
         }
     },
     created() {
