@@ -8,14 +8,9 @@ use Tainacan\Repositories;
 
 class REST_Reports_Controller extends REST_Controller {
 
-	private $items_repository;
 	private $taxonomy_repository;
 	private $metadatum_repository;
 	private $collections_repository;
-
-	protected function get_schema() {
-        return "TODO:get_schema";
-    }
 
 	public function __construct() {
 		$this->rest_base = 'reports';
@@ -24,7 +19,6 @@ class REST_Reports_Controller extends REST_Controller {
 	}
 
 	public function init_objects() {
-		$this->items_repository = Repositories\Items::get_instance();
 		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
 		$this->metadatum_repository = Repositories\Metadata::get_instance();
 		$this->collections_repository = Repositories\Collections::get_instance();
@@ -42,19 +36,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_collections'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_collection_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/summary',
@@ -63,19 +47,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_summary'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_summary_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata',
@@ -84,19 +58,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_stats_collection_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/metadata',
@@ -105,19 +69,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_stats_collection_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/repository/summary',
@@ -126,19 +80,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_summary'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_summary_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/taxonomy',
@@ -147,19 +91,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_taxonomies_list'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/taxonomy/(?P<taxonomy_id>[\d]+)',
@@ -168,19 +102,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_taxonomy'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/activities',
@@ -189,29 +113,23 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_activities'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'start' => [
-							'title'       => __( 'start Date', 'tainacan' ),
-							'type'        => 'string',
-							'format'      => 'date-time',
-						], 
-						'end' => [
-							'title'       => __( 'start Date', 'tainacan' ),
-							'type'        => 'string',
-							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+					'args'                => array_merge(
+						[
+							'start' => [
+								'title'       => __( 'start Date', 'tainacan' ),
+								'type'        => 'string',
+								'format'      => 'date-time',
+							], 
+							'end' => [
+								'title'       => __( 'start Date', 'tainacan' ),
+								'type'        => 'string',
+								'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+							],
 						],
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+						$this->get_endpoint_args_for_item_schema()
+					)
 				),
+				'schema' => array($this, 'get_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/activities',
@@ -220,29 +138,23 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_activities'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'start' => [
-							'title'       => __( 'start Date', 'tainacan' ),
-							'type'        => 'string',
-							'format'      => 'date-time',
-						], 
-						'end' => [
-							'title'       => __( 'start Date', 'tainacan' ),
-							'type'        => 'string',
-							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+					'args'                => array_merge(
+						[
+							'start' => [
+								'title'       => __( 'start Date', 'tainacan' ),
+								'type'        => 'string',
+								'format'      => 'date-time',
+							], 
+							'end' => [
+								'title'       => __( 'start Date', 'tainacan' ),
+								'type'        => 'string',
+								'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+							],
 						],
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+						$this->get_endpoint_args_for_item_schema()
+					)
 				),
+				'schema' => array($this, 'get_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)',
@@ -251,23 +163,17 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'parent' => [
-							'title'       => __( 'parent', 'tainacan' ),
-							'type'        => 'integer',
+					'args'                => array_merge(
+						[
+							'parent' => [
+								'title'       => __( 'parent', 'tainacan' ),
+								'type'        => 'integer',
+							],
 						],
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+						$this->get_endpoint_args_for_item_schema()
+					)
 				),
+				'schema' => array($this, 'get_schema'),
 			)
 		);
 	}
@@ -888,6 +794,204 @@ class REST_Reports_Controller extends REST_Controller {
 		$expiration = 604800; //one week
 		$data['report_cached_on'] = (new \DateTime())->format('Y-m-d H:i:s');
 		return set_transient($this->prefix_transient_cahce . $key, $data, $expiration);
+	}
+
+	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_endpoint_args_for_item_schema( $method = null ) {
+		$endpoint_args = [
+			'force' => [
+				'title'       => __( 'Force regenerate', 'tainacan' ),
+				'type'        => 'string',
+				'default' 	  => 'no',
+				'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
+				'enum'    	  => array(
+					'no',
+					'yes'
+				)
+			]
+		];
+
+		return $endpoint_args;
+	}
+
+	function get_collection_schema() {
+		$schema = $this->get_schema();
+		$schema['properties']['list'] = [
+			'type' => 'array',
+			'items' => [
+				'type' => 'object',
+				'description' => __( 'List of Collection objects', 'tainacan' ),
+				'properties' => [
+					'id' => [
+						'type' => 'integer',
+						'description' => __( 'Collection ID', 'tainacan' )
+					],
+					'name' => [
+						'type' => 'string',
+						'description' => __( 'Collection name', 'tainacan' )
+					],
+					'items' => [
+						'type' => 'object',
+						'description' => __( 'Object containing summary of items totals', 'tainacan' ),
+						'properties' => [
+							'total' => [
+								'type' => 'integer',
+								'description' => __( 'Summation of the total of items', 'tainacan' )
+							],
+							'trash' => [
+								'type' => 'integer',
+								'description' => __( 'Total of trashed items', 'tainacan' )
+							],
+							'publish' => [
+								'type' => 'integer',
+								'description' => __( 'Total of published items', 'tainacan' )
+							],
+							'draft' => [
+								'type' => 'integer',
+								'description' => __( 'Total of draft items', 'tainacan' )
+							],
+							'private' => [
+								'type' => 'integer',
+								'description' => __( 'Total of private items', 'tainacan' )
+							]
+						]
+					],
+				]
+			]
+		];
+		return $schema;
+	}
+	
+	function get_summary_schema() {
+
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => $this->rest_base,
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
+			'properties' => [
+				'report_cached_on' => [
+					'type' => 'string',
+					'format'      => 'date-time',
+					'description' => __( 'Date of the last cache update', 'tainacan' )
+				],
+				'totals' => [
+					'type' => 'object',
+					'properties' => [	
+						'items' => [
+							'type' => 'object',
+							'description' => __( 'Total of items', 'tainacan' ),
+							'properties' => [
+								'total' => [
+									'type' => 'integer',
+									'description' => __( 'Summation of the total of items', 'tainacan' )
+								],
+								'trash' => [
+									'type' => 'integer',
+									'description' => __( 'Total of trashed items', 'tainacan' )
+								],
+								'publish' => [
+									'type' => 'integer',
+									'description' => __( 'Total of published items', 'tainacan' )
+								],
+								'draft' => [
+									'type' => 'integer',
+									'description' => __( 'Total of draft items', 'tainacan' )
+								],
+								'private' => [
+									'type' => 'integer',
+									'description' => __( 'Total of private items', 'tainacan' )
+								],
+								'restrict' => [
+									'type' => 'integer',
+									'description' => __( 'Total of items with restrict access', 'tainacan' )
+								],
+								'not_restrict' => [
+									'type' => 'integer',
+									'description' => __( 'Total of items without restrict access', 'tainacan' )
+								]
+							]
+						],
+						'collections' => [
+							'type' => 'object',
+							'description' => __( 'Total of collections', 'tainacan' ),
+							'properties' => [
+								'total' => [
+									'type' => 'integer',
+									'description' => __( 'Summation of the total of collections', 'tainacan' )
+								],
+								'trash' => [
+									'type' => 'integer',
+									'description' => __( 'Total of trashed collections', 'tainacan' )
+								],
+								'publish' => [
+									'type' => 'integer',
+									'description' => __( 'Total of published collections', 'tainacan' )
+								],
+								'private' => [
+									'type' => 'integer',
+									'description' => __( 'Total of private collections', 'tainacan' )
+								]
+							]
+						],
+						'taxonomies' => [
+							'type' => 'object',
+							'description' => __( 'Total of taxonomies', 'tainacan' ),
+							'properties' => [
+								'total' => [
+									'type' => 'integer',
+									'description' => __( 'Summation of the total of taxonomies', 'tainacan' )
+								],
+								'trash' => [
+									'type' => 'integer',
+									'description' => __( 'Total of trashed taxonomies', 'tainacan' )
+								],
+								'publish' => [
+									'type' => 'integer',
+									'description' => __( 'Total of published taxonomies', 'tainacan' )
+								],
+								'private' => [
+									'type' => 'integer',
+									'description' => __( 'Total of private taxonomies', 'tainacan' )
+								],
+								'used' => [
+									'type' => 'integer',
+									'description' => __( 'Total of taxonomies used in some collection', 'tainacan' )
+								],
+								'not_used' => [
+									'type' => 'integer',
+									'description' => __( 'Total of taxonomies not used in any collection', 'tainacan' )
+								]
+							]
+						]
+					]
+				]
+			]
+		];
+
+		return $schema;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => $this->rest_base,
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
+			'properties' => [
+				'report_cached_on' => [
+					'type' => 'string',
+					'format'      => 'date-time',
+					'description' => __( 'Date of the last cache update', 'tainacan' )
+				]
+			]
+		];
+
+		return $schema;
 	}
 }
 
