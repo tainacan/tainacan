@@ -59,16 +59,17 @@
                     v-if="selectedEstrategy == 'mappers'"
                     class="collection-creation-options-container"
                     role="list">
-                <button
-                         class="collection-creation-option"
-                        @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $parent.close();"
-                        :key="metadatumMapper.slug"
-                        v-for="metadatumMapper in metadatumMappers"
-                        v-if="metadatumMapper.metadata != false"
-                        aria-role="listitem">
-                    <h3>{{ metadatumMapper.name }}</h3>
-                    <p>{{ metadatumMapper.description }}</p>
-                </button>
+                <template v-for="metadatumMapper in metadatumMappers">
+                    <button
+                            class="collection-creation-option"
+                            @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $parent.close();"
+                            :key="metadatumMapper.slug"
+                            v-if="metadatumMapper.metadata != false"
+                            aria-role="listitem">
+                        <h3>{{ metadatumMapper.name }}</h3>
+                        <p>{{ metadatumMapper.description }}</p>
+                    </button>
+                </template>
             </div>
 
             <div 

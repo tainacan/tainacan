@@ -125,9 +125,8 @@
                             </a>
                         </li>
                         <li 
-                                v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
+                                v-for="(statusOption, index) of statusOptionsForTaxonomies"
                                 :key="index"
-                                v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_taxonomies'))"
                                 @click="onChangeTab(statusOption.slug)"
                                 :class="{ 'is-active': status == statusOption.slug}"
                                 :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
@@ -171,11 +170,8 @@
                                     </span>
                                 </p>
                                 <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
-                                <p
-                                        v-for="(statusOption, index) of $statusHelper.getStatuses()"
-                                        :key="index"
-                                        v-if="status == statusOption.slug">
-                                    {{ $i18n.get('info_no_taxonomies_' + statusOption.slug) }}
+                                <p v-else>
+                                    {{ $i18n.get('info_no_taxonomies_' + status) }}
                                 </p>
                                 <router-link
                                         v-if="status == undefined || status == ''"
@@ -269,6 +265,9 @@
             },
             repositoryTotalTaxonomies(){
                 return this.getRepositoryTotalTaxonomies();
+            },
+            statusOptionsForTaxonomies() {
+                return this.$statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (status.slug != 'private' || (status.slug == 'private' && this.$userCaps.hasCapability('tnc_rep_read_private_taxonomies'))));
             }
         },
         created() {

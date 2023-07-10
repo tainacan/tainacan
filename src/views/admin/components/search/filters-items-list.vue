@@ -49,206 +49,210 @@
 
             <!--  TAXONOMY TERM ITEMS FILTERS -->
             <template v-if="taxonomy && taxonomyFilters">
-                <div 
-                        v-if="key == 'repository-filters'"
-                        :key="index"
-                        v-for="(taxonomyFilter, key, index) of taxonomyFilters">
+                <template v-for="(taxonomyFilter, key, index) of taxonomyFilters">
                     <div 
-                            v-tooltip="{
-                                delay: {
-                                    shown: 500,
-                                    hide: 300,
-                                },
-                                content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
-                                autoHide: false,
-                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                placement: 'auto-start'
-                            }" 
-                            v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
-                            class="collection-name">
-                        {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
+                            v-if="key == 'repository-filters'"
+                            :key="index">
+                        <div 
+                                v-tooltip="{
+                                    delay: {
+                                        shown: 500,
+                                        hide: 300,
+                                    },
+                                    content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
+                                    autoHide: false,
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }" 
+                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
+                                class="collection-name">
+                            {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
+                        </div>
+                        <div    
+                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
+                                class="collection-name">
+                            <span 
+                                    style="width: 100%; height: 54px;"
+                                    class="icon has-text-centered loading-icon">
+                                <div class="control has-icons-right is-loading is-clearfix" />
+                            </span>
+                        </div>
+                        <template v-if="taxonomyFilter.length > 0">
+                            <tainacan-filter-item
+                                    :is-loading-items="isLoadingItems"
+                                    v-show="!isMenuCompressed"        
+                                    :query="getQuery"
+                                    v-for="(filter, filterIndex) in taxonomyFilter"
+                                    :key="filterIndex"
+                                    :filter="filter"
+                                    :expand-all="!collapseAll"
+                                    :is-repository-level="key == 'repository-filters'"
+                                    :filters-as-modal="filtersAsModal"
+                                    :is-mobile-screen="isMobileScreen"/>
+                        </template>
+                        <!-- <p   
+                                class="has-text-gray"
+                                style="font-size: 0.75em;"
+                                v-if="taxonomyFilter.length <= 0">
+                            {{ $i18n.get('info_there_is_no_filter') }}    
+                        </p> -->
+                        <hr v-if="taxonomyFilter.length > 1">
                     </div>
-                    <div    
-                            v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
-                            class="collection-name">
-                        <span 
-                                style="width: 100%; height: 54px;"
-                                class="icon has-text-centered loading-icon">
-                            <div class="control has-icons-right is-loading is-clearfix" />
-                        </span>
-                    </div>
-                    <template v-if="taxonomyFilter.length > 0">
-                        <tainacan-filter-item
-                                :is-loading-items="isLoadingItems"
-                                v-show="!isMenuCompressed"        
-                                :query="getQuery"
-                                v-for="(filter, filterIndex) in taxonomyFilter"
-                                :key="filterIndex"
-                                :filter="filter"
-                                :expand-all="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"
-                                :filters-as-modal="filtersAsModal"
-                                :is-mobile-screen="isMobileScreen"/>
-                    </template>
-                    <!-- <p   
-                            class="has-text-gray"
-                            style="font-size: 0.75em;"
-                            v-if="taxonomyFilter.length <= 0">
-                        {{ $i18n.get('info_there_is_no_filter') }}    
-                    </p> -->
-                    <hr v-if="taxonomyFilter.length > 1">
-                </div>
-                <div 
-                        v-if="key != 'repository-filters'"
-                        :key="index"
-                        v-for="(taxonomyFilter, key, index) of taxonomyFilters">
+                </template>
+                <template v-for="(taxonomyFilter, key, index) of taxonomyFilters">
                     <div 
-                            v-tooltip="{
-                                delay: {
-                                    shown: 500,
-                                    hide: 300,
-                                },
-                                content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
-                                autoHide: false,
-                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                placement: 'auto-start'
-                            }" 
-                            v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
-                            class="collection-name">
-                        {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
+                            v-if="key != 'repository-filters'"
+                            :key="index">
+                        <div 
+                                v-tooltip="{
+                                    delay: {
+                                        shown: 500,
+                                        hide: 300,
+                                    },
+                                    content: $i18n.get('label_filters_from') + ' ' + taxonomyFiltersCollectionNames[key] + ': ',
+                                    autoHide: false,
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }" 
+                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
+                                class="collection-name">
+                            {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
+                        </div>
+                        <div    
+                                v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
+                                class="collection-name">
+                            <span 
+                                    style="width: 100%; height: 54px;"
+                                    class="icon has-text-centered loading-icon">
+                                <div class="control has-icons-right is-loading is-clearfix" />
+                            </span>
+                        </div>
+                        <template v-if="taxonomyFilter.length > 0">
+                            <tainacan-filter-item
+                                    :is-loading-items="isLoadingItems"
+                                    v-show="!isMenuCompressed"        
+                                    :query="getQuery"
+                                    v-for="(filter, filterIndex) in taxonomyFilter"
+                                    :key="filterIndex"
+                                    :filter="filter"
+                                    :expand-all="!collapseAll"
+                                    :is-repository-level="key == 'repository-filters'"
+                                    :filters-as-modal="filtersAsModal"
+                                    :is-mobile-screen="isMobileScreen" />
+                        </template>
+                        <!-- <p   
+                                class="has-text-gray"
+                                style="font-size: 0.75em;"
+                                v-if="taxonomyFilter.length <= 0">
+                            {{ $i18n.get('info_there_is_no_filter') }}    
+                        </p> -->
+                        <hr v-if="taxonomyFilter.length > 1">
                     </div>
-                    <div    
-                            v-if="taxonomyFilter.length > 0 && !(taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined)"
-                            class="collection-name">
-                        <span 
-                                style="width: 100%; height: 54px;"
-                                class="icon has-text-centered loading-icon">
-                            <div class="control has-icons-right is-loading is-clearfix" />
-                        </span>
-                    </div>
-                    <template v-if="taxonomyFilter.length > 0">
-                        <tainacan-filter-item
-                                :is-loading-items="isLoadingItems"
-                                v-show="!isMenuCompressed"        
-                                :query="getQuery"
-                                v-for="(filter, filterIndex) in taxonomyFilter"
-                                :key="filterIndex"
-                                :filter="filter"
-                                :expand-all="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"
-                                :filters-as-modal="filtersAsModal"
-                                :is-mobile-screen="isMobileScreen" />
-                    </template>
-                    <!-- <p   
-                            class="has-text-gray"
-                            style="font-size: 0.75em;"
-                            v-if="taxonomyFilter.length <= 0">
-                        {{ $i18n.get('info_there_is_no_filter') }}    
-                    </p> -->
-                    <hr v-if="taxonomyFilter.length > 1">
-                </div>
+                </template>
             </template>
 
             <!-- REPOSITORY ITEMS FILTERS -->
             <template v-else-if="isRepositoryLevel && !taxonomy">
-                <div 
-                        v-if="key == 'repository-filters'"
-                        :key="index"
-                        v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters">
+                <template v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters">
                     <div 
-                            v-tooltip="{
-                                delay: {
-                                    shown: 500,
-                                    hide: 300,
-                                },
-                                content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
-                                autoHide: false,
-                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                placement: 'auto-start'
-                            }" 
-                            v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"
-                            class="collection-name">
-                        {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
+                            v-if="key == 'repository-filters'"
+                            :key="index">
+                        <div 
+                                v-tooltip="{
+                                    delay: {
+                                        shown: 500,
+                                        hide: 300,
+                                    },
+                                    content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
+                                    autoHide: false,
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }" 
+                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"
+                                class="collection-name">
+                            {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
+                        </div>
+                        <div    
+                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined)"
+                                class="collection-name">
+                            <span 
+                                    style="width: 100%; height: 54px;"
+                                    class="icon has-text-centered loading-icon">
+                                <div class="control has-icons-right is-loading is-clearfix" />
+                            </span>
+                        </div>
+                        <template v-if="repositoryCollectionFilter.length > 0">
+                            <tainacan-filter-item
+                                    :is-loading-items="isLoadingItems"
+                                    v-show="!isMenuCompressed"        
+                                    :query="getQuery"
+                                    v-for="(filter, filterIndex) in repositoryCollectionFilter"
+                                    :key="filterIndex"
+                                    :filter="filter"
+                                    :expand-all="!collapseAll"
+                                    :is-repository-level="key == 'repository-filters'"
+                                    :filters-as-modal="filtersAsModal"
+                                    :is-mobile-screen="isMobileScreen" />
+                        </template>
+                        <!-- <p   
+                                class="has-text-gray"
+                                style="font-size: 0.75em;"
+                                v-if="taxonomyFilter.length <= 0">
+                            {{ $i18n.get('info_there_is_no_filter') }}    
+                        </p> -->
+                        <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
-                    <div    
-                            v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined)"
-                            class="collection-name">
-                        <span 
-                                style="width: 100%; height: 54px;"
-                                class="icon has-text-centered loading-icon">
-                            <div class="control has-icons-right is-loading is-clearfix" />
-                        </span>
-                    </div>
-                    <template v-if="repositoryCollectionFilter.length > 0">
-                        <tainacan-filter-item
-                                :is-loading-items="isLoadingItems"
-                                v-show="!isMenuCompressed"        
-                                :query="getQuery"
-                                v-for="(filter, filterIndex) in repositoryCollectionFilter"
-                                :key="filterIndex"
-                                :filter="filter"
-                                :expand-all="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"
-                                :filters-as-modal="filtersAsModal"
-                                :is-mobile-screen="isMobileScreen" />
-                    </template>
-                    <!-- <p   
-                            class="has-text-gray"
-                            style="font-size: 0.75em;"
-                            v-if="taxonomyFilter.length <= 0">
-                        {{ $i18n.get('info_there_is_no_filter') }}    
-                    </p> -->
-                    <hr v-if="repositoryCollectionFilters.length > 1">
-                </div>
-                <div 
-                        v-if="key != 'repository-filters'"
-                        :key="index"
-                        v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters">
+                </template>
+                <template v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters">
                     <div 
-                            v-tooltip="{
-                                delay: {
-                                    shown: 500,
-                                    hide: 300,
-                                },
-                                content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
-                                autoHide: false,
-                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                placement: 'auto-start'
-                            }" 
-                            v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"
-                            class="collection-name">
-                        {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
+                            v-if="key != 'repository-filters'"
+                            :key="index">
+                        <div 
+                                v-tooltip="{
+                                    delay: {
+                                        shown: 500,
+                                        hide: 300,
+                                    },
+                                    content: $i18n.get('label_filters_from') + ' ' + repositoryCollectionNames[key] + ': ',
+                                    autoHide: false,
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }" 
+                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"
+                                class="collection-name">
+                            {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
+                        </div>
+                        <div    
+                                v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined)"
+                                class="collection-name">
+                            <span 
+                                    style="width: 100%; height: 54px;"
+                                    class="icon has-text-centered loading-icon">
+                                <div class="control has-icons-right is-loading is-clearfix" />
+                            </span>
+                        </div>
+                        <template v-if="repositoryCollectionFilter.length > 0">
+                            <tainacan-filter-item
+                                    :is-loading-items="isLoadingItems"
+                                    v-show="!isMenuCompressed"        
+                                    :query="getQuery"
+                                    v-for="(filter, filterIndex) in repositoryCollectionFilter"
+                                    :key="filterIndex"
+                                    :filter="filter"
+                                    :expand-all="!collapseAll"
+                                    :is-repository-level="key == 'repository-filters'"
+                                    :filters-as-modal="filtersAsModal"
+                                    :is-mobile-screen="isMobileScreen" />
+                        </template>
+                        <!-- <p   
+                                class="has-text-gray"
+                                style="font-size: 0.75em;"
+                                v-if="taxonomyFilter.length <= 0">
+                            {{ $i18n.get('info_there_is_no_filter') }}    
+                        </p> -->
+                        <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
-                    <div    
-                            v-if="repositoryCollectionFilter.length > 0 && !(repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined)"
-                            class="collection-name">
-                        <span 
-                                style="width: 100%; height: 54px;"
-                                class="icon has-text-centered loading-icon">
-                            <div class="control has-icons-right is-loading is-clearfix" />
-                        </span>
-                    </div>
-                    <template v-if="repositoryCollectionFilter.length > 0">
-                        <tainacan-filter-item
-                                :is-loading-items="isLoadingItems"
-                                v-show="!isMenuCompressed"        
-                                :query="getQuery"
-                                v-for="(filter, filterIndex) in repositoryCollectionFilter"
-                                :key="filterIndex"
-                                :filter="filter"
-                                :expand-all="!collapseAll"
-                                :is-repository-level="key == 'repository-filters'"
-                                :filters-as-modal="filtersAsModal"
-                                :is-mobile-screen="isMobileScreen" />
-                    </template>
-                    <!-- <p   
-                            class="has-text-gray"
-                            style="font-size: 0.75em;"
-                            v-if="taxonomyFilter.length <= 0">
-                        {{ $i18n.get('info_there_is_no_filter') }}    
-                    </p> -->
-                    <hr v-if="repositoryCollectionFilters.length > 1">
-                </div>
+                </template>
             </template>
 
             <!-- COLLECTION ITEMS FILTERS -->
