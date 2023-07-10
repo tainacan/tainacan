@@ -9,7 +9,7 @@
                   <div class="field select-all is-pulled-left">
                       <span>
                           <b-checkbox
-                                  @click.native="selectAllOnPage()"
+                                  @click="selectAllOnPage()"
                                   :value="allOnPageSelected">{{ $i18n.get('label_select_all_processes_page') }}</b-checkbox>
                       </span>
                   </div>

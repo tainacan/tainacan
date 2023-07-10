@@ -443,8 +443,8 @@
                                                             :is-focused="focusedMetadatum === index"
                                                             :is-metadata-navigation="isMetadataNavigation"
                                                             @changeCollapse="onChangeCollapse($event, index)"
-                                                            @touchstart.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
-                                                            @mousedown.native="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
+                                                            @touchstart="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
+                                                            @mousedown="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
                                                             @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
                                                 </template>
                                             </div>

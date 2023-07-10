@@ -7,7 +7,7 @@
                 type="text"
                 v-mask="dateMask"
                 v-model="dateValue"
-                @input.native="onInput"
+                @input="onInput"
                 @blur="onBlur"
                 @focus="onMobileSpecialFocus"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : dateFormat.toLowerCase()" />

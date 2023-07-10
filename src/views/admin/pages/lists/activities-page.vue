@@ -133,7 +133,7 @@
                                 :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
                                 autocomplete="on"
                                 v-model="searchQuery"
-                                @keyup.enter.native="searchActivities()"
+                                @keyup.enter="searchActivities()"
                                 icon-right="magnify"
                                 icon-right-clickable
                                 @icon-right-click="searchActivities()" />
@@ -197,7 +197,7 @@
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
                             autocomplete="on"
                             v-model="searchQuery"
-                            @keyup.enter.native="searchProcesses()"
+                            @keyup.enter="searchProcesses()"
                             icon-right="magnify"
                             icon-right-clickable
                             @icon-right-click="searchProcesses" />

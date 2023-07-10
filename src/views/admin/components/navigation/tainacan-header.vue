@@ -60,8 +60,8 @@
                         class="search-header"
                         size="is-small"
                         :value="searchQuery"
-                        @input.native="futureSearchQuery = $event.target.value"
-                        @keyup.enter.native="updateSearch()"
+                        @input="futureSearchQuery = $event.target.value"
+                        @keyup.enter="updateSearch()"
                         icon-right="magnify"
                         icon-right-clickable
                         @icon-right-click="updateSearch()" />

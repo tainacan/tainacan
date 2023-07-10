@@ -10,7 +10,7 @@
                     class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
-                            @click.native.prevent="selectAllItemsOnPage()"
+                            @click.prevent="selectAllItemsOnPage()"
                             :value="allItemsOnPageSelected">
                         {{ $i18n.get('label_select_all_items_page') }}
                     </b-checkbox>

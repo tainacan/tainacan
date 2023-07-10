@@ -8,7 +8,7 @@
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox 
-                            @click.native="selectAllCollectionsOnPage()" 
+                            @click="selectAllCollectionsOnPage()" 
                             :value="allCollectionsOnPageSelected">{{ $i18n.get('label_select_all_collections_page') }}</b-checkbox>
                 </span>
             </div>

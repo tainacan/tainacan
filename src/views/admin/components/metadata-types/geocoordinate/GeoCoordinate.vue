@@ -27,7 +27,7 @@
                             :placeholder="-14.408656999999"
                             type="text"
                             :step="0.000000000001"
-                            @input.native="onUpdateFromLatitudeInput"
+                            @input="onUpdateFromLatitudeInput"
                             :value="latitude" />
                     <b-input 
                             v-if="editingMarkerIndex >= 0"
@@ -35,7 +35,7 @@
                             :placeholder="-51.316689999999"
                             type="text"
                             :step="0.000000000001"
-                            @input.native="onUpdateFromLongitudeInput"
+                            @input="onUpdateFromLongitudeInput"
                             :value="longitude" />
                     <b-button
                             v-if="editingMarkerIndex >= 0"

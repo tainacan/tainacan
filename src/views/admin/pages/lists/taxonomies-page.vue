@@ -103,7 +103,7 @@
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
                             autocomplete="on"
                             v-model="searchQuery"
-                            @keyup.enter.native="searchTaxonomies()"
+                            @keyup.enter="searchTaxonomies()"
                             icon-right="magnify"
                             icon-right-clickable
                             @icon-right-click="searchTaxonomies()" />

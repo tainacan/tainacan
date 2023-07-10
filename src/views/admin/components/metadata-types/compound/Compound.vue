@@ -69,8 +69,8 @@
                         }"
                         :is-focused="(focusedGroupMetadatum === groupIndex) && (focusedChildMetadatum === childIndex)"
                         :is-metadata-navigation="isMetadataNavigation"
-                        @touchstart.native="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
-                        @mousedown.native="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
+                        @touchstart="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
+                        @mousedown="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
                         @mobileSpecialFocus="setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: true })"
                     />
 

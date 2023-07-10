@@ -2,8 +2,8 @@
     <b-field
             class="filter-item-forms"
             :ref="isMobileScreen ? ('filter-field-id-' + filter.id) : null"
-            @touchstart.native="setFilterFocus(filter.id)"
-            @mousedown.native="setFilterFocus(filter.id)"
+            @touchstart="setFilterFocus(filter.id)"
+            @mousedown="setFilterFocus(filter.id)"
             :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}">
         <b-collapse
                 v-if="displayFilter"

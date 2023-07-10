@@ -82,8 +82,8 @@
                                 type="search"
                                 :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                                 :value="searchQuery"
-                                @input.native="typeFutureSearch"
-                                @keyup.enter.native="updateSearch()"
+                                @input="typeFutureSearch"
+                                @keyup.enter="updateSearch()"
                                 icon-right="magnify"
                                 icon-right-clickable
                                 @icon-right-click="updateSearch()"

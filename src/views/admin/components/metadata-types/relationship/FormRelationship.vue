@@ -15,7 +15,7 @@
                     name="metadata_type_relationship[collection_id]"
                     :placeholder="$i18n.get('instruction_select_collection_fetch_items' )"
                     v-model="collection"
-                    @change.native="emitValues()"
+                    @change="emitValues()"
                     @focus="clear()"
                     :loading="loading"
                     expanded>

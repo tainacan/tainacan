@@ -184,7 +184,7 @@
                         :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
                         autocomplete="on"
                         v-model="searchQuery"
-                        @keyup.enter.native="searchCollections()"
+                        @keyup.enter="searchCollections()"
                         icon-right="magnify"
                         icon-right-clickable
                         @icon-right-click="searchCollections()" />
