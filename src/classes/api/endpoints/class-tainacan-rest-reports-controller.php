@@ -820,6 +820,7 @@ class REST_Reports_Controller extends REST_Controller {
 
 	function get_collection_schema() {
 		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-collection";
 		$schema['properties']['list'] = [
 			'type' => 'array',
 			'items' => [
@@ -867,106 +868,94 @@ class REST_Reports_Controller extends REST_Controller {
 	}
 	
 	function get_summary_schema() {
-
-		$schema = [
-			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => $this->rest_base,
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-summary";
+		$schema['properties']['totals'] = [
 			'type' => 'object',
-			'tags' => [ $this->rest_base ],
-			'properties' => [
-				'report_cached_on' => [
-					'type' => 'string',
-					'format'      => 'date-time',
-					'description' => __( 'Date of the last cache update', 'tainacan' )
-				],
-				'totals' => [
+			'properties' => [	
+				'items' => [
 					'type' => 'object',
-					'properties' => [	
-						'items' => [
-							'type' => 'object',
-							'description' => __( 'Total of items', 'tainacan' ),
-							'properties' => [
-								'total' => [
-									'type' => 'integer',
-									'description' => __( 'Summation of the total of items', 'tainacan' )
-								],
-								'trash' => [
-									'type' => 'integer',
-									'description' => __( 'Total of trashed items', 'tainacan' )
-								],
-								'publish' => [
-									'type' => 'integer',
-									'description' => __( 'Total of published items', 'tainacan' )
-								],
-								'draft' => [
-									'type' => 'integer',
-									'description' => __( 'Total of draft items', 'tainacan' )
-								],
-								'private' => [
-									'type' => 'integer',
-									'description' => __( 'Total of private items', 'tainacan' )
-								],
-								'restrict' => [
-									'type' => 'integer',
-									'description' => __( 'Total of items with restrict access', 'tainacan' )
-								],
-								'not_restrict' => [
-									'type' => 'integer',
-									'description' => __( 'Total of items without restrict access', 'tainacan' )
-								]
-							]
+					'description' => __( 'Total of items', 'tainacan' ),
+					'properties' => [
+						'total' => [
+							'type' => 'integer',
+							'description' => __( 'Summation of the total of items', 'tainacan' )
 						],
-						'collections' => [
-							'type' => 'object',
-							'description' => __( 'Total of collections', 'tainacan' ),
-							'properties' => [
-								'total' => [
-									'type' => 'integer',
-									'description' => __( 'Summation of the total of collections', 'tainacan' )
-								],
-								'trash' => [
-									'type' => 'integer',
-									'description' => __( 'Total of trashed collections', 'tainacan' )
-								],
-								'publish' => [
-									'type' => 'integer',
-									'description' => __( 'Total of published collections', 'tainacan' )
-								],
-								'private' => [
-									'type' => 'integer',
-									'description' => __( 'Total of private collections', 'tainacan' )
-								]
-							]
+						'trash' => [
+							'type' => 'integer',
+							'description' => __( 'Total of trashed items', 'tainacan' )
 						],
-						'taxonomies' => [
-							'type' => 'object',
-							'description' => __( 'Total of taxonomies', 'tainacan' ),
-							'properties' => [
-								'total' => [
-									'type' => 'integer',
-									'description' => __( 'Summation of the total of taxonomies', 'tainacan' )
-								],
-								'trash' => [
-									'type' => 'integer',
-									'description' => __( 'Total of trashed taxonomies', 'tainacan' )
-								],
-								'publish' => [
-									'type' => 'integer',
-									'description' => __( 'Total of published taxonomies', 'tainacan' )
-								],
-								'private' => [
-									'type' => 'integer',
-									'description' => __( 'Total of private taxonomies', 'tainacan' )
-								],
-								'used' => [
-									'type' => 'integer',
-									'description' => __( 'Total of taxonomies used in some collection', 'tainacan' )
-								],
-								'not_used' => [
-									'type' => 'integer',
-									'description' => __( 'Total of taxonomies not used in any collection', 'tainacan' )
-								]
-							]
+						'publish' => [
+							'type' => 'integer',
+							'description' => __( 'Total of published items', 'tainacan' )
+						],
+						'draft' => [
+							'type' => 'integer',
+							'description' => __( 'Total of draft items', 'tainacan' )
+						],
+						'private' => [
+							'type' => 'integer',
+							'description' => __( 'Total of private items', 'tainacan' )
+						],
+						'restrict' => [
+							'type' => 'integer',
+							'description' => __( 'Total of items with restrict access', 'tainacan' )
+						],
+						'not_restrict' => [
+							'type' => 'integer',
+							'description' => __( 'Total of items without restrict access', 'tainacan' )
+						]
+					]
+				],
+				'collections' => [
+					'type' => 'object',
+					'description' => __( 'Total of collections', 'tainacan' ),
+					'properties' => [
+						'total' => [
+							'type' => 'integer',
+							'description' => __( 'Summation of the total of collections', 'tainacan' )
+						],
+						'trash' => [
+							'type' => 'integer',
+							'description' => __( 'Total of trashed collections', 'tainacan' )
+						],
+						'publish' => [
+							'type' => 'integer',
+							'description' => __( 'Total of published collections', 'tainacan' )
+						],
+						'private' => [
+							'type' => 'integer',
+							'description' => __( 'Total of private collections', 'tainacan' )
+						]
+					]
+				],
+				'taxonomies' => [
+					'type' => 'object',
+					'description' => __( 'Total of taxonomies', 'tainacan' ),
+					'properties' => [
+						'total' => [
+							'type' => 'integer',
+							'description' => __( 'Summation of the total of taxonomies', 'tainacan' )
+						],
+						'trash' => [
+							'type' => 'integer',
+							'description' => __( 'Total of trashed taxonomies', 'tainacan' )
+						],
+						'publish' => [
+							'type' => 'integer',
+							'description' => __( 'Total of published taxonomies', 'tainacan' )
+						],
+						'private' => [
+							'type' => 'integer',
+							'description' => __( 'Total of private taxonomies', 'tainacan' )
+						],
+						'used' => [
+							'type' => 'integer',
+							'description' => __( 'Total of taxonomies used in some collection', 'tainacan' )
+						],
+						'not_used' => [
+							'type' => 'integer',
+							'description' => __( 'Total of taxonomies not used in any collection', 'tainacan' )
 						]
 					]
 				]
