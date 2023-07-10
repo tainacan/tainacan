@@ -38,12 +38,30 @@ module.exports = {
         filename: '[name].js',
         chunkFilename: `[name].js?ver=[contenthash]`
     },
+    resolve: {
+        fallback: {
+            fs: false,
+            net: false,
+            tls: false
+        },
+        alias: {
+            vue: '@vue/compat'
+        }
+    },
     module: {
         rules: [
             {
                 test: /\.vue$/,
                 exclude: /node_modules/,
-                loader: 'vue-loader'
+                loader: 'vue-loader',
+                options: {
+                    compilerOptions: {
+                        compatConfig: {
+                            // Default everything to Vue 2 behavior
+                            MODE: 2
+                        }
+                    }
+                }
             },
             {
                 test: /\.js$/,
@@ -57,7 +75,6 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
-                    'vue-style-loader',
                     'css-loader',
                     'postcss-loader',
                 ],
@@ -83,13 +100,6 @@ module.exports = {
                 ],
             }
         ]
-    },
-    resolve: {
-        fallback: {
-            fs: false,
-            net: false,
-            tls: false
-        }
     },
     performance: {
         hints: false
