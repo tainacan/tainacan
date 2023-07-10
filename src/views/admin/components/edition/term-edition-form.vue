@@ -165,7 +165,7 @@
                         :append-to-body="true"
                         check-infinite-scroll
                         @infinite-scroll="fetchMoreParentTerms">
-                    <template v-slot="props">
+                    <template #default="props">
                         <div class="media">
                             <div 
                                     v-if="props.option.header_image"
@@ -179,7 +179,7 @@
                             </div>
                         </div>
                     </template>
-                    <template slot="empty">{{ $i18n.get('info_no_parent_term_found') }}</template>
+                    <template #empty>{{ $i18n.get('info_no_parent_term_found') }}</template>
                 </b-autocomplete>
                 <transition name="fade">
                     <p

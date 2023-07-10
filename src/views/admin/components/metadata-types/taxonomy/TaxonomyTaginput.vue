@@ -25,7 +25,7 @@
             check-infinite-scroll
             @infinite-scroll="loadMoreTerms"
             :has-counter="false">
-        <template v-slot="props">
+        <template #default="props">
             <div class="media">
                 <div class="media-content">
                     {{ props.option.label }}
@@ -34,12 +34,12 @@
         </template>
         <template 
                 v-if="!isFetching"
-                slot="empty">
+                #empty>
             {{ $i18n.get('info_no_terms_found') }}
         </template>
         <template 
                 v-if="allowNew"
-                slot="footer">
+                #footer>
                 <a @click="$emit('showAddNewTerm', { name: searchName })">
                 {{ $i18n.get('label_create_new_term') + ' "' + searchName + '"' }}
             </a>

@@ -522,10 +522,10 @@
                                 :disabled="form.enable_cover_page != 'yes'"
                                 check-infinite-scroll
                                 @infinite-scroll="fetchMoreCoverPages">
-                            <template v-slot="props">
+                            <template #default="props">
                                 {{ props.option.title.rendered }}
                             </template>
-                            <template slot="empty">{{ $i18n.get('info_no_page_found') }}</template>
+                            <template #empty>{{ $i18n.get('info_no_page_found') }}</template>
                         </b-autocomplete>
   
                         <div 

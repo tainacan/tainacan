@@ -32,7 +32,7 @@
                         @infinite-scroll="searchMore"
                         :has-counter="false"
                         @focus="onMobileSpecialFocus">
-                    <template v-slot="props">
+                    <template #default="props">
                         <div 
                                 v-if="!isDisplayingRelatedItemMetadata"
                                 class="media">
@@ -55,12 +55,12 @@
                     </template>
                     <template 
                             v-if="!isLoading"
-                            slot="empty">
+                            #empty>
                         {{ $i18n.get('info_no_item_found') }}
                     </template>
                     <template
                             v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)" 
-                            slot="footer">
+                            #footer>
                         <a @click="editItemModalOpen = true">
                             {{ $i18n.get('label_create_new_item') + ' "' + searchQuery + '"' }}
                         </a>

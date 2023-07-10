@@ -313,29 +313,29 @@
                     <b-collapse 
                             aria-id="metadata-collapse-for-slideshow"
                             :open="!collapseAll">
-                        <label
-                                class="label has-text-white"
-                                v-slot:trigger="props">
-                            <span class="icon">
-                                <i 
-                                        :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
-                            </span>
-                            <span 
-                                    v-tooltip="{
-                                        delay: {
-                                            shown: 500,
-                                            hide: 300,
-                                        },
-                                        content: metadatum.name,
-                                        autoHide: false,
-                                        placement: 'auto-start',
-                                        popperClass: ['tainacan-tooltip', 'tooltip']
-                                    }"  
-                                    class="ellipsed-name">
-                                {{ metadatum.name }}
-                            </span>
-                        </label>
+                        <template #trigger="props">
+                            <label class="label has-text-white">
+                                <span class="icon">
+                                    <i 
+                                            :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                </span>
+                                <span 
+                                        v-tooltip="{
+                                            delay: {
+                                                shown: 500,
+                                                hide: 300,
+                                            },
+                                            content: metadatum.name,
+                                            autoHide: false,
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip']
+                                        }"  
+                                        class="ellipsed-name">
+                                    {{ metadatum.name }}
+                                </span>
+                            </label>
+                        </template>
                         <div class="content">
                             <p  
                                 class="has-text-white"

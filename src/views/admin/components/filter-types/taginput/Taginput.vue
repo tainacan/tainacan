@@ -17,7 +17,7 @@
                 :placeholder="getInputPlaceholder"
                 check-infinite-scroll
                 @infinite-scroll="searchMore">
-            <template v-slot="props">
+            <template #default="props">
                 <div class="media">
                     <div
                             class="media-left"
@@ -37,7 +37,7 @@
             </template>
             <template 
                     v-if="!isLoadingOptions" 
-                    slot="empty">
+                    #empty>
                 {{ $i18n.get('info_no_options_found'	) }}
             </template>
         </b-taginput>

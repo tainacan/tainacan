@@ -18,7 +18,7 @@
                 :placeholder="$i18n.get('info_type_to_add_terms')"
                 check-infinite-scroll
                 @infinite-scroll="searchMore">
-            <template v-slot="props">
+            <template #default="props">
                 <div class="media">
                     <div class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>
@@ -30,7 +30,7 @@
             </template>
             <template 
                     v-if="!isLoadingOptions" 
-                    slot="empty">
+                    #empty>
                 {{ $i18n.get('info_no_options_found'	) }}
             </template>
         </b-taginput>

@@ -27,7 +27,7 @@
                 check-infinite-scroll
                 @infinite-scroll="searchMore"
                 :has-counter="false">
-            <template v-slot="props">
+            <template #default="props">
                 <div class="media">
                     <div
                             v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
@@ -43,7 +43,7 @@
             </template>
             <template 
                     v-if="!isLoading"
-                    slot="empty">
+                    #empty>
                 {{ $i18n.get('info_no_user_found') }}
             </template>
         </b-taginput>
