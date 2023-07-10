@@ -5,7 +5,7 @@
 
         <b-loading
                 :is-full-page="false"
-                :active.sync="isLoadingFilters"/>
+                v-model:active="isLoadingFilters"/>
 
         <h3 
                 id="filters-label-landmark"

@@ -1,6 +1,6 @@
 <template>
     <div class="repository-level-page page-container">
-        <b-loading :active.sync="isLoading"/>
+        <b-loading v-model:active="isLoading"/>
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]"/>
         <div class="sub-header">
@@ -342,7 +342,7 @@
                         <b-pagination
                                 @change="onPageChange"
                                 :total="totalCollections"
-                                :current.sync="page"
+                                v-model:current="page"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="collectionsPerPage"

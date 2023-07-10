@@ -258,7 +258,7 @@
             </div>
 
             <b-loading 
-                    :active.sync="isLoadingTaxonomy" 
+                    v-model:active="isLoadingTaxonomy" 
                     :can-cancel="false"/>
 
         </div>

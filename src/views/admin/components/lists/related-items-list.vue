@@ -3,7 +3,7 @@
         <div class="table-container">
             <b-loading
                     is-full-page="false" 
-                    :active.sync="displayLoading" />
+                    v-model:active="displayLoading" />
             <div class="table-wrapper">
                 <div class="related-items-list">
                     <div 
@@ -137,7 +137,7 @@
                 </div>
                 <b-modal 
                         :width="1200"
-                        :active.sync="editItemModal"
+                        v-model:active="editItemModal"
                         @after-leave="reloadRelatedItems"
                         custom-class="tainacan-modal"
                         :close-button-aria-label="$i18n.get('close')">

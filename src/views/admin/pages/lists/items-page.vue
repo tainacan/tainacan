@@ -26,7 +26,7 @@
             </h3>
             <!-- <b-loading
                     :is-full-page="false"
-                    :active.sync="isLoadingMetadata"/> -->
+                    v-model:active="isLoadingMetadata"/> -->
                         <!-- Button for hiding filters -->
             <button 
                     aria-controls="filters-modal"
@@ -513,7 +513,7 @@
                 role="region"
                 id="filters-modal"     
                 ref="filters-modal"       
-                :active.sync="isFiltersModalActive"
+                v-model:active="isFiltersModalActive"
                 :width="736"
                 animation="slide-menu"
                 trap-focus

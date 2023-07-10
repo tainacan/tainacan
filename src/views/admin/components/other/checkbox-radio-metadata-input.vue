@@ -101,7 +101,7 @@
                         </template>
                         <b-loading
                                 :is-full-page="false"
-                                :active.sync="isLoadingSearch"/>
+                                v-model:active="isLoadingSearch"/>
                     </ul>
                     <a
                             v-if="!noMoreSearchPage"
@@ -153,7 +153,7 @@
                         </li>
                         <b-loading
                                 :is-full-page="false"
-                                :active.sync="isCheckboxListLoading"/>
+                                v-model:active="isCheckboxListLoading"/>
                     </ul>
                     <a
                             v-if="!noMorePage"
@@ -258,7 +258,7 @@
 
                 <b-loading
                         :is-full-page="false"
-                        :active.sync="isColumnLoading"/>
+                        v-model:active="isColumnLoading"/>
                 
             </b-tab-item>
 
@@ -301,7 +301,7 @@
                     </section>
                     <b-loading
                             :is-full-page="false"
-                            :active.sync="isSelectedTermsLoading"/>
+                            v-model:active="isSelectedTermsLoading"/>
                 </div>
             </b-tab-item>
         </b-tabs>

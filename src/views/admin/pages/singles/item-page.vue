@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-loading
-                :active.sync="isLoading"
+                v-model:active="isLoading"
                 :can-cancel="false"/>
 
         <tainacan-title 
@@ -161,7 +161,7 @@
                                         :collection-id="collectionId"
                                         :related-items="item.related_items"
                                         :is-editable="false"
-                                        :is-loading.sync="isLoading" />
+                                        v-model:is-loading="isLoading" />
                             </div>
 
                         </section>

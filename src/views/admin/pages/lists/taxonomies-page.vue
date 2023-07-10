@@ -113,7 +113,7 @@
             <div class="above-subheader">
                 <b-loading
                         :is-full-page="true" 
-                        :active.sync="isLoading" 
+                        v-model:active="isLoading" 
                         :can-cancel="false"/>
                 <div class="tabs">
                     <ul>
@@ -229,7 +229,7 @@
                             <b-pagination
                                     @change="onPageChange"
                                     :total="total"
-                                    :current.sync="page"
+                                    v-model:current="page"
                                     order="is-centered"
                                     size="is-small"
                                     :per-page="taxonomiesPerPage"

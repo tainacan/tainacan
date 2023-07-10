@@ -683,7 +683,7 @@
         </div>
 
         <b-loading 
-                :active.sync="isLoading" 
+                v-model:active="isLoading" 
                 :can-cancel="false"/>
     </div>
 </template>

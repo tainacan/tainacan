@@ -28,7 +28,7 @@
         <div>
             <b-loading
                     :is-full-page="true" 
-                    :active.sync="isLoading" 
+                    v-model:active="isLoading" 
                     :can-cancel="false"/>
 
             <capabilities-list

@@ -1,7 +1,7 @@
 <template>
     <div class="column">
                            
-        <b-loading :active.sync="isLoadingMetadata"/>
+        <b-loading v-model:active="isLoadingMetadata"/>
 
         <div class="tainacan-form sub-header">
             <!-- <h3>{{ $i18n.get('metadata') }}<span class="has-text-gray">{{ ( activeMetadatumList && activeMetadatumList.length ? (' (' + activeMetadatumList.length + ')') : '' ) }}</span></h3> -->

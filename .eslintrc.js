@@ -23,6 +23,7 @@ module.exports = {
         'vue/multiline-html-element-content-newline': 'off',
         'vue/prop-name-casing': 'off',
         "vue/no-v-for-template-key": 'off', // In Vue3, this rule is deprecated
+        "vue/no-v-model-argument": "off", // ADD
         'vue/multi-word-component-names': 'off',
         'vue/require-default-prop': 'off',
         'vue/no-v-text-v-html-on-component': 'off'

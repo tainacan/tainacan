@@ -8,7 +8,7 @@
         <b-collapse
                 v-if="displayFilter"
                 class="show" 
-                :open.sync="singleCollapseOpen"
+                v-model:open="singleCollapseOpen"
                 animation="filter-item">
             <button
                     :for="'filter-input-id-' + filter.id"

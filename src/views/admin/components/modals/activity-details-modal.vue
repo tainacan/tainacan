@@ -15,7 +15,7 @@
         </header>
         <b-loading 
                 :is-full-page="false"
-                :active.sync="isLoadingActivity" 
+                v-model:active="isLoadingActivity" 
                 :can-cancel="false"/>
         <div 
                 v-if="!isLoadingActivity"

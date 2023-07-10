@@ -3,7 +3,7 @@
 
         <b-loading
                 :is-full-page="false"
-                :active.sync="isColumnLoading"/>
+                v-model:active="isColumnLoading"/>
 
         <transition name="appear-from-top">
             <button

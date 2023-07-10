@@ -127,7 +127,7 @@
             </a>
             <b-modal 
                     :width="1200"
-                    :active.sync="editItemModalOpen"
+                    v-model:active="editItemModalOpen"
                     :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
                     :close-button-aria-label="$i18n.get('close')">
                 <iframe 

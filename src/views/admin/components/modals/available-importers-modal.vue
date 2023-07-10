@@ -32,7 +32,7 @@
 
                     <b-loading 
                         :is-full-page="false"
-                        :active.sync="isLoading" 
+                        v-model:active="isLoading" 
                         :can-cancel="false"/>
                 </div>
                 

@@ -3,11 +3,11 @@
         <b-loading
                 :can-cancel="false"
                 :is-full-page="false"
-                :active.sync="isLoadingMetadatumMappers"/>
+                v-model:active="isLoadingMetadatumMappers"/>
         <b-loading
                 :can-cancel="false"
                 :is-full-page="false"
-                :active.sync="isLoadingMetadata"/>
+                v-model:active="isLoadingMetadata"/>
 
         <b-field>
             <p style="line-height: 2em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
@@ -154,7 +154,7 @@
 
         <b-modal
                 @close="onCancelNewMetadataMapperMetadata"
-                :active.sync="isMapperMetadataCreating"
+                v-model:active="isMapperMetadataCreating"
                 trap-focus
                 aria-modal
                 aria-role="dialog"

@@ -94,7 +94,7 @@
                     aria-controls="items-list-results"
                     @change="onPageChange"
                     :total="totalItems"
-                    :current.sync="page"
+                    v-model:current="page"
                     order="is-centered"
                     size="is-small"
                     :per-page="itemsPerPage"

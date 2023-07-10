@@ -33,7 +33,7 @@
 
                 <b-loading
                         :is-full-page="false"
-                        :active.sync="isLoading" 
+                        v-model:active="isLoading" 
                         :can-cancel="false"/>
 
                 <div 
@@ -279,7 +279,7 @@
                         <b-pagination
                                 @change="onPageChange"
                                 :total="totalActivities"
-                                :current.sync="activitiesPage"
+                                v-model:current="activitiesPage"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="activitiesPerPage"
@@ -320,7 +320,7 @@
                         <b-pagination
                                 @change="onPageChange"
                                 :total="totalProcesses"
-                                :current.sync="processesPage"
+                                v-model:current="processesPage"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="processesPerPage"

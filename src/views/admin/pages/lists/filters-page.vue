@@ -8,7 +8,7 @@
         </template>
                         
         <div class="filters-list-page">
-            <b-loading :active.sync="isLoadingMetadatumTypes"/>
+            <b-loading v-model:active="isLoadingMetadatumTypes"/>
             
             <div
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
@@ -365,7 +365,7 @@
             <b-modal 
                     ref="filterTypeModal"
                     :width="680"
-                    :active.sync="isSelectingFilterType"
+                    v-model:active="isSelectingFilterType"
                     trap-focus
                     aria-modal
                     aria-role="dialog"

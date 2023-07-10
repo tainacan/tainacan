@@ -23,7 +23,7 @@
         </div>
 
         <b-loading 
-                :active.sync="isLoading" 
+                v-model:active="isLoading" 
                 :can-cancel="false"/>
 
         <form 
@@ -35,7 +35,7 @@
 
             <b-loading 
                     :is-full-page="false"
-                    :active.sync="isLoadingSourceInfo" 
+                    v-model:active="isLoadingSourceInfo" 
                     :can-cancel="false"/>
             
             <!-- Metadata Mapping -->
@@ -200,7 +200,7 @@
                 
                 <b-modal 
                         @close="onMetadatumEditionCanceled()"
-                        :active.sync="isNewMetadatumModalActive"
+                        v-model:active="isNewMetadatumModalActive"
                         trap-focus
                         aria-modal
                         aria-role="dialog"
@@ -214,7 +214,7 @@
                             v-if="selectedMetadatumType == undefined && !isEditingMetadatum">
                         <b-loading 
                                 :is-full-page="isFullPage" 
-                                :active.sync="isLoadingMetadatumTypes"/>
+                                v-model:active="isLoadingMetadatumTypes"/>
                         <div 
                                 
                                 class="tainacan-modal-content">
@@ -287,7 +287,7 @@
         <!-- Prompt to show title -->
         <b-modal 
                 v-if="importerSourceInfo"
-                :active.sync="showTitlePromptModal"
+                v-model:active="showTitlePromptModal"
                 :can-cancel="false"
                 :width="820"
                 scroll="keep"

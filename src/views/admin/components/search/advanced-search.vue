@@ -212,7 +212,7 @@
 
         <b-loading 
                 :is-full-page="false" 
-                :active.sync="isLoadingMetadata" />
+                v-model:active="isLoadingMetadata" />
         
         <section
                 v-if="!isLoadingMetadata && metadataAsArray && metadataAsArray.length <= 0"

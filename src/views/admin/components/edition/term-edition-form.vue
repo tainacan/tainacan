@@ -25,7 +25,7 @@
         <div class="modal-card-body">
             <b-loading
                     :is-full-page="false"
-                    :active.sync="isLoading" />
+                    v-model:active="isLoading" />
 
             <!-- Name -------------- -->
             <b-field

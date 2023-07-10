@@ -43,7 +43,7 @@
                 </footer>
 
                 <b-loading
-                        :active.sync="isLoading"
+                        v-model:active="isLoading"
                         :can-cancel="false"/>
             </section>
         </div>

@@ -2,7 +2,7 @@
     <div :class="isCreatingNewItem ? 'item-creation-container' : 'item-edition-container'"><!-- Do NOT remove this classes, they may be used by third party plugins -->
         <b-loading
                 :is-full-page="false"
-                :active.sync="isLoading"
+                v-model:active="isLoading"
                 :can-cancel="false"/>
 
         <tainacan-title 
@@ -482,7 +482,7 @@
                                             :collection-id="collectionId"
                                             :related-items="item.related_items"
                                             :is-editable="!$adminOptions.itemEditionMode"
-                                            :is-loading.sync="isLoading" />
+                                            v-model:is-loading="isLoading" />
                                     
                                 </div>
 

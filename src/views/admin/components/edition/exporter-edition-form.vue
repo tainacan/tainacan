@@ -6,7 +6,7 @@
                     { path: '', label: exporterType != undefined ? (exporterName != undefined ? exporterName : exporterType) : $i18n.get('title_exporter_page') }
                 ]"/>
         <b-loading
-                :active.sync="isLoading"
+                v-model:active="isLoading"
                 :can-cancel="false"/>
         <form
                 @click="formErrorMessage = ''"

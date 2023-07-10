@@ -2,7 +2,7 @@
     <div v-if="collectionId">
         <b-loading
                 :is-full-page="false"
-                :active.sync="isLoading"
+                v-model:active="isLoading"
                 :can-cancel="false"/>
 
         <template v-if="couldLoadCollection && collecionAllowsItemSubmission">

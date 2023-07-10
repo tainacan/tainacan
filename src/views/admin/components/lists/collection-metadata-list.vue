@@ -1,7 +1,7 @@
 <template>
     <div class="column">
                            
-        <b-loading :active.sync="isLoadingMetadataSections"/>
+        <b-loading v-model:active="isLoadingMetadataSections"/>
 
         <div class="tainacan-form sub-header">
             <template v-if="activeMetadataSectionsList">
@@ -245,7 +245,7 @@
                     </div>
                 </section>
 
-                <b-loading :active.sync="isUpdatingMetadatum"/>
+                <b-loading v-model:active="isUpdatingMetadatum"/>
 
                 <!-- The Metadata list, inside each metadata section -->
                 <template v-if="metadataSection.metadata_object_list && Array.isArray(metadataSection.metadata_object_list)">

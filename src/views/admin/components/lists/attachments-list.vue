@@ -5,7 +5,7 @@
                 class="table-container">
             <b-loading
                     :is-full-page="false" 
-                    :active.sync="isLoading" />
+                    v-model:active="isLoading" />
             <div
                     v-if="attachments.length > 0"
                     class="table-wrapper">
@@ -74,7 +74,7 @@
                 <b-pagination
                         @change="onPageChange"
                         :total="totalAttachments"
-                        :current.sync="attachmentsPage"
+                        v-model:current="attachmentsPage"
                         order="is-centered"
                         size="is-small"
                         :per-page="attachmentsPerPage"

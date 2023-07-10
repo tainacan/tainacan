@@ -90,12 +90,12 @@
 
             <b-loading 
                     :is-full-page="false"
-                    :active.sync="isLoadingMetadatumMappers" 
+                    v-model:active="isLoadingMetadatumMappers" 
                     :can-cancel="false"/>
 
             <b-loading 
                     :is-full-page="false"
-                    :active.sync="isCreatingCollectionPreset" 
+                    v-model:active="isCreatingCollectionPreset" 
                     :can-cancel="false"/>
 
             <footer class="field is-grouped form-submit">

@@ -414,7 +414,7 @@
                     role="region"
                     id="filters-modal"     
                     ref="filters-modal"       
-                    :active.sync="isFiltersModalActive"
+                    v-model:active="isFiltersModalActive"
                     :width="736"
                     :auto-focus="filtersAsModal"
                     :trap-focus="filtersAsModal"
@@ -547,7 +547,7 @@
                     <b-loading 
                             v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
                             :is-full-page="false"
-                            :active.sync="showLoading"/>
+                            v-model:active="showLoading"/>
 
                     <!-- Custom skeleton templates used by some view modes --> 
                     <div

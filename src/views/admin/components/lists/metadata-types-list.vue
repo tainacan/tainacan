@@ -3,7 +3,7 @@
             v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
             class="column available-metadata-types-area" >
 
-        <b-loading :active.sync="isLoadingMetadataTypes"/>
+        <b-loading v-model:active="isLoadingMetadataTypes"/>
 
         <div class="field">
             <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
