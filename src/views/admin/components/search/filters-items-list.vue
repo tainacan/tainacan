@@ -49,10 +49,10 @@
 
             <!--  TAXONOMY TERM ITEMS FILTERS -->
             <template v-if="taxonomy && taxonomyFilters">
-                <template v-for="(taxonomyFilter, key, index) of taxonomyFilters">
-                    <div 
-                            v-if="key == 'repository-filters'"
-                            :key="index">
+                <template 
+                        v-for="(taxonomyFilter, key, index) of taxonomyFilters"
+                        :key="index">
+                    <div v-if="key == 'repository-filters'">
                         <div 
                                 v-tooltip="{
                                     delay: {
@@ -99,10 +99,10 @@
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
                 </template>
-                <template v-for="(taxonomyFilter, key, index) of taxonomyFilters">
-                    <div 
-                            v-if="key != 'repository-filters'"
-                            :key="index">
+                <template 
+                        v-for="(taxonomyFilter, key, index) of taxonomyFilters"
+                        :key="index">
+                    <div v-if="key != 'repository-filters'">
                         <div 
                                 v-tooltip="{
                                     delay: {
@@ -153,10 +153,10 @@
 
             <!-- REPOSITORY ITEMS FILTERS -->
             <template v-else-if="isRepositoryLevel && !taxonomy">
-                <template v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters">
-                    <div 
-                            v-if="key == 'repository-filters'"
-                            :key="index">
+                <template 
+                        v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
+                        :key="index">
+                    <div v-if="key == 'repository-filters'">
                         <div 
                                 v-tooltip="{
                                     delay: {
@@ -203,10 +203,10 @@
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
                 </template>
-                <template v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters">
-                    <div 
-                            v-if="key != 'repository-filters'"
-                            :key="index">
+                <template 
+                        v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
+                        :key="index">
+                    <div v-if="key != 'repository-filters'">
                         <div 
                                 v-tooltip="{
                                     delay: {

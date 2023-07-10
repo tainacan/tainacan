@@ -422,10 +422,11 @@
                                                     {{ metadataSection.description }}
                                                 </p>
 
-                                                <template v-for="(itemMetadatum, index) of itemMetadata">
+                                                <template 
+                                                        v-for="(itemMetadatum, index) of itemMetadata"
+                                                        :key="index">
                                                     <tainacan-form-item
                                                             v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
-                                                            :key="index"
                                                             :id="'metadatum-index--' + index"
                                                             v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
                                                             :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
@@ -601,6 +602,12 @@
 
             </form>
 
+        </transition>
+
+        <transition
+                mode="out-in"
+                :name="(isOnSequenceEdit && sequenceRightDirection != undefined) ? (sequenceRightDirection ? 'page-right' : 'page-left') : ''">
+                
             <!-- In case user enters this page whithout having permission -->
             <template v-if="!isLoading && ((isCreatingNewItem && collection && collection.current_user_can_edit_items == false) || (!isCreatingNewItem && item && item.current_user_can_edit != undefined && collection && collection.current_user_can_edit_items == false))">
                 <section class="section">

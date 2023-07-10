@@ -59,11 +59,12 @@
                     v-if="selectedEstrategy == 'mappers'"
                     class="collection-creation-options-container"
                     role="list">
-                <template v-for="metadatumMapper in metadatumMappers">
+                <template 
+                        v-for="metadatumMapper in metadatumMappers"
+                        :key="metadatumMapper.slug">
                     <button
                             class="collection-creation-option"
                             @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $parent.close();"
-                            :key="metadatumMapper.slug"
                             v-if="metadatumMapper.metadata != false"
                             aria-role="listitem">
                         <h3>{{ metadatumMapper.name }}</h3>

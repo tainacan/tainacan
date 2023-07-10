@@ -28,27 +28,28 @@
                                 searchCriterion,
                                 index
                             )">
-                        <template v-for="(metadatum, metadatumIndex) in metadataAsArray">
+                        <template
+                                v-for="(metadatum, metadatumIndex) in metadataAsArray"
+                                :key="metadatumIndex">
                             <option
                                     v-if="metadatum.metadata_type_object.component !== 'tainacan-user' &&
                                         metadatum.metadata_type_object.component !== 'tainacan-geocoordinate' &&
                                         metadatum.metadata_type_object.component !== 'tainacan-relationship' &&
                                         metadatum.metadata_type_object.component !== 'tainacan-compound' &&
                                         metadatum.parent <= 0"
-                                    :value="metadatum.id"
-                                    :key="metadatumIndex">
+                                    :value="metadatum.id">
                                 {{ metadatum.name }}
                             </option>
                             <optgroup
                                     v-if="metadatum.metadata_type_object.component === 'tainacan-compound'"
-                                    :key="metadatumIndex"
                                     :label="metadatum.name">
-                                <template v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects">
+                                <template 
+                                        v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
+                                        :key="childIndex">
                                     <option
                                             v-if="childMetadatum.metadata_type_object.component !== 'tainacan-user' &&
                                                 childMetadatum.metadata_type_object.component !== 'tainacan-geocoordinate' &&
                                                 childMetadatum.metadata_type_object.component !== 'tainacan-relationship'"
-                                            :key="childIndex"
                                             :value="childMetadatum.id">
                                         {{ childMetadatum.name }}
                                     </option>

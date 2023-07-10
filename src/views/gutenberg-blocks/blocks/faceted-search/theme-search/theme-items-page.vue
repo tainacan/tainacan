@@ -273,14 +273,15 @@
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
                             </button>
-                            <template v-for="metadatum of sortingMetadata">
+                            <template 
+                                    v-for="metadatum of sortingMetadata"
+                                    :key="metadatum.slug">
                                 <b-dropdown-item
                                         aria-controls="items-list-results"
                                         role="button"
                                         :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                         v-if="metadatum != undefined"
                                         :value="metadatum"
-                                        :key="metadatum.slug"
                                         aria-role="listitem">
                                     {{ metadatum.name }}
                                 </b-dropdown-item>
@@ -326,13 +327,14 @@
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
-                        <template v-for="(viewModeOption, index) of enabledViewModes">
+                        <template 
+                                v-for="(viewModeOption, index) of enabledViewModes"
+                                :key="index">
                             <b-dropdown-item 
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': viewModeOption == viewMode }"
                                     v-if="(registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false) || (showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined)"
-                                    :key="index"
                                     :value="viewModeOption"
                                     aria-role="listitem">
                                 <span 
@@ -364,13 +366,14 @@
             <div 
                     id="tainacanFullScreenViewMode"
                     class="search-control-item search-control-item--full-screen-view-mode">
-                <template v-for="(viewModeOption, index) of enabledViewModes">
+                <template 
+                        v-for="(viewModeOption, index) of enabledViewModes"
+                        :key="index">
                     <button 
                             class="button is-white"
                             :aria-label="$i18n.get('label_slides')"
                             @click="onChangeViewMode(viewModeOption)"
                             v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true"
-                            :key="index"
                             :value="viewModeOption">
                         <span 
                                 class="gray-icon view-mode-icon"

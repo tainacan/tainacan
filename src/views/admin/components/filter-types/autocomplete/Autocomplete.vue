@@ -15,7 +15,7 @@
                 :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')"
                 check-infinite-scroll
                 @infinite-scroll="searchMore">
-            <template slot-scope="props">
+            <template v-slot="props">
                 <div class="media">
                     <div
                             class="media-left"

@@ -833,10 +833,10 @@
                                             v-html="item.description"
                                             class="metadata-value"/>
                                 </span>
-                                <template v-for="(column, metadatumIndex) in displayedMetadata">
+                                <template 
+                                        v-for="(column, metadatumIndex) in displayedMetadata"
+                                        :key="metadatumIndex">
                                     <span
-                                            
-                                            :key="metadatumIndex"
                                             v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && (column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title'))"
                                             :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
@@ -845,7 +845,6 @@
                                                 class="metadata-value"/>
                                     </span>
                                     <span
-                                            :key="metadatumIndex"
                                             v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined && column.display">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <p
@@ -879,9 +878,10 @@
                         </th>
 
                         <!-- Displayed Metadata -->
-                        <template v-for="(column, index) in displayedMetadata">
+                        <template 
+                                v-for="(column, index) in displayedMetadata"
+                                :key="index">
                             <th
-                                    :key="index"
                                     v-if="column.display"
                                     class="column-default-width"
                                     :class="{
@@ -957,9 +957,10 @@
                             </span>
                         </td>
                         <!-- Item Displayed Metadata -->
-                        <template v-for="(column, columnIndex) in displayedMetadata">
+                        <template 
+                                v-for="(column, columnIndex) in displayedMetadata"
+                                :key="columnIndex">
                             <td
-                                    :key="columnIndex"
                                     v-if="column.display"
                                     class="column-default-width"
                                     :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
@@ -1337,19 +1338,18 @@
                                         v-html="item.description"
                                         class="metadata-value"/>
                             </span>
-                            <template v-for="(column, metadatumIndex) in displayedMetadata">
+                            <template 
+                                    v-for="(column, metadatumIndex) in displayedMetadata"
+                                    :key="metadatumIndex">
                                 <span 
                                         v-if="renderMetadata(item.metadata, column) != '' && column.display && column.slug != 'thumbnail' && (column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title'))"
-                                        :key="metadatumIndex"
                                         :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <p      
                                             v-html="renderMetadata(item.metadata, column)"
                                             class="metadata-value"/> 
                                 </span>
-                                <span
-                                        :key="metadatumIndex"
-                                        v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined && column.display">
+                                <span v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined && column.display">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <p
                                             v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
@@ -1810,10 +1810,10 @@
                                                         v-html="item.description != undefined ? item.description : ''"
                                                         class="metadata-value"/>
                                             </span>
-                                            <template v-for="(column, metadatumIndex) in displayedMetadata">
+                                            <template 
+                                                    v-for="(column, metadatumIndex) in displayedMetadata"
+                                                    :key="metadatumIndex">
                                                 <span
-                                                        
-                                                        :key="metadatumIndex"
                                                         :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                                         v-if="renderMetadata(item.metadata, column) != '' &&
                                                             column.display && column.slug != 'thumbnail' &&
@@ -1825,9 +1825,7 @@
                                                             v-html="renderMetadata(item.metadata, column)"
                                                             class="metadata-value"/>
                                                 </span>
-                                                <span
-                                                        :key="metadatumIndex"
-                                                        v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
+                                                <span v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <p
                                                             v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"

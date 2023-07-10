@@ -42,9 +42,10 @@
                         aria-controls="items-list-results"
                         aria-labelledby="items-per-page-select"
                         @input="onChangeItemsPerPage">
-                    <template v-for="(itemsPerPageOption, index) of itemsPerPageOptions">
+                    <template 
+                            v-for="(itemsPerPageOption, index) of itemsPerPageOptions"
+                            :key="index">
                         <option
-                                :key="index"
                                 v-if="maxItemsPerPage >= 12"
                                 :value="itemsPerPageOption">
                         {{ itemsPerPageOption }} &nbsp;

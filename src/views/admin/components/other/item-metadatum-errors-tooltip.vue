@@ -16,10 +16,10 @@
             <template #popper>
                 <p><strong>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</strong></p>
                 <ol>
-                    <template v-for="(error, index) of formErrors">
-                        <li 
-                                v-if="error.errors.length"
-                                :key="index">
+                    <template
+                            v-for="(error, index) of formErrors"
+                            :key="index">
+                        <li v-if="error.errors.length">
                             <a 
                                     v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id)"
                                     @click="metadataElements[error.metadatum_id].scrollIntoView({ behavior: 'smooth', block: 'center' })">

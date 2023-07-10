@@ -17,11 +17,12 @@
                 <div 
                         role="list"
                         class="importer-types-container">
-                    <template v-for="importerType in availableImporters">
+                    <template 
+                            v-for="importerType in availableImporters"
+                            :key="importerType.slug">
                         <div
                                 role="listitem"
                                 class="importer-type"
-                                :key="importerType.slug"
                                 v-if="!(hideWhenManualCollection && !importerType.manual_collection)"
                                 @click="onSelectImporter(importerType)">
                             <h4>{{ importerType.name }}</h4>

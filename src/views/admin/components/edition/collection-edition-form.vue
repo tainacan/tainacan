@@ -522,7 +522,7 @@
                                 :disabled="form.enable_cover_page != 'yes'"
                                 check-infinite-scroll
                                 @infinite-scroll="fetchMoreCoverPages">
-                            <template slot-scope="props">
+                            <template v-slot="props">
                                 {{ props.option.title.rendered }}
                             </template>
                             <template slot="empty">{{ $i18n.get('info_no_page_found') }}</template>

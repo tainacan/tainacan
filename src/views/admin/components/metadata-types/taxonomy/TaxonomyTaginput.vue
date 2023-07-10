@@ -25,7 +25,7 @@
             check-infinite-scroll
             @infinite-scroll="loadMoreTerms"
             :has-counter="false">
-        <template slot-scope="props">
+        <template v-slot="props">
             <div class="media">
                 <div class="media-content">
                     {{ props.option.label }}

@@ -18,7 +18,7 @@
                 :placeholder="$i18n.get('info_type_to_add_terms')"
                 check-infinite-scroll
                 @infinite-scroll="searchMore">
-            <template slot-scope="props">
+            <template v-slot="props">
                 <div class="media">
                     <div class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>

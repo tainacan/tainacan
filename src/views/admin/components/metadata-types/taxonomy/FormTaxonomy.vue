@@ -134,7 +134,7 @@
                     :placeholder="$i18n.get('instruction_select_one_or_more_collections')"
                     @typing="filterCollections"
                     :loading="loadingCollections">
-                <template slot-scope="props">
+                <template v-slot="props">
                     <div class="media">
                         <div
                                 v-if="props.option.thumbnail && props.option.thumbnail['tainacan-small'] && props.option.thumbnail['tainacan-small']"

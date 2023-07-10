@@ -106,9 +106,10 @@
                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)">   -->
                             </div>
                             <div class="list-metadata media-body">
-                                <template v-for="(column, metadatumIndex) in displayedMetadata">
+                                <template 
+                                        v-for="(column, metadatumIndex) in displayedMetadata"
+                                        :key="metadatumIndex">
                                     <span 
-                                            :key="metadatumIndex"
                                             :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
                                             v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
                                         <h3 class="metadata-label">{{ column.name }}</h3>

@@ -18,11 +18,12 @@
                 <div 
                         role="list"
                         class="exporter-types-container">
-                    <template v-for="exporterType in availableExporters">
+                    <template 
+                            v-for="exporterType in availableExporters"
+                            :key="exporterType.slug">
                         <div
                                 role="listitem"
                                 class="exporter-type"
-                                :key="exporterType.slug"
                                 v-if="!(hideWhenManualCollection && !exporterType.manual_collection)"
                                 @click="onSelectExporter(exporterType)">
                             <h4>{{ exporterType.name }}</h4>

@@ -15,15 +15,16 @@
     <div
             v-if="childItemMetadataGroups.length > 0"
             class="multiple-inputs">
-        <template v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups">
-            <hr 
-                    v-if="groupIndex > 0"
-                    :key="groupIndex">
+        <template 
+                v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups"
+                :key="groupIndex">
+            <hr v-if="groupIndex > 0">
             
-            <template v-for="(childItemMetadatum, childIndex) of childItemMetadata">
+            <template 
+                    v-for="(childItemMetadatum, childIndex) of childItemMetadata"
+                    :key="groupIndex + '-' + childIndex">
                 <div 
                         class="field"
-                        :key="groupIndex + '-' + childIndex"
                         v-if="isRemovingGroup">
                     <span class="collapse-handle">
                         <span class="icon">
@@ -53,7 +54,6 @@
                 <tainacan-form-item
                         v-else
                         v-show="(metadataNameFilterString == '' || filterByMetadatumName(childItemMetadatum))"
-                        :key="groupIndex + '-' + childIndex"
                         :ref="'tainacan-form-item--' + groupIndex + '-' + childIndex"
                         :item-metadatum="childItemMetadatum"
                         :hide-collapses="hideCollapses"
@@ -78,8 +78,7 @@
             <a 
                     v-if="isMultiple" 
                     @click="removeGroup(groupIndex)"
-                    class="add-link"
-                    :key="groupIndex">
+                    class="add-link">
                 <span class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
                 </span>

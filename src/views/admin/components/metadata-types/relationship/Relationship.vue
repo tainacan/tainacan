@@ -32,7 +32,7 @@
                         @infinite-scroll="searchMore"
                         :has-counter="false"
                         @focus="onMobileSpecialFocus">
-                    <template slot-scope="props">
+                    <template v-slot="props">
                         <div 
                                 v-if="!isDisplayingRelatedItemMetadata"
                                 class="media">

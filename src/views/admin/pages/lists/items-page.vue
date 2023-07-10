@@ -321,14 +321,15 @@
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
-                        <template v-for="metadatum of sortingMetadata">
+                        <template 
+                                v-for="metadatum of sortingMetadata"
+                                :key="metadatum.slug">
                             <b-dropdown-item
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
                                     v-if="metadatum != undefined"
                                     :value="metadatum"
-                                    :key="metadatum.slug"
                                     aria-role="listitem">
                                 {{ metadatum.name }}
                             </b-dropdown-item>

@@ -12,12 +12,14 @@
                 class="wp-heading-inline">
             {{ $i18n.get('Add new role') }}
         </h1>
-         <transition name="appear-from-right">
+        <transition name="appear-from-right">
             <div 
                     v-if="showNotice"
                     class="notice notice-success notice-alt">
                 <p>{{ $i18n.get('User Role Saved') }}</p>
             </div>
+        </transition>
+        <transition name="appear-from-right">
             <div 
                     v-if="showErrorNotice"
                     class="notice notice-error notice-alt">
@@ -93,7 +95,9 @@
                                 :key="groupIndex">
                             <h3>{{ groupIndex }}</h3>
                             <ul>
-                                <template v-for="(capability, index) of group">
+                                <template 
+                                        v-for="(capability, index) of group"
+                                        :key="index">
                                     <li
                                             v-tooltip="{
                                                 content: repositoryCapabilities[capability].description,
@@ -102,7 +106,6 @@
                                                 placement: 'bottom',
                                                 popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
                                             }"
-                                            :key="index"
                                             :id="'capability-' + capability">
                                         <span class="check-column">
                                             <label
@@ -124,7 +127,7 @@
                                             {{ repositoryCapabilities[capability].display_name }}
                                         </span>
                                     </li>
-                                    <br :key="index">
+                                    <br>
                                 </template>
                             </ul>
                         </div>
@@ -175,7 +178,9 @@
                                     :key="groupIndex">
                                 <h3>{{ groupIndex }}</h3>
                                 <ul>
-                                    <template v-for="(capability, index) of group">
+                                    <template 
+                                            v-for="(capability, index) of group"
+                                            :key="index">
                                         <li
                                                 v-tooltip="{
                                                     content: collectionCapabilities[capability].description,
@@ -184,7 +189,6 @@
                                                     placement: 'bottom',
                                                     popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
                                                 }"
-                                                :key="index"
                                                 :id="'capability-' + capability.replace('%d', selectedCollection)">
                                             <span class="check-column">
                                                 <label
@@ -206,7 +210,7 @@
                                                 {{ collectionCapabilities[capability].display_name }}
                                             </span>
                                         </li>
-                                        <br :key="index">
+                                        <br>
                                     </template>
                                 </ul>
                             </div>

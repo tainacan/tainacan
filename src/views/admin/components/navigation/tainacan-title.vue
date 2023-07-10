@@ -17,16 +17,15 @@
             <router-link 
                     tag="a" 
                     :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link>
-            <template v-for="(breadCrumbItem, index) of breadCrumbItems">
-                <span :key="index">&nbsp;>&nbsp;</span>
+            <template 
+                    v-for="(breadCrumbItem, index) of breadCrumbItems"
+                    :key="index">
+                <span>&nbsp;>&nbsp;</span>
                 <router-link    
-                        :key="index"
                         v-if="breadCrumbItem.path != ''"
                         tag="a"
                         :to="breadCrumbItem.path">{{ breadCrumbItem.label }}</router-link>
-                <span 
-                        :key="index"
-                        v-else>{{ breadCrumbItem.label }}</span>
+                <span v-else>{{ breadCrumbItem.label }}</span>
             </template>   
         </nav>
         <nav 
@@ -43,16 +42,15 @@
             <router-link 
                     tag="a" 
                     :to="{ path: collectionBreadCrumbItem.url, query: { fromBreadcrumb: true }}">{{ collectionBreadCrumbItem.name }}</router-link> 
-            <template v-for="(childBreadCrumbItem, index) of childrenBreadCrumbItems">
-                <span :key="index">&nbsp;>&nbsp;</span>
+            <template 
+                    v-for="(childBreadCrumbItem, index) of childrenBreadCrumbItems"
+                    :key="index">
+                <span>&nbsp;>&nbsp;</span>
                 <router-link    
-                        :key="index"
                         v-if="childBreadCrumbItem.path != ''"
                         tag="a"
                         :to="{ path: childBreadCrumbItem.path, query: index === $i18n.get('items') ? { fromBreadcrumb: true } : null }">{{ childBreadCrumbItem.label }}</router-link>
-                <span 
-                        :key="index"
-                        v-else>{{ childBreadCrumbItem.label }}</span>
+                <span v-else>{{ childBreadCrumbItem.label }}</span>
             </template>
         </nav>
 

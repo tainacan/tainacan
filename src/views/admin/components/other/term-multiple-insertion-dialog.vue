@@ -88,7 +88,7 @@
                             check-infinite-scroll
                             :append-to-body="true"
                             @infinite-scroll="fetchMoreParentTerms">
-                        <template slot-scope="props">
+                        <template v-slot="props">
                             <div class="media">
                                 <div 
                                         v-if="props.option.header_image_id"

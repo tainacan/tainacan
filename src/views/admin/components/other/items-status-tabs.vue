@@ -18,10 +18,11 @@
                     </span>
                 </a>
             </li>
-            <template v-for="(statusOption, index) of $statusHelper.getStatuses()">
+            <template
+                    v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                    :key="index">
                 <li 
                         v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && collection && collection.current_user_can_read_private_items)"
-                        :key="index"
                         @click="onChangeTab(statusOption.slug)"
                         :class="{ 'is-active': status == statusOption.slug}"
                         :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"

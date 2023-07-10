@@ -135,15 +135,16 @@
                     <div     
                             class="slide-main-content">
 
+                        <span 
+                                v-if="isLoadingItem"
+                                class="icon is-large loading-icon">
+                            <div class="is-large control has-icons-right is-loading is-clearfix" />
+                        </span>
+
                         <transition 
                                 mode="out-in"
                                 :name="goingRight ? 'slide-right' : 'slide-left'" >
-                            <span 
-                                    v-if="isLoadingItem"
-                                    class="icon is-large loading-icon">
-                                <div class="is-large control has-icons-right is-loading is-clearfix" />
-                            </span>
-
+                            
                             <!-- Empty result placeholder -->
                             <section
                                     v-if="!isLoading && !isLoadingItem && items.length <= 0"
@@ -158,12 +159,22 @@
                                 </div>
                             </section>
 
+                        </transition>
+
+                        <transition 
+                                mode="out-in"
+                                :name="goingRight ? 'slide-right' : 'slide-left'" >
+
                             <!-- JS-side hook for extra content -->
                             <div 
                                     v-if="hasBeforeHook()"
                                     class="faceted-search-hook faceted-search-hook-item-before"
                                     v-html="getBeforeHook(item)" />
+                        </transition>
 
+                        <transition 
+                                mode="out-in"
+                                :name="goingRight ? 'slide-right' : 'slide-left'" >
                             <div 
                                     v-if="!isLoadingItem && slideItems.length > 0 && (item.document != undefined && item.document != undefined && item.document != '')"
                                     v-html="item.document_as_html" />  
@@ -175,7 +186,11 @@
                                             :src="$thumbHelper.getEmptyThumbnailPlaceholder(item.document_mimetype)">
                                 </div>
                             </div>
+                        </transition>
 
+                        <transition 
+                                mode="out-in"
+                                :name="goingRight ? 'slide-right' : 'slide-left'" >
                             <!-- JS-side hook for extra content -->
                             <div 
                                     v-if="hasAfterHook()"
@@ -183,6 +198,7 @@
                                     v-html="getAfterHook(item)" />
                         </transition>
                     </div>
+                    
                     <button 
                             @click.stop.prevent="nextSlide()"
                             :style="{ visibility: (swiper.activeIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
@@ -288,18 +304,18 @@
                 <div class="is-large control has-icons-right is-loading is-clearfix" />
             </span>
 
-            <template v-for="(metadatum, index) of item.metadata">
+            <template 
+                    v-for="(metadatum, index) of item.metadata"
+                    :key="index">
                 <div
                         v-if="metadatum.value_as_html != undefined && metadatum.value_as_html != ''"
-                        :key="index"
                         class="field">
                     <b-collapse 
                             aria-id="metadata-collapse-for-slideshow"
                             :open="!collapseAll">
                         <label
                                 class="label has-text-white"
-                                slot="trigger"
-                                slot-scope="props">
+                                v-slot:trigger="props">
                             <span class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"

@@ -75,10 +75,11 @@
                     <transition-group
                             name="filter-item"
                             class="multiple-inputs">
-                        <template v-for="(value, index) of values">
+                        <template 
+                                v-for="(value, index) of values"
+                                :key="index">
                             <component 
                                     v-if="index > 0"
-                                    :key="index"
                                     :is="metadatumComponent"
                                     v-model="values[index]" 
                                     :item-metadatum="itemMetadatum"

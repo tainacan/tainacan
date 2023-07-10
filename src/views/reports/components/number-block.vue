@@ -17,9 +17,10 @@
             &nbsp;{{ $i18n.get(entityType) }}
         </p>
         <ul class="has-text-gray status-list">
-            <template v-for="(statusOption, index) of $statusHelper.getStatuses()">
+            <template 
+                    v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                    :key="index">
                 <li 
-                        :key="index"
                         @mouseenter="currentHoveredStatus = statusOption.slug"
                         @mouseleave="currentHoveredStatus = ''"
                         v-if="(statusOption.slug != 'draft' || entityType != 'collections') && totalByStatus[statusOption.slug]">

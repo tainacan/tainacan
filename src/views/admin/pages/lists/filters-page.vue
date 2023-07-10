@@ -251,7 +251,9 @@
                                 :prevent-on-filter="false" 
                                 :group="{ name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true }"
                                 drag-class="sortable-drag">
-                            <template v-for="(metadatum, index) in availableMetadata">
+                            <template 
+                                    v-for="(metadatum, index) in availableMetadata"
+                                    :key="index">
                                 <div 
                                         class="available-metadatum-item"
                                         :class="{
@@ -260,7 +262,6 @@
                                         }"
                                         v-if="metadatum.enabled"
                                         v-show="metadatumNameFilterString == '' || metadatum.name.toString().toLowerCase().indexOf(metadatumNameFilterString.toString().toLowerCase()) >= 0"
-                                        :key="index"
                                         @click.prevent="addMetadatumViaButton(metadatum, index)">
                                     <span 
                                             v-tooltip="{

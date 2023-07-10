@@ -12,9 +12,10 @@
                     class="tainacan-table tainacan-table-skeleton"
                     tabindex="0">
                 <thead>
-                    <template v-for="(column, metadatumIndex) in displayedMetadata">
+                    <template 
+                            v-for="(column, metadatumIndex) in displayedMetadata"
+                            :key="metadatumIndex">
                         <th 
-                                :key="metadatumIndex"
                                 v-if="column.display"
                                 class="column-default-width"
                                 :class="{
@@ -35,9 +36,10 @@
                     <tr   
                             :key="item"
                             v-for="item in 12">
-                        <template v-for="(column, metadatumIndex) in displayedMetadata">
+                        <template 
+                                v-for="(column, metadatumIndex) in displayedMetadata"
+                                :key="metadatumIndex">
                             <td 
-                                    :key="metadatumIndex"
                                     v-if="column.display"
                                     :class="{ 'thumbnail-cell': metadatumIndex == 0 }"
                                     class="column-default-width skeleton"/>
@@ -53,9 +55,10 @@
                 <thead>
                     <tr>
                         <!-- Displayed Metadata -->
-                        <template v-for="(column, index) in displayedMetadata">
+                        <template 
+                                v-for="(column, index) in displayedMetadata"
+                                :key="index">
                             <th 
-                                    :key="index"
                                     v-if="column.display"
                                     class="column-default-width"
                                     :class="{
@@ -101,9 +104,10 @@
                                 v-html="getBeforeHook(item)" />
                                 
                         <!-- Item Displayed Metadata -->
-                        <template v-for="(column, metadatumIndex) in displayedMetadata">
-                            <td 
-                                    :key="metadatumIndex"    
+                        <template 
+                                v-for="(column, metadatumIndex) in displayedMetadata"
+                                :key="metadatumIndex">
+                            <td     
                                     v-if="column.display"
                                     class="column-default-width"
                                     :class="{

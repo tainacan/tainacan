@@ -17,7 +17,7 @@
                 :placeholder="getInputPlaceholder"
                 check-infinite-scroll
                 @infinite-scroll="searchMore">
-            <template slot-scope="props">
+            <template v-slot="props">
                 <div class="media">
                     <div
                             class="media-left"

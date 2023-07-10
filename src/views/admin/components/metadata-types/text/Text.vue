@@ -30,7 +30,7 @@
                     {{ $i18n.get('info_metadata_autocomplete_suggestions') }}
                 </span>
             </template>
-            <template slot-scope="props">
+            <template v-slot="props">
                 <div class="media">
                     <div class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>

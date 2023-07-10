@@ -27,7 +27,7 @@
                 check-infinite-scroll
                 @infinite-scroll="searchMore"
                 :has-counter="false">
-            <template slot-scope="props">
+            <template v-slot="props">
                 <div class="media">
                     <div
                             v-if="props.option.avatar_urls && props.option.avatar_urls['24']"

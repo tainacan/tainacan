@@ -19,10 +19,11 @@
                 <div 
                         v-if="!isLoading" 
                         class="collection-types-container">
-                    <template v-for="(collection, index) in collections">
+                    <template
+                            v-for="(collection, index) in collections"
+                            :key="index">
                         <div
                                 class="collection-type"
-                                :key="index"
                                 v-if="collection && collection.current_user_can_edit_items"
                                 @click="onSelectCollection(collection)">
                             <h4>{{ collection.name }}</h4>

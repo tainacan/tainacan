@@ -16,10 +16,11 @@
                     <p>{{ $i18n.get('info_associated_roles') }}</p>
                     <br>
                     <div class="roles-list">
-                        <template v-for="(role, roleIndex) of existingRoles">
+                        <template
+                                v-for="(role, roleIndex) of existingRoles"
+                                :key="roleIndex">
                             <b-checkbox
                                     v-if="!capability.roles_inherited[role.slug]"
-                                    :key="roleIndex"
                                     :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
                                     @input="($event) => updateRole(role.slug, $event)"
                                     name="roles">
@@ -49,10 +50,11 @@
                     </label>
                     <br>
                     <div class="roles-list">
-                        <template v-for="(role, roleIndex) of existingRoles">
+                        <template 
+                                v-for="(role, roleIndex) of existingRoles"
+                                :key="roleIndex">
                             <b-checkbox
                                     v-if="capability.roles_inherited[role.slug]"
-                                    :key="roleIndex"
                                     class="has-text-yellow2"
                                     :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
                                     name="roles_inherited"

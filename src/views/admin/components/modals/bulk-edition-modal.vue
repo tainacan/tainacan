@@ -31,20 +31,22 @@
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                 :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                 @input="addToBulkEditionProcedures($event, 'metadatum', criterion)">
-                            <template v-for="(metadatum, index) in metadata">
+                            <template 
+                                    v-for="(metadatum, index) in metadata"
+                                    :key="index">
                                 <option
-                                        :key="index"
+                                        
                                         v-if="metadatum.id && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
                                         :value="metadatum">
                                     {{ metadatum.name }}
                                 </option>
                                 <optgroup 
                                         v-if="metadatum.id && metadatum.metadata_type_object.component === 'tainacan-compound' && metadatum.multiple !== 'yes'"
-                                        :key="index"
                                         :label="metadatum.name">
-                                    <template v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects">
+                                    <template 
+                                            v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
+                                            :key="childIndex">
                                         <option 
-                                                :key="childIndex"
                                                 v-if="childMetadatum.id"
                                                 :value="childMetadatum">
                                             {{ childMetadatum.name }}
@@ -162,20 +164,20 @@
                                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
                                             @input="addToBulkEditionProcedures($event, 'metadatumIdCopyFrom', criterion)">
                                         <template 
-                                                v-for="(metadatumForCopy, index) in getAllowedMetadataForCopy(criterion)">
+                                                v-for="(metadatumForCopy, index) in getAllowedMetadataForCopy(criterion)"
+                                                :key="index">
                                             <option
-                                                    :key="index"
                                                     v-if="metadatumForCopy.id && metadatumForCopy.metadata_type_object.component !== 'tainacan-compound' && metadatumForCopy.parent <= 0"
                                                     :value="metadatumForCopy.id">
                                                 {{ metadatumForCopy.name }}
                                             </option>
                                             <optgroup 
                                                     v-if="metadatumForCopy.id && metadatumForCopy.metadata_type_object.component === 'tainacan-compound'"
-                                                    :key="index"
                                                     :label="metadatumForCopy.name">
-                                                <template v-for="(childmetadatumForCopy, childIndex) of metadatumForCopy.metadata_type_options.children_objects">
+                                                <template
+                                                        v-for="(childmetadatumForCopy, childIndex) of metadatumForCopy.metadata_type_options.children_objects"
+                                                        :key="childIndex">
                                                     <option 
-                                                            :key="childIndex"
                                                             v-if="childMetadatumForCopy.id"
                                                             :value="childMetadatumForCopy.id">
                                                         {{ childMetadatumForCopy.name }}

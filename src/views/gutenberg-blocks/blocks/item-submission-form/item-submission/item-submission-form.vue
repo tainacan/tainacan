@@ -485,17 +485,17 @@
                                     {{ metadataSection.description }}
                                 </p>
                                 <template v-if="itemMetadata && Array.isArray(itemMetadata)">
-                                    <template v-for="(itemMetadatum, index) of itemMetadata.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)">
+                                    <template 
+                                            v-for="(itemMetadatum, index) of itemMetadata.filter(anItemMetadatum => anItemMetadatum.metadatum.metadata_section_id == metadataSection.id)"
+                                            :key="index">
                                 
                                         <!-- JS-side hook for extra content -->
                                         <div 
-                                                :key="index"
                                                 v-if="hasBeforeHook('metadatum')"
                                                 class="item-submission-hook item-submission-hook-metadatum-before"
                                                 v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
 
                                         <tainacan-form-item
-                                                :key="index"
                                                 v-if="enabledMetadata[index] == 'true'"
                                                 :item-metadatum="itemMetadatum"
                                                 :hide-collapses="hideCollapses"
@@ -507,7 +507,6 @@
 
                                         <!-- JS-side hook for extra content -->
                                         <div 
-                                                :key="index"
                                                 v-if="hasAfterHook('metadatum')"
                                                 class="item-submission-hook item-submission-hook-metadatum-after"
                                                 v-html="getAfterHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
@@ -557,10 +556,10 @@
                         <template v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length">
                             <p>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</p>
                             <ol>
-                                <template v-for="(error, index) of formErrors">
-                                    <li 
-                                            v-if="error.errors.length"
-                                            :key="index">
+                                <template 
+                                        v-for="(error, index) of formErrors"
+                                        :key="index">
+                                    <li v-if="error.errors.length">
                                         <a 
                                                 v-if="['thumbnail', 'attachments', 'document'].includes(error.metadatum_id) || metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')]"
                                                 class="has-text-danger"
