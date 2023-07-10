@@ -330,11 +330,18 @@
                                 </p>
                                 <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
                                 <router-link
-                                        id="button-create-metadatum"
                                         :to="isRepositoryLevel ? $routerHelper.getNewMetadatumPath() : $routerHelper.getNewCollectionMetadatumPath(collectionId)"
-                                        tag="button" 
-                                        class="button is-secondary is-centered">
-                                    {{ $i18n.getFrom('metadata', 'new_item') }}</router-link>
+                                        custom
+                                        v-slot="{ navigate }">
+                                    <button
+                                            role="link" 
+                                            ttype="button"
+                                            @click="navigate()" 
+                                            id="button-create-metadatum"
+                                            class="button is-secondary is-centered">
+                                        {{ $i18n.getFrom('metadata', 'new_item') }}
+                                    </button>
+                                </router-link>
                             </div>
                         </section>
                     </div>

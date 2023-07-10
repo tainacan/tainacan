@@ -7,7 +7,6 @@
                 class="new-collection-menu">
             <li>
                 <router-link
-                        tag="a" 
                         :to="$routerHelper.getNewCollectionPath()"
                         class="first-card">
                     <div class="list-metadata">
@@ -20,7 +19,6 @@
             </li>
             <li>
                 <router-link 
-                        tag="a" 
                         :to="{ path: $routerHelper.getNewCollectionPath() }" 
                         :aria-label="$i18n.get('label_collection_items')">
                     <span
@@ -38,7 +36,6 @@
             </li>
             <li>
                 <router-link  
-                        tag="a" 
                         :to="{ path: $routerHelper.getNewCollectionPath() }"
                         :aria-label="$i18n.get('label_collection_metadata')">
                     <span
@@ -56,7 +53,6 @@
             </li>
             <li>
                 <router-link 
-                        tag="a" 
                         :to="{ path: $routerHelper.getNewCollectionPath() }" 
                         :aria-label="$i18n.get('label_collection_filters')">
                     <span
@@ -75,8 +71,7 @@
         </ul>   
         <ul v-if="collections.length > 0 && !isLoading">
             <li v-if="!$adminOptions.hideHomeCollectionCreateNewButton && $userCaps.hasCapability('tnc_rep_edit_collections')">
-                <router-link
-                        tag="a" 
+                <router-link 
                         :to="$routerHelper.getNewCollectionPath()"
                         class="tainacan-card new-card">
                     <div class="list-metadata">
@@ -88,7 +83,6 @@
                     <ul class="menu-list">
                         <li>
                             <router-link 
-                                    tag="a" 
                                     :to="{ path: $routerHelper.getNewCollectionPath() }" 
                                     :aria-label="$i18n.get('label_collection_items')">
                                 <span 
@@ -105,7 +99,6 @@
                         </li>
                         <li>
                             <router-link  
-                                    tag="a" 
                                     :to="{ path: $routerHelper.getNewCollectionPath() }"
                                     :aria-label="$i18n.get('label_collection_metadata')">
                                 <span 
@@ -122,7 +115,6 @@
                         </li>
                         <li>
                             <router-link 
-                                    tag="a" 
                                     :to="{ path: $routerHelper.getNewCollectionPath() }" 
                                     :aria-label="$i18n.get('label_collection_filters')">
                                 <span 
@@ -148,7 +140,6 @@
                 <ul class="menu-list">
                     <li>
                         <router-link 
-                                tag="a" 
                                 :to="{ path: $routerHelper.getCollectionItemsPath(collection.id, '') }" 
                                 :aria-label="$i18n.get('label_collection_items')">
                             <span 
@@ -165,7 +156,6 @@
                     </li>
                     <li v-if="collection.current_user_can_edit_items && $adminOptions.showHomeCollectionCreateItemButton">
                         <router-link
-                                tag="a" 
                                 :to="{ path: $routerHelper.getNewItemPath(collection.id) }" 
                                 :aria-label="$i18n.get('add_one_item')">
                             <span 
@@ -182,7 +172,6 @@
                     </li>
                     <li v-if="collection.current_user_can_edit && !$adminOptions.hideHomeCollectionSettingsButton">
                         <router-link
-                                tag="a" 
                                 :to="{ path: $routerHelper.getCollectionEditPath(collection.id) }" 
                                 :aria-label="$i18n.get('label_settings')">
                             <span 
@@ -199,7 +188,6 @@
                     </li>
                     <li v-if="collection.current_user_can_edit_metadata && !$adminOptions.hideHomeCollectionMetadataButton">
                         <router-link  
-                                tag="a" 
                                 :to="{ path: $routerHelper.getCollectionMetadataPath(collection.id) }"
                                 :aria-label="$i18n.get('label_collection_metadata')">
                             <span
@@ -216,7 +204,6 @@
                     </li>
                     <li v-if="collection.current_user_can_edit_filters && !$adminOptions.hideHomeCollectionFiltersButton">
                         <router-link 
-                                tag="a" 
                                 :to="{ path: $routerHelper.getCollectionFiltersPath(collection.id) }" 
                                 :aria-label="$i18n.get('label_collection_filters')">
                             <span 
@@ -233,7 +220,6 @@
                     </li>
                     <li v-if="$userCaps.hasCapability('tnc_rep_read_logs') && !$adminOptions.hideHomeCollectionActivitiesButton">
                         <router-link 
-                                tag="a" 
                                 :to="{ path: $routerHelper.getCollectionActivitiesPath(collection.id) }"
                                 :aria-label="$i18n.get('label_collection_activities')">
                             <span 
@@ -266,7 +252,6 @@
                     </li>
                 </ul>
                 <router-link
-                        tag="a"
                         :to="$routerHelper.getCollectionPath(collection.id)"
                         class="card-body">
                     <img 

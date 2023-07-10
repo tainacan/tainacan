@@ -7,12 +7,18 @@
             <router-link
                     v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
                     :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
-                    class="button is-turquoise4"
-                    tag="button"
-                    :aria-label="$i18n.get('back')">
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-previous"/>
-                </span>
+                    custom 
+                    v-slot="{ navigate }">
+                <button 
+                        @click="navigate()"
+                        role="link"
+                        :aria-label="$i18n.get('back')"
+                        type="button"
+                        class="button is-turquoise4">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-previous"/>
+                    </span>
+                </button>
             </router-link>
         </div>
         <div class="level">      
@@ -21,12 +27,18 @@
                     <router-link
                             v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
-                            class="button is-turquoise4"
-                            tag="button"
-                            :aria-label="$i18n.get('back')">
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-previous"/>
-                        </span>
+                            custom
+                            v-slot="{ navigate }">
+                        <button 
+                                @click="navigate()"
+                                role="link"
+                                :aria-label="$i18n.get('back')"
+                                type="button"
+                                class="button is-turquoise4">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-previous"/>
+                            </span>
+                        </button>
                     </router-link>
                 </div>
             </div>
@@ -35,8 +47,7 @@
                 <li     
                         :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
                         class="level-item">
-                    <router-link 
-                            tag="a" 
+                    <router-link  
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
                             :aria-label="$i18n.get('label_collection_items')">               
                         <span class="icon">
@@ -50,7 +61,6 @@
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
                         class="level-item">
                     <router-link
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionEditPath(collection.id) : '' }" 
                             :aria-label="$i18n.get('label_settings')">
                         <span class="icon">
@@ -65,7 +75,6 @@
                         :class="activeRoute == 'CollectionMetadataPage' ? 'is-active':''"
                         class="level-item">
                     <router-link  
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionMetadataPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_metadata')">
                         <span class="icon">
@@ -79,7 +88,6 @@
                         :class="activeRoute == 'CollectionFiltersPage' ? 'is-active':''" 
                         class="level-item">
                     <router-link 
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionFiltersPath(collection.id) : ''}" 
                             :aria-label="$i18n.get('label_collection_filters')">
                         <span class="icon">
@@ -93,7 +101,6 @@
                         :class="activeRoute == 'CollectionActivitiesPage' ? 'is-active':''"
                         class="level-item">
                     <router-link 
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionActivitiesPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_activities')">
                         <span class="icon">
@@ -107,7 +114,6 @@
                         :class="activeRoute == 'CollectionCapabilitiesPage' ? 'is-active':''"
                         class="level-item is-hidden-mobile">
                     <router-link 
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionCapabilitiesPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_capabilities')">
                         <span class="icon">

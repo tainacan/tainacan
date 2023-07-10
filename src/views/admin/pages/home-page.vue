@@ -30,7 +30,6 @@
                 <ul class="repository-menu-list">
                     <!-- <li>
                         <router-link
-                                tag="a"
                                 to="/collections">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-collections"/>
@@ -40,7 +39,6 @@
                     </li> -->
                     <!-- <li>
                         <router-link
-                                tag="a"
                                 to="/items">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-items"/>
@@ -50,7 +48,6 @@
                     </li> -->
                     <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata') && !$adminOptions.hideHomeMetadataButton">
                         <router-link
-                                tag="a"
                                 to="/metadata">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
@@ -60,7 +57,6 @@
                     </li>
                     <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters') && !$adminOptions.hideHomeFiltersButton">
                         <router-link
-                                tag="a"
                                 to="/filters">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
@@ -70,7 +66,6 @@
                     </li>
                     <li v-if="!$adminOptions.hideHomeTaxonomiesButton">
                         <router-link
-                                tag="a"
                                 to="/taxonomies">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-taxonomies"/>
@@ -80,7 +75,6 @@
                     </li>
                     <li v-if="!$adminOptions.hideHomeActivitiesButton">
                         <router-link
-                                tag="a"
                                 to="/activities">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-activities"/>
@@ -90,7 +84,6 @@
                     </li>
                     <li v-if="!$adminOptions.hideHomeImportersButton">
                         <router-link
-                                tag="a"
                                 to="/importers">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-importers"/>
@@ -100,7 +93,6 @@
                     </li>
                     <li v-if="!$adminOptions.hideHomeExportersButton">
                         <router-link
-                                tag="a"
                                 to="/exporters">
                             <span class="icon is-medium">
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-export"/>
@@ -122,10 +114,14 @@
             <div class="home-section-header collections-section-header">
                 <div class="home-section-icon">
                     <router-link
-                        tag="span"
-                        class="icon"
-                        to="/collections">
-                        <i class="tainacan-icon tainacan-icon-collections"/>
+                            to="/collections"
+                            custom
+                            v-slot="{ navigate }">
+                        <span 
+                                @click="navigate()"
+                                class="icon">
+                            <i class="tainacan-icon tainacan-icon-collections"/>
+                        </span>
                     </router-link>
                 </div>
                 <h1>{{ $i18n.get('label_recent_collections') }}</h1>
@@ -147,7 +143,6 @@
             <router-link
                     v-if="!$adminOptions.hideHomeCollectionsButton"
                     class="collections-see-more"
-                    tag="a"
                     to="/collections">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewtable"/>

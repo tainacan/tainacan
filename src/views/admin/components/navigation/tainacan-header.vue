@@ -7,7 +7,6 @@
                     v-if="!$adminOptions.hideTainacanHeaderHomeButton"
                     class="level-item home-area">
                 <router-link
-                        tag="a"
                         to="/"
                         :aria-label="$i18n.get('label_plugin_home_page')">
                     <span
@@ -24,7 +23,6 @@
             </div>
             <div class="level-item logo-area">
                 <router-link
-                        tag="a"
                         to="/"
                         :aria-label="$i18n.get('label_plugin_home_page')">
                     <h1>

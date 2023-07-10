@@ -11,16 +11,12 @@
             <hr>
             <nav class="breadcrumbs">
                 <router-link 
-                        tag="a" 
                         :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link> > 
-                <router-link 
-                        tag="a" 
+                <router-link  
                         :to="$routerHelper.getAvailableImportersPath()">{{ $i18n.get('importers') }}</router-link> > 
                 <router-link 
-                        tag="a" 
                         :to="$routerHelper.getImporterPath(importerType, sessionId)">{{ importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }}</router-link> >
                 <router-link 
-                        tag="a" 
                         :to="$routerHelper.getImporterMappingPath(importerType, sessionId, collectionId)">{{ $i18n.get('label_metadata_mapping') }}</router-link> 
             </nav>
 

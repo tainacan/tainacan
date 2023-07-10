@@ -23,12 +23,16 @@
                     </button>
                     <b-dropdown-item aria-role="listitem">
                         <router-link
-                                id="a-create-collection"
-                                tag="div"
-                                :to="{ path: $routerHelper.getNewCollectionPath() }">
-                            {{ $i18n.get('new_blank_collection') }}
-                            <br>
-                            <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                                :to="{ path: $routerHelper.getNewCollectionPath() }"
+                                custom
+                                v-slot="{ navigate }">
+                            <div 
+                                    id="a-create-collection"
+                                    @click="navigate()">
+                                {{ $i18n.get('new_blank_collection') }}
+                                <br>
+                                <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                            </div>
                         </router-link>
                     </b-dropdown-item>
                     <b-dropdown-item aria-role="listitem">
@@ -267,12 +271,16 @@
                                     </button>
                                     <b-dropdown-item aria-role="listitem">
                                         <router-link
-                                                id="a-create-collection"
-                                                tag="div"
-                                                :to="{ path: $routerHelper.getNewCollectionPath() }">
-                                            {{ $i18n.get('new_blank_collection') }}
-                                            <br>
-                                            <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                                                :to="{ path: $routerHelper.getNewCollectionPath() }"
+                                                custom
+                                                v-slot="{ navigate }">
+                                            <div 
+                                                    id="a-create-collection"
+                                                    @click="navigate()">
+                                                {{ $i18n.get('new_blank_collection') }}
+                                                <br>
+                                                <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                                            </div>
                                         </router-link>
                                     </b-dropdown-item>
                                     <b-dropdown-item aria-role="listitem">

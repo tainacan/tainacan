@@ -12,7 +12,6 @@
                         v-if="!$adminOptions.hidePrimaryMenuRepositoryButton"
                         class="repository-label">
                     <router-link
-                            tag="a"
                             :to="$routerHelper.getCollectionsPath()"
                             :aria-label="$i18n.get('repository')">
                         <span v-if="!isMenuCompressed">{{ $i18n.get('repository') }}</span>
@@ -25,7 +24,6 @@
                 </li>
                 <li v-if="!$adminOptions.hidePrimaryMenuCollectionsButton">
                     <router-link
-                            tag="a"
                             :to="$routerHelper.getCollectionsPath()"
                             :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
                         <span class="icon">
@@ -36,7 +34,6 @@
                 </li>
                 <li v-if="!$adminOptions.hidePrimaryMenuItemsButton">
                     <router-link
-                            tag="a"
                             :to="$routerHelper.getItemsPath()"
                             :class="activeRoute == 'ItemsPage' ? 'is-active':''">
                         <span class="icon">
@@ -48,7 +45,6 @@
                 <li class="separator"/>
                 <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata') && !$adminOptions.hidePrimaryMenuMetadataButton">
                     <router-link
-                            tag="a"
                             to="/metadata"
                             :class="activeRoute == 'MetadataPage' ? 'is-active':''">
                         <span class="icon">
@@ -59,7 +55,6 @@
                 </li>
                 <li v-if="$userCaps.hasCapability('tnc_rep_edit_filters') && !$adminOptions.hidePrimaryMenuFiltersButton">
                     <router-link
-                            tag="a"
                             to="/filters"
                             :class="activeRoute == 'FiltersPage' ? 'is-active':''">
                         <span class="icon">
@@ -70,7 +65,6 @@
                 </li>
                 <li v-if="!$adminOptions.hidePrimaryMenuTaxonomiesButton">
                     <router-link
-                            tag="a"
                             to="/taxonomies"
                             :class="activeRoute == 'Page' ? 'is-active':''">
                         <span class="icon">
@@ -81,7 +75,6 @@
                 </li>
                 <li v-if="!$adminOptions.hidePrimaryMenuActivitiesButton">
                     <router-link
-                            tag="a"
                             to="/activities"
                             :class="activeRoute == 'ActivitiesPage' ? 'is-active':''">
                         <span class="icon">
@@ -94,7 +87,6 @@
                         class="is-hidden-mobile"
                         v-if="$userCaps.hasCapability('tnc_rep_edit_users') && !$adminOptions.hidePrimaryMenuCapabilitiesButton">
                     <router-link
-                            tag="a"
                             :to="$routerHelper.getCapabilitiesPath()"
                             :class="activeRoute == 'CapabilitiesPage' ? 'is-active':''">
                         <span class="icon">
@@ -105,7 +97,6 @@
                 </li>
                 <li v-if="!$adminOptions.hidePrimaryMenuImportersButton">
                     <router-link
-                            tag="a"
                             to="/importers"
                             :class="(
                                 activeRoute == 'AvailableImportersPage' ||
@@ -120,7 +111,6 @@
                 </li>
                 <li v-if="!$adminOptions.hidePrimaryMenuExportersButton">
                     <router-link
-                            tag="a"
                             to="/exporters"
                             :class="(
                                 activeRoute == 'ExportersPage' ||

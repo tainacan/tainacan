@@ -1,5 +1,4 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router'
+import { createRouter } from 'vue-router'
 import qs from 'qs';
 
 // Main Pages
@@ -25,8 +24,6 @@ import ItemBulkEditionForm from '../components/edition/item-bulk-edition-form.vu
 import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
 import ExporterEditionForm from '../components/edition/exporter-edition-form.vue'
 
-Vue.use(VueRouter);
-
 const i18nGet = function (key) {
   let string = tainacan_plugin.i18n[key];
   return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";
@@ -42,7 +39,7 @@ const routes = [
 
     { path: '/collections/:collectionId', component: CollectionPage, meta: {title: i18nGet('title_collection_page') },
       children: [
-        { path: '', redirect: 'items'},
+        { path: '/', redirect: 'items'},
         { path: 'items', component: ItemsPage, name: 'CollectionItemsPage', meta: {title: i18nGet('title_collection_page') }, props: { isOnTheme: false } },
         { path: 'items/:itemId/edit', name: 'ItemEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item') } },
         { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: {title: i18nGet('title_create_item_collection') } },
@@ -68,7 +65,7 @@ const routes = [
     { path: '/taxonomies', name: 'TaxonomyPage', component: TaxonomyPage, meta: {title: i18nGet('title_taxonomies_page') } },
     { path: '/taxonomies/new', name: 'TaxonomyCreationForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_create_taxonomy_page') } },
     { path: '/taxonomies/:taxonomyId/edit', name: 'TaxonomyEditionForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_taxonomy_edit_page') } },
-    { path: '/taxonomies/:taxonomyId', redirect: '/taxonomies/:taxonomyId/edit' },
+    { path: '/taxonomies/:taxonomyId', redirect: { name: 'TaxonomyEditionForm' } },
 
     { path: '/activities',  name: 'ActivitiesPage', component: ActivitiesPage, meta: {title: i18nGet('title_repository_activities_page') } },
 
@@ -82,10 +79,9 @@ const routes = [
     { path: '/exporters/', name: 'ExportersPage', component: AvailableExportersPage, meta: {title: i18nGet('title_exporters_page') } },
     { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: {title: i18nGet('title_exporter_page') }},
 
-    { path: '*', redirect: '/'}
 ];
 
-export default new VueRouter ({
+export default createRouter({
     routes,
     // set custom query resolver
     parseQuery(query) {

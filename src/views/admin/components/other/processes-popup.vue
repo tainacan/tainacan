@@ -33,7 +33,6 @@
                 <li class="popup-list-subheader">
                     {{ $i18n.get('label_last_processed_on') + ' ' + getDate(bgProcesses[0].processed_last) }}
                     <router-link 
-                            tag="a"
                             :to="$routerHelper.getProcessesPage()"
                             class="is-secondary">
                         {{ $i18n.get('label_view_more') }}

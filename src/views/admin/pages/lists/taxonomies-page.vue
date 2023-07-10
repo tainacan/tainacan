@@ -10,11 +10,18 @@
                         v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')"
                         class="header-item">
                     <router-link
-                            id="button-create-taxonomy" 
-                            tag="button" 
-                            class="button is-secondary"
-                            :to="{ path: $routerHelper.getNewTaxonomyPath() }">
-                        {{ $i18n.getFrom('taxonomies', 'new_item') }}
+                            tag="button"
+                            :to="{ path: $routerHelper.getNewTaxonomyPath() }"
+                            custom
+                            v-slot="{ navigate }">
+                        <button 
+                                type="button"
+                                role="link"
+                                id="button-create-taxonomy" 
+                                class="button is-secondary"
+                                @click="navigate()">
+                            {{ $i18n.getFrom('taxonomies', 'new_item') }}
+                        </button>
                     </router-link>
                 </div>
 
@@ -175,11 +182,17 @@
                                 </p>
                                 <router-link
                                         v-if="status == undefined || status == ''"
-                                        id="button-create-taxonomy"
-                                        tag="button"
-                                        class="button is-secondary"
-                                        :to="{ path: $routerHelper.getNewTaxonomyPath() }">
-                                    {{ $i18n.getFrom('taxonomies', 'new_item') }}
+                                        :to="{ path: $routerHelper.getNewTaxonomyPath() }"
+                                        custom
+                                        v-slot="{ navigate }">
+                                    <button
+                                            role="link"
+                                            id="button-create-taxonomy"
+                                            type="button"
+                                            class="button is-secondary"
+                                            @click="navigate()">
+                                        {{ $i18n.getFrom('taxonomies', 'new_item') }}
+                                    </button>
                                 </router-link>
                             </div>
                         </section>

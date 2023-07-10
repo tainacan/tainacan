@@ -128,16 +128,22 @@
                             collection.current_user_can_edit_items"
                     class="search-control-item">
                 <router-link
-                        id="item-creation-options-dropdown"
+                        :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
                         v-if="$adminOptions.hideItemsListCreationDropdownBulkAdd && $adminOptions.hideItemsListCreationDropdownImport"
-                        class="button is-secondary"
-                        tag="button"
-                        :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                    <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
-                    <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
-                    <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-add" />
-                    </span>
+                        custom
+                        v-slot="{ navigate }">
+                    <button
+                            type="button"
+                            role="link"
+                            @click="navigate()"
+                            class="button is-secondary"
+                            id="item-creation-options-dropdown">
+                        <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
+                        <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-add" />
+                        </span>
+                    </button>
                 </router-link>
                 <b-dropdown
                         v-else
@@ -159,10 +165,15 @@
                             v-if="!isRepositoryLevel"
                             aria-role="listitem">
                         <router-link
-                                id="a-create-item"
-                                tag="div"
-                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                            {{ $i18n.get('add_one_item') }}
+                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
+                                custom
+                                v-slot="{ navigate }">
+                            <div
+                                    role="link"
+                                    id="a-create-item"
+                                    @click="navigate()" >
+                                {{ $i18n.get('add_one_item') }}
+                            </div>
                         </router-link>
                     </b-dropdown-item>
                     <b-dropdown-item 
@@ -179,12 +190,17 @@
                             v-if="!isRepositoryLevel && !$adminOptions.hideItemsListCreationDropdownBulkAdd"
                             aria-role="listitem">
                         <router-link
-                                id="a-item-add-bulk"
-                                tag="div"
-                                :to="{ path: $routerHelper.getNewItemBulkAddPath(collectionId) }">
-                            {{ $i18n.get('add_items_bulk') }}
-                            <br> 
-                            <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
+                                :to="{ path: $routerHelper.getNewItemBulkAddPath(collectionId) }"
+                                custom
+                                v-slot="{ navigate }">
+                            <button
+                                    role="link"
+                                    @click="navigate()"
+                                    id="a-item-add-bulk">
+                                {{ $i18n.get('add_items_bulk') }}
+                                <br> 
+                                <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
+                            </button>
                         </router-link>
                     </b-dropdown-item>
                     <b-dropdown-item 
@@ -638,11 +654,17 @@
 
                         <router-link
                                 v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
-                                id="button-create-item"
-                                tag="button"
-                                class="button is-secondary"
-                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }">
-                            {{ $i18n.getFrom('items', 'add_new') }}
+                                :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
+                                custom
+                                v-slot="{ navigate }">
+                            <button
+                                    id="button-create-item"
+                                    type="button"
+                                    @click="navigate()"
+                                    role="link"
+                                    class="button is-secondary">
+                                {{ $i18n.getFrom('items', 'add_new') }}
+                            </button>
                         </router-link> 
                         <button
                                 v-else-if="isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"

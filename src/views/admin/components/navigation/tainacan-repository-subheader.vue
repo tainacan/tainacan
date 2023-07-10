@@ -10,12 +10,18 @@
             <router-link
                     v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
                     :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
-                    class="button is-turquoise4"
-                    tag="button"
-                    :aria-label="$i18n.get('back')">
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-previous"/>
-                </span>
+                    custom
+                    v-slot="{ navigate }">
+                <button
+                        role="link"
+                        class="button is-turquoise4"
+                        type="button"
+                        :aria-label="$i18n.get('back')"
+                        @click="navigate()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-previous"/>
+                    </span>
+                </button>
             </router-link>
         </div>
 
