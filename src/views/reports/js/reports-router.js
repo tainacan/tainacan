@@ -1,4 +1,4 @@
-import { createRouter } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import qs from 'qs';
 import ReportsList from '../pages/reports-list.vue';
 
@@ -11,6 +11,7 @@ const routes = [
 
 export default createRouter({
     routes,
+    history: createWebHashHistory(),
     // set custom query resolver
     parseQuery(query) {
         return qs.parse(query);
