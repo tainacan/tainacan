@@ -409,7 +409,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		return $query_params;
 	}
 
-		/**
+	/**
 	 * @param string $method
 	 *
 	 * @return array|mixed
@@ -597,6 +597,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 	function get_sequence_schema() {
 		$schema = $this->get_schema();
 		$schema['title'] = "$this->rest_base-sequence";
+		$schema['tags'][] = 'sequence-edit';
 		$schema['properties'] = [
 			'id' => [
 				'type' => 'string',
@@ -614,7 +615,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 	function get_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => "$this->rest_base-bulk",
+			'title' => $this->rest_base,
 			'type' => 'object',
 			'tags' => [ $this->rest_base ]
 		];
