@@ -3,8 +3,6 @@
 namespace Tainacan\API\EndPoints;
 
 use \Tainacan\API\REST_Controller;
-use Tainacan\Entities;
-use Tainacan\Repositories;
 
 class REST_Roles_Controller extends REST_Controller {
 
@@ -32,54 +30,34 @@ class REST_Roles_Controller extends REST_Controller {
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
 				'permission_callback' => array($this, 'get_items_permissions_check'),
-				//'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
+				'args'                => $this->get_endpoint_args(\WP_REST_Server::DELETABLE)
 			),
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
 				'permission_callback' => array($this, 'create_item_permissions_check'),
-				'args'                => array(
-					'name' => array(
-						'description' => __('New role name', 'tainacan'),
-						'type' => 'string',
-						'required' => true
-					),
-					'capabilities' => array(
-						'description' => __('Array of capabilities, where the keys are capability slugs and values are booleans', 'tainacan'),
-						'required' => false,
-						'validate_callback' => [$this, 'validate_roles_capabilities_arg']
-					),
-				)
+				'args'                => $this->get_endpoint_args(\WP_REST_Server::CREATABLE)
 			),
-			'schema'                  => [$this, 'get_schema']
+			'schema'                  => [$this, 'get_list_schema']
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<role>[a-z0-9-_]+)', array(
 			array(
 				'methods'             => \WP_REST_Server::DELETABLE,
 				'callback'            => array($this, 'delete_item'),
 				'permission_callback' => array($this, 'delete_item_permissions_check'),
+				'args'                => $this->get_endpoint_args(\WP_REST_Server::DELETABLE)
 			),
 			array(
 				'methods'             => \WP_REST_Server::EDITABLE,
 				'callback'            => array($this, 'update_item'),
 				'permission_callback' => array($this, 'update_item_permissions_check'),
-				'args'                => array(
-					'name' => array(
-						'description' => __('New role name', 'tainacan'),
-						'type' => 'string',
-						'required' => false
-					),
-					'capabilities' => array(
-						'description' => __('Array of capabilities, where the keys are capability slugs and values are booleans', 'tainacan'),
-						'required' => false,
-						'validate_callback' => [$this, 'validate_roles_capabilities_arg']
-					),
-				)
+				'args'                => $this->get_endpoint_args(\WP_REST_Server::EDITABLE)
 			),
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_item'),
 				'permission_callback' => array($this, 'get_item_permissions_check'),
+				'args'                => $this->get_endpoint_args(\WP_REST_Server::READABLE)
 			),
 			'schema'                  => [$this, 'get_schema']
 		));
@@ -90,7 +68,15 @@ class REST_Roles_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_capabilities'),
 					'permission_callback' => array($this, 'get_capabilities_permissions_check'),
-				)
+					'args'				  => [
+						'collection_id' => [
+							'description' => __( 'Collection ID', 'tainacan' ),
+							'type' => 'string',
+							'required' => true,
+						]
+					]
+				),
+				'schema'                  => [$this, 'get_capabilities_schema']
 		));
 		register_rest_route(
 			$this->namespace, '/capabilities',
@@ -99,7 +85,8 @@ class REST_Roles_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_capabilities'),
 					'permission_callback' => array($this, 'get_capabilities_permissions_check'),
-				)
+				),
+				'schema'                  => [$this, 'get_capabilities_schema']
 		));
 	}
 
@@ -471,6 +458,45 @@ class REST_Roles_Controller extends REST_Controller {
 	}
 
 	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_endpoint_args( $method = null ) {
+		$endpoint_args = [
+			'role' => [
+				'description' => __( 'Role slug', 'tainacan' ),
+				'type' => 'string',
+				'required' => true,
+			]
+		];
+		
+		switch ( $method ) {
+			case \WP_REST_Server::CREATABLE:
+			case \WP_REST_Server::EDITABLE:
+				$endpoint_args['name'] = array(
+					'description' => __('New role name', 'tainacan'),
+					'type' => 'string',
+					'required' => true
+				);
+				$endpoint_args['capabilities'] = array(
+					'description' => __('Array of capabilities, where the keys are capability slugs and values are booleans', 'tainacan'),
+					'required' => false,
+					'validate_callback' => [$this, 'validate_roles_capabilities_arg']
+				);
+
+				if ( $method == \WP_REST_Server::CREATABLE )
+					unset($endpoint_args['role']);
+			break;
+			case \WP_REST_Server::READABLE:
+			case \WP_REST_Server::DELETABLE:
+			break;
+		}
+
+		return $endpoint_args;
+	}
+
+	/**
 	 * @param \WP_REST_Request $request
 	 *
 	 * @return \WP_Error|\WP_REST_Response
@@ -540,17 +566,114 @@ class REST_Roles_Controller extends REST_Controller {
 
 	}
 
+	function get_capabilities_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => "$this->rest_base-capabilities",
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
+			'properties' => [
+				'capabilities' => [
+					'description' => __( 'Capabilities for the user role.', 'tainacan' ),
+					'type'        => 'object',
+					'properties' 	 => [
+						'[capability]:string' => [
+							'type' => 'object',
+							'description' => __( 'Capability object', 'tainacan' ),
+							'properties' => [
+								'display_name' => [
+									'description' => __( 'Display name for the capability.', 'tainacan' ),
+									'type'        => 'string'
+								],
+								'description' => [
+									'description' => __( 'Description for the capability.', 'tainacan' ),
+									'type'        => 'string'
+								],
+								'scope' => [
+									'description' => __( 'Scope for the capability.', 'tainacan' ),
+									'type'        => 'string',
+									'enum'		  => [ 'repository', 'collection' ]
+								],
+								'superpcaps' => [
+									'description' => __( 'Super capabilities that have precendence over this capability.', 'tainacan' ),
+									'type'        => 'array',
+									'items'		  => [
+										'type' => 'string'
+									]
+								],
+								'roles' => [
+									'description' => __( 'Roles that have this capability.', 'tainacan' ),
+									'type'        => 'array',
+									'items'		  => [
+										'type' => 'object',
+										'properties' => [
+											'slug' => [
+												'description' => __( 'Slug for the role.', 'tainacan' ),
+												'type'        => 'string'
+											],
+											'name' => [
+												'description' => __( 'Display name for the role.', 'tainacan' ),
+												'type'        => 'string'
+											],
+										]
+									]
+								],
+								'roles_inherit' => [
+									'description' => __( 'Roles that inherit this capability.', 'tainacan' ),
+									'type'        => 'array',
+									'items'		  => [
+										'type' => 'object',
+										'properties' => [
+											'slug' => [
+												'description' => __( 'Slug for the role.', 'tainacan' ),
+												'type'        => 'string'
+											],
+											'name' => [
+												'description' => __( 'Display name for the role.', 'tainacan' ),
+												'type'        => 'string'
+											],
+										]
+									]
+								],
+							]
+						]
+					]
+				],
+			]
+		];
 
+		return $schema;
+	}
 
 	function get_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => 'filter',
-			'type' => 'object'
+			'title' => $this->rest_base,
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
+			'properties' => [
+				'slug' => [
+					'description' => __( 'Unique identifier for the user role.', 'tainacan' ),
+					'type'        => 'string'
+				],
+				'name' => [
+					'description' => __( 'Display name for the user role.', 'tainacan' ),
+					'type'        => 'string'
+				],
+				'capabilities' => [
+					'description' => __( 'Capabilities for the user role.', 'tainacan' ),
+					'type'        => 'object',
+					'properties' 	 => [
+						'[capability]:string' => [
+							'type' => 'boolean',
+							'description' => __( 'Whether the role has the given capability.', 'tainacan' ),
+						]
+					]
+				],
+			]
 		];
 
 		return $schema;
-
 	}
 }
 ?>
