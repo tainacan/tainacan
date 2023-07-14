@@ -117,10 +117,9 @@ export const ThumbnailHelperFunctions = () => {
     }
 }
 
-ThumbnailHelperPlugin.install = function (Vue, options = {}) {
-    Vue.prototype.$thumbHelper = ThumbnailHelperFunctions();
+ThumbnailHelperPlugin.install = function (app, options = {}) {
+    app.config.globalProperties.$thumbHelper = ThumbnailHelperFunctions();
 };
-
 
 
 // ORDERBY PLUGIN - Converts a metadatum information into appropriate orderby query for WP Query
@@ -214,6 +213,6 @@ export const OrderByHelperFunctions = () => {
     }
 }
 
-OrderByHelperPlugin.install = function (Vue, options = {}) {
-    Vue.prototype.$orderByHelper = OrderByHelperFunctions();
+OrderByHelperPlugin.install = function (app, options = {}) {
+    app.config.globalProperties.$orderByHelper = OrderByHelperFunctions();
 };

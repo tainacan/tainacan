@@ -1,8 +1,10 @@
+import { createApp } from 'vue';
+
 export default {
 
-    install(Vue, options = {}) {
+    install(app, options = {}) {
 
-        Vue.prototype.$eventBusSearch = new Vue({
+        app.config.globalProperties.$eventBusSearch = new createApp({
             router: options.router,
             store: options.store,
             data: {

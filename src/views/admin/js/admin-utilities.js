@@ -9,12 +9,12 @@ wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 
 // CONSOLE PLUGIN - Allows custom use of console functions and avoids eslint warnings.
 export const ConsolePlugin = {};
-ConsolePlugin.install = function (Vue, options = { visual: false }) {
+ConsolePlugin.install = function (app, options = { visual: false }) {
     
-    Vue.prototype.$console = {
+    app.config.globalProperties.$console = {
         log(something) {
             if (options.visual) {
-                Vue.prototype.$buefy.snackbar.open({
+                app.config.globalProperties.$buefy.snackbar.open({
                     message: something,
                     type: 'is-secondary',
                     position: 'is-bottom-right',
@@ -27,7 +27,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         },
         info(someInfo) {
             if (options.visual) {
-                Vue.prototype.$buefy.snackbar.open({
+                app.config.globalProperties.$buefy.snackbar.open({
                     message: someInfo,
                     type: 'is-primary',
                     position: 'is-bottom-right',
@@ -40,7 +40,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         },
         error(someError) {
             if (options.visual) {
-                Vue.prototype.$buefy.snackbar.open({
+                app.config.globalProperties.$buefy.snackbar.open({
                     message: someError,
                     type: 'is-danger',
                     position: 'is-bottom-right',
@@ -56,9 +56,9 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
 
 // I18N PLUGIN - Allows access to Wordpress translation file.
 export const I18NPlugin = {};
-I18NPlugin.install = function (Vue, options = {}) {
+I18NPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$i18n = {
+    app.config.globalProperties.$i18n = {
         get(key) {
             let string = tainacan_plugin.i18n[key];
             return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
@@ -123,9 +123,9 @@ I18NPlugin.install = function (Vue, options = {}) {
 
 // USER PREFERENCES - Used to save key-value information for user settings of plugin
 export const UserPrefsPlugin = {};
-UserPrefsPlugin.install = function (Vue, options = {}) {
+UserPrefsPlugin.install = function (app, options = {}) {
 
-    Vue.prototype.$userPrefs = {
+    app.config.globalProperties.$userPrefs = {
         
         tainacanPrefs: {
             'items_per_page': 12,
@@ -201,9 +201,9 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
 
 // ROUTER HELPER PLUGIN - Allows easy access to URL paths for entities
 export const RouterHelperPlugin = {};
-RouterHelperPlugin.install = function (Vue, options = {}) {
+RouterHelperPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$routerHelper = {
+    app.config.globalProperties.$routerHelper = {
         // Lists
         getCollectionsPath(query) {
             return '/collections/?' + qs.stringify(query);
@@ -351,9 +351,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
 
 // USER CAPABILITIES PLUGIN - Allows easy checking of user capabilities.
 export const UserCapabilitiesPlugin = {};
-UserCapabilitiesPlugin.install = function (Vue, options = {}) {
+UserCapabilitiesPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$userCaps = {
+    app.config.globalProperties.$userCaps = {
         hasCapability(key) {
             return tainacan_plugin.user_caps[key];
         }
@@ -362,9 +362,9 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
 
 // STATUS ICONS PLUGIN - Sets icon for status option
 export const StatusHelperPlugin = {};
-StatusHelperPlugin.install = function (Vue, options = {}) {
+StatusHelperPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$statusHelper = {
+    app.config.globalProperties.$statusHelper = {
         statuses: [
             { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
             { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
@@ -424,9 +424,9 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
 
 // COMMENTS STATUS PLUGIN - 
 export const CommentsStatusHelperPlugin = {};
-CommentsStatusHelperPlugin.install = function (Vue, options = {}) {
+CommentsStatusHelperPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$commentsStatusHelper = {
+    app.config.globalProperties.$commentsStatusHelper = {
         statuses: [
             { name: tainacan_plugin.i18n['comments_status_open'], slug: 'open' },
             { name: tainacan_plugin.i18n['comments_status_closed'], slug: 'closed' }
@@ -440,7 +440,7 @@ CommentsStatusHelperPlugin.install = function (Vue, options = {}) {
 
 // ADMIN OPTIONS HELPER PLUGIN - Stores options passed to the data-options in the admin div.
 export const AdminOptionsHelperPlugin = {};
-AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
+AdminOptionsHelperPlugin.install = function (app, options = {}) {
 
     // Passes options to global variable
     try {
@@ -454,10 +454,10 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
                     objectOptions[key] = false;
             }
         }
-        Vue.prototype.$adminOptions = objectOptions;
+        app.config.globalProperties.$adminOptions = objectOptions;
 
     } catch(e) {
-        Vue.prototype.$adminOptions = {};
+        app.config.globalProperties.$adminOptions = {};
     }
 
     // Declares common 'modes', which group certain admin options
@@ -540,12 +540,12 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
     }
     for (let adminSpecialMode in adminSpecialModes) {
 
-        if (Vue.prototype.$adminOptions[adminSpecialMode]) {
+        if (app.config.globalProperties.$adminOptions[adminSpecialMode]) {
 
             console.log('Tainacan Admin loaded in ' + adminSpecialMode);
 
             for (let option in adminSpecialModes[adminSpecialMode])
-                Vue.prototype.$adminOptions[option] = adminSpecialModes[adminSpecialMode][option];
+                app.config.globalProperties.$adminOptions[option] = adminSpecialModes[adminSpecialMode][option];
         }
     }
     

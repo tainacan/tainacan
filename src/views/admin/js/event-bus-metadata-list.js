@@ -1,11 +1,10 @@
+import { createApp } from 'vue';
+
 export default {
 
-    install(Vue, options = {}) {
+    install(app, options = {}) {
 
-        Vue.prototype.$eventBusMetadataList = new Vue({
-
-            data: {
-            },
+        app.config.globalProperties.$eventBusMetadataList = new createApp({
             methods: {
                 onAddMetadatumViaButton(metadataType) {
                     this.$emit('addMetadatumViaButton', metadataType);
