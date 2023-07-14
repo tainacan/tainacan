@@ -131,7 +131,7 @@
             if (!this.isUsingElasticSearch)
                 this.loadOptions();
         },
-        beforeDestroy() {
+        beforeUnmount() {
             
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)

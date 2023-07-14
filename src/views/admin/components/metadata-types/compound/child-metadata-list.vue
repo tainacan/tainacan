@@ -300,7 +300,7 @@
             else
                 this.collectionId = this.$route.params.collectionId;
         },
-        beforeDestroy() {
+        beforeUnmount() {
 
             // Cancels previous Request
             if (this.metadataSearchCancel != undefined)

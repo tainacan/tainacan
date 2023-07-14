@@ -219,7 +219,7 @@ export default {
 
         this.fetchItems();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },

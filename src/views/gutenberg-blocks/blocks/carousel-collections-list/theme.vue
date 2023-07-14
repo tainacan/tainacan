@@ -207,7 +207,7 @@ export default {
 
         this.fetchCollections();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },

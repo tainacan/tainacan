@@ -411,7 +411,7 @@
                 }
             });
         },
-        beforeDestroy() {
+        beforeUnmount() {
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Get options request canceled.');

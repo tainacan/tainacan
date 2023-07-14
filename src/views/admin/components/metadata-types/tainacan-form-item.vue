@@ -224,7 +224,7 @@
                 this.errorMessage = updatedErrorMessage;
             }); 
         },
-        beforeDestroy() {
+        beforeUnmount() {
             if (this.itemMetadatum && this.itemMetadatum.metadatum) {
                 eventBusItemMetadata.$off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
             }

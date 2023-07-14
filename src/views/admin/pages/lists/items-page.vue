@@ -908,7 +908,7 @@
             this.hideFiltersOnMobile();
             window.addEventListener('resize', this.hideFiltersOnMobile);
         },
-        beforeDestroy() {
+        beforeUnmount() {
             this.removeEventListeners();
 
             // Cancels previous Metadata Request

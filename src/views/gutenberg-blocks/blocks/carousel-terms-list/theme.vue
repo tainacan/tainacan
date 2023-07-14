@@ -209,7 +209,7 @@ export default {
             
         this.fetchTerms();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },

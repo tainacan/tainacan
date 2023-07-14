@@ -391,7 +391,7 @@
             if (this.isUsingElasticSearch)
                 this.$eventBusSearch.$on('isLoadingItems', this.updateIsLoadingItems);
         },
-        beforeDestroy() {
+        beforeUnmount() {
             // Cancels previous collection name Request
             if (this.collectionNameSearchCancel != undefined)
                 this.collectionNameSearchCancel.cancel('Collection name search Canceled.');

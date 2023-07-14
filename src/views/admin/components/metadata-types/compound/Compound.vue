@@ -185,7 +185,7 @@
             eventBusItemMetadata.$on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
             eventBusItemMetadata.$on('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
-        beforeDestroy() {
+        beforeUnmount() {
             eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
             eventBusItemMetadata.$off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
             eventBusItemMetadata.$off('focusNextChildMetadatum', this.focusNextChildMetadatum);

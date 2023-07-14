@@ -206,7 +206,7 @@
                 this.handleWindowResize(mapComponentRef);
             });
         },
-        beforeDestroy() {
+        beforeUnmount() {
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
             eventBusItemMetadata.$off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },

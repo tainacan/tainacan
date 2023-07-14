@@ -244,7 +244,7 @@ export default {
     mounted() {
         this.$el.addEventListener('tainacan-blocks-facets-list-update', this.receiveSearchString);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.$el.removeEventListener('tainacan-blocks-facets-list-update', this.receiveSearchString);
     },
     methods: {

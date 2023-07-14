@@ -1010,7 +1010,7 @@
                 this.itemsListBottomIntersectionObserver.observe(this.$refs['items-list-results-bottom']);
             }
         },
-        beforeDestroy() {
+        beforeUnmount() {
             this.removeEventListeners();
             
             // Removes intersection listener, if it was set up

@@ -98,7 +98,7 @@ export default {
 
         this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     },
     methods: {

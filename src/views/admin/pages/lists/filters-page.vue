@@ -579,7 +579,7 @@ export default {
         }
         
     },
-    beforeDestroy() {
+    beforeUnmount() {
         // Cancels previous filters Request
         if (this.filtersSearchCancel != undefined)
             this.filtersSearchCancel.cancel('Metadata search Canceled.');

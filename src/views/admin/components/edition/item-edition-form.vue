@@ -1089,7 +1089,7 @@ export default {
         if (this.$adminOptions.mobileAppMode)
             this.isMobileSubheaderOpen = true;
     },
-    beforeDestroy () {
+    beforeUnmount () {
         eventBusItemMetadata.$off('isUpdatingValue');
         eventBusItemMetadata.$off('hasErrorsOnForm');
         eventBusItemMetadata.$off('isOnFirstMetadatumOfCompoundNavigation');

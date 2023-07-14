@@ -967,7 +967,7 @@ export default {
         else if (this.hideFileModalButton && this.hideTextModalButton && !this.hideLinkModalButton)
             this.form.document_type = 'url';
     },
-    beforeDestroy () {
+    beforeUnmount () {
         eventBusItemMetadata.$off('hasErrorsOnForm');
     },
     methods: {

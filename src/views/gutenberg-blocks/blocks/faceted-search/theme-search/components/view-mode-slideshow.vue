@@ -522,7 +522,7 @@ export default {
         document.documentElement.scrollTo(0,0);
         document.documentElement.classList.add('is-clipped');
     },
-    beforeDestroy() {
+    beforeUnmount() {
         // Remove clipped class from root html
         document.documentElement.classList.remove('is-clipped');
 

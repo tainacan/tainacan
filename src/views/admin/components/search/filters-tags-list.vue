@@ -79,7 +79,7 @@
 <script>
     import { nextTick } from 'vue';
     import { mapGetters } from 'vuex';
-    
+
     import 'swiper/css';
     import 'swiper/css/mousewheel';
     import 'swiper/css/navigation';
@@ -158,7 +158,7 @@
                 });
             });
         },
-        beforeDestroy() {
+        beforeUnmount() {
             if (typeof this.swiper.destroy == 'function')
                 this.swiper.destroy();
         },

@@ -254,7 +254,7 @@ export default {
                 this.updateExtraFormData(this.form);
             });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.closedByForm) {
             this.$emit('onUpdateSavedState', true);
         } else {

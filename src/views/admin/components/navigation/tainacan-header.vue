@@ -134,7 +134,7 @@
                 this.showProcesses = true;
             });
         },
-        beforeDestroy() {
+        beforeUnmount() {
             this.$root.$off('openProcessesPopup');
         },
         methods: {

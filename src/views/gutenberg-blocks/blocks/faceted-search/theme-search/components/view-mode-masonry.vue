@@ -128,7 +128,7 @@ export default {
     created() {
         this.shouldUseLegacyMasonyCols = wp !== undefined && wp.hooks !== undefined && wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.masonry !== false)
             this.masonry.destroy();
     },

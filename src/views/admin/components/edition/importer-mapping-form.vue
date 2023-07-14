@@ -437,7 +437,7 @@ export default {
                 this.collection = collection;
             });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         // Cancels previous Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');

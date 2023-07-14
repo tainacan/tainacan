@@ -179,7 +179,7 @@ export default {
             immediate: true
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.masonry !== false)
             this.masonry.destroy();
     },

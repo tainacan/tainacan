@@ -371,7 +371,7 @@ export const dynamicFilterTypeMixin = {
             }
         },
     },
-    beforeDestroy() {
+    beforeUnmount() {
         // Cancels previous Request
         if (this.getOptionsValuesCancel != undefined)
             this.getOptionsValuesCancel.cancel('Facet search Canceled.');

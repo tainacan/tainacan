@@ -205,7 +205,7 @@ export default {
                 this.$refs['item-edition-footer-dropdown'].toggle();
         });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.$parent.$off('toggleItemEditionFooterDropdown');
     },
     methods: {

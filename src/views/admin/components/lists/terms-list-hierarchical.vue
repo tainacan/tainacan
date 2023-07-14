@@ -320,7 +320,7 @@ export default {
         this.$parent.$on('deleteSelectedTerms', this.deleteSelectedTerms);
         this.$parent.$on('updateSelectedTermsParent', this.updateSelectedTermsParent);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.$parent.$off('deleteSelectedTerms', this.deleteSelectedTerms);
         this.$parent.$off('updateSelectedTermsParent', this.updateSelectedTermsParent);
     },

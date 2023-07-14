@@ -592,7 +592,7 @@ export default {
                 this.isLoadingMetadataSections = false;
             });
     },
-    beforeDestroy() {
+    beforeUnmount() {
         // Cancels previous Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');

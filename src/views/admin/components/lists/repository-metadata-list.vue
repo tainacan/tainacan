@@ -337,7 +337,7 @@ export default {
         this.loadMetadata();
         this.$eventBusMetadataList.$on('addMetadatumViaButton', this.addMetadatumViaButton);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         // Cancels previous Request
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');

@@ -201,7 +201,7 @@ export default {
             jQuery( document ).on( 'heartbeat-tick', this.onHeartBitTickPopup);
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (jQuery && jQuery( document )) {
             jQuery( document ).off( 'heartbeat-tick', this.onHeartBitTickPopup)
         }

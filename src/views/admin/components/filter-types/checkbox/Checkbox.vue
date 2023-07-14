@@ -101,7 +101,7 @@
         created() {
             this.$eventBusSearch.$on('has-to-reload-facets', this.reloadOptions);
         },
-        beforeDestroy() {
+        beforeUnmount() {
             this.$eventBusSearch.$off('has-to-reload-facets', this.reloadOptions); 
         },
         methods: {
