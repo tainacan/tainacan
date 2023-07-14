@@ -127,7 +127,7 @@
         display: flex;
         font-size: 1.125em;
     }
-    .status-radios /deep/ .b-radio {
+    .status-radios :deep(.b-radio) {
         margin-bottom: 0px !important;
     }
     .modal-card-foot {

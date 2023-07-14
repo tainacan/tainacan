@@ -2118,7 +2118,7 @@ export default {
             .metadata-navigation {
                 margin-right: auto;
             }
-            .metadata-navigation /deep/ .button {
+            .metadata-navigation :deep(.button) {
                 border-radius: 0 !important;
                 margin-left: 0;
                 min-height: 2.25em;

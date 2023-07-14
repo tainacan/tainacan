@@ -785,7 +785,7 @@ export default {
         margin-left: 0px !important;
         padding: 0 !important;
 
-        /deep/ .b-checkbox, /deep/ .b-radio {
+        :deep(.b-checkbox), :deep(.b-radio) {
             max-width: 100%;
             min-height: 1.875em;
             margin-left: 0.7em;

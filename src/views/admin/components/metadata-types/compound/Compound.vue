@@ -510,10 +510,10 @@
             .field {
                 padding-left: 12px;
                 
-                /deep/ .label {
+                :deep(.label) {
                     margin-left: 0;
                 }
-                /deep/ .collapse-handle {
+                :deep(.collapse-handle) {
                     margin-left: -28px;
                 }
             }

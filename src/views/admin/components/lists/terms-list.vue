@@ -196,7 +196,7 @@ export default {
             .control {
                 margin: 0;
             }
-            /deep/ .input {
+            :deep(.input) {
                 height: 0.875em;
             }
             .input .icon .mdi::before {
@@ -216,7 +216,7 @@ export default {
                     color: var(--tainacan-secondary)
                 }
             } 
-            /deep/ .field-body>.field {
+            :deep(.field-body>.field) {
                 padding: 0px !important;
                 margin-left: 0px !important;
             }
@@ -235,10 +235,10 @@ export default {
             }
 
             #selected-terms-dropdown {
-                /deep/ .dropdown-trigger {
+                :deep(.dropdown-trigger) {
                     font-size: 1.125em !important;
                 }
-                /deep/ .dropdown-menu {
+                :deep(.dropdown-menu) {
                     width: max-content;
                     max-width: 380px;
                 }
@@ -282,7 +282,7 @@ export default {
         align-items: stretch;
         min-height: 1.5em;
 
-        /deep/ .b-checkbox, /deep/ .b-radio {
+        :deep(.b-checkbox), :deep(.b-radio) {
             margin-right: 0px;
             margin-bottom: 0;
             -webkit-break-inside: avoid;

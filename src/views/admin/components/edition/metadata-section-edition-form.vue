@@ -389,7 +389,7 @@
             .field > .field:not(:last-child) {
                 margin-bottom: 0em;
             }
-            /deep/ .field {
+            :deep(.field) {
                 -webkit-column-break-inside: avoid;
                 page-break-inside: avoid;
                 break-inside: avoid;
@@ -408,7 +408,7 @@
         .tainacan-form .field:not(:last-child) {
             margin-bottom: 1em;
         }
-        .tainacan-form /deep/ .control-label {
+        .tainacan-form :deep(.control-label) {
             white-space: normal;
         }
         .metadata-form-section {

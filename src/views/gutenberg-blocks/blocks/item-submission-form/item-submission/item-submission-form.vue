@@ -1221,7 +1221,7 @@ export default {
             padding: 12px 0px 12px 34px;
             margin-left: 16px;
         }
-        /deep/ input {
+        :deep(input) {
             box-sizing: border-box;
         }
         .columns {
@@ -1340,7 +1340,7 @@ export default {
                 margin: 0;
             }
         }
-        /deep/ .control-label {
+        :deep(.control-label) {
             white-space: normal !important;
             overflow: visible;
         }
@@ -1367,7 +1367,7 @@ export default {
             margin-bottom: 0.25rem;
         }
 
-        /deep/ ol {
+        :deep(ol) {
             margin-top: 0;
             margin-bottom: 0;
             padding-top: 0;
@@ -1428,7 +1428,7 @@ export default {
         border-radius: 2px;
         margin-top: 1em;
 
-        /deep/ .steps {
+        :deep(.steps) {
 
             .step-items {
                 margin-top: -1em;

@@ -845,25 +845,25 @@
 
 <style lang="scss" scoped>
 
-    /deep/ .tabs {
+    :deep(.tabs) {
         margin-bottom: 0 !important;
 
         ul {
             padding: 0;
         }
     }
-    .hidden-tabs-section /deep/ .tabs {
+    .hidden-tabs-section :deep(.tabs) {
         display: none;
         visibility: hidden;
     }
-    .hidden-tabs-section /deep/ .tab-content {
+    .hidden-tabs-section :deep(.tab-content) {
         padding-top: 0 !important;
 
         .tainacan-finder-columns-container {
             border: none;
         }
     }
-    /deep/ .tab-content {
+    :deep(.tab-content) {
         transition: height 0.2s ease;
         padding: 0.5em 0px !important;
     }
@@ -917,7 +917,7 @@
         -webkit-break-inside: avoid;
         break-inside: avoid;
 
-        /deep/ .b-checkbox, /deep/ .b-radio {
+        :deep(.b-checkbox), :deep(.b-radio) {
             max-width: 100%;
             min-height: 1.5em;
             margin-left: 0.7em;
@@ -964,7 +964,7 @@
         -webkit-break-inside: avoid;
         break-inside: avoid;
 
-        /deep/ .b-checkbox, /deep/ .b-radio {
+        :deep(.b-checkbox), :deep(.b-radio) {
             margin-right: 0px;
             margin-bottom: 0;
             -webkit-break-inside: avoid;
@@ -1151,7 +1151,7 @@
                 color: var(--tainacan-secondary)
             }
         } 
-        /deep/ .field-body>.field {
+        :deep(.field-body>.field) {
             padding: 0px !important;
             margin-left: 0px !important;
         }

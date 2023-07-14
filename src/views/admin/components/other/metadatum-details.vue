@@ -89,7 +89,7 @@ export default {
         column-count: 1;
     }
 
-    /deep/ .field {
+    :deep(.field) {
         -webkit-column-break-inside: avoid;
         page-break-inside: avoid;
         break-inside: avoid;

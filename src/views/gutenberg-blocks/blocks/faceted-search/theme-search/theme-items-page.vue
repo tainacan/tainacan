@@ -1705,10 +1705,10 @@
                 .tainacan-textual-search-input {
                     width: 100%;
 
-                    /deep/ .dropdown-trigger {
+                    :deep(.dropdown-trigger) {
                         width: 100%;
                     }
-                    /deep/ .dropdown-menu {
+                    :deep(.dropdown-menu) {
                         z-index: 99999991;
 
                         .dropdown-item:last-child {

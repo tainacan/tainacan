@@ -1374,7 +1374,7 @@ export default {
             font-size: 0.8em;
         }
         img,
-        /deep/ .image-wrapper {
+        :deep(.image-wrapper) {
             height: 146px;
             width: 146px;
             border: 6px solid var(--tainacan-background-color);
@@ -1480,13 +1480,13 @@ export default {
         position: relative;
         z-index: 101;
 
-        /deep/ .dropdown-item {
+        :deep(.dropdown-item) {
             display: flex !important;
         }
         p {
             white-space: normal;
         }
-        /deep/ svg {
+        :deep(svg) {
             margin-left: -2px;
             overflow: hidden;
             vertical-align: middle;

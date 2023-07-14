@@ -1455,7 +1455,7 @@
         visibility: visible;
         display: block;
 
-        /deep/ .filters-components-list {
+        :deep(.filters-components-list) {
             margin-left: 3px;
         }
         @media screen and (max-width: 768px) {
@@ -1648,10 +1648,10 @@
                 .tainacan-textual-search-input {
                     width: 100%;
                     
-                    /deep/ .dropdown-trigger {
+                    :deep(.dropdown-trigger) {
                         width: 100%;
                     }
-                    /deep/ .dropdown-menu {
+                    :deep(.dropdown-menu) {
                         z-index: 99999991;
 
                         .dropdown-item:last-child {

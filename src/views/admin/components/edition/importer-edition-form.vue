@@ -461,7 +461,7 @@ export default {
 
     @import "../../scss/_variables.scss";
 
-    /deep/ .columns {
+    :deep(.columns) {
         padding-left: var(--tainacan-one-column);
         padding-right: var(--tainacan-one-column);
     }

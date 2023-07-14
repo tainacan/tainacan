@@ -129,14 +129,14 @@
             width: 100%;
         }
     }
-    .tainacan-selectbox-metadata-type--taginput /deep/ {
-        .tag,
-        .tags {
+    .tainacan-selectbox-metadata-type--taginput {
+        :deep(.tag),
+        :deep(.tags) {
             white-space: normal !important;
             min-height: calc(2em - 1px) !important;
             height: auto !important;
         }
-        .tag.is-delete {
+        :deep(.tag.is-delete) {
             min-width: calc(2em - 1px) !important;
         }
     }

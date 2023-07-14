@@ -298,7 +298,7 @@ export default {
     padding: 12px;
 
     @media only screen {
-        /deep/ .apexcharts-title-text {
+        :deep(.apexcharts-title-text) {
             display: none;
             visibility: hidden;
         }   

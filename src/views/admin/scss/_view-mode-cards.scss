@@ -103,8 +103,8 @@
             opacity: 0;
             visibility: hidden;
         }
-        /deep/ img,
-        /deep/ canvas {
+        :deep(img),
+        :deep(canvas) {
             width: 170px !important;
             height: 170px !important;
             border-radius: 0px;

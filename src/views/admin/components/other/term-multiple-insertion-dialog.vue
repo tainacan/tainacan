@@ -279,13 +279,13 @@
         margin-top: 2px;
     }
 
-    .tainacan-multiple-term-insertion--taginput /deep/ .tag,
-    .tainacan-multiple-term-insertion--taginput /deep/ .tags {
+    .tainacan-multiple-term-insertion--taginput :deep(.tag),
+    .tainacan-multiple-term-insertion--taginput :deep(.tags) {
         white-space: normal !important;
         min-height: calc(2em - 1px) !important;
         height: auto !important;
     }
-    .tainacan-multiple-term-insertion--taginput /deep/ .tag.is-delete {
+    .tainacan-multiple-term-insertion--taginput :deep(.tag.is-delete) {
         min-width: calc(2em - 1px) !important;
     }
 

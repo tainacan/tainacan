@@ -244,7 +244,7 @@ export default {
             margin-right: 0px;
         }
 
-        /deep/ .item-edition-footer-dropdown {
+        :deep(.item-edition-footer-dropdown) {
             .dropdown-trigger .button>.icon.is-small {
                 border-left: 1px solid rgba(255,255,255,0.6);
                 margin-left: 0.5em;

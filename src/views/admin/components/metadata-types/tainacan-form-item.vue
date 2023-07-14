@@ -341,9 +341,9 @@
         justify-content: space-between;
     }
 
-    /deep/ .is-special-hidden-for-mobile,
-    /deep/ .is-special-hidden-for-mobile:focus,
-    /deep/ .is-special-hidden-for-mobile:focus-visible {
+    :deep(.is-special-hidden-for-mobile),
+    :deep(.is-special-hidden-for-mobile:focus),
+    :deep(.is-special-hidden-for-mobile:focus-visible) {
         opacity: 0;
         width: 0;
         height: 0 !important;

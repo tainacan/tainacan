@@ -118,42 +118,40 @@ export default {
                 padding-bottom: 2rem;
             }
 
-            /deep/ img,
-            /deep/ video,
-            /deep/ figure {
+            :deep(img),
+            :deep(video),
+            :deep(figure) {
                 max-width: 100%;
                 max-height: 32vh;
                 width: auto !important;
                 margin: 0;
             }
-            /deep/ a {
+            :deep(a){
                 min-height: 60px;
                 display: block;
             }
-            /deep/ audio,
-            /deep/ iframe,
-            /deep/ blockquote {
+            :deep(audio),
+            :deep(iframe),
+            :deep(blockquote) {
                 max-width: 100%;
                 max-height: 32vh;
                 width: 100%;
                 margin: 0;
                 min-height: 150px;
             }
-            /deep/ audio {
+            :deep(audio) {
                 min-height: 80px;
             }
 
             @media screen and (max-height: 760px) {
                 max-height: 25vh;
 
-                /deep/ img,
-                /deep/ video,
-                /deep/ figure {
-                    max-height: 25vh;
-                }
-                /deep/ audio,
-                /deep/ iframe,
-                /deep/ blockquote {
+                :deep(img),
+                :deep(video),
+                :deep(figure),
+                :deep(audio),
+                :deep(iframe),
+                :deep(blockquote) {
                     max-height: 25vh;
                 }
             }

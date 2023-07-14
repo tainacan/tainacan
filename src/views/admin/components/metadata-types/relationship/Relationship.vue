@@ -512,17 +512,17 @@
         margin-bottom: 0;
         width: 100%;
     }
-    /deep/ .b-tabs .tab-content {
+    :deep(.b-tabs) .tab-content {
         padding: 0.5em 0px !important;
     }
-    /deep/ .tabs {
+    :deep(.tabs) {
         margin-bottom: 0 !important;
 
         ul {
             padding: 0;
         }
     }
-    /deep/ .tainacan-relationship-results-container {
+    :deep(.tainacan-relationship-results-container) {
         border: 1px solid var(--tainacan-gray1);
         background-color: var(--tainacan-white);
         margin-top: calc(-1 * (0.5em + 1px));
@@ -560,7 +560,7 @@
             }
         }
     }
-    /deep/ .tainacan-relationship-group {
+    :deep(.tainacan-relationship-group) {
         width: 100%;
         .tainacan-relationship-metadatum {
             .label {
@@ -592,8 +592,8 @@
             top: 0px;
         }
     }
-    /deep/ .relationship-value-button--edit,
-    /deep/ .relationship-value-button--remove {
+    :deep(.relationship-value-button--edit),
+    :deep(.relationship-value-button--remove) {
         right: 4px;
         background-color: var(--tainacan-white);
         border-radius: 100%;
@@ -603,7 +603,7 @@
             background-color: var(--tainacan-gray0);
         }
     }
-    /deep/ .relationship-value-button--edit {
+    :deep(.relationship-value-button--edit) {
         right: 34px;
     }
 </style>

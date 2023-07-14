@@ -838,7 +838,7 @@
 
 <style lang="scss" scoped>
 
-    /deep/ .tainacan-modal-title {
+    :deep(.tainacan-modal-title) {
         margin-bottom: 16px;
     }
 
@@ -846,18 +846,18 @@
         width: auto;
     }
 
-    /deep/ .tabs {
+    :deep(.tabs) {
         margin-bottom: 0 !important;
 
         ul {
             padding: 0;
         }
     }
-    .hidden-tabs-section /deep/ .tabs {
+    .hidden-tabs-section :deep(.tabs) {
         display: none;
         visibility: hidden;
     }
-    /deep/ .tab-content {
+    :deep(.tab-content) {
         transition: height 0.2s ease;
         padding: 0px !important;
         min-height: 86px;
