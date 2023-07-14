@@ -1,12 +1,10 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
+
 import DynamicItemsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
 import VueBlurHash from 'vue-blurhash';
 
 export default (element) => {
-
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanDynamicItemsBlocks() {
     
@@ -129,9 +127,10 @@ export default (element) => {
                     }
                 };
     
-                Vue.use(ThumbnailHelperPlugin);
-                Vue.use(VueBlurHash);
-                new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
+                const VueDynamicItemsList = createApp( Object.assign({ el: '#' + blockId }, vueOptions) );
+
+                VueDynamicItemsList.use(ThumbnailHelperPlugin);
+                VueDynamicItemsList.use(VueBlurHash);
             }
         }
     }

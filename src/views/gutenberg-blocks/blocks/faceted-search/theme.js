@@ -1,5 +1,5 @@
 // Main imports
-import Vue from 'vue';
+import { createApp } from 'vue';
 import {
     Field,
     Input,
@@ -47,9 +47,6 @@ import {
 
 export default (element) => {
 
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
-
     function renderTainacanItemsListComponent() {
 
         // Gets the div with the content of the block
@@ -58,109 +55,8 @@ export default (element) => {
         // Mount only if the div exists and it is not already mounted
         if ( blockElement && blockElement.classList && !blockElement.classList.contains('has-mounted') ) {
 
-            /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
-            if (typeof window.tainacan_extra_plugins != "undefined") {
-                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
-                    Vue.component(extraVuePluginName, extraVuePluginObject);
-                }
-            }
-
-            // Configure and Register Plugins
-            Vue.use(Field);
-            Vue.use(Input);
-            Vue.use(Autocomplete);
-            Vue.use(Taginput);
-            Vue.use(Collapse);
-            Vue.use(Button); 
-            Vue.use(Datepicker);
-            Vue.use(Select);
-            Vue.use(Checkbox);
-            Vue.use(Radio);
-            Vue.use(Tag);
-            Vue.use(Tabs);
-            Vue.use(Loading);
-            Vue.use(Dropdown);
-            Vue.use(Modal);
-            Vue.use(Dialog);
-            Vue.use(Snackbar);
-            Vue.use(Toast);
-            Vue.use(Pagination);
-            Vue.use(Numberinput);
-            Vue.use(VTooltip, {
-                popperTriggers: ['hover'],
-                themes: {
-                    'taianacan-tooltip': {
-                        '$extend': 'tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true,
-                    }
-                }
-            });
-            Vue.use(VueBlurHash);
-            Vue.use(I18NPlugin);
-            Vue.use(UserPrefsPlugin);
-            Vue.use(ThumbnailHelperPlugin);
-            Vue.use(OrderByHelperPlugin);
-            Vue.use(ConsolePlugin, {visual: false});
-            Vue.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
-
-            /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
-            if (typeof window.tainacan_extra_components != "undefined") {
-                for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
-                    Vue.component(extraVueComponentName, extraVueComponentObject);
-                }
-            }
-
-            // Filters logic
-            let possibleHideFilters = false;
-            if ( blockElement.attributes['hide-filters'] != undefined ) {
-                const hideFiltersValue = blockElement.attributes['hide-filters'].value;
-                possibleHideFilters = ( hideFiltersValue == true || hideFiltersValue == 'true' || hideFiltersValue == '1' || hideFiltersValue == 1 ) ? true : false;
-            }
-
-            if ( !possibleHideFilters ) {
-                import('../../../admin/components/search/filters-items-list.vue')
-                    .then(importedModule => Vue.component('filters-items-list', importedModule.default))
-                    .catch(error => console.log(error));
-            }
-
-            /* Main page component */
-            Vue.component('theme-items-page', ThemeItemsPage);
-            Vue.component('theme-search', ThemeSearch);
-
-            // View Modes Logic
-            const registeredViewModes =
-                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
-                tainacan_plugin.registered_view_modes :
-                [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
-
-            // At first, we consider that all registered view modes are included.
-            let possibleViewModes = registeredViewModes;
-            if ( blockElement.attributes['enabled-view-modes'] != undefined )
-                possibleViewModes = blockElement.attributes['enabled-view-modes'].value.split(',');
-
-            // View Mode settings
-            let possibleDefaultViewMode = 'masonry';
-            if ( blockElement.attributes['default-view-mode'] != undefined)
-                possibleDefaultViewMode = blockElement.attributes['default-view-mode'].value;
-        
-            if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
-                possibleViewModes.push(possibleDefaultViewMode);
-
-            // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
-            possibleViewModes.forEach(viewModeSlug => {
-                if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
-                    import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')
-                        .then(importedModule => Vue.component('view-mode-' + viewModeSlug, importedModule.default) )
-                        .catch(error => console.log(error)); 
-            });
-
-            Vue.use(eventBusSearch, { store: store, router: routerTheme});
-                
-            const VueItemsList = new Vue({
-                store,
-                router: routerTheme,
+            const VueItemsList = createApp({
+                el: '#tainacan-items-page',
                 data: {
                     termId: '',
                     taxonomy: '',
@@ -282,7 +178,110 @@ export default (element) => {
                 render: h => h(ThemeSearch)
             });
 
-            VueItemsList.$mount('#tainacan-items-page');
+            VueItemsList.use(store);
+            VueItemsList.use(routerTheme);
+
+            /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
+            if (typeof window.tainacan_extra_plugins != "undefined") {
+                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
+                    VueItemsList.component(extraVuePluginName, extraVuePluginObject);
+                }
+            }
+
+            // Configure and Register Plugins
+            VueItemsList.use(Field);
+            VueItemsList.use(Input);
+            VueItemsList.use(Autocomplete);
+            VueItemsList.use(Taginput);
+            VueItemsList.use(Collapse);
+            VueItemsList.use(Button); 
+            VueItemsList.use(Datepicker);
+            VueItemsList.use(Select);
+            VueItemsList.use(Checkbox);
+            VueItemsList.use(Radio);
+            VueItemsList.use(Tag);
+            VueItemsList.use(Tabs);
+            VueItemsList.use(Loading);
+            VueItemsList.use(Dropdown);
+            VueItemsList.use(Modal);
+            VueItemsList.use(Dialog);
+            VueItemsList.use(Snackbar);
+            VueItemsList.use(Toast);
+            VueItemsList.use(Pagination);
+            VueItemsList.use(Numberinput);
+            VueItemsList.use(VTooltip, {
+                popperTriggers: ['hover'],
+                themes: {
+                    'taianacan-tooltip': {
+                        '$extend': 'tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
+                }
+            });
+            VueItemsList.use(VueBlurHash);
+            VueItemsList.use(I18NPlugin);
+            VueItemsList.use(UserPrefsPlugin);
+            VueItemsList.use(ThumbnailHelperPlugin);
+            VueItemsList.use(OrderByHelperPlugin);
+            VueItemsList.use(ConsolePlugin, {visual: false});
+            VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
+
+            /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
+            if (typeof window.tainacan_extra_components != "undefined") {
+                for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
+                    VueItemsList.component(extraVueComponentName, extraVueComponentObject);
+                }
+            }
+
+            // Filters logic
+            let possibleHideFilters = false;
+            if ( blockElement.attributes['hide-filters'] != undefined ) {
+                const hideFiltersValue = blockElement.attributes['hide-filters'].value;
+                possibleHideFilters = ( hideFiltersValue == true || hideFiltersValue == 'true' || hideFiltersValue == '1' || hideFiltersValue == 1 ) ? true : false;
+            }
+
+            if ( !possibleHideFilters ) {
+                import('../../../admin/components/search/filters-items-list.vue')
+                    .then(importedModule => VueItemsList.component('filters-items-list', importedModule.default))
+                    .catch(error => console.log(error));
+            }
+
+            /* Main page component */
+            VueItemsList.component('theme-items-page', ThemeItemsPage);
+            VueItemsList.component('theme-search', ThemeSearch);
+
+            // View Modes Logic
+            const registeredViewModes =
+                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
+                tainacan_plugin.registered_view_modes :
+                [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
+
+            // At first, we consider that all registered view modes are included.
+            let possibleViewModes = registeredViewModes;
+            if ( blockElement.attributes['enabled-view-modes'] != undefined )
+                possibleViewModes = blockElement.attributes['enabled-view-modes'].value.split(',');
+
+            // View Mode settings
+            let possibleDefaultViewMode = 'masonry';
+            if ( blockElement.attributes['default-view-mode'] != undefined)
+                possibleDefaultViewMode = blockElement.attributes['default-view-mode'].value;
+        
+            if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
+                possibleViewModes.push(possibleDefaultViewMode);
+
+            // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
+            possibleViewModes.forEach(viewModeSlug => {
+                if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
+                    import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')
+                        .then(importedModule => VueItemsList.component('view-mode-' + viewModeSlug, importedModule.default) )
+                        .catch(error => console.log(error)); 
+            });
+
+            VueItemsList.use(eventBusSearch, { store: store, router: routerTheme });
+
+            VueItemsList.mount();
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

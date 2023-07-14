@@ -1,12 +1,9 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import CarouselCollectionsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
 import VueBlurHash from 'vue-blurhash';
 
 export default (element) => {
-
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanCollectionsCarouselBlocks() {
 
@@ -97,9 +94,11 @@ export default (element) => {
                     }
                 };
 
-                Vue.use(VueBlurHash);
-                Vue.use(ThumbnailHelperPlugin);
-                new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
+
+                const VueCollectionsList = createApp( Object.assign({ el: '#' + blockId }, vueOptions) );
+
+                VueCollectionsList.use(VueBlurHash);
+                VueCollectionsList.use(ThumbnailHelperPlugin);
             }
         }
     }

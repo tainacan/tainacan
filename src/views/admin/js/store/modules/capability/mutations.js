@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 // Roles
 export const addCapabilityToRole = (state, {capabilityKey, role}) => {

@@ -1,5 +1,5 @@
 // Main imports
-import Vue from 'vue';
+import { createApp } from 'vue';
 import {
     Field,
     Numberinput,
@@ -53,99 +53,14 @@ import { ThumbnailHelperPlugin } from '../../../admin/js/utilities';
 export default (element) => {
     function renderItemSubmissionForm() {
 
-        // Vue Dev Tools!
-        Vue.config.devtools = TAINACAN_ENV === 'development';
-
         // Gets the div with the content of the block
         let blockElement = element ? element : document.getElementById('tainacan-item-submission-form');
 
         // Mount only if the div exists
         if ( blockElement && blockElement.classList && !blockElement.classList.contains('has-mounted') ) {
 
-            /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
-            if (typeof window.tainacan_extra_plugins != "undefined") {
-                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins))
-                    Vue.use(extraVuePluginObject);
-            }
-
-            // Configure and Register Plugins
-            Vue.use(Field);
-            Vue.use(Numberinput);
-            Vue.use(Switch);
-            Vue.use(Tabs);
-            Vue.use(Tag);
-            Vue.use(Checkbox);
-            Vue.use(Radio);
-            Vue.use(Button);
-            Vue.use(Select);
-            Vue.use(Loading);
-            Vue.use(Dropdown);
-            Vue.use(Datepicker);
-            Vue.use(Upload);
-            Vue.use(Taginput);
-            Vue.use(Autocomplete);
-            Vue.use(Collapse);
-            Vue.use(Snackbar);
-            Vue.use(Modal);
-            Vue.use(Input);
-            Vue.use(Steps);
-            Vue.use(VTooltip, {
-                popperTriggers: ['hover'],
-                themes: {
-                    'taianacan-tooltip': {
-                        '$extend': 'tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true,
-                    },
-                    'tainacan-helper-tooltip': {
-                        '$extend': 'tainacan-tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true,
-                    }
-                }
-            });
-            Vue.use(I18NPlugin);
-            Vue.use(UserPrefsPlugin);
-            Vue.use(StatusHelperPlugin);
-            Vue.use(RouterHelperPlugin);
-            Vue.use(ConsolePlugin, {visual: false});
-            Vue.use(VueTheMask);
-            Vue.use(CommentsStatusHelperPlugin);
-            Vue.use(ThumbnailHelperPlugin);
-            Vue.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
-
-            /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
-            if (typeof window.tainacan_extra_components != "undefined") {
-                for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
-                    Vue.component(extraVueComponentName, extraVueComponentObject);
-                }
-            }
-
-            /* Metadata */
-            Vue.component('tainacan-text', Text);
-            Vue.component('tainacan-textarea', Textarea);
-            Vue.component('tainacan-selectbox', Selectbox);
-            Vue.component('tainacan-numeric', Numeric);
-            Vue.component('tainacan-date', Date);
-            Vue.component('tainacan-relationship', Relationship);
-            Vue.component('tainacan-taxonomy', Taxonomy);
-            Vue.component('tainacan-compound', Compound);
-            Vue.component('tainacan-user', User);
-            Vue.component('tainacan-geocoordinate', GeoCoordinate);
-
-            /* Main page component */
-            Vue.component('item-submission-form', ItemSubmissionForm);
-            Vue.component('item-submission', ItemSubmission);
-
-            /* Others */
-            Vue.component('tainacan-form-item', TainacanFormItem);
-            Vue.component('term-creation-panel', TermCreationPanel);
-            Vue.component('help-button', HelpButton);
-                
-            const VueItemSubmission = new Vue({
-                store,
+            const VueItemSubmission = createApp({
+                el: '#tainacan-item-submission-form',
                 data: {
                     collectionId: '',
                     hideFileModalButton: false,
@@ -240,7 +155,91 @@ export default (element) => {
                 render: h => h(ItemSubmission)
             });
 
-            VueItemSubmission.$mount('#tainacan-item-submission-form');
+            VueItemSubmission.use(store);
+
+            /* Registers Extra VueItemSubmission Plugins passed to the window.tainacan_extra_plugins  */
+            if (typeof window.tainacan_extra_plugins != "undefined") {
+                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins))
+                    VueItemSubmission.use(extraVuePluginObject);
+            }
+
+            // Configure and Register Plugins
+            VueItemSubmission.use(Field);
+            VueItemSubmission.use(Numberinput);
+            VueItemSubmission.use(Switch);
+            VueItemSubmission.use(Tabs);
+            VueItemSubmission.use(Tag);
+            VueItemSubmission.use(Checkbox);
+            VueItemSubmission.use(Radio);
+            VueItemSubmission.use(Button);
+            VueItemSubmission.use(Select);
+            VueItemSubmission.use(Loading);
+            VueItemSubmission.use(Dropdown);
+            VueItemSubmission.use(Datepicker);
+            VueItemSubmission.use(Upload);
+            VueItemSubmission.use(Taginput);
+            VueItemSubmission.use(Autocomplete);
+            VueItemSubmission.use(Collapse);
+            VueItemSubmission.use(Snackbar);
+            VueItemSubmission.use(Modal);
+            VueItemSubmission.use(Input);
+            VueItemSubmission.use(Steps);
+            VueItemSubmission.use(VTooltip, {
+                popperTriggers: ['hover'],
+                themes: {
+                    'taianacan-tooltip': {
+                        '$extend': 'tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-helper-tooltip': {
+                        '$extend': 'tainacan-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
+                }
+            });
+            VueItemSubmission.use(I18NPlugin);
+            VueItemSubmission.use(UserPrefsPlugin);
+            VueItemSubmission.use(StatusHelperPlugin);
+            VueItemSubmission.use(RouterHelperPlugin);
+            VueItemSubmission.use(ConsolePlugin, {visual: false});
+            VueItemSubmission.use(VueTheMask);
+            VueItemSubmission.use(CommentsStatusHelperPlugin);
+            VueItemSubmission.use(ThumbnailHelperPlugin);
+            VueItemSubmission.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
+
+            /* Registers Extra VueItemSubmission Components passed to the window.tainacan_extra_components  */
+            if (typeof window.tainacan_extra_components != "undefined") {
+                for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
+                    VueItemSubmission.component(extraVueComponentName, extraVueComponentObject);
+                }
+            }
+
+            /* Metadata */
+            VueItemSubmission.component('tainacan-text', Text);
+            VueItemSubmission.component('tainacan-textarea', Textarea);
+            VueItemSubmission.component('tainacan-selectbox', Selectbox);
+            VueItemSubmission.component('tainacan-numeric', Numeric);
+            VueItemSubmission.component('tainacan-date', Date);
+            VueItemSubmission.component('tainacan-relationship', Relationship);
+            VueItemSubmission.component('tainacan-taxonomy', Taxonomy);
+            VueItemSubmission.component('tainacan-compound', Compound);
+            VueItemSubmission.component('tainacan-user', User);
+            VueItemSubmission.component('tainacan-geocoordinate', GeoCoordinate);
+
+            /* Main page component */
+            VueItemSubmission.component('item-submission-form', ItemSubmissionForm);
+            VueItemSubmission.component('item-submission', ItemSubmission);
+
+            /* Others */
+            VueItemSubmission.component('tainacan-form-item', TainacanFormItem);
+            VueItemSubmission.component('term-creation-panel', TermCreationPanel);
+            VueItemSubmission.component('help-button', HelpButton);
+
+            VueItemSubmission.mount();
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

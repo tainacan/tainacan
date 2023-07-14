@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 export const setItem = ( state, item ) => {
     state.item = item;

@@ -1,13 +1,10 @@
+import { createApp } from 'vue';
 
-import Vue from 'vue';
 import CarouselItemsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
 import VueBlurHash from 'vue-blurhash';
 
 export default (element) => {
-
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanItemCarouselBlocks() {
 
@@ -115,9 +112,10 @@ export default (element) => {
                     }
                 };
 
-                Vue.use(ThumbnailHelperPlugin);
-                Vue.use(VueBlurHash);
-                new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
+                const VueCarouselItemsList = createApp( Object.assign({ el: '#' + blockId }, vueOptions) );
+
+                VueCarouselItemsList.use(ThumbnailHelperPlugin);
+                VueCarouselItemsList.use(VueBlurHash);
             }
         }
     }

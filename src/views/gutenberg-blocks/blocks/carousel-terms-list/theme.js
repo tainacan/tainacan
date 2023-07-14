@@ -1,12 +1,9 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import CarouselTermsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
 import VueBlurHash from 'vue-blurhash';
 
 export default (element) => {
-
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanTermsCarouselBlocks() {
         
@@ -100,9 +97,10 @@ export default (element) => {
                     }
                 };
                 
-                Vue.use(VueBlurHash);
-                Vue.use(ThumbnailHelperPlugin);
-                new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
+                const VueCarouselTermsList = createApp( Object.assign({ el: '#' + blockId }, vueOptions) );
+
+                VueCarouselTermsList.use(VueBlurHash);
+                VueCarouselTermsList.use(ThumbnailHelperPlugin);
             }
         }
     }

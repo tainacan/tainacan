@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 export const setPostQueryAttribute = ( state, { attr, value }) => {
     Object.assign(state.postquery, { [attr]: value });

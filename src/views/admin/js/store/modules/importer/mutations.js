@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 export const setAvailableImporters = (state, availableImporters) => {
     state.available_importers = availableImporters;

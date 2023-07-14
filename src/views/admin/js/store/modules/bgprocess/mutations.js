@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 export const setProcesses = ( state, processes ) => {
     state.bg_processes = processes;

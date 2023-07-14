@@ -1,12 +1,8 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import FacetsListTheme from './theme.vue';
 import FacetsListThemeUnit from './facet-unit.vue';
 
 export default (element) => {
-    
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
-    Vue.component('facets-list-theme-unit', FacetsListThemeUnit);
 
     function renderTainacanFacetsListBlock() {
 
@@ -114,7 +110,9 @@ export default (element) => {
                     }
                 };
 
-                new Vue( Object.assign({ el: '#' + blockId }, vueOptions) );
+                const VueFacetsList = createApp( Object.assign({ el: '#' + blockId }, vueOptions) );
+                
+                VueFacetsList.component('facets-list-theme-unit', FacetsListThemeUnit);
             }
         }
     }

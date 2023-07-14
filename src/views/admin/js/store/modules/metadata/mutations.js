@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 export const deleteMetadatum = ( state, metadatum ) => {
     if (metadatum.parent && metadatum.parent >= 0) {

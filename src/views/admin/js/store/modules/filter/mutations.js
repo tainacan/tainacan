@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 // FILTERS ------------------------------------------------------------------------
 export const deleteFilter = ( state, filter ) => {

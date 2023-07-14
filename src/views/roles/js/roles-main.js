@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import store from '../../admin/js/store/store';
 import router from './roles-router';
 import VTooltip from 'floating-vue';
@@ -10,9 +10,6 @@ import RolesPage from '../roles.vue';
 
 export default (element) => {
 
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
-
     function renderTainacanRolePage() {
 
         // Gets the div with the content of the page
@@ -21,8 +18,13 @@ export default (element) => {
         // Mount only if the div exists and it is not already mounted
         if ( pageElement && pageElement.classList && !pageElement.classList.contains('has-mounted') ) {
 
-            Vue.use(I18NPlugin);
-            Vue.use(VTooltip, {
+            const VueRoles = createApp({
+                el: '#tainacan-roles-app',
+                render: h => h(RolesPage)
+            });
+
+            VueRoles.use(I18NPlugin);
+            VueRoles.use(VTooltip, {
                 popperTriggers: ['hover'],
                 themes: {
                     'taianacan-tooltip': {
@@ -33,8 +35,8 @@ export default (element) => {
                     }
                 }
             });
-            Vue.use(Snackbar);
-            Vue.use(Modal);
+            VueRoles.use(Snackbar);
+            VueRoles.use(Modal);
             
             // Changing title of pages
             router.beforeEach((to, from, next) => {
@@ -42,13 +44,10 @@ export default (element) => {
                 if (next() != undefined)
                     next();
             });
+
+            VueRoles.use(router);
+            VueRoles.use(store);
             
-            new Vue({
-                el: '#tainacan-roles-app',
-                store,
-                router,
-                render: h => h(RolesPage)
-            });
         };
     };
 

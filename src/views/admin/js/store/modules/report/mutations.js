@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 export const setSummary = (state, summary) => {
   state.summary = summary;
