@@ -393,7 +393,7 @@
                             Object.prototype.hasOwnProperty.call(this.metaqueryOperatorsRegular, metaquery[meta]['compare']) ||
                             Object.prototype.hasOwnProperty.call(this.metaqueryOperatorsForInterval, metaquery[meta]['compare'])
                         )
-                            this.$set(this.advancedSearchQuery.metaquery, `${meta}`, metaquery[meta]);
+                            Object.assign( this.advancedSearchQuery.metaquery, { [`${meta}`]: metaquery[meta] });
                     }
 
                     let metakeys = Object.keys(this.advancedSearchQuery.metaquery);
@@ -412,7 +412,7 @@
 
                     for (let tax in taxquery) {
                         if ( Object.prototype.hasOwnProperty.call(this.taxqueryOperators, taxquery[tax]['operator']) )
-                            this.$set(this.advancedSearchQuery.taxquery, `${tax}`, taxquery[tax]);
+                            Object.assign( this.advancedSearchQuery.taxquery, { [`${tax}`]: taxquery[tax] });
                     }
 
                     let taxkeys = Object.keys(this.advancedSearchQuery.taxquery);
@@ -467,7 +467,7 @@
                             let expectedIndex = queryIndex;
                             while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
                                 if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'metaquery') {
-                                    this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
+                                    Object.assign(this.searchCriteria[expectedIndex], { 'index': queryIndex });
                                     isCriterionIndexUpdated = true;
                                 } else {
                                     expectedIndex++;
@@ -479,7 +479,7 @@
                             let expectedIndex = queryIndex;
                             while(!isCriterionIndexUpdated && expectedIndex < this.searchCriteria.length) {
                                 if (this.searchCriteria[expectedIndex] && this.searchCriteria[expectedIndex].type == 'taxquery') {
-                                    this.$set(this.searchCriteria[expectedIndex], 'index', queryIndex);
+                                    Object.assign(this.searchCriteria[expectedIndex], { 'index': queryIndex });
                                     isCriterionIndexUpdated = true;
                                 } else {
                                     expectedIndex++;
@@ -521,8 +521,8 @@
                     
                     // Convert fake placeholder criterion row to a tax row
                     let totalOfTaxCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'taxquery' ? counter += 1 : counter, 0);
-                    this.$set(this.searchCriteria[index], 'type', 'taxquery');
-                    this.$set(this.searchCriteria[index], 'index', totalOfTaxCriteria);
+                    Object.assign(this.searchCriteria[index], { 'type': 'taxquery' });
+                    Object.assign(this.searchCriteria[index], { 'index': totalOfTaxCriteria });
 
                     // Was selected a taxonomy criteria      
                     this.advancedSearchQuery.taxquery.push({
@@ -534,8 +534,8 @@
 
                     // Convert fake placeholder criterion row to a meta row
                     let totalOfMetaCriteria = this.searchCriteria.reduce((counter, { type }) => type === 'metaquery' ? counter += 1 : counter, 0);
-                    this.$set(this.searchCriteria[index], 'type', 'metaquery');
-                    this.$set(this.searchCriteria[index], 'index', totalOfMetaCriteria);
+                    Object.assign(this.searchCriteria[index], { 'type': 'metaquery' });
+                    Object.assign(this.searchCriteria[index], { 'index': totalOfMetaCriteria });
 
                     // Was selected a metadatum criteria
                     if (type != 'date' && type != 'int' && type != 'float') {
@@ -556,9 +556,9 @@
                     return;
 
                 if (searchCriterion.type == 'metaquery' && this.advancedSearchQuery.metaquery[searchCriterion.index])
-                    this.$set(this.advancedSearchQuery.metaquery[searchCriterion.index], 'value', value);
+                    Object.assign(this.advancedSearchQuery.metaquery[searchCriterion.index], { 'value': value });
                 else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index])
-                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion.index], 'terms', value);
+                    Object.assign(this.advancedSearchQuery.taxquery[searchCriterion.index], { 'terms': value });
 
                 this.hasUpdatedSearch = true;
             },
@@ -567,9 +567,9 @@
                     return;
 
                 if (searchCriterion.type == 'metaquery' && this.advancedSearchQuery.metaquery[searchCriterion.index])
-                    this.$set(this.advancedSearchQuery.metaquery[searchCriterion.index], 'compare', comparator);
+                    Object.assign(this.advancedSearchQuery.metaquery[searchCriterion.index], { 'compare': comparator });
                 else if (searchCriterion.type == 'taxquery' && this.advancedSearchQuery.taxquery[searchCriterion.index])
-                    this.$set(this.advancedSearchQuery.taxquery[searchCriterion.index], 'operator', comparator);
+                    Object.assign(this.advancedSearchQuery.taxquery[searchCriterion.index], { 'operator': comparator });
 
                 this.hasUpdatedSearch = true;
             },
@@ -583,7 +583,7 @@
                 } 
 
                 if ( Object.keys(this.advancedSearchQuery.taxquery).length > 1 )
-                    this.$set(this.advancedSearchQuery.taxquery, 'relation', 'AND');
+                    Object.assign(this.advancedSearchQuery.taxquery, { 'relation': 'AND' });
                 else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.taxquery, 'relation') )
                     delete this.advancedSearchQuery.taxquery.relation;
 
@@ -595,13 +595,13 @@
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
                             if (value.includes('/'))
-                                this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.convertDateToMatchInDB(value));
+                                Object.assign(this.advancedSearchQuery.metaquery[metaquery], { 'value': this.convertDateToMatchInDB(value) });
                         }
                     }
                 }
 
                 if ( Object.keys(this.advancedSearchQuery.metaquery).length > 1 )
-                    this.$set(this.advancedSearchQuery.metaquery, 'relation', 'AND');
+                    Object.assign(this.advancedSearchQuery.metaquery, { 'relation': 'AND' });
                 else if ( Object.prototype.hasOwnProperty.call(this.advancedSearchQuery.metaquery, 'relation') )
                     delete this.advancedSearchQuery.metaquery.relation;
                 
@@ -615,7 +615,7 @@
                             let value = this.advancedSearchQuery.metaquery[metaquery].value;
                             
                             if (value.includes('-'))
-                                this.$set(this.advancedSearchQuery.metaquery[metaquery], 'value', this.parseValidDateToNavigatorLanguage(value));
+                                Object.assign(this.advancedSearchQuery.metaquery[metaquery], { 'value': this.parseValidDateToNavigatorLanguage(value) });
                         }
                     }
                 }

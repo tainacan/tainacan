@@ -386,11 +386,10 @@
                 });
             },
             onClickTaxonomy($event, taxonomyId, index) {
-                if ($event.ctrlKey) {
-                    this.$set(this.selected, index, !this.selected[index]); 
-                } else {
+                if ($event.ctrlKey)
+                    Object.assign( this.selected, { [index]: !this.selected[index] }); 
+                else
                     this.$router.push(this.$routerHelper.getTaxonomyEditPath(taxonomyId));
-                }
             },
             renderListOfCollections(collections, metadata) {
                 let htmlList = '';

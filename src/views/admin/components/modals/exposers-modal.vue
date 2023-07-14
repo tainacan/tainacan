@@ -368,8 +368,8 @@ export default {
         ]),
         collapse(index) {
             let exposerMapper = this.selectedExposerMappers[index];
-            this.$set(exposerMapper, 'collapsed', !exposerMapper.collapsed);
-            this.$set(this.selectedExposerMappers, index, exposerMapper);
+            Object.assign( exposerMapper, { 'collapsed': !exposerMapper.collapsed });
+            Object.assign( this.selectedExposerMappers, { [index]: exposerMapper });
         },
         selectExposer(exposerType) {
             this.selectedExposer = exposerType;

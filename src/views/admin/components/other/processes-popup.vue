@@ -171,7 +171,7 @@ export default {
                 for (let updatedProcess of this.updatedProcesses) {
                     let updatedProcessIndex = this.bgProcesses.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
                     if (updatedProcessIndex >= 0)
-                        this.$set(this.bgProcesses, updatedProcessIndex, updatedProcess);
+                        Object.assign(this.bgProcesses, { [updatedProcessIndex]: updatedProcess });
                 }
             }
         },
@@ -212,7 +212,7 @@ export default {
             'updateProcess'
         ]),
         toggleDetails(index) {
-            this.$set(this.processesCollapses, index, !this.processesCollapses[index]);
+            Object.assign( this.processesCollapses, { index: !this.processesCollapses[index] });
         },
         getUnfinishedProcesses() {
             let nUnfinishedProcesses = 0;

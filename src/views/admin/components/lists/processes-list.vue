@@ -51,7 +51,7 @@
             :key="index"
             v-for="(bgProcess, index) of processes">
           <div
-              @click="$set(collapses, index, !collapses[index])"
+              @click="Object.assign( collapses, { [index]: !collapses[index] })"
               class="process-handler">
             <!-- Collapse -->
             <span class="icon">

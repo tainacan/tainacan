@@ -16,7 +16,7 @@ export const setSingleAttachment = ( state, attachment ) => {
     let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){
         //state.metadatum[index] = metadatum;
-        Vue.set( state.attachments, index, attachment );
+        Object.assign(state.attachments, { [index]: attachment });
     } else {
         state.attachments.push( attachment );
     }
@@ -73,7 +73,7 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
     if (itemMetadatum.metadatum.parent <= 0) {
         let index = state.itemMetadata.findIndex(anItemMetadatum => anItemMetadatum.metadatum.id == itemMetadatum.metadatum.id);
         if (index >= 0)
-            Vue.set( state.itemMetadata, index, itemMetadatum );
+            Object.assign(state.itemMetadata, { [index]: itemMetadatum });
         else
             state.itemMetadata.push( itemMetadatum );
     } else {
@@ -119,7 +119,7 @@ export const setSingleMetadatum = (state, itemMetadatum) => {
             }
             
             currentParent.value = currentParentValues;
-            Vue.set(state.itemMetadata, parentIndex, currentParent);
+            Object.assign(state.itemMetadata, { [parentIndex]: currentParent });
         }
     }
 }
@@ -140,7 +140,7 @@ export const deleteChildItemMetadata = (state, { parentMetadatumId, parentMetaId
             currentParentValues.splice(currentChildMetadataGroupIndex, 1);
             
         currentParent.value = JSON.parse(JSON.stringify(currentParentValues));
-        Vue.set(state.itemMetadata, parentIndex, currentParent);
+        Object.assign(state.itemMetadata, { [parentIndex]: currentParent });
     }
 }
 
@@ -166,7 +166,7 @@ export const setItemSubmissionMetadata = (state, value) => {
 }
 
 export const updateItemSubmission = (state, { key, value }) => {
-    Vue.set(state.itemSubmission, key, value);
+    Object.assign(state.itemSubmission, { [key]: value });
 }
 
 export const updateItemSubmissionMetadatum = (state, { metadatum_id, values, child_group_index, parent_id }) => {
@@ -199,7 +199,7 @@ export const updateItemSubmissionMetadatum = (state, { metadatum_id, values, chi
         else
             metadata.push({ metadatum_id: metadatum_id, value: values });
     }
-    Vue.set(state, 'itemSubmissionMetadata', metadata);
+    Object.assign(state, { 'itemSubmissionMetadata': metadata });
 }
 
 export const deleteGroupFromItemSubmissionMetadatum = (state, { metadatum_id, child_group_index }) => {
@@ -212,7 +212,7 @@ export const deleteGroupFromItemSubmissionMetadatum = (state, { metadatum_id, ch
             let existingMetadatumValue = existingMetadatum.value;
             existingMetadatumValue.splice(child_group_index, 1);
             existingMetadatum.value = existingMetadatumValue;
-            Vue.set(state.itemSubmissionMetadata, existingMetadatumIndex, existingMetadatum);
+            Object.assign(state.itemSubmissionMetadata, { [existingMetadatumIndex]: existingMetadatum });
         }
     }
 }

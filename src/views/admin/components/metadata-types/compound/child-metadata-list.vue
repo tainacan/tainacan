@@ -91,7 +91,7 @@
                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                 placement: 'auto-start'
                             }"
-                            @click="$set(collapses, metadatum.id, !isCollapseOpen(metadatum.id))"
+                            @click="Object.assign( collapses, { [metadatum.id]: !isCollapseOpen(metadatum.id) })"
                             class="gray-icon icon"
                             :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }">
                         <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
@@ -291,7 +291,7 @@
                 immediate: true
             },
             collapseAll(isCollapsed) {
-                this.childrenMetadata.forEach((metadatum) => this.$set(this.collapses, metadatum.id, isCollapsed));
+                this.childrenMetadata.forEach((metadatum) => Object.assign( this.collapses, { [metadatum.id]: isCollapsed }));
             }
         },
         mounted() {

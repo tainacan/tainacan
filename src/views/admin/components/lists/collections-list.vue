@@ -519,17 +519,16 @@ export default {
             this.clearContextMenu();
         },
         selectCollection() {
-            if (this.contextMenuIndex != null) {
-                this.$set(this.selectedCollections, this.contextMenuIndex, !this.selectedCollections[this.contextMenuIndex]);
-            }
+            if (this.contextMenuIndex != null)
+                Object.assign( this.selectedCollections, { [this.contextMenuIndex]: !this.selectedCollections[this.contextMenuIndex] });
+            
             this.clearContextMenu();
         },
         onClickCollection($event, collectionId, index) {
-            if ($event.ctrlKey) {
-                this.$set(this.selectedCollections, index, !this.selectedCollections[index]); 
-            } else {
+            if ($event.ctrlKey)
+                Object.assign( this.selectedCollections, { [index]: !this.selectedCollections[index] }); 
+            else
                 this.$router.push(this.$routerHelper.getCollectionPath(collectionId));
-            }
         },
         goToCollectionEditPage(collectionId) {
             this.$router.push(this.$routerHelper.getCollectionEditPath(collectionId));

@@ -398,10 +398,14 @@ export default {
                         }, facet));
                     }
 
-                    this.$set(this.childFacetsObject, parentTermId, {
-                        facets: childFacets,
-                        visible: true
-                    });
+                    Object.assign(
+                        this.childFacetsObject,
+                        {
+                            [parentTermId]: {
+                                facets: childFacets,
+                                visible: true
+                            }
+                        });
                     this.isloadingChildTerms = null;
                     
                 }).catch(() => { 
@@ -410,9 +414,9 @@ export default {
                 });
         },
         displayChildTerms(parentTermId) {
-            if (this.childFacetsObject[parentTermId]) {
-                this.$set(this.childFacetsObject[parentTermId], 'visible', !this.childFacetsObject[parentTermId].visible);
-            } else
+            if (this.childFacetsObject[parentTermId])
+                Object.assign( this.childFacetsObject[parentTermId], { 'visible': !this.childFacetsObject[parentTermId].visible });
+            else
                 this.fetchChildTerms(parentTermId)
         },
         getSkeletonHeight() {

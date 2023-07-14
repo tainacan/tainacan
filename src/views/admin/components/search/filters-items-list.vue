@@ -356,7 +356,7 @@
             taxonomyFilters() {
                 if ( this.taxonomyFilters != undefined && Object.keys(this.taxonomyFilters).length ) {
                     
-                    this.$set(this.taxonomyFiltersCollectionNames, 'repository-filters', this.$i18n.get('repository'));
+                    Object.assign( this.taxonomyFiltersCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
                                                     
                     // Cancels previous collection name Request
                     if (this.collectionNameSearchCancel != undefined)
@@ -368,7 +368,7 @@
                             resp.request
                                 .then((collections) => {
                                     for (let collection of collections)
-                                        this.$set(this.taxonomyFiltersCollectionNames, '' + collection.id, collection.name);
+                                        Object.assign( this.taxonomyFiltersCollectionNames, { [collection.id]: collection.name });
                                 });
                             // Search Request Token for cancelling
                             this.collectionNameSearchCancel = resp.source;     
@@ -378,10 +378,10 @@
             repositoryCollectionFilters() {
                 if ( this.repositoryCollectionFilters != undefined && Object.keys(this.repositoryCollectionFilters).length ) {
                     
-                    this.$set(this.repositoryCollectionNames, 'repository-filters', this.$i18n.get('repository'));
+                    Object.assign( this.repositoryCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
                     
                     for ( let collection of this.getCollections() )
-                        this.$set(this.repositoryCollectionNames, '' + collection.id, collection.name);
+                        Object.assign( this.repositoryCollectionNames, { [collection.id]: collection.name });
                 }                
             }
         },

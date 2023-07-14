@@ -257,7 +257,7 @@ export default {
 
                         let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
                         if ( index >= 0)
-                            this.$set( this.uploadedItems, index, item );
+                            Object.assign(this.uploadedItems, { [index]: item });
                         else 
                             this.uploadedItems.push( item );
                         
@@ -276,7 +276,7 @@ export default {
 
                                         let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
                                         if ( index >= 0)
-                                            this.$set( this.uploadedItems, index, item);
+                                            Object.assign(this.uploadedItems, { [index]: item });
                                         else 
                                             this.uploadedItems.unshift( item );
                                     })

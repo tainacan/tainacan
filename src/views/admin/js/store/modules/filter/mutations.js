@@ -17,7 +17,7 @@ export const deleteTemporaryFilter = ( state, index) => {
 }
 
 export const setSingleFilter = (state, { filter, index}) => {
-    Vue.set( state.filters, index, filter );
+    Object.assign(state.filters, { [index]: filter });
 }
 
 export const setFilters = (state, filters) => {

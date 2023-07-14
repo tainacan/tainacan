@@ -326,7 +326,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip'],
                                                 placement: 'auto-start'
                                             }"
-                                            @click="$set(collapses, metadatum.id, !isCollapseOpen(metadatum.id))"
+                                            @click="Object.assign(collapses, { [metadatum.id]: !isCollapseOpen(metadatum.id) })"
                                             class="gray-icon icon"
                                             :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }">
                                         <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
@@ -571,7 +571,7 @@ export default {
         collapseAll(isCollapsed) {
             this.activeMetadataSectionsList.forEach((metadataSection) => {
                 if ( metadataSection.metadata_object_list && Array.isArray(metadataSection.metadata_object_list) )
-                    metadataSection.metadata_object_list.forEach((metadatum) => this.$set(this.collapses, metadatum.id, isCollapsed));
+                    metadataSection.metadata_object_list.forEach((metadatum) => Object.assign(this.collapses, { [metadatum.id]: isCollapsed }) );
             });
         }
     },

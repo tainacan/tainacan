@@ -60,7 +60,7 @@ export const eventBusItemMetadata = new Vue({
                             messages.push(error[index]);
 
                         if ( index >= 0) {
-                            Vue.set( this.errors, index, { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages });
+                            Object.assign( this.errors, { [index]: { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } });
                             this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
                         } else {
                             this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );

@@ -235,7 +235,7 @@
 
                             <div
                                     v-if="bulkEditionProcedures[criterion].isDone"
-                                    @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
+                                    @mouseover="Object.assign( bulkEditionProcedures[criterion], { 'tooltipShow': !bulkEditionProcedures[criterion].tooltipShow })"
                                     class="is-pulled-right">
                                 <span 
                                         v-tooltip="{
@@ -426,17 +426,17 @@
             ]),
             finalizeProcedure(criterion){
 
-                this.$set(this.bulkEditionProcedures[criterion], 'isDone', true);
+                Object.assign(this.bulkEditionProcedures[criterion], { 'isDone': true });
 
                 this.dones[this.editionCriteria.indexOf(criterion)] = true;
  
-                this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', false);
+                Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
             },
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
 
                 if (procedure.action === this.editionActions.redefine) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     if (procedure.metadatum.id === 'status'){
                         this.setStatusInBulk({
@@ -467,7 +467,7 @@
                         });
                     }
                 } else if (procedure.action === this.editionActions.add) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.addValueInBulk({
                         collectionId: this.collectionId,
@@ -480,7 +480,7 @@
                         this.finalizeProcedure(criterion);
                     });
                 } else if (procedure.action === this.editionActions.replace) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.replaceValueInBulk({
                         collectionId: this.collectionId,
@@ -494,7 +494,7 @@
                         this.finalizeProcedure(criterion);
                     });
                 } else if (procedure.action === this.editionActions.remove) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.removeValueInBulk({
                         collectionId: this.collectionId,
@@ -507,7 +507,7 @@
                         this.finalizeProcedure(criterion);
                     });
                 } else if (procedure.action === this.editionActions.clear) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.clearValuesInBulk({
                         collectionId: this.collectionId,
@@ -519,7 +519,7 @@
                         this.finalizeProcedure(criterion);
                     });
                 } else if (procedure.action === this.editionActions.copy) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.copyValuesInBulk({
                         collectionId: this.collectionId,
@@ -629,7 +629,7 @@
                 if (Array.isArray(value))
                     value = value[0];
 
-                this.$set(this.bulkEditionProcedures[criterion], `${key}`, value);
+                Object.assign( this.bulkEditionProcedures[criterion], { [`${key}`]: value });
             }
         }
     }

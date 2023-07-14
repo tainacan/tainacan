@@ -1,7 +1,7 @@
 import Vue from 'vue';
 
 export const setPostQueryAttribute = ( state, { attr, value }) => {
-    Vue.set( state.postquery, attr , value );
+    Object.assign(state.postquery, { [attr]: value });
 };
 
 export const removePostQueryAttribute = ( state, attr) => {
@@ -22,13 +22,18 @@ export const addMetaQuery = ( state, filter ) => {
     state.postquery.metaquery = ( ! state.postquery.metaquery  || state.postquery.metaquery.length == undefined ) ? [] : state.postquery.metaquery;
 
     let index = state.postquery.metaquery.findIndex( item => item.key === filter.metadatum_id);
-    if ( index >= 0 ){
-        Vue.set( state.postquery.metaquery, index, {
-            key: filter.metadatum_id,
-            value: filter.value,
-            compare: filter.compare,
-            type: filter.type
-        } );
+    if ( index >= 0 ) {
+        Object.assign(
+            state.postquery.metaquery, 
+            {
+                [index]: {
+                    key: filter.metadatum_id,
+                    value: filter.value,
+                    compare: filter.compare,
+                    type: filter.type
+                } 
+            }
+        );
     } else {
         state.postquery.metaquery.push({
             key: filter.metadatum_id,
@@ -44,12 +49,17 @@ export const addTaxQuery = ( state, filter ) => {
 
     let index = state.postquery.taxquery.findIndex( item => item.taxonomy === filter.taxonomy);
 
-    if ( index >= 0 ){
-        Vue.set( state.postquery.taxquery, index, {
-            taxonomy: filter.taxonomy,
-            terms: filter.terms,
-            compare: filter.compare
-        } );
+    if ( index >= 0 ) {
+        Object.assign( 
+            state.postquery.taxquery, 
+            {
+                [index]: {
+                    taxonomy: filter.taxonomy,
+                    terms: filter.terms,
+                    compare: filter.compare
+                } 
+            }
+        );
     } else {
         state.postquery.taxquery.push({
             taxonomy: filter.taxonomy,
@@ -149,9 +159,9 @@ export const setSearchQuery = ( state, searchQuery ) => {
 
 export const setSentenceMode = ( state, sentenceMode ) => {
     if (sentenceMode != true)
-        Vue.set(state.postquery, 'sentence', sentenceMode);
+        Object.assign(state.postquery, { 'sentence': sentenceMode });
     else {
-        Vue.set(state.postquery, 'sentence', sentenceMode); // Needed to trigger getter
+        Object.assign(state.postquery, { 'sentence': sentenceMode }); // Needed to trigger getter
         delete state.postquery.sentence;
     }
 };
@@ -173,7 +183,7 @@ export const addFilterTag = ( state, filterTag ) => {
     let index = state.filter_tags.findIndex( tag => tag.filterId == filterTag.filterId);
 
     if (index >= 0)
-        Vue.set(state.filter_tags, index, filterTag);
+        Object.assign(state.filter_tags, { [index]: filterTag });
     else
         state.filter_tags.push(filterTag);
 };

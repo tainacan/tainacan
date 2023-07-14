@@ -323,7 +323,7 @@
 
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)) {
-                                    this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
+                                   Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n' });
                                 }
                             }
                         });
@@ -353,7 +353,7 @@
                         .catch((errors) => {
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)) {
-                                    this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
+                                    Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n' });
                                 }
                             }
                             this.isLoading = false;

@@ -912,7 +912,7 @@ export default {
                     if (hasErrors) {
                         if (Array.isArray(this.formErrors)) {
                             for (let i = 0; i < this.metadataSectionCollapses.length; i++)
-                                this.$set(this.metadataSectionCollapses, i, true);
+                                Object.assign(this.metadataSectionCollapses, { [i]: true });
                         }
                         this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
                         this.loadMetadataElements();
@@ -1146,13 +1146,13 @@ export default {
                 this.metadataCollapses[i] = this.collapseAll;
 
             for (let i = 0; i < this.metadataSectionCollapses.length; i++)
-                this.$set(this.metadataSectionCollapses, i, this.collapseAll);
+                Object.assign(this.metadataSectionCollapses, { [i]: this.collapseAll });
         },
         onChangeCollapse(event, index) {
             this.metadataCollapses.splice(index, 1, event);
         },
         toggleMetadataSectionCollapse(sectionIndex) {
-            this.$set(this.metadataSectionCollapses, sectionIndex, (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]));
+            Object.assign( this.metadataSectionCollapses, { [sectionIndex]: (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]) });
         },
         getErrorMessage(errors) {
             let metadatumErrorMessage = '';

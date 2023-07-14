@@ -432,8 +432,8 @@
             onUpdateCapability(value, capabilityKey) {
                 this.showNotice = false;
                 const capabilities = this.form.capabilities && Object.keys(this.form.capabilities).length ? this.form.capabilities : {};
-                this.$set(capabilities, capabilityKey, value);
-                this.$set(this.form, 'capabilities', capabilities);
+                Object.assign(capabilities, { [capabilityKey]: value });
+                Object.assign(this.form, { 'capabilities': capabilities });
             },
             onSubmit(event) {
                 event.preventDefault();

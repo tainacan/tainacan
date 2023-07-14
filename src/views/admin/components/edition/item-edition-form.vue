@@ -1636,7 +1636,7 @@ export default {
                 this.metadataCollapses[i] = this.collapseAll;
             
             for (let i = 0; i < this.metadataSectionCollapses.length; i++)
-                this.$set(this.metadataSectionCollapses, i, this.collapseAll);
+                Object.assign(this.metadataSectionCollapses, { [i]: this.collapseAll });
 
         },
         onChangeCollapse(event, index) {
@@ -1647,7 +1647,7 @@ export default {
         },
         toggleMetadataSectionCollapse(sectionIndex) {
             if (!this.isMetadataNavigation) 
-                this.$set(this.metadataSectionCollapses, sectionIndex, (this.errorMessage ? true : !this.metadataSectionCollapses[sectionIndex]));
+                Object.assign( this.metadataSectionCollapses, { [sectionIndex]: (this.errorMessage ? true : !this.metadataSectionCollapses[sectionIndex]) });
         },
         onDeletePermanently() {
             this.$buefy.modal.open({
