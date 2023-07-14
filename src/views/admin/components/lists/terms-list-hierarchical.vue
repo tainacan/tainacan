@@ -262,10 +262,13 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { mapActions } from 'vuex';
+
 import TermDeletionDialog from '../other/term-deletion-dialog.vue';
 import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
 import TermMultipleInsertionDialog from '../other/term-multiple-insertion-dialog.vue';
+
 import { tainacan as axios } from '../../js/axios';
 
 export default {
@@ -380,7 +383,7 @@ export default {
             else
                 this.termColumns.push({ name: name, id: id, children: children, total_children: res.headers['x-wp-total'] });
 
-            this.$nextTick(() => {
+            nextTick(() => {
                 setTimeout(() => {
                     if (
                         this.$refs &&

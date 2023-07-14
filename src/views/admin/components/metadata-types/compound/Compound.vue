@@ -114,6 +114,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import { eventBusItemMetadata } from '../../../js/event-bus-item-metadata';
 
     export default {
@@ -449,7 +450,7 @@
                 }
             },
             laterUpdateIsRemovingGroup() {
-                this.$nextTick(() => {
+                nextTick(() => {
                     this.isRemovingGroup = false;
                 });
             }

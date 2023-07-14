@@ -707,6 +707,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import ItemsList from '../../components/lists/items-list.vue';
     import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
@@ -1330,7 +1331,7 @@
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {
-                this.$nextTick(() => {
+                nextTick(() => {
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
                         const previousMobileScreen = this.isMobileScreen;
                         const previousWindowWidth = this.windowWidth;

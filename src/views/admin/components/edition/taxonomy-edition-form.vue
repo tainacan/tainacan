@@ -266,6 +266,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import { wpAjax, formHooks } from "../../js/mixins";
     import { mapActions, mapGetters } from 'vuex';
     import TermsList from '../lists/terms-list.vue';
@@ -362,7 +363,7 @@
                         this.taxonomy = res.taxonomy;
 
                         // Fills hook forms with it's real values 
-                        this.$nextTick()
+                        nextTick()
                             .then(() => {
                                 this.updateExtraFormData(this.taxonomy);
                             });

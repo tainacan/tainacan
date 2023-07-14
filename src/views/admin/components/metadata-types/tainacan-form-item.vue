@@ -155,6 +155,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
 
     export default {
@@ -234,7 +235,7 @@
 
                 if (this.isHighlightedMetadatum) {
                     
-                    this.$nextTick(() => {
+                    nextTick(() => {
                         let highlightedMetadatum = this.$refs['hightlighted-metadatum'];
                         if (highlightedMetadatum && highlightedMetadatum.$el && highlightedMetadatum.$el.scrollIntoView)
                             setTimeout(() => highlightedMetadatum.$el.scrollIntoView(), 500);

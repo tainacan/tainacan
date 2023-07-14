@@ -387,6 +387,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import {mapActions} from 'vuex';
     import { formHooks } from "../../js/mixins";
 
@@ -433,7 +434,7 @@
         },
         mounted() {
             // Fills hook forms with it's real values 
-            this.$nextTick()
+            nextTick()
                 .then(() => {
                     this.updateExtraFormData(this.form);
                 });

@@ -85,12 +85,15 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
+
     import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl } from 'vue2-leaflet';
     import 'leaflet/dist/leaflet.css';
     import { Icon, latLng } from 'leaflet';
     import iconUrl from 'leaflet/dist/images/marker-icon.png';
     import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
     import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+    
     import { eventBusItemMetadata } from '../../../js/event-bus-item-metadata';
 
     delete Icon.Default.prototype._getIconUrl;
@@ -177,7 +180,7 @@
         watch: {
             selectedLatLng() {
                 const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                this.$nextTick(() => {
+                nextTick(() => {
                     if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject && this.selectedLatLng.length != undefined) {
                         if (this.selectedLatLng.length == 1)
                             this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
@@ -198,7 +201,7 @@
             eventBusItemMetadata.$on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         mounted() {
-            this.$nextTick(() => {
+            nextTick(() => {
                 const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
                 this.handleWindowResize(mapComponentRef);
             });

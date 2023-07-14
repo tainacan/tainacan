@@ -90,6 +90,7 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { viewModesMixin } from '../js/view-modes-mixin.js';
 import Masonry from 'masonry-layout';
 
@@ -108,7 +109,7 @@ export default {
         isLoading: { 
             handler() {
                 if (this.items && this.items.length > 0 && !this.isLoading) {
-                    this.$nextTick(() => {
+                    nextTick(() => {
                         if (this.masonry !== false)
                             this.masonry.destroy();
                         

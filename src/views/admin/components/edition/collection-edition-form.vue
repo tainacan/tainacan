@@ -689,6 +689,7 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
@@ -819,7 +820,7 @@ export default {
 
                 // Initializes Media Frames now that collectonId exists
                 this.initializeMediaFrames();
-                this.$nextTick()
+                nextTick()
                     .then(() => {
                         // Fills hook forms with it's real values 
                         this.updateExtraFormData(this.collection);

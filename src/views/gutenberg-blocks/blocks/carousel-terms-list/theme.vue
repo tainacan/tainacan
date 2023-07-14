@@ -149,6 +149,7 @@
 </template>
  
 <script>
+import { nextTick } from 'vue';
 import axios from 'axios';
 import qs from 'qs';
 import 'swiper/css';
@@ -217,7 +218,7 @@ export default {
             this.isLoading = true;
             this.errorMessage = 'No terms found.';
 
-            this.$nextTick(() => {
+            nextTick(() => {
                 this.mountCarousel();
             });
             
@@ -240,7 +241,7 @@ export default {
                     this.isLoading = false;
                     this.totalTerms = response.headers['x-wp-total'];
 
-                    this.$nextTick(() => {
+                    nextTick(() => {
                         this.mountCarousel();
                     });
 

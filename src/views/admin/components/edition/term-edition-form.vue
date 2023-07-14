@@ -222,6 +222,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import { formHooks } from "../../js/mixins";
     import { mapActions } from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
@@ -260,7 +261,7 @@
         mounted() {
 
             // Fills hook forms with it's real values 
-            this.$nextTick()
+            nextTick()
                 .then(() => {
                     this.updateExtraFormData(this.form);
                     document.getElementById('termEditForm').scrollIntoView({ behavior: 'smooth' });

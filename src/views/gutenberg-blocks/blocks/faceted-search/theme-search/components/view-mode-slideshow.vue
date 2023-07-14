@@ -353,6 +353,7 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 import axios from '../../../../../admin/js/axios';
 import 'swiper/css';
@@ -635,7 +636,7 @@ export default {
                 // Checks if item is preloaded
                 if (this.preloadedItem.id != undefined && this.preloadedItem.id == this.slideItems[this.swiper.activeIndex].id) {
                     this.replaceItem(this.preloadedItem);
-                    this.$nextTick(() => this.isLoadingItem = false);
+                    nextTick(() => this.isLoadingItem = false);
                 } else {
                     // Cancels previous Request
                     if (this.itemRequestCancel != undefined)

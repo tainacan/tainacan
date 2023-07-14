@@ -292,6 +292,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import { formHooks } from '../../admin/js/mixins';
 
@@ -360,7 +361,7 @@
                         this.isLoadingRole = false;
 
                         // Fills hook forms with it's real values 
-                        this.$nextTick(() => this.updateExtraFormData(this.form) );
+                        nextTick(() => this.updateExtraFormData(this.form) );
                         
                     }).catch(() => {
                         this.isLoadingRole = false;
@@ -376,7 +377,7 @@
                         this.isLoadingRole = false;
 
                         // Fills hook forms with it's real values 
-                        this.$nextTick(() => this.updateExtraFormData(this.form) );
+                        nextTick(() => this.updateExtraFormData(this.form) );
 
                     }).catch(() => {
                         this.isLoadingRole = false;

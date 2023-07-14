@@ -696,6 +696,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import FiltersTagsList from '../../../../admin/components/search/filters-tags-list.vue';
     import Pagination from '../../../../admin/components/search/pagination.vue'
     import AdvancedSearch from '../../../../admin/components/search/advanced-search.vue';
@@ -1430,7 +1431,7 @@
                     });
             },
             hideFiltersOnMobile: _.debounce( function() {
-                this.$nextTick(() => {
+                nextTick(() => {
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
                         const previousMobileScreen = this.isMobileScreen;
                         const previousWindowWidth = this.windowWidth;

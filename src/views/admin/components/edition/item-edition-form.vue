@@ -711,6 +711,7 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
 import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
@@ -952,7 +953,7 @@ export default {
                     if (typeof this.swiper.update == 'function')
                         this.swiper.update();
                     else {
-                        this.$nextTick(() => {
+                        nextTick(() => {
                             this.swiper = new Swiper('#tainacanTabsSwiper', {
                                 watchOverflow: true,
                                 mousewheel: true,
@@ -1702,7 +1703,7 @@ export default {
                     }
 
                     // Fills hook forms with it's real values
-                    this.$nextTick()
+                    nextTick()
                         .then(() => {
                             this.updateExtraFormData(this.item);
                         });
@@ -1779,7 +1780,7 @@ export default {
                 this.openMetadataNameFilter = false;
         },
         handleWindowResize: _.debounce( function() {
-            this.$nextTick(() => {
+            nextTick(() => {
                 eventBusItemMetadata.$emit('itemEditionFormResize');
                 if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
                     this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;

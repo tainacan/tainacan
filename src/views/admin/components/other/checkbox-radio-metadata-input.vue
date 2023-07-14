@@ -316,6 +316,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import qs from 'qs';
     import { tainacan as axios, isCancel } from '../../js/axios';
     import { dynamicFilterTypeMixin } from '../../js/filter-types-mixin';
@@ -690,7 +691,7 @@
                 else
                     this.finderColumns.push({ label: label, children: children, lastTerm: res.data.last_term.es_term });
 
-                this.$nextTick(() => {
+                nextTick(() => {
                     setTimeout(() => {
                         if (
                             this.$refs &&

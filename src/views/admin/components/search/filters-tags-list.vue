@@ -77,7 +77,9 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import { mapGetters } from 'vuex';
+    
     import 'swiper/css';
     import 'swiper/css/mousewheel';
     import 'swiper/css/navigation';
@@ -138,7 +140,7 @@
             }
         },
         mounted() {
-           this.$nextTick(() => {
+           nextTick(() => {
                 this.swiper = new Swiper('#tainacanFilterTagsSwiper' + (this.isInsideModal ? 'InsideModal' : ''), {
                     mousewheel: true,
                     observer: true,

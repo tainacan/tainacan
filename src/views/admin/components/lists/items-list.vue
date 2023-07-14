@@ -1845,12 +1845,16 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+
 import CustomDialog from '../other/custom-dialog.vue';
 import ItemCopyDialog from '../other/item-copy-dialog.vue';
 import BulkEditionModal from '../modals/bulk-edition-modal.vue';
+
 import Masonry from 'masonry-layout';
 import { dateInter } from "../../js/mixins";
+
 import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from 'vue2-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { latLng } from 'leaflet';
@@ -2082,7 +2086,7 @@ export default {
         isLoading: {
              handler() {
                 if (this.items && this.items.length > 0) {
-                    this.$nextTick(() => {
+                    nextTick(() => {
                         if (this.masonry !== false)
                             this.masonry.destroy();
                         

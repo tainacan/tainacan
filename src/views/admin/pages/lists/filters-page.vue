@@ -447,7 +447,9 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+
 import FilterEditionForm from '../../components/edition/filter-edition-form.vue';
 import CustomDialog from '../../components/other/custom-dialog.vue';
 
@@ -544,7 +546,7 @@ export default {
         if (!this.isRepositoryLevel)
             this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
 
-        this.$nextTick(() => { 
+        nextTick(() => { 
             this.columnsTopY = this.$refs.filterEditionPageColumns ? this.$refs.filterEditionPageColumns.getBoundingClientRect().top : 0;
         });
 
