@@ -319,6 +319,9 @@
             isLoadingItems: Boolean,
             isMobileScreen: false
         },
+        emits: [
+            'updateIsLoadingItemsState'
+        ],
         data() {
             return {
                 isLoadingFilters: false,

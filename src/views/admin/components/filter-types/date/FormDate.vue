@@ -34,6 +34,9 @@
                 type: [String]
             }
         },
+        emits: [
+            'input',
+        ],
         methods: {
             onUpdateType(type) {
                 this.$emit('input', { type: type });

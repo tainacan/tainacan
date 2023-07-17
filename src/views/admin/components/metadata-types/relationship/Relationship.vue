@@ -154,6 +154,11 @@
             isLastMetadatum: false,
             isMobileScreen: false
         },
+        emits: [
+            'input',
+            'blur',
+            'mobileSpecialFocus'    
+        ],
         data() {
             return {
                 selected:[],

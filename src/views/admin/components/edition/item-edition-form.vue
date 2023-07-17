@@ -765,6 +765,9 @@ export default {
             next()
         }
     },
+    emits: [
+        'toggleItemEditionFooterDropdown'
+    ],
     data(){
         return {
             swiper: {},

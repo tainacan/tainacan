@@ -102,6 +102,11 @@
             allowSelectToCreate: false,
             isMobileScreen: false,
         },
+        emits: [
+            'input',
+            'updateTaxonomyInputs',
+            'mobileSpecialFocus'
+        ],
         data(){
             return {
                 valueComponent: null,
@@ -191,7 +196,7 @@
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
                             this.valueComponent = term.id;
-                            this.$emit('update-taxonomy-inputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
+                            this.$emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
                         })
                     } else {
                         val = val ? val : [];
@@ -201,7 +206,7 @@
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
                             this.valueComponent = val;
-                            this.$emit('update-taxonomy-inputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
+                            this.$emit('updateTaxonomyInputs', { taxonomyId: this.taxonomyId, metadatumId: this.itemMetadatum.metadatum.id });
                         })
                     }
                 }

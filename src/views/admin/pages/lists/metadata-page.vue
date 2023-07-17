@@ -21,15 +21,15 @@
                         <repository-metadata-list
                                 v-if="isRepositoryLevel"
                                 :metadata-type-filter-options="metadataTypeFilterOptions"
-                                @onUpdatehightlightedMetadatum="(newValue) => hightlightedMetadatum = newValue" />
+                                @onUpdatehighlightedMetadatum="(newValue) => highlightedMetadatum = newValue" />
                         <collection-metadata-list
                                 v-else
                                 :metadata-type-filter-options="metadataTypeFilterOptions"
-                                @onUpdatehightlightedMetadatum="(newValue) => hightlightedMetadatum = newValue" />
+                                @onUpdatehighlightedMetadatum="(newValue) => highlightedMetadatum = newValue" />
 
                         <!-- Available Metadata Area -->
                         <metadata-types-list 
-                                :hightlighted-metadatum="hightlightedMetadatum"
+                                :highlighted-metadatum="highlightedMetadatum"
                                 :is-repository-level="isRepositoryLevel"
                                 @onFinishedLoadingMetadataTypes="createMetadataTypeFilterOptions"/>
                     </div>
@@ -78,7 +78,7 @@ export default {
         return {
             isRepositoryLevel: false,
             activeTab: 0,
-            hightlightedMetadatum: '',
+            highlightedMetadatum: '',
             metadataTypeFilterOptions: []
         }
     },

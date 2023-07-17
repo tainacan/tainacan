@@ -4,7 +4,7 @@ export default {
 
     install(app, options = {}) {
 
-        app.config.globalProperties.$eventBusSearch = new createApp({
+        app.config.globalProperties.$eventBusSearch = createApp({
             router: options.router,
             store: options.store,
             data: {
@@ -17,6 +17,14 @@ export default {
                 termId: undefined,
                 searchCancel: undefined
             },
+            emits: [
+                'input',
+                'startSlideshowFromItem',
+                'hasToReloadFacets',
+                'isLoadingItems',
+                'hasFiltered',
+                'closeAdvancedSearch'
+            ],
             created() {
                 this.$on('input', data => {
                     if (data.taxonomy)
@@ -126,7 +134,7 @@ export default {
 
                         // Emit slideshow-from to start this view mode from index
                         if (this.$route.query.view_mode != 'slideshow' && this.$route.query['slideshow-from'] !== null && this.$route.query['slideshow-from'] !== undefined && this.$route.query['slideshow-from'] !== false)
-                            this.$emit('start-slideshow-from-item', this.$route.query['slideshow-from']);
+                            this.$emit('startSlideshowFromItem', this.$route.query['slideshow-from']);
 
                         // Admin View Modes
                         if (this.$route.name != null && this.$route.name != undefined  && 
@@ -174,7 +182,7 @@ export default {
                             JSON.stringify(oldStatusArray)    != JSON.stringify(newStatusArray) ||
                             JSON.stringify(oldSearchQuery)    != JSON.stringify(newSearchQuery)
                         ) {
-                            this.$emit('has-to-reload-facets', true);
+                            this.$emit('hasToReloadFacets', true);
                         }
                         
                         // Finally, loads items

@@ -76,6 +76,7 @@
         props: {
             value: [ String, Object, Array ]
         },
+        emits: ['input'],
         data() {
             return {
                 mapProvider: String,

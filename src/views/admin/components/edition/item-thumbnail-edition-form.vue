@@ -106,6 +106,11 @@ export default {
         item: Object,
         form: Object
     },
+    emits: [
+        'openThumbnailMediaFrame',
+        'onDeleteThumbnail',
+        'onUpdateThumbnailAlt'
+    ],
     methods: {
         updateThumbnailAlt: _.debounce(function($event) {
             this.$emit('onUpdateThumbnailAlt', $event.target.value);

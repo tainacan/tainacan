@@ -259,6 +259,10 @@
             collectionId: '',
             isInsideImporterFlow: false,
         },
+        emits: [
+            'onEditionFinished',
+            'onEditionCanceled'
+        ],
         data() {
             return {
                 form: {},

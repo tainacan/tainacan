@@ -135,6 +135,9 @@ export default {
         itemsCountStyle: String,
         imageSize: String
     },
+    emits: [
+        'onDisplayChildTerms'
+    ],
     computed:{
         facetId() {
             return (this.facet.id != undefined ? this.facet.id : this.facet.value);
@@ -142,7 +145,7 @@ export default {
     },
     methods: {
         displayChildTerms(facetId) {
-            this.$emit('on-display-child-terms', facetId)
+            this.$emit('onDisplayChildTerms', facetId)
         },
         isCollapseInsteadOfLink(facet) {
             return (this.appendChildTerms && facet.total_children > 0 && (!this.childFacetsObject[facet.id != undefined ? facet.id : facet.value] || this.childFacetsObject[facet.id != undefined ? facet.id : facet.value].facets.length) );

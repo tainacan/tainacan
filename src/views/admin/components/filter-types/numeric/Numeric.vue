@@ -78,6 +78,9 @@
         mixins: [
             filterTypeMixin
         ],
+        emits: [
+            'input',
+        ],
         data(){
             return {
                 value: null,

@@ -133,6 +133,7 @@
             metadatum: [ String, Object ],
             errors: [ String, Object, Array ]
         },
+        emits: ['input'],
         data(){
             return {
                 icon: '',

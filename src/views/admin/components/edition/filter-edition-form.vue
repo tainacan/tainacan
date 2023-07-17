@@ -225,7 +225,13 @@ export default {
         index: '',
         editedFilter: Object,
         originalFilter: Object,
-    },
+    }, 
+    emits: [
+        'onUpdateSavedState',
+        'onEditionFinished',
+        'onEditionCanceled',
+        'onErrorFound'
+    ],
     data(){
         return {
             form: {},
@@ -237,8 +243,7 @@ export default {
             entityName: 'filter',
             isLoading: false
         }
-    }, 
-
+    },
     created() {
 
         this.form = this.editedFilter;

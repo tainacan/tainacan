@@ -61,6 +61,10 @@
             maxtags: '',
             isLastMetadatum: false
         },
+        emits: [
+            'input',
+            'showAddNewTerm'
+        ],
         data() {
             return {
                 selected: [],

@@ -63,6 +63,10 @@
             TainacanHeader,
             TainacanRepositorySubheader
         },
+        emits: [
+            'onCollectionBreadCrumbUpdate',
+            'openProcessesPopup'
+        ],
         data(){
             return {
                 isMenuCompressed: false,

@@ -78,6 +78,10 @@
             currentCollectionId: String,
             filtersAsModal: Boolean
         },
+        emits: [
+            'input',
+            'updateParentCollapse'
+        ],
         data(){
             return {
                 isLoadingOptions: true,
@@ -125,7 +129,7 @@
                     this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
                     this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
                 }
-            this.$eventBusSearch.$on('has-to-reload-facets', this.reloadOptions); 
+            this.$eventBusSearch.$on('hasToReloadFacets', this.reloadOptions); 
         },
         mounted(){
             if (!this.isUsingElasticSearch)
@@ -137,7 +141,7 @@
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-            this.$eventBusSearch.$off('has-to-reload-facets', this.reloadOptions); 
+            this.$eventBusSearch.$off('hasToReloadFacets', this.reloadOptions); 
         }, 
         methods: {
             ...mapGetters('search', [

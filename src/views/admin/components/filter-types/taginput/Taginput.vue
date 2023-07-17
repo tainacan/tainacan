@@ -50,6 +50,9 @@
 
     export default {
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
+        emits: [
+            'input',
+        ],
         data() {
             return {
                 results:'',

@@ -263,7 +263,7 @@
                 isLoadingMetadata: false,
                 isUpdatingMetadataOrder: false,
                 openedMetadatumId: '',
-                hightlightedMetadatum: '',
+                highlightedMetadatum: '',
                 metadataSearchCancel: undefined,
                 childrenMetadata: [],
                 collapses: {}
@@ -353,7 +353,7 @@
                     this.updateMetadataOrder();
 
                     this.toggleMetadatumEdition(metadatum.id)
-                    this.hightlightedMetadatum = '';
+                    this.highlightedMetadatum = '';
                 })
                 .catch((error) => {
                     this.$console.error(error);

@@ -58,7 +58,11 @@ export default {
         totalAttachments: Number,
         isLoading: Boolean,
         shouldLoadAttachments: Boolean
-    }
+    },
+    emits: [
+        'openAttachmentsMediaFrame',
+        'onDeleteAttachment'
+    ]
 }
 </script>
 

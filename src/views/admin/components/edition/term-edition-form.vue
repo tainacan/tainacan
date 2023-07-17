@@ -236,6 +236,9 @@
             isHierarchical: Boolean,
             isTermInsertionFlow: false
         },
+        emits: [
+            'onEditionFinished'
+        ],
         data() {
             return {
                 formErrors: {},

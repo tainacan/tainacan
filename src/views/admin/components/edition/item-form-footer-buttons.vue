@@ -199,6 +199,12 @@ export default {
         currentUserCanPublish: Boolean,
         isEditingItemMetadataInsideIframe: Boolean
     },
+    emits: [
+        'onSubmit',
+        'onNextInSequence',
+        'onPrevInSequence',
+        'onDiscard',
+    ],
     mounted() {
         this.$parent.$on('toggleItemEditionFooterDropdown', () => {
             if (this.$refs && this.$refs['item-edition-footer-dropdown'])

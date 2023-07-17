@@ -93,6 +93,9 @@
             id: '',
             disabled: false,
         },
+        emits: [
+            'input',
+        ],
         data() {
             return {
                 showIntervalOnTag: true,

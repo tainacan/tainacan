@@ -292,12 +292,15 @@ export default {
     props: {
         metadataTypeFilterOptions: Array
     },
+    emits: [
+        'onUpdatehighlightedMetadatum',
+    ],
     data() {
         return {
             collectionId: 'default',
             isLoadingMetadata: false,
             openedMetadatumId: '',
-            hightlightedMetadatum: '',
+            highlightedMetadatum: '',
             collapses: {},
             collapseAll: false,
             metadataNameFilterString: '',
@@ -364,8 +367,8 @@ export default {
             this.addNewMetadatum(metadatumType, lastIndex);
             
             // Higlights the clicked metadatum
-            this.hightlightedMetadatum = metadatumType.name;
-            this.$emit('onUpdatehightlightedMetadatum', this.hightlightedMetadatum);
+            this.highlightedMetadatum = metadatumType.name;
+            this.$emit('onUpdatehighlightedMetadatum', this.highlightedMetadatum);
         },
         addNewMetadatum(newMetadatum, newIndex) {
             this.sendMetadatum({
@@ -379,8 +382,8 @@ export default {
             })
             .then((metadatum) => {
                 this.toggleMetadatumEdition(metadatum);
-                this.hightlightedMetadatum = '';
-                this.$emit('onUpdatehightlightedMetadatum', this.hightlightedMetadatum);
+                this.highlightedMetadatum = '';
+                this.$emit('onUpdatehighlightedMetadatum', this.highlightedMetadatum);
             })
             .catch((error) => {
                 this.$console.error(error);

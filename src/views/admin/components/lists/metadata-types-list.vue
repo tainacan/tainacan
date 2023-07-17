@@ -16,7 +16,7 @@
                         :id="metadatum.component"
                         @click.prevent.once="addMetadatumViaButton(metadatum)"
                         class="available-metadatum-item"
-                        :class="{ 'hightlighted-metadatum' : hightlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
+                        :class="{ 'highlighted-metadatum' : highlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
                         v-for="(metadatum, index) in availableMetadatumList"
                         :key="index">
                     <span
@@ -59,7 +59,7 @@
                     </span>
                     <span 
                             class="loading-spinner" 
-                            v-if="hightlightedMetadatum == metadatum.name"/>
+                            v-if="highlightedMetadatum == metadatum.name"/>
                 </div>
             </draggable>
 
@@ -126,8 +126,11 @@ export default {
     name: 'MetadataTypesList',
     props: {
         isRepositoryLevel: Boolean,
-        hightlightedMetadatum: String
+        highlightedMetadatum: String
     },
+    emits: [
+        'onFinishedLoadingMetadataTypes'
+    ],
     data() {
         return {
             isLoadingMetadataTypes: true,
@@ -351,7 +354,7 @@ export default {
                 border-color: transparent white transparent transparent;  
             }
         }
-        .hightlighted-metadatum {
+        .highlighted-metadatum {
             background-color: var(--tainacan-white);
             position: relative;
             left: 0px;

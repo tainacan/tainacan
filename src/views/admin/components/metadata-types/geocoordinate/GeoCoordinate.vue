@@ -119,6 +119,7 @@
             maxtags: '',
             isLastMetadatum: false
         },
+        emits: ['input'],
         data() {
             return {
                 editingMarkerIndex: -1,

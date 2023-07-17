@@ -614,6 +614,10 @@
         props: {
             activityId: String
         },
+        emits: [
+            'approveActivity',
+            'notApproveActivity',
+        ],
         data() {
             return {
                 infoEmpty: `[ ${this.$i18n.get('info_empty').toLowerCase()} ]`,

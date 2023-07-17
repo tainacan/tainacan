@@ -103,7 +103,14 @@ export default {
     props: {
         item: Object,
         form: Object
-    }
+    },
+    emits: [
+        'onSetFileDocument',
+        'onSetTextDocument',
+        'onSetURLDocument',
+        'onSetDocument',
+        'onRemoveDocument'
+    ]
 }
 </script>
 

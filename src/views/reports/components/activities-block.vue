@@ -97,6 +97,9 @@ import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {
     mixins: [ reportsChartMixin ],
+    emits: [
+        'timeRangeUpdate'
+    ],
     data() {
         return {
             chartSeriesByUser: [],
@@ -136,7 +139,7 @@ export default {
             let currentStartDate = new Date(this.currentStart.getTime());
             const newStart = new Date(currentStartDate.setFullYear(newStartYear));
             this.setStartDate(newStart.toISOString());
-            this.$emit('time-range-update', newStart.toISOString());
+            this.$emit('timeRangeUpdate', newStart.toISOString());
         },
         getDaysArray(start, end) {
             let everyDay = [];

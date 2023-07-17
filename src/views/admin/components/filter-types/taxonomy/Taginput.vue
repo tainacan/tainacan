@@ -44,6 +44,9 @@
     
     export default {
         mixins: [ filterTypeMixin ],
+        emits: [
+            'input',
+        ],
         data(){
             return {
                 isLoadingOptions: false,

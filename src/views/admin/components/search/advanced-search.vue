@@ -244,6 +244,10 @@
             isRepositoryLevel: false,
             collectionId: ''
         },
+        emits: [
+            'close',
+            'performAdvancedSearch'
+        ],
         data() {
             return {
                 metaqueryOperatorsForInterval: {

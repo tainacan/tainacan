@@ -43,6 +43,7 @@ export const dynamicFilterTypeMixin = {
             facetSearchPage: 1
         }
     },
+    emits: ['updateParentCollapse'],
     computed: {
         facetsFromItemSearch() {
             return this.getFacets();

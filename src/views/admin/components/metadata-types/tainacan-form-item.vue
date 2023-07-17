@@ -1,7 +1,7 @@
 <template>
     <b-field
             :class="metadatumFormClasses"
-            :ref="isHighlightedMetadatum ? 'hightlighted-metadatum': 'null'"
+            :ref="isHighlightedMetadatum ? 'highlighted-metadatum': 'null'"
             :addons="false"
             :message="errorMessage"
             :type="errorMessage ? 'is-danger' : ''">
@@ -173,6 +173,11 @@
             isFocused: false,
             isMetadataNavigation: false
         },
+        emits: [
+            'input',
+            'changeCollapse',
+            'mobileSpecialFocus'
+        ],
         data(){
             return {
                 values: [],
@@ -203,7 +208,7 @@
             metadatumFormClasses() {
                 return '' + 
                     (this.hideCollapses ? ' has-collapses-hidden' : '') + 
-                    (this.isHighlightedMetadatum ? ' hightlighted-metadatum' : '') + 
+                    (this.isHighlightedMetadatum ? ' highlighted-metadatum' : '') + 
                     (this.metadatumComponent ? ' tainacan-metadatum-component--' + this.metadatumComponent : '') +
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.placeholder ? ' has-placeholder' : '') +  
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.description ? ' has-description' : '') +  
@@ -236,7 +241,7 @@
                 if (this.isHighlightedMetadatum) {
                     
                     nextTick(() => {
-                        let highlightedMetadatum = this.$refs['hightlighted-metadatum'];
+                        let highlightedMetadatum = this.$refs['highlighted-metadatum'];
                         if (highlightedMetadatum && highlightedMetadatum.$el && highlightedMetadatum.$el.scrollIntoView)
                             setTimeout(() => highlightedMetadatum.$el.scrollIntoView(), 500);
                     });
@@ -363,7 +368,7 @@
         border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
 
-        &.hightlighted-metadatum {
+        &.highlighted-metadatum {
             background-color: var(--tainacan-white);
             transition: background-color 0.8s; 
             animation-name: metadatum-highlight;

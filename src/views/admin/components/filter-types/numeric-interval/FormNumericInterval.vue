@@ -79,6 +79,9 @@
         props: {
             value: [String, Number, Array]
         },
+        emits: [
+            'input',
+        ],
         data() {
             return {
                 step: [Number, String],

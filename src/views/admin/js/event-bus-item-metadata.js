@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import store from './store/store'
 
-export const eventBusItemMetadata = new createApp({
+export const eventBusItemMetadata = createApp({
     store,
     data: {
         errors : [],
@@ -17,13 +17,26 @@ export const eventBusItemMetadata = new createApp({
             }
         }
     },
+    emits: [
+        'input',
+        'itemEditionFormResize',
+        'focusPreviousChildMetadatum',
+        'focusNextChildMetadatum',
+        'removeCompoundGroup',
+        'isOnLastMetadatumOfCompoundNavigation',
+        'isOnFirstMetadatumOfCompoundNavigation',
+        'hasErrorsOnForm',
+        'updateErrorMessageOf#',
+        'hasRemovedItemMetadataGroup',
+        'isUpdatingValue'
+    ],
     created() {
         this.$on('input', this.updateValue);
-        this.$on('remove_group', this.removeItemMetadataGroup);
+        this.$on('removeCompoundGroup', this.removeItemMetadataGroup);
     },
     beforeUpdate() {
         this.$off('input', this.updateValue);
-        this.$on('remove_group', this.removeItemMetadataGroup);
+        this.$on('removeCompoundGroup', this.removeItemMetadataGroup);
     },
     methods : {
         updateValue({ itemId, metadatumId, values, parentMetaId, parentId }){

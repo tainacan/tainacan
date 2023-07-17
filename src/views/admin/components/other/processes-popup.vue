@@ -155,6 +155,9 @@ import moment from 'moment';
 
 export default {
     name: 'ProcessesPopup',
+    emits: [
+        'closeProcessesPopup'
+    ],
     data() {
         return {
             showProcessesList: false,

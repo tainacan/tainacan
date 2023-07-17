@@ -102,6 +102,9 @@
             shouldLoadAttachments: Boolean,
             isEditable: Boolean,
         },
+        emits: [
+            'onDeleteAttachment',
+        ],
         data() {
             return {
                 attachmentsPage: 1,

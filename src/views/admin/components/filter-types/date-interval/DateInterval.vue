@@ -61,6 +61,9 @@
             dateInter, 
             filterTypeMixin
         ],
+        emits: [
+            'input',
+        ],
         data(){
             return {
                 dateInit: undefined,

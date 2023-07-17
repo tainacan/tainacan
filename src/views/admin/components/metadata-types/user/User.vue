@@ -63,6 +63,11 @@ export default {
         allowNew: true,
         isLastMetadatum: false
     },
+    emits: [
+        'input',
+        'blur',
+        'mobileSpecialFocus'
+    ],
     data() {
         return {
             selected:[],

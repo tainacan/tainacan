@@ -927,7 +927,7 @@
                 });
             }
 
-            this.$eventBusSearch.$on('start-slideshow-from-item', (index) => {
+            this.$eventBusSearch.$on('startSlideshowFromItem', (index) => {
                 let currentQuery = this.$route.query;
                 delete currentQuery['slideshow-from'];
                 this.$router.replace({ query: currentQuery }).catch((error) => this.$console.log(error));

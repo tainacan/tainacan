@@ -30,6 +30,9 @@
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     export default {
         mixins: [ filterTypeMixin ],
+        emits: [
+            'input',
+        ],
         data(){
             return {
                 valueInit: null,

@@ -37,6 +37,10 @@ export default {
     props: {
         textContent: ''
     },
+    emits: [
+        'confirmTextWriting',
+        'cancelTextWriting'
+    ],
     data(){
         return {
             localTextContent: ''

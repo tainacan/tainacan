@@ -352,7 +352,7 @@
                 
                 if (this.itemMetadatum.value && this.itemMetadatum.value[groupIndex] && this.itemMetadatum.value[groupIndex][0]) {
                     this.isRemovingGroup = true;
-                    eventBusItemMetadata.$emit('remove_group', {
+                    eventBusItemMetadata.$emit('removeCompoundGroup', {
                         itemId: this.itemMetadatum.item.id,
                         metadatumId: this.itemMetadatum.metadatum.id,
                         parentMetaId: this.itemMetadatum.item.id ? this.itemMetadatum.value[groupIndex][0].parent_meta_id : groupIndex

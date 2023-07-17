@@ -281,6 +281,10 @@ export default {
         searchString: String,
         isHierarchical: Boolean
     },
+    emits: [
+        'onUpdateSelectedColumnIndex',
+        'onUpdateSelectedTerms',
+    ],
     data() {
         return {
             termColumns: [],

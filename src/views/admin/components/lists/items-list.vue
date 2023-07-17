@@ -1885,6 +1885,10 @@ export default {
         viewMode: 'card',
         isRepositoryLevel: false
     },
+    emits: [
+        'updateIsLoading',
+        'openProcessesPopup'
+    ],
     data(){
         return {
             isAllItemsSelected: false,

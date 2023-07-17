@@ -131,6 +131,10 @@ export default {
         currentUserCanEditTaxonomy: Boolean,
         isHierarchical: Boolean
     },
+    emits: [
+        'deleteSelectedTerms',
+        'updateSelectedTermsParent'
+    ],
     data() {
         return {
             searchString: '',

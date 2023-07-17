@@ -349,6 +349,10 @@
                 default: true,
             }
         },
+        emits: [
+            'input',
+            'appliedCheckBoxModal'
+        ],
         data() {
             return {
                 finderColumns: [],
@@ -398,7 +402,7 @@
             else
                 this.isCheckboxListLoading = true;
             
-            this.$parent.$on('update-taxonomy-inputs', ($event) => { 
+            this.$parent.$on('updateTaxonomyInputs', ($event) => { 
                 if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
                     this.optionName = '';

@@ -122,6 +122,10 @@
             taxonomyId: '',
             isHierarchical: Boolean
         },
+        emits: [
+            'onEditionFinished',
+            'onEditionCanceled'
+        ],
         data() {
             return {
                 formErrors: {},

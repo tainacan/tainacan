@@ -402,6 +402,11 @@
             isParentMultiple: false,
             isInsideImporterFlow: false
         },
+        emits: [
+            'onEditionFinished',
+            'onEditionCanceled',
+            'onErrorFound'
+        ],
         data() {
             return {
                 form: {},

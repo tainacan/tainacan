@@ -514,6 +514,9 @@ export default {
     props: {
         metadataTypeFilterOptions: Array
     },
+    emits: [
+        'onUpdatehighlightedMetadatum',
+    ],
     data() {
         return {
             collectionId: '',
@@ -521,7 +524,7 @@ export default {
             isUpdatingMetadataOrder: false,
             openedMetadatumId: '',
             openedMetadataSectionId: '',
-            hightlightedMetadatum: '',
+            highlightedMetadatum: '',
             collapses: {},
             collapseAll: false,
             metadataNameFilterString: '',
@@ -710,8 +713,8 @@ export default {
             this.addNewMetadatum(metadatumType, this.activeMetadataSectionsList[0].metadata_object_list.length, 0);
             
             // Higlights the clicked metadatum
-            this.hightlightedMetadatum = metadatumType.name;
-            this.$emit('onUpdatehightlightedMetadatum', this.hightlightedMetadatum);
+            this.highlightedMetadatum = metadatumType.name;
+            this.$emit('onUpdatehighlightedMetadatum', this.highlightedMetadatum);
         },
         addMetadataSectionViaButton() {
             let lastIndex = this.activeMetadataSectionsList.length;
@@ -734,9 +737,9 @@ export default {
                 this.updateMetadataOrder(sectionIndex);
 
                 this.toggleMetadatumEdition(metadatum)
-                this.hightlightedMetadatum = '';
+                this.highlightedMetadatum = '';
                 this.isUpdatingMetadatum = false;
-                this.$emit('onUpdatehightlightedMetadatum', this.hightlightedMetadatum);
+                this.$emit('onUpdatehighlightedMetadatum', this.highlightedMetadatum);
             })
             .catch((error) => {
                 this.isUpdatingMetadatum = false;

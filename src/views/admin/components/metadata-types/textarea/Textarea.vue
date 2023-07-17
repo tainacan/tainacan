@@ -17,6 +17,11 @@
             value: [String, Number, Array],
             disabled: false
         },
+        emits: [
+            'input',
+            'blur',
+            'mobileSpecialFocus'
+        ],
         methods: {
             onInput(value) {
                 this.$emit('input', value);

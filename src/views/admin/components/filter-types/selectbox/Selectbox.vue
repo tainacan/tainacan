@@ -30,6 +30,10 @@
 
     export default {
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
+        emits: [
+            'input',
+            'updateParentCollapse'
+        ],
         data(){
             return {
                 options: [],
@@ -50,10 +54,10 @@
                 this.loadOptions(); 
         },
         created() {
-            this.$eventBusSearch.$on('has-to-reload-facets', this.reloadOptions);
+            this.$eventBusSearch.$on('hasToReloadFacets', this.reloadOptions);
         },
         beforeUnmount() {
-            this.$eventBusSearch.$off('has-to-reload-facets', this.reloadOptions); 
+            this.$eventBusSearch.$off('hasToReloadFacets', this.reloadOptions); 
         },
         methods: {
             reloadOptions(shouldReload) {

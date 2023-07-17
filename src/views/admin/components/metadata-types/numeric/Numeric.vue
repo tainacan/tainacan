@@ -19,6 +19,11 @@
             value: [String, Number, Array],
             disabled: false,
         },
+        emits: [
+            'input',
+            'blur',
+            'mobileSpecialFocus'
+        ],
         computed: {
             getStep() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.step)

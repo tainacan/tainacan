@@ -52,6 +52,11 @@
             value: [String, Number, Array],
             disabled: false
         },
+        emits: [
+            'input',
+            'blur',
+            'mobileSpecialFocus'
+        ],
         data() {
             return {
                 selected:'',
