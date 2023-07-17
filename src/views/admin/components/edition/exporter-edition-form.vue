@@ -36,7 +36,7 @@
                         <b-select
                                 @input="formErrorMessage = null"
                                 expanded
-                                v-model="selectedCollection"
+                                v-model:value="selectedCollection"
                                 :loading="isFetchingCollections"
                                 :placeholder="$i18n.get('instruction_select_a_collection')">
                             <option
@@ -57,7 +57,7 @@
                         <b-select
                                 @input="formErrorMessage = null"
                                 expanded
-                                v-model="selectedMapping"
+                                v-model:value="selectedMapping"
                                 :placeholder="$i18n.get('instruction_select_a_mapper')">
                             <option 
                                     v-if="exporterSession.accept_no_mapping"
@@ -81,7 +81,7 @@
                         <b-checkbox
                                 true-value="1"
                                 false-value="0"
-                                v-model="sendEmail"
+                                v-model:value="sendEmail"
                                 @input="formErrorMessage = null">
                             {{ $i18n.get('label_yes') }}
                         </b-checkbox>

@@ -6,7 +6,7 @@
                 :custom-class="{ 'is-danger': isInvalidDate && dateValue }"
                 type="text"
                 v-mask="dateMask"
-                v-model="dateValue"
+                v-model:value="dateValue"
                 @input="onInput"
                 @blur="onBlur"
                 @focus="onMobileSpecialFocus"
@@ -24,7 +24,7 @@
 
             <!--<div class="field">-->
                 <!--<b-datepicker-->
-                        <!--v-model="dateValue"-->
+                        <!--v-model:value="dateValue"-->
                         <!--:readonly="false"-->
                         <!--inline-->
                         <!--@input="onInput($event)"-->

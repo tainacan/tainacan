@@ -29,7 +29,7 @@
                         <br>
                         <b-upload
                                 v-if="importer.tmp_file == undefined && (importerFile == undefined || importerFile == null || importerFile == '')" 
-                                v-model="importerFile"
+                                v-model:value="importerFile"
                                 drag-drop
                                 class="source-file-upload">
                             <section class="drop-inner">
@@ -80,7 +80,7 @@
                                 extra-classes="tainacan-repository-tooltip"/>
                         <b-input
                                 id="tainacan-url-link-source"
-                                v-model="url"/>  
+                                v-model:value="url"/>  
                     </b-field>
                 </div>
 

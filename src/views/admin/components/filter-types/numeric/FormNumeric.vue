@@ -12,7 +12,7 @@
                     class="is-flex">
                 <b-select
                         name="step_options"
-                        v-model="step"
+                        v-model:value="step"
                         @input="onUpdateStep">
                     <option value="0.001">0.001</option>
                     <option value="0.01">0.01</option>
@@ -49,7 +49,7 @@
                     class="is-flex">
                 <b-input
                         name="max_options"
-                        v-model="step"
+                        v-model:value="step"
                         @input="onUpdateStep"
                         type="number"
                         step="1" />

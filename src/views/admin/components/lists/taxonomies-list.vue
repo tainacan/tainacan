@@ -92,7 +92,7 @@
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
-                                    v-model="selected[index]"/> 
+                                    v-model:value="selected[index]"/> 
                         </td>
                         <!-- Status icon -->
                         <td 

@@ -88,7 +88,7 @@
                                     custom
                                     aria-role="listitem">
                                 <b-checkbox
-                                        v-model="collectionTaxonomyTerm.enabled"
+                                        v-model:value="collectionTaxonomyTerm.enabled"
                                         :native-value="collectionTaxonomyTerm.enabled">
                                     {{ collectionTaxonomyTerm.name }}
                                 </b-checkbox>
@@ -183,7 +183,7 @@
                         size="is-small"
                         :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
                         autocomplete="on"
-                        v-model="searchQuery"
+                        v-model:value="searchQuery"
                         @keyup.enter="searchCollections()"
                         icon-right="magnify"
                         icon-right-clickable

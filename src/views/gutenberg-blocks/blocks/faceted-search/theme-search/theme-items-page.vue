@@ -188,7 +188,7 @@
                             custom
                             aria-role="listitem">
                         <b-checkbox
-                                v-model="column.display"
+                                v-model:value="column.display"
                                 :native-value="column.display">
                             {{ column.name }}
                         </b-checkbox>

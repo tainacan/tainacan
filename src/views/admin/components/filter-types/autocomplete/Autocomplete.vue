@@ -4,7 +4,7 @@
                 icon="magnify"
                 size="is-small"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                v-model="selected"
+                v-model:value="selected"
                 :data="options"
                 expanded
                 :loading="isLoadingOptions"

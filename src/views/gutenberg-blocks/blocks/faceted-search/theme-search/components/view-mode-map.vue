@@ -163,7 +163,7 @@
                                 <b-select
                                         :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model="selectedGeocoordinateMetadatumId">
+                                        v-model:value="selectedGeocoordinateMetadatumId">
                                     <option
                                             v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
                                             :key="geocoordinateMetadatum.id"

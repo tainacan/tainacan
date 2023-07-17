@@ -13,7 +13,7 @@
         <div class="metadata-list-page">
             <b-tabs 
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
-                    v-model="activeTab">    
+                    v-model:value="activeTab">    
                 <b-tab-item :label="isRepositoryLevel ? repositoryTabLabel : collectionTabLabel">
                     <div class="columns">
 

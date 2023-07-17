@@ -143,7 +143,7 @@
                                 v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
                                 :class="{ 'is-selecting': isSelectingCollections }"
                                 class="checkbox-cell">
-                            <b-checkbox v-model="selectedCollections[index]"/> 
+                            <b-checkbox v-model:value="selectedCollections[index]"/> 
                         </td>
                         <!-- Status icon -->
                         <td 

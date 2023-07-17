@@ -79,7 +79,7 @@
                 
                 <b-select
                         :name="'mappers-metadatum-select-' + mapperMetadatum.slug"
-                        v-model="mapperMetadatum.selected"
+                        v-model:value="mapperMetadatum.selected"
                         @input="onSelectMetadatumForMapperMetadata">
                     <option
                             value="">
@@ -172,7 +172,7 @@
                 </div>
                 <b-field>
                     <b-input
-                            v-model="newMetadataLabel"
+                            v-model:value="newMetadataLabel"
                             required
                             :placeholder="$i18n.get('label_name')"/>
                 </b-field>
@@ -181,7 +181,7 @@
                             placeholder="URI"
                             type="url"
                             required
-                            v-model="newMetadataUri"/>
+                            v-model:value="newMetadataUri"/>
                 </b-field>
                 <div class="field is-grouped form-submit">
                     <div class="control">

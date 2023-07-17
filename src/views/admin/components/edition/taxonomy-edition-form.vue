@@ -27,7 +27,7 @@
                                     extra-classes="tainacan-repository-tooltip"/>
                             <b-input
                                     id="tainacan-text-name"
-                                    v-model="form.name"
+                                    v-model:value="form.name"
                                     @focus="clearErrors('name')"
                                     @blur="updateSlug()"
                                     :disabled="isUpdatingSlug"
@@ -56,7 +56,7 @@
                                     id="tainacan-text-description"
                                     type="textarea"
                                     rows="3"
-                                    v-model="form.description"
+                                    v-model:value="form.description"
                                     @focus="clearErrors('description')"/>
                         </b-field>
 
@@ -67,7 +67,7 @@
                                     <b-switch
                                             id="tainacan-checkbox-allow-insert" 
                                             size="is-small"
-                                            v-model="form.allowInsert"
+                                            v-model:value="form.allowInsert"
                                             true-value="yes"
                                             false-value="no" />
                                     <help-button 
@@ -84,7 +84,7 @@
                                     <b-switch
                                             id="tainacan-checkbox-allow-insert" 
                                             size="is-small"
-                                            v-model="form.hierarchical"
+                                            v-model:value="form.hierarchical"
                                             true-value="yes"
                                             false-value="no" />
                                     <help-button 
@@ -107,7 +107,7 @@
                             <b-input
                                     @input="updateSlug()"
                                     id="tainacan-text-slug"
-                                    v-model="form.slug"
+                                    v-model:value="form.slug"
                                     @focus="clearErrors('slug')"
                                     :disabled="isUpdatingSlug"/>
                         </b-field>
@@ -132,7 +132,7 @@
                                         :native-value="wpPostType.slug"
                                         :true-value="wpPostType.slug"
                                         false-value=""
-                                        v-model="form.enabledPostTypes"
+                                        v-model:value="form.enabledPostTypes"
                                         name="enabled_post_types" >
                                         {{ wpPostType.label }}  
                                     </b-checkbox>
@@ -156,7 +156,7 @@
                                     extra-classes="tainacan-repository-tooltip"/>
                             <div class="status-radios">
                                 <b-radio
-                                        v-model="form.status"
+                                        v-model:value="form.status"
                                         v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                                         :key="index"
                                         :native-value="statusOption.slug">

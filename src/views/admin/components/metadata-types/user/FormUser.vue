@@ -8,7 +8,7 @@
                         :message="$i18n.getHelperMessage('tainacan-user', 'default_author')"/>
             </label>
             <b-checkbox
-                    v-model="defaultAuthor"
+                    v-model:value="defaultAuthor"
                     @input="onUpdateDefaultAuthor"
                     true-value="yes"
                     false-value="no">

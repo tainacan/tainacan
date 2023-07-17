@@ -38,7 +38,7 @@
                                     :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </label>
                         <b-input
-                                v-model="form.name"
+                                v-model:value="form.name"
                                 name="name"
                                 @focus="clearErrors('name')"/>
                     </b-field>
@@ -67,7 +67,7 @@
                                 type="textarea"
                                 name="description"
                                 rows="3"
-                                v-model="form.description"
+                                v-model:value="form.description"
                                 @focus="clearErrors('description')"/>
                     </b-field>
 
@@ -80,7 +80,7 @@
                         <b-switch
                                 size="is-small"
                                 @input="clearErrors('description_bellow_name')"
-                                v-model="form.description_bellow_name"
+                                v-model:value="form.description_bellow_name"
                                 true-value="yes"
                                 false-value="no"
                                 name="description_bellow_name">
@@ -104,7 +104,7 @@
                                     :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </label>
                         <b-input
-                                v-model="form.placeholder"
+                                v-model:value="form.placeholder"
                                 name="placeholder"
                                 @focus="clearErrors('placeholder')"/>
                     </b-field>
@@ -126,7 +126,7 @@
                                     @focus="clearErrors('label_status')"
                                     id="tainacan-select-status-publish"
                                     name="status"
-                                    v-model="form.status"
+                                    v-model:value="form.status"
                                     native-value="publish">
                                 <span class="icon has-text-gray3">
                                     <i class="tainacan-icon tainacan-icon-public"/>
@@ -137,7 +137,7 @@
                                     @focus="clearErrors('label_status')"
                                     id="tainacan-select-status-private"
                                     name="status"
-                                    v-model="form.status"
+                                    v-model:value="form.status"
                                     native-value="private">
                                 <span class="icon has-text-gray3">
                                     <i class="tainacan-icon tainacan-icon-private"/>
@@ -162,7 +162,7 @@
                         </label>
                         <b-select 
                                 expanded
-                                v-model="form.display"
+                                v-model:value="form.display"
                                 @input="clearErrors('display')">
                             <option value="yes">
                                 {{ $i18n.get('label_display_default') }}
@@ -186,7 +186,7 @@
                                 :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
                             <b-checkbox
                                     @input="clearErrors('required')"
-                                    v-model="form.required"
+                                    v-model:value="form.required"
                                     true-value="yes"
                                     false-value="no"
                                     class="is-inline-block"
@@ -205,7 +205,7 @@
                                 :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
                             <b-checkbox
                                     @input="clearErrors('collection_key')"
-                                    v-model="form.collection_key"
+                                    v-model:value="form.collection_key"
                                     true-value="yes"
                                     false-value="no"
                                     class="is-inline-block"
@@ -224,7 +224,7 @@
                                 :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
                             <b-checkbox
                                     @input="clearErrors('multiple')"
-                                    v-model="form.multiple"
+                                    v-model:value="form.multiple"
                                     true-value="yes"
                                     false-value="no"
                                     class="is-inline-block"
@@ -247,7 +247,7 @@
                         <b-switch
                                 size="is-small"
                                 :disabled="form.multiple != 'yes'"
-                                v-model="showCardinalityOptions" />
+                                v-model:value="showCardinalityOptions" />
                     </b-field>
 
                     <b-field
@@ -267,13 +267,13 @@
                                 name="cardinality"
                                 step="1"
                                 min="2"
-                                v-model="form.cardinality"/>
+                                v-model:value="form.cardinality"/>
                     </b-field>
 
                     <b-field v-if="!isRepositoryLevel && isInsideImporterFlow">
                         <b-checkbox
                                 class="is-inline-block"
-                                v-model="form.repository_level"
+                                v-model:value="form.repository_level"
                                 @input="clearErrors('repository_level')"
                                 name="repository_level"
                                 true-value="yes"
@@ -312,7 +312,7 @@
                             v-if="(form.metadata_type_object && form.metadata_type_object.form_component) || form.edit_form != ''"
                             :is="form.metadata_type_object.form_component"
                             :metadatum="form"
-                            v-model="form.metadata_type_options"/>
+                            v-model:value="form.metadata_type_options"/>
                     <div
                             v-html="form.edit_form"
                             v-else/>
@@ -354,7 +354,7 @@
                                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                             </label>
                             <b-input
-                                    v-model="form.semantic_uri"
+                                    v-model:value="form.semantic_uri"
                                     name="semantic_uri"
                                     type="url"
                                     @focus="clearErrors('semantic_uri')"/>

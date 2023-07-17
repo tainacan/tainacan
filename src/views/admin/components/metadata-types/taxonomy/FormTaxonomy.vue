@@ -15,7 +15,7 @@
             <b-select
                     name="field_type_options[taxonomy_id]"
                     placeholder="Select the taxonomy"
-                    v-model="taxonomy_id"
+                    v-model:value="taxonomy_id"
                     @input="emitValues()"
                     @focus="clear"
                     :loading="loading"
@@ -42,7 +42,7 @@
                     name="metadata_type_options[component_type]"
                     placeholder="Select the input type for the taxonomy metadatum"
                     @input="emitValues()"
-                    v-model="input_type"
+                    v-model:value="input_type"
                     expanded>
                 <option
                         v-for="(option, index) in single_types"
@@ -55,7 +55,7 @@
             <b-select
                     name="metadata_type_options[input_type]"
                     placeholder="Select the input type for the taxonomy metadatum"
-                    v-model="input_type"
+                    v-model:value="input_type"
                     @input="emitValues()"
                     v-else
                     expanded>
@@ -75,7 +75,7 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model="visible_options_list"
+                    v-model:value="visible_options_list"
                     @input="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')"
@@ -88,7 +88,7 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model="allow_new_terms"
+                    v-model:value="allow_new_terms"
                     @input="emitValues()"
                     true-value="yes"
                     false-value="no" />
@@ -103,7 +103,7 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model="do_not_dispaly_term_as_link"
+                    v-model:value="do_not_dispaly_term_as_link"
                     @input="emitValues()"
                     true-value="yes"
                     false-value="no" />
@@ -160,7 +160,7 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model="hide_hierarchy_path"
+                    v-model:value="hide_hierarchy_path"
                     @input="emitValues()"
                     true-value="yes"
                     false-value="no" />

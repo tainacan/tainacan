@@ -44,7 +44,7 @@
                         <b-datepicker
                                 ref="datepicker"
                                 :placeholder="$i18n.get('instruction_filter_activities_date')"
-                                v-model="searchDates"
+                                v-model:value="searchDates"
                                 range
                                 :trap-focus="false"
                                 @input="searchActivities()"
@@ -132,7 +132,7 @@
                                 size="is-small"
                                 :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
                                 autocomplete="on"
-                                v-model="searchQuery"
+                                v-model:value="searchQuery"
                                 @keyup.enter="searchActivities()"
                                 icon-right="magnify"
                                 icon-right-clickable
@@ -149,7 +149,7 @@
                             :placeholder="$i18n.get('instruction_filter_activities_date')"
                             range
                             icon="calendar-today"
-                            v-model="searchDates"
+                            v-model:value="searchDates"
                             @input="searchProcesses()"
                             :date-formatter="(date) => dateFormatter(date)"
                             :date-parser="(date) => dateParser(date)"
@@ -196,7 +196,7 @@
                             size="is-small"
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
                             autocomplete="on"
-                            v-model="searchQuery"
+                            v-model:value="searchQuery"
                             @keyup.enter="searchProcesses()"
                             icon-right="magnify"
                             icon-right-clickable

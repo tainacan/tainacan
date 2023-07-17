@@ -30,7 +30,7 @@
                                 :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </label>
                     <b-input
-                            v-model="form.name"
+                            v-model:value="form.name"
                             name="name"
                             @focus="clearErrors('name')"/>
                 </b-field>
@@ -59,7 +59,7 @@
                             type="textarea"
                             name="description"
                             rows="3"
-                            v-model="form.description"
+                            v-model:value="form.description"
                             @focus="clearErrors('description')"/>
                 </b-field>
 
@@ -72,7 +72,7 @@
                     <b-switch
                             size="is-small"
                             @input="clearErrors('description_bellow_name')"
-                            v-model="form.description_bellow_name"
+                            v-model:value="form.description_bellow_name"
                             true-value="yes"
                             false-value="no"
                             name="description_bellow_name">
@@ -100,7 +100,7 @@
                                 @focus="clearErrors('label_status')"
                                 id="tainacan-select-status-publish"
                                 name="status"
-                                v-model="form.status"
+                                v-model:value="form.status"
                                 native-value="publish">
                             <span class="icon has-text-gray3">
                                 <i class="tainacan-icon tainacan-icon-public"/>
@@ -111,7 +111,7 @@
                                 @focus="clearErrors('label_status')"
                                 id="tainacan-select-status-private"
                                 name="status"
-                                v-model="form.status"
+                                v-model:value="form.status"
                                 native-value="private">
                             <span class="icon has-text-gray3">
                                 <i class="tainacan-icon tainacan-icon-private"/>
@@ -152,7 +152,7 @@
                         <b-switch
                                 size="is-small"
                                 @input="clearErrors('is_conditional_section')"
-                                v-model="form.is_conditional_section"
+                                v-model:value="form.is_conditional_section"
                                 true-value="yes"
                                 false-value="no"
                                 name="is_conditional_section">
@@ -179,7 +179,7 @@
                                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                             </label>
                             <b-select 
-                                    v-model="selectedConditionalMetadatum"
+                                    v-model:value="selectedConditionalMetadatum"
                                     :placeholder="$i18n.get('label_select_metadatum')">
                                 <option 
                                         v-for="conditionalMetadatum of availableConditionalMetadata"
@@ -201,7 +201,7 @@
                             </label>
                             <div style="overflow-y: auto; overflow-x: hidden; max-height: 100px;">
                                 <b-checkbox
-                                        v-model="selectedConditionalValue"
+                                        v-model:value="selectedConditionalValue"
                                         v-for="(conditionalValue, conditionalValueIndex) of availableConditionalMetadata.find((availableMetadatum) => availableMetadatum.id == selectedConditionalMetadatum).metadata_type_object.options.options.split('\n')"
                                         :key="conditionalValueIndex"
                                         :native-value="conditionalValue">

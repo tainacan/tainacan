@@ -44,7 +44,7 @@
                                     custom
                                     aria-role="listitem">
                                 <b-checkbox
-                                        v-model="metadataType.enabled"
+                                        v-model:value="metadataType.enabled"
                                         :native-value="metadataType.enabled">
                                     {{ metadataType.name }}
                                 </b-checkbox>
@@ -55,7 +55,7 @@
                 <b-field class="header-item">
                     <b-input 
                             :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
-                            v-model="metadataNameFilterString"
+                            v-model:value="metadataNameFilterString"
                             icon="magnify"
                             size="is-small"
                             icon-right="close-circle"
@@ -80,7 +80,7 @@
 
         <!-- The Metadata Sections list -->
         <draggable 
-                v-model="activeMetadataSectionsList"
+                v-model:value="activeMetadataSectionsList"
                 class="active-metadata-sections-area"
                 @change="handleSectionChange($event)"
                 :group="{ name:'metadata-sections', pull: false, put: [ 'metadata-sections' ] }"
@@ -250,7 +250,7 @@
                 <!-- The Metadata list, inside each metadata section -->
                 <template v-if="metadataSection.metadata_object_list && Array.isArray(metadataSection.metadata_object_list)">
                     <draggable 
-                            v-model="metadataSection.metadata_object_list"
+                            v-model:value="metadataSection.metadata_object_list"
                             class="active-metadata-area"
                             @change="handleChange($event, sectionIndex)"
                             :group="{ name:'metadata', pull: [ 'metadata' ], put: [ 'metadata' ] }"

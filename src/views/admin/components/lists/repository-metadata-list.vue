@@ -46,7 +46,7 @@
                                     custom
                                     aria-role="listitem">
                                 <b-checkbox
-                                        v-model="metadataType.enabled"
+                                        v-model:value="metadataType.enabled"
                                         :native-value="metadataType.enabled">
                                     {{ metadataType.name }}
                                 </b-checkbox>
@@ -57,7 +57,7 @@
                 <b-field class="header-item">
                     <b-input 
                             :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
-                            v-model="metadataNameFilterString"
+                            v-model:value="metadataNameFilterString"
                             icon="magnify"
                             size="is-small"
                             icon-right="close-circle"
@@ -84,7 +84,7 @@
         <!-- The Repository Metadata list -->
         <div class="active-metadata-sections-area">
             <draggable 
-                    v-model="activeMetadatumList"
+                    v-model:value="activeMetadatumList"
                     class="active-metadata-area"
                     @change="handleChange($event)"
                     :group="{ name:'metadata', pull: false, put: true }"

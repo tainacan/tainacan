@@ -37,7 +37,7 @@
                         </label>
 
                     <b-taginput
-                            v-model="termNames"
+                            v-model:value="termNames"
                             attached
                             :confirm-keys="termNamesSeparator"
                             :on-paste-separators="termNamesSeparator"
@@ -52,7 +52,7 @@
                                 v-for="separator of ['Enter', ',', ';', '|']"
                                 :key="separator"
                                 name="term-multiple-insertion-separator"
-                                v-model="termNamesSeparator"
+                                v-model:value="termNamesSeparator"
                                 :native-value="separator"
                                 :disabled="separator == 'Enter'">
                             <kbd>{{ separator }}</kbd>
@@ -66,12 +66,12 @@
                         class="parent-term-options">
                     <b-radio 
                             :native-value="false"
-                            v-model="hasParent">
+                            v-model:value="hasParent">
                         {{ $i18n.get('label_no_parent_root_term') }}
                     </b-radio>
                     <b-radio 
                             :native-value="true"
-                            v-model="hasParent">
+                            v-model:value="hasParent">
                         {{ $i18n.get('instruction_select_a_parent_term') }}
                     </b-radio>
                     <b-autocomplete
@@ -81,7 +81,7 @@
                             :data="parentTerms"
                             field="name"
                             clearable
-                            v-model="parentTermName"
+                            v-model:value="parentTermName"
                             @select="onSelectParentTerm($event)"
                             :loading="isFetchingParentTerms"
                             @input="fetchParentTerms"

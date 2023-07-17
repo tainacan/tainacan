@@ -21,7 +21,7 @@
                     size="is-small"
                     animated
                     @input="fetchSelectedLabels()"
-                    v-model="activeTab"
+                    v-model:value="activeTab"
                     :class="{ 'hidden-tabs-section': !isModal || !hasToDisplaySearchBar }">
                 <b-tab-item 
                         :style="{ margin: isModal ? '0' : '0 0 1rem 0' }"
@@ -36,7 +36,7 @@
                                 autocomplete="on"
                                 :placeholder="$i18n.get('instruction_search')"
                                 :aria-label="$i18n.get('instruction_search')"
-                                v-model="optionName"
+                                v-model:value="optionName"
                                 @input="autoComplete"
                                 icon-right="magnify"
                                 type="search" />

@@ -5,7 +5,7 @@
                 :disabled="disabled"
                 :is="getComponent"
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
-                v-model="valueComponent"
+                v-model:value="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNewFromOptions"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_term')"
@@ -50,7 +50,7 @@
 
         <!-- Term creation modal, used on admin for a complete term creation -->
         <b-modal
-                v-model="isTermCreationModalOpen"
+                v-model:value="isTermCreationModalOpen"
                 :width="768"
                 trap-focus
                 aria-role="dialog"

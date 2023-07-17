@@ -8,7 +8,7 @@
         <div class="field">
             <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
             <draggable 
-                    v-model="availableMetadatumList"
+                    v-model:value="availableMetadatumList"
                     :sort="false" 
                     :group="{ name:'metadata', pull: 'clone', put: false, revertClone: true }"
                     drag-class="sortable-drag">
@@ -65,7 +65,7 @@
 
             <draggable
                     v-if="!isRepositoryLevel" 
-                    v-model="availableMetadataSectionsList"
+                    v-model:value="availableMetadataSectionsList"
                     :sort="false" 
                     :group="{ name:'metadata-sections', pull: 'clone', put: false, revertClone: true }"
                     drag-class="sortable-drag">

@@ -3,7 +3,7 @@
         <b-datepicker
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
-                v-model="dateInit"
+                v-model:value="dateInit"
                 @focus="isTouched = true"
                 @input="($event) => { resetPage(); validadeValues($event) }"
                 editable
@@ -29,7 +29,7 @@
         <b-datepicker
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
-                v-model="dateEnd"
+                v-model:value="dateEnd"
                 @input="validadeValues()"
                 @focus="isTouched = true"
                 editable

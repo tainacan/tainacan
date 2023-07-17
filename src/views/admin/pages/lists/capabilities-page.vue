@@ -14,7 +14,7 @@
                 <div class="control has-icons-right  is-small is-clearfix">
                     <b-autocomplete
                             clearable
-                            v-model="filteredRole"
+                            v-model:value="filteredRole"
                             :data="filteredRoles"
                             :placeholder="$i18n.get('instruction_type_search_roles_filter')"
                             keep-first

@@ -3,7 +3,7 @@
         <b-tabs
                 size="is-small"
                 animated
-                v-model="activeTab">
+                v-model:value="activeTab">
             <b-tab-item :label="$i18n.get('label_insert_items')">
                 <b-taginput
                         expanded

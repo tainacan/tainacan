@@ -102,7 +102,7 @@
                             size="is-small"
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
                             autocomplete="on"
-                            v-model="searchQuery"
+                            v-model:value="searchQuery"
                             @keyup.enter="searchTaxonomies()"
                             icon-right="magnify"
                             icon-right-clickable

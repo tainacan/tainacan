@@ -25,7 +25,7 @@
                             <b-field class="header-item">
                                 <b-input 
                                         :placeholder="$i18n.get('instruction_type_search_filter_filter')"
-                                        v-model="filterNameFilterString"
+                                        v-model:value="filterNameFilterString"
                                         icon="magnify"
                                         size="is-small"
                                         icon-right="close-circle"
@@ -53,7 +53,7 @@
                             class="active-filters-area"
                             @change="handleChangeOnFilter"
                             :class="{'filters-area-receive': isDraggingFromAvailable}" 
-                            v-model="activeFiltersList"
+                            v-model:value="activeFiltersList"
                             :group="{ name:'filters', pull: false, put: true }"
                             :sort="(openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel"
                             :handle="'.handle'" 
@@ -231,7 +231,7 @@
                             <b-field class="header-item">
                                 <b-input 
                                         :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
-                                        v-model="metadatumNameFilterString"
+                                        v-model:value="metadatumNameFilterString"
                                         icon="magnify"
                                         size="is-small"
                                         icon-right="close-circle"
@@ -245,7 +245,7 @@
                         <draggable
                                 @change="handleChangeOnMetadata"
                                 v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
-                                v-model="availableMetadata"
+                                v-model:value="availableMetadata"
                                 :sort="false"
                                 filter=".not-sortable-item"
                                 :prevent-on-filter="false" 

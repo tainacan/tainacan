@@ -16,7 +16,7 @@
             </div>
         </section>
         <draggable
-                v-model="childrenMetadata"
+                v-model:value="childrenMetadata"
                 :style="{ minHeight: childrenMetadata.length > 0 ? '40px' : '70px' }"
                 class="active-metadata-area child-metadata-area"
                 @change="handleChange"

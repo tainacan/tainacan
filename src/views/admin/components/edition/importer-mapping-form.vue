@@ -309,7 +309,7 @@
                         <b-field>
                             <b-select
                                     expanded
-                                    v-model="selectedTitle"
+                                    v-model:value="selectedTitle"
                                     :placeholder="$i18n.get('label_select_metadatum')">
                                 <option
                                         v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"

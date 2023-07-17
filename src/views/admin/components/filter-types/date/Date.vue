@@ -68,12 +68,12 @@
                 size="is-small"
                 step="1"
                 @input="emitOnlyYear($event)"
-                v-model="yearsOnlyValue"/> -->
+                v-model:value="yearsOnlyValue"/> -->
         <b-datepicker
                 position="is-bottom-left"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
-                v-model="value"
+                v-model:value="value"
                 @input="($event) => { resetPage(); emit($event); }"
                 editable
                 :trap-focus="false"

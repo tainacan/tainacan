@@ -14,7 +14,7 @@
             <b-select
                     name="metadata_type_relationship[collection_id]"
                     :placeholder="$i18n.get('instruction_select_collection_fetch_items' )"
-                    v-model="collection"
+                    v-model:value="collection"
                     @change="emitValues()"
                     @focus="clear()"
                     :loading="loading"
@@ -45,7 +45,7 @@
                 </label>
                 <b-select
                         name="metadata_type_relationship[search]"
-                        v-model="modelSearch"
+                        v-model:value="modelSearch"
                         expanded>
                     <option
                             v-for="(option, index) in metadata.filter(metadatum => metadatum.metadata_type_object.component !== 'tainacan-compound')"
@@ -72,7 +72,7 @@
                             native-value="thumbnail"
                             name="metadata_type_relationship[display_related_item_metadata]"
                             @input="emitValues()"
-                            v-model="displayRelatedItemMetadata">
+                            v-model:value="displayRelatedItemMetadata">
                         {{ $i18n.get('label_thumbnail') }}
                     </b-checkbox>
                     <b-checkbox
@@ -81,7 +81,7 @@
                             :native-value="metadatumOption.id"
                             name="metadata_type_relationship[display_related_item_metadata]"
                             @input="emitValues()"
-                            v-model="displayRelatedItemMetadata"
+                            v-model:value="displayRelatedItemMetadata"
                             :disabled="metadatumOption.id == modelSearch">
                         {{ metadatumOption.name }}
                     </b-checkbox>
@@ -95,7 +95,7 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model="modelDisplayInRelatedItems"
+                    v-model:value="modelDisplayInRelatedItems"
                     @input="emitValues()"
                     true-value="yes"
                     false-value="no" />
@@ -110,7 +110,7 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model="modelAcceptDraftItems"
+                    v-model:value="modelAcceptDraftItems"
                     @input="emitValues()"
                     true-value="yes"
                     false-value="no" />

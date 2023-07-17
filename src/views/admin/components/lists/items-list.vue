@@ -20,7 +20,7 @@
                         style="margin-left: 10px"
                         v-if="totalPages > 1 && allItemsOnPageSelected && Array.isArray(items) && items.length > 1">
                     <b-checkbox
-                            v-model="isAllItemsSelected">
+                            v-model:value="isAllItemsSelected">
                         {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
                     </b-checkbox>
                 </span>
@@ -191,7 +191,7 @@
                                 v-else
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                v-model="singleItemSelection"
+                                v-model:value="singleItemSelection"
                                 :aria-label="$i18n.get('label_select_item')">
                             <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </b-radio>
@@ -483,7 +483,7 @@
                                 v-else
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                v-model="singleItemSelection">
+                                v-model:value="singleItemSelection">
                             <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </b-radio>
                     </div>
@@ -934,7 +934,7 @@
                                     v-else
                                     name="item-single-selection"
                                     :native-value="item.id"
-                                    v-model="singleItemSelection">
+                                    v-model:value="singleItemSelection">
                                 <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                             </b-radio>
                         </td>
@@ -1588,7 +1588,7 @@
                                 <b-select
                                         :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model="selectedGeocoordinateMetadatumId">
+                                        v-model:value="selectedGeocoordinateMetadatumId">
                                     <option
                                             v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
                                             :key="geocoordinateMetadatum.id"

@@ -4,7 +4,7 @@
                 expanded
                 :placeholder="$i18n.get('instruction_select_a_interval')"
                 @input="($event) => { resetPage; changeInterval($event) }"
-                v-model="selectedInterval">
+                v-model:value="selectedInterval">
             <option value="">
                 {{ $i18n.get('label_selectbox_init') }}...
             </option>

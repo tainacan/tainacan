@@ -9,7 +9,7 @@
             </label>
             <b-select
                     name="type_options"
-                    v-model="type"
+                    v-model:value="type"
                     @input="onUpdateType">
                 <option value="day">{{ $i18n.get('label_day') }}</option>
                 <option value="month">{{ $i18n.get('label_month') }}</option>

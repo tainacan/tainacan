@@ -67,7 +67,7 @@
                 size="is-small"
                 :step="Number(filterTypeOptions.step)"
                 @input="($event) => { resetPage($event); emit($event); }"
-                v-model="value"/>
+                v-model:value="value"/>
     </div>
 </template>
 

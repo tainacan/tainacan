@@ -58,7 +58,7 @@
                 </p>
                 <component 
                         :is="metadatumComponent"
-                        v-model="values[0]" 
+                        v-model:value="values[0]" 
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
                         @blur="performValueChange"
@@ -81,7 +81,7 @@
                             <component 
                                     v-if="index > 0"
                                     :is="metadatumComponent"
-                                    v-model="values[index]" 
+                                    v-model:value="values[index]" 
                                     :item-metadatum="itemMetadatum"
                                     @input="changeValue"
                                     @blur="performValueChange"
@@ -135,7 +135,7 @@
                 </p>
                 <component
                         :is="metadatumComponent"
-                        v-model="values"
+                        v-model:value="values"
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
                         @blur="performValueChange"

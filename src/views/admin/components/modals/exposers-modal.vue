@@ -121,7 +121,7 @@
                                 placement: 'bottom',
                                 popperClass: ['tainacan-tooltip', 'tooltip']
                             }" 
-                            v-model="shouldRespectFetchOnly">{{ $i18n.get('label_expose_only_displayed_metadata') }}</b-checkbox>
+                            v-model:value="shouldRespectFetchOnly">{{ $i18n.get('label_expose_only_displayed_metadata') }}</b-checkbox>
                 </div>
                 <b-field 
                         :addons="false"

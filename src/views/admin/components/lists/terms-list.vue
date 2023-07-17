@@ -10,7 +10,7 @@
                         autocomplete="on"
                         :placeholder="$i18n.get('instruction_search')"
                         :aria-name="$i18n.get('instruction_search')"
-                        v-model="searchString"
+                        v-model:value="searchString"
                         icon-right="magnify"
                         type="search" />
             </b-field>

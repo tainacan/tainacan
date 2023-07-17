@@ -10,7 +10,7 @@
             <div>
                 <b-field>
                     <b-checkbox
-                            v-model="showIntervalOnTag"
+                            v-model:value="showIntervalOnTag"
                             @input="onUpdateShowIntervalOnTag()">
                         {{ $i18n.get('info_show_interval_on_tag') }}
                     </b-checkbox>
@@ -34,7 +34,7 @@
                                 expanded
                                 :placeholder="$i18n.get('label')"
                                 @input="onUpdate(interval)"
-                                v-model="interval.label" />
+                                v-model:value="interval.label" />
                     </b-field>
                     <b-field>
                         <b-input
@@ -43,14 +43,14 @@
                                 step="0.01"
                                 :placeholder="$i18n.get('info_initial_value')"
                                 @input="onUpdate(interval, true)"
-                                v-model="interval.from" />
+                                v-model:value="interval.from" />
                         <b-input
                                 expanded
                                 type="number"
                                 step="0.01"
                                 :placeholder="$i18n.get('info_final_value')"
                                 @input="onUpdate(interval, true)"
-                                v-model="interval.to" />
+                                v-model:value="interval.to" />
                     </b-field>
                     <p class="control">
                         <a

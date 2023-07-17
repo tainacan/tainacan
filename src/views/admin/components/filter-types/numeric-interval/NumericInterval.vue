@@ -7,7 +7,7 @@
                 size="is-small"
                 @input="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"
-                v-model="valueInit"
+                v-model:value="valueInit"
                 />
         <p 
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
@@ -21,7 +21,7 @@
                 size="is-small"
                 @input="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"
-                v-model="valueEnd"/>
+                v-model:value="valueEnd"/>
         
     </div>
 </template>

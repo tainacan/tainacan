@@ -11,7 +11,7 @@
                 size="is-small"
                 animated
                 @input="fetchSelectedLabels()"
-                v-model="activeTab"
+                v-model:value="activeTab"
                 :class="{ 'hidden-tabs-section': (shouldBeginWithListExpanded && !hasToDisplaySearchBar) }">
             <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                 
@@ -39,7 +39,7 @@
                             autocomplete="on"
                             :placeholder="metadatum.placeholder ? metadatum.placeholder : ( expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search') )"
                             :aria-label="expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search')"
-                            v-model="optionName"
+                            v-model:value="optionName"
                             @input="autoComplete"
                             @focus="!shouldBeginWithListExpanded && !expandResultsSection ? toggleResultsSection() : null"
                             icon-right="magnify"

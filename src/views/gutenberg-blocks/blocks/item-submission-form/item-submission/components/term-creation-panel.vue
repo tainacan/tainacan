@@ -29,7 +29,7 @@
                 </label>
                 <b-input
                         :placeholder="$i18n.get('label_term_without_name')"
-                        v-model="form.name"
+                        v-model:value="form.name"
                         name="name"
                         @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
             </b-field>
@@ -46,7 +46,7 @@
                             @input="onToggleSwitch()"
                             id="tainacan-checkbox-has-parent" 
                             size="is-small"
-                            v-model="hasParent" />
+                            v-model:value="hasParent" />
                     <help-button
                             :title="$i18n.get('label_parent_term')"
                             :message="$i18n.get('info_help_parent_term')"/>
@@ -57,7 +57,7 @@
                         :data="parentTerms"
                         field="name"
                         clearable
-                        v-model="parentTermName"
+                        v-model:value="parentTermName"
                         @select="onSelectParentTerm($event)"
                         :loading="isFetchingParentTerms"
                         @input="fetchParentTerms"

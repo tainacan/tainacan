@@ -26,7 +26,7 @@
                 <br>
                 <b-upload
                         native
-                        v-model="submitedFileList"
+                        v-model:value="submitedFileList"
                         drag-drop
                         multiple
                         @input="uploadFiles()"
