@@ -146,11 +146,14 @@ export default {
         }
     },
     watch: {
-        '$route' (to, from) {
-            if (to.path != from.path) {
-                this.activeRoute = to.name;
-                this.pageTitle = this.$route.meta.title;
-            }
+        '$route': {
+            handler(to, from) {
+                if (to.path != from.path) {
+                    this.activeRoute = to.name;
+                    this.pageTitle = this.$route.meta.title;
+                }
+            },
+            deep: true
         }
     },
     created() {

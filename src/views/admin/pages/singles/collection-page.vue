@@ -37,24 +37,27 @@ export default {
         }
     },
     watch: {
-        '$route' (to, from) {
-            if (!this.isRepositoryLevel &&
-                (from != undefined) &&
-                (from.path != undefined) &&
-                (to.path != from.path) &&
-                (this.collectionId != this.$route.params.collectionId)
-            ) {
-                this.isLoadingCollectionBasics = true;
-                this.collectionId = this.$route.params.collectionId;
-                this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
-                    .then(() => {
-                        this.isLoadingCollectionBasics = false;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                        this.isLoadingCollectionBasics = false;
-                    });
-            }
+        '$route': {
+            handler(to, from) {
+                if (!this.isRepositoryLevel &&
+                    (from != undefined) &&
+                    (from.path != undefined) &&
+                    (to.path != from.path) &&
+                    (this.collectionId != this.$route.params.collectionId)
+                ) {
+                    this.isLoadingCollectionBasics = true;
+                    this.collectionId = this.$route.params.collectionId;
+                    this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
+                        .then(() => {
+                            this.isLoadingCollectionBasics = false;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isLoadingCollectionBasics = false;
+                        });
+                }
+            },
+            deep: true
         }
     },
     created() {

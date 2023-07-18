@@ -54,6 +54,7 @@ export default {
                 this.buildActivitiesPerUserChart();
             },
             immediate: true,
+            deep: true
         }
     },
     methods: {

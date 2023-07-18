@@ -36,6 +36,7 @@ export default {
                 this.buildMetadataDistributionChart();
             },
             immediate: true,
+            deep: true
         }
     },
     methods: {

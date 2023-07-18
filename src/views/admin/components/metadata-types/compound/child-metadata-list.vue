@@ -279,7 +279,8 @@
                             this.editMetadatum(this.childrenMetadata[existingMetadataIndex])                  
                     }
                 },
-                immediate: true
+                immediate: true,
+                deep: true
             },
             'parent.metadata_type_options.children_objects': {
                 handler(childrenObjects) {
@@ -288,7 +289,8 @@
                     else
                         this.childrenMetadata = [];
                 }, 
-                immediate: true
+                immediate: true,
+                deep: true
             },
             collapseAll(isCollapsed) {
                 this.childrenMetadata.forEach((metadatum) => Object.assign( this.collapses, { [metadatum.id]: isCollapsed }));

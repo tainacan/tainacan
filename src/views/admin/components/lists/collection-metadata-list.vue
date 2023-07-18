@@ -569,7 +569,8 @@ export default {
                         this.editMetadataSection(newQuery.sectionEdit);                        
                 }
             },
-            immediate: true
+            immediate: true,
+            deep: true
         },
         collapseAll(isCollapsed) {
             this.activeMetadataSectionsList.forEach((metadataSection) => {
@@ -581,8 +582,8 @@ export default {
     mounted() {
         this.cleanMetadataSections();
         
-        this.$eventBusMetadataList.$on('addMetadatumViaButton', this.addMetadatumViaButton);
-        this.$eventBusMetadataList.$on('addMetadataSectionViaButton', this.addMetadataSectionViaButton);
+        this.$eventBusMetadataList.$emitter.$on('addMetadatumViaButton', this.addMetadatumViaButton);
+        this.$eventBusMetadataList.$emitter.$on('addMetadataSectionViaButton', this.addMetadataSectionViaButton);
 
         this.collectionId = this.$route.params.collectionId;
         this.isLoadingMetadataSections = true;
@@ -600,8 +601,8 @@ export default {
         if (this.metadataSearchCancel != undefined)
             this.metadataSearchCancel.cancel('Metadata search Canceled.');
         
-        this.$eventBusMetadataList.$off('addMetadatumViaButton', this.addMetadatumViaButton);
-        this.$eventBusMetadataList.$off('addMetadataSectionViaButton', this.addMetadataSectionViaButton);
+        this.$eventBusMetadataList.$emitter.$off('addMetadatumViaButton', this.addMetadatumViaButton);
+        this.$eventBusMetadataList.$emitter.$off('addMetadataSectionViaButton', this.addMetadataSectionViaButton);
     },
     methods: {
         ...mapActions('metadata', [

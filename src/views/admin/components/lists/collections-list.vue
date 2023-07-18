@@ -392,23 +392,29 @@ export default {
         }
     },
     watch: {
-        collections() {
-            this.selectedCollections = [];
-            for (let i = 0; i < this.collections.length; i++)
-                this.selectedCollections.push(false);    
+        collections: {
+            handler() {
+                this.selectedCollections = [];
+                for (let i = 0; i < this.collections.length; i++)
+                    this.selectedCollections.push(false);    
+            },
+            deep: true
         },
-        selectedCollections() {
-            let allSelected = true;
-            let isSelecting = false;
-            for (let i = 0; i < this.selectedCollections.length; i++) {
-                if (this.selectedCollections[i] == false) {
-                    allSelected = false;
-                } else {
-                    isSelecting = true;
+        selectedCollections: {
+            handler() {
+                let allSelected = true;
+                let isSelecting = false;
+                for (let i = 0; i < this.selectedCollections.length; i++) {
+                    if (this.selectedCollections[i] == false) {
+                        allSelected = false;
+                    } else {
+                        isSelecting = true;
+                    }
                 }
-            }
-            this.allCollectionsOnPageSelected = allSelected;
-            this.isSelectingCollections = isSelecting;
+                this.allCollectionsOnPageSelected = allSelected;
+                this.isSelectingCollections = isSelecting;
+            },
+            deep: true
         }
     },
     methods: {

@@ -198,8 +198,11 @@ export default {
         })
     },
     watch: {
-        totalByStatus() {
-            this.buildVisibilityChart();
+        totalByStatus: {
+            handler() {
+                this.buildVisibilityChart();
+            },
+            deep: true
         }
     },
     methods: {

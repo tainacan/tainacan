@@ -45,7 +45,8 @@ export default {
             handler() {
                 this.buildCollectionsList();
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     methods: {

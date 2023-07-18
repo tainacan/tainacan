@@ -275,23 +275,28 @@
             }
         },
         watch: {
-            taxonomies() {
-                this.selected = [];
-                for (let i = 0; i < this.taxonomies.length; i++)
-                    this.selected.push(false);    
+            taxonomies: {
+                handler() {
+                    this.selected = [];
+                    for (let i = 0; i < this.taxonomies.length; i++)
+                        this.selected.push(false);   
+                } 
             },
-            selected() {
-                let allSelected = true;
-                let isSelecting = false;
-                for (let i = 0; i < this.selected.length; i++) {
-                    if (this.selected[i] == false) {
-                        allSelected = false;
-                    } else {
-                        isSelecting = true;
+            selected: {
+                handler() {
+                    let allSelected = true;
+                    let isSelecting = false;
+                    for (let i = 0; i < this.selected.length; i++) {
+                        if (this.selected[i] == false) {
+                            allSelected = false;
+                        } else {
+                            isSelecting = true;
+                        }
                     }
-                }
-                this.allOnPageSelected = allSelected;
-                this.isSelecting = isSelecting;
+                    this.allOnPageSelected = allSelected;
+                    this.isSelecting = isSelecting;
+                },
+                deep: true
             }
         },
         methods: {

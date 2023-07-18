@@ -149,8 +149,11 @@
             }
         },
         watch: {
-            'query'() {
-                this.updateSelectedValues();
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true,
             },
         },
         mounted() {

@@ -157,8 +157,11 @@
             }
         },
         watch: {
-            valueComponent( val ) {
-                this.$emit('input', val);
+            valueComponent: {
+                handler( val ) {
+                    this.$emit('input', val);
+                },
+                deep: true
             }
         },
         created() {

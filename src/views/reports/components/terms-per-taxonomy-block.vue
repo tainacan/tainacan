@@ -49,7 +49,8 @@ export default {
             handler() {
                 this.buildTaxonomiesList();
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     methods: {

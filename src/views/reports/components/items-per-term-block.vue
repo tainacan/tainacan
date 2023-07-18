@@ -171,7 +171,8 @@ export default {
                 if (this.taxonomiesListArray && this.taxonomiesListArray.length)
                     this.selectedTaxonomy = this.taxonomiesListArray[0];
             },
-            immediate: true
+            immediate: true,
+            deep: true
         },
         selectedTaxonomy: {
             handler() {
@@ -179,7 +180,8 @@ export default {
                 if (this.selectedTaxonomy && this.selectedTaxonomy.id)
                     this.loadTaxonomyTerms();
             },
-            immediate: true
+            immediate: true,
+            deep: true
         },
         termsDisplayedPage() {
             this.buildTaxonomyTermsChart();

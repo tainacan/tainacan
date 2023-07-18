@@ -334,7 +334,8 @@ export default {
                     this.loadMetadataList();
                 }
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     created() {

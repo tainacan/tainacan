@@ -363,7 +363,8 @@ export default {
                 if (this.metadataListArray && this.metadataListArray.length)
                     this.selectedMetadatum = this.metadataListArray[0];
             },
-            immediate: true
+            immediate: true,
+            deep: true
         },
         selectedMetadatum: {
             handler() {
@@ -373,7 +374,8 @@ export default {
                     this.loadMetadatumTerms();
                 }
             },
-            immediate: true
+            immediate: true,
+            deep: true
         },
         termsDisplayedPage() {
             this.buildMetadatumTermsChart();
@@ -389,10 +391,13 @@ export default {
             this.childTermsDisplayedPage = 1;
             this.buildMetadatumChildTermsChart();
         },
-        selectedParentTerm() {
-            if (this.selectedParentTerm[this.selectedParentTerm.length - 1] && this.selectedParentTerm[this.selectedParentTerm.length - 1].id) {
-                this.loadMetadatumChildTerms();
-            }
+        selectedParentTerm: {
+            handler() {
+                if (this.selectedParentTerm[this.selectedParentTerm.length - 1] && this.selectedParentTerm[this.selectedParentTerm.length - 1].id) {
+                    this.loadMetadatumChildTerms();
+                }
+            },
+            deep: true
         },
         itemsPerTermChartMode() {
             this.termsDisplayedPage = 1;

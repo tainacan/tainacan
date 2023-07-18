@@ -667,9 +667,12 @@
             }
         },
         watch: {
-            '$route' (to, from) {
-                if (to !== from)
-                    this.$parent.close();
+            '$route': {
+                hanlder(to, from) {
+                    if (to !== from)
+                        this.$parent.close();
+                },
+                deep: true
             }
         },
         created() {

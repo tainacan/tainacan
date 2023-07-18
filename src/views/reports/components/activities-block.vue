@@ -121,7 +121,8 @@ export default {
                 if (this.chartData && this.chartData.totals)
                     this.buildActivitiesChart();
             },
-            immediate: true
+            immediate: true,
+            deep: true
         },
     },
     methods: {

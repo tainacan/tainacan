@@ -358,27 +358,33 @@
             }
         },
         watch: {
-            processes() {
-                this.selected = [];
-                for (let i = 0; i < this.processes.length; i++)
-                    this.selected.push(false);   
-                
-                this.collapses = [];
-                for (let i = 0; i < this.processes.length; i++)
-                    this.collapses.push(false);   
+            processes: {
+                handler() {
+                    this.selected = [];
+                    for (let i = 0; i < this.processes.length; i++)
+                        this.selected.push(false);   
+                    
+                    this.collapses = [];
+                    for (let i = 0; i < this.processes.length; i++)
+                        this.collapses.push(false);   
+                },
+                deep: true
             },
-            selected() {
-                let allSelected = true;
-                let isSelecting = false;
-                for (let i = 0; i < this.selected.length; i++) {
-                    if (this.selected[i] == false) {
-                        allSelected = false;
-                    } else {
-                        isSelecting = true;
+            selected: {
+                handler() {
+                    let allSelected = true;
+                    let isSelecting = false;
+                    for (let i = 0; i < this.selected.length; i++) {
+                        if (this.selected[i] == false) {
+                            allSelected = false;
+                        } else {
+                            isSelecting = true;
+                        }
                     }
-                }
-                this.allOnPageSelected = allSelected;
-                this.isSelecting = isSelecting;
+                    this.allOnPageSelected = allSelected;
+                    this.isSelecting = isSelecting;
+                },
+                deep: true
             }
         },
         mounted() {

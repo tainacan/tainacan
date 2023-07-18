@@ -163,7 +163,7 @@
             }
         },
         watch:{
-            collection( value ){
+            collection( value ) {
                 this.collection = value;
                 if( value && value !== '' ) {
                     this.fetchMetadataFromCollection(value);

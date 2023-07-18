@@ -535,7 +535,8 @@ export default {
                         this.editFilter(this.activeFiltersList[existingFilterIndex])                        
                 }
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     created() {

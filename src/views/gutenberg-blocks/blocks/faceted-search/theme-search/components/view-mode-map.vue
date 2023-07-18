@@ -506,15 +506,18 @@ export default {
         }
     },
     watch: {
-        itemsLocations() {
-            setTimeout(() => {
-                if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
-                    if (this.itemsLocations.length == 1)
-                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
-                    else
-                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
-                }
-            }, 500)
+        itemsLocations: { 
+            handler() {
+                setTimeout(() => {
+                    if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
+                        if (this.itemsLocations.length == 1)
+                            this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                        else
+                            this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                    }
+                }, 500)
+            },
+            deep: true
         },
         selectedGeocoordinateMetadatum() {
             this.clearSelectedMarkers();
@@ -533,7 +536,8 @@ export default {
                 else 
                     this.selectedGeocoordinateMetadatumId = this.$userPrefs.get(prefsGeocoordinateMetadatum);
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     methods: {

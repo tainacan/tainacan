@@ -67,8 +67,11 @@
                 },
                 immediate: true
             },
-            'query'() {
-                this.updateSelectedValues();
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true
             }
         },
         created() {

@@ -96,10 +96,13 @@
             }
         },
         watch: {
-            '$route' (to) {
-                this.isMenuCompressed = (to.params.collectionId != undefined);
-                this.activeRoute = to.name;
-                this.isRepositoryLevel = this.$route.params.collectionId == undefined;
+            '$route': {
+                handler(to) {
+                    this.isMenuCompressed = (to.params.collectionId != undefined);
+                    this.activeRoute = to.name;
+                    this.isRepositoryLevel = this.$route.params.collectionId == undefined;
+                },
+                deep: true
             }
         },
         created() {

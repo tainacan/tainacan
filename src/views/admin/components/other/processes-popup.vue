@@ -169,17 +169,23 @@ export default {
         }
     },
     watch: {
-        updatedProcesses() {
-            if (this.updatedProcesses.length !== 0) {
-                for (let updatedProcess of this.updatedProcesses) {
-                    let updatedProcessIndex = this.bgProcesses.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
-                    if (updatedProcessIndex >= 0)
-                        Object.assign(this.bgProcesses, { [updatedProcessIndex]: updatedProcess });
+        updatedProcesses: { 
+            handler() {
+                if (this.updatedProcesses.length !== 0) {
+                    for (let updatedProcess of this.updatedProcesses) {
+                        let updatedProcessIndex = this.bgProcesses.findIndex((aProcess) => aProcess.ID == updatedProcess.ID);
+                        if (updatedProcessIndex >= 0)
+                            Object.assign(this.bgProcesses, { [updatedProcessIndex]: updatedProcess });
+                    }
                 }
-            }
+            },
+            deep: true
         },
-        bgProcesses(newBG) {
-            this.hasAnyProcessExecuting = newBG.some((element) => element.done <= 0);
+        bgProcesses: {
+            hanlder(newBG) {
+                this.hasAnyProcessExecuting = newBG.some((element) => element.done <= 0);
+            },
+            deep: true
         }
     },
     created() {

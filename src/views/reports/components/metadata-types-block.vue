@@ -65,7 +65,8 @@ export default {
                 if (this.chartData && this.chartData.totals)
                     this.buildMetadataTypeChart();
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     methods: {

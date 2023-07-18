@@ -134,9 +134,12 @@
             }
         },
         watch: {
-            filterTags() {
-                if (typeof this.swiper.update == 'function')
-                    this.swiper.update();
+            filterTags: {
+                handler() {
+                    if (typeof this.swiper.update == 'function')
+                        this.swiper.update();
+                },
+                deep: true
             }
         },
         mounted() {
