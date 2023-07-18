@@ -33,7 +33,7 @@ import VTooltip from 'floating-vue';
 import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 import cssVars from 'css-vars-ponyfill';
-import VueBlurHash from 'vue-blurhash';
+import VueBlurHash from 'another-vue3-blurhash';
 
 // Metadata Types
 import Text from '../components/metadata-types/text/Text.vue';

@@ -1855,7 +1855,7 @@ import BulkEditionModal from '../modals/bulk-edition-modal.vue';
 import Masonry from 'masonry-layout';
 import { dateInter } from "../../js/mixins";
 
-import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from 'vue2-leaflet';
+import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { latLng } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
@@ -2565,7 +2565,7 @@ export default {
     @import "../../scss/_view-mode-map.scss";
     
     // Vue Blurhash transtition effect
-    @import '../../../../../node_modules/vue-blurhash/dist/vue-blurhash.css';
+    @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
 
     .selection-control {
         margin-bottom: 6px;

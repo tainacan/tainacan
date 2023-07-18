@@ -78,7 +78,7 @@ export default {
     .theme-items-list {
 
         // Vue Blurhash transtition effect
-        @import '../../../../../node_modules/vue-blurhash/dist/vue-blurhash.css';
+        @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
 
         // Tainacan imports
         @import "../../../admin/scss/_tables.scss";

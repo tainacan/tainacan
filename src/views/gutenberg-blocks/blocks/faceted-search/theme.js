@@ -25,7 +25,7 @@ import {
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';
-import VueBlurHash from 'vue-blurhash';
+import VueBlurHash from 'another-vue3-blurhash';
 
 import ThemeItemsPage from './theme-search/theme-items-page.vue';
 import ThemeSearch from './theme.vue';

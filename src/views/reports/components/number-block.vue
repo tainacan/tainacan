@@ -152,7 +152,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import ICountUp from 'vue-countup-v2';
+import ICountUp from 'vue-countup-v3';
 import { reportsChartMixin } from '../js/reports-mixin';
 
 export default {

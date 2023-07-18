@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
 import CarouselTermsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
-import VueBlurHash from 'vue-blurhash';
+import VueBlurHash from 'another-vue3-blurhash';
 
 export default (element) => {
 

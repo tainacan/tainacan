@@ -87,7 +87,7 @@
 <script>
     import { nextTick } from 'vue';
 
-    import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl } from 'vue2-leaflet';
+    import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl } from '@vue-leaflet/vue-leaflet';
     import 'leaflet/dist/leaflet.css';
     import { Icon, latLng } from 'leaflet';
     import iconUrl from 'leaflet/dist/images/marker-icon.png';

@@ -369,7 +369,7 @@
 
 <script>
 import { viewModesMixin } from '../js/view-modes-mixin.js';
-import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from 'vue2-leaflet';
+import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { latLng } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
