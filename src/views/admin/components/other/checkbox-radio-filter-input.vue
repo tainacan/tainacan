@@ -402,7 +402,7 @@
             else
                 this.isCheckboxListLoading = true;
             
-            this.$parent.$on('updateTaxonomyInputs', ($event) => { 
+            this.$parent.$emitter.$on('updateTaxonomyInputs', ($event) => { 
                 if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
                     this.optionName = '';

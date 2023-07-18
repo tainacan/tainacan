@@ -385,8 +385,11 @@
             }
         },
         watch: {
-            selected() {
-                this.$emit('input', this.selected);
+            selected: {
+                handler() {
+                    this.$emit('input', this.selected);
+                },
+                deep: true
             },
             optionName(newValue, oldValue) {
                 if (newValue != oldValue) {
@@ -405,7 +408,7 @@
 
             this.expandResultsSection = this.shouldBeginWithListExpanded;
             
-            this.$parent.$on('updateTaxonomyInputs', ($event) => { 
+            this.$parent.$emitter.$on('updateTaxonomyInputs', ($event) => { 
                 if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
                     this.optionName = '';

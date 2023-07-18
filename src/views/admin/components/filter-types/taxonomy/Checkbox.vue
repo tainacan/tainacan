@@ -98,19 +98,23 @@
             }
         },
         watch: {
-            selected(newVal, oldVal) {
-                const isEqual = (Array.isArray(newVal) && Array.isArray(oldVal) && (newVal.length == oldVal.length)) && newVal.every((element, index) => {
-                    return element === oldVal[index]; 
-                });
-                if (!isEqual)
-                    this.onSelect();
+            selected: {
+                handler(newVal, oldVal) {
+                    const isEqual = (Array.isArray(newVal) && Array.isArray(oldVal) && (newVal.length == oldVal.length)) && newVal.every((element, index) => {
+                        return element === oldVal[index]; 
+                    });
+                    if (!isEqual)
+                        this.onSelect();
+                },
+                deep: true
             },
             facetsFromItemSearch: {
                 handler() {
                     if (this.isUsingElasticSearch)
                         this.loadOptions();
                 },
-                immediate: true
+                immediate: true,
+                deep:true
             },                
             isLoadingItems: {
                 handler() {
@@ -129,7 +133,7 @@
                     this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
                     this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
                 }
-            this.$eventBusSearch.$on('hasToReloadFacets', this.reloadOptions); 
+            this.$eventBusSearch.$emitter.$on('hasToReloadFacets', this.reloadOptions); 
         },
         mounted(){
             if (!this.isUsingElasticSearch)
@@ -141,7 +145,7 @@
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-            this.$eventBusSearch.$off('hasToReloadFacets', this.reloadOptions); 
+            this.$eventBusSearch.$emitter.$off('hasToReloadFacets', this.reloadOptions); 
         }, 
         methods: {
             ...mapGetters('search', [

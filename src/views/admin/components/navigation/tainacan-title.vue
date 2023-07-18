@@ -81,13 +81,16 @@ export default {
         }
     },
     watch: {
-        '$route' (to, from) {
-            if (to.path != from.path) {
-                this.isRepositoryLevel = (to.params.collectionId == undefined);
+        '$route': {
+            handler(to, from) {
+                if (to.path != from.path) {
+                    this.isRepositoryLevel = (to.params.collectionId == undefined);
 
-                this.activeRoute = to.name;
-                this.pageTitle = this.$route.meta.title;
-            }
+                    this.activeRoute = to.name;
+                    this.pageTitle = this.$route.meta.title;
+                }
+            },
+            deep: true
         }
     },
     created() {
@@ -96,10 +99,10 @@ export default {
         document.title = this.$route.meta.title;
         this.pageTitle = document.title;
 
-        this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
+        this.$root.$emitter.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     },
     beforeUnmount() {
-        this.$root.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
+        this.$root.$emitter.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     },
     methods: {
         ...mapGetters('collection', [

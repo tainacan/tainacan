@@ -87,6 +87,7 @@ import {
     ThumbnailHelperPlugin,
     OrderByHelperPlugin
 } from './utilities';
+import mitt from 'mitt';
 
 export default (element) => {
 
@@ -104,9 +105,12 @@ export default (element) => {
                 store,
                 render: h => h(AdminPage)
             });
-
+            
             app.use(router);
             app.use(store);
+
+            const emitter = mitt();
+            app.config.globalProperties.$emitter = emitter;
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {

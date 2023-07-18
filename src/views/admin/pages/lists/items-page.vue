@@ -816,8 +816,11 @@
             }
         },
         watch: {
-            displayedMetadata() {
-                this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
+            displayedMetadata: {
+                handler() {
+                    this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
+                },
+                deep: true
             },
             openAdvancedSearch(newValue) {
                 if (newValue == false){
@@ -848,7 +851,7 @@
             this.$eventBusSearch.setCollectionId(this.collectionId);
             this.$eventBusSearch.updateStoreFromURL();
 
-            this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+            this.$eventBusSearch.$emitter.$on('isLoadingItems', isLoadingItems => {
                 
                 if (isLoadingItems != this.isLoadingItems && this.$refs['items-page-container'] && this.$refs['search-control']) {
 
@@ -861,7 +864,7 @@
                 this.isLoadingItems = isLoadingItems;
             });
 
-            this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
+            this.$eventBusSearch.$emitter.$on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
             });
             
@@ -869,7 +872,7 @@
                 this.openAdvancedSearch = this.$route.query.advancedSearch;
             }
 
-            this.$root.$on('openAdvancedSearch', (openAdvancedSearch) => {
+            this.$root.$emitter.$on('openAdvancedSearch', (openAdvancedSearch) => {
                 this.openAdvancedSearch = openAdvancedSearch;
             });
 
@@ -1393,14 +1396,14 @@
             }, 750),
             removeEventListeners() {
                 // Component
-                this.$off();
+                this.$emitter.$off();
                 // Window
                 window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
-                this.$root.$off('openAdvancedSearch');
+                this.$root.$emitter.$off('openAdvancedSearch');
                 // $eventBusSearch
-                this.$eventBusSearch.$off('isLoadingItems');
-                this.$eventBusSearch.$off('hasFiltered');
+                this.$eventBusSearch.$emitter.$off('isLoadingItems');
+                this.$eventBusSearch.$emitter.$off('hasFiltered');
             }
         }
     }

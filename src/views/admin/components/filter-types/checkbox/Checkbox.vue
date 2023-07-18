@@ -83,19 +83,23 @@
             }
         },
         watch: {
-            selected(newVal, oldVal) {
-                const isEqual = (Array.isArray(newVal) && Array.isArray(oldVal) && (newVal.length == oldVal.length)) && newVal.every((element, index) => {
-                    return element === oldVal[index]; 
-                });
-                if (!isEqual)
-                    this.onSelect();
+            selected: {
+                handler(newVal, oldVal) {
+                    const isEqual = (Array.isArray(newVal) && Array.isArray(oldVal) && (newVal.length == oldVal.length)) && newVal.every((element, index) => {
+                        return element === oldVal[index]; 
+                    });
+                    if (!isEqual)
+                        this.onSelect();
+                },
+                deep: true
             },
             facetsFromItemSearch: {
                 handler() {
                     if (this.isUsingElasticSearch)
                         this.loadOptions();
                 },
-                immediate: true
+                immediate: true,
+                deep: true
             },
         },
         mounted() {
@@ -103,10 +107,10 @@
                 this.loadOptions();
         },
         created() {
-            this.$eventBusSearch.$on('hasToReloadFacets', this.reloadOptions);
+            this.$eventBusSearch.$emitter.$on('hasToReloadFacets', this.reloadOptions);
         },
         beforeUnmount() {
-            this.$eventBusSearch.$off('hasToReloadFacets', this.reloadOptions); 
+            this.$eventBusSearch.$emitter.$off('hasToReloadFacets', this.reloadOptions); 
         },
         methods: {
             reloadOptions(shouldReload) {

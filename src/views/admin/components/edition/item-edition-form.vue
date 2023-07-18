@@ -950,7 +950,7 @@ export default {
             // Obtains current Sequence Group Info
             this.fetchSequenceGroup({ collectionId: this.collectionId, groupId: this.sequenceId });
         },
-        tabs:{
+        tabs: {
             handler() {
                 if (this.tabs.length >= 2) {
                     if (typeof this.swiper.update == 'function')
@@ -976,7 +976,8 @@ export default {
                     }
                 }
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     created() {
@@ -1065,10 +1066,10 @@ export default {
             });
 
         // Sets feedback variables
-        eventBusItemMetadata.$on('isUpdatingValue', (status) => {
+        eventBusItemMetadata.$emitter.$on('isUpdatingValue', (status) => {
             this.isUpdatingValues = status;
         });
-        eventBusItemMetadata.$on('hasErrorsOnForm', (hasErrors) => {
+        eventBusItemMetadata.$emitter.$on('hasErrorsOnForm', (hasErrors) => {
             if (hasErrors)
                 this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
             else
@@ -1077,10 +1078,10 @@ export default {
         this.cleanLastUpdated();
 
         // Updates variables for metadata navigation from compound childs
-        eventBusItemMetadata.$on('isOnFirstMetadatumOfCompoundNavigation', (isOnFirstMetadatumOfCompoundNavigation) => {
+        eventBusItemMetadata.$emitter.$on('isOnFirstMetadatumOfCompoundNavigation', (isOnFirstMetadatumOfCompoundNavigation) => {
             this.isOnFirstMetadatumOfCompoundNavigation = isOnFirstMetadatumOfCompoundNavigation
         });
-        eventBusItemMetadata.$on('isOnLastMetadatumOfCompoundNavigation', (isOnLastMetadatumOfCompoundNavigation) => {
+        eventBusItemMetadata.$emitter.$on('isOnLastMetadatumOfCompoundNavigation', (isOnLastMetadatumOfCompoundNavigation) => {
             this.isOnLastMetadatumOfCompoundNavigation = isOnLastMetadatumOfCompoundNavigation
         });
 
@@ -1093,10 +1094,10 @@ export default {
             this.isMobileSubheaderOpen = true;
     },
     beforeUnmount () {
-        eventBusItemMetadata.$off('isUpdatingValue');
-        eventBusItemMetadata.$off('hasErrorsOnForm');
-        eventBusItemMetadata.$off('isOnFirstMetadatumOfCompoundNavigation');
-        eventBusItemMetadata.$off('isOnLastMetadatumOfCompoundNavigation');
+        eventBusItemMetadata.$emitter.$off('isUpdatingValue');
+        eventBusItemMetadata.$emitter.$off('hasErrorsOnForm');
+        eventBusItemMetadata.$emitter.$off('isOnFirstMetadatumOfCompoundNavigation');
+        eventBusItemMetadata.$emitter.$off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();

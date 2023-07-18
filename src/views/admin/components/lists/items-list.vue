@@ -2107,21 +2107,24 @@ export default {
             },
             immediate: true
         },
-        itemsLocations() {
-            setTimeout(() => {
-                if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
-                    if (this.itemsLocations.length == 1)
-                        this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
-                    else
-                        this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
-                }
-            }, 500)
+        itemsLocations: {
+            handler() {
+                setTimeout(() => {
+                    if ( this.itemsLocations.length && this.$refs['tainacan-admin-view-mode-map'] && this.$refs['tainacan-admin-view-mode-map'].mapObject ) {
+                        if (this.itemsLocations.length == 1)
+                            this.$refs['tainacan-admin-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
+                        else
+                            this.$refs['tainacan-admin-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16, paddingTopLeft: [48, 48], paddingTopRight: [48, 48] });
+                    }
+                }, 500);
+            },
+            deep: true
         },
         selectedGeocoordinateMetadatum() {
             this.clearSelectedMarkers();
         },
         geocoordinateMetadata: {
-                handler() {
+            handler() {
                 // Setting default geocoordinate metadatum for map view mode
                 const prefsGeocoordinateMetadatum = !this.isRepositoryLevel ? 'map_view_mode_selected_geocoordinate_metadatum_' + this.collectionId : 'map_view_mode_selected_geocoordinate_metadatum';
                 const geocoordinateMetadataIds = Object.keys(this.geocoordinateMetadata);
@@ -2134,7 +2137,8 @@ export default {
                 else 
                     this.selectedGeocoordinateMetadatumId = this.$userPrefs.get(prefsGeocoordinateMetadatum);
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     mounted() {

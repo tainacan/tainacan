@@ -44,6 +44,7 @@ import {
     ThumbnailHelperPlugin,
     OrderByHelperPlugin
 } from '../../../admin/js/utilities';
+import mitt from 'mitt';
 
 export default (element) => {
 
@@ -278,6 +279,9 @@ export default (element) => {
                         .then(importedModule => VueItemsList.component('view-mode-' + viewModeSlug, importedModule.default) )
                         .catch(error => console.log(error)); 
             });
+
+            const emitter = mitt();
+            VueItemsList.config.globalProperties.$emitter = emitter;
 
             VueItemsList.use(eventBusSearch, { store: store, router: routerTheme });
 

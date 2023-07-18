@@ -168,27 +168,27 @@
                 handler() {
                     this.createChildMetadataGroups();
                 },
-                immediate: true
+                immediate: true,
+                deep: true
             },
             isMetadataNavigation() {
                 this.focusedGroupMetadatum = 0;
                 this.focusedChildMetadatum = 0;
             },
             isFocused() {                
-                if (this.isFocused) {
+                if ( this.isFocused )
                     this.setMetadatumChildFocus({ groupIndex: this.focusedGroupMetadatum, childIndex: this.focusedChildMetadatum, scrollIntoView: true });
-                }
             }
         },
         created() {
-            eventBusItemMetadata.$on('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
-            eventBusItemMetadata.$on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
-            eventBusItemMetadata.$on('focusNextChildMetadatum', this.focusNextChildMetadatum);
+            eventBusItemMetadata.$emitter.$on('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
+            eventBusItemMetadata.$emitter.$on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            eventBusItemMetadata.$emitter.$on('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         beforeUnmount() {
-            eventBusItemMetadata.$off('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
-            eventBusItemMetadata.$off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
-            eventBusItemMetadata.$off('focusNextChildMetadatum', this.focusNextChildMetadatum);
+            eventBusItemMetadata.$emitter.$off('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
+            eventBusItemMetadata.$emitter.$off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            eventBusItemMetadata.$emitter.$off('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         methods: {
             createChildMetadataGroups() {

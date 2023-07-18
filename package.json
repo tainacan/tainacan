@@ -8,6 +8,7 @@
     "build-prod": "cross-env NODE_ENV=production webpack --config webpack.prod.js --progress --mode production"
   },
   "dependencies": {
+    "@vue/compat": "^3.3.4",
     "apexcharts": "^3.40.0",
     "axios": "^1.4.0",
     "blurhash": "^2.0.5",
@@ -20,6 +21,7 @@
     "leaflet": "^1.9.4",
     "leaflet-active-area": "^1.2.1",
     "masonry-layout": "^4.2.2",
+    "mitt": "^3.0.1",
     "moment": "^2.29.4",
     "node-sass": "^7.0.3",
     "photoswipe": "^5.3.7",
@@ -28,7 +30,6 @@
     "react-dom": "^17.0.2",
     "swiper": "^8.4.5",
     "vue": "^3.3.4",
-    "@vue/compat": "^3.3.4",
     "vue-apexcharts": "^1.6.2",
     "vue-blurhash": "^0.1.4",
     "vue-countup-v2": "^4.0.0",

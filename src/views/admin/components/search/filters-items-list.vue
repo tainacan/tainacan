@@ -356,43 +356,49 @@
             }
         },
         watch: {
-            taxonomyFilters() {
-                if ( this.taxonomyFilters != undefined && Object.keys(this.taxonomyFilters).length ) {
-                    
-                    Object.assign( this.taxonomyFiltersCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
-                                                    
-                    // Cancels previous collection name Request
-                    if (this.collectionNameSearchCancel != undefined)
-                        this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-                    let collectionIds = JSON.parse(JSON.stringify(Object.keys(this.taxonomyFilters)));
-    
-                    this.fetchAllCollectionNames( collectionIds.filter(aCollectionId => aCollectionId !== 'repository-filters') )
-                        .then((resp) => {
-                            resp.request
-                                .then((collections) => {
-                                    for (let collection of collections)
-                                        Object.assign( this.taxonomyFiltersCollectionNames, { [collection.id]: collection.name });
-                                });
-                            // Search Request Token for cancelling
-                            this.collectionNameSearchCancel = resp.source;     
-                        });
-                }
+            taxonomyFilters: {
+                handler() {
+                    if ( this.taxonomyFilters != undefined && Object.keys(this.taxonomyFilters).length ) {
+                        
+                        Object.assign( this.taxonomyFiltersCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
+                                                        
+                        // Cancels previous collection name Request
+                        if (this.collectionNameSearchCancel != undefined)
+                            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+                        let collectionIds = JSON.parse(JSON.stringify(Object.keys(this.taxonomyFilters)));
+        
+                        this.fetchAllCollectionNames( collectionIds.filter(aCollectionId => aCollectionId !== 'repository-filters') )
+                            .then((resp) => {
+                                resp.request
+                                    .then((collections) => {
+                                        for (let collection of collections)
+                                            Object.assign( this.taxonomyFiltersCollectionNames, { [collection.id]: collection.name });
+                                    });
+                                // Search Request Token for cancelling
+                                this.collectionNameSearchCancel = resp.source;     
+                            });
+                    }
+                },
+                deep: true
             },
-            repositoryCollectionFilters() {
-                if ( this.repositoryCollectionFilters != undefined && Object.keys(this.repositoryCollectionFilters).length ) {
-                    
-                    Object.assign( this.repositoryCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
-                    
-                    for ( let collection of this.getCollections() )
-                        Object.assign( this.repositoryCollectionNames, { [collection.id]: collection.name });
-                }                
+            repositoryCollectionFilters: {
+                handler() {
+                    if ( this.repositoryCollectionFilters != undefined && Object.keys(this.repositoryCollectionFilters).length ) {
+                        
+                        Object.assign( this.repositoryCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
+                        
+                        for ( let collection of this.getCollections() )
+                            Object.assign( this.repositoryCollectionNames, { [collection.id]: collection.name });
+                    }
+                },
+                deep: true                
             }
         },
         mounted() {
             this.prepareFilters();
 
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$on('isLoadingItems', this.updateIsLoadingItems);
+                this.$eventBusSearch.$emitter.$on('isLoadingItems', this.updateIsLoadingItems);
         },
         beforeUnmount() {
             // Cancels previous collection name Request
@@ -408,7 +414,7 @@
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
 
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems', this.updateIsLoadingItems);
+                this.$eventBusSearch.$emitter.$off('isLoadingItems', this.updateIsLoadingItems);
      
         },
         methods: {

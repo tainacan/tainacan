@@ -179,16 +179,19 @@
             }
         },
         watch: {
-            selectedLatLng() {
-                const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-                nextTick(() => {
-                    if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject && this.selectedLatLng.length != undefined) {
-                        if (this.selectedLatLng.length == 1)
-                            this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
-                        else 
-                            this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
-                    }
-                });
+            selectedLatLng: {
+                handler() {
+                    const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
+                    nextTick(() => {
+                        if ( this.$refs[mapComponentRef] && this.$refs[mapComponentRef].mapObject && this.selectedLatLng.length != undefined) {
+                            if (this.selectedLatLng.length == 1)
+                                this.$refs[mapComponentRef].mapObject.panInsideBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                            else 
+                                this.$refs[mapComponentRef].mapObject.flyToBounds(this.selectedLatLng, { animate: true, maxZoom: this.maxZoom });
+                        }
+                    });
+                },
+                deep: true
             }
         },
         created() {
@@ -199,7 +202,7 @@
             // We need to pass mapComponentRef here instead of creating it inside the function
             // otherwise the listener would conflict when multiple geo metadata are inserted.
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-            eventBusItemMetadata.$on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
+            eventBusItemMetadata.$emitter.$on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         mounted() {
             nextTick(() => {
@@ -209,7 +212,7 @@
         },
         beforeUnmount() {
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-            eventBusItemMetadata.$off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
+            eventBusItemMetadata.$emitter.$off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         methods: {
             onUpdateFromLatitudeInput: _.debounce( function($event) {

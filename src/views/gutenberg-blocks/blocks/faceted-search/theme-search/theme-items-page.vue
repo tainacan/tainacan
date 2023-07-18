@@ -830,8 +830,11 @@
             }
         },
         watch: {
-            displayedMetadata() {
-                this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
+            displayedMetadata: {
+                handler() {
+                    this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
+                },
+                deep: true
             },
             openAdvancedSearch(newValue){
                 if (newValue == false){
@@ -898,7 +901,7 @@
                 }
             }
 
-            this.$eventBusSearch.$on('isLoadingItems', isLoadingItems => {
+            this.$eventBusSearch.$emitter.$on('isLoadingItems', isLoadingItems => {
 
                 this.isLoadingItems = isLoadingItems;
                 
@@ -912,7 +915,7 @@
                 }));
             });
 
-            this.$eventBusSearch.$on('hasFiltered', hasFiltered => {
+            this.$eventBusSearch.$emitter.$on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
             });
             
@@ -922,12 +925,12 @@
                     this.openAdvancedSearch = this.$route.query.advancedSearch;
                 }
 
-                this.$root.$on('openAdvancedSearch', (openAdvancedSearch) => {
+                this.$root.$emitter.$on('openAdvancedSearch', (openAdvancedSearch) => {
                     this.openAdvancedSearch = openAdvancedSearch;
                 });
             }
 
-            this.$eventBusSearch.$on('startSlideshowFromItem', (index) => {
+            this.$eventBusSearch.$emitter.$on('startSlideshowFromItem', (index) => {
                 let currentQuery = this.$route.query;
                 delete currentQuery['slideshow-from'];
                 this.$router.replace({ query: currentQuery }).catch((error) => this.$console.log(error));
@@ -1453,16 +1456,16 @@
             }, 500),
             removeEventListeners() {
                 // Component
-                this.$off();
+                this.$emitter.$off();
                 // Window
                 if (!this.hideFilters)
                     window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
                 if (!this.hideAdvancedSearch)
-                    this.$root.$off('openAdvancedSearch');
+                    this.$root.$emitter.$off('openAdvancedSearch');
                 // $eventBusSearch
-                this.$eventBusSearch.$off('isLoadingItems');
-                this.$eventBusSearch.$off('hasFiltered');
+                this.$eventBusSearch.$emitter.$off('isLoadingItems');
+                this.$eventBusSearch.$emitter.$off('hasFiltered');
 
             },
         }

@@ -1,5 +1,8 @@
 import { createApp } from 'vue';
 import store from './store/store'
+import mitt from 'mitt';
+
+const emitter = mitt();
 
 export const eventBusItemMetadata = createApp({
     store,
@@ -8,13 +11,16 @@ export const eventBusItemMetadata = createApp({
         conditionalSections: {}
     },
     watch: {
-        errors() {
-            this.$emit('hasErrorsOnForm', this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length);
-            
-            if (this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length) {
-                for (let error of this.errors) 
-                    this.$emit('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
-            }
+        errors: {
+            handler() {
+                this.$emit('hasErrorsOnForm', this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length);
+                
+                if (this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length) {
+                    for (let error of this.errors) 
+                        this.$emit('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
+                }
+            },
+            deep: true
         }
     },
     emits: [
@@ -31,12 +37,12 @@ export const eventBusItemMetadata = createApp({
         'isUpdatingValue'
     ],
     created() {
-        this.$on('input', this.updateValue);
-        this.$on('removeCompoundGroup', this.removeItemMetadataGroup);
+        this.$emitter.$on('input', this.updateValue);
+        this.$emitter.$on('removeCompoundGroup', this.removeItemMetadataGroup);
     },
     beforeUpdate() {
-        this.$off('input', this.updateValue);
-        this.$on('removeCompoundGroup', this.removeItemMetadataGroup);
+        this.$emitter.$off('input', this.updateValue);
+        this.$emitter.$on('removeCompoundGroup', this.removeItemMetadataGroup);
     },
     methods : {
         updateValue({ itemId, metadatumId, values, parentMetaId, parentId }){
@@ -153,3 +159,4 @@ export const eventBusItemMetadata = createApp({
         }
     }
 });
+eventBusItemMetadata.config.globalProperties.$emitter = emitter;
