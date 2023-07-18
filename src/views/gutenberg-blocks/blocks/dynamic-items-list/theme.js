@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
 
 import DynamicItemsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
@@ -54,7 +54,7 @@ export default (element) => {
                         className: '',
                         style: ''
                     },
-                    render(h){ 
+                    render(){ 
                         return h(DynamicItemsListTheme, {
                             props: {
                                 collectionId: this.collectionId,  

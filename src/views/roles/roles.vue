@@ -1,7 +1,5 @@
 <template>
-    <div
-            id="tainacan-roles-app"
-            class="has-mounted wrap">
+    <div class="has-mounted wrap">
         <router-view /> 
     </div> 
 </template>

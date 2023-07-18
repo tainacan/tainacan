@@ -3,7 +3,7 @@
 //window.underscore = _.noConflict();
 
 // Main imports
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
 import {
     Field,
     Input,
@@ -103,7 +103,7 @@ export default (element) => {
                 el: '#tainacan-admin-app',
                 router,
                 store,
-                render: h => h(AdminPage)
+                render: () => h(AdminPage)
             });
             
             app.use(router);
@@ -246,7 +246,7 @@ export default (element) => {
                     next();
             });
 
-            app.mount();
+            app.mount('#tainacan-admin-app');
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

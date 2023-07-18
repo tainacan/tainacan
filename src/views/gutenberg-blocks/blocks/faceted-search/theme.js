@@ -1,5 +1,5 @@
 // Main imports
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
 import {
     Field,
     Input,
@@ -176,7 +176,7 @@ export default (element) => {
                         }
                     }
                 },
-                render: h => h(ThemeSearch)
+                render: () => h(ThemeSearch)
             });
 
             VueItemsList.use(store);
@@ -285,7 +285,7 @@ export default (element) => {
 
             VueItemsList.use(eventBusSearch, { store: store, router: routerTheme });
 
-            VueItemsList.mount();
+            VueItemsList.mount('#tainacan-items-page');
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

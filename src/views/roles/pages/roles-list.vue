@@ -59,7 +59,9 @@
                     v-model="searchString">
 		</p>
 
-        <div class="tablenav top">
+        <div 
+                v-if="roles"         
+                class="tablenav top">
             <div class="align-left actions">
                 <p>{{ $i18n.get('Create and edit roles for users') }}</p>
             </div>
@@ -201,6 +203,7 @@
 
         <div class="tablenav bottom">
             <div 
+                    v-if="roles"        
                     style="margin-left: auto;"
                     class="tablenav-pages one-page">
                 <span class="displaying-num">
@@ -230,7 +233,7 @@
             roles() {
                 let roles = this.getRoles();
 
-                if (this.searchString) {
+                if (this.searchString && roles) {
                     let searchedRoles = {}
                     for (let [roleKey, role] of Object.entries(roles)) {
                         if (role.name.toLowerCase().match(this.searchString))
@@ -239,7 +242,7 @@
                     roles = searchedRoles;
                 }
 
-                if (this.relatedEntities.length) {
+                if (this.relatedEntities.length && roles) {
                     let filteredRoles = {};
                     for (let [roleKey, role] of Object.entries(roles)) {
                         for (let entity of this.relatedEntities) {
@@ -253,7 +256,7 @@
                     roles = filteredRoles;
                 }
 
-                return roles;
+                return roles ? roles : {};
             }
         },
         created() {

@@ -1,5 +1,5 @@
 // Main imports
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
 import {
     Field,
     Numberinput,
@@ -152,7 +152,7 @@ export default (element) => {
                         return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
                     }
                 },
-                render: h => h(ItemSubmission)
+                render: () => h(ItemSubmission)
             });
 
             VueItemSubmission.use(store);
@@ -239,7 +239,7 @@ export default (element) => {
             VueItemSubmission.component('term-creation-panel', TermCreationPanel);
             VueItemSubmission.component('help-button', HelpButton);
 
-            VueItemSubmission.mount();
+            VueItemSubmission.mount('#tainacan-item-submission-form');
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

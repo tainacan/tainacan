@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
 import store from '../../admin/js/store/store';
 import router from './reports-router';
 import { Snackbar, Modal } from 'buefy';
@@ -71,7 +71,7 @@ export default (element) => {
 
             const VueReports = createApp({
                 el: '#tainacan-reports-app',
-                render: h => h(ReportsPage)
+                render: () => h(ReportsPage)
             });
 
             VueReports.use(store);

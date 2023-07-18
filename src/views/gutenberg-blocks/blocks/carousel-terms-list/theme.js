@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
 import CarouselTermsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
 import VueBlurHash from 'another-vue3-blurhash';
@@ -43,7 +43,7 @@ export default (element) => {
                         taxonomyId: '',
                         style: ''
                     },
-                    render(h){ 
+                    render(){ 
                         return h(CarouselTermsListTheme, {
                             props: {
                                 blockId: blockId,

@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, h } from 'vue';
 import FacetsListTheme from './theme.vue';
 import FacetsListThemeUnit from './facet-unit.vue';
 
@@ -47,7 +47,7 @@ export default (element) => {
                         className: '',
                         style: ''
                     },
-                    render(h){ 
+                    render(){ 
                         return h(FacetsListTheme, {
                             props: {
                                 metadatumId: this.metadatumId,
