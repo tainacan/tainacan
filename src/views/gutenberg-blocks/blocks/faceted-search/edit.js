@@ -4,6 +4,7 @@ const {
     Button,
     BaseControl,
     CheckboxControl,
+    ColorPalette,
     RangeControl,
     FontSizePicker,
     HorizontalRule,
@@ -19,11 +20,10 @@ const {
     MenuItemsChoice
 } = wp.components;
 
-const { InspectorControls, BlockControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls } = wp.blockEditor;
 
 import CollectionModal from './collection-modal.js';
 import TermModal from './term-modal.js';
-import TainacanBlocksCompatColorPicker from '../../js/compatibility/tainacan-blocks-compat-colorpicker.js';
 
 export default function({ attributes, setAttributes, className, isSelected, clientId }) {
     let {
@@ -213,46 +213,12 @@ export default function({ attributes, setAttributes, className, isSelected, clie
             <div>
                 <BlockControls>
                     { !( termId == undefined && listType == 'term' ) && !( collectionId == undefined && listType == 'collection' ) ?
-                        tainacan_blocks.wp_version < '5.4' ?
-                            <Dropdown
-                                contentClassName="wp-block-tainacan__dropdown"
-                                renderToggle={ ( { isOpen, onToggle } ) => 
-                                    <Button
-                                        style={{ whiteSpace: 'nowrap', backgroundColor: '#fff', alignItems: 'center', borderTop: '1px solid #b5bcc2', borderBottom: '1px solid #b5bcc2', height: '100%' }}
-                                        onClick={ onToggle }
-                                        aria-expanded={ isOpen }>
-                                            { __('Items list source', 'tainacan')  }
-                                            <span class="components-dropdown-menu__indicator"></span> 
-                                    </Button>
-                                }
-                                renderContent={ ( { onToggle } ) => (
-                                    <MenuGroup>
-                                        <MenuItemsChoice
-                                            choices={ listTypeChoices }
-                                            value={ listType }
-                                            onSelect={ (value) => {
-                                                onUpdateListType(value);
-                                                onToggle(); 
-                                            }}>
-                                        </MenuItemsChoice>
-                                    </MenuGroup>
-                                ) }
-                            />
-                            :
-                            <ToolbarGroup>
-                                { tainacan_blocks.wp_version < '5.6' ?
+                        <ToolbarGroup>
+                            <ToolbarItem>
+                                { () => (
                                     <Dropdown
                                         contentClassName="wp-block-tainacan__dropdown"
                                         renderToggle={ ( { isOpen, onToggle } ) => (
-                                            tainacan_blocks.wp_version < '5.5' ?
-                                                <Button
-                                                    style={{ whiteSpace: 'nowrap' }}
-                                                    onClick={ onToggle }
-                                                    aria-expanded={ isOpen }>
-                                                        { __('Items list source', 'tainacan')  }
-                                                        <span class="components-dropdown-menu__indicator"></span> 
-                                                </Button>
-                                                :
                                                 <ToolbarButton
                                                     onClick={ onToggle }
                                                     aria-expanded={ isOpen }>
@@ -273,36 +239,9 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                             </MenuGroup>
                                         ) }
                                     />
-                                    :
-                                    <ToolbarItem>
-                                        { () => (
-                                            <Dropdown
-                                                contentClassName="wp-block-tainacan__dropdown"
-                                                renderToggle={ ( { isOpen, onToggle } ) => (
-                                                        <ToolbarButton
-                                                            onClick={ onToggle }
-                                                            aria-expanded={ isOpen }>
-                                                                { __('Items list source', 'tainacan')  }
-                                                                <span class="components-dropdown-menu__indicator"></span>  
-                                                        </ToolbarButton>
-                                                ) }
-                                                renderContent={ ( { onToggle } ) => (
-                                                    <MenuGroup>
-                                                        <MenuItemsChoice
-                                                            choices={ listTypeChoices }
-                                                            value={ listType } 
-                                                            onSelect={ (value) => {
-                                                                onUpdateListType(value);
-                                                                onToggle(); 
-                                                            }}>
-                                                        </MenuItemsChoice>
-                                                    </MenuGroup>
-                                                ) }
-                                            />
-                                        ) }
-                                    </ToolbarItem>
-                            }
-                            </ToolbarGroup>
+                                ) }
+                            </ToolbarItem>
+                        </ToolbarGroup>
                     :null }
                 </BlockControls>
             </div>
@@ -642,7 +581,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="backgroundColorPicker"
                                 label={ __('Background color', 'tainacan')}
                                 help={ __('The background color of the entire items list', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ backgroundColor }
                                 onChange={ ( colorValue ) => {
                                     backgroundColor = colorValue;
@@ -656,7 +595,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="secondaryColorPicker"
                                 label={ __('Link and Active Main color', 'tainacan')}
                                 help={ __('The text color links and other action or active state elements, such as select arrows, tooltip contents, etc', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ secondaryColor }
                                 onChange={ (colorValue ) => {
                                     secondaryColor = colorValue;
@@ -670,7 +609,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="primaryColorPicker"
                                 label={ __('Tooltips background color', 'tainacan')}
                                 help={ __('The tooltips background color and other elements, such as the hide filters button', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ primaryColor }
                                 onChange={ (colorValue ) => {
                                     primaryColor = colorValue;
@@ -684,7 +623,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="inputBackgroundColorPicker"
                                 label={ __('Input Background color', 'tainacan')}
                                 help={ __('The background color for input fields', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ inputBackgroundColor }
                                 onChange={ (colorValue ) => {
                                     inputBackgroundColor = colorValue;
@@ -698,7 +637,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="inputColorPicker"
                                 label={ __('Input Text color', 'tainacan')}
                                 help={ __('The text color for input fields, including dropdowns and buttons', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ inputColor }
                                 onChange={ (colorValue ) => {
                                     inputColor = colorValue;
@@ -712,7 +651,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="inputBorderColorPicker"
                                 label={ __('Input Border color', 'tainacan')}
                                 help={ __('The border color for input fields', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ inputBorderColor }
                                 onChange={ (colorValue ) => {
                                     inputBorderColor = colorValue;
@@ -726,7 +665,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="labelColorPicker"
                                 label={ __('Label Text color', 'tainacan')}
                                 help={ __('The text color for field labels', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ labelColor }
                                 onChange={ (colorValue ) => {
                                     labelColor = colorValue;
@@ -740,7 +679,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="headingColorPicker"
                                 label={ __('Headings Text color', 'tainacan')}
                                 help={ __('The text color for headings such as items title and filters menu header', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ headingColor }
                                 onChange={ (colorValue ) => {
                                     headingColor = colorValue;
@@ -754,7 +693,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="infoColorPicker"
                                 label={ __('General Info Text color', 'tainacan')}
                                 help={ __('The text color for other information such as item metadata, icons, number of pages, etc', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ infoColor }
                                 onChange={ (colorValue ) => {
                                     infoColor = colorValue;
@@ -767,7 +706,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="itemBackgroundColorPicker"
                                 label={ __('Item Background color', 'tainacan')}
                                 help={ __('The background color for an item on the list', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ itemBackgroundColor }
                                 onChange={ (colorValue ) => {
                                     itemBackgroundColor = colorValue;
@@ -781,7 +720,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="itemHoverBackgroundColorPicker"
                                 label={ __('Item Hover Background color', 'tainacan')}
                                 help={ __('The background color for an item on the list, when hovered', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ itemHoverBackgroundColor }
                                 onChange={ (colorValue ) => {
                                     itemHoverBackgroundColor = colorValue;
@@ -799,7 +738,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                                 id="itemHeadingHoverBackgroundColorPicker"
                                 label={ __('Item Heading Hover Background color', 'tainacan')}
                                 help={ __('The background color for the item heading (where the title is), when hovered', 'tainacan') }>
-                            <TainacanBlocksCompatColorPicker
+                            <ColorPalette
                                 value={ itemHeadingHoverBackgroundColor }
                                 onChange={ (colorValue ) => {
                                     itemHeadingHoverBackgroundColor = colorValue;

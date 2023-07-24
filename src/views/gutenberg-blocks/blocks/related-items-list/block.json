@@ -53,5 +53,5 @@
         "multiple": true
     },
     "editorScript": "related-items-list",
-	"editorStyle": "related-items-list"
+	"editorStyle": ["related-items-list", "tainacan-blocks-common-editor-styles" ]
 }

@@ -159,5 +159,5 @@
         "multiple": false
     },
     "editorScript": "item-submission-form",
-	"editorStyle": "item-submission-form"
+	"editorStyle": ["item-submission-form", "tainacan-blocks-common-editor-styles" ]
 }

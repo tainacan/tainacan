@@ -304,7 +304,7 @@
         right: -8px;
         top: -8px;
         border: 1px solid var(--tainacan-block-gray3, #a5a5a5);
-        border-radius: 12px;
+        border-radius: 100em;
         transition: opacity linear 0.15s, right linear 0.15s; }
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item:hover button:hover {
         background-color: white !important;

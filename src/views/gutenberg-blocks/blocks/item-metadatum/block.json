@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/item-metadatum",
     "title": "Tainacan Item Metadatum",
-    "apiVersion": 2,
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "item", "metadatum", "field", "value" ],
     "description": "A single item metadatum, including a label and its value.",
@@ -75,5 +75,5 @@
         }
     },
     "editorScript": "item-metadatum",
-	"editorStyle": "item-metadatum"
+	"editorStyle": ["item-metadatum", "tainacan-blocks-common-editor-styles" ]
 }

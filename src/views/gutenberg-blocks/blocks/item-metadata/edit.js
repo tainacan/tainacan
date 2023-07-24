@@ -3,7 +3,7 @@ const { __ } = wp.i18n;
 const { Button, Spinner, ToggleControl, Placeholder, PanelBody } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
-const { useBlockProps, InnerBlocks, BlockControls, AlignmentControl, InspectorControls } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { useBlockProps, InnerBlocks, BlockControls, AlignmentControl, InspectorControls } = wp.blockEditor;
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
@@ -30,7 +30,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
     } = attributes;
 
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps( {
+    const blockProps = useBlockProps( {
         className: {
             [ `has-text-align-${ textAlign }` ]: textAlign,
         }
@@ -310,7 +310,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                             <ServerSideRender
                                 block="tainacan/item-metadata"
                                 attributes={ attributes }
-                                httpMethod={ currentWPVersion >= '5.5' ? 'POST' : 'GET' }
+                                httpMethod={ 'POST' }
                             />
                             :
                             <InnerBlocks

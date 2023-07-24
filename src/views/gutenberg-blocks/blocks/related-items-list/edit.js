@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { Spinner, Button, Placeholder } = wp.components;
 
-const { InnerBlocks } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InnerBlocks } = wp.blockEditor;
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
 import tainacan from '../../js/axios.js';

@@ -1,7 +1,7 @@
 const { __ } = wp.i18n;
 const { ToolbarDropdownMenu, SVG, Path, __experimentalHeading: Heading } = wp.components;
 
-const { useBlockProps, BlockControls, AlignmentControl } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;
 
 const levelToPath = {
     1: 'M9 5h2v10H9v-4H5v4H3V5h2v4h4V5zm6.6 0c-.6.9-1.5 1.7-2.6 2v1h2v7h2V5h-1.4z',
@@ -23,7 +23,7 @@ export default function ({ attributes, setAttributes, className, context }) {
     } = attributes;
 
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps( {
+    const blockProps = useBlockProps( {
 		className: {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
 		}

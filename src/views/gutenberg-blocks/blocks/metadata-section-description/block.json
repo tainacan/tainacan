@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/metadata-section-description",
     "title": "Tainacan Metadata Section Description",
-    "apiVersion": 2,
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": ["metadata", "description", "field", "section"],
     "description": "A metadata section description, used to complement information about a metadata section.",
@@ -57,5 +57,5 @@
         }
     },
     "editorScript": "metadata-section-description",
-	"editorStyle": "metadata-section-description"
+	"editorStyle": ["metadata-section-description", "tainacan-blocks-common-editor-styles" ]
 }

@@ -1,6 +1,6 @@
 const { __ } = wp.i18n;
 
-const { useBlockProps, BlockControls, AlignmentControl } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;
 
 export default function ({ attributes, setAttributes, className, context }) {
     
@@ -12,7 +12,7 @@ export default function ({ attributes, setAttributes, className, context }) {
     } = attributes;
 
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps( {
+    const blockProps = useBlockProps( {
 		className: {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
 		}

@@ -1,8 +1,8 @@
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { RangeControl,  Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import CollectionsModal from './collections-modal.js';
@@ -20,7 +20,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
     } = attributes;
     
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+    const blockProps = useBlockProps();
 
     function prepareCollection(collection) {
         return (
@@ -28,21 +28,13 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                 key={ collection.id }
                 className="collection-list-item"
                 style={{ marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>
-                { 
-                    tainacan_blocks.wp_version < '5.4' ?
-                    <IconButton
+                <button
                         onClick={ () => removeCollectionOfId(collection.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
-                    :
-                    <button
-                            onClick={ () => removeCollectionOfId(collection.id) }
-                            type="button"
-                            class="components-button has-icon"
-                            aria-label={__('Remove', 'tainacan')}>
-                        <span class="dashicon dashicons dashicons-no-alt" />
-                    </button>
-                }
+                        type="button"
+                        class="components-button has-icon"
+                        aria-label={__('Remove', 'tainacan')}>
+                    <span class="dashicon dashicons dashicons-no-alt" />
+                </button>
                 <a 
                     id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
                     href={ collection.url }

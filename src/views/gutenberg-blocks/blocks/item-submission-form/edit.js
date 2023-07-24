@@ -7,6 +7,7 @@ const {
     BaseControl,
     CheckboxControl,
     FontSizePicker,
+    ColorPalette,
     HorizontalRule,
     Spinner,
     ToggleControl,
@@ -14,12 +15,11 @@ const {
     PanelBody
 } = wp.components;
 
-const { InspectorControls, BlockControls, RichText, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, RichText, useBlockProps } = wp.blockEditor;
 
 import tainacan from '../../js/axios.js';
 import CollectionModal from '../faceted-search/collection-modal.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
-import TainacanBlocksCompatColorPicker from '../../js/compatibility/tainacan-blocks-compat-colorpicker.js';
 
 export default function ({ attributes, setAttributes, className }) {
     let {
@@ -436,7 +436,7 @@ export default function ({ attributes, setAttributes, className }) {
                                     id="backgroundColorPicker"
                                     label={ __('Background color', 'tainacan')}
                                     help={ __('The background color of the entire items list', 'tainacan') }>
-                                <TainacanBlocksCompatColorPicker
+                                <ColorPalette
                                     value={ backgroundColor }
                                     onChange={ (colorValue ) => {
                                         backgroundColor = colorValue;
@@ -450,7 +450,7 @@ export default function ({ attributes, setAttributes, className }) {
                                     id="secondaryColorPicker"
                                     label={ __('Link and Active Main color', 'tainacan')}
                                     help={ __('The text color links and other action or active state elements, such as select arrows, tooltip contents, etc', 'tainacan') }>
-                                <TainacanBlocksCompatColorPicker
+                                <ColorPalette
                                     value={ secondaryColor }
                                     onChange={ (colorValue ) => {
                                         secondaryColor = colorValue;
@@ -464,7 +464,7 @@ export default function ({ attributes, setAttributes, className }) {
                                     id="primaryColorPicker"
                                     label={ __('Tooltips background color', 'tainacan')}
                                     help={ __('The tooltips background color and other elements, such as the hide filters button', 'tainacan') }>
-                                <TainacanBlocksCompatColorPicker
+                                <ColorPalette
                                     value={ primaryColor }
                                     onChange={ (colorValue ) => {
                                         primaryColor = colorValue;
@@ -478,7 +478,7 @@ export default function ({ attributes, setAttributes, className }) {
                                     id="inputBackgroundColorPicker"
                                     label={ __('Input Background color', 'tainacan')}
                                     help={ __('The background color for input fields', 'tainacan') }>
-                                <TainacanBlocksCompatColorPicker
+                                <ColorPalette
                                     value={ inputBackgroundColor }
                                     onChange={ (colorValue ) => {
                                         inputBackgroundColor = colorValue;
@@ -492,7 +492,7 @@ export default function ({ attributes, setAttributes, className }) {
                                     id="inputColorPicker"
                                     label={ __('Input Text color', 'tainacan')}
                                     help={ __('The text color for input fields, including dropdowns and buttons', 'tainacan') }>
-                                <TainacanBlocksCompatColorPicker
+                                <ColorPalette
                                     value={ inputColor }
                                     onChange={ (colorValue ) => {
                                         inputColor = colorValue;
@@ -506,7 +506,7 @@ export default function ({ attributes, setAttributes, className }) {
                                     id="inputBorderColorPicker"
                                     label={ __('Input Border color', 'tainacan')}
                                     help={ __('The border color for input fields', 'tainacan') }>
-                                <TainacanBlocksCompatColorPicker
+                                <ColorPalette
                                     value={ inputBorderColor }
                                     onChange={ (colorValue ) => {
                                         inputBorderColor = colorValue;
@@ -520,7 +520,7 @@ export default function ({ attributes, setAttributes, className }) {
                                     id="labelColorPicker"
                                     label={ __('Label Text color', 'tainacan')}
                                     help={ __('The text color for field labels', 'tainacan') }>
-                                <TainacanBlocksCompatColorPicker
+                                <ColorPalette
                                     value={ labelColor }
                                     onChange={ (colorValue ) => {
                                         labelColor = colorValue;
@@ -533,7 +533,7 @@ export default function ({ attributes, setAttributes, className }) {
                                     id="infoColorPicker"
                                     label={ __('General Info Text color', 'tainacan')}
                                     help={ __('The text color for other information such as item metadata, icons, number of pages, etc', 'tainacan') }>
-                                <TainacanBlocksCompatColorPicker
+                                <ColorPalette
                                     value={ infoColor }
                                     onChange={ (colorValue ) => {
                                         infoColor = colorValue;

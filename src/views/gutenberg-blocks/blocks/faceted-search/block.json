@@ -219,6 +219,6 @@
         "multiple": false
     },
     "editorScript": "faceted-search",
-	"editorStyle": "faceted-search",
+	"editorStyle": ["faceted-search", "tainacan-blocks-common-editor-styles" ],
 	"style": "faceted-search"
 }
