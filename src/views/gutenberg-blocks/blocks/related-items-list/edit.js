@@ -2,13 +2,13 @@ const { __ } = wp.i18n;
 
 const { Spinner, Button, Placeholder } = wp.components;
 
-const { InnerBlocks } = wp.blockEditor;
+const { InnerBlocks, useBlockProps } = wp.blockEditor;
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
-export default function ({ attributes, setAttributes, className, isSelected }) {
+export default function ({ attributes, setAttributes, isSelected }) {
     
     let {
         content, 
@@ -21,6 +21,10 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
         relatedItemsTemplate,
         itemsListlayout
     } = attributes;
+  
+    // Gets blocks props from hook
+    const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     function setContent(){
         isLoading = true;
@@ -138,7 +142,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
                         src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
             </div>
         : (
-        <div className={className}>
+        <div { ...blockProps }>
 
             { isSelected ? 
                 ( 

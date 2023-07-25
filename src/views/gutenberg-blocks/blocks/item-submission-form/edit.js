@@ -21,7 +21,7 @@ import tainacan from '../../js/axios.js';
 import CollectionModal from '../faceted-search/collection-modal.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 
-export default function ({ attributes, setAttributes, className }) {
+export default function ({ attributes, setAttributes }) {
     let {
         collectionId,
         isCollectionModalOpen,
@@ -61,7 +61,8 @@ export default function ({ attributes, setAttributes, className }) {
     } = attributes;
 
     const blockProps = useBlockProps();
-
+    const className = blockProps.className;
+    
     const fontSizes = [
         {
             name: __( 'Tiny', 'tainacan' ),
@@ -145,7 +146,7 @@ export default function ({ attributes, setAttributes, className }) {
                     src={ `${tainacan_blocks.base_url}/assets/images/item-submission-form.png` } />
         </div>
         : (
-            <div className={className}>
+            <div { ...blockProps }>
 
                 { collectionId ?
                     <BlockControls>

@@ -2,6 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/item-submission-form",
     "title": "Tainacan Item Submission Form",
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "item", "submission", "form" ],
     "description": "A public item submission form, to allow visitors to create items drafts.",

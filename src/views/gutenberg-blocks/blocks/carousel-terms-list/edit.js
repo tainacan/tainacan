@@ -14,12 +14,8 @@ import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
-import 'swiper/css';
-import 'swiper/css/a11y';
-import 'swiper/css/autoplay';
-import 'swiper/css/navigation';
 
-export default function({ attributes, setAttributes, className, isSelected, clientId }){
+export default function({ attributes, setAttributes, isSelected, clientId }){
     let {
         terms,
         content,
@@ -44,6 +40,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
     // Gets blocks props from hook
     const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });

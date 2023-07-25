@@ -1,6 +1,6 @@
 const { useBlockProps } = wp.blockEditor;
 
-export default function ({ attributes, className }) {
+export default function ({ attributes }) {
     const {
         content, 
         blockId,
@@ -25,9 +25,10 @@ export default function ({ attributes, className }) {
         collectionBackgroundColor,
         collectionTextColor
     } = attributes;
-
+    
     // Gets attributes such as style, that are automatically added by the editor hook
     const blockProps = useBlockProps.save();
+
     return <div 
                 { ...blockProps }
                 data-module="carousel-items-list"

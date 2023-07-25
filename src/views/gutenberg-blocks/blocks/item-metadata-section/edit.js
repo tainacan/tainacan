@@ -10,7 +10,7 @@ import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainac
 import tainacan from '../../js/axios.js';
 import axios from 'axios';
 
-export default function ({ attributes, setAttributes, className, isSelected }) {
+export default function ({ attributes, setAttributes, isSelected }) {
     
     let {
         content, 
@@ -36,7 +36,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
             [ `has-text-align-${ textAlign }` ]: textAlign,
         }
     } );
-    const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
+    const className = blockProps.className;
 
     function setContent() {
 

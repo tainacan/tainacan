@@ -1,6 +1,6 @@
 const { useBlockProps } = wp.blockEditor;
 
-export default function({ attributes, className }){
+export default function({ attributes }){
     const { content } = attributes;
     
     // Gets attributes such as style, that are automatically added by the editor hook

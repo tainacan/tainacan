@@ -1,6 +1,6 @@
 const { RichText, useBlockProps } = wp.blockEditor;
 
-export default function({ attributes, className }) {
+export default function({ attributes }) {
     const {
         collectionId,
         backgroundColor,
@@ -37,6 +37,8 @@ export default function({ attributes, className }) {
     } = attributes;
     
     const blockProps = useBlockProps.save();
+    const className = blockProps.className;
+
     let termsAgreementMessageHTML = <RichText.Content { ...blockProps } tagName="p" value={ termsAgreementMessage } />;
     termsAgreementMessageHTML = (termsAgreementMessageHTML && termsAgreementMessageHTML.props && termsAgreementMessageHTML.props.value) ? termsAgreementMessageHTML.props.value : '';
 

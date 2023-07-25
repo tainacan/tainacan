@@ -8,7 +8,7 @@ import SingleItemMetadatumModal from '../../js/selection/single-item-metadatum-m
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 
-export default function ({ attributes, setAttributes, className, isSelected }) {
+export default function ({ attributes, setAttributes, isSelected }) {
     
     let {
         content, 
@@ -27,6 +27,7 @@ export default function ({ attributes, setAttributes, className, isSelected }) {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
 		}
 	} );
+    const className = blockProps.className;
     const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
 
     // Checks if we are in template mode, if so, gets the collection Id from URL.

@@ -7,7 +7,7 @@ const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import ItemsModal from './items-modal.js';
 
-export default function({ attributes, setAttributes, className, isSelected }) {
+export default function({ attributes, setAttributes, isSelected }) {
     let {
         selectedItemsObject, 
         selectedItemsHTML, 
@@ -22,6 +22,7 @@ export default function({ attributes, setAttributes, className, isSelected }) {
 
     // Gets blocks props from hook
     const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     function prepareItem(item) {
         return (

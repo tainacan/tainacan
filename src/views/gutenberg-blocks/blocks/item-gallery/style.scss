@@ -1,3 +1,8 @@
+@import '../../../../../node_modules/swiper/swiper.scss';
+@import '../../../../../node_modules/swiper/modules/navigation/navigation.scss';
+@import '../../../../../node_modules/swiper/modules/a11y/a11y.scss';
+@import '../../../../../node_modules/swiper/modules/autoplay/autoplay.scss';
+
 .item-gallery-edit-container {
     .tainacan-media-component {
         .swiper-slide,
@@ -98,7 +103,7 @@
         fill: currentColor;
     }
     ul.swiper-wrapper { 
-        list-style: none;
+        list-style: none !important;
         padding: 0;
     }
 }

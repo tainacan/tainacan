@@ -7,7 +7,7 @@ const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import TermsModal from './terms-modal.js';
 
-export default function({ attributes, setAttributes, className, isSelected }){
+export default function({ attributes, setAttributes, isSelected }){
     let { 
         selectedTermsObject, 
         selectedTermsHTML, 
@@ -21,6 +21,7 @@ export default function({ attributes, setAttributes, className, isSelected }){
 
     // Gets blocks props from hook
     const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     function prepareTerm(term) {
         return (

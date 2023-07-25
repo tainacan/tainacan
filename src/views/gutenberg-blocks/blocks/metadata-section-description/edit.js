@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { useBlockProps, BlockControls, AlignmentControl } = wp.blockEditor;
 
-export default function ({ attributes, setAttributes, className, context }) {
+export default function ({ attributes, setAttributes, context }) {
     
     let {
         content, 
@@ -17,6 +17,7 @@ export default function ({ attributes, setAttributes, className, context }) {
 			[ `has-text-align-${ textAlign }` ]: textAlign,
 		}
 	} );
+    const className = blockProps.className;
 
     if (context['tainacan/metadataSectionId'])
         sectionId = context['tainacan/metadataSectionId'];

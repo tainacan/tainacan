@@ -20,12 +20,12 @@ const {
     MenuItemsChoice
 } = wp.components;
 
-const { InspectorControls, BlockControls } = wp.blockEditor;
+const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 
 import CollectionModal from './collection-modal.js';
 import TermModal from './term-modal.js';
 
-export default function({ attributes, setAttributes, className, isSelected, clientId }) {
+export default function({ attributes, setAttributes, isSelected, clientId }) {
     let {
         termId,
         taxonomyId,
@@ -78,6 +78,10 @@ export default function({ attributes, setAttributes, className, isSelected, clie
         collectionOrderByMeta,
         collectionOrderByType
     } = attributes;
+
+    // Gets blocks props from hook
+    const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     let registeredViewModesEntries = [];
     let registeredViewModesKeys = [];
@@ -208,7 +212,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
                         src={ `${tainacan_blocks.base_url}/assets/images/faceted-search.png` } />
             </div>
         : (
-        <div className={className}>
+        <div { ...blockProps }>
 
             <div>
                 <BlockControls>

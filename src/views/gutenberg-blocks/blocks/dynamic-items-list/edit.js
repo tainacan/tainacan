@@ -15,7 +15,7 @@ import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 
-export default function({ attributes, setAttributes, className, isSelected, clientId }){
+export default function({ attributes, setAttributes, isSelected, clientId }) {
     let {
         items, 
         content, 
@@ -54,6 +54,7 @@ export default function({ attributes, setAttributes, className, isSelected, clie
 
     // Gets blocks props from hook
     const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
