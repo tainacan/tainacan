@@ -38,7 +38,7 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'args'                => $this->get_create_params()
 				),
 				'schema' => array($this, 'get_bulk_schema')
-			),
+			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)',
 			array(
@@ -623,5 +623,3 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		return $schema;
 	}
 }
-
-?>
