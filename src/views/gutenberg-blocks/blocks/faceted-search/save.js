@@ -1,4 +1,6 @@
-export default function({ attributes, className }) {
+const { useBlockProps } = wp.blockEditor;
+
+export default function({ attributes }) {
     const {
         termId,
         taxonomyId,
@@ -57,6 +59,9 @@ export default function({ attributes, className }) {
     else if (updatedListType === '' && termId && taxonomyId)
         updatedListType = 'term';
         
+    // Gets attributes such as style, that are automatically added by the editor hook
+    const blockProps = useBlockProps.save();
+
     return <div 
             style={{
                 'font-size': baseFontSize + 'px',
@@ -76,7 +81,7 @@ export default function({ attributes, className }) {
                 '--tainacan-primary': primaryColor,
                 '--tainacan-secondary': secondaryColor
             }}
-            className={ className }>
+            { ...blockProps }>
         <main 
                 id="tainacan-items-page"
                 data-module="faceted-search"

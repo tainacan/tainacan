@@ -1,13 +1,13 @@
 const { __ } = wp.i18n;
 
-const { IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
+const {  Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import TermsModal from './terms-modal.js';
 
-export default function({ attributes, setAttributes, className, isSelected }){
+export default function({ attributes, setAttributes, isSelected }){
     let { 
         selectedTermsObject, 
         selectedTermsHTML, 
@@ -20,27 +20,21 @@ export default function({ attributes, setAttributes, className, isSelected }){
     } = attributes;
 
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+    const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     function prepareTerm(term) {
         return (
             <li 
                 key={ term.id }
                 className="term-list-item">
-                { tainacan_blocks.wp_version < '5.4' ?
-                    <IconButton
+                <button
                         onClick={ () => removeTermOfId(term.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
-                        :
-                    <button
-                            onClick={ () => removeTermOfId(term.id) }
-                            type="button"
-                            class="components-button has-icon"
-                            aria-label={__('Remove', 'tainacan')}>
-                        <span class="dashicon dashicons dashicons-no-alt" />
-                    </button>
-                }         
+                        type="button"
+                        class="components-button has-icon"
+                        aria-label={__('Remove', 'tainacan')}>
+                    <span class="dashicon dashicons dashicons-no-alt" />
+                </button>     
                 <a 
                     id={ isNaN(term.id) ? term.id : 'term-id-' + term.id }
                     href={ term.url }

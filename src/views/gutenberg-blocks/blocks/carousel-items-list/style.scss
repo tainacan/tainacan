@@ -1,4 +1,8 @@
 @import '../../scss/gutenberg-blocks-variables.scss';
+@import '../../../../../node_modules/swiper/swiper.scss';
+@import '../../../../../node_modules/swiper/modules/navigation/navigation.scss';
+@import '../../../../../node_modules/swiper/modules/a11y/a11y.scss';
+@import '../../../../../node_modules/swiper/modules/autoplay/autoplay.scss';
 
 .wp-block-tainacan-carousel-items-list {
     margin: 2em auto;
@@ -150,7 +154,7 @@
             margin: 0 var(--spaceAroundCarousel, 50px);
 
             ul.swiper-wrapper { 
-                list-style: none;
+                list-style: none !important;
                 padding: 0;
                 margin: 0;
             }
@@ -373,7 +377,7 @@
                 right: -8px;
                 top: -8px;
                 border: 1px solid var(--tainacan-block-gray3, $gray3);
-                border-radius: 12px;
+                border-radius: 100em;
                 transition: opacity linear 0.15s, right linear 0.15s;
             }
             &:hover button:hover {

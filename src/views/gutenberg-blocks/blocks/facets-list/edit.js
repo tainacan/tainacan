@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { BaseControl, RangeControl, Spinner, SelectControl, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
 const { useSelect } = wp.data;
 
@@ -16,7 +16,7 @@ import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 
-export default function({ attributes, setAttributes, className, isSelected, clientId }) {
+export default function({ attributes, setAttributes, isSelected, clientId }) {
     let {
         facets, 
         facetsObject,
@@ -50,7 +50,8 @@ export default function({ attributes, setAttributes, className, isSelected, clie
     } = attributes;
 
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+    const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
