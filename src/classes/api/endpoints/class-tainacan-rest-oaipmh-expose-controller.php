@@ -6,9 +6,6 @@ use Tainacan\OAIPMHExpose;
 use \Tainacan\API\REST_Controller;
 
 class REST_Oaipmh_Expose_Controller extends REST_Controller {
-    protected function get_schema() {
-        return "TODO:get_schema";
-    }
 
     /**
      * REST_Facets_Controller constructor.
@@ -37,8 +34,10 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
             array(
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_verb'),
-                'permission_callback' => array($this, 'get_verb_permissions_check')
-            )
+                'permission_callback' => array($this, 'get_verb_permissions_check'),
+                'args'              => $this->get_verb_params() 
+            ),
+            'schema' => [$this, 'get_schema']
         ));
     }
 
@@ -127,4 +126,39 @@ class REST_Oaipmh_Expose_Controller extends REST_Controller {
 
         die;
     }
+
+    function get_verb_params() {
+        return [
+            'verb' => [
+                'enum' => ['ListSets', 'ListRecords', 'ListIdentifiers', 'GetRecord', 'ListMetadataFormats', 'Identify'],
+                'required' => true,
+                'description' => __( 'The OAI-PMH verb to execute.', 'tainacan' ),
+                'type=' => 'string'
+            ],
+            'resumptionToken' => [
+                'description' => __( 'The resumptionToken to continue a previous request.', 'tainacan' ),
+                'type' => 'string'
+            ],
+            'metadataPrefix' => [
+                'description' => __( 'The metadataPrefix to use in the request. Used when the verb is "ListRecords", "ListIdentifiers" and "GetRecord"', 'tainacan' ),
+                'type' => 'string'
+            ],
+            'identifier' => [
+                'description' => __( 'The identifier to use in the request. Used when the verb is "GetRecord".', 'tainacan' ),
+                'type' => 'string'
+            ],
+        ];
+    }
+
+    function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => $this->rest_base,
+			'type' => 'string',
+			'tags' => [ $this->rest_base ],
+            'description' => __( 'Result of the OAI-PMH Exposer for the provided verb.', 'tainacan'),
+		];
+
+		return $schema;
+	}
 }

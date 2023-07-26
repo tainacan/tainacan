@@ -11,9 +11,6 @@ class REST_Bulkedit_Controller extends REST_Controller {
 	private $metadatum_repository;
 	private $collections_repository;
 
-    protected function get_schema() {
-        return "TODO:get_schema";
-    }
 
 	public function __construct() {
 		$this->rest_base = 'bulk-edit';
@@ -40,7 +37,8 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
 					'args'                => $this->get_create_params()
 				),
-			)
+				'schema' => array($this, 'get_bulk_schema')
+			),
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)',
 			array(
@@ -48,7 +46,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'				  => $this->get_actions_params()
 				),
+				'schema' => array($this, 'get_bulk_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/add',
@@ -57,17 +57,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'add_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
-					'args'                => [
-						'metadatum_id' => [
-							'type'        => 'integer',
-							'description' => __( 'The metadatum ID', 'tainacan' ),
-						],
-						'value' => [
-							'type'        => ['string', 'integer'],
-							'description' => __( 'The value to be added', 'tainacan' ),
-						],
-					],
+					'args'                => $this->get_actions_params('add')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/trash',
@@ -76,7 +68,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'trash_items'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'                => $this->get_actions_params('trash')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/untrash',
@@ -85,7 +79,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'untrash_items'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'                => $this->get_actions_params('untrash')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/delete_items',
@@ -94,7 +90,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'delete_items'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'                => $this->get_actions_params('delete_items')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set_status',
@@ -103,13 +101,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'set_status'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
-					'args'                => [
-						'value' => [
-							'type'        => 'string',
-							'description' => __( 'The new status value', 'tainacan' ),
-						],
-					],
+					'args'                => $this->get_actions_params('set_status')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set',
@@ -118,17 +112,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'set_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
-					'args'                => [
-						'metadatum_id' => [
-							'type'        => 'integer',
-							'description' => __( 'The metadatum ID', 'tainacan' ),
-						],
-						'value' => [
-							'type'        => ['string', 'integer', 'array'],
-							'description' => __( 'The value to be set', 'tainacan' ),
-						],
-					],
+					'args'                => $this->get_actions_params('set')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/copy_value',
@@ -137,17 +123,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'copy_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
-					'args'                => [
-						'metadatum_id_to' => [
-							'type'        => 'integer',
-							'description' => __( 'The metadatum ID', 'tainacan' ),
-						],
-						'metadatum_id_from' => [
-							'type'        => ['string', 'integer'],
-							'description' => __( 'The metadatum ID to be copied', 'tainacan' ),
-						],
-					],
+					'args'                => $this->get_actions_params('copy_value')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/remove',
@@ -156,17 +134,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'remove_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
-					'args'                => [
-						'metadatum_id' => [
-							'type'        => 'integer',
-							'description' => __( 'The metadatum ID', 'tainacan' ),
-						],
-						'value' => [
-							'type'        => ['string', 'integer'],
-							'description' => __( 'The value to be added', 'tainacan' ),
-						],
-					],
+					'args'                => $this->get_actions_params('remove')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/replace',
@@ -175,21 +145,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'replace_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
-					'args'                => [
-						'metadatum_id' => [
-							'type'        => 'integer',
-							'description' => __( 'The metadatum ID', 'tainacan' ),
-						],
-						'old_value' => [
-							'type'        => ['string', 'integer'],
-							'description' => __( 'The value to search for', 'tainacan' ),
-						],
-						'new_value' => [
-							'type'        => ['string', 'integer'],
-							'description' => __( 'The value to be set', 'tainacan' ),
-						],
-					],
+					'args'                => $this->get_actions_params('replace')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/clear',
@@ -198,13 +156,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'clear_value'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
-					'args'                => [
-						'metadatum_id' => [
-							'type'        => 'integer',
-							'description' => __( 'The metadatum ID', 'tainacan' ),
-						]
-					],
+					'args'                => $this->get_actions_params('clear')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/set_comment_status',
@@ -213,13 +167,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'set_comment_status'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
-					'args'                => [
-						'value' => [
-							'type'        => 'string',
-							'description' => __( 'The new comments status (open or closed)', 'tainacan' ),
-						],
-					],
+					'args'                => $this->get_actions_params('set_comment_status')
 				),
+				'schema' => array($this, 'get_actions_schema')
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/sequence/(?P<sequence_index>[\d]+)',
@@ -228,7 +178,9 @@ class REST_Bulkedit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item_in_sequence'),
 					'permission_callback' => array($this, 'bulk_edit_permissions_check'),
+					'args'				  => $this->get_sequence_params()
 				),
+				'schema' => array($this, 'get_sequence_schema')
 			)
 		);
 	}
@@ -439,6 +391,11 @@ class REST_Bulkedit_Controller extends REST_Controller {
 			'description' => __( 'Array of items IDs', 'tainacan' ),
 		];
 
+		$query_params['collection_id'] = [
+			'type'        => 'string',
+			'description' => __( 'Collection ID', 'tainacan' ),
+		];
+
 		$query_params['use_query'] = [
 			'type'        => ['boolean', 'object'],
 			'description' => __( 'Whether to use the current query to select posts', 'tainacan' ),
@@ -452,6 +409,219 @@ class REST_Bulkedit_Controller extends REST_Controller {
 		return $query_params;
 	}
 
+	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_sequence_params() {
+		$endpoint_args = [
+			'collection_id' => [
+				'type'        => 'string',
+				'description' => __( 'Collection ID', 'tainacan' ),
+				'required' => true,
+			],
+			'group_id' => [
+				'type'        => 'string',
+				'description' => __( 'Group ID', 'tainacan' ),
+				'required' => true,
+			],
+			'sequence_index' => [
+				'type'        => 'string',
+				'description' => __( 'Sequence index', 'tainacan' ),
+				'required' => true,
+			],
+		];
+
+		return $endpoint_args;
+	}
+
+	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_actions_params( $action = null ) {
+		$endpoint_args = [
+			'collection_id' => [
+				'type'        => 'string',
+				'description' => __( 'Collection ID', 'tainacan' ),
+				'required' => true,
+			],
+			'group_id' => [
+				'type'        => 'string',
+				'description' => __( 'Group ID', 'tainacan' ),
+				'required' => true,
+			]
+		];
+		
+		switch ( $action ) {
+			case 'add':
+				$endpoint_args['metadatum_id'] = [
+					'type'        => 'integer',
+					'description' => __( 'The metadatum ID', 'tainacan' ),
+				];
+				$endpoint_args['value'] = [
+					'type'        => ['string', 'integer'],
+					'description' => __( 'The value to be added', 'tainacan' ),
+				];
+			break;
+			case 'set_status':
+				$endpoint_args['value'] = [
+					'type'        => 'string',
+					'description' => __( 'The new status value', 'tainacan' ),
+				];
+			break;
+			case 'set':
+				$endpoint_args['metadatum_id'] = [
+					'type'        => 'integer',
+					'description' => __( 'The metadatum ID', 'tainacan' ),
+				];
+				$endpoint_args['value'] = [
+					'type'        => ['string', 'integer', 'array'],
+					'description' => __( 'The value to be set', 'tainacan' ),
+				];
+			break;
+			case 'copy_value':
+				$endpoint_args['metadatum_id_to'] = [
+					'type'        => 'integer',
+					'description' => __( 'The metadatum ID', 'tainacan' ),
+				];
+				$endpoint_args['metadatum_id_from'] = [
+					'type'        => ['string', 'integer'],
+					'description' => __( 'The metadatum ID to be copied', 'tainacan' ),
+				];
+			break;
+			case 'remove':
+				$endpoint_args['metadatum_id'] = [
+					'type'        => 'integer',
+					'description' => __( 'The metadatum ID', 'tainacan' ),
+				];
+				$endpoint_args['value'] = [
+					'type'        => ['string', 'integer'],
+					'description' => __( 'The value to be added', 'tainacan' ),
+				];
+			break;
+			case 'replace':
+				$endpoint_args['metadatum_id'] = [
+					'type'        => 'integer',
+					'description' => __( 'The metadatum ID', 'tainacan' ),
+				];
+				$endpoint_args['old_value'] = [
+					'type'        => ['string', 'integer'],
+					'description' => __( 'The value to search for', 'tainacan' ),
+				];
+				$endpoint_args['new_value'] = [
+					'type'        => ['string', 'integer'],
+					'description' => __( 'The value to be set', 'tainacan' ),
+				];
+			break;
+			case 'clear':
+				$endpoint_args['metadatum_id'] = [
+					'type'        => 'integer',
+					'description' => __( 'The metadatum ID', 'tainacan' ),
+				];
+			break;
+			case 'set_comment_status':
+				$endpoint_args['value'] = [
+					'type'        => 'string',
+					'description' => __( 'The new comments status (open or closed)', 'tainacan' ),
+				];
+			break;
+		}
+
+		return $endpoint_args;
+	}
+
+
+	function get_actions_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-action";
+		$schema['properties'] = [
+			'bg_process_id' => [
+				'type' => 'string',
+				'description' => __( 'Bulk edition processs ID', 'tainacan' )
+			],
+			'method' => [
+				'type' => 'string',
+				'description' => __( 'Method that was executed', 'tainacan' )
+			]
+		];
+
+		return $schema;
+	}
+
+    function get_bulk_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-bulk";
+		$schema['properties'] = [
+			'id' => [
+				'type' => 'string',
+				'description' => __( 'Bulk edition processs ID', 'tainacan' )
+			],
+			'options' => [
+				'type' => 'object',
+				'description' => __( 'Bulk edition options containing the selection of items.', 'tainacan' ),
+				'properties' => [
+					'items_ids' => [
+						'type' => 'array',
+						'description' => __( 'Items selected for the bulk edition.', 'tainacan' ),
+						'items' => [
+							'type' => 'integer',
+							'description' => __( 'Item ID', 'tainacan' ),
+						]
+					],
+					'collection_id' => [
+						'type' => 'string',
+						'description' => __( 'Collection ID', 'tainacan' ),
+					],
+					'order' => [
+						'type' => 'string',
+						'description' => __( 'Order of the items selected', 'tainacan' ),
+					],
+					'order_by' => [
+						'type' => 'string',
+						'description' => __( 'By which metadata the selected items are sorted', 'tainacan' ),
+					],
+					'query' => [
+						'type' => 'string',
+						'description' => __( 'Query used to select the items if not selected manually', 'tainacan' ),
+					],
+				]
+			]
+		];
+
+		return $schema;
+	}
+
+	function get_sequence_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-sequence";
+		$schema['tags'][] = 'sequence-edit';
+		$schema['properties'] = [
+			'id' => [
+				'type' => 'string',
+				'description' => __( 'Bulk edition processs ID', 'tainacan' )
+			],
+			'items_count' => [
+				'type' => 'integer',
+				'description' => __( 'Total of items selected for the sequence edit.', 'tainacan' ),
+			]
+		];
+
+		return $schema;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => $this->rest_base,
+			'type' => 'object',
+			'tags' => [ $this->rest_base ]
+		];
+
+		return $schema;
+	}
 }
 
 ?>
