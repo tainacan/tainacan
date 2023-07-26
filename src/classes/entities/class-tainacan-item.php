@@ -765,9 +765,11 @@ class Item extends Entity {
 			$before = str_replace('$id', ' id="metadata-id-' . $item_metadatum->get_metadatum()->get_id() . '"', $before);
 
 			// Let theme authors tweak the wrapper opener
+			$metadata_type = $item_metadatum->get_metadatum()->get_metadata_type();
+			$metadatum_id = $item_metadatum->get_metadatum()->get_id();
 			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before', $before, $item_metadatum );
-			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--type-' . $item_metadatum->get_metadatum()->get_metadata_type(), $before, $item_metadatum );
-			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--id-' . $item_metadatum->get_metadatum()->get_id(), $before, $item_metadatum );
+			$before = apply_filters( "tainacan-get-item-metadatum-as-html-before--type-$metadata_type", $before, $item_metadatum );
+			$before = apply_filters( "tainacan-get-item-metadatum-as-html-before--id-$metadatum_id", $before, $item_metadatum );
 			if ( is_numeric($metadatum_index) ) {
 				$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--index-' . $metadatum_index, $before, $item_metadatum );
 			}
@@ -795,8 +797,10 @@ class Item extends Entity {
 			if ( is_numeric($metadatum_index) ) {
 				$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--index-' . $metadatum_index, $after, $item_metadatum );
 			}
-			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--id-' . $item_metadatum->get_metadatum()->get_id(), $after, $item_metadatum );
-			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--type-' . $item_metadatum->get_metadatum()->get_metadata_type(), $after, $item_metadatum );
+			$metadata_type = $item_metadatum->get_metadatum()->get_metadata_type();
+			$metadatum_id = $item_metadatum->get_metadatum()->get_id();
+			$after = apply_filters( "tainacan-get-item-metadatum-as-html-after--id-$metadatum_id", $after, $item_metadatum );
+			$after = apply_filters( "tainacan-get-item-metadatum-as-html-after--type-$metadata_type", $after, $item_metadatum );
 			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after', $after, $item_metadatum );
 			
 			// Closes the wrapper

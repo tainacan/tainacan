@@ -29,7 +29,8 @@ class Filters extends Repository {
 	}
 
 	protected function _get_map() {
-		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
+		$entity = $this->get_name();
+		return apply_filters( "tainacan-get-map-$entity", [
 			'name'                => [
 				'map'         => 'post_title',
 				'title'       => __( 'Name', 'tainacan' ),
