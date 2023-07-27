@@ -133,7 +133,7 @@
                     this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
                     this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
                 }
-            this.$eventBusSearch.$emitter.$on('hasToReloadFacets', this.reloadOptions); 
+            this.$eventBusSearch.$emitter.on('hasToReloadFacets', this.reloadOptions); 
         },
         mounted(){
             if (!this.isUsingElasticSearch)
@@ -145,7 +145,7 @@
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-            this.$eventBusSearch.$emitter.$off('hasToReloadFacets', this.reloadOptions); 
+            this.$eventBusSearch.$emitter.off('hasToReloadFacets', this.reloadOptions); 
         }, 
         methods: {
             ...mapGetters('search', [

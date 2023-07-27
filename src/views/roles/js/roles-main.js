@@ -1,8 +1,8 @@
-import { createApp, h } from 'vue';
+import { createApp } from 'vue';
 import store from '../../admin/js/store/store';
 import router from './roles-router';
 import FloatingVue from 'floating-vue';
-//import { Snackbar, Modal } from 'buefy';
+import { Snackbar, Modal } from '@ntohq/buefy-next';
 
 import { I18NPlugin } from './wp-i18n-plugin';
 
@@ -18,25 +18,21 @@ export default (element) => {
         // Mount only if the div exists and it is not already mounted
         if ( pageElement && pageElement.classList && !pageElement.classList.contains('has-mounted') ) {
 
-            const VueRoles = createApp({
-                el: '#tainacan-roles-app',
-                render: () => h(RolesPage)
-            });
+            const VueRoles = createApp(RolesPage);
 
             VueRoles.use(I18NPlugin);
             VueRoles.use(FloatingVue, {
                 popperTriggers: ['hover'],
                 themes: {
                     'taianacan-tooltip': {
-                        '$extend': 'tooltip',
+                        $extend: 'tooltip',
                         triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
                         html: true,
                     }
                 }
             });
-            // VueRoles.use(Snackbar);
-            // VueRoles.use(Modal);
+            VueRoles.use(Snackbar);
+            VueRoles.use(Modal);
             
             // Changing title of pages
             router.beforeEach((to, from, next) => {

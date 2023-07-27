@@ -107,10 +107,10 @@
                 this.loadOptions();
         },
         created() {
-            this.$eventBusSearch.$emitter.$on('hasToReloadFacets', this.reloadOptions);
+            this.$eventBusSearch.$emitter.on('hasToReloadFacets', this.reloadOptions);
         },
         beforeUnmount() {
-            this.$eventBusSearch.$emitter.$off('hasToReloadFacets', this.reloadOptions); 
+            this.$eventBusSearch.$emitter.off('hasToReloadFacets', this.reloadOptions); 
         },
         methods: {
             reloadOptions(shouldReload) {

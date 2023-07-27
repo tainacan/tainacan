@@ -29,20 +29,20 @@ export default {
                 'closeAdvancedSearch'
             ],
             created() {
-                this.$emitter.$on('input', data => {
+                this.$emitter.on('input', data => {
                     if (data.taxonomy)
                         this.addTaxquery(data);
                     else
                         this.addMetaquery(data);
                 });
 
-                this.$root.$emitter.$on('closeAdvancedSearch', () => {
+                this.$root.$emitter.on('closeAdvancedSearch', () => {
                     this.$store.dispatch('search/setPage', 1);
                     
                     this.performAdvancedSearch({});
                 });
 
-                this.$root.$emitter.$on('performAdvancedSearch', advancedSearchQuery => {
+                this.$root.$emitter.on('performAdvancedSearch', advancedSearchQuery => {
                     this.$store.dispatch('search/setPage', 1);
                     this.performAdvancedSearch(advancedSearchQuery);
 

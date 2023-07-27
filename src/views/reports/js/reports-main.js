@@ -1,8 +1,8 @@
-import { createApp, h } from 'vue';
+import { createApp } from 'vue';
 import store from '../../admin/js/store/store';
 import router from './reports-router';
-import { Snackbar, Modal } from 'buefy';
-import VueApexCharts from 'vue-apexcharts';
+import { Snackbar, Modal } from '@ntohq/buefy-next';
+import VueApexCharts from 'vue3-apexcharts';
 import cssVars from 'css-vars-ponyfill';
 import { 
     I18NPlugin,
@@ -69,10 +69,7 @@ export default (element) => {
                 }
             }
 
-            const VueReports = createApp({
-                el: '#tainacan-reports-app',
-                render: () => h(ReportsPage)
-            });
+            const VueReports = createApp(ReportsPage);
 
             VueReports.use(store);
             VueReports.use(router);
@@ -95,7 +92,6 @@ export default (element) => {
             VueReports.component('collections-list-block', CollectionsListBlock);
             VueReports.component('activities-block', ActivitiesBlock);
             VueReports.component('activities-per-user-block', ActivitiesPerUserBlock);
-            VueReports.component('apexchart', VueApexCharts);
 
             // Changing title of pages
             router.beforeEach((to, from, next) => {
@@ -103,6 +99,8 @@ export default (element) => {
                 if (next() != undefined)
                     next();
             });
+
+            VueReports.mount('#tainacan-reports-app');
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

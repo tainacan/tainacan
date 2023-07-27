@@ -206,13 +206,13 @@ export default {
         'onDiscard',
     ],
     mounted() {
-        this.$parent.$emitter.$on('toggleItemEditionFooterDropdown', () => {
+        this.$parent.$emitter.on('toggleItemEditionFooterDropdown', () => {
             if (this.$refs && this.$refs['item-edition-footer-dropdown'])
                 this.$refs['item-edition-footer-dropdown'].toggle();
         });
     },
     beforeUnmount() {
-        this.$parent.$emitter.$off('toggleItemEditionFooterDropdown');
+        this.$parent.$emitter.off('toggleItemEditionFooterDropdown');
     },
     methods: {
         openItemCreationStatusDialog() {

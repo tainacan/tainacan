@@ -28,7 +28,7 @@ import {
     Snackbar,
     Toast,
     Numberinput
-} from 'buefy';
+} from '@ntohq/buefy-next';
 import VTooltip from 'floating-vue';
 import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';

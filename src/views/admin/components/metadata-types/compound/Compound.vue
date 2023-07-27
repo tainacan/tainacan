@@ -181,14 +181,14 @@
             }
         },
         created() {
-            eventBusItemMetadata.$emitter.$on('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
-            eventBusItemMetadata.$emitter.$on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
-            eventBusItemMetadata.$emitter.$on('focusNextChildMetadatum', this.focusNextChildMetadatum);
+            eventBusItemMetadata.$emitter.on('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
+            eventBusItemMetadata.$emitter.on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            eventBusItemMetadata.$emitter.on('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         beforeUnmount() {
-            eventBusItemMetadata.$emitter.$off('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
-            eventBusItemMetadata.$emitter.$off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
-            eventBusItemMetadata.$emitter.$off('focusNextChildMetadatum', this.focusNextChildMetadatum);
+            eventBusItemMetadata.$emitter.off('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
+            eventBusItemMetadata.$emitter.off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            eventBusItemMetadata.$emitter.off('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         methods: {
             createChildMetadataGroups() {

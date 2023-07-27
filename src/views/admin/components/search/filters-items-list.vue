@@ -398,7 +398,7 @@
             this.prepareFilters();
 
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$emitter.$on('isLoadingItems', this.updateIsLoadingItems);
+                this.$eventBusSearch.$emitter.on('isLoadingItems', this.updateIsLoadingItems);
         },
         beforeUnmount() {
             // Cancels previous collection name Request
@@ -414,7 +414,7 @@
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
 
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$emitter.$off('isLoadingItems', this.updateIsLoadingItems);
+                this.$eventBusSearch.$emitter.off('isLoadingItems', this.updateIsLoadingItems);
      
         },
         methods: {

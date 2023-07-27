@@ -321,12 +321,12 @@ export default {
     },
     created() {
         this.fetchTerms();
-        this.$parent.$emitter.$on('deleteSelectedTerms', this.deleteSelectedTerms);
-        this.$parent.$emitter.$on('updateSelectedTermsParent', this.updateSelectedTermsParent);
+        this.$parent.$emitter.on('deleteSelectedTerms', this.deleteSelectedTerms);
+        this.$parent.$emitter.on('updateSelectedTermsParent', this.updateSelectedTermsParent);
     },
     beforeUnmount() {
-        this.$parent.$emitter.$off('deleteSelectedTerms', this.deleteSelectedTerms);
-        this.$parent.$emitter.$off('updateSelectedTermsParent', this.updateSelectedTermsParent);
+        this.$parent.$emitter.off('deleteSelectedTerms', this.deleteSelectedTerms);
+        this.$parent.$emitter.off('updateSelectedTermsParent', this.updateSelectedTermsParent);
     },
     methods: {
         ...mapActions('taxonomy', [

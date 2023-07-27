@@ -908,7 +908,7 @@ export default {
                 // CREATING NEW ITEM SUBMISSION
                 this.createNewItem();
 
-                eventBusItemMetadata.$emitter.$on('hasErrorsOnForm', (hasErrors) => {
+                eventBusItemMetadata.$emitter.on('hasErrorsOnForm', (hasErrors) => {
                     if (hasErrors) {
                         if (Array.isArray(this.formErrors)) {
                             for (let i = 0; i < this.metadataSectionCollapses.length; i++)
@@ -968,7 +968,7 @@ export default {
             this.form.document_type = 'url';
     },
     beforeUnmount () {
-        eventBusItemMetadata.$emitter.$off('hasErrorsOnForm');
+        eventBusItemMetadata.$emitter.off('hasErrorsOnForm');
     },
     methods: {
         ...mapActions('item', [

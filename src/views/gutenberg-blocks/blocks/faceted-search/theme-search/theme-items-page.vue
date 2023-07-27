@@ -901,7 +901,7 @@
                 }
             }
 
-            this.$eventBusSearch.$emitter.$on('isLoadingItems', isLoadingItems => {
+            this.$eventBusSearch.$emitter.on('isLoadingItems', isLoadingItems => {
 
                 this.isLoadingItems = isLoadingItems;
                 
@@ -915,7 +915,7 @@
                 }));
             });
 
-            this.$eventBusSearch.$emitter.$on('hasFiltered', hasFiltered => {
+            this.$eventBusSearch.$emitter.on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
             });
             
@@ -925,12 +925,12 @@
                     this.openAdvancedSearch = this.$route.query.advancedSearch;
                 }
 
-                this.$root.$emitter.$on('openAdvancedSearch', (openAdvancedSearch) => {
+                this.$root.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
                     this.openAdvancedSearch = openAdvancedSearch;
                 });
             }
 
-            this.$eventBusSearch.$emitter.$on('startSlideshowFromItem', (index) => {
+            this.$eventBusSearch.$emitter.on('startSlideshowFromItem', (index) => {
                 let currentQuery = this.$route.query;
                 delete currentQuery['slideshow-from'];
                 this.$router.replace({ query: currentQuery }).catch((error) => this.$console.log(error));
@@ -1456,16 +1456,16 @@
             }, 500),
             removeEventListeners() {
                 // Component
-                this.$emitter.$off();
+                this.$emitter.off();
                 // Window
                 if (!this.hideFilters)
                     window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
                 if (!this.hideAdvancedSearch)
-                    this.$root.$emitter.$off('openAdvancedSearch');
+                    this.$root.$emitter.off('openAdvancedSearch');
                 // $eventBusSearch
-                this.$eventBusSearch.$emitter.$off('isLoadingItems');
-                this.$eventBusSearch.$emitter.$off('hasFiltered');
+                this.$eventBusSearch.$emitter.off('isLoadingItems');
+                this.$eventBusSearch.$emitter.off('hasFiltered');
 
             },
         }

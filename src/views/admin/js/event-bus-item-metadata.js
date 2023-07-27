@@ -37,12 +37,12 @@ export const eventBusItemMetadata = createApp({
         'isUpdatingValue'
     ],
     created() {
-        this.$emitter.$on('input', this.updateValue);
-        this.$emitter.$on('removeCompoundGroup', this.removeItemMetadataGroup);
+        this.$emitter.on('input', this.updateValue);
+        this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
     },
     beforeUpdate() {
-        this.$emitter.$off('input', this.updateValue);
-        this.$emitter.$on('removeCompoundGroup', this.removeItemMetadataGroup);
+        this.$emitter.off('input', this.updateValue);
+        this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
     },
     methods : {
         updateValue({ itemId, metadatumId, values, parentMetaId, parentId }){

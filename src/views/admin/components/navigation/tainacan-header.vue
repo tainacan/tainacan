@@ -130,12 +130,12 @@
             }
         },
         created(){
-            this.$root.$emitter.$on('openProcessesPopup', () => {
+            this.$root.$emitter.on('openProcessesPopup', () => {
                 this.showProcesses = true;
             });
         },
         beforeUnmount() {
-            this.$root.$emitter.$off('openProcessesPopup');
+            this.$root.$emitter.off('openProcessesPopup');
         },
         methods: {
             updateSearch() {

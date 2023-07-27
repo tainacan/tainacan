@@ -99,10 +99,10 @@ export default {
         document.title = this.$route.meta.title;
         this.pageTitle = document.title;
 
-        this.$root.$emitter.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
+        this.$root.$emitter.on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     },
     beforeUnmount() {
-        this.$root.$emitter.$on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
+        this.$root.$emitter.on('onCollectionBreadCrumbUpdate', this.collectionBreadCrumbUpdate);
     },
     methods: {
         ...mapGetters('collection', [

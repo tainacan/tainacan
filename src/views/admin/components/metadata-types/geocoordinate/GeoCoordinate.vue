@@ -202,7 +202,7 @@
             // We need to pass mapComponentRef here instead of creating it inside the function
             // otherwise the listener would conflict when multiple geo metadata are inserted.
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-            eventBusItemMetadata.$emitter.$on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
+            eventBusItemMetadata.$emitter.on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         mounted() {
             nextTick(() => {
@@ -212,7 +212,7 @@
         },
         beforeUnmount() {
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-            eventBusItemMetadata.$emitter.$off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
+            eventBusItemMetadata.$emitter.off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         methods: {
             onUpdateFromLatitudeInput: _.debounce( function($event) {

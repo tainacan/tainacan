@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { SnackbarProgrammatic as Snackbar } from 'buefy';
-import { ModalProgrammatic as Modal } from 'buefy';
+import { SnackbarProgrammatic as Snackbar } from '@ntohq/buefy-next';
+import { ModalProgrammatic as Modal } from '@ntohq/buefy-next';
 import CustomDialog from '../components/other/custom-dialog.vue'
 
 // Simpler version of the i18n plugin to translate error feedback messages

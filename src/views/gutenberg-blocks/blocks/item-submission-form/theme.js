@@ -21,7 +21,7 @@ import {
     Taginput,
     Snackbar,
     Steps
-} from 'buefy';
+} from '@ntohq/buefy-next';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueTheMask from 'vue-the-mask';
