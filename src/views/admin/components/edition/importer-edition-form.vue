@@ -115,7 +115,6 @@
                                     :placeholder="$i18n.get('instruction_select_a_target_collection')">
                                 <option
                                         v-for="collection of collections"
-                                        v-if="collection.current_user_can_edit_items"
                                         :key="collection.id"
                                         :value="collection.id">{{ collection.name }}
                                 </option>
@@ -437,7 +436,9 @@ export default {
             this.fetchAllCollectionNames()
                 .then((resp) => {
                     resp.request.then((collections) => {
-                        this.collections = collections;
+                        this.collections = Array.isArray(collections)? collections.filter((collection) => {
+                            return collection.current_user_can_edit_items;
+                        }) : [];
                         this.isFetchingCollections = false;
                     })
                     .catch((error) => {

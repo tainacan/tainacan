@@ -141,7 +141,6 @@
                 </router-link>
             </li>
             <li
-                    v-if="collections.length > 0 && !isLoading" 
                     :key="index"
                     v-for="(collection, index) of collections"
                     class="tainacan-card"

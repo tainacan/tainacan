@@ -23,8 +23,8 @@ jobs:
       matrix:
         # Notes regarding supported versions in WP:
         # The base matrix only contains the PHP versions which are supported on all supported WP versions.
-        php: ['5.9', '7.0', '7.3', '7.4']
-        wp: ['latest', '5.4']
+        php: ['7.0', '7.3', '7.4']
+        wp: ['latest', '5.9']
         experimental: [false]
 
         # include:

@@ -17,29 +17,30 @@
             &nbsp;{{ $i18n.get(entityType) }}
         </p>
         <ul class="has-text-gray status-list">
-            <li 
-                    v-for="(statusOption, index) of $statusHelper.getStatuses()"
-                    :key="index"
-                    @mouseenter="currentHoveredStatus = statusOption.slug"
-                    @mouseleave="currentHoveredStatus = ''"
-                    v-if="(statusOption.slug != 'draft' || entityType != 'collections') && totalByStatus[statusOption.slug]">
-                <span class="value">
-                    <i-count-up
-                            :delay="750"
-                            :end-val="totalByStatus[statusOption.slug]"
-                            :options="{ separator: ' ' }" />
-                    &nbsp;
-                </span>
-                <span 
-                        v-if="$statusHelper.hasIcon(statusOption.slug)"
-                        class="icon has-text-gray">
-                    <i 
-                            :style="(isRepositoryLevel && entityType === 'items') ? 'color: var(--tainacan-block-primary, #187181);' : ''"
-                            class="tainacan-icon tainacan-icon-1-125em"
-                            :class="$statusHelper.getIcon(statusOption.slug)" />
-                </span>
-                <!-- {{ statusOption.name }} -->
-            </li>
+            <template v-for="(statusOption, index) of $statusHelper.getStatuses()">
+                <li 
+                        :key="index"
+                        @mouseenter="currentHoveredStatus = statusOption.slug"
+                        @mouseleave="currentHoveredStatus = ''"
+                        v-if="(statusOption.slug != 'draft' || entityType != 'collections') && totalByStatus[statusOption.slug]">
+                    <span class="value">
+                        <i-count-up
+                                :delay="750"
+                                :end-val="totalByStatus[statusOption.slug]"
+                                :options="{ separator: ' ' }" />
+                        &nbsp;
+                    </span>
+                    <span 
+                            v-if="$statusHelper.hasIcon(statusOption.slug)"
+                            class="icon has-text-gray">
+                        <i 
+                                :style="(isRepositoryLevel && entityType === 'items') ? 'color: var(--tainacan-block-primary, #187181);' : ''"
+                                class="tainacan-icon tainacan-icon-1-125em"
+                                :class="$statusHelper.getIcon(statusOption.slug)" />
+                    </span>
+                    <!-- {{ statusOption.name }} -->
+                </li>
+            </template>
         </ul>
         <p 
                 v-if="summary.totals && summary.totals[entityType] && entityType == 'taxonomies'"

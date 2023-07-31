@@ -16,15 +16,16 @@
                     <p>{{ $i18n.get('info_associated_roles') }}</p>
                     <br>
                     <div class="roles-list">
-                        <b-checkbox
-                                v-if="!capability.roles_inherited[role.slug]"
-                                v-for="(role, roleIndex) of existingRoles"
-                                :key="roleIndex"
-                                :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
-                                @input="($event) => updateRole(role.slug, $event)"
-                                name="roles">
-                            {{ role.name }}
-                        </b-checkbox>
+                        <template v-for="(role, roleIndex) of existingRoles">
+                            <b-checkbox
+                                    v-if="!capability.roles_inherited[role.slug]"
+                                    :key="roleIndex"
+                                    :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
+                                    @input="($event) => updateRole(role.slug, $event)"
+                                    name="roles">
+                                {{ role.name }}
+                            </b-checkbox>
+                        </template>
                     </div>
                 </b-field>
             </template>
@@ -48,16 +49,17 @@
                     </label>
                     <br>
                     <div class="roles-list">
-                        <b-checkbox
-                                v-if="capability.roles_inherited[role.slug]"
-                                v-for="(role, roleIndex) of existingRoles"
-                                :key="roleIndex"
-                                class="has-text-yellow2"
-                                :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
-                                name="roles_inherited"
-                                disabled>
-                            {{ role.name }}
-                        </b-checkbox>
+                        <template v-for="(role, roleIndex) of existingRoles">
+                            <b-checkbox
+                                    v-if="capability.roles_inherited[role.slug]"
+                                    :key="roleIndex"
+                                    class="has-text-yellow2"
+                                    :value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
+                                    name="roles_inherited"
+                                    disabled>
+                                {{ role.name }}
+                            </b-checkbox>
+                        </template>
                     </div>
                 </b-field>
             </template>

@@ -205,9 +205,8 @@
                         </a>
                     </li>
                     <li 
-                            v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
+                            v-for="(statusOption, index) of statusOptionsForCollections"
                             :key="index"
-                            v-if="statusOption.slug != 'private' || (statusOption.slug == 'private' && $userCaps.hasCapability('tnc_rep_read_private_collections'))"
                             @click="onChangeTab(statusOption.slug)"
                             :class="{ 'is-active': status == statusOption.slug}"
                             :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
@@ -252,13 +251,7 @@
                                 </span>
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
-                            <p
-                                    v-for="(statusOption, index) of $statusHelper.getStatuses()"
-                                    :key="index"
-                                    v-if="status == statusOption.slug">
-                                {{ $i18n.get('info_no_collections_' + statusOption.slug) }}
-                            </p>
-
+                            <p v-else>{{ $i18n.get('info_no_collections_' + status) }}</p>
                             <div v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         id="collection-creation-options-dropdown"
@@ -406,6 +399,9 @@ export default {
             }
 
             return {};
+        },
+        statusOptionsForCollections() {
+            return this.$statusHelper.getStatuses().filter((status) => status.slug != 'draft' && (status.slug != 'private' || (status.slug == 'private' && this.$userCaps.hasCapability('tnc_rep_read_private_collections'))));
         }
     },
     created() {

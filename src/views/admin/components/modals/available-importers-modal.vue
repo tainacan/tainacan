@@ -7,9 +7,7 @@
             tabindex="-1"
             aria-modal
             ref="availableImportersModal">
-        <div 
-                class="tainacan-modal-content" 
-                style="width: auto">
+        <div style="width: auto">
             <header class="tainacan-modal-title">
                 <h2>{{ $i18n.get('importers') }}</h2>
                 <hr>
@@ -19,16 +17,17 @@
                 <div 
                         role="list"
                         class="importer-types-container">
-                    <div
-                            role="listitem"
-                            class="importer-type"
-                            v-for="importerType in availableImporters"
-                            :key="importerType.slug"
-                            v-if="!(hideWhenManualCollection && !importerType.manual_collection)"
-                            @click="onSelectImporter(importerType)">
-                        <h4>{{ importerType.name }}</h4>
-                        <p>{{ importerType.description }}</p>            
-                    </div>
+                    <template v-for="importerType in availableImporters">
+                        <div
+                                role="listitem"
+                                class="importer-type"
+                                :key="importerType.slug"
+                                v-if="!(hideWhenManualCollection && !importerType.manual_collection)"
+                                @click="onSelectImporter(importerType)">
+                            <h4>{{ importerType.name }}</h4>
+                            <p>{{ importerType.description }}</p>            
+                        </div>
+                    </template>
 
                     <b-loading 
                         :is-full-page="false"

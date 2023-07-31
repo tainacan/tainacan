@@ -19,15 +19,16 @@
                 <div 
                         v-if="!isLoading" 
                         class="collection-types-container">
-                    <div
-                            class="collection-type"
-                            v-for="(collection, index) in collections"
-                            :key="index"
-                            v-if="collection && collection.current_user_can_edit_items"
-                            @click="onSelectCollection(collection)">
-                        <h4>{{ collection.name }}</h4>
-                        <p>{{ collection.description.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            
-                    </div>
+                    <template v-for="(collection, index) in collections">
+                        <div
+                                class="collection-type"
+                                :key="index"
+                                v-if="collection && collection.current_user_can_edit_items"
+                                @click="onSelectCollection(collection)">
+                            <h4>{{ collection.name }}</h4>
+                            <p>{{ collection.description.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            
+                        </div>
+                    </template>
                     <div 
                             v-if="collections.length <= 0"
                             class="block">

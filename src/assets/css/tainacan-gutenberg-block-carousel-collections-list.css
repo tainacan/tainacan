@@ -328,7 +328,8 @@
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper ul.swiper-wrapper {
         list-style: none !important;
         padding: 0;
-        margin: 0; }
+        margin: 0;
+        height: auto; }
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper a > span,
       .wp-block-tainacan-carousel-collections-list .tainacan-carousel .swiper a:hover > span {
         color: inherit;

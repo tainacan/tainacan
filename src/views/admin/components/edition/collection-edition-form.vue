@@ -196,8 +196,7 @@
                                     v-model="form.default_view_mode"
                                     @focus="clearErrors('default_view_mode')">
                                 <option
-                                        v-for="(viewMode, index) of form.enabled_view_modes"
-                                        v-if="registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen != true"
+                                        v-for="(viewMode, index) of validDefaultViewModes"
                                         :key="index"
                                         :value="viewMode">
                                     {{ registeredViewModes[viewMode].label }}
@@ -761,7 +760,10 @@ export default {
     computed: {
         ...mapGetters('metadata', {
             'metadata': 'getMetadata'
-        })
+        }),
+        validDefaultViewModes() {
+            return Array.isArray(this.form.enabled_view_modes) ? this.form.enabled_view_modes.filter((aViewMode) => this.registeredViewModes[aViewMode] != undefined && this.registeredViewModes[aViewMode].full_screen == false ) : [];
+        }
     },
     watch: {
         'form.hide_items_thumbnail_on_lists' (newValue) {
