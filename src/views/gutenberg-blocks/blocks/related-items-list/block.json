@@ -2,6 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/related-items-list",
     "title": "Tainacan Related Items List",
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "items", "carousel", "slider", "relationship" ],
     "description": "A set of lists to display items related to a certain item via relationship metadata.",
@@ -53,5 +54,5 @@
         "multiple": true
     },
     "editorScript": "related-items-list",
-	"editorStyle": "related-items-list"
+	"editorStyle": ["related-items-list", "tainacan-blocks-common-editor-styles" ]
 }
