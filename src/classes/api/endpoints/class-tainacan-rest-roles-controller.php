@@ -30,7 +30,7 @@ class REST_Roles_Controller extends REST_Controller {
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_items'),
 				'permission_callback' => array($this, 'get_items_permissions_check'),
-				'args'                => $this->get_endpoint_args(\WP_REST_Server::DELETABLE)
+				'args'                => $this->get_endpoint_args(\WP_REST_Server::READABLE)
 			),
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,
@@ -226,8 +226,6 @@ class REST_Roles_Controller extends REST_Controller {
 				'error'         => $role_slug
 			], 400);
 		}
-
-		$role = $roles[$role_slug];
 
 		if ( isset($request['name']) ) {
 
@@ -463,33 +461,44 @@ class REST_Roles_Controller extends REST_Controller {
 	 * @return array|mixed
 	 */
 	public function get_endpoint_args( $method = null ) {
-		$endpoint_args = [
-			'role' => [
-				'description' => __( 'Role slug', 'tainacan' ),
-				'type' => 'string',
-				'required' => true,
-			]
-		];
+		$endpoint_args = [];
 		
 		switch ( $method ) {
-			case \WP_REST_Server::CREATABLE:
 			case \WP_REST_Server::EDITABLE:
+				$endpoint_args['role'] = array(
+					'description' => __( 'Role slug', 'tainacan' ),
+					'type' => 'string',
+					'required' => true
+				);
+				$endpoint_args['add_cap'] = array(
+					'description' => __( 'the capability slug to be add', 'tainacan' ),
+					'type' => 'string',
+					'required' => false
+				);
+				$endpoint_args['remove_cap'] = array(
+					'description' => __( 'The capability slug to be removed', 'tainacan' ),
+					'type' => 'string',
+					'required' => false
+				);
+			case \WP_REST_Server::CREATABLE:
 				$endpoint_args['name'] = array(
 					'description' => __('New role name', 'tainacan'),
 					'type' => 'string',
-					'required' => true
+					'required' => $method  == \WP_REST_Server::CREATABLE
 				);
 				$endpoint_args['capabilities'] = array(
 					'description' => __('Array of capabilities, where the keys are capability slugs and values are booleans', 'tainacan'),
 					'required' => false,
 					'validate_callback' => [$this, 'validate_roles_capabilities_arg']
 				);
-
-				if ( $method == \WP_REST_Server::CREATABLE )
-					unset($endpoint_args['role']);
 			break;
 			case \WP_REST_Server::READABLE:
 			case \WP_REST_Server::DELETABLE:
+				$endpoint_args['role'] = array(
+					'description' => __( 'Role slug', 'tainacan' ),
+					'type' => 'string',
+					'required' => $method == \WP_REST_Server::DELETABLE
+				);
 			break;
 		}
 
