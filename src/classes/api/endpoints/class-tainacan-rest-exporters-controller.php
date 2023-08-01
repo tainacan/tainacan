@@ -14,10 +14,6 @@ use \Tainacan\Exposers\Mappers\Value;
 class REST_Exporters_Controller extends REST_Controller {
 	private $collections_repository;
 
-	protected function get_schema() {
-        return "TODO:get_schema";
-    }
-
 	/**
 	* REST_Exporters_Controller constructor.
 	* Define the namespace, rest base and instantiate your attributes.
@@ -45,6 +41,7 @@ class REST_Exporters_Controller extends REST_Controller {
 				'callback'            => array($this, 'get_registered_exporters'),
 				'permission_callback' => array($this, 'export_permissions_check'),
 			),
+			'schema' => [$this, 'get_schema_exporters_available']
 		));
 
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/session', array(
@@ -53,12 +50,13 @@ class REST_Exporters_Controller extends REST_Controller {
 				'callback'            => array($this, 'create_item'),
 				'permission_callback' => array($this, 'export_permissions_check'),
 				'args'                => [
-					'importer_slug' => [
+					'exporter_slug' => [
 						'type'        => 'string',
 						'description' => __( 'The slug of the exporter to be initialized', 'tainacan' ),
 					]
 				],
 			),
+			'schema' => [$this, 'get_schema']
 		));
 
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)', array(
@@ -67,6 +65,10 @@ class REST_Exporters_Controller extends REST_Controller {
 				'callback'            => array($this, 'update_item'),
 				'permission_callback' => array($this, 'export_permissions_check'),
 				'args'                => [
+					'session_id' => [
+						'type'        => 'string',
+						'description' => __( 'The ID for this exporter session', 'tainacan' ),
+					],
 					'send_email' => [
 						'type'        => 'string',
 						'description' => __( 'The e-mail to be used by the export to send a message when the process ends', 'tainacan' ),
@@ -81,6 +83,7 @@ class REST_Exporters_Controller extends REST_Controller {
 					]
 				],
 			),
+			'schema' => [$this, 'get_schema']
 		));
 
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/session/(?P<session_id>[0-9a-f]+)/run', array(
@@ -88,7 +91,14 @@ class REST_Exporters_Controller extends REST_Controller {
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'run'),
 				'permission_callback' => array($this, 'export_permissions_check'),
+				'args'                => [
+					'session_id' => [
+						'type'        => 'string',
+						'description' => __( 'The ID for this exporter session', 'tainacan' ),
+					],
+				]
 			),
+			'schema' => [$this, 'get_schema_run']
 		));
 
 	}
@@ -268,6 +278,215 @@ class REST_Exporters_Controller extends REST_Controller {
 			$ret = [];
 		}
 		return $ret;
+	}
+
+	public function get_schema() {
+		
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'exporters',
+			'type' => 'object',
+			'tags' => [ 'background-process' ],
+		];
+
+		$schema['properties'] = array_merge(
+			[
+				'id' => [
+					'description'  => esc_html__( 'The ID for this exporter session', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'in_step_count' => [
+					'description'  => esc_html__( 'Number of items found to process in step.', 'tainacan' ),
+					'type'         => 'integer',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'current_step' => [
+					'description'  => esc_html__( 'Current step.', 'tainacan' ),
+					'type'         => 'integer',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'transients' => [
+					'description'  => esc_html__( 'Properties of exporter class, the values will be kept during all the time the process is running.', 'tainacan' ),
+					'type'         => 'object',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'options' => [
+					'description'  => esc_html__( 'the set set of options exporter may have its own, that will be used during the export process.', 'tainacan' ),
+					'type'         => 'object',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'options_form' => [
+					'description'  => esc_html__( 'The form to input the set set of options exporter may have its own.', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'collections' => [
+					'description'  => esc_html__( 'Array of the target collections, with their IDs, an identifier from the source, the total number of items to be exporter, the mapping array from the source structure to the ID of the metadata in tainacan', 'tainacan' ),
+					'type'        => 'array',
+					'items'       => [
+						'type' => 'object',
+						'properties' => [
+							'id' => [
+								'type' => 'integer',
+								'description' => __( 'Collection ID an identifier from the source', 'tainacan' ),
+							],
+							'total_items' => [
+								'type' => 'integer',
+								'description' => __( 'The total number of items to be exporter', 'tainacan' ),
+							]
+						]
+					],
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'class_name' => [
+					'description'  => esc_html__( 'The Exporter Class. e.g. "\Tainacan\Exporter\Test_Exporter"', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'manual_collection' => [
+					'description'  => esc_html__( 'Define whether manually selecting collections is accepted', 'tainacan' ),
+					'type'         => 'boolean',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'mapping_accept' => [
+					'description'  => esc_html__( 'If is set to “any”, all mappers will be available. If set to “list”, only the list of mappers indicated by "mapping_list" can be used.', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'mapping_list' => [
+					'description'  => esc_html__( 'The list of mappers accepted by the exported.', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'accept_no_mapping' => [
+					'description'  => esc_html__( 'Informs that is also allow export items in their original form, without any mapping.', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'mapping_selected' => [
+					'description'  => esc_html__( 'Mapper selected for process.', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'current_collection_item' => [
+					'description'  => esc_html__( 'Id of the current item in the process is running on.', 'tainacan' ),
+					'type'         => 'integer',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'current_collection' => [
+					'description'  => esc_html__( 'Id of the current collection in the process is running on.', 'tainacan' ),
+					'type'         => 'integer',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'output_files' => [
+					'description'  => esc_html__( 'Get a list of the generated files to display to users.', 'tainacan' ),
+					'type'         => 'array',
+					'items'		   => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'send_email' => [
+					'description'  => esc_html__( 'if notify the user after completion of the process.', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				
+			]
+		);
+
+		return $schema;
+	}
+
+	public function get_schema_run() {
+		
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'exporters-run',
+			'type' => 'object',
+			'tags' => [ 'background-process' ],
+		];
+
+		$schema['properties'] = array_merge(
+			[
+				'bg_process_id' => [
+					'description'  => esc_html__( 'The ID for this exporter session', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+			]
+		);
+
+		return $schema;
+	}
+
+	public function get_schema_exporters_available() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'exporters-available',
+			'type' => 'object',
+			'tags' => [ 'background-process' ],
+		];
+
+		$schema['properties'] = array_merge(
+			[
+				'slug' => [
+					'description'  => esc_html__( 'A unique slug for the exporter. e.g. "example-exporter"', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'name' => [
+					'description'  => esc_html__( 'The name of the exporter. e.g. "Example exporter".', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'description' => [
+					'description'  => esc_html__( 'The exporter description', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'class_name' => [
+					'description'  => esc_html__( 'The Exporter Class. e.g. "\Tainacan\Exporter\Test_Exporter"', 'tainacan' ),
+					'type'         => 'string',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'manual_mapping' => [
+					'description'  => esc_html__( 'Wether Tainacan must present the user with an interface to manually choose a mapping standard. This will allow them to export the items mapped to a chosen standard instead of in its original form.', 'tainacan' ),
+					'type'         => 'boolean',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				],
+				'manual_collection' => [
+					'description'  => esc_html__( 'Wether Tainacan will let the user choose the source collection. If set to true, Tainacan give the user a select box from where he/she will Choose one (and only one) Collection to export items from. Otherwise, the child exporter class must choose the collections somehow.', 'tainacan' ),
+					'type'         => 'boolean',
+					'context'      => array( 'view' ),
+					'readonly'     => true
+				]
+			]
+		);
+
+		return $schema;
 	}
 	
 }
