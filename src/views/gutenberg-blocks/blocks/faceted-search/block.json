@@ -2,6 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/faceted-search",
     "title": "Tainacan Faceted Search",
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "facets", "search", "items" ],
     "description": "A full items list faceted search from either the repository, a collection or a term.",
@@ -219,6 +220,6 @@
         "multiple": false
     },
     "editorScript": "faceted-search",
-	"editorStyle": "faceted-search",
+	"editorStyle": ["faceted-search", "tainacan-blocks-common-editor-styles" ],
 	"style": "faceted-search"
 }

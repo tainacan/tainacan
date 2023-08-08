@@ -10,7 +10,6 @@ class REST_Filters_Controller extends REST_Controller {
 	private $collection;
 	private $collection_repository;
 
-	private $metadatum;
 	private $metadatum_repository;
 
 	private $filter_repository;
@@ -42,7 +41,7 @@ class REST_Filters_Controller extends REST_Controller {
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
 				'permission_callback' => array($this, 'create_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE, true)
 			),
 			'schema'                  => [$this, 'get_schema']
 		));
@@ -57,9 +56,9 @@ class REST_Filters_Controller extends REST_Controller {
 				'methods'             => \WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'create_item'),
 				'permission_callback' => array($this, 'create_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE, true)
 			),
-			'schema'                  => [$this, 'get_schema']
+			'schema'                  => [$this, 'get_list_schema']
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base, array(
 			array(
@@ -74,19 +73,14 @@ class REST_Filters_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'create_item_permissions_check'),
 				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
 			),
-			'schema'                  => [$this, 'get_schema']
+			'schema'                  => [$this, 'get_list_schema']
 		));
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<filter_id>[\d]+)', array(
 			array(
-				'methods'             => \WP_REST_Server::DELETABLE,
-				'callback'            => array($this, 'delete_item'),
-				'permission_callback' => array($this, 'delete_item_permissions_check'),
-				'args'                => array(
-	            	'permanently' => array(
-		                'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
-			            'default'     => '0'
-		            ),
-	            )
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_item'),
+				'permission_callback' => array($this, 'get_item_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
 			),
 			array(
 				'methods'             => \WP_REST_Server::EDITABLE,
@@ -95,10 +89,10 @@ class REST_Filters_Controller extends REST_Controller {
 				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
 			),
 			array(
-				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array($this, 'get_item'),
-				'permission_callback' => array($this, 'get_item_permissions_check'),
-				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => array($this, 'delete_item'),
+				'permission_callback' => array($this, 'delete_item_permissions_check'),
+				'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::DELETABLE)
 			),
 			'schema'                  => [$this, 'get_schema']
 		));
@@ -228,7 +222,7 @@ class REST_Filters_Controller extends REST_Controller {
 		if (! $filter instanceof Entities\Filter) {
 			return new \WP_REST_Response([
 		    	'error_message' => __('A filter with this ID was not found', 'tainacan' ),
-			    'filter_id' => $filter_id
+			    'filter_id' => $request['filter_id']
 		    ], 400);
 		}
 
@@ -463,26 +457,60 @@ class REST_Filters_Controller extends REST_Controller {
 	 *
 	 * @return array|mixed
 	 */
-	public function get_endpoint_args_for_item_schema( $method = null ) {
-		$endpoint_args = [];
-		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args = array_merge(
-                $endpoint_args,
-                parent::get_wp_query_params()
-            );
-		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
-			$map = $this->filter_repository->get_map();
+	public function get_endpoint_args_for_item_schema( $method = null, $is_collection_level = false ) {
+		$endpoint_args = [
+			'filter_id' => [
+				'description' => __( 'Filter ID', 'tainacan' ),
+				'required' => true,
+			]
+		];
 
-			foreach ($map as $mapped => $value){
-				$set_ = 'set_'. $mapped;
+		if ( $is_collection_level )
+			$endpoint_args['collection_id'] = [
+				'description' => __( 'Collection ID', 'tainacan' ),
+				'required' => true,
+			];
 
-				// Show only args that has a method set
-				if( !method_exists(new Entities\Filter(), "$set_") ){
-					unset($map[$mapped]);
+		switch ( $method ) {
+			case \WP_REST_Server::READABLE:
+				$endpoint_args['context'] = array(
+					'type'    	  => 'string',
+					'default' 	  => 'view',
+					'description' => 'The context in which the request is made.',
+					'enum'    	  => array(
+						'view',
+						'edit'
+					),
+				);
+			break;
+			case \WP_REST_Server::CREATABLE:
+			case \WP_REST_Server::EDITABLE:
+				$map = $this->filter_repository->get_map();
+
+				foreach ($map as $mapped => $value){
+					$set_ = 'set_'. $mapped;
+
+					// Show only args that has a method set
+					if( !method_exists(new Entities\Filter(), "$set_") ){
+						unset($map[$mapped]);
+					}
 				}
-			}
 
-			$endpoint_args = $map;
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					$map
+				);
+
+				if ( $method === \WP_REST_Server::CREATABLE )
+					unset($endpoint_args['filter_id']);
+
+			break;
+			case \WP_REST_Server::DELETABLE:
+				$endpoint_args['permanently'] = array(
+					'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash the filter.', 'tainacan'),
+					'default'     => 0
+				);
+			break;
 		}
 
 		return $endpoint_args;
@@ -513,25 +541,20 @@ class REST_Filters_Controller extends REST_Controller {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'filter',
-			'type' => 'object'
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
 		];
 
 		$main_schema = parent::get_repository_schema( $this->filter_repository );
 		$permissions_schema = parent::get_permissions_schema();
 
-		// $collection_scheme = parent::get_repository_schema( $this->collection_repository );
-		// $metadatum_scheme = parent::get_repository_schema( $this->metadatum_repository );
-
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
 			$permissions_schema
-			// $collection_scheme,
-			// $metadatum_scheme
 		);
 
 		return $schema;
-
 	}
 }
 ?>

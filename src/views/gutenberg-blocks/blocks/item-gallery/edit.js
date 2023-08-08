@@ -3,12 +3,12 @@ const { __ } = wp.i18n;
 const { Button, ButtonGroup, BaseControl, Placeholder, RangeControl, ToggleControl, PanelBody } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
-const { InspectorControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, useBlockProps } = wp.blockEditor;
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
 
-export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
+export default function ({ attributes, setAttributes, isSelected, clientId }) {
     
     let {
         content, 
@@ -38,8 +38,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
     } = attributes;
 
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
-    const currentWPVersion = (typeof tainacan_blocks != 'undefined') ? tainacan_blocks.wp_version : tainacan_plugin.wp_version;
+    const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
@@ -395,7 +395,7 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
                     <ServerSideRender
                         block="tainacan/item-gallery"
                         attributes={ attributes }
-                        httpMethod={ currentWPVersion >= '5.5' ? 'POST' : 'GET' }
+                        httpMethod={ 'POST' }
                     />
                 </div>
                 ) : null

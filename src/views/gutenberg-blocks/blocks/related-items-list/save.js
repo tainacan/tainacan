@@ -1,5 +1,6 @@
-const { InnerBlocks} = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InnerBlocks, useBlockProps } = wp.blockEditor;
 
-export default function({ className }) {
-    return <div data-module="related-items-list" className={ className }><InnerBlocks.Content /></div>
+export default function() {
+    const blockProps = useBlockProps.save();
+    return <div { ...blockProps } data-module="related-items-list"><InnerBlocks.Content /></div>
 };

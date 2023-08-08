@@ -21,7 +21,6 @@ class Metadatum extends Entity {
 		$display,
 		$cardinality,
 		$collection_key,
-		$mask,
 		$default_value,
 		$metadata_type,
 		$metadata_type_options,
@@ -166,15 +165,6 @@ class Metadatum extends Entity {
 	 */
 	function get_collection_key(){
 		return $this->get_mapped_property('collection_key');
-	}
-
-	/**
-	 * Return the mask
-	 *
-	 * @return string
-	 */
-	function get_mask(){
-		return $this->get_mapped_property('mask');
 	}
 
 	/**
@@ -381,15 +371,6 @@ class Metadatum extends Entity {
 		$this->set_mapped_property('collection_key', $value);
 	}
 
-	/**
-	 * Set mask for the metadatum
-	 *
-	 * @param [string] $value
-	 * @return void
-	 */
-	function set_mask( $value ){
-		$this->set_mapped_property('mask', $value);
-	}
 
 	/**
 	 * Set default value

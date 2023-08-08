@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/search-bar",
     "title": "Tainacan Search Bar",
-    "apiVersion": 2,
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "items", "search", "bar" ],
     "description": "Set up a custom search bar to redirect to an item's list",
@@ -104,5 +104,5 @@
         }
     ],
     "editorScript": "search-bar",
-	"editorStyle": "search-bar"
+	"editorStyle": ["search-bar", "tainacan-blocks-common-editor-styles" ]
 }

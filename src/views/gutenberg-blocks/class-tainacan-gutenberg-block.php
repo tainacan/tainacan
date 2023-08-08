@@ -1,7 +1,5 @@
 <?php
 
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
 // Slugs and options for the Tainacan Blocks.
 const TAINACAN_BLOCKS = [
 	'items-list' => [],
@@ -33,29 +31,25 @@ tainacan_blocks_initialize();
  * Initialize the Gutenberg Blocks logic, only if possible
  */
 function tainacan_blocks_initialize() {
-	global $wp_version;
 
-	if (is_plugin_active('gutenberg/gutenberg.php') || $wp_version >= '5') {
-
-		// Via Gutenberg filters, we create the Tainacan category
-		if ( class_exists('WP_Block_Editor_Context') ) { // Introduced WP 5.8
-			add_filter( 'block_categories_all', 'tainacan_blocks_register_categories', 10, 2 );
-		} else {
-			add_filter( 'block_categories', 'tainacan_blocks_register_categories', 10, 2 );
-		}
-
-		// On the theme side, all we need is the common scripts, 
-		// that handle dynamically the imports using conditioner.js
-		if ( !is_admin() ) {
-			add_action( 'init', 'tainacan_blocks_add_common_theme_scripts', 90 );
-			add_action( 'init', 'tainacan_blocks_get_common_theme_styles', 90 );
-		}
-
-		// On the admin side, we need the blocks registered and their assets (editor-side)
-		// The reason why we don't use admin_init here is because server side blocks
-		// need to be registered whithin the init
-		add_action('init', 'tainacan_blocks_register_and_enqueue_all_blocks');
+	// Via Gutenberg filters, we create the Tainacan category
+	if ( class_exists('WP_Block_Editor_Context') ) { // Introduced WP 5.8
+		add_filter( 'block_categories_all', 'tainacan_blocks_register_categories', 10, 2 );
+	} else {
+		add_filter( 'block_categories', 'tainacan_blocks_register_categories', 10, 2 );
 	}
+
+	// On the theme side, all we need is the common scripts, 
+	// that handle dynamically the imports using conditioner.js
+	if ( !is_admin() ) {
+		add_action( 'init', 'tainacan_blocks_add_common_theme_scripts', 90 );
+		add_action( 'init', 'tainacan_blocks_get_common_theme_styles', 90 );
+	}
+
+	// On the admin side, we need the blocks registered and their assets (editor-side)
+	// The reason why we don't use admin_init here is because server side blocks
+	// need to be registered whithin the init
+	add_action('init', 'tainacan_blocks_register_and_enqueue_all_blocks');
 }
 
 /** 
@@ -105,7 +99,6 @@ function tainacan_blocks_register_and_enqueue_all_blocks() {
 function tainacan_blocks_register_block($block_slug, $options = []) {
 	global $TAINACAN_BASE_URL;
 	global $TAINACAN_VERSION;
-	global $wp_version;
 
 	// Creates Register params based on registered scripts and styles
 	$register_params = [];
@@ -125,10 +118,7 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 
 	// Defines dependencies for editor script
 	$editor_script_deps = array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-server-side-render', 'wp-data');
-	if ( version_compare( $wp_version, '5.2', '<') )
-		$editor_script_deps[] = 'wp-editor';
-	else
-		$editor_script_deps[] = 'wp-block-editor';
+	$editor_script_deps[] = 'wp-block-editor';
 	
 	if ( isset($options['extra_editor_script_deps']) )
 		array_merge($editor_script_deps, $options['extra_editor_script_deps']);
@@ -171,12 +161,9 @@ function tainacan_blocks_register_block($block_slug, $options = []) {
 	}
 
 	// Registers the new block
-	if (function_exists('register_block_type')) {
-		if ( version_compare( $wp_version, '5.8-RC', '>=') )
-			register_block_type( __DIR__ . '/blocks/' . $block_slug, $register_params );
-		else
-			register_block_type( 'tainacan/' . $block_slug, $register_params );
-	}
+	if (function_exists('register_block_type')) 
+		register_block_type( __DIR__ . '/blocks/' . $block_slug, $register_params );
+	
 }
 
 /** 

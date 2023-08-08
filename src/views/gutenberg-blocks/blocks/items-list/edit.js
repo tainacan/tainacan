@@ -1,13 +1,13 @@
 const { __ } = wp.i18n;
 
-const { RangeControl, IconButton, Button, ToggleControl, Placeholder, PanelBody } = wp.components;
+const { RangeControl,  Button, ToggleControl, Placeholder, PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps } = wp.blockEditor;
 
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 import ItemsModal from './items-modal.js';
 
-export default function({ attributes, setAttributes, className, isSelected }) {
+export default function({ attributes, setAttributes, isSelected }) {
     let {
         selectedItemsObject, 
         selectedItemsHTML, 
@@ -21,7 +21,8 @@ export default function({ attributes, setAttributes, className, isSelected }) {
     } = attributes;
 
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+    const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     function prepareItem(item) {
         return (
@@ -29,18 +30,13 @@ export default function({ attributes, setAttributes, className, isSelected }) {
                 key={ item.id }
                 className="item-list-item"
                 style={{ marginBottom: layout == 'grid' ?  (showName ? gridMargin + 12 : gridMargin) + 'px' : ''}}>
-                { tainacan_blocks.wp_version < '5.4' ?
-                    <IconButton
-                        onClick={ () => removeItemOfId(item.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
-                        :
-                    <Button
-                        onClick={ () => removeItemOfId(item.id) }
-                        icon="no-alt"
-                        showTooltip={false}
-                        label={__('Remove', 'tainacan')}/>
-                }
+                <Button
+                    onClick={ () => removeItemOfId(item.id) }
+                    icon={ () => (
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 13.06l3.712 3.713 1.061-1.06L13.061 12l3.712-3.712-1.06-1.06L12 10.938 8.288 7.227l-1.061 1.06L10.939 12l-3.712 3.712 1.06 1.061L12 13.061z"></path></svg>
+                        ) }
+                    showTooltip={false}
+                    label={__('Remove', 'tainacan')}/>
                 <a 
                     id={ isNaN(item.id) ? item.id : 'item-id-' + item.id }
                     href={ item.url }

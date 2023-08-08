@@ -56,10 +56,11 @@ abstract class Repository {
 	 * Register hooks
 	 */
 	protected function __construct() {
+		$name = $this->get_name();
 		add_action( 'init', array( &$this, 'register_post_type' ) );
 		add_action( 'init', array( &$this, 'init_objects' ) );
 
-		add_filter( 'tainacan-get-map-' . $this->get_name(), array( $this, 'get_default_properties' ) );
+		add_filter( "tainacan-get-map-$name", array( $this, 'get_default_properties' ) );
 	}
 
 	public function init_objects() {
@@ -630,8 +631,9 @@ abstract class Repository {
 	 */
 	public function delete( Entities\Entity $entity, $permanent = true ) {
 
+		$post_type = $entity->get_post_type();
 		do_action( 'tainacan-pre-delete', $entity, $permanent );
-		do_action( 'tainacan-pre-delete-' . $entity->get_post_type(), $entity, $permanent );
+		do_action( "tainacan-pre-delete-$post_type", $entity, $permanent );
 
 		if ($permanent === true) {
 			$return = wp_delete_post( $entity->get_id(), $permanent );
@@ -642,8 +644,9 @@ abstract class Repository {
 
 		if ( $return instanceof \WP_Post && $this->use_logs ) {
 
+			$post_type = $entity->get_post_type();
 			do_action( 'tainacan-deleted', $entity, $permanent );
-			do_action( 'tainacan-deleted-' . $entity->get_post_type(), $entity, $permanent );
+			do_action( "tainacan-deleted-$post_type", $entity, $permanent );
 
 			$return = $this->get_entity_by_post($return);
 

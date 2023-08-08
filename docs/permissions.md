@@ -1,1 +1,0 @@
-This page was moved to https://tainacan.github.io/tainacan-wiki/

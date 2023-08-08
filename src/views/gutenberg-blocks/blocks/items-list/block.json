@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/items-list",
     "title": "Tainacan Items List",
-    "apiVersion": 2,
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "items", "collection" ],
     "description": "Expose items from your Tainacan collections",
@@ -102,5 +102,5 @@
         "inserter": false
     },
     "editorScript": "items-list",
-	"editorStyle": "items-list"
+	"editorStyle": ["items-list", "tainacan-blocks-common-editor-styles" ]
 }
