@@ -122,7 +122,7 @@
     // Auxiliary component for avoinding multiple calls to getCompleteRolesList
     const CompleteRolesList = {
         render() {
-            return this.$slots.default(this.$attrs)
+            return !!this.$slots.default && typeof this.$slots.default == 'function' ? this.$slots.default(this.$attrs) : '';
         }
     }
     export default {

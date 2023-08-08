@@ -668,7 +668,7 @@
         },
         watch: {
             '$route': {
-                hanlder(to, from) {
+                handler(to, from) {
                     if (to !== from)
                         this.$parent.close();
                 },

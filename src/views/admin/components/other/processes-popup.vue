@@ -163,7 +163,7 @@ export default {
             showProcessesList: false,
             updatedProcesses: [],
             bgProcesses: [],
-            processesCollapses: [],
+            processesCollapses: {},
             hasAnyProcessExecuting: false,
             dateFormat: ''
         }
@@ -182,7 +182,7 @@ export default {
             deep: true
         },
         bgProcesses: {
-            hanlder(newBG) {
+            handler(newBG) {
                 this.hasAnyProcessExecuting = newBG.some((element) => element.done <= 0);
             },
             deep: true
@@ -221,7 +221,7 @@ export default {
             'updateProcess'
         ]),
         toggleDetails(index) {
-            Object.assign( this.processesCollapses, { index: !this.processesCollapses[index] });
+            Object.assign( this.processesCollapses, { [index]: !this.processesCollapses[index] });
         },
         getUnfinishedProcesses() {
             let nUnfinishedProcesses = 0;

@@ -109,6 +109,8 @@
             <!-- Sorting options ----  -->
             <b-field class="header-item">
                 <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
+                <pre>{{ collections.length }}</pre>
+                <pre>{{ isLoading }}</pre>
                 <b-dropdown
                         :mobile-modal="true"
                         :disabled="collections.length <= 0 || isLoading"
@@ -390,7 +392,9 @@ export default {
     },
     computed: {
         collections() {
-            return this.getCollections(); 
+            const ope = this.getCollections();
+            console.log(ope.length)
+            return  ope;
         },
         repositoryTotalCollections(){
             return this.getRepositoryTotalCollections();
@@ -533,6 +537,7 @@ export default {
             .then((res) => {
                 this.isLoading = false;
                 this.totalCollections = res.total;
+                console.log(this.isLoading)
             }) 
             .catch(() => {
                 this.isLoading = false;

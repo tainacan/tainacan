@@ -62,7 +62,7 @@ export default {
     },
     created() {
         this.collectionId = this.$route.params.collectionId;
-        
+        console.log(this.$eventBusSearch)
         this.$eventBusSearch.setCollectionId(this.collectionId);
 
         // Loads to store basic collection info such as name, url, current_user_can_edit... etc.

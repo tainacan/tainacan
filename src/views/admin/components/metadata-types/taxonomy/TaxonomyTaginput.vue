@@ -77,7 +77,7 @@
         },
         watch: {
             selected: {
-                hanlder() {
+                handler() {
                     if (this.allowSelectToCreate && this.selected[0]) {
                         this.selected[0].label.includes(`(${this.$i18n.get('select_to_create')})`);
                         this.selected[0].label = this.selected[0].label.split('(')[0];

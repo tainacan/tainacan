@@ -142,41 +142,41 @@ export default (element) => {
             app.use(Snackbar);
             app.use(Toast);
             app.use(Numberinput);
-            app.use(VTooltip, {
-                popperTriggers: ['hover', 'touch'],
-                themes: {
-                    'taianacan-tooltip': {
-                        '$extend': 'tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true
-                    },
-                    'tainacan-repository-tooltip': {
-                        '$extend': 'tainacan-tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true,
-                    },
-                    'tainacan-repository-tooltip': {
-                        '$extend': 'tainacan-header-tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true,
-                    },
-                    'tainacan-repository-tooltip': {
-                        '$extend': 'tainacan-repository-header-tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true,
-                    },
-                    'tainacan-helper-tooltip': {
-                        '$extend': 'tainacan-tooltip',
-                        triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
-                        html: true,
-                    }
-                }
-            });
+            // app.use(VTooltip, {
+            //     popperTriggers: ['hover', 'touch'],
+            //     themes: {
+            //         'taianacan-tooltip': {
+            //             '$extend': 'tooltip',
+            //             triggers: ['hover', 'focus', 'touch'],
+            //             autoHide: true,
+            //             html: true
+            //         },
+            //         'tainacan-repository-tooltip': {
+            //             '$extend': 'tainacan-tooltip',
+            //             triggers: ['hover', 'focus', 'touch'],
+            //             autoHide: true,
+            //             html: true,
+            //         },
+            //         'tainacan-repository-tooltip': {
+            //             '$extend': 'tainacan-header-tooltip',
+            //             triggers: ['hover', 'focus', 'touch'],
+            //             autoHide: true,
+            //             html: true,
+            //         },
+            //         'tainacan-repository-tooltip': {
+            //             '$extend': 'tainacan-repository-header-tooltip',
+            //             triggers: ['hover', 'focus', 'touch'],
+            //             autoHide: true,
+            //             html: true,
+            //         },
+            //         'tainacan-helper-tooltip': {
+            //             '$extend': 'tainacan-tooltip',
+            //             triggers: ['hover', 'focus', 'touch'],
+            //             autoHide: true,
+            //             html: true,
+            //         }
+            //     }
+            // });
             app.use(VueBlurHash);
             app.use(I18NPlugin);
             app.use(UserPrefsPlugin);

@@ -148,12 +148,12 @@
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewtable"/>
                 </span>
                 <span
-                        v-if="collectionsTotal != undefined && collectionsTotal > 1"
+                        v-if="collectionsTotal > 1"
                         class="menu-text">
                     {{ $i18n.getWithVariables('label_view_all_%s_collections', [collectionsTotal]) }}
                 </span>
                 <span
-                        v-if="collectionsTotal != undefined && collectionsTotal <= 1"
+                        v-if="collectionsTotal <= 1"
                         class="menu-text">
                     {{ $i18n.get('label_view_collections_list') }}
                 </span>
@@ -166,6 +166,7 @@
 <script>
 import CollectionsHomeList from '../components/lists/collections-home-list.vue';
 import { mapActions, mapGetters } from 'vuex';
+import { nextTick } from 'vue';
 
 export default {
     name: 'HomePage',
@@ -180,7 +181,8 @@ export default {
             themeItemsListURL: tainacan_plugin.theme_items_list_url,
             collectionsToLoad: (this.$adminOptions.homeCollectionsPerPage && !isNaN(this.$adminOptions.homeCollectionsPerPage)) ? this.$adminOptions.homeCollectionsPerPage : 9,
             collectionsOrderBy: this.$adminOptions.homeCollectionsOrderBy ? this.$adminOptions.homeCollectionsOrderBy : 'modified',
-            collectionsOrder: this.$adminOptions.homeCollectionsOrder ? this.$adminOptions.homeCollectionsOrder : 'desc'
+            collectionsOrder: this.$adminOptions.homeCollectionsOrder ? this.$adminOptions.homeCollectionsOrder : 'desc',
+            collectionsTotal: 0
         }
     },
     computed: {
@@ -188,7 +190,7 @@ export default {
             return this.getCollections(); 
         }
     },
-    mounted(){
+    mounted() {
         this.loadCollections();
     },
     methods: {
@@ -211,8 +213,11 @@ export default {
                     contextEdit: true
                 })
                 .then((res) => {
-                    this.collectionsTotal = res.total;
-                    this.isLoadingCollections = false;
+                    nextTick(() => {
+                        this.collectionsTotal = isNaN(res.total) ? 0 : Number(res.total) 
+                    
+                        this.isLoadingCollections = false;
+                    });
                 }) 
                 .catch(() => {
                     this.isLoadingCollections = false;

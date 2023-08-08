@@ -7,7 +7,7 @@ export default {
 
     install(app, options = {}) {
         app.config.globalProperties.$emitter = emitter;
-        app.config.globalProperties.$eventBusSearch = createApp({
+        app.config.globalProperties.$eventBusSearch = {
             router: options.router,
             store: options.store,
             data: {
@@ -439,6 +439,6 @@ export default {
                     this.updateURLQueries();
                 }
             }
-        });
+        };
     }
 }
