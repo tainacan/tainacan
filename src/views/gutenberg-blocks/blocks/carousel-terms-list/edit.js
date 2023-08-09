@@ -2,7 +2,7 @@ const { __ } = wp.i18n;
 
 const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder,  PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
 const { useSelect } = wp.data;
 
