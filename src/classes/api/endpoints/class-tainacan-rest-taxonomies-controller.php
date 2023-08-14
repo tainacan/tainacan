@@ -25,7 +25,6 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	public function init_objects() {
 		$this->taxonomy = new Entities\Taxonomy();
 		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
-		$this->collections_repository = Repositories\Collections::get_instance();
 	}
 
 	public function register_routes() {
@@ -44,7 +43,7 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route(
@@ -55,6 +54,10 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
 					'args'				  => array(
+						'taxonomy_id' => array(
+							'description' => __( 'Taxonomy ID', 'tainacan' ),
+							'required' => true,
+						),
 						'context' => array(
 							'type'    	  => 'string',
 							'default' 	  => 'view',
@@ -64,21 +67,6 @@ class REST_Taxonomies_Controller extends REST_Controller {
 								'edit'
 							)
 						),
-						'fetch_only' => array(
-							'type'        => ['string', 'array'],
-							'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.', 'tainacan' ),
-						)
-					)
-				),
-				array(
-					'methods'             => \WP_REST_Server::DELETABLE,
-					'callback'            => array($this, 'delete_item'),
-					'permission_callback' => array($this, 'delete_item_permissions_check'),
-					'args'                => array(
-						'permanently' => array(
-							'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
-							'default'     => '0',
-						),
 					)
 				),
 				array(
@@ -86,6 +74,12 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
+				),
+				array(
+					'methods'             => \WP_REST_Server::DELETABLE,
+					'callback'            => array($this, 'delete_item'),
+					'permission_callback' => array($this, 'delete_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::DELETABLE)
 				),
 				'schema'                  => [$this, 'get_schema']
 			)
@@ -97,7 +91,15 @@ class REST_Taxonomies_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::EDITABLE,
 					'callback'            => array($this, 'update_item'),
 					'permission_callback' => array($this, 'update_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
+					'args'                => array_merge(
+						array(
+							'collection_id' => array(
+								'description' => __( 'Collection ID', 'tainacan' ),
+								'required' => true,
+							)
+						),
+						$this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE)
+					),
 				),
 				'schema'                  => [$this, 'get_schema']
 			)
@@ -497,26 +499,62 @@ class REST_Taxonomies_Controller extends REST_Controller {
 	 * @return array|mixed
 	 */
 	public function get_endpoint_args_for_item_schema( $method = null ) {
-		$endpoint_args = [];
-		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args = array_merge(
-                $endpoint_args,
-				parent::get_wp_query_params(),
-                parent::get_fetch_only_param()
-            );
-		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
-			$map = $this->taxonomy_repository->get_map();
+		$endpoint_args = [
+			'taxonomy_id' => [
+				'description' => __( 'Taxonomy ID', 'tainacan' ),
+				'required' => true,
+			]
+		];
+		
+		switch ( $method ) {
+			case \WP_REST_Server::READABLE:
 
-			foreach ($map as $mapped => $value){
-				$set_ = 'set_'. $mapped;
+				$endpoint_args['fetch_only'] = array(
+					'type'        => ['string', 'array'],
+					'description' => __( 'Fetch only specific attribute. The specifics attributes are the same in schema.', 'tainacan' ),
+				);
+				$endpoint_args['context'] = array(
+					'description' => __( 'Scope under which the request is made; determines fields present in response.', 'tainacan' ),
+					'type'        => 'string',
+					'default'     => 'view',
+					'enum'        => array(
+						'view',
+						'edit',
+					),
+				);
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					parent::get_wp_query_params(),
+					parent::get_fetch_only_param()
+				);
+			break;
+			case \WP_REST_Server::CREATABLE:
+			case \WP_REST_Server::EDITABLE:
+				$map = $this->taxonomy_repository->get_map();
 
-				// Show only args that has a method set
-				if( !method_exists($this->taxonomy, "$set_") ){
-					unset($map[$mapped]);
+				foreach ($map as $mapped => $value){
+					$set_ = 'set_'. $mapped;
+
+					// Show only args that has a method set
+					if( !method_exists($this->taxonomy, "$set_") ){
+						unset($map[$mapped]);
+					}
 				}
-			}
 
-			$endpoint_args = $map;
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					$map
+				);
+	
+				if ( $method === \WP_REST_Server::CREATABLE )
+					unset($endpoint_args['taxonomy_id']);
+			break;
+			case \WP_REST_Server::DELETABLE:
+				$endpoint_args['permanently'] = array(
+					'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection'),
+					'default'     => '0',
+				);
+			break;
 		}
 
 		return $endpoint_args;
@@ -549,7 +587,8 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'taxonomy',
-			'type' => 'object'
+			'type' => 'object',
+			'tags' => [ $this->rest_base ]
 		];
 
 		$main_schema = parent::get_repository_schema( $this->taxonomy_repository );
@@ -562,7 +601,6 @@ class REST_Taxonomies_Controller extends REST_Controller {
 		);
 
 		return $schema;
-
 	}
 }
 

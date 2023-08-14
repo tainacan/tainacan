@@ -8,6 +8,10 @@ use Tainacan\Repositories;
 
 class REST_Reports_Controller extends REST_Controller {
 
+	private $taxonomy_repository;
+	private $metadatum_repository;
+	private $collections_repository;
+
 	public function __construct() {
 		$this->rest_base = 'reports';
 		parent::__construct();
@@ -15,7 +19,6 @@ class REST_Reports_Controller extends REST_Controller {
 	}
 
 	public function init_objects() {
-		$this->items_repository = Repositories\Items::get_instance();
 		$this->taxonomy_repository = Repositories\Taxonomies::get_instance();
 		$this->metadatum_repository = Repositories\Metadata::get_instance();
 		$this->collections_repository = Repositories\Collections::get_instance();
@@ -33,19 +36,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_collections'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_collection_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/summary',
@@ -54,19 +47,17 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_summary'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => array_merge(
+						array(
+							'collection_id' => array(
+								'description'       => __('Collection ID.', 'tainacan'),
+								'required' 			=> true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema()
+					)
 				),
+				'schema' => array($this, 'get_collection_summary_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata',
@@ -75,19 +66,17 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_stats_collection_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => array_merge(
+						array(
+							'collection_id' => array(
+								'description'       => __('Collection ID.', 'tainacan'),
+								'required' 			=> true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema()
+					)
 				),
+				'schema' => array($this, 'get_metadata_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/metadata',
@@ -96,19 +85,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_stats_collection_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_metadata_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/repository/summary',
@@ -117,19 +96,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_summary'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_summary_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/taxonomy',
@@ -138,19 +107,9 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_taxonomies_list'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => $this->get_endpoint_args_for_item_schema()
 				),
+				'schema' => array($this, 'get_taxonomy_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/taxonomy/(?P<taxonomy_id>[\d]+)',
@@ -159,19 +118,17 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_taxonomy'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+					'args'                => array_merge(
+						array(
+							'taxonomy_id' => array(
+								'description'       => __('Taxonomy ID.', 'tainacan'),
+								'required' 			=> true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema()
+					)
 				),
+				'schema' => array($this, 'get_taxonomy_terms_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/activities',
@@ -180,29 +137,23 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_activities'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'start' => [
-							'title'       => __( 'start Date', 'tainacan' ),
-							'type'        => 'string',
-							'format'      => 'date-time',
-						], 
-						'end' => [
-							'title'       => __( 'start Date', 'tainacan' ),
-							'type'        => 'string',
-							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+					'args'                => array_merge(
+						[
+							'start' => [
+								'title'       => __( 'start Date', 'tainacan' ),
+								'type'        => 'string',
+								'format'      => 'date-time',
+							], 
+							'end' => [
+								'title'       => __( 'start Date', 'tainacan' ),
+								'type'        => 'string',
+								'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+							],
 						],
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+						$this->get_endpoint_args_for_item_schema()
+					)
 				),
+				'schema' => array($this, 'get_activities_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/activities',
@@ -211,29 +162,27 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_activities'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'start' => [
-							'title'       => __( 'start Date', 'tainacan' ),
-							'type'        => 'string',
-							'format'      => 'date-time',
-						], 
-						'end' => [
-							'title'       => __( 'start Date', 'tainacan' ),
-							'type'        => 'string',
-							'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+					'args'                => array_merge(
+						[
+							'collection_id' => [
+								'description'       => __('Collection ID.', 'tainacan'),
+								'required' 			=> true,
+							],
+							'start' => [
+								'title'       => __( 'start Date', 'tainacan' ),
+								'type'        => 'string',
+								'format'      => 'date-time',
+							], 
+							'end' => [
+								'title'       => __( 'start Date', 'tainacan' ),
+								'type'        => 'string',
+								'format'      => 'date-time', //  RFC3339. https://tools.ietf.org/html/rfc3339#section-5.8
+							],
 						],
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+						$this->get_endpoint_args_for_item_schema()
+					)
 				),
+				'schema' => array($this, 'get_activities_schema'),
 			)
 		);
 		register_rest_route($this->namespace, $this->rest_base . '/collection/(?P<collection_id>[\d]+)/metadata/(?P<metadata_id>[\d]+)',
@@ -242,23 +191,27 @@ class REST_Reports_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_metadata'),
 					'permission_callback' => array($this, 'reports_permissions_check'),
-					'args'                => [
-						'parent' => [
-							'title'       => __( 'parent', 'tainacan' ),
-							'type'        => 'integer',
+					'args'                => array_merge(
+						[
+							'parent' => [
+								'title'       => __( 'parent', 'tainacan' ),
+								'type'        => 'integer',
+							],
+							'collection_id' => [
+								'description'       => __('Collection ID.', 'tainacan'),
+								'type'				=> 'string',
+								'required' 			=> true,
+							],
+							'metadata_id' => [
+								'description'       => __('Metadatum ID.', 'tainacan'),
+								'type'				=> 'string',
+								'required' 			=> true,
+							],
 						],
-						'force' => [
-							'title'       => __( 'Force regenerate', 'tainacan' ),
-							'type'        => 'string',
-							'default' 	  => 'no',
-							'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
-							'enum'    	  => array(
-								'no',
-								'yes'
-							)
-						]
-					]
+						$this->get_endpoint_args_for_item_schema()
+					)
 				),
+				'schema' => array($this, 'get_collection_metadatum_schema'),
 			)
 		);
 	}
@@ -879,6 +832,567 @@ class REST_Reports_Controller extends REST_Controller {
 		$expiration = 604800; //one week
 		$data['report_cached_on'] = (new \DateTime())->format('Y-m-d H:i:s');
 		return set_transient($this->prefix_transient_cahce . $key, $data, $expiration);
+	}
+
+	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_endpoint_args_for_item_schema( $method = null ) {
+		$endpoint_args = [
+			'force' => [
+				'title'       => __( 'Force regenerate', 'tainacan' ),
+				'type'        => 'string',
+				'default' 	  => 'no',
+				'description' => __( 'Force generating the report, despite presence of cache.', 'tainacan' ),
+				'enum'    	  => array(
+					'no',
+					'yes'
+				)
+			]
+		];
+
+		return $endpoint_args;
+	}
+
+	function get_metadata_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-metadata";
+		$schema['properties']['totals'] = [
+			'name' => 'totals',
+			'description' => __( 'Information about the amount of existing metadata', 'tainacan' ),
+			'type' => 'object',
+			'properties' => [
+				'metadata' => [
+					'description' => __( 'Total of metadata per status', 'tainacan' ),
+					'type' => 'object',
+					'properties' => [
+						'total' => [
+							'type' => 'integer',
+							'description' => __( 'Total of metadata of any status', 'tainacan' )
+						],
+						'public' => [
+							'type' => 'integer',
+							'description' => __( 'Total of public metadata', 'tainacan' )
+						],
+						'private' => [
+							'type' => 'integer',
+							'description' => __( 'Total of private metadata', 'tainacan' )
+						]
+					]
+				],
+				'metadata_per_type' => [
+					'description' => __( 'Total of metadata per type', 'tainacan' ),
+					'type' => 'object',
+					'properties' => [
+						'[metadata_type_name:string]' => [
+							'description' => __( 'Dynamic object, where the keys are the metadata type slug', 'tainacan' ),
+							'type' => 'object',
+							'properties' => [
+								'name' => [
+									'type' => 'string',
+									'description' => __( 'Metadata type name', 'tainacan' )
+								],
+								'count' => [
+									'type' => 'integer',
+									'description' => __( 'Total of metadata of this type', 'tainacan' )
+								]
+							]
+						]
+					]
+				]
+			]
+		];
+
+		$schema['properties']['distribution'] = [
+			'description' => __( 'Distribution of how much each metadata has values in the items', 'tainacan' ),
+			'type' => 'array',
+			'items' => [
+				'description' => __( 'Metadatum distribution information', 'tainacan' ),
+				'type' => 'object',
+				'properties' => [
+					'name' => [
+						'description' => __( 'Metadatum name', 'tainacan' ),
+						'type' => 'string'
+					],
+					'parent_name' => [
+						'description' => __( 'Metadatum parent name, if a child of a compound metadatum', 'tainacan' ),
+						'type' => 'string'
+					],
+					'id' => [
+						'description' => __( 'Metadatum ID', 'tainacan' ),
+						'type' => 'string',
+					],
+					'fill_percentage' => [
+						'type' => 'string',
+						'description' => __( 'Percentage of items that have this metadatum filled', 'tainacan' )
+					]
+				]
+			]
+		];
+		
+		return $schema;
+	}
+
+	function get_collection_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-collection";
+		$schema['properties']['list'] = [
+			'type' => 'object',
+			'properties' => [
+				'[tnc_col_<ID>_item:string]' => [
+					'description' => __( 'Dynamic object, where the key is the collection post type', 'tainacan' ),
+					'type' => 'object',
+					'properties' => [
+						'id' => [
+							'type' => 'integer',
+							'description' => __( 'Collection ID', 'tainacan' )
+						],
+						'name' => [
+							'type' => 'string',
+							'description' => __( 'Collection name', 'tainacan' )
+						],
+						'items' => [
+							'type' => 'object',
+							'description' => __( 'Object containing summary of items totals', 'tainacan' ),
+							'properties' => [
+								'total' => [
+									'type' => 'integer',
+									'description' => __( 'Summation of the total of items', 'tainacan' )
+								],
+								'trash' => [
+									'type' => 'integer',
+									'description' => __( 'Total of trashed items', 'tainacan' )
+								],
+								'publish' => [
+									'type' => 'integer',
+									'description' => __( 'Total of published items', 'tainacan' )
+								],
+								'draft' => [
+									'type' => 'integer',
+									'description' => __( 'Total of draft items', 'tainacan' )
+								],
+								'private' => [
+									'type' => 'integer',
+									'description' => __( 'Total of private items', 'tainacan' )
+								]
+							]
+						]
+					]
+				]
+			]
+		];
+		return $schema;
+	}
+
+	function get_collection_metadatum_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-collection";
+		$schema['properties']['list'] = [
+			'type' => 'array',
+			'description' => __( 'List of item metadata objects', 'tainacan' ),
+			'items' => [
+				'description' => __( 'Item metadatum object', 'tainacan' ),
+				'type' => 'object',
+				'properties' => [
+					'type' => [
+						'type' => 'string',
+						'description' => __( 'Metadatum type', 'tainacan' )
+					],
+					'value' => [
+						'type' => 'string',
+						'description' => __( 'Metadatum value', 'tainacan' )
+					],
+					'label' => [
+						'type' => 'string',
+						'description' => __( 'Metadatum value label (used when the value is relationship item or a taxonomy term)', 'tainacan' )
+					],
+					'parent' => [
+						'type' => 'string',
+						'description' => __( 'Term parent id, if the value is a term that has a parent term', 'tainacan' )
+					],
+					'totel_items' => [
+						'type' => 'integer',
+						'description' => __( 'Total of items that have this value', 'tainacan' )
+					],
+					'totel_children' => [
+						'type' => 'integer',
+						'description' => __( 'Total of child terms, if the value is a term that has child terms', 'tainacan' )
+					]
+				]
+			]
+		];
+		return $schema;
+	}
+
+	function get_collection_summary_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-collection-summary";
+		$schema['properties']['totals'] = [
+			'type' => 'object',
+			'properties' => [	
+				'items' => [
+					'type' => 'object',
+					'description' => __( 'Total of items', 'tainacan' ),
+					'properties' => [
+						'total' => [
+							'type' => 'integer',
+							'description' => __( 'Summation of the total of items', 'tainacan' )
+						],
+						'trash' => [
+							'type' => 'integer',
+							'description' => __( 'Total of trashed items', 'tainacan' )
+						],
+						'publish' => [
+							'type' => 'integer',
+							'description' => __( 'Total of published items', 'tainacan' )
+						],
+						'draft' => [
+							'type' => 'integer',
+							'description' => __( 'Total of draft items', 'tainacan' )
+						],
+						'private' => [
+							'type' => 'integer',
+							'description' => __( 'Total of private items', 'tainacan' )
+						],
+						'restrict' => [
+							'type' => 'integer',
+							'description' => __( 'Total of items with restrict access', 'tainacan' )
+						],
+						'not_restrict' => [
+							'type' => 'integer',
+							'description' => __( 'Total of items without restrict access', 'tainacan' )
+						]
+					]
+				],
+			]
+		];
+		return $schema;
+	}
+
+	function get_taxonomy_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-taxonomy";
+		$schema['properties']['list'] = [
+			'type' => 'object',
+			'properties' => [
+				'[tnc_tax_<ID>:string]' => [
+					'description' => __( 'Dynamic object, where the key is the taxonomy post type', 'tainacan' ),
+					'type' => 'object',
+					'properties' => [
+						'id' => [
+							'type' => 'integer',
+							'description' => __( 'Taxonomy ID', 'tainacan' )
+						],
+						'name' => [
+							'type' => 'string',
+							'description' => __( 'Taxonomy name', 'tainacan' )
+						],
+						'items' => [
+							'type' => 'object',
+							'description' => __( 'Object containing summary of terms totals', 'tainacan' ),
+							'properties' => [
+								'total_terms' => [
+									'type' => 'integer',
+									'description' => __( 'Total of terms existing in the taxonomy', 'tainacan' )
+								],
+								'total_terms_used' => [
+									'type' => 'integer',
+									'description' => __( 'Total of terms that are used as value in some item taxonomy metadatum', 'tainacan' )
+								],
+								'total_terms_not_used' => [
+									'type' => 'integer',
+									'description' => __( 'Total of terms that are not used as value in any item taxonomy metadatum', 'tainacan' )
+								]
+							]
+						]
+					]
+				]
+			]
+		];
+		return $schema;
+	}
+
+	function get_taxonomy_terms_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-taxonomy-terms";
+		$schema['properties']['terms'] = [
+			'type' => 'object',
+			'description' => __( 'Object containing summary of term usage numbers', 'tainacan' ),
+			'properties' => [
+				'[tnc_tax_<ID>:string]' => [
+					'description' => __( 'Dynamic object, where the key is the term id', 'tainacan' ),
+					'type' => 'object',
+					'properties' => [
+						'id' => [
+							'type' => 'integer',
+							'description' => __( 'Term ID', 'tainacan' )
+						],
+						'name' => [
+							'type' => 'string',
+							'description' => __( 'Term name', 'tainacan' )
+						],
+						'count' => [
+							'type' => 'integer',
+							'description' => __( 'Total of items that use this term', 'tainacan' )
+						]
+					]
+				]
+			]
+		];
+		return $schema;
+	}
+	
+	function get_summary_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-summary";
+		$schema['properties']['totals'] = [
+			'type' => 'object',
+			'properties' => [	
+				'items' => [
+					'type' => 'object',
+					'description' => __( 'Total of items', 'tainacan' ),
+					'properties' => [
+						'total' => [
+							'type' => 'integer',
+							'description' => __( 'Summation of the total of items', 'tainacan' )
+						],
+						'trash' => [
+							'type' => 'integer',
+							'description' => __( 'Total of trashed items', 'tainacan' )
+						],
+						'publish' => [
+							'type' => 'integer',
+							'description' => __( 'Total of published items', 'tainacan' )
+						],
+						'draft' => [
+							'type' => 'integer',
+							'description' => __( 'Total of draft items', 'tainacan' )
+						],
+						'private' => [
+							'type' => 'integer',
+							'description' => __( 'Total of private items', 'tainacan' )
+						],
+						'restrict' => [
+							'type' => 'integer',
+							'description' => __( 'Total of items with restrict access', 'tainacan' )
+						],
+						'not_restrict' => [
+							'type' => 'integer',
+							'description' => __( 'Total of items without restrict access', 'tainacan' )
+						]
+					]
+				],
+				'collections' => [
+					'type' => 'object',
+					'description' => __( 'Total of collections', 'tainacan' ),
+					'properties' => [
+						'total' => [
+							'type' => 'integer',
+							'description' => __( 'Summation of the total of collections', 'tainacan' )
+						],
+						'trash' => [
+							'type' => 'integer',
+							'description' => __( 'Total of trashed collections', 'tainacan' )
+						],
+						'publish' => [
+							'type' => 'integer',
+							'description' => __( 'Total of published collections', 'tainacan' )
+						],
+						'private' => [
+							'type' => 'integer',
+							'description' => __( 'Total of private collections', 'tainacan' )
+						]
+					]
+				],
+				'taxonomies' => [
+					'type' => 'object',
+					'description' => __( 'Total of taxonomies', 'tainacan' ),
+					'properties' => [
+						'total' => [
+							'type' => 'integer',
+							'description' => __( 'Summation of the total of taxonomies', 'tainacan' )
+						],
+						'trash' => [
+							'type' => 'integer',
+							'description' => __( 'Total of trashed taxonomies', 'tainacan' )
+						],
+						'publish' => [
+							'type' => 'integer',
+							'description' => __( 'Total of published taxonomies', 'tainacan' )
+						],
+						'private' => [
+							'type' => 'integer',
+							'description' => __( 'Total of private taxonomies', 'tainacan' )
+						],
+						'used' => [
+							'type' => 'integer',
+							'description' => __( 'Total of taxonomies used in some collection', 'tainacan' )
+						],
+						'not_used' => [
+							'type' => 'integer',
+							'description' => __( 'Total of taxonomies not used in any collection', 'tainacan' )
+						]
+					]
+				]
+			]
+		];
+
+		return $schema;
+	}
+
+	function get_activities_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-activities";
+		$schema['properties']['totals'] = [
+			'type' => 'object',
+			'properties' => [
+				'by_interval' => [
+					'type' => 'object',
+					'description' => __( 'Total of activities by interval', 'tainacan' ),
+					'properties' => [
+						'start' => [
+							'type' => 'string',
+							'format' => 'date-time',
+							'description' => __( 'Start date of the interval', 'tainacan' )
+						],
+						'end' => [
+							'type' => 'string',
+							'format' => 'date-time',
+							'description' => __( 'End date of the interval', 'tainacan' )
+						],
+						'general' => [
+							'type' => 'array',
+							'description' => __( 'List of all activites per day, when there is any.', 'tainacan' ),
+							'items' => [
+								'type' => 'object',
+								'description' => __( 'Activity object', 'tainacan' ),
+								'properties' => [
+									'total' => [
+										'type' => 'string',
+										'description' => __( 'Total of activities', 'tainacan' ),
+									],
+									'date' => [
+										'type' => 'string',
+										'format' => 'date',
+										'description' => __( 'Date of the activity', 'tainacan' ),
+									]
+								]
+							]
+						],
+						'by_user' => [
+							'type' => 'array',
+							'description' => __( 'Total of activities by user', 'tainacan' ),
+							'items' => [
+								'type' => 'object',
+								'description' => __( 'User activity object', 'tainacan'),
+								'properties' => [
+									'user' => [
+										'type' => 'object',
+										'description' => __( 'User object', 'tainacan' ),
+									],
+									'user_id' => [
+										'type' => 'string',
+										'description' => __( 'User ID', 'tainacan' ),
+									],
+									'total' => [
+										'type' => 'integer',
+										'description' => __( 'Total of activities', 'tainacan' ),
+									],
+									'by_date' => [
+										'type' => 'array',
+										'items' => [
+											'type' => 'object',
+											'description' => __( 'Activity by date object', 'tainacan' ),
+											'properties' => [
+												'user_id' => [
+													'type' => 'string',
+													'description' => __( 'User ID', 'tainacan' ),
+												],
+												'total' => [
+													'type' => 'string',
+													'description' => __( 'Total of activities', 'tainacan' ),
+												],
+												'date' => [
+													'type' => 'string',
+													'format' => 'date',
+													'description' => __( 'Date of the activity', 'tainacan' ),
+												]
+											]
+										]
+									]
+								]
+							]
+						]
+					]
+				],
+				'by_user' => [
+					'type' => 'array',
+					'description' => __( 'Total of activities by user', 'tainacan' ),
+					'items' => [
+						'type' => 'object',
+						'description' => __( 'User activity object', 'tainacan'),
+						'properties' => [
+							'user' => [
+								'type' => 'object',
+								'description' => __( 'User object', 'tainacan' ),
+							],
+							'user_id' => [
+								'type' => 'string',
+								'description' => __( 'User ID', 'tainacan' ),
+							],
+							'total' => [
+								'type' => 'integer',
+								'description' => __( 'Total of activities', 'tainacan' ),
+							],
+							'by_date' => [
+								'type' => 'array',
+								'items' => [
+									'type' => 'object',
+									'description' => __( 'Activity by date object', 'tainacan' ),
+									'properties' => [
+										'user_id' => [
+											'type' => 'string',
+											'description' => __( 'User ID', 'tainacan' ),
+										],
+										'total' => [
+											'type' => 'string',
+											'description' => __( 'Total of activities', 'tainacan' ),
+										],
+										'date' => [
+											'type' => 'string',
+											'format' => 'date',
+											'description' => __( 'Date of the activity', 'tainacan' ),
+										]
+									]
+								]
+							]
+						]
+					]
+				]
+			]
+		];
+
+		return $schema;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => $this->rest_base,
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
+			'properties' => [
+				'report_cached_on' => [
+					'type' => 'string',
+					'format'      => 'date-time',
+					'description' => __( 'Date of the last cache update', 'tainacan' )
+				]
+			]
+		];
+
+		return $schema;
 	}
 }
 

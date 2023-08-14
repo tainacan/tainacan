@@ -1742,9 +1742,11 @@ class Theme_Helper {
 			$before = str_replace('$id', ' id="metadata-id-' . $metadatum->get_id() . '"', $before);
 
 			// Let theme authors tweak the wrapper opener
+			$metadata_type = $metadatum->get_metadata_type();
+			$metadatum_id = $metadatum->get_id();
 			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before', $before, $item_metadatum );
-			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--type-' . $metadatum->get_metadata_type(), $before, $item_metadatum );
-			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--id-' . $metadatum->get_id(), $before, $item_metadatum );
+			$before = apply_filters( "tainacan-get-item-metadatum-as-html-before--type-$metadata_type", $before, $item_metadatum );
+			$before = apply_filters( "tainacan-get-item-metadatum-as-html-before--id-$metadatum_id", $before, $item_metadatum );
 
 			// Renders the metadatum opener
 			$return .= $before;
@@ -1766,8 +1768,10 @@ class Theme_Helper {
 			$after = $args['after'];
 
 			// Let theme authors tweak the wrapper closer
-			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--id-' . $metadatum->get_id(), $after, $item_metadatum );
-			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--type-' . $metadatum->get_metadata_type(), $after, $item_metadatum );
+			$metadatum_id = $metadatum->get_id();
+			$metadata_type = $metadatum->get_metadata_type();
+			$after = apply_filters( "tainacan-get-item-metadatum-as-html-after--id-$metadatum_id", $after, $item_metadatum );
+			$after = apply_filters( "tainacan-get-item-metadatum-as-html-after--type-$metadata_type", $after, $item_metadatum );
 			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after', $after, $item_metadatum );
 			
 			// Closes the wrapper

@@ -1,6 +1,6 @@
-const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder, IconButton, PanelBody } = wp.components;
+const { RangeControl, Spinner, Button, BaseControl, ToggleControl, SelectControl, Placeholder,  PanelBody } = wp.components;
 
-const { InspectorControls, BlockControls, useBlockProps, store } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
+const { InspectorControls, BlockControls, useBlockProps, store } = wp.blockEditor;
 
 const { __ } = wp.i18n;
 
@@ -14,12 +14,8 @@ import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
-import 'swiper/css';
-import 'swiper/css/a11y';
-import 'swiper/css/autoplay';
-import 'swiper/css/navigation';
 
-export default function ({ attributes, setAttributes, className, isSelected, clientId }) {
+export default function ({ attributes, setAttributes, isSelected, clientId }) {
     let {
         collections,
         content,
@@ -42,7 +38,8 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
     } = attributes;
 
     // Gets blocks props from hook
-    const blockProps = tainacan_blocks.wp_version < '5.6' ? { className: className } : useBlockProps();
+    const blockProps = useBlockProps();
+    const className = blockProps.className;
 
     // Obtains block's client id to render it on save function
     setAttributes({ blockId: clientId });
@@ -81,17 +78,12 @@ export default function ({ attributes, setAttributes, className, isSelected, cli
             <li
                 key={ collection.id }
                 className={ 'swiper-slide collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid ' : '') + (maxCollectionsPerScreen ? ' max-collections-per-screen-' + maxCollectionsPerScreen : '') }>
-                { tainacan_blocks.wp_version < '5.4' ?
-                    <IconButton
-                        onClick={ () => removeItemOfId(collection.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
-                        :
-                    <Button
-                        onClick={ () => removeItemOfId(collection.id) }
-                        icon="no-alt"
-                        label={__('Remove', 'tainacan')}/>
-                }
+            <Button
+                onClick={ () => removeItemOfId(collection.id) }
+                icon={ () => (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 13.06l3.712 3.713 1.061-1.06L13.061 12l3.712-3.712-1.06-1.06L12 10.938 8.288 7.227l-1.061 1.06L10.939 12l-3.712 3.712 1.06 1.061L12 13.061z"></path></svg>
+                    ) }
+                label={__('Remove', 'tainacan')}/>
                 <a
                     id={ isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id }
                     href={ collection.url }>

@@ -7,6 +7,11 @@ use Tainacan\Entities;
 use Tainacan\Repositories;
 
 class REST_Metadata_Sections_Controller extends REST_Controller {
+
+	private $metadata_sections_repository;
+	private $metadata_repository;
+	private $collection_repository;
+
 	public function __construct() {
 		parent::__construct();
 		$this->rest_base = 'metadata-sections';
@@ -42,7 +47,15 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
-					'args'                => array(
+					'args'                => [
+						'collection_id' => [
+							'description' => __( 'Collection ID', 'tainacan' ),
+							'required' => true,
+						],
+						'metadata_section_id' => [
+							'description' => __( 'Metadata Section ID', 'tainacan' ),
+							'required' => true,
+						],
 						'context' => array(
 							'type'    	  => 'string',
 							'default' 	  => 'view',
@@ -52,7 +65,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 								'edit'
 							)
 						),
-					),
+					],
 				),
 				array(
 					'methods'             => \WP_REST_Server::EDITABLE,
@@ -64,6 +77,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
+					'args' => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::DELETABLE)
 				),
 				'schema'                  => [$this, 'get_schema']
 			)
@@ -74,7 +88,15 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_wp_query_params(),
+					'args'                => array_merge(
+						array(
+							'collection_id' => [
+								'description' => __( 'Collection ID', 'tainacan' ),
+								'required' => true,
+							],
+						),	
+						$this->get_wp_query_params()
+					),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -82,7 +104,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<metadata_section_id>[\d|default_section]+)/metadata',
@@ -102,10 +124,10 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 				array(
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_metadata'),
-					'permission_callback' => array($this, 'update_item_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::EDITABLE),
+					'permission_callback' => array($this, 'delete_item_permissions_check'),
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::DELETABLE),
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_metadata_list_schema']
 			)
 		);
 	}
@@ -594,7 +616,7 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 		$query_params = array_merge($query_params, parent::get_wp_query_params());
 
 		$query_params['name'] = array(
-			'description' => __('Limits the result set to metadata with a specific name'),
+			'description' => __('Limits the result set to metadata sections with a specific name'),
 			'type'        => 'string',
 		);
 
@@ -610,51 +632,80 @@ class REST_Metadata_Sections_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function get_endpoint_args_for_item_schema( $method = null ) {
-		$endpoint_args = [];
-		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args = array_merge(
-				$endpoint_args,
-				parent::get_wp_query_params()
-			);
-		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
-			$map = $this->metadata_sections_repository->get_map();
+		$endpoint_args = [
+			'metadata_section_id' => [
+				'description' => __( 'Metadata Section ID', 'tainacan' ),
+				'required' => true,
+			],
+			'collection_id' => [
+				'description' => __( 'Collection ID', 'tainacan' ),
+				'required' => true,
+			]
+		];
 
-			foreach ($map as $mapped => $value){
-				$set_ = 'set_'. $mapped;
+		switch ( $method ) {
+			case \WP_REST_Server::READABLE:
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					parent::get_wp_query_params()
+				);
+			break;
+			case \WP_REST_Server::CREATABLE:
+			case \WP_REST_Server::EDITABLE:
+				$map = $this->metadata_sections_repository->get_map();
 
-				// Show only args that has a method set
-				if( !method_exists(new Entities\Metadatum(), "$set_") ){
-					unset($map[$mapped]);
+				foreach ($map as $mapped => $value){
+					$set_ = 'set_'. $mapped;
+	
+					// Show only args that has a method set
+					if( !method_exists(new Entities\Metadatum(), "$set_") ){
+						unset($map[$mapped]);
+					}
 				}
-			}
+	
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					$map
+				);
+	
+				if ( $method === \WP_REST_Server::CREATABLE )
+					unset($endpoint_args['metadata_section_id']);
 
-			$endpoint_args = $map;
+			break;
 		}
 
 		return $endpoint_args;
 	}
 
+	function get_metadata_list_schema() {
+		$metadatum_schema = parent::get_repository_schema($this->metadata_repository);
+		return [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'metadata',
+			'tags' => [$this->rest_base, 'metadata'],
+			'type' => 'array',
+			'items' => array(
+				'type' => 'object',
+				'properties' => $metadatum_schema,
+			)
+		];
+	}
+
 	function get_schema() {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => 'metadatum',
-			'type' => 'object'
+			'title' => 'metadata-section',
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
 		];
 
 		$main_schema = parent::get_repository_schema( $this->metadata_sections_repository );
 		$permissions_schema = parent::get_permissions_schema();
 
-		// $item_metadata_scheme = parent::get_repository_schema( $this->item_metadata_repository );
-		// $item_scheme = parent::get_repository_schema( $this->item_repository );
-		// $collection_scheme = parent::get_repository_schema( $this->collection_repository );
-
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
 			$main_schema,
 			$permissions_schema
-			// $item_metadata_scheme,
-			// $item_scheme,
-			// $collection_scheme
 		);
 
 		return $schema;

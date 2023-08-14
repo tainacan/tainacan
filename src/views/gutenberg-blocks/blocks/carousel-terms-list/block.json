@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/carousel-terms-list",
     "title": "Tainacan Terms Carousel",
-    "apiVersion": 2,
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "carousel", "slider", "taxonomy" ],
     "description": "List terms on a Carousel, showing their thumbnails or a preview of items.",
@@ -130,5 +130,5 @@
         }
     },
     "editorScript": "carousel-terms-list",
-	"editorStyle": "carousel-terms-list"
+	"editorStyle": ["carousel-terms-list", "tainacan-blocks-common-editor-styles" ]
 }

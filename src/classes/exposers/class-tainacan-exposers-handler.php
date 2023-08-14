@@ -1,7 +1,7 @@
 <?php
 namespace Tainacan;
 
-use Tainacan\Mappers_Hanlder;
+use Tainacan\Mappers_Handler;
 use Tainacan\Mappers\Mapper;
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );

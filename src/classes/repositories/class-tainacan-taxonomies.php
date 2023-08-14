@@ -32,7 +32,8 @@ class Taxonomies extends Repository {
 	}
 
 	protected function _get_map() {
-		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
+		$entity = $this->get_name();
+		return apply_filters( "tainacan-get-map-$entity", [
 			'name'            => [
 				'map'         => 'post_title',
 				'title'       => __( 'Name', 'tainacan' ),
@@ -63,6 +64,7 @@ class Taxonomies extends Repository {
 				'description' => __( 'Allow/Deny the creation of new terms in the taxonomy', 'tainacan' ),
 				'on_error'    => __( 'Invalid insertion, allowed values are ( yes/no )', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'enum'		  => [ 'yes', 'no' ],
 				'default'     => 'yes'
 			],
 			'hierarchical'    => [
@@ -72,6 +74,7 @@ class Taxonomies extends Repository {
 				'description' => __( 'Allow/Deny the existence of terms children to build a hierarchy', 'tainacan' ),
 				'on_error'    => __( 'Invalid insertion, allowed values are ( yes/no )', 'tainacan' ),
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'enum'		  => [ 'yes', 'no' ],
 				'default'     => 'yes'
 			],
 			'enabled_post_types'    => [

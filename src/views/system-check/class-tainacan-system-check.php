@@ -4,7 +4,7 @@ namespace Tainacan;
 
 class System_Check {
 
-	private $min_php_version = '5.6';
+	private $min_php_version = '7.0';
 
 	private $mysql_min_version_check;
 	private $mysql_rec_version_check;
@@ -28,21 +28,20 @@ class System_Check {
 
 	public function test_php_version() {
 		$testphpmin = version_compare( $this->min_php_version, PHP_VERSION, '<=' );
-		$testphprec = version_compare( 7, PHP_VERSION, '<=' );
+		$testphprec = version_compare( '7.4', PHP_VERSION, '<=' );
 
 		if ($testphprec) {
 			$class = 'good';
 			$text = PHP_VERSION;
 		} elseif ($testphpmin)  {
 			$class = 'warning';
-			$text = PHP_VERSION . ' - ' . __('Version supported, but you should consider upgrade to PHP 7', 'tainacan') . ': ';
+			$text = PHP_VERSION . ' - ' . __('Version supported, but you should consider upgrade to PHP 7.4', 'tainacan') . ': ';
 		} else {
 			$class = 'error';
-			$text = PHP_VERSION . ' - ' . __('This PHP Version is not supported. Please upgrade to PHP 5.6 or higher!', 'tainacan');
+			$text = PHP_VERSION . ' - ' . __('This PHP Version is not supported. Please upgrade to PHP 7 or higher!', 'tainacan');
 		}
 
 		printf( '<span class="%1$s"></span> %2$s', esc_attr( $class ), esc_html( $text ) );
-
 	}
 
 	private function prepare_sql_data() {
@@ -163,11 +162,11 @@ class System_Check {
 		$text  = '';
 		$class = '';
 
-		if ( version_compare($core_current_version, '4.8') < 0 ) {
+		if ( version_compare($core_current_version, '5.9') < 0 ) {
 
 			$class = 'error';
 			$text =  sprintf(
-				__('Tainacan requires WordPress 4.8 or newer! Your version is %s. Please upgrade.'),
+				__('Tainacan requires WordPress 5.9 or newer! Your version is %s. Please upgrade.'),
 				$core_current_version
 			);
 
