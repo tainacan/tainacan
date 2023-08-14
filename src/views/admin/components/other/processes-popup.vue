@@ -100,12 +100,7 @@
                         <span 
                                 v-if="bgProcess.status === 'running'"
                                 class="icon has-text-success loading-icon">
-                            <!--<progress-->
-                                    <!--:value="bgProcess.progress_value > 0 ? bgProcess.progress_value : 0"-->
-                                    <!--max="100"-->
-                                    <!--class="progress is-success is-small is-loading">-->
-                                <!--{{ `(${ bgProcess.progress_value &lt;&equals; 0 ? 0 : bgProcess.progress_value }%)` }}-->
-                            <!--</progress>-->
+
                             <div class="control has-icons-right is-loading is-clearfix" />
                         </span>
                     </div>

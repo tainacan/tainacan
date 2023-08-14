@@ -10,8 +10,8 @@
             <div>
                 <b-field>
                     <b-checkbox
-                            v-model:value="showIntervalOnTag"
-                            @input="onUpdateShowIntervalOnTag()">
+                            v-model="showIntervalOnTag"
+                            @update:model-value="onUpdateShowIntervalOnTag()">
                         {{ $i18n.get('info_show_interval_on_tag') }}
                     </b-checkbox>
                 </b-field>
@@ -33,8 +33,8 @@
                         <b-input
                                 expanded
                                 :placeholder="$i18n.get('label')"
-                                @input="onUpdate(interval)"
-                                v-model:value="interval.label" />
+                                @update:model-value="onUpdate(interval)"
+                                v-model="interval.label" />
                     </b-field>
                     <b-field>
                         <b-input
@@ -42,15 +42,15 @@
                                 type="number"
                                 step="0.01"
                                 :placeholder="$i18n.get('info_initial_value')"
-                                @input="onUpdate(interval, true)"
-                                v-model:value="interval.from" />
+                                @update:model-value="onUpdate(interval, true)"
+                                v-model="interval.from" />
                         <b-input
                                 expanded
                                 type="number"
                                 step="0.01"
                                 :placeholder="$i18n.get('info_final_value')"
-                                @input="onUpdate(interval, true)"
-                                v-model:value="interval.to" />
+                                @update:model-value="onUpdate(interval, true)"
+                                v-model="interval.to" />
                     </b-field>
                     <p class="control">
                         <a

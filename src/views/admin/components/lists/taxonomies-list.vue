@@ -10,7 +10,7 @@
                 <span>
                     <b-checkbox 
                             @click="selectAllOnPage()" 
-                            :value="allOnPageSelected">{{ $i18n.get('label_select_all_taxonomies_page') }}</b-checkbox>
+                            :model-value="allOnPageSelected">{{ $i18n.get('label_select_all_taxonomies_page') }}</b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
@@ -20,15 +20,14 @@
                         id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button> 
-
+                    <template #trigger>
+                        <button class="button is-white">
+                            <span>{{ $i18n.get('label_bulk_actions') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                            </span>
+                        </button> 
+                    </template>
                     <b-dropdown-item
                             id="item-delete-selected-items"
                             @click="deleteSelected()"
@@ -92,7 +91,7 @@
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
-                                    v-model:value="selected[index]"/> 
+                                    v-model="selected[index]"/> 
                         </td>
                         <!-- Status icon -->
                         <td 

@@ -1,6 +1,6 @@
 <template>
     <div class="repository-level-page page-container">
-        <b-loading v-model:active="isLoading"/>
+        <b-loading v-model="isLoading"/>
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]"/>
         <div class="sub-header">
@@ -13,14 +13,14 @@
                         aria-role="list"
                         id="collection-creation-options-dropdown"
                         trap-focus>
-                    <button
-                            class="button is-secondary"
-                            slot="trigger">
-                        <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button class="button is-secondary">
+                            <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </template>   
                     <b-dropdown-item aria-role="listitem">
                         <router-link
                                 :to="{ path: $routerHelper.getNewCollectionPath() }"
@@ -71,15 +71,16 @@
                             class="show metadata-options-dropdown"
                             aria-role="list"
                             trap-focus>
-                        <button
-                                :aria-label="collectionTaxonomy['name']"
-                                class="button is-white"
-                                slot="trigger">
-                            <span>{{ collectionTaxonomy['name'] }}</span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
+                        <template #trigger>
+                            <button
+                                    :aria-label="collectionTaxonomy['name']"
+                                    class="button is-white">
+                                <span>{{ collectionTaxonomy['name'] }}</span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
                         <div class="metadata-options-container">
                             <b-dropdown-item
                                     v-for="(collectionTaxonomyTerm, index) in collectionTaxonomy['terms']"
@@ -88,7 +89,7 @@
                                     custom
                                     aria-role="listitem">
                                 <b-checkbox
-                                        v-model:value="collectionTaxonomyTerm.enabled"
+                                        v-model="collectionTaxonomyTerm.enabled"
                                         :native-value="collectionTaxonomyTerm.enabled">
                                     {{ collectionTaxonomyTerm.name }}
                                 </b-checkbox>
@@ -109,29 +110,28 @@
             <!-- Sorting options ----  -->
             <b-field class="header-item">
                 <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
-                <pre>{{ collections.length }}</pre>
-                <pre>{{ isLoading }}</pre>
                 <b-dropdown
                         :mobile-modal="true"
                         :disabled="collections.length <= 0 || isLoading"
-                        @input="onChangeOrder"
+                        @update:model-value="onChangeOrder"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            :aria-label="$i18n.get('label_sorting_direction')"
-                            class="button is-white"
-                            slot="trigger">
-                        <span 
-                                style="margin-top: -2px;"
-                                class="icon is-small gray-icon">
-                            <i 
-                                    :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                    class="tainacan-icon tainacan-icon-1-125em"/>
-                        </span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button
+                                :aria-label="$i18n.get('label_sorting_direction')"
+                                class="button is-white">
+                            <span 
+                                    style="margin-top: -2px;"
+                                    class="icon is-small gray-icon">
+                                <i 
+                                        :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                        class="tainacan-icon tainacan-icon-1-125em"/>
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item
                             aria-controls="items-list-results"
                             role="button"
@@ -165,8 +165,8 @@
                 <b-select
                         class="sorting-select"
                         :disabled="collections.length <= 0"
-                        @input="onChangeOrderBy($event)"
-                        :value="orderBy"
+                        @update:model-value="onChangeOrderBy($event)"
+                        :model-value="orderBy"
                         :label="$i18n.get('label_sorting')">
                     <option
                             v-for="(option, index) in sortingOptions"
@@ -185,7 +185,7 @@
                         size="is-small"
                         :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
                         autocomplete="on"
-                        v-model:value="searchQuery"
+                        v-model="searchQuery"
                         @keyup.enter="searchCollections()"
                         icon-right="magnify"
                         icon-right-clickable
@@ -263,14 +263,14 @@
                                         id="collection-creation-options-dropdown"
                                         aria-role="list"
                                         trap-focus>
-                                    <button
-                                            class="button is-secondary"
-                                            slot="trigger">
-                                        <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
-                                        <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                                        </span>
-                                    </button>
+                                    <template #trigger>
+                                        <button class="button is-secondary">
+                                            <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                            </span>
+                                        </button>
+                                    </template>
                                     <b-dropdown-item aria-role="listitem">
                                         <router-link
                                                 :to="{ path: $routerHelper.getNewCollectionPath() }"
@@ -330,8 +330,8 @@
                                 horizontal 
                                 :label="$i18n.get('label_collections_per_page')"> 
                             <b-select 
-                                    :value="collectionsPerPage"
-                                    @input="onChangeCollectionsPerPage" 
+                                    :model-value="collectionsPerPage"
+                                    @update:model-value="onChangeCollectionsPerPage" 
                                     :disabled="collections.length <= 0">
                                 <option value="12">12</option>
                                 <option value="24">24</option>
@@ -344,7 +344,7 @@
                         <b-pagination
                                 @change="onPageChange"
                                 :total="totalCollections"
-                                v-model:current="page"
+                                v-model="page"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="collectionsPerPage"
@@ -392,9 +392,7 @@ export default {
     },
     computed: {
         collections() {
-            const ope = this.getCollections();
-            console.log(ope.length)
-            return  ope;
+            return this.getCollections();
         },
         repositoryTotalCollections(){
             return this.getRepositoryTotalCollections();
@@ -537,7 +535,6 @@ export default {
             .then((res) => {
                 this.isLoading = false;
                 this.totalCollections = res.total;
-                console.log(this.isLoading)
             }) 
             .catch(() => {
                 this.isLoading = false;

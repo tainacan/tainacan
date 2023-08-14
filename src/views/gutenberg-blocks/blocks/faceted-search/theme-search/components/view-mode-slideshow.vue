@@ -312,7 +312,7 @@
                         class="field">
                     <b-collapse 
                             aria-id="metadata-collapse-for-slideshow"
-                            :open="!collapseAll">
+                            :model-value="!collapseAll">
                         <template #trigger="props">
                             <label class="label has-text-white">
                                 <span class="icon">

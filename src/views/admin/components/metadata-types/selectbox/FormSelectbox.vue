@@ -23,8 +23,8 @@
             </label>
 
             <b-taginput
-                    v-model:value="options"
-                    @input="emitValues()"
+                    v-model="options"
+                    @update:model-value="emitValues()"
                     @focus="clear()"
                     attached
                     :confirm-keys="optionsSeparator"
@@ -40,8 +40,8 @@
                         v-for="separator of ['Enter', 'Tab', ',', ';', '|']"
                         :key="separator"
                         name="metadata_type_selectbox[options_separator]"
-                        @input="emitValues()"
-                        v-model:value="optionsSeparator"
+                        @update:model-value="emitValues()"
+                        v-model="optionsSeparator"
                         :native-value="separator"
                         :disabled="separator == 'Enter'">
                     <kbd>{{ separator }}</kbd>

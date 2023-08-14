@@ -29,7 +29,7 @@
                         <br>
                         <b-upload
                                 v-if="importer.tmp_file == undefined && (importerFile == undefined || importerFile == null || importerFile == '')" 
-                                v-model:value="importerFile"
+                                v-model="importerFile"
                                 drag-drop
                                 class="source-file-upload">
                             <section class="drop-inner">
@@ -80,7 +80,7 @@
                                 extra-classes="tainacan-repository-tooltip"/>
                         <b-input
                                 id="tainacan-url-link-source"
-                                v-model:value="url"/>  
+                                v-model="url"/>  
                     </b-field>
                 </div>
 
@@ -109,8 +109,8 @@
                             <b-select
                                     expanded
                                     id="tainacan-select-target-collection"
-                                    :value="collectionId"
-                                    @input="onSelectCollection($event)"
+                                    :model-value="collectionId"
+                                    @update:model-value="onSelectCollection($event)"
                                     :loading="isFetchingCollections"
                                     :placeholder="$i18n.get('instruction_select_a_target_collection')">
                                 <option
@@ -192,7 +192,7 @@
         </form>
         
         <b-loading 
-                v-model:active="isLoading" 
+                v-model="isLoading" 
                 :can-cancel="false"/>
     </div>
 </template>

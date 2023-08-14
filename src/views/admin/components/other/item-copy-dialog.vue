@@ -42,9 +42,9 @@
                                 :aria-minus-label="$i18n.get('label_decrease')"
                                 :aria-plus-label="$i18n.get('label_increase')"
                                 min="1" 
-                                :value="copyCount"
+                                :model-value="copyCount"
                                 step="1"
-                                @input="copyCount = $event"/>
+                                @update:model-value="copyCount = $event"/>
                     </b-field>
                 </div>
             </section>

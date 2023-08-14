@@ -3,8 +3,8 @@
         <b-select
                 expanded
                 :placeholder="$i18n.get('instruction_select_a_interval')"
-                @input="($event) => { resetPage; changeInterval($event) }"
-                v-model:value="selectedInterval">
+                @update:model-value="($event) => { resetPage; changeInterval($event) }"
+                v-model="selectedInterval">
             <option value="">
                 {{ $i18n.get('label_selectbox_init') }}...
             </option>

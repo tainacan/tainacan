@@ -11,7 +11,7 @@
                 <span>
                     <b-checkbox
                             @click.prevent="selectAllItemsOnPage()"
-                            :value="allItemsOnPageSelected">
+                            :model-value="allItemsOnPageSelected">
                         {{ $i18n.get('label_select_all_items_page') }}
                     </b-checkbox>
                 </span>
@@ -20,7 +20,7 @@
                         style="margin-left: 10px"
                         v-if="totalPages > 1 && allItemsOnPageSelected && Array.isArray(items) && items.length > 1">
                     <b-checkbox
-                            v-model:value="isAllItemsSelected">
+                            v-model="isAllItemsSelected">
                         {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
                     </b-checkbox>
                 </span>
@@ -61,15 +61,14 @@
                         id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button>
-
+                    <template #trigger>
+                        <button class="button is-white">
+                            <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item
                             v-if="!isAllItemsSelected && selectedItems.length"
                             @click="filterBySelectedItems()"
@@ -183,15 +182,15 @@
                             class="grid-item-checkbox">
                         <b-checkbox
                                 v-if="!$adminOptions.itemsSingleSelectionMode"
-                                :value="getSelectedItemChecked(item.id)"
-                                @input="setSelectedItemChecked(item.id)">
+                                :model-value="getSelectedItemChecked(item.id)"
+                                @update:model-value="setSelectedItemChecked(item.id)">
                             <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </b-checkbox>
                         <b-radio
                                 v-else
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                v-model:value="singleItemSelection"
+                                v-model="singleItemSelection"
                                 :aria-label="$i18n.get('label_select_item')">
                             <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </b-radio>
@@ -475,15 +474,15 @@
                             class="card-checkbox">
                         <b-checkbox
                                 v-if="!$adminOptions.itemsSingleSelectionMode"
-                                :value="getSelectedItemChecked(item.id)"
-                                @input="setSelectedItemChecked(item.id)">
+                                :model-value="getSelectedItemChecked(item.id)"
+                                @update:model-value="setSelectedItemChecked(item.id)">
                             <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </b-checkbox>
                         <b-radio
                                 v-else
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                v-model:value="singleItemSelection">
+                                v-model="singleItemSelection">
                             <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </b-radio>
                     </div>
@@ -926,15 +925,15 @@
                                 class="checkbox-cell">
                             <b-checkbox
                                     v-if="!$adminOptions.itemsSingleSelectionMode"
-                                    :value="getSelectedItemChecked(item.id)"
-                                    @input="setSelectedItemChecked(item.id)">
+                                    :model-value="getSelectedItemChecked(item.id)"
+                                    @update:model-value="setSelectedItemChecked(item.id)">
                                 <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                             </b-checkbox>
                             <b-radio
                                     v-else
                                     name="item-single-selection"
                                     :native-value="item.id"
-                                    v-model:value="singleItemSelection">
+                                    v-model="singleItemSelection">
                                 <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                             </b-radio>
                         </td>
@@ -1588,7 +1587,7 @@
                                 <b-select
                                         :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model:value="selectedGeocoordinateMetadatumId">
+                                        v-model="selectedGeocoordinateMetadatumId">
                                     <option
                                             v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
                                             :key="geocoordinateMetadatum.id"

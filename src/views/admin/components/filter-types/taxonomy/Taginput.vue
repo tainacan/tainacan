@@ -14,7 +14,7 @@
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 @typing="search"
-                @input="($event) => { resetPage(); onSelect($event) }"
+                @update:model-value="($event) => { resetPage(); onSelect($event) }"
                 :placeholder="$i18n.get('info_type_to_add_terms')"
                 check-infinite-scroll
                 @infinite-scroll="searchMore">

@@ -2,7 +2,7 @@
     <div>
         <b-loading
                 :is-full-page="false"
-                v-model:active="isLoading"
+                v-model="isLoading"
                 :can-cancel="false"/>
         <div 
                 v-if="!$adminOptions.hideBulkEditionPageTitle"
@@ -26,10 +26,10 @@
                 <br>
                 <b-upload
                         native
-                        v-model:value="submitedFileList"
+                        v-model="submitedFileList"
                         drag-drop
                         multiple
-                        @input="uploadFiles()"
+                        @update:model-value="uploadFiles()"
                         class="source-file-upload">
                     <section class="drop-inner">
                         <div class="content has-text-centered">
@@ -150,8 +150,9 @@
                         <button 
                                 type="button"
                                 class="button is-outlined" 
-                                @click.prevent="$router.go(-1)" 
-                                slot="trigger">{{ $i18n.get('cancel') }}</button>
+                                @click.prevent="$router.go(-1)">
+                            {{ $i18n.get('cancel') }}
+                        </button>
                     </div>
                     <div 
                             style="margin-left: auto;"
@@ -161,7 +162,9 @@
                                 class="button is-secondary" 
                                 :class="{'is-loading': isCreatingSequenceEditGroup }"
                                 @click.prevent="sequenceEditGroup()"
-                                type="submit">{{ $i18n.get('label_sequence_edit_items') }}</button>
+                                type="submit">
+                            {{ $i18n.get('label_sequence_edit_items') }}
+                        </button>
                     </div>
                     <div class="control">
                         <button 

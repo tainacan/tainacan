@@ -6,8 +6,8 @@
                 :custom-class="{ 'is-danger': isInvalidDate && dateValue }"
                 type="text"
                 v-mask="dateMask"
-                v-model:value="dateValue"
-                @input="onInput"
+                v-model="dateValue"
+                @update:model-value="onInput"
                 @blur="onBlur"
                 @focus="onMobileSpecialFocus"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : dateFormat.toLowerCase()" />
@@ -15,22 +15,6 @@
                 v-if="isInvalidDate && dateValue"
                 style="font-size: 0.75em;"
                 class="has-text-danger is-italic">{{ $i18n.get('info_error_invalid_date') }}</p>
-        <!--<b-collapse-->
-                <!--position="is-bottom-right">-->
-            <!--<span class="icon"-->
-                    <!--icon="calendar-today"-->
-                    <!--size="is-small"-->
-                    <!--slot="trigger" />-->
-
-            <!--<div class="field">-->
-                <!--<b-datepicker-->
-                        <!--v-model:value="dateValue"-->
-                        <!--:readonly="false"-->
-                        <!--inline-->
-                        <!--@input="onInput($event)"-->
-                        <!--:placeholder="datePlaceHolder"/>-->
-            <!--</div>-->
-        <!--</b-collapse>-->
     </div>
 </template>
 

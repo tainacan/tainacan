@@ -13,7 +13,7 @@
         <div class="metadata-list-page">
             <b-tabs 
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
-                    v-model:value="activeTab">    
+                    v-model="activeTab">    
                 <b-tab-item :label="isRepositoryLevel ? repositoryTabLabel : collectionTabLabel">
                     <div class="columns">
 
@@ -326,6 +326,7 @@ export default {
                 .grip-icon { 
                     color: var(--tainacan-gray3); 
                     position: relative;
+                    flex-shrink: 0;
                 }
                 .metadatum-name {
                     white-space: nowrap;

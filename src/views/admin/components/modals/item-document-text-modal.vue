@@ -9,7 +9,7 @@
                 ref="item-document-text-input"
                 type="textarea"
                 :autofocus="true"
-                v-model:value="localTextContent"/>
+                v-model="localTextContent"/>
 
         <div class="field is-grouped form-submit">
             <div class="control">

@@ -104,7 +104,6 @@
             <button 
                     class="swiper-button-prev" 
                     :id="blockId + '-prev'" 
-                    slot="button-prev"
                     :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                 <svg
                         :width="largeArrows ? 60 : 42"
@@ -123,8 +122,7 @@
             </button>
             <button 
                     class="swiper-button-next" 
-                    :id="blockId + '-next'" 
-                    slot="button-next"
+                    :id="blockId + '-next'"
                     :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
                 <svg
                         :width="largeArrows ? 60 : 42"

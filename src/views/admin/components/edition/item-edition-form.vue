@@ -2,7 +2,7 @@
     <div :class="isCreatingNewItem ? 'item-creation-container' : 'item-edition-container'"><!-- Do NOT remove this classes, they may be used by third party plugins -->
         <b-loading
                 :is-full-page="false"
-                v-model:active="isLoading"
+                v-model="isLoading"
                 :can-cancel="false"/>
 
         <tainacan-title 
@@ -216,8 +216,7 @@
                                 </ul>
                                 <button 
                                         class="swiper-button-prev" 
-                                        id="tainacan-tabs-prev" 
-                                        slot="button-prev">
+                                        id="tainacan-tabs-prev">
                                     <svg
                                             width="24"
                                             height="24"
@@ -344,7 +343,7 @@
                                                 id="tainacan-switch-required-metadata"
                                                 :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
                                                 size="is-small"
-                                                v-model:value="showOnlyRequiredMetadata">
+                                                v-model="showOnlyRequiredMetadata">
                                             {{ isMobileScreen ? $i18n.get('label_required') : $i18n.get('label_only_required') }} *
                                         </b-switch>
 
@@ -354,7 +353,7 @@
                                             <b-input
                                                     v-if="!isMobileScreen || openMetadataNameFilter"
                                                     :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
-                                                    v-model:value="metadataNameFilterString"
+                                                    v-model="metadataNameFilterString"
                                                     icon="magnify"
                                                     size="is-small"
                                                     icon-right="close-circle"
@@ -676,7 +675,7 @@
                                 size="is-small"
                                 true-value="open"
                                 false-value="closed"
-                                v-model:value="form.comment_status">
+                                v-model="form.comment_status">
                             <span class="icon has-text-gray4">
                                 <i class="tainacan-icon tainacan-icon-comment"/>
                             </span>

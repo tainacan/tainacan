@@ -27,16 +27,16 @@
                             :placeholder="-14.408656999999"
                             type="text"
                             :step="0.000000000001"
-                            @input="onUpdateFromLatitudeInput"
-                            :value="latitude" />
+                            @update:model-value="onUpdateFromLatitudeInput"
+                            :model-value="latitude" />
                     <b-input 
                             v-if="editingMarkerIndex >= 0"
                             expanded
                             :placeholder="-51.316689999999"
                             type="text"
                             :step="0.000000000001"
-                            @input="onUpdateFromLongitudeInput"
-                            :value="longitude" />
+                            @update:model-value="onUpdateFromLongitudeInput"
+                            :model-value="longitude" />
                     <b-button
                             v-if="editingMarkerIndex >= 0"
                             outlined

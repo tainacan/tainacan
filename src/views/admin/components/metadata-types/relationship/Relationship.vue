@@ -3,7 +3,7 @@
         <b-tabs
                 size="is-small"
                 animated
-                v-model:value="activeTab">
+                v-model="activeTab">
             <b-tab-item :label="$i18n.get('label_insert_items')">
                 <b-taginput
                         expanded
@@ -11,8 +11,8 @@
                         :id="relationshipInputId"
                         size="is-small"
                         icon="magnify"
-                        :value="selected"
-                        @input="onInput"
+                        :model-value="selected"
+                        @update:model-value="onInput"
                         @blur="onBlur"
                         @add="onAdd"
                         @remove="onRemove"
@@ -127,7 +127,7 @@
             </a>
             <b-modal 
                     :width="1200"
-                    v-model:active="editItemModalOpen"
+                    v-model="editItemModalOpen"
                     :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
                     :close-button-aria-label="$i18n.get('close')">
                 <iframe 

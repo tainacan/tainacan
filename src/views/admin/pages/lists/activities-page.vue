@@ -33,7 +33,7 @@
 
                 <b-loading
                         :is-full-page="false"
-                        v-model:active="isLoading" 
+                        v-model="isLoading" 
                         :can-cancel="false"/>
 
                 <div 
@@ -44,10 +44,10 @@
                         <b-datepicker
                                 ref="datepicker"
                                 :placeholder="$i18n.get('instruction_filter_activities_date')"
-                                v-model:value="searchDates"
+                                v-model="searchDates"
                                 range
                                 :trap-focus="false"
-                                @input="searchActivities()"
+                                @update:model-value="searchActivities()"
                                 :date-formatter="(date) => dateFormatter(date)"
                                 :date-parser="(date) => dateParser(date)"
                                 icon="calendar-today"
@@ -95,7 +95,7 @@
                                 :placeholder="$i18n.get('instruction_type_search_users_filter')"
                                 keep-first
                                 open-on-focus
-                                @input="fetchUsersForFiltering"
+                                @update:model-value="fetchUsersForFiltering"
                                 @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
                                 @select="filterActivitiesByUser"
                                 :loading="isFetchingUsers"
@@ -132,7 +132,7 @@
                                 size="is-small"
                                 :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
                                 autocomplete="on"
-                                v-model:value="searchQuery"
+                                v-model="searchQuery"
                                 @keyup.enter="searchActivities()"
                                 icon-right="magnify"
                                 icon-right-clickable
@@ -149,8 +149,8 @@
                             :placeholder="$i18n.get('instruction_filter_activities_date')"
                             range
                             icon="calendar-today"
-                            v-model:value="searchDates"
-                            @input="searchProcesses()"
+                            v-model="searchDates"
+                            @update:model-value="searchProcesses()"
                             :date-formatter="(date) => dateFormatter(date)"
                             :date-parser="(date) => dateParser(date)"
                             :years-range="[-50, 3]"
@@ -196,7 +196,7 @@
                             size="is-small"
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
                             autocomplete="on"
-                            v-model:value="searchQuery"
+                            v-model="searchQuery"
                             @keyup.enter="searchProcesses()"
                             icon-right="magnify"
                             icon-right-clickable
@@ -265,8 +265,8 @@
                                 horizontal
                                 :label="$i18n.get('label_activities_per_page')">
                             <b-select
-                                    :value="activitiesPerPage"
-                                    @input="onChangeActivitiesPerPage"
+                                    :model-value="activitiesPerPage"
+                                    @update:model-value="onChangeActivitiesPerPage"
                                     :disabled="activities.length <= 0">
                                 <option value="12">12</option>
                                 <option value="24">24</option>
@@ -279,7 +279,7 @@
                         <b-pagination
                                 @change="onPageChange"
                                 :total="totalActivities"
-                                v-model:current="activitiesPage"
+                                v-model="activitiesPage"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="activitiesPerPage"
@@ -306,8 +306,8 @@
                                 horizontal 
                                 :label="$i18n.get('label_processes_per_page')">
                             <b-select
-                                    :value="processesPerPage"
-                                    @input="onChangeProcessesPerPage"
+                                    :model-value="processesPerPage"
+                                    @update:model-value="onChangeProcessesPerPage"
                                     :disabled="processes.length <= 0">
                                 <option value="12">12</option>
                                 <option value="24">24</option>
@@ -320,7 +320,7 @@
                         <b-pagination
                                 @change="onPageChange"
                                 :total="totalProcesses"
-                                v-model:current="processesPage"
+                                v-model="processesPage"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="processesPerPage"

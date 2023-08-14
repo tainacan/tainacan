@@ -6,7 +6,7 @@
                     { path: '', label: exporterType != undefined ? (exporterName != undefined ? exporterName : exporterType) : $i18n.get('title_exporter_page') }
                 ]"/>
         <b-loading
-                v-model:active="isLoading"
+                v-model="isLoading"
                 :can-cancel="false"/>
         <form
                 @click="formErrorMessage = ''"
@@ -34,9 +34,9 @@
                                 extra-classes="tainacan-repository-tooltip"/>
                         <br>
                         <b-select
-                                @input="formErrorMessage = null"
+                                @update:model-value="formErrorMessage = null"
                                 expanded
-                                v-model:value="selectedCollection"
+                                v-model="selectedCollection"
                                 :loading="isFetchingCollections"
                                 :placeholder="$i18n.get('instruction_select_a_collection')">
                             <option
@@ -55,9 +55,9 @@
                                 exporterSession.mapping_list.length"
                             :label="$i18n.get('mapping')">
                         <b-select
-                                @input="formErrorMessage = null"
+                                @update:model-value="formErrorMessage = null"
                                 expanded
-                                v-model:value="selectedMapping"
+                                v-model="selectedMapping"
                                 :placeholder="$i18n.get('instruction_select_a_mapper')">
                             <option 
                                     v-if="exporterSession.accept_no_mapping"
@@ -81,8 +81,8 @@
                         <b-checkbox
                                 true-value="1"
                                 false-value="0"
-                                v-model:value="sendEmail"
-                                @input="formErrorMessage = null">
+                                v-model="sendEmail"
+                                @update:model-value="formErrorMessage = null">
                             {{ $i18n.get('label_yes') }}
                         </b-checkbox>
                     </b-field>

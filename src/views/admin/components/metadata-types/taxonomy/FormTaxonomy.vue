@@ -15,8 +15,8 @@
             <b-select
                     name="field_type_options[taxonomy_id]"
                     placeholder="Select the taxonomy"
-                    v-model:value="taxonomy_id"
-                    @input="emitValues()"
+                    v-model="taxonomy_id"
+                    @update:model-value="emitValues()"
                     @focus="clear"
                     :loading="loading"
                     expanded>
@@ -41,8 +41,8 @@
                     v-if="listInputType"
                     name="metadata_type_options[component_type]"
                     placeholder="Select the input type for the taxonomy metadatum"
-                    @input="emitValues()"
-                    v-model:value="input_type"
+                    @update:model-value="emitValues()"
+                    v-model="input_type"
                     expanded>
                 <option
                         v-for="(option, index) in single_types"
@@ -55,8 +55,8 @@
             <b-select
                     name="metadata_type_options[input_type]"
                     placeholder="Select the input type for the taxonomy metadatum"
-                    v-model:value="input_type"
-                    @input="emitValues()"
+                    v-model="input_type"
+                    @update:model-value="emitValues()"
                     v-else
                     expanded>
                 <option
@@ -75,8 +75,8 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model:value="visible_options_list"
-                    @input="emitValues()" />
+                    v-model="visible_options_list"
+                    @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')"
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')"/>
@@ -88,8 +88,8 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model:value="allow_new_terms"
-                    @input="emitValues()"
+                    v-model="allow_new_terms"
+                    @update:model-value="emitValues()"
                     true-value="yes"
                     false-value="no" />
             <help-button
@@ -103,8 +103,8 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model:value="do_not_dispaly_term_as_link"
-                    @input="emitValues()"
+                    v-model="do_not_dispaly_term_as_link"
+                    @update:model-value="emitValues()"
                     true-value="yes"
                     false-value="no" />
             <help-button
@@ -119,12 +119,12 @@
                     :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')"/>
             </label>
             <b-taginput
-                    :value="getSelectedTaxonomyCollections()"
+                    :model-value="getSelectedTaxonomyCollections()"
                     autocomplete
                     :open-on-focus="true"
                     :data="collections.filter((collection) => !link_filtered_by_collections.includes(collection.id) && (collectionSearchString ? (collection.name.toLowerCase().indexOf(collectionSearchString.toLowerCase()) >= 0) : true) )"
                     field="name"
-                    @input="updateSelectedCollections"
+                    @update:model-value="updateSelectedCollections"
                     @focus="clear()"
                     attached
                     :disabled="do_not_dispaly_term_as_link == 'yes'"
@@ -160,8 +160,8 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model:value="hide_hierarchy_path"
-                    @input="emitValues()"
+                    v-model="hide_hierarchy_path"
+                    @update:model-value="emitValues()"
                     true-value="yes"
                     false-value="no" />
             <help-button

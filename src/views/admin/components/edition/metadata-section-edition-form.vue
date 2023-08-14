@@ -30,7 +30,7 @@
                                 :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </label>
                     <b-input
-                            v-model:value="form.name"
+                            v-model="form.name"
                             name="name"
                             @focus="clearErrors('name')"/>
                 </b-field>
@@ -59,7 +59,7 @@
                             type="textarea"
                             name="description"
                             rows="3"
-                            v-model:value="form.description"
+                            v-model="form.description"
                             @focus="clearErrors('description')"/>
                 </b-field>
 
@@ -71,8 +71,8 @@
                         &nbsp;
                     <b-switch
                             size="is-small"
-                            @input="clearErrors('description_bellow_name')"
-                            v-model:value="form.description_bellow_name"
+                            @update:model-value="clearErrors('description_bellow_name')"
+                            v-model="form.description_bellow_name"
                             true-value="yes"
                             false-value="no"
                             name="description_bellow_name">
@@ -100,7 +100,7 @@
                                 @focus="clearErrors('label_status')"
                                 id="tainacan-select-status-publish"
                                 name="status"
-                                v-model:value="form.status"
+                                v-model="form.status"
                                 native-value="publish">
                             <span class="icon has-text-gray3">
                                 <i class="tainacan-icon tainacan-icon-public"/>
@@ -111,7 +111,7 @@
                                 @focus="clearErrors('label_status')"
                                 id="tainacan-select-status-private"
                                 name="status"
-                                v-model:value="form.status"
+                                v-model="form.status"
                                 native-value="private">
                             <span class="icon has-text-gray3">
                                 <i class="tainacan-icon tainacan-icon-private"/>
@@ -151,8 +151,8 @@
                             &nbsp;
                         <b-switch
                                 size="is-small"
-                                @input="clearErrors('is_conditional_section')"
-                                v-model:value="form.is_conditional_section"
+                                @update:model-value="clearErrors('is_conditional_section')"
+                                v-model="form.is_conditional_section"
                                 true-value="yes"
                                 false-value="no"
                                 name="is_conditional_section">
@@ -179,7 +179,7 @@
                                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                             </label>
                             <b-select 
-                                    v-model:value="selectedConditionalMetadatum"
+                                    v-model="selectedConditionalMetadatum"
                                     :placeholder="$i18n.get('label_select_metadatum')">
                                 <option 
                                         v-for="conditionalMetadatum of availableConditionalMetadata"
@@ -201,7 +201,7 @@
                             </label>
                             <div style="overflow-y: auto; overflow-x: hidden; max-height: 100px;">
                                 <b-checkbox
-                                        v-model:value="selectedConditionalValue"
+                                        v-model="selectedConditionalValue"
                                         v-for="(conditionalValue, conditionalValueIndex) of availableConditionalMetadata.find((availableMetadatum) => availableMetadatum.id == selectedConditionalMetadatum).metadata_type_object.options.options.split('\n')"
                                         :key="conditionalValueIndex"
                                         :native-value="conditionalValue">
@@ -228,8 +228,8 @@
             <button
                     type="button"
                     class="button is-outlined"
-                    @click.prevent="cancelEdition()"
-                    slot="trigger">{{ $i18n.get('cancel') }}
+                    @click.prevent="cancelEdition()">
+                {{ $i18n.get('cancel') }}
             </button>
         </div>
         <p class="help is-danger">{{ formErrorMessage }}</p>

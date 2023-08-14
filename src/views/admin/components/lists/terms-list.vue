@@ -10,7 +10,7 @@
                         autocomplete="on"
                         :placeholder="$i18n.get('instruction_search')"
                         :aria-name="$i18n.get('instruction_search')"
-                        v-model:value="searchString"
+                        v-model="searchString"
                         icon-right="magnify"
                         type="search" />
             </b-field>
@@ -37,15 +37,16 @@
                         aria-role="list"
                         trap-focus
                         position="is-bottom-left">
-                    <button
-                            type="button"
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ selected.length == 1 ? $i18n.get('label_one_selected_term') : $i18n.getWithVariables('label_%s_selected_terms', [ selected.length ]) }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button
+                                type="button"
+                                class="button is-white">
+                            <span>{{ selected.length == 1 ? $i18n.get('label_one_selected_term') : $i18n.getWithVariables('label_%s_selected_terms', [ selected.length ]) }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item
                             custom
                             v-for="term of selected"
@@ -78,15 +79,16 @@
                         id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            type="button"
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button
+                                type="button"
+                                class="button is-white">
+                            <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item
                             @click="$emit('deleteSelectedTerms')"
                             id="item-delete-selected-terms"

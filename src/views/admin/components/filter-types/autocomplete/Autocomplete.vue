@@ -4,11 +4,11 @@
                 icon="magnify"
                 size="is-small"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                v-model:value="selected"
+                v-model="selected"
                 :data="options"
                 expanded
                 :loading="isLoadingOptions"
-                @input="($event) => { resetPage(); search($event); }"
+                @update:model-value="($event) => { resetPage(); search($event); }"
                 field="label"
                 @select="onSelect"
                 clearable

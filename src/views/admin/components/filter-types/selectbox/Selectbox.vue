@@ -4,9 +4,9 @@
             class="block">
         <b-select
                 v-if="!isLoadingOptions"
-                :value="selected"
+                :model-value="selected"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                @input="($event) => { resetPage(); onSelect($event) }"
+                @update:model-value="($event) => { resetPage(); onSelect($event) }"
                 :placeholder="$i18n.get('label_selectbox_init')"
                 expanded>
             <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
@@ -55,10 +55,10 @@
                 this.loadOptions(); 
         },
         created() {
-            this.$eventBusSearch.$emitter.on('hasToReloadFacets', this.reloadOptions);
+            this.$eventBusSearchEmitter.on('hasToReloadFacets', this.reloadOptions);
         },
         beforeUnmount() {
-            this.$eventBusSearch.$emitter.off('hasToReloadFacets', this.reloadOptions); 
+            this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         },
         methods: {
             reloadOptions(shouldReload) {

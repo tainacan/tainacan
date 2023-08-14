@@ -2,20 +2,21 @@
     <div class="date-filter-container">
          <b-dropdown
                 :mobile-modal="true"
-                @input="($event) => { resetPage(); onChangeComparator($event) }"
+                @update:model-value="($event) => { resetPage(); onChangeComparator($event) }"
                 aria-role="list"
                 trap-focus>
-            <button
-                    :aria-label="$i18n.get('label_comparator')"
-                    class="button is-white"
-                    slot="trigger">
-                <span class="icon is-small">
-                    <i v-html="comparatorSymbol" />
-                </span>
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                </span>
-            </button>
+            <template #trigger>
+                <button
+                        :aria-label="$i18n.get('label_comparator')"
+                        class="button is-white">
+                    <span class="icon is-small">
+                        <i v-html="comparatorSymbol" />
+                    </span>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                    </span>
+                </button>
+            </template>
             <b-dropdown-item
                     role="button"
                     :class="{ 'is-active': comparator == '=' }"
@@ -67,14 +68,14 @@
                 :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
                 step="1"
-                @input="emitOnlyYear($event)"
-                v-model:value="yearsOnlyValue"/> -->
+                @update:model-value="emitOnlyYear($event)"
+                v-model="yearsOnlyValue"/> -->
         <b-datepicker
                 position="is-bottom-left"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
-                v-model:value="value"
-                @input="($event) => { resetPage(); emit($event); }"
+                v-model="value"
+                @update:model-value="($event) => { resetPage(); emit($event); }"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"

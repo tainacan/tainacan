@@ -35,7 +35,7 @@
                 <!-- Status -------------------------------- --> 
                 <div class="status-radios">
                     <b-radio
-                            v-model:value="selectedStatus"
+                            v-model="selectedStatus"
                             v-for="(statusOption, index) of availableStatus"
                             :key="index"
                             :native-value="statusOption.slug">

@@ -20,8 +20,8 @@
             <b-tabs
                     size="is-small"
                     animated
-                    @input="fetchSelectedLabels()"
-                    v-model:value="activeTab"
+                    @update:model-value="fetchSelectedLabels()"
+                    v-model="activeTab"
                     :class="{ 'hidden-tabs-section': !isModal || !hasToDisplaySearchBar }">
                 <b-tab-item 
                         :style="{ margin: isModal ? '0' : '0 0 1rem 0' }"
@@ -36,8 +36,8 @@
                                 autocomplete="on"
                                 :placeholder="$i18n.get('instruction_search')"
                                 :aria-label="$i18n.get('instruction_search')"
-                                v-model:value="optionName"
-                                @input="autoComplete"
+                                v-model="optionName"
+                                @update:model-value="autoComplete"
                                 icon-right="magnify"
                                 type="search" />
                     </b-field>
@@ -88,7 +88,7 @@
                             </template>
                             <b-loading
                                     :is-full-page="false"
-                                    v-model:active="isLoadingSearch"/>
+                                    v-model="isLoadingSearch"/>
                         </ul>
                         <a
                                 v-if="!noMoreSearchPage"
@@ -151,7 +151,7 @@
                             </template>
                             <b-loading
                                     :is-full-page="false"
-                                    v-model:active="isCheckboxListLoading"/>
+                                    v-model="isCheckboxListLoading"/>
                         </ul>
                         <a
                                 v-if="!noMorePage"
@@ -250,7 +250,7 @@
 
                     <b-loading
                             :is-full-page="false"
-                            v-model:active="isColumnLoading"/>
+                            v-model="isColumnLoading"/>
                     
                 </b-tab-item>
 
@@ -290,7 +290,7 @@
                         </section>
                         <b-loading
                                 :is-full-page="false"
-                                v-model:active="isSelectedTermsLoading"/>
+                                v-model="isSelectedTermsLoading"/>
                     </div>
                 </b-tab-item>
             </b-tabs>
@@ -813,7 +813,7 @@
                 this.$eventBusSearch.resetPageOnStore();
 
                 if (this.isTaxonomy) {
-                    this.$eventBusSearch.$emit('input', {
+                    this.$eventBusSearchEmitter.emit('input', {
                         filter: 'checkbox',
                         taxonomy: this.taxonomy,
                         compare: 'IN',
@@ -822,7 +822,7 @@
                         terms: this.selected
                     });         
                 } else {
-                    this.$eventBusSearch.$emit('input', {
+                    this.$eventBusSearchEmitter.emit('input', {
                         filter: 'checkbox',
                         compare: 'IN',
                         metadatum_id: this.metadatumId ? this.metadatumId : this.filter.metatadum_id,

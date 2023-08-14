@@ -8,7 +8,7 @@
             :allow-new="false"
             @add="emitAdd"
             @remove="emitRemove"
-            v-model:value="selected"
+            v-model="selected"
             :data="labels"
             :maxtags="maxtags"
             field="label"

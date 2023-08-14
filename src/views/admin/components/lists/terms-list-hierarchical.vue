@@ -3,7 +3,7 @@
 
         <b-loading
                 :is-full-page="false"
-                v-model:active="isColumnLoading"/>
+                v-model="isColumnLoading"/>
 
         <transition name="appear-from-top">
             <button
@@ -243,7 +243,7 @@
         </section>
 
         <b-modal
-                v-model:value="isEditingTerm"
+                v-model="isEditingTerm"
                 :width="768"
                 trap-focus
                 aria-role="dialog"

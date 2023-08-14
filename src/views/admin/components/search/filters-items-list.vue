@@ -5,7 +5,7 @@
 
         <b-loading
                 :is-full-page="false"
-                v-model:active="isLoadingFilters"/>
+                v-model="isLoadingFilters"/>
 
         <h3 
                 id="filters-label-landmark"
@@ -398,7 +398,7 @@
             this.prepareFilters();
 
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$emitter.on('isLoadingItems', this.updateIsLoadingItems);
+                this.$eventBusSearchEmitter.on('isLoadingItems', this.updateIsLoadingItems);
         },
         beforeUnmount() {
             // Cancels previous collection name Request
@@ -414,7 +414,7 @@
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
 
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$emitter.off('isLoadingItems', this.updateIsLoadingItems);
+                this.$eventBusSearchEmitter.off('isLoadingItems', this.updateIsLoadingItems);
      
         },
         methods: {

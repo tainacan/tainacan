@@ -14,7 +14,7 @@
             <b-select
                     name="metadata_type_relationship[collection_id]"
                     :placeholder="$i18n.get('instruction_select_collection_fetch_items' )"
-                    v-model:value="collection"
+                    v-model="collection"
                     @change="emitValues()"
                     @focus="clear()"
                     :loading="loading"
@@ -45,7 +45,7 @@
                 </label>
                 <b-select
                         name="metadata_type_relationship[search]"
-                        v-model:value="modelSearch"
+                        v-model="modelSearch"
                         expanded>
                     <option
                             v-for="(option, index) in metadata.filter(metadatum => metadatum.metadata_type_object.component !== 'tainacan-compound')"
@@ -71,8 +71,8 @@
                     <b-checkbox
                             native-value="thumbnail"
                             name="metadata_type_relationship[display_related_item_metadata]"
-                            @input="emitValues()"
-                            v-model:value="displayRelatedItemMetadata">
+                            @update:model-value="emitValues()"
+                            v-model="displayRelatedItemMetadata">
                         {{ $i18n.get('label_thumbnail') }}
                     </b-checkbox>
                     <b-checkbox
@@ -80,8 +80,8 @@
                             :key="index"
                             :native-value="metadatumOption.id"
                             name="metadata_type_relationship[display_related_item_metadata]"
-                            @input="emitValues()"
-                            v-model:value="displayRelatedItemMetadata"
+                            @update:model-value="emitValues()"
+                            v-model="displayRelatedItemMetadata"
                             :disabled="metadatumOption.id == modelSearch">
                         {{ metadatumOption.name }}
                     </b-checkbox>
@@ -95,8 +95,8 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model:value="modelDisplayInRelatedItems"
-                    @input="emitValues()"
+                    v-model="modelDisplayInRelatedItems"
+                    @update:model-value="emitValues()"
                     true-value="yes"
                     false-value="no" />
             <help-button
@@ -110,8 +110,8 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model:value="modelAcceptDraftItems"
-                    @input="emitValues()"
+                    v-model="modelAcceptDraftItems"
+                    @update:model-value="emitValues()"
                     true-value="yes"
                     false-value="no" />
             <help-button

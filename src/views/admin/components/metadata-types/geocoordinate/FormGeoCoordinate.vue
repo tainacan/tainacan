@@ -10,8 +10,8 @@
                 </label>
                 <b-input
                         name="mapProvider"
-                        v-model:value="mapProvider"
-                        @input="emitValues()"
+                        v-model="mapProvider"
+                        @update:model-value="emitValues()"
                         placeholder="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
         </b-field>
 
@@ -26,8 +26,8 @@
                 </label>
                 <b-input
                         name="attribution"
-                        v-model:value="attribution"
-                        @input="emitValues()"
+                        v-model="attribution"
+                        @update:model-value="emitValues()"
                         placeholder="© OpenStreetMap contributors" />
 
         </b-field>
@@ -43,8 +43,8 @@
                 </label>
                 <b-numberinput
                         name="initialZoom"
-                        v-model:value="initialZoom"
-                        @input="emitValues()"
+                        v-model="initialZoom"
+                        @update:model-value="emitValues()"
                         :step="1"
                         :max="19"
                         :min="1" />
@@ -61,8 +61,8 @@
                 </label>
                 <b-numberinput
                         name="maximumZoom"
-                        v-model:value="maximumZoom"
-                        @input="emitValues()"
+                        v-model="maximumZoom"
+                        @update:model-value="emitValues()"
                         :step="1"
                         :max="19"
                         :min="1" />

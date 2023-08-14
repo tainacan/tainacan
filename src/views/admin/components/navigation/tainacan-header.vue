@@ -59,8 +59,8 @@
                         :placeholder="$i18n.get('instruction_search_in_repository')"
                         class="search-header"
                         size="is-small"
-                        :value="searchQuery"
-                        @input="futureSearchQuery = $event.target.value"
+                        :model-value="searchQuery"
+                        @update:model-value="futureSearchQuery = $event.target.value"
                         @keyup.enter="updateSearch()"
                         icon-right="magnify"
                         icon-right-clickable

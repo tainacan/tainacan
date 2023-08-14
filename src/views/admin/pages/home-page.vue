@@ -1,6 +1,6 @@
 <template>
     <div class="home-page page-container">
-        <b-loading v-model:active="isLoadingCollections"/>
+        <b-loading v-model="isLoadingCollections"/>
         <section 
                 v-if="!$adminOptions.hideHomeRepositorySection"
                 class="home-section home-section-repository">

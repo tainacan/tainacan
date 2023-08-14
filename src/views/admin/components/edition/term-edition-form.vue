@@ -25,7 +25,7 @@
         <div class="modal-card-body">
             <b-loading
                     :is-full-page="false"
-                    v-model:active="isLoading" />
+                    v-model="isLoading" />
 
             <!-- Name -------------- -->
             <b-field
@@ -42,7 +42,7 @@
                 </label>
                 <b-input
                         :placeholder="$i18n.get('label_term_without_name')"
-                        v-model:value="form.name"
+                        v-model="form.name"
                         name="name"
                         @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
             </b-field>
@@ -126,7 +126,7 @@
                         <b-input
                                 type="textarea"
                                 name="description"
-                                v-model:value="form.description"
+                                v-model="form.description"
                                 @focus="clearErrors('description')"/>
                     </b-field>
                 </div>
@@ -141,10 +141,10 @@
             <label class="label is-inline">
                     {{ $i18n.get('label_parent_term') }}
                     <b-switch
-                            @input="onToggleSwitch()"
+                            @update:model-value="onToggleSwitch()"
                             id="tainacan-checkbox-has-parent" 
                             size="is-small"
-                            v-model:value="hasParent" />
+                            v-model="hasParent" />
                     <help-button
                             :title="$i18n.get('label_parent_term')"
                             :message="$i18n.get('info_help_parent_term')"
@@ -156,10 +156,10 @@
                         :data="parentTerms"
                         field="name"
                         clearable
-                        v-model:value="parentTermName"
+                        v-model="parentTermName"
                         @select="onSelectParentTerm($event)"
                         :loading="isFetchingParentTerms"
-                        @input="fetchParentTerms"
+                        @update:model-value="fetchParentTerms"
                         @focus="clearErrors('parent');"
                         :disabled="!hasParent"
                         :append-to-body="true"
@@ -204,8 +204,7 @@
                     <button
                             type="button"
                             class="button is-outlined"
-                            @click.prevent="cancelEdition()"
-                            slot="trigger">
+                            @click.prevent="cancelEdition()">
                         {{ $i18n.get('cancel') }}
                     </button>
                 </div>

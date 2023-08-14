@@ -5,9 +5,9 @@
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
-                @input="($event) => { resetPage(); validadeValues($event) }"
+                @update:model-value="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"
-                v-model:value="valueInit"
+                v-model="valueInit"
                 />
         <p 
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
@@ -19,9 +19,9 @@
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
-                @input="($event) => { resetPage(); validadeValues($event) }"
+                @update:model-value="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"
-                v-model:value="valueEnd"/>
+                v-model="valueEnd"/>
         
     </div>
 </template>

@@ -6,8 +6,8 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    :value="displaySuggestions"
-                    @input="onUpdateDisplaySuggestions"
+                    :model-value="displaySuggestions"
+                    @update:model-value="onUpdateDisplaySuggestions"
                     :true-value="'yes'"
                     :false-value="'no'" />
             <help-button

@@ -50,7 +50,7 @@
 
         <!-- Term creation modal, used on admin for a complete term creation -->
         <b-modal
-                v-model:value="isTermCreationModalOpen"
+                v-model="isTermCreationModalOpen"
                 :width="768"
                 trap-focus
                 aria-role="dialog"

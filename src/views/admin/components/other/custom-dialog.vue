@@ -33,7 +33,7 @@
                 <span v-html="message" />
                 <div v-if="showNeverShowAgainOption">
                     <b-checkbox
-                            @input="changeNeverShowMessageAgain($event)"
+                            @update:model-value="changeNeverShowMessageAgain($event)"
                             :native-value="neverShowAgain">
                         {{ $i18n.get('instruction_never_show_message_again') }}
                     </b-checkbox>

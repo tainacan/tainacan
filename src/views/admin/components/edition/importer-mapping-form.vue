@@ -23,7 +23,7 @@
         </div>
 
         <b-loading 
-                v-model:active="isLoading" 
+                v-model="isLoading" 
                 :can-cancel="false"/>
 
         <form 
@@ -35,7 +35,7 @@
 
             <b-loading 
                     :is-full-page="false"
-                    v-model:active="isLoadingSourceInfo" 
+                    v-model="isLoadingSourceInfo" 
                     :can-cancel="false"/>
             
             <!-- Metadata Mapping -->
@@ -88,8 +88,8 @@
                                 v-if="collectionMetadata != undefined &&
                                     collectionMetadata.length > 0 &&
                                     !isFetchingCollectionMetadata"
-                                :value="checkCurrentSelectedCollectionMetadatum(sourceMetadatum)"
-                                @input="onSelectCollectionMetadata($event, sourceMetadatum)"
+                                :model-value="checkCurrentSelectedCollectionMetadatum(sourceMetadatum)"
+                                @update:model-value="onSelectCollectionMetadata($event, sourceMetadatum)"
                                 :placeholder="$i18n.get('label_select_metadatum')">
                             <option :value="null">
                                 {{ $i18n.get('label_select_metadatum') }}
@@ -124,8 +124,8 @@
                                 v-if="collectionMetadata != undefined &&
                                     collectionMetadata.length > 0 &&
                                     !isFetchingCollectionMetadata"
-                                :value="checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true)"
-                                @input="onSelectCollectionMetadata($event, Object.entries(sourceMetadatum)[0][0], true, Object.entries(sourceMetadatum)[0][1])"
+                                :model-value="checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true)"
+                                @update:model-value="onSelectCollectionMetadata($event, Object.entries(sourceMetadatum)[0][0], true, Object.entries(sourceMetadatum)[0][1])"
                                 :placeholder="$i18n.get('label_select_metadatum')">
                             <option :value="null">
                                 {{ $i18n.get('label_select_metadatum') }}
@@ -161,8 +161,8 @@
                                             collectionMetadata.length > 0 &&
                                             !isFetchingCollectionMetadata"
                                         :disabled="[undefined, null, false, 'create_metadata' + index].includes(checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
-                                        :value="checkCurrentSelectedCollectionChildMetadatum(childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
-                                        @input="onSelectCollectionChildMetadata($event, childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true), Object.entries(sourceMetadatum)[0][0])"
+                                        :model-value="checkCurrentSelectedCollectionChildMetadatum(childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
+                                        @update:model-value="onSelectCollectionChildMetadata($event, childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true), Object.entries(sourceMetadatum)[0][0])"
                                         :placeholder="$i18n.get('label_select_metadatum')">
                                     <option :value="null">
                                         {{ $i18n.get('label_select_metadatum') }}
@@ -200,7 +200,7 @@
                 
                 <b-modal 
                         @close="onMetadatumEditionCanceled()"
-                        v-model:active="isNewMetadatumModalActive"
+                        v-model="isNewMetadatumModalActive"
                         trap-focus
                         aria-modal
                         aria-role="dialog"
@@ -214,7 +214,7 @@
                             v-if="selectedMetadatumType == undefined && !isEditingMetadatum">
                         <b-loading 
                                 :is-full-page="isFullPage" 
-                                v-model:active="isLoadingMetadatumTypes"/>
+                                v-model="isLoadingMetadatumTypes"/>
                         <div 
                                 
                                 class="tainacan-modal-content">
@@ -287,7 +287,7 @@
         <!-- Prompt to show title -->
         <b-modal 
                 v-if="importerSourceInfo"
-                v-model:active="showTitlePromptModal"
+                v-model="showTitlePromptModal"
                 :can-cancel="false"
                 :width="820"
                 scroll="keep"
@@ -309,7 +309,7 @@
                         <b-field>
                             <b-select
                                     expanded
-                                    v-model:value="selectedTitle"
+                                    v-model="selectedTitle"
                                     :placeholder="$i18n.get('label_select_metadatum')">
                                 <option
                                         v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"

@@ -40,7 +40,7 @@
                 </div>
                 <b-loading 
                         :is-full-page="false"
-                        v-model:active="isLoading" 
+                        v-model="isLoading" 
                         :can-cancel="false"/>
                 
                  <footer class="field is-grouped form-submit">

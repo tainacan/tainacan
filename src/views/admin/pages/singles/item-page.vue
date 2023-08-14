@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-loading
-                v-model:active="isLoading"
+                v-model="isLoading"
                 :can-cancel="false"/>
 
         <tainacan-title 
@@ -262,7 +262,7 @@
                         <div 
                                 v-if="!$adminOptions.hideItemSingleAttachments"
                                 class="section-label">
-                            <label slot="header">
+                            <label>
                                 <span class="icon has-text-gray4">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments"/>
                                 </span>
@@ -274,7 +274,7 @@
                                         ({{ totalAttachments }})
                                     </span>
                                 </span>
-                            </label> 
+                            </label>
                         </div>   
                         <div 
                                 v-if="item != undefined && item.id != undefined && !isLoading && !$adminOptions.hideItemSingleAttachments"

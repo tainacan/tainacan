@@ -4,20 +4,20 @@
                 v-if="!getDisplayAutocomplete"
                 :disabled="disabled"
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
-                :value="value"
+                :model-value="value"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
-                @input="onInput($event)"
+                @update:model-value="onInput($event)"
                 @blur="onBlur"
                 @focus="onMobileSpecialFocus" />
         <b-autocomplete
                 v-else
                 :disabled="disabled"
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
-                :value="value"
+                :model-value="value"
                 @blur="onBlur"
                 :data="options"
                 :loading="isLoadingOptions"
-                @input="($event) => { search($event); }"
+                @update:model-value="($event) => { search($event); }"
                 field="label"
                 @select="onSelect"
                 clearable

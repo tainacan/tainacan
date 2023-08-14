@@ -30,7 +30,7 @@
                                 :disabled="!!bulkEditionProcedures[criterion].metadatum || metadataIsLoading"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                 :placeholder="$i18n.get('instruction_select_a_metadatum')"
-                                @input="addToBulkEditionProcedures($event, 'metadatum', criterion)">
+                                @update:model-value="addToBulkEditionProcedures($event, 'metadatum', criterion)">
                             <template 
                                     v-for="(metadatum, index) in metadata"
                                     :key="index">
@@ -66,10 +66,10 @@
                         <b-select
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].action }"
                                 :disabled="!!bulkEditionProcedures[criterion].action || !bulkEditionProcedures[criterion].metadatum"
-                                :value="bulkEditionProcedures[criterion].action ? bulkEditionProcedures[criterion].action : undefined"
+                                :model-value="bulkEditionProcedures[criterion].action ? bulkEditionProcedures[criterion].action : undefined"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                 :placeholder="$i18n.get('instruction_select_a_action')"
-                                @input="addToBulkEditionProcedures($event, 'action', criterion)">
+                                @update:model-value="addToBulkEditionProcedures($event, 'action', criterion)">
                             <template v-if="bulkEditionProcedures[criterion].metadatum">
                                 <option
                                         v-for="(edtAct, key) in getValidEditionActions(bulkEditionProcedures[criterion].metadatum)"
@@ -129,7 +129,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_status2')"
-                                            @input="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-value="addToBulkEditionProcedures($event, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $statusHelper.getStatuses().filter(option => { return option.value != 'trash' })"
                                                 :key="index"
@@ -145,7 +145,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_comments_status')"
-                                            @input="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-value="addToBulkEditionProcedures($event, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $commentsStatusHelper.getStatuses()"
                                                 :key="index"
@@ -162,7 +162,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom || metadataIsLoading"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
-                                            @input="addToBulkEditionProcedures($event, 'metadatumIdCopyFrom', criterion)">
+                                            @update:model-value="addToBulkEditionProcedures($event, 'metadatumIdCopyFrom', criterion)">
                                         <template 
                                                 v-for="(metadatumForCopy, index) in getAllowedMetadataForCopy(criterion)"
                                                 :key="index">

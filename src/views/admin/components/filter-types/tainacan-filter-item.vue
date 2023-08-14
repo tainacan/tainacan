@@ -8,38 +8,38 @@
         <b-collapse
                 v-if="displayFilter"
                 class="show" 
-                v-model:open="singleCollapseOpen"
+                v-model="singleCollapseOpen"
                 animation="filter-item">
-            <button
-                    :for="'filter-input-id-' + filter.id"
-                    :aria-controls="'filter-input-id-' + filter.id"
-                    :aria-expanded="singleCollapseOpen"
-                    v-tooltip="{
-                        delay: {
-                            shown: 500,
-                            hide: 300,
-                        },
-                        content: filter.name,
-                        html: false,
-                        autoHide: false,
-                        placement: 'top-start',
-                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                    }"
-                    :id="'filter-label-id-' + filter.id"
-                    :aria-label="filter.name"
-                    class="label"
-                    slot="trigger"
-                    slot-scope="props">
-                <span class="icon">
-                    <i 
-                            :class="{
-                                'tainacan-icon-arrowdown' : props.open,
-                                'tainacan-icon-arrowright' : !props.open
-                            }"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
-                </span>
-                <span class="collapse-label">{{ filter.name }}</span>
-            </button>
+            <template #trigger="{ props }">
+                <button
+                        :for="'filter-input-id-' + filter.id"
+                        :aria-controls="'filter-input-id-' + filter.id"
+                        :aria-expanded="singleCollapseOpen"
+                        v-tooltip="{
+                            delay: {
+                                shown: 500,
+                                hide: 300,
+                            },
+                            content: filter.name,
+                            html: false,
+                            autoHide: false,
+                            placement: 'top-start',
+                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                        }"
+                        :id="'filter-label-id-' + filter.id"
+                        :aria-label="filter.name"
+                        class="label">
+                    <span class="icon">
+                        <i 
+                                :class="{
+                                    'tainacan-icon-arrowdown' : props.open,
+                                    'tainacan-icon-arrowright' : !props.open
+                                }"
+                                class="tainacan-icon tainacan-icon-1-25em"/>
+                    </span>
+                    <span class="collapse-label">{{ filter.name }}</span>
+                </button>
+            </template>
             <div :id="'filter-input-id-' + filter.id">
                 <component
                         :is="filter.filter_type_object ? filter.filter_type_object.component : null"
@@ -150,7 +150,7 @@
         },
         methods: {
             onInput(inputEvent) {
-                this.$eventBusSearch.$emit('input', inputEvent);
+                this.$eventBusSearchEmitter.emit('input', inputEvent);
             },
             onFilterUpdateParentCollapse(open) {
                 const componentsThatShouldCollapseIfEmpty = ['tainacan-filter-taxonomy-checkbox', 'tainacan-filter-selectbox', 'tainacan-filter-checkbox'];

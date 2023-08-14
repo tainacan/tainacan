@@ -3,11 +3,11 @@
         <b-loading
                 :can-cancel="false"
                 :is-full-page="false"
-                v-model:active="isLoadingMetadatumMappers"/>
+                v-model="isLoadingMetadatumMappers"/>
         <b-loading
                 :can-cancel="false"
                 :is-full-page="false"
-                v-model:active="isLoadingMetadata"/>
+                v-model="isLoadingMetadata"/>
 
         <b-field>
             <p style="line-height: 2em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
@@ -15,8 +15,8 @@
                     id="mappers-options-dropdown"
                     size="is-small"
                     :placeholder="$i18n.get('instruction_select_a_mapper')"
-                    :value="mapper"
-                    @input="onSelectMetadataMapper($event)">
+                    :model-value="mapper"
+                    @update:model-value="onSelectMetadataMapper($event)">
                 <option
                         v-for="metadatumMapper in metadatumMappers"
                         :key="metadatumMapper.slug"
@@ -79,8 +79,8 @@
                 
                 <b-select
                         :name="'mappers-metadatum-select-' + mapperMetadatum.slug"
-                        v-model:value="mapperMetadatum.selected"
-                        @input="onSelectMetadatumForMapperMetadata">
+                        v-model="mapperMetadatum.selected"
+                        @update:model-value="onSelectMetadatumForMapperMetadata">
                     <option
                             value="">
                         {{ $i18n.get('instruction_select_a_metadatum') }}
@@ -154,7 +154,7 @@
 
         <b-modal
                 @close="onCancelNewMetadataMapperMetadata"
-                v-model:active="isMapperMetadataCreating"
+                v-model="isMapperMetadataCreating"
                 trap-focus
                 aria-modal
                 aria-role="dialog"
@@ -172,7 +172,7 @@
                 </div>
                 <b-field>
                     <b-input
-                            v-model:value="newMetadataLabel"
+                            v-model="newMetadataLabel"
                             required
                             :placeholder="$i18n.get('label_name')"/>
                 </b-field>
@@ -181,7 +181,7 @@
                             placeholder="URI"
                             type="url"
                             required
-                            v-model:value="newMetadataUri"/>
+                            v-model="newMetadataUri"/>
                 </b-field>
                 <div class="field is-grouped form-submit">
                     <div class="control">

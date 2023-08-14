@@ -33,12 +33,12 @@
                         class="type-of-deletion-options">
                     <b-radio 
                             native-value="selected"
-                            v-model:value="typeOfDelete">
+                            v-model="typeOfDelete">
                         {{ amountOfTerms > 1 ? $i18n.get('label_remove_selected_terms') : $i18n.get('label_remove_selected_term') }}
                     </b-radio>
                     <b-radio 
                             native-value="descendants"
-                            v-model:value="typeOfDelete">
+                            v-model="typeOfDelete">
                         {{ amountOfTerms > 1 ? $i18n.get('label_remove_terms_and_descendants') : $i18n.get('label_remove_term_and_descendants') }}
                     </b-radio>
                 </div>

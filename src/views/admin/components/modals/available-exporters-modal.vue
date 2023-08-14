@@ -43,7 +43,7 @@
                 </footer>
 
                 <b-loading
-                        v-model:active="isLoading"
+                        v-model="isLoading"
                         :can-cancel="false"/>
             </section>
         </div>

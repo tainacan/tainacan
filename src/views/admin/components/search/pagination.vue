@@ -38,10 +38,10 @@
                     horizontal 
                     :label="$i18n.get('label_items_per_page')"> 
                 <b-select 
-                        :value="itemsPerPage"
+                        :model-value="itemsPerPage"
                         aria-controls="items-list-results"
                         aria-labelledby="items-per-page-select"
-                        @input="onChangeItemsPerPage">
+                        @update:model-value="onChangeItemsPerPage">
                     <template 
                             v-for="(itemsPerPageOption, index) of itemsPerPageOptions"
                             :key="index">
@@ -67,15 +67,16 @@
                         @change="onPageChange"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            aria-labelledby="go-to-page-dropdown"
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ page }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button
+                                aria-labelledby="go-to-page-dropdown"
+                                class="button is-white">
+                            <span>{{ page }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item
                             aria-controls="items-list-results"
                             role="button" 
@@ -94,7 +95,7 @@
                     aria-controls="items-list-results"
                     @change="onPageChange"
                     :total="totalItems"
-                    v-model:current="page"
+                    v-model="page"
                     order="is-centered"
                     size="is-small"
                     :per-page="itemsPerPage"

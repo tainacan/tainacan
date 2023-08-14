@@ -30,7 +30,6 @@ import {
     Numberinput
 } from '@ntohq/buefy-next';
 import VTooltip from 'floating-vue';
-import draggable from 'vuedraggable';
 import VueTheMask from 'vue-the-mask';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';
@@ -72,7 +71,6 @@ import TainacanTitle from '../components/navigation/tainacan-title.vue';
 import store from './store/store';
 import router from './router';
 import eventBusSearch from './event-bus-search';
-import eventBusMetadataList from './event-bus-metadata-list.js';
 import { 
     I18NPlugin,
     UserPrefsPlugin,
@@ -89,6 +87,14 @@ import {
 } from './utilities';
 import mitt from 'mitt';
 
+import { configureCompat } from 'vue'
+
+// Desabilita a compatibilidade Vue2 para certos recursos já tratados no código
+configureCompat({
+    COMPONENT_V_MODEL: false
+})
+
+
 export default (element) => {
 
     function renderTainacanAdminPage() {
@@ -101,8 +107,6 @@ export default (element) => {
 
             const app = createApp({
                 el: '#tainacan-admin-app',
-                router,
-                store,
                 render: () => h(AdminPage)
             });
             
@@ -111,6 +115,9 @@ export default (element) => {
 
             const emitter = mitt();
             app.config.globalProperties.$emitter = emitter;
+
+            const eventBusMetadataList = mitt();
+            app.config.globalProperties.$eventBusMetadataList = emitter;
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
@@ -232,7 +239,6 @@ export default (element) => {
 
             /* Others */
             app.component('help-button', HelpButton);
-            app.component('draggable', draggable);
             app.component('tainacan-title', TainacanTitle);
 
             // Event bus are needed to facilate comunication between child-parent-child components

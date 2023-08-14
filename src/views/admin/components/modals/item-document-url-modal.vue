@@ -7,7 +7,7 @@
         <b-input 
                 aria-labelledby="item-document-url-modal-title"
                 ref="item-document-url-input"
-                v-model:value="localUrlLink" />
+                v-model="localUrlLink" />
         <br>
         <b-field
                 :addons="false"
@@ -15,7 +15,7 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model:value="localUrlForcedIframe" />
+                    v-model="localUrlForcedIframe" />
             <help-button
                     :title="$i18n.get('label_document_option_forced_iframe')"
                     :message="$i18n.get('info_document_option_forced_iframe')" />
@@ -29,7 +29,7 @@
                         :aria-minus-label="$i18n.get('label_decrease')"
                         :aria-plus-label="$i18n.get('label_increase')"
                         min="1" 
-                        v-model:value="localUrlIframeWidth"
+                        v-model="localUrlIframeWidth"
                         step="1" />
             </b-field>
             <b-field :label="$i18n.get('label_document_option_iframe_height')">
@@ -37,7 +37,7 @@
                         :aria-minus-label="$i18n.get('label_decrease')"
                         :aria-plus-label="$i18n.get('label_increase')"
                         min="1" 
-                        v-model:value="localUrlIframeHeight"
+                        v-model="localUrlIframeHeight"
                         step="1" />
             </b-field>
         </b-field>
@@ -55,7 +55,7 @@
                 &nbsp;
             <b-switch
                     size="is-small" 
-                    v-model:value="localUrlIsImage" />
+                    v-model="localUrlIsImage" />
             <help-button
                     :title="$i18n.get('label_document_option_is_image')"
                     :message="$i18n.get('info_document_option_is_image')" />

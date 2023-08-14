@@ -27,7 +27,7 @@
                                     extra-classes="tainacan-repository-tooltip"/>
                             <b-input
                                     id="tainacan-text-name"
-                                    v-model:value="form.name"
+                                    v-model="form.name"
                                     @focus="clearErrors('name')"
                                     @blur="updateSlug()"
                                     :disabled="isUpdatingSlug"
@@ -56,7 +56,7 @@
                                     id="tainacan-text-description"
                                     type="textarea"
                                     rows="3"
-                                    v-model:value="form.description"
+                                    v-model="form.description"
                                     @focus="clearErrors('description')"/>
                         </b-field>
 
@@ -67,7 +67,7 @@
                                     <b-switch
                                             id="tainacan-checkbox-allow-insert" 
                                             size="is-small"
-                                            v-model:value="form.allowInsert"
+                                            v-model="form.allowInsert"
                                             true-value="yes"
                                             false-value="no" />
                                     <help-button 
@@ -84,7 +84,7 @@
                                     <b-switch
                                             id="tainacan-checkbox-allow-insert" 
                                             size="is-small"
-                                            v-model:value="form.hierarchical"
+                                            v-model="form.hierarchical"
                                             true-value="yes"
                                             false-value="no" />
                                     <help-button 
@@ -105,9 +105,9 @@
                                     :message="$i18n.getHelperMessage('taxonomies', 'slug')"
                                     extra-classes="tainacan-repository-tooltip"/>
                             <b-input
-                                    @input="updateSlug()"
+                                    @update:model-value="updateSlug()"
                                     id="tainacan-text-slug"
-                                    v-model:value="form.slug"
+                                    v-model="form.slug"
                                     @focus="clearErrors('slug')"
                                     :disabled="isUpdatingSlug"/>
                         </b-field>
@@ -132,7 +132,7 @@
                                         :native-value="wpPostType.slug"
                                         :true-value="wpPostType.slug"
                                         false-value=""
-                                        v-model:value="form.enabledPostTypes"
+                                        v-model="form.enabledPostTypes"
                                         name="enabled_post_types" >
                                         {{ wpPostType.label }}  
                                     </b-checkbox>
@@ -156,7 +156,7 @@
                                     extra-classes="tainacan-repository-tooltip"/>
                             <div class="status-radios">
                                 <b-radio
-                                        v-model:value="form.status"
+                                        v-model="form.status"
                                         v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                                         :key="index"
                                         :native-value="statusOption.slug">
@@ -258,7 +258,7 @@
             </div>
 
             <b-loading 
-                    v-model:active="isLoadingTaxonomy" 
+                    v-model="isLoadingTaxonomy" 
                     :can-cancel="false"/>
 
         </div>

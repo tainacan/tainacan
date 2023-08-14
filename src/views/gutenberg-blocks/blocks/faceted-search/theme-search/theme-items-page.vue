@@ -75,19 +75,20 @@
                             :mobile-modal="false"
                             :disabled="openAdvancedSearch"
                             :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
-                        <b-input
-                                slot="trigger"
-                                size="is-small"
-                                :placeholder="$i18n.get('instruction_search')"
-                                type="search"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
-                                :value="searchQuery"
-                                @input="typeFutureSearch"
-                                @keyup.enter="updateSearch()"
-                                icon-right="magnify"
-                                icon-right-clickable
-                                @icon-right-click="updateSearch()"
-                                :disabled="openAdvancedSearch" />
+                        <template #trigger>
+                            <b-input
+                                    size="is-small"
+                                    :placeholder="$i18n.get('instruction_search')"
+                                    type="search"
+                                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                                    :model-value="searchQuery"
+                                    @update:model-value="typeFutureSearch"
+                                    @keyup.enter="updateSearch()"
+                                    icon-right="magnify"
+                                    icon-right-clickable
+                                    @icon-right-click="updateSearch()"
+                                    :disabled="openAdvancedSearch" />
+                        </template>
                         <b-dropdown-item 
                                 @click="updateSearch()"
                                 :focusable="false">
@@ -98,10 +99,10 @@
                                 custom
                                 :focusable="false">
                             <b-checkbox 
-                                    :value="sentenceMode"
+                                    :model-value="sentenceMode"
                                     :true-value="false"
                                     :false-value="true"
-                                    @input="$eventBusSearch.setSentenceMode($event)">
+                                    @update:model-value="$eventBusSearch.setSentenceMode($event)">
                                 {{ $i18n.get('label_use_search_separated_words') }}
                             </b-checkbox>
                             <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
@@ -170,16 +171,17 @@
                         class="show metadata-options-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            :aria-label="$i18n.get('label_displayed_metadata')"
-                            class="button is-white"
-                            slot="trigger">
-                        <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
-                        <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button
+                                :aria-label="$i18n.get('label_displayed_metadata')"
+                                class="button is-white">
+                            <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
+                            <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                            </span>
+                        </button>
+                    </template>
                     <div class="metadata-options-container">
                     <b-dropdown-item
                             v-for="(column, index) in localDisplayedMetadata"
@@ -188,7 +190,7 @@
                             custom
                             aria-role="listitem">
                         <b-checkbox
-                                v-model:value="column.display"
+                                v-model="column.display"
                                 :native-value="column.display">
                             {{ column.name }}
                         </b-checkbox>
@@ -213,22 +215,23 @@
                     <label class="label">{{ $i18n.get('label_sort') }}</label>
                     <b-dropdown
                             :mobile-modal="true"
-                            @input="onChangeOrder"
+                            @update:model-value="onChangeOrder"
                             aria-role="list"
                             trap-focus>
-                        <button
-                                :aria-label="$i18n.get('label_sorting_direction')"
-                                class="button is-white"
-                                slot="trigger">
-                            <span class="icon is-small gray-icon">
-                                <i 
-                                        :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                        class="tainacan-icon"/>
-                            </span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
+                        <template #trigger>
+                            <button
+                                    :aria-label="$i18n.get('label_sorting_direction')"
+                                    class="button is-white">
+                                <span class="icon is-small gray-icon">
+                                    <i 
+                                            :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                            class="tainacan-icon"/>
+                                </span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
                         <b-dropdown-item
                                 aria-controls="items-list-results"
                                 role="button"
@@ -261,18 +264,19 @@
                         <b-dropdown
                                 id="tainacanSortByDropdown"
                                 :mobile-modal="true"
-                                @input="onChangeOrderBy($event)"
+                                @update:model-value="onChangeOrderBy($event)"
                                 aria-role="list"
                                 trap-focus>
-                            <button
-                                    :aria-label="$i18n.get('label_sorting')"
-                                    class="button is-white"
-                                    slot="trigger">
-                                <span>{{ orderByName }}</span>
-                                <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                                </span>
-                            </button>
+                            <template #trigger>
+                                <button
+                                        :aria-label="$i18n.get('label_sorting')"
+                                        class="button is-white">
+                                    <span>{{ orderByName }}</span>
+                                    <span class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                    </span>
+                                </button>
+                            </template>
                             <template 
                                     v-for="metadatum of sortingMetadata"
                                     :key="metadatum.slug">
@@ -314,19 +318,20 @@
                             position="is-bottom-left"
                             aria-role="list"
                             trap-focus>
-                        <button 
-                                class="button is-white" 
-                                :aria-label="$i18n.get('label_view_mode') + (registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : '')"
-                                slot="trigger">
-                            <span 
-                                    class="gray-icon view-mode-icon"
-                                    v-if="registeredViewModes[viewMode] != undefined"
-                                    v-html="registeredViewModes[viewMode].icon"/>
-                            <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
+                        <template #trigger>
+                            <button 
+                                    class="button is-white" 
+                                    :aria-label="$i18n.get('label_view_mode') + (registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : '')">
+                                <span 
+                                        class="gray-icon view-mode-icon"
+                                        v-if="registeredViewModes[viewMode] != undefined"
+                                        v-html="registeredViewModes[viewMode].icon"/>
+                                <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
                         <template 
                                 v-for="(viewModeOption, index) of enabledViewModes"
                                 :key="index">
@@ -414,7 +419,7 @@
                     role="region"
                     id="filters-modal"     
                     ref="filters-modal"       
-                    v-model:active="isFiltersModalActive"
+                    v-model="isFiltersModalActive"
                     :width="736"
                     :auto-focus="filtersAsModal"
                     :trap-focus="filtersAsModal"
@@ -547,7 +552,7 @@
                     <b-loading 
                             v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
                             :is-full-page="false"
-                            v-model:active="showLoading"/>
+                            v-model="showLoading"/>
 
                     <!-- Custom skeleton templates used by some view modes --> 
                     <div
@@ -634,10 +639,10 @@
                                 </template>
                                 <br>
                                 <b-checkbox 
-                                        :value="sentenceMode"
+                                        :model-value="sentenceMode"
                                         :true-value="false"
                                         :false-value="true"
-                                        @input="$eventBusSearch.setSentenceMode($event); updateSearch();">
+                                        @update:model-value="$eventBusSearch.setSentenceMode($event); updateSearch();">
                                     {{ $i18n.get('label_use_search_separated_words') }}
                                 </b-checkbox>
                             </p>
@@ -838,7 +843,7 @@
             },
             openAdvancedSearch(newValue){
                 if (newValue == false){
-                    this.$eventBusSearch.$emit('closeAdvancedSearch');
+                    this.$eventBusSearchEmitter.emit('closeAdvancedSearch');
                     this.isFiltersModalActive = !this.startWithFiltersHidden;
                 } else {
                     this.isFiltersModalActive = false;
@@ -901,7 +906,7 @@
                 }
             }
 
-            this.$eventBusSearch.$emitter.on('isLoadingItems', isLoadingItems => {
+            this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
 
                 this.isLoadingItems = isLoadingItems;
                 
@@ -915,7 +920,7 @@
                 }));
             });
 
-            this.$eventBusSearch.$emitter.on('hasFiltered', hasFiltered => {
+            this.$eventBusSearchEmitter.on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
             });
             
@@ -930,7 +935,7 @@
                 });
             }
 
-            this.$eventBusSearch.$emitter.on('startSlideshowFromItem', (index) => {
+            this.$eventBusSearchEmitter.on('startSlideshowFromItem', (index) => {
                 let currentQuery = this.$route.query;
                 delete currentQuery['slideshow-from'];
                 this.$router.replace({ query: currentQuery }).catch((error) => this.$console.log(error));
@@ -1464,8 +1469,8 @@
                 if (!this.hideAdvancedSearch)
                     this.$root.$emitter.off('openAdvancedSearch');
                 // $eventBusSearch
-                this.$eventBusSearch.$emitter.off('isLoadingItems');
-                this.$eventBusSearch.$emitter.off('hasFiltered');
+                this.$eventBusSearchEmitter.off('isLoadingItems');
+                this.$eventBusSearchEmitter.off('hasFiltered');
 
             },
         }

@@ -3,127 +3,147 @@
             v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
             class="column available-metadata-types-area" >
 
-        <b-loading v-model:active="isLoadingMetadataTypes"/>
+        <b-loading v-model="isLoadingMetadataTypes"/>
 
         <div class="field">
             <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
-            <draggable 
-                    v-model:value="availableMetadatumList"
-                    :sort="false" 
-                    :group="{ name:'metadata', pull: 'clone', put: false, revertClone: true }"
-                    drag-class="sortable-drag">
-                <div 
-                        :id="metadatum.component"
-                        @click.prevent.once="addMetadatumViaButton(metadatum)"
-                        class="available-metadatum-item"
-                        :class="{ 'highlighted-metadatum' : highlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
-                        v-for="(metadatum, index) in availableMetadatumList"
-                        :key="index">
-                    <span
-                            v-tooltip="{
-                                content: $i18n.get('instruction_click_or_drag_metadatum_create'),
-                                autoHide: true,
-                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                placement: 'auto-start'
-                            }"   
-                            class="icon grip-icon">
-                        <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
-                        <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                height="24px"
-                                viewBox="0 0 24 24"
-                                width="24px"
-                                fill="currentColor">
-                            <path
-                                    d="M0 0h24v24H0V0z"
-                                    fill="transparent"/>
-                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-                        </svg>
-                    </span>
-                    <span class="metadatum-name">
-                        {{ metadatum.name }}
-                        <span 
+            <sortable 
+                    :list="availableMetadatumList"
+                    item-key="id"
+                    :options="{
+                        group: {
+                            name: 'metadata',
+                            pull: 'clone',
+                            put: false,
+                            revertClone: true
+                        },
+                        sort: false,
+                        dragClass: 'sortable-drag'
+                    }">
+                <template #item="{ element: metadatum }">
+                    <div 
+                            :id="metadatum.component"
+                            @click.prevent.once="addMetadatumViaButton(metadatum)"
+                            class="available-metadatum-item"
+                            :class="{ 'highlighted-metadatum' : highlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }">
+                        <span
                                 v-tooltip="{
-                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '', 'metadata-type-preview-tooltip'],
-                                    content: getPreviewTemplateContent(metadatum),
-                                    html: true,
-                                    delay: {
-                                        shown: 0,
-                                        hide: 100,
-                                    },
-                                    placement: 'top',
-                                }"
-                                class="icon preview-help-icon has-text-secondary">
-                            <i class="tainacan-icon tainacan-icon-help"/>
+                                    content: $i18n.get('instruction_click_or_drag_metadatum_create'),
+                                    autoHide: true,
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }"   
+                                class="icon grip-icon">
+                            <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
+                            <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    height="24px"
+                                    viewBox="0 0 24 24"
+                                    width="24px"
+                                    fill="currentColor">
+                                <path
+                                        d="M0 0h24v24H0V0z"
+                                        fill="transparent"/>
+                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                            </svg>
                         </span>
-                    </span>
-                    <span 
-                            class="loading-spinner" 
-                            v-if="highlightedMetadatum == metadatum.name"/>
-                </div>
-            </draggable>
+                        <span class="metadatum-name">
+                            {{ metadatum.name }}
+                            <span 
+                                    v-tooltip="{
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '', 'metadata-type-preview-tooltip'],
+                                        content: getPreviewTemplateContent(metadatum),
+                                        html: true,
+                                        delay: {
+                                            shown: 0,
+                                            hide: 100,
+                                        },
+                                        placement: 'top',
+                                    }"
+                                    class="icon preview-help-icon has-text-secondary">
+                                <i class="tainacan-icon tainacan-icon-help"/>
+                            </span>
+                        </span>
+                        <span 
+                                class="loading-spinner" 
+                                v-if="highlightedMetadatum == metadatum.name"/>
+                    </div>
+                </template>
+            </sortable>
 
-            <draggable
+            <sortable
                     v-if="!isRepositoryLevel" 
-                    v-model:value="availableMetadataSectionsList"
-                    :sort="false" 
-                    :group="{ name:'metadata-sections', pull: 'clone', put: false, revertClone: true }"
-                    drag-class="sortable-drag">
-                <div 
-                        :id="metadataSection.id"
-                        @click.prevent="addMetadataSectionViaButton()"
-                        class="available-metadata-section-item"
-                        v-for="(metadataSection, index) in availableMetadataSectionsList"
-                        :key="index">
-                    <span
-                            v-tooltip="{
-                                content: $i18n.get('instruction_click_or_drag_metadatum_create'),
-                                autoHide: true,
-                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                placement: 'auto-start'
-                            }"   
-                            class="icon grip-icon">
-                        <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
-                        <svg 
-                                xmlns="http://www.w3.org/2000/svg" 
-                                height="24px"
-                                viewBox="0 0 24 24"
-                                width="24px"
-                                fill="currentColor">
-                            <path
-                                    d="M0 0h24v24H0V0z"
-                                    fill="transparent"/>
-                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-                        </svg>
-                    </span>
-                    <span class="metadatum-name">
-                        {{ metadataSection.label }}
-                        <span 
+                    :list="availableMetadataSectionsList"
+                    item-key="id"
+                    :options="{
+                        group: {
+                            name: 'metadata-sections',
+                            pull: 'clone',
+                            put: false,
+                            revertClone: true
+                        },
+                        sort: false,
+                        dragClass: 'sortable-drag'
+                    }">
+                <template #item="{ element: metadataSection }">
+                    <div 
+                            :id="metadataSection.id"
+                            @click.prevent="addMetadataSectionViaButton()"
+                            class="available-metadata-section-item">
+                        <span
                                 v-tooltip="{
-                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '', 'metadata-type-preview-tooltip'],
-                                    content: $i18n.get('info_create_section'),
-                                    html: true,
-                                    delay: {
-                                        shown: 0,
-                                        hide: 100,
-                                    },
-                                    placement: 'top',
-                                }"
-                                class="icon preview-help-icon has-text-secondary">
-                            <i class="tainacan-icon tainacan-icon-help"/>
+                                    content: $i18n.get('instruction_click_or_drag_metadatum_create'),
+                                    autoHide: true,
+                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                    placement: 'auto-start'
+                                }"   
+                                class="icon grip-icon">
+                            <!-- <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-drag"/> -->
+                            <svg 
+                                    xmlns="http://www.w3.org/2000/svg" 
+                                    height="24px"
+                                    viewBox="0 0 24 24"
+                                    width="24px"
+                                    fill="currentColor">
+                                <path
+                                        d="M0 0h24v24H0V0z"
+                                        fill="transparent"/>
+                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                            </svg>
                         </span>
-                    </span>
-                </div>
-            </draggable>
+                        <span class="metadatum-name">
+                            {{ metadataSection.label }}
+                            <span 
+                                    v-tooltip="{
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '', 'metadata-type-preview-tooltip'],
+                                        content: $i18n.get('info_create_section'),
+                                        html: true,
+                                        delay: {
+                                            shown: 0,
+                                            hide: 100,
+                                        },
+                                        placement: 'top',
+                                    }"
+                                    class="icon preview-help-icon has-text-secondary">
+                                <i class="tainacan-icon tainacan-icon-help"/>
+                            </span>
+                        </span>
+                    </div>
+                </template>
+            </sortable>
         </div>
     </div> 
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { Sortable } from "sortablejs-vue3";
 
 export default {
     name: 'MetadataTypesList',
+    components: {
+        Sortable
+    },
     props: {
         isRepositoryLevel: Boolean,
         highlightedMetadatum: String
@@ -172,10 +192,10 @@ export default {
             'getMetadatumTypes'
         ]),
         addMetadatumViaButton(metadatumType) {
-            this.$eventBusMetadataList.onAddMetadatumViaButton(metadatumType);
+            this.$eventBusMetadataList.emit('addMetadatumViaButton', metadatumType);
         },
         addMetadataSectionViaButton() {
-            this.$eventBusMetadataList.onAddMetadataSectionViaButton();
+            this.$eventBusMetadataList.emit('addMetadataSectionViaButton');
         },
         getPreviewTemplateContent(metadatum) {
             return `<div class="metadata-type-preview tainacan-form">
@@ -242,6 +262,7 @@ export default {
             .grip-icon { 
                 color: var(--tainacan-gray3);
                 position: relative;
+                flex-shrink: 0;
             }
             .icon {
                 position: relative;

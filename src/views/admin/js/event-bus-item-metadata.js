@@ -5,7 +5,6 @@ import mitt from 'mitt';
 const emitter = mitt();
 
 export const eventBusItemMetadata = createApp({
-    store,
     data: {
         errors : [],
         conditionalSections: {}
@@ -160,3 +159,4 @@ export const eventBusItemMetadata = createApp({
     }
 });
 eventBusItemMetadata.config.globalProperties.$emitter = emitter;
+eventBusItemMetadata.use(store);

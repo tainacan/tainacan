@@ -10,8 +10,8 @@
         <b-tabs
                 size="is-small"
                 animated
-                @input="fetchSelectedLabels()"
-                v-model:value="activeTab"
+                @update:model-value="fetchSelectedLabels()"
+                v-model="activeTab"
                 :class="{ 'hidden-tabs-section': (shouldBeginWithListExpanded && !hasToDisplaySearchBar) }">
             <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                 
@@ -39,8 +39,8 @@
                             autocomplete="on"
                             :placeholder="metadatum.placeholder ? metadatum.placeholder : ( expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search') )"
                             :aria-label="expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search')"
-                            v-model:value="optionName"
-                            @input="autoComplete"
+                            v-model="optionName"
+                            @update:model-value="autoComplete"
                             @focus="!shouldBeginWithListExpanded && !expandResultsSection ? toggleResultsSection() : null"
                             icon-right="magnify"
                             type="search" />
@@ -101,7 +101,7 @@
                         </template>
                         <b-loading
                                 :is-full-page="false"
-                                v-model:active="isLoadingSearch"/>
+                                v-model="isLoadingSearch"/>
                     </ul>
                     <a
                             v-if="!noMoreSearchPage"
@@ -153,7 +153,7 @@
                         </li>
                         <b-loading
                                 :is-full-page="false"
-                                v-model:active="isCheckboxListLoading"/>
+                                v-model="isCheckboxListLoading"/>
                     </ul>
                     <a
                             v-if="!noMorePage"
@@ -258,7 +258,7 @@
 
                 <b-loading
                         :is-full-page="false"
-                        v-model:active="isColumnLoading"/>
+                        v-model="isColumnLoading"/>
                 
             </b-tab-item>
 
@@ -301,7 +301,7 @@
                     </section>
                     <b-loading
                             :is-full-page="false"
-                            v-model:active="isSelectedTermsLoading"/>
+                            v-model="isSelectedTermsLoading"/>
                 </div>
             </b-tab-item>
         </b-tabs>

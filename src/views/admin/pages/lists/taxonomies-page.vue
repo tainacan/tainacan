@@ -31,24 +31,25 @@
                     <b-dropdown
                             :mobile-modal="true"
                             :disabled="taxonomies.length <= 0 || isLoading"
-                            @input="onChangeOrder"
+                            @update:model-value="onChangeOrder"
                             aria-role="list"
                             trap-focus>
-                        <button
-                                :aria-label="$i18n.get('label_sorting_direction')"
-                                class="button is-white"
-                                slot="trigger">
-                            <span 
-                                    style="margin-top: -2px;"
-                                    class="icon is-small gray-icon">
-                                <i 
-                                        :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                        class="tainacan-icon tainacan-icon-1-125em"/>
-                            </span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
+                        <template #trigger>
+                            <button
+                                    :aria-label="$i18n.get('label_sorting_direction')"
+                                    class="button is-white">
+                                <span 
+                                        style="margin-top: -2px;"
+                                        class="icon is-small gray-icon">
+                                    <i 
+                                            :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                            class="tainacan-icon tainacan-icon-1-125em"/>
+                                </span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
                         <b-dropdown-item
                                 aria-controls="items-list-results"
                                 role="button"
@@ -82,8 +83,8 @@
                     <b-select
                             class="sorting-select"
                             :disabled="taxonomies.length <= 0"
-                            @input="onChangeOrderBy($event)"
-                            :value="orderBy"
+                            @update:model-value="onChangeOrderBy($event)"
+                            :model-value="orderBy"
                             :label="$i18n.get('label_sorting')">
                         <option
                                 v-for="(option, index) in sortingOptions"
@@ -102,7 +103,7 @@
                             size="is-small"
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
                             autocomplete="on"
-                            v-model:value="searchQuery"
+                            v-model="searchQuery"
                             @keyup.enter="searchTaxonomies()"
                             icon-right="magnify"
                             icon-right-clickable
@@ -113,7 +114,7 @@
             <div class="above-subheader">
                 <b-loading
                         :is-full-page="true" 
-                        v-model:active="isLoading" 
+                        v-model="isLoading" 
                         :can-cancel="false"/>
                 <div class="tabs">
                     <ul>
@@ -215,8 +216,8 @@
                                     horizontal 
                                     :label="$i18n.get('label_taxonomies_per_page')">
                                 <b-select
-                                        :value="taxonomiesPerPage"
-                                        @input="onChangePerPage"
+                                        :model-value="taxonomiesPerPage"
+                                        @update:model-value="onChangePerPage"
                                         :disabled="taxonomies.length <= 0">
                                     <option value="12">12</option>
                                     <option value="24">24</option>
@@ -229,7 +230,7 @@
                             <b-pagination
                                     @change="onPageChange"
                                     :total="total"
-                                    v-model:current="page"
+                                    v-model="page"
                                     order="is-centered"
                                     size="is-small"
                                     :per-page="taxonomiesPerPage"

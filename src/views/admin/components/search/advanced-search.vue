@@ -18,8 +18,8 @@
                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
                             :aria-label="$i18n.get('instruction_select_a_metadatum')"
                             :disabled="advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index]"
-                            :value="(advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index] ) ? advancedSearchQuery[searchCriterion.type][searchCriterion.index].key : null"
-                            @input="addMetadatumToAdvancedSearchQuery(
+                            :model-value="(advancedSearchQuery[searchCriterion.type] && advancedSearchQuery[searchCriterion.type][searchCriterion.index] ) ? advancedSearchQuery[searchCriterion.type][searchCriterion.index].key : null"
+                            @update:model-value="addMetadatumToAdvancedSearchQuery(
                                 { 
                                     metadatumId: $event,
                                     type: (metadataAsObject[$event] && metadataAsObject[$event].metadata_type_object) ? metadataAsObject[$event].metadata_type_object.primitive_type : '',
@@ -67,8 +67,8 @@
                     <b-select
                             :loading="isLoadingMetadata"
                             v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index]"
-                            @input="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.metaquery[searchCriterion.index].compare"
+                            @update:model-value="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
+                            :model-value="advancedSearchQuery.metaquery[searchCriterion.index].compare"
                             :placeholder="$i18n.get('label_criterion_to_compare')"
                             :aria-label="$i18n.get('label_criterion_to_compare')">
                         <option 
@@ -80,8 +80,8 @@
                     <b-select
                             :loading="isLoadingMetadata"
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
-                            @input="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
-                            :value="advancedSearchQuery.taxquery[searchCriterion.index].operator"
+                            @update:model-value="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
+                            :model-value="advancedSearchQuery.taxquery[searchCriterion.index].operator"
                             :placeholder="$i18n.get('label_criterion_to_compare')"
                             :aria-label="$i18n.get('label_criterion_to_compare')">
                         <option 
@@ -104,8 +104,8 @@
                                 v-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float'"
                                 type="number"
                                 step="any"
-                                @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                                :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
+                                @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                                :model-value="advancedSearchQuery.metaquery[searchCriterion.index].value"
                                 :placeholder="$i18n.get('label_number_to_search_for')"
                                 :aria-label="$i18n.get('label_number_to_search_for')"
                         />
@@ -121,16 +121,16 @@
                         <b-input
                                 v-else
                                 type="text"
-                                @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                                :value="advancedSearchQuery.metaquery[searchCriterion.index].value"
+                                @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                                :model-value="advancedSearchQuery.metaquery[searchCriterion.index].value"
                                 :placeholder="$i18n.get('label_string_to_search_for')"
                                 :aria-label="$i18n.get('label_string_to_search_for')"
                         />
                     </template>
                     <b-input
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
-                            :value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
-                            @input="addValueToAdvancedSearchQuery($event, searchCriterion)"
+                            :model-value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
+                            @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
                             type="text"
                             :placeholder="$i18n.get('label_string_to_search_for')"
                             :aria-label="$i18n.get('label_string_to_search_for')" />
@@ -212,7 +212,7 @@
 
         <b-loading 
                 :is-full-page="false" 
-                v-model:active="isLoadingMetadata" />
+                v-model="isLoadingMetadata" />
         
         <section
                 v-if="!isLoadingMetadata && metadataAsArray && metadataAsArray.length <= 0"
@@ -625,7 +625,7 @@
                 }
 
                 this.hasUpdatedSearch = false;
-                this.$eventBusSearch.$emit('performAdvancedSearch', this.advancedSearchQuery);
+                this.$eventBusSearchEmitter.emit('performAdvancedSearch', this.advancedSearchQuery);
             },
             getAdvancedSearchQueryCriterionMetadataType(searchCriterion) {
                 if (this.advancedSearchQuery.metaquery[searchCriterion] &&

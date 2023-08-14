@@ -45,8 +45,7 @@
                 </ul>
                 <button 
                         class="swiper-button-prev" 
-                        id="tainacan-filter-tags-prev" 
-                        slot="button-prev">
+                        id="tainacan-filter-tags-prev">
                     <svg
                             width="24"
                             height="24"
@@ -59,8 +58,7 @@
                 </button>
                 <button 
                         class="swiper-button-next" 
-                        id="tainacan-filter-tags-next" 
-                        slot="button-next">
+                        id="tainacan-filter-tags-next">
                     <svg
                             width="24"
                             height="24"

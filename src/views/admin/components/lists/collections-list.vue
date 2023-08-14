@@ -9,7 +9,7 @@
                 <span>
                     <b-checkbox 
                             @click="selectAllCollectionsOnPage()" 
-                            :value="allCollectionsOnPageSelected">{{ $i18n.get('label_select_all_collections_page') }}</b-checkbox>
+                            :model-value="allCollectionsOnPageSelected">{{ $i18n.get('label_select_all_collections_page') }}</b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
@@ -19,15 +19,14 @@
                         id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button> 
-
+                    <template #trigger>
+                        <button class="button is-white">
+                            <span>{{ $i18n.get('label_bulk_actions') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                            </span>
+                        </button> 
+                    </template>
                     <b-dropdown-item
                             id="item-delete-selected-items"
                             @click="deleteSelectedCollections()"
@@ -143,7 +142,7 @@
                                 v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
                                 :class="{ 'is-selecting': isSelectingCollections }"
                                 class="checkbox-cell">
-                            <b-checkbox v-model:value="selectedCollections[index]"/> 
+                            <b-checkbox v-model="selectedCollections[index]"/> 
                         </td>
                         <!-- Status icon -->
                         <td 

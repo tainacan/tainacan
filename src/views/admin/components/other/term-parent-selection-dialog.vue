@@ -33,12 +33,12 @@
                 <div class="parent-term-options">
                     <b-radio 
                             :native-value="false"
-                            v-model:value="hasParent">
+                            v-model="hasParent">
                         {{ $i18n.get('label_no_parent_root_term') }}
                     </b-radio>
                     <b-radio 
                             :native-value="true"
-                            v-model:value="hasParent">
+                            v-model="hasParent">
                         {{ $i18n.get('instruction_select_a_parent_term') }}
                     </b-radio>
                     <b-autocomplete
@@ -47,10 +47,10 @@
                             :data="parentTerms"
                             field="name"
                             clearable
-                            v-model:value="parentTermName"
+                            v-model="parentTermName"
                             @select="onSelectParentTerm($event)"
                             :loading="isFetchingParentTerms"
-                            @input="fetchParentTerms"
+                            @update:model-value="fetchParentTerms"
                             :disabled="!hasParent"
                             check-infinite-scroll
                             :append-to-body="true"

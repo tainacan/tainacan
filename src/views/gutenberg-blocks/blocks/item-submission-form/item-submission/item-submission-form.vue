@@ -2,7 +2,7 @@
     <div v-if="collectionId">
         <b-loading
                 :is-full-page="false"
-                v-model:active="isLoading"
+                v-model="isLoading"
                 :can-cancel="false"/>
 
         <template v-if="couldLoadCollection && collecionAllowsItemSubmission">
@@ -50,7 +50,7 @@
                                 <b-upload
                                         expanded
                                         v-if="!form.document"
-                                        v-model:value="form.document"
+                                        v-model="form.document"
                                         drag-drop>
                                     <section class="section">
                                         <div class="content has-text-centered">
@@ -85,21 +85,21 @@
                             <div v-if="form.document_type == 'text'">
                                 <b-input
                                         type="textarea"
-                                        v-model:value="form.document" />
+                                        v-model="form.document" />
                                 <br v-if="hasMoreThanOneDocumentTypeOption">
                             </div>
                             <div v-if="form.document_type == 'url'">
                                 <b-input
                                         :placeholder="$i18n.get('instruction_insert_url')"
                                         type="url"
-                                        v-model:value="form.document" />
+                                        v-model="form.document" />
                                 <b-field
                                         :addons="false"
                                         :label="$i18n.get('label_document_option_forced_iframe')">
                                         &nbsp;
                                     <b-switch
                                             size="is-small"
-                                            v-model:value="form.document_options.forced_iframe" />
+                                            v-model="form.document_options.forced_iframe" />
                                     <help-button
                                             :title="$i18n.get('label_document_option_forced_iframe')"
                                             :message="$i18n.get('info_document_option_forced_iframe')" />
@@ -114,7 +114,7 @@
                                                 :aria-minus-label="$i18n.get('label_decrease')"
                                                 :aria-plus-label="$i18n.get('label_increase')"
                                                 min="1"
-                                                v-model:value="form.document_options.forced_iframe_width"
+                                                v-model="form.document_options.forced_iframe_width"
                                                 step="1" />
                                     </b-field>
                                     <b-field
@@ -124,7 +124,7 @@
                                                 :aria-minus-label="$i18n.get('label_decrease')"
                                                 :aria-plus-label="$i18n.get('label_increase')"
                                                 min="1"
-                                                v-model:value="form.document_options.forced_iframe_height"
+                                                v-model="form.document_options.forced_iframe_height"
                                                 step="1" />
                                     </b-field>
                                 </b-field>
@@ -141,7 +141,7 @@
                                         &nbsp;
                                     <b-switch
                                             size="is-small"
-                                            v-model:value="form.document_options.is_image" />
+                                            v-model="form.document_options.is_image" />
                                     <help-button
                                             :title="$i18n.get('label_document_option_is_image')"
                                             :message="$i18n.get('info_document_option_is_image')" />
@@ -226,7 +226,7 @@
                             <b-switch
                                     id="tainacan-checkbox-show-thumbnail-input"
                                     size="is-small"
-                                    v-model:value="showThumbnailInput">
+                                    v-model="showThumbnailInput">
                                 {{ $i18n.get('label_upload_custom_thumbnail') }}
                             </b-switch>
                         </div>
@@ -238,7 +238,7 @@
                         <b-upload
                                 expanded
                                 v-if="!form.thumbnail"
-                                v-model:value="form.thumbnail"
+                                v-model="form.thumbnail"
                                 drag-drop>
                             <section class="section">
                                 <div class="content has-text-centered">
@@ -311,7 +311,7 @@
                             id="tainacan-item-metadatum_id-attachments">
                         <b-upload
                                 expanded
-                                v-model:value="form.attachments"
+                                v-model="form.attachments"
                                 multiple
                                 drag-drop>
                             <section class="section">
@@ -383,7 +383,7 @@
                                     size="is-small"
                                     true-value="open"
                                     false-value="closed"
-                                    v-model:value="form.comment_status">
+                                    v-model="form.comment_status">
                                 {{ $i18n.get('label_allow_comments') }}
                             </b-switch>
                         </div>
@@ -420,7 +420,7 @@
                 <component
                         v-if="metadataSections.length"
                         :is="showSteppedLayout ? 'b-steps' : 'div'" 
-                        v-model:value="activeSectionStep"
+                        v-model="activeSectionStep"
                         :has-navigation="false"
                         type="is-secondary"
                         mobile-mode="compact"
@@ -588,7 +588,7 @@
                         class="terms-agreement-confirmation-section">
                     <b-field>
                         <b-checkbox
-                                v-model:value="userHasAgreedToTerms"
+                                v-model="userHasAgreedToTerms"
                                 size="is-medium">
                             <span v-html="termsAgreementMessage" />
                         </b-checkbox>

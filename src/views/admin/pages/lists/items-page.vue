@@ -26,7 +26,7 @@
             </h3>
             <!-- <b-loading
                     :is-full-page="false"
-                    v-model:active="isLoadingMetadata"/> -->
+                    v-model="isLoadingMetadata"/> -->
                         <!-- Button for hiding filters -->
             <button 
                     aria-controls="filters-modal"
@@ -65,19 +65,20 @@
                             :mobile-modal="false"
                             :disabled="openAdvancedSearch"
                             :triggers="hasSearchByMoreThanOneWord ? ['click','contextmenu','focus'] : []">
-                        <b-input
-                                slot="trigger"
-                                size="is-small"
-                                :placeholder="$i18n.get('instruction_search')"
-                                type="search"
-                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
-                                :value="searchQuery"
-                                @input="typeFutureSearch"
-                                @keyup.enter="updateSearch()"
-                                icon-right="magnify"
-                                icon-right-clickable
-                                @icon-right-click="updateSearch()"
-                                :disabled="openAdvancedSearch" />
+                        <template #trigger>
+                            <b-input
+                                    size="is-small"
+                                    :placeholder="$i18n.get('instruction_search')"
+                                    type="search"
+                                    :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
+                                    :model-value="searchQuery"
+                                    @update:model-value="typeFutureSearch"
+                                    @keyup.enter="updateSearch()"
+                                    icon-right="magnify"
+                                    icon-right-clickable
+                                    @icon-right-click="updateSearch()"
+                                    :disabled="openAdvancedSearch" />
+                        </template>
                         <b-dropdown-item 
                                 @click="updateSearch()"
                                 :focusable="false">
@@ -88,10 +89,10 @@
                                 custom
                                 :focusable="false">
                             <b-checkbox 
-                                    :value="sentenceMode"
+                                    :model-value="sentenceMode"
                                     :true-value="false"
                                     :false-value="true"
-                                    @input="$eventBusSearch.setSentenceMode($event)">
+                                    @update:model-value="$eventBusSearch.setSentenceMode($event)">
                                 {{ $i18n.get('label_use_search_separated_words') }}
                             </b-checkbox>
                             <small class="is-small help">{{ $i18n.get('info_use_search_separated_words') }}</small>
@@ -151,16 +152,15 @@
                         id="item-creation-options-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            class="button is-secondary"
-                            slot="trigger">
-                        <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
-                        <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                        </span>
-                    </button>
-
+                    <template #trigger>
+                        <button class="button is-secondary">
+                            <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
+                            <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item 
                             v-if="!isRepositoryLevel"
                             aria-role="listitem">
@@ -237,16 +237,17 @@
                         class="show metadata-options-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            :aria-label="$i18n.get('label_displayed_metadata')"
-                            class="button is-white"
-                            slot="trigger">
-                        <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
-                        <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button
+                                :aria-label="$i18n.get('label_displayed_metadata')"
+                                class="button is-white">
+                            <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
+                            <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </template>
                     <div class="metadata-options-container">
                         <b-dropdown-item
                                 v-for="(column, index) in localDisplayedMetadata"
@@ -255,7 +256,7 @@
                                 custom
                                 aria-role="listitem">
                             <b-checkbox
-                                    v-model:value="column.display"
+                                    v-model="column.display"
                                     :native-value="column.display">
                                 {{ column.name }}
                             </b-checkbox>
@@ -278,28 +279,29 @@
                     <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                     <b-dropdown
                             :mobile-modal="true"
-                            @input="onChangeOrder"
+                            @update:model-value="onChangeOrder"
                             aria-role="list"
                             trap-focus>
-                        <button
-                                :aria-label="$i18n.get('label_sorting_direction')"
-                                class="button is-white"
-                                slot="trigger"
-                                style="padding-right: 3px !important;">
-                            <span class="icon is-small gray-icon">
-                                <i 
-                                        :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                        class="tainacan-icon"/>
-                            </span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
+                        <template #trigger>
+                            <button
+                                    :aria-label="$i18n.get('label_sorting_direction')"
+                                    class="button is-white"
+                                    style="padding-right: 3px !important;">
+                                <span class="icon is-small gray-icon">
+                                    <i 
+                                            :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                            class="tainacan-icon"/>
+                                </span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
                         <b-dropdown-item
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': order == 'DESC' }"
-                                :value="'DESC'"
+                                :model-value="'DESC'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
@@ -310,7 +312,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': order == 'ASC' }"
-                                :value="'ASC'"
+                                :model-value="'ASC'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
@@ -325,18 +327,19 @@
                     </span>
                     <b-dropdown
                             :mobile-modal="true"
-                            @input="onChangeOrderBy($event)"
+                            @update:model-value="onChangeOrderBy($event)"
                             aria-role="list"
                             trap-focus>
-                        <button
-                                :aria-label="$i18n.get('label_sorting')"
-                                class="button is-white"
-                                slot="trigger">
-                            <span>{{ orderByName }}</span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
+                        <template #trigger>
+                            <button
+                                    :aria-label="$i18n.get('label_sorting')"
+                                    class="button is-white">
+                                <span>{{ orderByName }}</span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
                         <template 
                                 v-for="metadatum of sortingMetadata"
                                 :key="metadatum.slug">
@@ -373,33 +376,34 @@
                             :aria-label="$i18n.get('label_view_mode')"
                             aria-role="list"
                             trap-focus>
-                        <button
-                                :aria-label="$i18n.get('label_view_mode')"
-                                class="button is-white"
-                                slot="trigger">
-                            <span class="view-mode-icon icon is-small gray-icon">
-                                <i 
-                                        v-if="adminViewMode !== 'map'"
-                                        :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
-                                                'tainacan-icon-viewcards' : adminViewMode == 'cards',
-                                                'tainacan-icon-viewminiature' : adminViewMode == 'grid',
-                                                'tainacan-icon-viewrecords' : adminViewMode == 'records',
-                                                'tainacan-icon-viewlist' : adminViewMode == 'list',
-                                                'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
-                                        class="tainacan-icon tainacan-icon-1-25em"/>
-                                <svg
-                                        v-else
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        style="fill: var(--tainacan-info-color)">
-                                    <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
-                                </svg>
-                            </span>
-                            &nbsp;&nbsp;&nbsp;{{ adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table') }}
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
+                        <template #trigger>
+                            <button
+                                    :aria-label="$i18n.get('label_view_mode')"
+                                    class="button is-white">
+                                <span class="view-mode-icon icon is-small gray-icon">
+                                    <i 
+                                            v-if="adminViewMode !== 'map'"
+                                            :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
+                                                    'tainacan-icon-viewcards' : adminViewMode == 'cards',
+                                                    'tainacan-icon-viewminiature' : adminViewMode == 'grid',
+                                                    'tainacan-icon-viewrecords' : adminViewMode == 'records',
+                                                    'tainacan-icon-viewlist' : adminViewMode == 'list',
+                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
+                                            class="tainacan-icon tainacan-icon-1-25em"/>
+                                    <svg
+                                            v-else
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            style="fill: var(--tainacan-info-color)">
+                                        <path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
+                                    </svg>
+                                </span>
+                                &nbsp;&nbsp;&nbsp;{{ adminViewMode != undefined ? $i18n.get('label_' + adminViewMode) : $i18n.get('label_table') }}
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
                         <b-dropdown-item 
                                 aria-controls="items-list-results"
                                 role="button"
@@ -513,7 +517,7 @@
                 role="region"
                 id="filters-modal"     
                 ref="filters-modal"       
-                v-model:active="isFiltersModalActive"
+                v-model="isFiltersModalActive"
                 :width="736"
                 animation="slide-menu"
                 trap-focus
@@ -587,7 +591,7 @@
                     <b-loading
                             v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
                             :is-full-page="false"
-                            :active="showLoading"/>
+                            :model-value="showLoading"/>
 
                     <!-- Custom skeleton templates used by some view modes -->
                     <div
@@ -685,10 +689,10 @@
                             </template>
                             <br>
                             <b-checkbox 
-                                    :value="sentenceMode"
+                                    :model-value="sentenceMode"
                                     :true-value="false"
                                     :false-value="true"
-                                    @input="$eventBusSearch.setSentenceMode($event); updateSearch();">
+                                    @update:model-value="$eventBusSearch.setSentenceMode($event); updateSearch();">
                                 {{ $i18n.get('label_use_search_separated_words') }}
                             </b-checkbox>
                         </p>
@@ -816,6 +820,152 @@
             }
         },
         watch: {
+            '$route': {
+                handler(to, from) {
+
+                    // Should set Collection ID from URL only when in admin.
+                    if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
+                        this.$eventBusSearch.setCollectionId( !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId) );
+                    
+                    // Fills the URL with appropriate default values in case a query is not passed
+                    if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
+                        
+                        // Items Per Page
+                        if (this.$route.query.perpage == undefined || to.params.collectionId != from.params.collectionId) {
+                            let perPageKey = (this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page');
+                            let perPageValue = this.$userPrefs.get(perPageKey);
+
+                            if (perPageValue)
+                                this.$route.query.perpage = perPageValue;
+                            else {
+                                this.$route.query.perpage = 12;
+                                this.$userPrefs.set(perPageKey, 12);
+                            }
+                        }    
+                        
+                        // Page
+                        if (this.$route.query.paged == undefined || to.params.collectionId != from.params.collectionId)
+                            this.$route.query.paged = 1;
+                        
+                        // Order (ASC, DESC)
+                        if (this.$route.query.order == undefined || to.params.collectionId != from.params.collectionId) {
+                            let orderKey = (this.collectionId != undefined ? 'order_' + this.collectionId : 'order');
+                            let orderValue = this.$userPrefs.get(orderKey) ? this.$userPrefs.get(orderKey) : this.defaultOrder;
+                            
+                            if (orderValue)
+                                this.$route.query.order = orderValue;
+                            else {
+                                this.$route.query.order = 'DESC';
+                                this.$userPrefs.set(orderKey, 'DESC');
+                            }
+                        }
+                        
+                        // Order By (required extra work to deal with custom metadata ordering)
+                        if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
+                            let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
+                            let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
+                        
+                            if (orderBy && orderBy != 'name') {
+                            
+                                // Previously was stored as a metadata object, now it is a orderby object
+                                if (orderBy.slug || typeof orderBy == 'string')
+                                    orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
+
+                                if (orderBy.orderby)
+                                    Object.keys(orderBy).forEach((paramKey) => {
+                                        this.$route.query[paramKey] = orderBy[paramKey];
+                                    });
+                                else
+                                    this.$route.query.orderby = 'date'
+                                
+                            } else {
+                                this.$route.query.orderby = 'date';
+                                this.$userPrefs.set(orderByKey, { 
+                                    slug: 'creation_date',
+                                    name: this.$i18n.get('label_creation_date')
+                                }).catch(() => { });
+                            }
+                        } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
+                            this.$route.query.orderby = 'date'
+                        }
+
+                        // Theme View Modes
+                        if ((this.$route.name == null || this.$route.name == undefined ) && 
+                            this.$route.name != 'CollectionItemsPage' && this.$route.name != 'ItemsPage' &&
+                            (this.$route.query.view_mode == undefined || to.params.collectionId != from.params.collectionId)
+                        ) {
+                            
+                            let viewModeKey = (this.collectionId != undefined ? 'view_mode_' + this.collectionId : 'view_mode');
+                            let viewModeValue = this.$userPrefs.get(viewModeKey);
+
+                            if (viewModeValue)
+                                this.$route.query.view_mode = viewModeValue;
+                            else {
+                                this.$route.query.view_mode = 'table';
+                                this.$userPrefs.set(viewModeKey, 'table');
+                            }
+                        }
+
+                        // Emit slideshow-from to start this view mode from index
+                        if (this.$route.query.view_mode != 'slideshow' && this.$route.query['slideshow-from'] !== null && this.$route.query['slideshow-from'] !== undefined && this.$route.query['slideshow-from'] !== false)
+                            this.$eventBusSearchEmitter.emit('startSlideshowFromItem', this.$route.query['slideshow-from']);
+
+                        // Admin View Modes
+                        if (this.$route.name != null && this.$route.name != undefined  && 
+                            (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') &&
+                            (this.$route.query.admin_view_mode == undefined || to.params.collectionId != from.params.collectionId)
+                        ) {
+                            let adminViewModeKey = (this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode');
+                            let adminViewModeValue = this.$userPrefs.get(adminViewModeKey);
+
+                            if (adminViewModeValue)
+                                this.$route.query.admin_view_mode = adminViewModeValue;
+                            else {
+                                this.$route.query.admin_view_mode = 'table';
+                                this.$userPrefs.set(adminViewModeKey, 'table');
+                            }
+                        }
+                        
+                        // Advanced Search
+                        if (this.$route.query && this.$route.query.advancedSearch){
+                            this.$store.dispatch('search/set_advanced_query', this.$route.query);
+                        } else {
+                            this.$store.dispatch('search/set_postquery', this.$route.query);
+                        }
+                        
+                        // Checks current metaqueries and taxqueries to alert filters that should reload
+                        // For some reason, this process is not working accessing to.query, so we need to check the path string. 
+                        const oldQueryString = from.fullPath.replace(from.path + '?', '');
+                        const newQueryString = to.fullPath.replace(from.path + '?', '');
+                        
+                        const oldQueryArray = oldQueryString.split('&');
+                        const newQueryArray = newQueryString.split('&');
+
+                        const oldMetaQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
+                        const newMetaQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
+                        const oldTaxQueryArray  = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                        const newTaxQueryArray  = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                        const oldStatusArray    = oldQueryArray.filter(queryItem => queryItem.startsWith('status'));
+                        const newStatusArray    = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
+                        const oldSearchQuery    = oldQueryArray.filter(queryItem => queryItem.startsWith('search'));
+                        const newSearchQuery    = newQueryArray.filter(queryItem => queryItem.startsWith('search'));
+
+                        if (
+                            JSON.stringify(oldMetaQueryArray) != JSON.stringify(newMetaQueryArray) ||
+                            JSON.stringify(oldTaxQueryArray)  != JSON.stringify(newTaxQueryArray) ||
+                            JSON.stringify(oldStatusArray)    != JSON.stringify(newStatusArray) ||
+                            JSON.stringify(oldSearchQuery)    != JSON.stringify(newSearchQuery)
+                        ) {
+                            this.$eventBusSearchEmitter.emit('hasToReloadFacets', true);
+                        }
+                        
+                        // Finally, loads items
+                        if (to.fullPath != from.fullPath)
+                            this.$eventBusSearch.loadItems();
+                    }
+                },
+                deep: true
+            },
             displayedMetadata: {
                 handler() {
                     this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
@@ -824,7 +974,7 @@
             },
             openAdvancedSearch(newValue) {
                 if (newValue == false){
-                    this.$eventBusSearch.$emit('closeAdvancedSearch');
+                    this.$eventBusSearchEmitter.emit('closeAdvancedSearch');
                     this.futureSearchQuery = '';
                     this.isFiltersModalActive = true;
                 } else {
@@ -851,7 +1001,7 @@
             this.$eventBusSearch.setCollectionId(this.collectionId);
             this.$eventBusSearch.updateStoreFromURL();
 
-            this.$eventBusSearch.$emitter.on('isLoadingItems', isLoadingItems => {
+            this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
                 
                 if (isLoadingItems != this.isLoadingItems && this.$refs['items-page-container'] && this.$refs['search-control']) {
 
@@ -864,7 +1014,7 @@
                 this.isLoadingItems = isLoadingItems;
             });
 
-            this.$eventBusSearch.$emitter.on('hasFiltered', hasFiltered => {
+            this.$eventBusSearchEmitter.on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
             });
             
@@ -1402,8 +1552,8 @@
                 // $root
                 this.$root.$emitter.off('openAdvancedSearch');
                 // $eventBusSearch
-                this.$eventBusSearch.$emitter.off('isLoadingItems');
-                this.$eventBusSearch.$emitter.off('hasFiltered');
+                this.$eventBusSearchEmitter.off('isLoadingItems');
+                this.$eventBusSearchEmitter.off('hasFiltered');
             }
         }
     }
