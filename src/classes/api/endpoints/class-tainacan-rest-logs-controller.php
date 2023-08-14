@@ -28,7 +28,7 @@ class REST_Logs_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::READABLE)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<log_id>[\d]+)',
@@ -37,6 +37,12 @@ class REST_Logs_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'get_item_permissions_check'),
+					'args'				  => array(
+						'log_id' => array(
+							'description' => __( 'Log ID', 'tainacan' ),
+							'required' => true,
+						),
+					)
 				),
 				'schema'                  => [$this, 'get_schema']
 			)
@@ -47,9 +53,17 @@ class REST_Logs_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					'args'                => array_merge(
+						array(
+							'collection_id' => array(
+								'description' => __( 'Collection ID', 'tainacan' ),
+								'required' => true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/item/(?P<item_id>[\d]+)/' . $this->rest_base,
@@ -58,9 +72,17 @@ class REST_Logs_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					'args'                => array_merge(
+						array(
+							'item_id' => array(
+								'description' => __( 'Item ID', 'tainacan' ),
+								'required' => true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/filter/(?P<filter_id>[\d]+)/' . $this->rest_base,
@@ -69,9 +91,17 @@ class REST_Logs_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					'args'                => array_merge(
+						array(
+							'filter_id' => array(
+								'description' => __( 'Filter ID', 'tainacan' ),
+								'required' => true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/metadatum/(?P<metadatum_id>[\d]+)/' . $this->rest_base,
@@ -80,9 +110,17 @@ class REST_Logs_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					'args'                => array_merge(
+						array(
+							'metadatum_id' => array(
+								'description' => __( 'Metadatum ID', 'tainacan' ),
+								'required' => true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/taxonomy/(?P<taxonomy_id>[\d]+)/' . $this->rest_base,
@@ -91,9 +129,17 @@ class REST_Logs_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					'args'                => array_merge(
+						array(
+							'taxonomy_id' => array(
+								'description' => __( 'Taxonomy ID', 'tainacan' ),
+								'required' => true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/term/(?P<term_id>[\d]+)/' . $this->rest_base,
@@ -102,9 +148,17 @@ class REST_Logs_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					'args'                => array_merge(
+						array(
+							'term_id' => array(
+								'description' => __( 'Term ID', 'tainacan' ),
+								'required' => true,
+							),
+						),
+						$this->get_endpoint_args_for_item_schema( \WP_REST_Server::READABLE)
+					)
 				),
-				'schema'                  => [$this, 'get_schema']
+				'schema'                  => [$this, 'get_list_schema']
 			)
 		);
 	}
@@ -334,11 +388,14 @@ class REST_Logs_Controller extends REST_Controller {
 	 */
 	public function get_endpoint_args_for_item_schema( $method = null ) {
 		$endpoint_args = [];
-		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args = array_merge(
-                $endpoint_args,
-                parent::get_wp_query_params()
-            );
+		
+		switch ( $method ) {
+			case \WP_REST_Server::READABLE:
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					parent::get_wp_query_params()
+				);
+			break;
 		}
 
 		return $endpoint_args;
@@ -348,7 +405,8 @@ class REST_Logs_Controller extends REST_Controller {
 		$schema = [
 			'$schema'  => 'http://json-schema.org/draft-04/schema#',
 			'title' => 'log',
-			'type' => 'object'
+			'type' => 'object',
+			'tags' => [ $this->rest_base ]
 		];
 
 		$main_schema = parent::get_repository_schema( $this->logs_repository );

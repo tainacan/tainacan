@@ -6,7 +6,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--tainacan-block-gray4, #555758); }
+    color: var(--tainacan-block-gray4, #505253); }
 @-webkit-keyframes skeleton-animation {
   0% {
     opacity: 1.0; }
@@ -60,7 +60,7 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      background-color: var(--tainacan-block-gray5, #454647); }
+      background-color: var(--tainacan-block-gray5, #373839); }
       .wp-block-tainacan-facets-list .facets-collection-header .collection-name h3 {
         color: white;
         text-decoration: none;
@@ -121,7 +121,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+    border-bottom: 1px solid var(--tainacan-block-gray3, #a5a5a5);
     padding: 1.00em 0.5em 0.75em 0.5em;
     box-sizing: border-box; }
     @media only screen and (max-width: 768px) {
@@ -147,7 +147,7 @@
       background: transparent;
       cursor: pointer; }
       .wp-block-tainacan-facets-list .facets-search-bar button svg {
-        fill: var(--tainacan-block-gray3, #cbcbcb);
+        fill: var(--tainacan-block-gray3, #a5a5a5);
         transition: fill 0.4s ease; }
       .wp-block-tainacan-facets-list .facets-search-bar button:hover svg {
         fill: #545758; }
@@ -160,13 +160,13 @@
         margin-right: 0em;
         padding: 0; }
         .wp-block-tainacan-facets-list .facets-search-bar button.next-button svg {
-          fill: var(--tainacan-block-primary, #298596); }
+          fill: var(--tainacan-block-primary, #187181); }
       .wp-block-tainacan-facets-list .facets-search-bar button.previous-button {
         margin-left: auto;
         margin-right: 1em;
         padding: 0; }
         .wp-block-tainacan-facets-list .facets-search-bar button.previous-button svg {
-          fill: var(--tainacan-block-primary, #298596); }
+          fill: var(--tainacan-block-primary, #187181); }
       .wp-block-tainacan-facets-list .facets-search-bar button[disabled] svg {
         fill: var(--tainacan-block-gray1, #f2f2f2);
         cursor: not-allowed; }
@@ -180,7 +180,7 @@
       transition: border-color 0.7s ease, width 0.5s ease-in; }
       .wp-block-tainacan-facets-list .facets-search-bar input:focus, .wp-block-tainacan-facets-list .facets-search-bar input:active, .wp-block-tainacan-facets-list .facets-search-bar input:hover {
         width: 100%;
-        border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
+        border: 1px solid var(--tainacan-block-gray3, #a5a5a5);
         box-shadow: none; }
   .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item {
     display: flex;
@@ -188,7 +188,7 @@
     .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item button {
       position: absolute !important;
       background-color: rgba(255, 255, 255, 0.75);
-      color: var(--tainacan-block-gray5, #454647);
+      color: var(--tainacan-block-gray5, #373839);
       padding: 2px;
       margin-left: 5px;
       min-width: 14px;
@@ -206,12 +206,12 @@
       opacity: 1;
       right: -8px;
       top: -8px;
-      border: 1px solid var(--tainacan-block-gray3, #cbcbcb);
-      border-radius: 12px;
+      border: 1px solid var(--tainacan-block-gray3, #a5a5a5);
+      border-radius: 100em;
       transition: opacity linear 0.15s, right linear 0.15s; }
     .wp-block-tainacan-facets-list ul.facets-list-edit li.facet-list-item:hover button:hover {
       background-color: white !important;
-      border: 1px solid var(--tainacan-block-gray3, #cbcbcb) !important; }
+      border: 1px solid var(--tainacan-block-gray3, #a5a5a5) !important; }
   .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid,
   .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid {
     padding: 0 2em;
@@ -374,7 +374,7 @@
         text-decoration: none; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-grid li.facet-list-item svg,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-grid li.facet-list-item svg {
-        fill: var(--tainacan-block-gray4, #555758);
+        fill: var(--tainacan-block-gray4, #505253);
         margin-left: auto;
         overflow: visible; }
   .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list,
@@ -526,7 +526,7 @@
         margin-right: 20px; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item svg,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-list li.facet-list-item svg {
-        fill: var(--tainacan-block-gray4, #555758);
+        fill: var(--tainacan-block-gray4, #505253);
         margin-left: auto;
         overflow: visible; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-list li.facet-list-item .facet-label-and-count,
@@ -581,7 +581,7 @@
           font-style: italic;
           font-size: 0.875em;
           margin: 0;
-          color: var(--tainacan-block-gray3, #cbcbcb); }
+          color: var(--tainacan-block-gray3, #a5a5a5); }
   .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud,
   .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud {
     padding: 0;
@@ -611,7 +611,7 @@
         margin-right: 20px; }
       .wp-block-tainacan-facets-list ul.facets-list.facets-layout-cloud li.facet-list-item svg,
       .wp-block-tainacan-facets-list ul.facets-list-edit.facets-layout-cloud li.facet-list-item svg {
-        fill: var(--tainacan-block-gray4, #555758);
+        fill: var(--tainacan-block-gray4, #505253);
         margin-left: auto;
         overflow: visible;
         margin-bottom: -12px; }
@@ -647,22 +647,22 @@
     margin: 12px auto;
     padding: 0.2em 0.25em;
     display: block;
-    background: var(--tainacan-block-primary, #298596);
+    background: var(--tainacan-block-primary, #187181);
     border: none;
     height: 24px;
     width: 24px;
     cursor: pointer; }
     .wp-block-tainacan-facets-list .show-more-button[disabled] {
-      background-color: var(--tainacan-block-gray3, #cbcbcb); }
+      background-color: var(--tainacan-block-gray3, #a5a5a5); }
     .wp-block-tainacan-facets-list .show-more-button i > svg {
       fill: white; }
   .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a {
-    color: var(--tainacan-block-gray5, #454647); }
+    color: var(--tainacan-block-gray5, #373839); }
     .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a:hover, .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a:focus, .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a:hover .facet-item-count, .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a:focus .facet-item-count {
-      color: var(--tainacan-block-primary, #298596); }
+      color: var(--tainacan-block-primary, #187181); }
     .wp-block-tainacan-facets-list:not(.has-text-color) li.facet-list-item a .facet-item-count {
       opacity: 1.0;
-      color: var(--tainacan-block-gray3, #cbcbcb); }
+      color: var(--tainacan-block-gray3, #a5a5a5); }
 
 .child-reveal-enter-active {
   overflow: hidden;

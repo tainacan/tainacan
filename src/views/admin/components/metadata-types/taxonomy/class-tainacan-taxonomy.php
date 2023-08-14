@@ -23,7 +23,8 @@ class Taxonomy extends Metadata_Type {
 			'allow_new_terms' => 'no',
 			'link_filtered_by_collections' => [],
 			'input_type' => 'tainacan-taxonomy-radio',
-			'hide_hierarchy_path' => 'no'
+			'hide_hierarchy_path' => 'no',
+			'do_not_dispaly_term_as_link' => 'no',
 		]);
 
 		$this->set_form_component('tainacan-form-taxonomy');
@@ -106,6 +107,10 @@ class Taxonomy extends Metadata_Type {
 			'hide_hierarchy_path' => [
 				'title' => __( 'Hide hierarchy path', 'tainacan' ),
 				'description' => __( 'Display only the current child term when showing values that belong to a term hierarchy.', 'tainacan' ),
+			],
+			'do_not_dispaly_term_as_link' => [
+				'title' => __( 'Do not display term as link', 'tainacan' ),
+				'description' => __( 'Do not show terms page link in the term name.', 'tainacan' ),
 			]
 		];
 	}
@@ -167,6 +172,7 @@ class Taxonomy extends Metadata_Type {
 						break;
 
 						case 'allow_new_terms':
+						case 'do_not_dispaly_term_as_link':
 							if ($option_value == 'yes')
 								$readable_option_value = __('Yes', 'tainacan');
 							else if ($option_value == 'no')
@@ -403,31 +409,37 @@ class Taxonomy extends Metadata_Type {
 
 	private function term_to_html($term) {
 		$collections = $this->get_option( 'link_filtered_by_collections' );
+		$do_not_display_term_as_link = $this->get_option('do_not_dispaly_term_as_link') == 'yes';
+
 		if ( !empty( $collections ) ) {
 			$return = '';
 			$id = $term->get_id();
 
 			if ( $id ) {
-				$link = get_term_link( (int) $id );
-				if (is_string($link)) {
-					$meta_query = [
-						'metaquery' => [
-							[
-								'key' => 'collection_id',
-								'compare' => 'IN',
-								'value' => $collections
+				if ( $do_not_display_term_as_link )
+					$return = $term->get_name();
+				else {
+					$link = get_term_link( (int) $id );
+					if (is_string($link)) {
+						$meta_query = [
+							'metaquery' => [
+								[
+									'key' => 'collection_id',
+									'compare' => 'IN',
+									'value' => $collections
+								]
 							]
-						]
-					];
-					$link = $link . '?' . http_build_query( $meta_query );
-					$return = "<a data-linkto='term' data-id='$id' href='$link'>";
-					$return.= $term->get_name();
-					$return .= "</a>";
+						];
+						$link = $link . '?' . http_build_query( $meta_query );
+						$return = "<a data-linkto='term' data-id='$id' href='$link'>";
+						$return.= $term->get_name();
+						$return .= "</a>";
+					}
 				}
 			}
 			return $return;
 		}
-		return $term->_toHtml();
+		return $do_not_display_term_as_link ? $term->get_name() : $term->_toHtml();
 	}
 
 	public function _toArray() {
@@ -438,7 +450,7 @@ class Taxonomy extends Metadata_Type {
 			$term_taxonomy = $this->get_taxonomy();
 
 			$array['options']['taxonomy'] = \Tainacan\Repositories\Taxonomies::get_instance()->get_db_identifier_by_id( $array['options']['taxonomy_id'] );
-			$array['options']['hierarchical'] = $term_taxonomy->get_hierarchical();
+			$array['options']['hierarchical'] = $term_taxonomy == false ? true : $term_taxonomy->get_hierarchical();
 		}
 		return $array;
 

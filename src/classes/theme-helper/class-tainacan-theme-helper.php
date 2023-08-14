@@ -126,7 +126,7 @@ class Theme_Helper {
 			'description' => 'A map view, for displaying items that have geocoordinate metadata.',
 			'icon' => '<span class="icon">
 							<i>
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--tainacan-info-color, #555758)" width="1.25em" height="1.25em">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--tainacan-info-color, #505253)" width="1.25em" height="1.25em">
 									<path d="M15,19L9,16.89V5L15,7.11M20.5,3C20.44,3 20.39,3 20.34,3L15,5.1L9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21C3.55,21 3.61,21 3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3Z" />
 								</svg>
 							</i>
@@ -1077,7 +1077,7 @@ class Theme_Helper {
 				: 'tainacan-medium',
 			'show_collection_header' => false,
 			'show_collection_label' => false,
-			'collection_background_color' => '#454647',
+			'collection_background_color' => '#373839',
 			'collection_text_color' => '#ffffff',
 			'tainacan_api_root' => '',
 			'tainacan_base_url' => '',
@@ -1149,7 +1149,7 @@ class Theme_Helper {
 				: 'tainacan-medium',
 			'show_collection_header' => false,
 			'show_collection_label' => false,
-			'collection_background_color' => '#454647',
+			'collection_background_color' => '#373839',
 			'collection_text_color' => '#ffffff',
 			'tainacan_api_root' => '',
 			'tainacan_base_url' => '',
@@ -1167,7 +1167,7 @@ class Theme_Helper {
 		// Always pass the class needed by Vue to mount the component;
 		$args['class'] = $args['class_name'] . ' wp-block-tainacan-dynamic-items-list';
 		unset($args['class_name']);
-		
+
 		// Builds parameters to the html div rendered by Vue
 		foreach ($args as $key => $value) {
 			if (is_bool($value))
@@ -1226,7 +1226,11 @@ class Theme_Helper {
 		if ( isset($args['order']) )
 			$related_items_query_args['order'] = $args['order'];
 
+		if ( isset($args['max_items_number']) )
+			$related_items_query_args['posts_per_page'] = $args['max_items_number'];
+		
 		$related_items = $item->get_related_items($related_items_query_args);
+
 		if (!count($related_items))
 			return;
 
@@ -1261,12 +1265,9 @@ class Theme_Helper {
 						? $block_args['image_size']
 						: ($no_crop_images_to_square ? 'tainacan-medium-full' : 'tainacan-medium');
 
-					// Remove attribute description and unused thumbnails image sizes, to avoid poluting HTML
+					// Remove attribute description to avoid poluting HTML
 					$related_group['items'] = array_map(
 						function($el) use ($image_size) {
-							$el['thumbnail'] = array_filter($el['thumbnail'], function($key) use ($image_size) {
-								return $key == $image_size;
-							}, ARRAY_FILTER_USE_KEY);
 							unset($el['description']);
 							return $el;
 						}, $related_group['items']
@@ -1294,7 +1295,7 @@ class Theme_Helper {
 					}
 				}
 				
-				$output .= '<div class="wp-block-group">
+				$output .= '<div class="wp-block-group" data-related-collection-id="' . $related_group['collection_id'] . '" data-related-metadata-id="' . $related_group['metadata_id'] . '">
 					<div class="wp-block-group__inner-container">' .
 						/**
 						 * Note to code reviewers: This lines doesn't need to be escaped.
@@ -1741,9 +1742,11 @@ class Theme_Helper {
 			$before = str_replace('$id', ' id="metadata-id-' . $metadatum->get_id() . '"', $before);
 
 			// Let theme authors tweak the wrapper opener
+			$metadata_type = $metadatum->get_metadata_type();
+			$metadatum_id = $metadatum->get_id();
 			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before', $before, $item_metadatum );
-			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--type-' . $metadatum->get_metadata_type(), $before, $item_metadatum );
-			$before = apply_filters( 'tainacan-get-item-metadatum-as-html-before--id-' . $metadatum->get_id(), $before, $item_metadatum );
+			$before = apply_filters( "tainacan-get-item-metadatum-as-html-before--type-$metadata_type", $before, $item_metadatum );
+			$before = apply_filters( "tainacan-get-item-metadatum-as-html-before--id-$metadatum_id", $before, $item_metadatum );
 
 			// Renders the metadatum opener
 			$return .= $before;
@@ -1765,8 +1768,10 @@ class Theme_Helper {
 			$after = $args['after'];
 
 			// Let theme authors tweak the wrapper closer
-			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--id-' . $metadatum->get_id(), $after, $item_metadatum );
-			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after--type-' . $metadatum->get_metadata_type(), $after, $item_metadatum );
+			$metadatum_id = $metadatum->get_id();
+			$metadata_type = $metadatum->get_metadata_type();
+			$after = apply_filters( "tainacan-get-item-metadatum-as-html-after--id-$metadatum_id", $after, $item_metadatum );
+			$after = apply_filters( "tainacan-get-item-metadatum-as-html-after--type-$metadata_type", $after, $item_metadatum );
 			$after = apply_filters( 'tainacan-get-item-metadatum-as-html-after', $after, $item_metadatum );
 			
 			// Closes the wrapper

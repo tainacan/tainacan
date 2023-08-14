@@ -46,7 +46,8 @@ class Logs extends Repository {
 	}
 
 	protected function _get_map() {
-		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
+		$entity = $this->get_name();
+		return apply_filters( "tainacan-get-map-$entity", [
 			'title'          => [
 				'map'         => 'post_title',
 				'title'       => __( 'Title', 'tainacan' ),
@@ -59,7 +60,7 @@ class Logs extends Repository {
 				'map'         => 'post_date',
 				'title'       => __( 'Log date', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The log date', 'tainacan' ),
+				'description' => __( 'The moment when the log was registered', 'tainacan' ),
 			],
 			'description'    => [
 				'map'         => 'post_content',
@@ -86,6 +87,7 @@ class Logs extends Repository {
 			'item_id'        => [
 				'map'         => 'meta',
 				'title'       => __( 'Item ID', 'tainacan' ),
+				'description' => __( 'Item ID', 'tainacan' ),
 				'type'        => 'integer',
 			],
 			// 'value'          => [
@@ -98,34 +100,44 @@ class Logs extends Repository {
 			'log_diffs'      => [ // deprecated
 				'map'         => 'meta',
 				'title'       => __( 'Log differences', 'tainacan' ),
-				'description' => __( 'Differences between old and new versions of object', 'tainacan' )
+				'description' => __( 'Differences between old and new versions of object', 'tainacan' ),
+				'type'        => 'string',
 			],
 			'collection_id'  => [
 				'map'         => 'meta',
 				'title'       => __( 'Log collection relationship', 'tainacan' ),
-				'description' => __( 'The ID of the collection that this log is related to', 'tainacan' )
+				'description' => __( 'The ID of the collection that this log is related to', 'tainacan' ),
+				'type'        => 'string',
 			],
 			'object_id' => [
 				'map'         => 'meta',
 				'title'       => __( 'Log item relationship', 'tainacan' ),
 				'description' => __( 'The ID of the object that this log is related to', 'tainacan' ),
+				'type'        => ['string', 'integer'],
 			],
 			'object_type' => [
 				'map'         => 'meta',
 				'title'       => __( 'Log item relationship', 'tainacan' ),
 				'description' => __( 'The type of the object that this log is related to', 'tainacan' ),
+				'type'        => 'string',
 			],
 			'old_value' => [
 				'map'         => 'meta',
 				'title'       => __( 'Old value', 'tainacan' ),
+				'description' => __( 'Value of the field previous to the edition registered by the log.', 'tainacan' ),
+				'type'        => 'string',
 			],
 			'new_value' => [
 				'map'         => 'meta',
 				'title'       => __( 'New value', 'tainacan' ),
+				'description'       => __( 'Value of the field after the edition registered by the log.', 'tainacan' ),
+				'type'        => 'string',
 			],
 			'action' => [
 				'map'         => 'meta',
 				'title'       => __( 'Action', 'tainacan' ),
+				'description' => __( 'Type of action registered by the log.', 'tainacan' ),
+				'type'        => 'string',
 			]
 		] );
 	}

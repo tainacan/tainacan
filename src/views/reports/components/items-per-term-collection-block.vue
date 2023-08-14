@@ -790,7 +790,7 @@ export default {
 
 <style lang="scss" scoped>
 .child-term-column {
-    border-left: 1px dashed var(--tainacan-block-gray3, #cbcbcb);
+    border-left: 1px dashed var(--tainacan-block-gray3, #a5a5a5);
 
     &>* {
         margin-left: 1.25rem;

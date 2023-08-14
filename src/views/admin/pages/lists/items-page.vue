@@ -89,6 +89,8 @@
                                 :focusable="false">
                             <b-checkbox 
                                     :value="sentenceMode"
+                                    :true-value="false"
+                                    :false-value="true"
                                     @input="$eventBusSearch.setSentenceMode($event)">
                                 {{ $i18n.get('label_use_search_separated_words') }}
                             </b-checkbox>
@@ -319,17 +321,18 @@
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
-                        <b-dropdown-item
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
-                                v-for="metadatum of sortingMetadata"
-                                v-if="metadatum != undefined"
-                                :value="metadatum"
-                                :key="metadatum.slug"
-                                aria-role="listitem">
-                            {{ metadatum.name }}
-                        </b-dropdown-item>
+                        <template v-for="metadatum of sortingMetadata">
+                            <b-dropdown-item
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                    v-if="metadatum != undefined"
+                                    :value="metadatum"
+                                    :key="metadatum.slug"
+                                    aria-role="listitem">
+                                {{ metadatum.name }}
+                            </b-dropdown-item>
+                        </template>
                     </b-dropdown>
                 </b-field>
             </div>
@@ -628,11 +631,8 @@
                         <p v-if="status == undefined || status == '' || status == 'publish,private,draft'">
                             {{ (hasFiltered || openAdvancedSearch || searchQuery) ? $i18n.get('info_no_item_found_filter') : (isSortingByCustomMetadata ? $i18n.get('info_no_item_found') : $i18n.get('info_no_item_created')) }}
                         </p>
-                        <p
-                                v-for="(statusOption, index) of $statusHelper.getStatuses()"
-                                :key="index"
-                                v-if="status == statusOption.slug">
-                            {{ $i18n.get('info_no_items_' + statusOption.slug) }}
+                        <p v-else>
+                            {{ $i18n.get('info_no_items_' + status) }}
                         </p>
 
                         <router-link
@@ -663,6 +663,8 @@
                             <br>
                             <b-checkbox 
                                     :value="sentenceMode"
+                                    :true-value="false"
+                                    :false-value="true"
                                     @input="$eventBusSearch.setSentenceMode($event); updateSearch();">
                                 {{ $i18n.get('label_use_search_separated_words') }}
                             </b-checkbox>

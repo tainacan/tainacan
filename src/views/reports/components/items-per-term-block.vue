@@ -238,7 +238,7 @@ export default {
                     animations: {
                         enabled: orderedTerms.length <= 40
                     },
-                    colors: ['#01295c'],
+                    colors: ['#062a57'],
                 }
             }
 

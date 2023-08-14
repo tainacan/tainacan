@@ -3,7 +3,7 @@
         <figure 
                 class="file-item"
                 :class="{'shows-modal-on-click' : modalOnClick}"
-                @click="modalOnClick? openPreviewModal() : null">
+                @click="modalOnClick ? openPreviewModal() : null">
             <figcaption 
                     v-if="showName && file.title != undefined"
                     v-tooltip="{
@@ -161,6 +161,10 @@ export default {
         justify-content: center !important;
         flex-direction: column;
         align-items: center;
+
+        p.attachment>a {
+            display: block;
+        }
     }
     
 </style>

@@ -5,10 +5,12 @@ namespace Tainacan\API\EndPoints;
 use \Tainacan\API\REST_Controller;
 use Tainacan\Entities;
 use Tainacan\Repositories;
-use Tainacan\Entities\Entity;
 
 class REST_Sequence_Edit_Controller extends REST_Controller {
 
+	private $items_repository;
+	private $collections_repository;
+	
 	public function __construct() {
 		$this->rest_base = 'sequence-edit';
 			parent::__construct();
@@ -34,6 +36,7 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'sequence_edit_permissions_check'),
 					'args'                => $this->get_create_params()
 				),
+				'schema' => [$this, 'get_sequence_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)',
@@ -42,7 +45,9 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item'),
 					'permission_callback' => array($this, 'sequence_edit_permissions_check'),
+					'args'                => $this->get_sequence_params()
 				),
+				'schema' => [$this, 'get_sequence_index_schema']
 			)
 		);
 		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base . '/(?P<group_id>[0-9a-f]+)/(?P<sequence_index>[\d]+)',
@@ -51,7 +56,9 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item_in_sequence'),
 					'permission_callback' => array($this, 'sequence_edit_permissions_check'),
+					'args'                => $this->get_sequence_params()
 				),
+				'schema' => [$this, 'get_sequence_index_schema']
 			)
 		);
 
@@ -185,6 +192,11 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 	 */
 	public function get_create_params($object_name = null) {
 
+		$query_params['collection_id'] = [
+			'type'        => 'string',
+			'description' => __( 'Collection ID', 'tainacan' ),
+		];
+
 		$query_params['items_ids'] = [
 			'type'        => 'array',
 			'items'       => ['type' => 'integer'],
@@ -197,6 +209,71 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 		];
 
 		return $query_params;
+	}
+
+
+		/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_sequence_params() {
+		$endpoint_args = [
+			'collection_id' => [
+				'type'        => 'string',
+				'description' => __( 'Collection ID', 'tainacan' ),
+				'required' => true,
+			],
+			'group_id' => [
+				'type'        => 'string',
+				'description' => __( 'Group ID', 'tainacan' ),
+				'required' => true,
+			],
+			'sequence_index' => [
+				'type'        => 'string',
+				'description' => __( 'Sequence index', 'tainacan' ),
+				'required' => true,
+			],
+		];
+
+		return $endpoint_args;
+	}
+
+	function get_sequence_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-sequence";
+		$schema['properties'] = [
+			'id' => [
+				'type' => 'string',
+				'description' => __( 'Bulk edition processs ID', 'tainacan' )
+			],
+			'items_count' => [
+				'type' => 'integer',
+				'description' => __( 'Total of items selected for the sequence edit.', 'tainacan' ),
+			]
+		];
+
+		return $schema;
+	}
+
+	function get_sequence_index_schema() {
+		$schema = $this->get_schema();
+		$schema['title'] = "$this->rest_base-sequence-index";
+		$schema['type'] = 'integer';
+		$schema['description'] = __( 'Item ID in the current sequence index', 'tainacan' );
+
+		return $schema;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => $this->rest_base,
+			'type' => 'object',
+			'tags' => [ $this->rest_base ]
+		];
+
+		return $schema;
 	}
 
 }

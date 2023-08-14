@@ -33,6 +33,12 @@ class TAINACAN_REST_Roles_Controller extends TAINACAN_UnitApiTestCase {
 		$data = $name_response->get_data();
 		$this->assertArrayHasKey('tainacan-new-role', $data);
 		$this->assertEquals('New role', $data['tainacan-new-role']['name']);
+
+		$request->set_query_params(['role' => 'tainacan-new-role']);
+		$name_response = $this->server->dispatch($request);
+		$data = $name_response->get_data();
+		$this->assertArrayHasKey('tainacan-new-role', $data);
+		$this->assertEquals('New role', $data['tainacan-new-role']['name']);
 	}
 
 	public function test_create_remove_roles() {

@@ -29,14 +29,15 @@
                     :aria-hidden="showDropdownMenu">
                 <!-- <p class="dropdown-menu-intro">{{ $i18n.get('Create a new role based on: ') }}</p> -->
                 <ul>
-                    <li 
-                            v-for="role of roles"
-                            :key="role.slug"
-                            v-if="role.slug.match('tainacan')">
-                        <router-link :to="'/roles/new?template=' + role.slug">
-                            {{ role.name }}
-                        </router-link>
-                    </li>
+                    <template v-for="role of roles">
+                        <li 
+                                :key="role.slug"
+                                v-if="role.slug.match('tainacan')">
+                            <router-link :to="'/roles/new?template=' + role.slug">
+                                {{ role.name }}
+                            </router-link>
+                        </li>
+                    </template>
                     <li><router-link to="/roles/new"><em>{{ $i18n.get('Blank') }}</em></router-link></li>
                 </ul>
             </div>

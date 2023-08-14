@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/dynamic-items-list",
     "title": "Tainacan Collection's Items List",
-    "apiVersion": 2,
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "items", "search", "collection" ],
     "description": "Dynamically list items from a Tainacan items search",
@@ -112,7 +112,7 @@
         },
         "collectionBackgroundColor": {
             "type": "string",
-            "default": "#454647"
+            "default": "#373839"
         },
         "collectionTextColor": {
             "type": "string",
@@ -168,5 +168,5 @@
         }
     },
     "editorScript": "dynamic-items-list",
-	"editorStyle": "dynamic-items-list"
+	"editorStyle": ["dynamic-items-list", "tainacan-blocks-common-editor-styles" ]
 }

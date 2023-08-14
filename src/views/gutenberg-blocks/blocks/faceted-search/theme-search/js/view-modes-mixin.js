@@ -28,7 +28,23 @@ export const viewModesMixin = {
                 delete currentQueries['fetch_only_meta'];
             }
             return currentQueries
-        }
+        },
+         /* 
+         * This computed property only returns the metadatum object where the title is. 
+         * In repository level, there is not "title metadatum", this information comes directly from the item.title.
+         */
+         titleItemMetadatum() {
+            const possibleTitleItemMetadatum = this.displayedMetadata.find(aMetadatum => aMetadatum.display && aMetadatum.metadata_type_object && aMetadatum.metadata_type_object.related_mapped_prop == 'title');
+            return possibleTitleItemMetadatum ? possibleTitleItemMetadatum : false;
+        },
+        /* 
+         * This computed property only returns the metadatum object where the description is. 
+         * In repository level, there is not "description metadatum", this information comes directly from the item.description.
+         */
+        descriptionItemMetadatum() {
+            const possibleDescriptionItemMetadatum = this.displayedMetadata.find(aMetadatum => aMetadatum.display && aMetadatum.metadata_type_object && aMetadatum.metadata_type_object.related_mapped_prop == 'description');
+            return possibleDescriptionItemMetadatum ? possibleDescriptionItemMetadatum : false;
+        },
     },
     mounted() {
         this.isSlideshowViewModeEnabled = (this.enabledViewModes && Array.isArray(this.enabledViewModes)) ? (this.enabledViewModes.findIndex((viewMode) => viewMode == 'slideshow') >= 0) : false;

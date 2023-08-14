@@ -31,7 +31,7 @@
     z-index: 99999;
     @media only screen and (max-width: 768px) {
         background-color: var(--tainacan-background-color, #ffffff);
-        &:before, &:after { background-color: var(--tainacan-secondary, #298596); }
+        &:before, &:after { background-color: var(--tainacan-secondary, #187181); }
     }
 }
 
@@ -91,10 +91,7 @@
         margin: 0;
         text-align: center;
     }
-    .attachment {
-        width: 100%;
-    }
-
+    
     .form-submit {
         padding: 40px 0em 0em 0em !important;
     }
@@ -124,7 +121,7 @@
     .modal-card {
         background-color: var(--tainacan-background-color);
         color: var(--tainacan-secondary);
-        border-radius: 10px;
+        border-radius: 6px;
         flex-wrap: wrap;
         flex-direction: row;
         padding: 35px;

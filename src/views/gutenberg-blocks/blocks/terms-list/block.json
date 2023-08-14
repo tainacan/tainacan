@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/terms-list",
     "title": "Tainacan Terms List",
-    "apiVersion": 2,
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "terms", "taxonomy" ],
     "description": "Expose terms from your Tainacan taxonomies",
@@ -97,5 +97,5 @@
         }
     },
     "editorScript": "terms-list",
-	"editorStyle": "terms-list"
+	"editorStyle": ["terms-list", "tainacan-blocks-common-editor-styles" ]
 }

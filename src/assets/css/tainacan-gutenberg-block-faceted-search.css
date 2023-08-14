@@ -6,12 +6,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--tainacan-block-gray4, #555758); }
+    color: var(--tainacan-block-gray4, #505253); }
   .wp-block-tainacan-faceted-search .preview-warning {
     width: 100%;
     font-size: 0.875rem;
     font-style: italic;
-    color: var(--tainacan-block-gray4, #555758);
+    color: var(--tainacan-block-gray4, #505253);
     text-align: center;
     margin: 0 auto;
     padding: 8px 2px 2px 2px; }

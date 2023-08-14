@@ -17,6 +17,9 @@ class REST_Items_Controller extends REST_Controller {
 	private $item_metadata;
 	private $collections_repository;
 	private $metadatum_repository;
+	private $terms_repository;
+	private $filters_repository;
+	private $taxonomy_repository;
 
 	/**
 	 * REST_Items_Controller constructor.
@@ -53,7 +56,14 @@ class REST_Items_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
-					'args'                => $this->get_wp_query_params(),
+					'args'                => array_merge([
+						'collection_id' => [
+							'description' => __( 'Collection ID', 'tainacan' ),
+							'required' => true,
+						],
+					],
+					$this->get_wp_query_params()
+				),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -61,6 +71,7 @@ class REST_Items_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
+				'schema'                => [$this, 'get_list_schema'],
 			)
 		);
 		register_rest_route(
@@ -82,13 +93,9 @@ class REST_Items_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::DELETABLE,
 					'callback'            => array($this, 'delete_item'),
 					'permission_callback' => array($this, 'delete_item_permissions_check'),
-					'args'                => array(
-						'permanently' => array(
-							'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection', 'tainacan'),
-							'default'     => '0'
-						),
-					)
+					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::DELETABLE),
 				),
+				'schema'                => [$this, 'get_schema'],
 			)
 		);
 		register_rest_route(
@@ -98,7 +105,14 @@ class REST_Items_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item_attachments'),
 					'permission_callback' => array($this, 'get_item_attachments_permissions_check'),
-					'args'                => $this->get_wp_query_params(),
+					'args'                => array_merge([
+							'item_id' => [
+								'description' => __( 'Item ID', 'tainacan' ),
+								'required' => true,
+							],
+						],
+						$this->get_wp_query_params()
+					),
 				),
 				'schema' => [$this, 'get_attachments_schema'],
 			)
@@ -112,6 +126,7 @@ class REST_Items_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => $this->get_wp_query_params(),
 				),
+				'schema'                => [$this, 'get_list_schema'],
 			)
 		);
 		register_rest_route(
@@ -122,6 +137,14 @@ class REST_Items_Controller extends REST_Controller {
 					'callback'            => array($this, 'duplicate_item'),
 					'permission_callback' => array($this, 'create_item_permissions_check'),
 					'args'                => array(
+						'collection_id' => [
+							'description' => __( 'Collection ID', 'tainacan' ),
+							'type' => 'string',
+						],
+						'item_id' => [
+							'description' => __( 'Item ID', 'tainacan' ),
+							'type' => 'string',
+						],
 						'copies' => array(
 							'description' => __('Number of copies to be created', 'tainacan'),
 							'default'     => 1,
@@ -129,10 +152,13 @@ class REST_Items_Controller extends REST_Controller {
 						),
 						'status' => array(
 							'description' => __('Try to assign the specified status to the duplicates if they validate. By default it will save them as drafts.', 'tainacan'),
-							'type'        => 'string'
+							'type'        => 'string',
+							'enum'        => array('draft', 'publish', 'private', 'trash'),
+							'default'     => 'draft'
 						),
 					)
 				),
+				'schema'                => [$this, 'get_list_schema']
 			)
 		);
 		register_rest_route(
@@ -144,6 +170,7 @@ class REST_Items_Controller extends REST_Controller {
 					'permission_callback' => array($this, 'submission_item_permissions_check'),
 					'args'                => $this->get_endpoint_args_for_item_schema(\WP_REST_Server::CREATABLE),
 				),
+				'schema'                => [$this, 'get_schema']
 			)
 		);
 		register_rest_route(
@@ -153,7 +180,18 @@ class REST_Items_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::CREATABLE,
 					'callback'            => array($this, 'submission_item_finish'),
 					'permission_callback' => array($this, 'submission_item_permissions_check'),
+					'args'                => array(
+						'collection_id' => [
+							'description' => __( 'Collection ID', 'tainacan' ),
+							'type' => 'string',
+						],
+						'submission_id' => [
+							'description' => __( 'Submission ID', 'tainacan' ),
+							'type' => 'string',
+						],
+					)
 				),
+				'schema'                => [$this, 'get_schema']
 			)
 		);
 	}
@@ -1447,35 +1485,56 @@ class REST_Items_Controller extends REST_Controller {
 	 * @return array|mixed
 	 */
 	public function get_endpoint_args_for_item_schema( $method = null ){
-		$endpoint_args = [];
+		$endpoint_args = [
+			'item_id' => [
+				'description' => __( 'Item ID', 'tainacan' ),
+				'required' => true,
+			]
+		];
 
-		if($method === \WP_REST_Server::READABLE) {
-			$endpoint_args['context'] = array(
-				'type'    	  => 'string',
-				'default' 	  => 'view',
-				'description' => 'The context in which the request is made.',
-				'enum'    	  => array(
-					'view',
-					'edit'
-				),
-			);
-			$endpoint_args = array_merge(
-				$endpoint_args,
-				parent::get_fetch_only_param()
-			);
-		} elseif ($method === \WP_REST_Server::CREATABLE || $method === \WP_REST_Server::EDITABLE) {
-			$map = $this->items_repository->get_map();
+		switch ( $method ) {
+			case \WP_REST_Server::READABLE:
+				$endpoint_args['context'] = array(
+					'type'    	  => 'string',
+					'default' 	  => 'view',
+					'description' => __( 'Scope under which the request is made; determines fields present in response.', 'tainacan' ),
+					'enum'    	  => array(
+						'view',
+						'edit'
+					),
+				);
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					parent::get_fetch_only_param()
+				);
+			break;
+			case \WP_REST_Server::CREATABLE:
+			case \WP_REST_Server::EDITABLE:
+				$map = $this->items_repository->get_map();
 
-			foreach ($map as $mapped => $value){
-				$set_ = 'set_'. $mapped;
-
-				// Show only args that has a method set
-				if( !method_exists($this->item, "$set_") ){
-					unset($map[$mapped]);
+				foreach ($map as $mapped => $value){
+					$set_ = 'set_'. $mapped;
+	
+					// Show only args that has a method set
+					if( !method_exists($this->item, "$set_") ){
+						unset($map[$mapped]);
+					}
 				}
-			}
-
-			$endpoint_args = $map;
+	
+				$endpoint_args = array_merge(
+					$endpoint_args,
+					$map
+				);
+	
+				if ( $method === \WP_REST_Server::CREATABLE )
+					unset($endpoint_args['item_id']);
+			break;
+			case \WP_REST_Server::DELETABLE:
+				$endpoint_args['permanently'] = array(
+					'description' => __('To delete permanently, you can pass \'permanently\' as 1. By default this will only trash collection', 'tainacan'),
+					'default'     => '0'
+				);
+			break;
 		}
 
 		return $endpoint_args;
@@ -1501,14 +1560,13 @@ class REST_Items_Controller extends REST_Controller {
 		return $query_params;
 	}
 
-	function get_attachments_schema() {
-		$schema = [
-			'$schema'  => 'http://json-schema.org/draft-04/schema#',
-			'title' => 'collection',
-			'type' => 'object'
-		];
+	function process_request_filters($args) {
+		return $this->prepare_filters($args);
+	}
 
-		$schema = [
+	function get_attachments_schema() {
+
+		$properties = [
 			'title' => [
 				'description' => esc_html__('The attachment title', 'tainacan'),
 				'type' => 'string'
@@ -1552,17 +1610,41 @@ class REST_Items_Controller extends REST_Controller {
 			],
 		];
 
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'attachments',
+			'type' => 'array',
+			'tags' => ['attachments', $this->rest_base],
+			'items' => array(
+				'type' => 'object',
+				'properties' => array_merge(
+					parent::get_base_properties_schema(),
+					$properties
+				)
+			)
+		];
+
+		return $schema;
+	}
+
+	function get_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'title' => 'item',
+			'type' => 'object',
+			'tags' => [ $this->rest_base ],
+		];
+
+		$main_schema = parent::get_repository_schema( $this->items_repository );
+		$permissions_schema = parent::get_permissions_schema();
+
 		$schema['properties'] = array_merge(
 			parent::get_base_properties_schema(),
-			$schema
+			$main_schema,
+			$permissions_schema
 		);
 
 		return $schema;
-
-	}
-
-	function process_request_filters($args) {
-		return $this->prepare_filters($args);
 	}
 }
 

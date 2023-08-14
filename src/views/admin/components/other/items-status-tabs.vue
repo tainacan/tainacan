@@ -18,36 +18,37 @@
                     </span>
                 </a>
             </li>
-            <li 
-                    v-for="(statusOption, index) of $statusHelper.getStatuses()"
-                    v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && collection && collection.current_user_can_read_private_items)"
-                    :key="index"
-                    @click="onChangeTab(statusOption.slug)"
-                    :class="{ 'is-active': status == statusOption.slug}"
-                    :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
-                    v-tooltip="{
-                        content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
-                        autoHide: true,
-                        placement: 'auto',
-                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                    }">
-                <a>
-                    <span 
-                            v-if="$statusHelper.hasIcon(statusOption.slug)"
-                            class="icon has-text-gray">
-                        <i 
-                                class="tainacan-icon tainacan-icon-1-125em"
-                                :class="$statusHelper.getIcon(statusOption.slug)"
-                                />
-                    </span>
-                    {{ statusOption.name }}
-                    <span 
-                            v-if="!$adminOptions.hideItemsListStatusTabsTotalItems"
-                            class="has-text-gray">
-                        &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}
-                    </span>
-                </a>
-            </li>
+            <template v-for="(statusOption, index) of $statusHelper.getStatuses()">
+                <li 
+                        v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && collection && collection.current_user_can_read_private_items)"
+                        :key="index"
+                        @click="onChangeTab(statusOption.slug)"
+                        :class="{ 'is-active': status == statusOption.slug}"
+                        :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
+                        v-tooltip="{
+                            content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
+                            autoHide: true,
+                            placement: 'auto',
+                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                        }">
+                    <a>
+                        <span 
+                                v-if="$statusHelper.hasIcon(statusOption.slug)"
+                                class="icon has-text-gray">
+                            <i 
+                                    class="tainacan-icon tainacan-icon-1-125em"
+                                    :class="$statusHelper.getIcon(statusOption.slug)"
+                                    />
+                        </span>
+                        {{ statusOption.name }}
+                        <span 
+                                v-if="!$adminOptions.hideItemsListStatusTabsTotalItems"
+                                class="has-text-gray">
+                            &nbsp;{{ (isRepositoryLevel && repositoryTotalItems) ? ` (${ repositoryTotalItems[statusOption.slug] })` : (collection && collection.total_items ? ` (${collection.total_items[statusOption.slug]})` : '') }}
+                        </span>
+                    </a>
+                </li>
+            </template>
         </ul>
     </div>
 </template>

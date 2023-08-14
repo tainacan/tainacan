@@ -23,8 +23,8 @@ jobs:
       matrix:
         # Notes regarding supported versions in WP:
         # The base matrix only contains the PHP versions which are supported on all supported WP versions.
-        php: ['5.6', '7.0', '7.3', '7.4']
-        wp: ['latest', '5.4']
+        php: ['7.0', '7.3', '7.4']
+        wp: ['latest', '5.9']
         experimental: [false]
 
         # include:
@@ -50,7 +50,7 @@ jobs:
         # in combination with PHP < 7.4 is not properly/sufficiently supported
         # within WP Core.
         # See: https://core.trac.wordpress.org/ticket/52496
-        image: mysql:${{ ( matrix.wp == 5.3 && '5.6' ) || ( (matrix.wp < 5.4 || matrix.php < 7.4) && '5.7' ) || '8.0' }}
+        image: mysql:${{ ( matrix.wp == 5.3 && '5.6' ) || ( (matrix.wp < 5.9 || matrix.php < 7.4) && '5.7' ) || '8.0' }}
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: false
         ports:

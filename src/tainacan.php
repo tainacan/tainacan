@@ -4,17 +4,18 @@ Plugin Name: Tainacan
 Plugin URI: https://tainacan.org/
 Description: Open source, powerful and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform.
 Author: Tainacan.org
-Version: 0.20.3
-Requires at least: 5.0
-Tested up to: 6.2.2
-Requires PHP: 5.6
-Stable tag: 0.20.3
+Author URI: https://tainacan.org/
+Version: 0.20.4
+Requires at least: 5.9
+Tested up to: 6.3
+Requires PHP: 7.0
+Stable tag: 0.20.4
 Text Domain: tainacan
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-const TAINACAN_VERSION = '0.20.3';
+const TAINACAN_VERSION = '0.20.4';
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);

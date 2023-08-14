@@ -288,47 +288,47 @@
                 <div class="is-large control has-icons-right is-loading is-clearfix" />
             </span>
 
-            <div
-                    v-for="(metadatum, index) of item.metadata"
-                    v-if="metadatum.value_as_html != undefined && metadatum.value_as_html != ''"
-                    :key="index"
-                    class="field">
-                <b-collapse 
-                        aria-id="metadata-collapse-for-slideshow"
-                        :open="!collapseAll">
-                    <label
-                            class="label has-text-white"
-                            slot="trigger"
-                            slot-scope="props">
-                        <span class="icon">
-                            <i 
-                                    :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
-                                    class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
-                        </span>
-                        <span 
-                                v-tooltip="{
-                                    delay: {
-                                        shown: 500,
-                                        hide: 300,
-                                    },
-                                    content: metadatum.name,
-                                    autoHide: false,
-                                    placement: 'auto-start',
-                                    popperClass: ['tainacan-tooltip', 'tooltip']
-                                }"  
-                                class="ellipsed-name">
-                            {{ metadatum.name }}
-                        </span>
-                    </label>
-                    <div class="content">
-                        <p  
-                            class="has-text-white"
-                            v-html="metadatum.value_as_html"/>
-                    </div>
-                </b-collapse>
+            <template v-for="(metadatum, index) of item.metadata">
+                <div
+                        v-if="metadatum.value_as_html != undefined && metadatum.value_as_html != ''"
+                        :key="index"
+                        class="field">
+                    <b-collapse 
+                            aria-id="metadata-collapse-for-slideshow"
+                            :open="!collapseAll">
+                        <label
+                                class="label has-text-white"
+                                slot="trigger"
+                                slot-scope="props">
+                            <span class="icon">
+                                <i 
+                                        :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                            </span>
+                            <span 
+                                    v-tooltip="{
+                                        delay: {
+                                            shown: 500,
+                                            hide: 300,
+                                        },
+                                        content: metadatum.name,
+                                        autoHide: false,
+                                        placement: 'auto-start',
+                                        popperClass: ['tainacan-tooltip', 'tooltip']
+                                    }"  
+                                    class="ellipsed-name">
+                                {{ metadatum.name }}
+                            </span>
+                        </label>
+                        <div class="content">
+                            <p  
+                                class="has-text-white"
+                                v-html="metadatum.value_as_html"/>
+                        </div>
+                    </b-collapse>
 
-            </div>
-
+                </div>
+            </template>
             <br>
             <br>
 

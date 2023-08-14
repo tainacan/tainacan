@@ -1,8 +1,13 @@
 <?php
 
+/**
+ * Base namespace for all rest api requests. WordPress default is 'wp/v2'.
+ */
 const TAINACAN_REST_NAMESPACE = 'tainacan/v2';
 
-//$rest_controller                    = new \Tainacan\API\REST_Controller();
+/**
+ * Tainacan REST APIs initialization.
+ */
 $rest_items_controller                = new \Tainacan\API\EndPoints\REST_Items_Controller();
 $rest_terms_controller                = new \Tainacan\API\EndPoints\REST_Terms_Controller();
 $rest_logs_controller                 = new \Tainacan\API\EndPoints\REST_Logs_Controller();

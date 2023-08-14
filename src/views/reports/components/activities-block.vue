@@ -213,7 +213,7 @@ export default {
                         minWidth: 48
                     }
                 },
-                colors: ['#01295c'],
+                colors: ['#062a57'],
             };
             const daysWithActivitiesByUser = JSON.parse(JSON.stringify(this.chartData.totals.by_interval.by_user)).sort((a, b) => parseInt(b.total) - parseInt(a.total));
 
@@ -325,7 +325,7 @@ export default {
             }
             .anonymous-user-avatar:before {
                 content: "?";
-                color: var(--tainacan-gray5, #454647);
+                color: var(--tainacan-gray5, #373839);
                 font-size: 1.5em;
                 font-weight: bold;
                 display: flex;
@@ -349,7 +349,7 @@ export default {
                     white-space: nowrap;
                 }
                 span {
-                    color: var(--tainacan-secondary, #298596);
+                    color: var(--tainacan-secondary, #187181);
                 }
             }
         }

@@ -42,13 +42,14 @@
                                         v-if="metadatum.id && metadatum.metadata_type_object.component === 'tainacan-compound' && metadatum.multiple !== 'yes'"
                                         :key="index"
                                         :label="metadatum.name">
-                                    <option 
-                                            v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
-                                            :key="childIndex"
-                                            v-if="childMetadatum.id"
-                                            :value="childMetadatum">
-                                        {{ childMetadatum.name }}
-                                    </option>
+                                    <template v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects">
+                                        <option 
+                                                :key="childIndex"
+                                                v-if="childMetadatum.id"
+                                                :value="childMetadatum">
+                                            {{ childMetadatum.name }}
+                                        </option>
+                                    </template>
                                 </optgroup>
                             </template>
                             <option :value="{ id: 'status' }">
@@ -172,13 +173,14 @@
                                                     v-if="metadatumForCopy.id && metadatumForCopy.metadata_type_object.component === 'tainacan-compound'"
                                                     :key="index"
                                                     :label="metadatumForCopy.name">
-                                                <option 
-                                                        v-for="(childmetadatumForCopy, childIndex) of metadatumForCopy.metadata_type_options.children_objects"
-                                                        :key="childIndex"
-                                                        v-if="childMetadatumForCopy.id"
-                                                        :value="childMetadatumForCopy.id">
-                                                    {{ childMetadatumForCopy.name }}
-                                                </option>
+                                                <template v-for="(childmetadatumForCopy, childIndex) of metadatumForCopy.metadata_type_options.children_objects">
+                                                    <option 
+                                                            :key="childIndex"
+                                                            v-if="childMetadatumForCopy.id"
+                                                            :value="childMetadatumForCopy.id">
+                                                        {{ childMetadatumForCopy.name }}
+                                                    </option>
+                                                </template>
                                             </optgroup>
                                         </template>
                                         <option 

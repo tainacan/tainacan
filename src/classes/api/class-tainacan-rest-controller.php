@@ -2,7 +2,7 @@
 
 namespace Tainacan\API;
 
-class REST_Controller extends \WP_REST_Controller {
+abstract class REST_Controller extends \WP_REST_Controller {
 
 	/**
 	 * REST_Controller constructor.
@@ -315,7 +315,7 @@ class REST_Controller extends \WP_REST_Controller {
 		);
 
 		$query_params['sentence'] = array(
-			'description'        => __( 'Whether to search by phrase. Default false.', 'tainacan' ),
+			'description'        => __( 'Whether to search by phrase. Default true.', 'tainacan' ),
 			'type'               => 'boolean',
 			'default'     => true,
 		);
@@ -627,6 +627,9 @@ class REST_Controller extends \WP_REST_Controller {
 				'description' => $value['description'],
 				'type' => $value['type']
 			];
+			if( isset($value['items'])) {
+				$schema[$mapped]['items'] = $value['items'];
+			}
 		}
 
 		return $schema;
@@ -660,6 +663,19 @@ class REST_Controller extends \WP_REST_Controller {
 				'readonly'     => true
 			]
 		];
+	}
+
+	protected abstract function get_schema();
+
+	function get_list_schema() {
+		$schema = [
+			'$schema'  => 'http://json-schema.org/draft-04/schema#',
+			'type' => 'array',
+			'items' => $this->get_schema(),
+			'title' => $this->rest_base,
+			'tags' => [$this->rest_base],
+		];
+		return $schema;
 	}
 
 }

@@ -2,7 +2,7 @@
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "name": "tainacan/carousel-items-list",
     "title": "Tainacan Collection's Items Carousel",
-    "apiVersion": 2,
+    "apiVersion": 3,
     "category": "tainacan-blocks",
     "keywords": [ "items", "carousel", "slider" ],
     "description": "List items on a Carousel, using search or item selection.",
@@ -120,7 +120,7 @@
         },
         "collectionBackgroundColor": {
             "type": "string",
-            "default": "#454647"
+            "default": "#373839"
         },
         "collectionTextColor": {
             "type": "string",
@@ -142,5 +142,5 @@
         }
     },
     "editorScript": "carousel-items-list",
-	"editorStyle": "carousel-items-list"
+	"editorStyle": [ "carousel-items-list", "tainacan-blocks-common-editor-styles" ]
 }

@@ -33,7 +33,8 @@ class Metadata_Sections extends Repository {
 	 * @see \Tainacan\Repositories\Repository::get_map()
 	 */
 	protected function _get_map() {
-		return apply_filters( 'tainacan-get-map-' . $this->get_name(), [
+		$entity = $this->get_name();
+		return apply_filters( "tainacan-get-map-$entity", [
 			'name'                  => [
 				'map'         => 'post_title',
 				'title'       => __( 'Name', 'tainacan' ),
@@ -68,6 +69,7 @@ class Metadata_Sections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'Whether the section metadata description should be displayed below the name instead of inside a tooltip.', 'tainacan' ),
 				'on_error'    => __( 'Please set the "Description below name" value as "yes" or "no"', 'tainacan' ),
+				'enum'        => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 				'default'     => 'no'
 			],
@@ -83,6 +85,7 @@ class Metadata_Sections extends Repository {
 				'type'        => 'string',
 				'description' => __( 'Binds this section visibility to a set of rules related to some metadata values.', 'tainacan' ),
 				'on_error'    => __( 'Value should be "yes" or "no"', 'tainacan' ),
+				'enum'        => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ),
 				'default'     => 'no'
 			],

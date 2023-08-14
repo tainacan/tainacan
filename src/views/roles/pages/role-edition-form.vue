@@ -555,7 +555,7 @@
         padding: 1em 2em;
     }
     .dashicons-info {
-        color: #bb7700;
+        color: #a06522;
     }
     .capabilities-list {
         padding: 1em 0;

@@ -18,16 +18,17 @@
                 <div 
                         role="list"
                         class="exporter-types-container">
-                    <div
-                            role="listitem"
-                            class="exporter-type"
-                            v-for="exporterType in availableExporters"
-                            :key="exporterType.slug"
-                            v-if="!(hideWhenManualCollection && !exporterType.manual_collection)"
-                            @click="onSelectExporter(exporterType)">
-                        <h4>{{ exporterType.name }}</h4>
-                        <p>{{ exporterType.description }}</p>
-                    </div>
+                    <template v-for="exporterType in availableExporters">
+                        <div
+                                role="listitem"
+                                class="exporter-type"
+                                :key="exporterType.slug"
+                                v-if="!(hideWhenManualCollection && !exporterType.manual_collection)"
+                                @click="onSelectExporter(exporterType)">
+                            <h4>{{ exporterType.name }}</h4>
+                            <p>{{ exporterType.description }}</p>
+                        </div>
+                    </template>
                 </div>
                 <footer class="field is-grouped form-submit">
                     <div class="control">

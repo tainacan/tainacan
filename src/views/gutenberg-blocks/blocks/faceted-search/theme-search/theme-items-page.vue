@@ -99,6 +99,8 @@
                                 :focusable="false">
                             <b-checkbox 
                                     :value="sentenceMode"
+                                    :true-value="false"
+                                    :false-value="true"
                                     @input="$eventBusSearch.setSentenceMode($event)">
                                 {{ $i18n.get('label_use_search_separated_words') }}
                             </b-checkbox>
@@ -271,17 +273,18 @@
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
                             </button>
-                            <b-dropdown-item
-                                    aria-controls="items-list-results"
-                                    role="button"
-                                    :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
-                                    v-for="metadatum of sortingMetadata"
-                                    v-if="metadatum != undefined"
-                                    :value="metadatum"
-                                    :key="metadatum.slug"
-                                    aria-role="listitem">
-                                {{ metadatum.name }}
-                            </b-dropdown-item>
+                            <template v-for="metadatum of sortingMetadata">
+                                <b-dropdown-item
+                                        aria-controls="items-list-results"
+                                        role="button"
+                                        :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
+                                        v-if="metadatum != undefined"
+                                        :value="metadatum"
+                                        :key="metadatum.slug"
+                                        aria-role="listitem">
+                                    {{ metadatum.name }}
+                                </b-dropdown-item>
+                            </template>
                         </b-dropdown>
                     </template>
                 </b-field>
@@ -323,35 +326,36 @@
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
-                        <b-dropdown-item 
-                                aria-controls="items-list-results"
-                                role="button"
-                                :class="{ 'is-active': viewModeOption == viewMode }"
-                                v-for="(viewModeOption, index) of enabledViewModes"
-                                :key="index"
-                                :value="viewModeOption"
-                                v-if="(registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false) || (showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined)"
-                                aria-role="listitem">
-                            <span 
-                                    v-if="!showInlineViewModeOptions"
-                                    class="gray-icon"
-                                    v-html="registeredViewModes[viewModeOption].icon"/>
-                            <span 
-                                    v-else 
-                                    v-tooltip="{
-                                        delay: {
-                                            shown: 500,
-                                            hide: 300,
-                                        },
-                                        content: registeredViewModes[viewModeOption].label,
-                                        autoHide: false,
-                                        placement: 'auto-start',
-                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                                    }"
-                                    class="gray-icon"
-                                    v-html="registeredViewModes[viewModeOption].icon"/>
-                            <span v-if="!showInlineViewModeOptions">{{ registeredViewModes[viewModeOption].label }}</span>
-                        </b-dropdown-item>
+                        <template v-for="(viewModeOption, index) of enabledViewModes">
+                            <b-dropdown-item 
+                                    aria-controls="items-list-results"
+                                    role="button"
+                                    :class="{ 'is-active': viewModeOption == viewMode }"
+                                    v-if="(registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false) || (showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined)"
+                                    :key="index"
+                                    :value="viewModeOption"
+                                    aria-role="listitem">
+                                <span 
+                                        v-if="!showInlineViewModeOptions"
+                                        class="gray-icon"
+                                        v-html="registeredViewModes[viewModeOption].icon"/>
+                                <span 
+                                        v-else 
+                                        v-tooltip="{
+                                            delay: {
+                                                shown: 500,
+                                                hide: 300,
+                                            },
+                                            content: registeredViewModes[viewModeOption].label,
+                                            autoHide: false,
+                                            placement: 'auto-start',
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
+                                        }"
+                                        class="gray-icon"
+                                        v-html="registeredViewModes[viewModeOption].icon"/>
+                                <span v-if="!showInlineViewModeOptions">{{ registeredViewModes[viewModeOption].label }}</span>
+                            </b-dropdown-item>
+                        </template>
                     </b-dropdown>
                 </b-field>
             </div>
@@ -360,19 +364,20 @@
             <div 
                     id="tainacanFullScreenViewMode"
                     class="search-control-item search-control-item--full-screen-view-mode">
-                <button 
-                        class="button is-white"
-                        :aria-label="$i18n.get('label_slides')"
-                        @click="onChangeViewMode(viewModeOption)"
-                        v-for="(viewModeOption, index) of enabledViewModes"
-                        :key="index"
-                        :value="viewModeOption"
-                        v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true ">
-                    <span 
-                            class="gray-icon view-mode-icon"
-                            v-html="registeredViewModes[viewModeOption].icon"/>
-                    <span class="is-hidden-tablet-only">{{ registeredViewModes[viewModeOption].label }}</span>
-                </button>
+                <template v-for="(viewModeOption, index) of enabledViewModes">
+                    <button 
+                            class="button is-white"
+                            :aria-label="$i18n.get('label_slides')"
+                            @click="onChangeViewMode(viewModeOption)"
+                            v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true"
+                            :key="index"
+                            :value="viewModeOption">
+                        <span 
+                                class="gray-icon view-mode-icon"
+                                v-html="registeredViewModes[viewModeOption].icon"/>
+                        <span class="is-hidden-tablet-only">{{ registeredViewModes[viewModeOption].label }}</span>
+                    </button>
+                </template>
             </div>
 
             <!-- Exposers or alternative links modal button -->
@@ -627,6 +632,8 @@
                                 <br>
                                 <b-checkbox 
                                         :value="sentenceMode"
+                                        :true-value="false"
+                                        :false-value="true"
                                         @input="$eventBusSearch.setSentenceMode($event); updateSearch();">
                                     {{ $i18n.get('label_use_search_separated_words') }}
                                 </b-checkbox>

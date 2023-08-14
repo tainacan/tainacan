@@ -42,13 +42,14 @@
                         aria-controls="items-list-results"
                         aria-labelledby="items-per-page-select"
                         @input="onChangeItemsPerPage">
-                    <option
-                            v-for="(itemsPerPageOption, index) of itemsPerPageOptions"
-                            :key="index"
-                            v-if="maxItemsPerPage >= 12"
-                            :value="itemsPerPageOption">
-                       {{ itemsPerPageOption }} &nbsp;
-                    </option>
+                    <template v-for="(itemsPerPageOption, index) of itemsPerPageOptions">
+                        <option
+                                :key="index"
+                                v-if="maxItemsPerPage >= 12"
+                                :value="itemsPerPageOption">
+                        {{ itemsPerPageOption }} &nbsp;
+                        </option>
+                    </template>
                 </b-select>
             </b-field>
         </div>
