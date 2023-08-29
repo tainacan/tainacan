@@ -307,7 +307,7 @@ class Item extends Entity {
 	 * @return string "open"|"closed"
 	 */
 	public function get_comment_status() {
-		return apply_filters('comments_open', $this->get_mapped_property('comment_status'), $this->get_id());
+		return apply_filters('tainacan-item-comments_open', $this->get_mapped_property('comment_status'), $this->get_id());
 	}
 
 	/**
