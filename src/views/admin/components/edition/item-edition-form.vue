@@ -80,7 +80,7 @@
                 </h1>
             </transition>
             <button 
-                    v-if="!formErrors.length || isUpdatingValues"
+                    v-if="!errors.length || isUpdatingValues"
                     @click="isMobileSubheaderOpen = !isMobileSubheaderOpen">
                 <span 
                         v-if="isUpdatingValues"
@@ -106,7 +106,7 @@
             </button>
             <item-metadatum-errors-tooltip 
                     v-else
-                    :form-errors="formErrors" />
+                    :form-errors="errors" />
         </div>
 
         <transition name="item-appear">
@@ -127,7 +127,7 @@
                     {{ $i18n.get('title_edit_item') + ' ' }}
                     <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}</span>
                 </h1>
-                <span v-if="!formErrors.length">{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
+                <span v-if="!errors.length">{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
                 <span 
                         v-else
                         class="help is-danger">
@@ -388,8 +388,8 @@
                                                         class="icon">
                                                     <i 
                                                             :class="{
-                                                                'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || errorMessage) && !isSectionHidden(metadataSection.id),
-                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || errorMessage) || isSectionHidden(metadataSection.id)
+                                                                'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || formErrorMessage) && !isSectionHidden(metadataSection.id),
+                                                                'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage) || isSectionHidden(metadataSection.id)
                                                             }"
                                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                                 </span>
@@ -441,6 +441,7 @@
                                                             :is-last-metadatum="index > 2 && (index == itemMetadata.length - 1)"
                                                             :is-focused="focusedMetadatum === index"
                                                             :is-metadata-navigation="isMetadataNavigation"
+                                                            @input="updateItemMetadataValue"
                                                             @changeCollapse="onChangeCollapse($event, index)"
                                                             @touchstart="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
                                                             @mousedown="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
@@ -659,8 +660,8 @@
                     <span class="help is-danger">
                         {{ formErrorMessage }}
                         <item-metadatum-errors-tooltip 
-                                v-if="formErrors.length"
-                                :form-errors="formErrors" />
+                                v-if="errors.length"
+                                :form-errors="errors" />
                     </span>
                 </p>
 
@@ -713,9 +714,9 @@
 import { nextTick } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
-import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
 import wpMediaFrames from '../../js/wp-media-frames';
 import { formHooks } from '../../js/mixins';
+import { itemMetadataMixin } from '../../js/item-metadata-mixin';
 
 import RelatedItemsList from '../lists/related-items-list.vue';
 import CustomDialog from '../other/custom-dialog.vue';
@@ -744,7 +745,7 @@ export default {
         ItemAttachmentsEditionForm,
         ItemFormFooterButtons
     },
-    mixins: [ formHooks ],
+    mixins: [ formHooks, itemMetadataMixin ],
     beforeRouteLeave ( to, from, next ) {
         if (this.item.status == 'auto-draft') {
             this.$buefy.modal.open({
@@ -870,12 +871,6 @@ export default {
         totalRelatedItems() {
             return (this.item && this.item.related_items) ? Object.values(this.item.related_items).reduce((totalItems, aRelatedItemsGroup) => totalItems + parseInt(aRelatedItemsGroup.total_items), 0) : false;
         },
-        formErrors() {
-           return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
-        },
-        conditionalSections() {
-            return eventBusItemMetadata && eventBusItemMetadata.conditionalSections ? eventBusItemMetadata.conditionalSections : [];
-        },
         isEditingItemMetadataInsideIframe() {
             return this.$route.query && this.$route.query.editingmetadata;
         },
@@ -929,7 +924,7 @@ export default {
 
             // Clear form variables
             this.cleanItemMetadata();
-            eventBusItemMetadata.clearAllErrors();
+            this.clearAllErrors();
             this.formErrorMessage = '';
 
             this.isLoading = true;
@@ -984,7 +979,7 @@ export default {
     created() {
         // Obtains collection ID
         this.cleanItemMetadata();
-        eventBusItemMetadata.clearAllErrors();
+        this.clearAllErrors();
         this.formErrorMessage = '';
         this.collectionId = this.$route.params.collectionId;
         this.form.collectionId = this.collectionId;
@@ -1046,12 +1041,12 @@ export default {
                  * Creates the conditional metadata set to later watch values
                  * of certain metadata that control sections visibility.
                  */
-                eventBusItemMetadata.conditionalSections = {};
+                this.conditionalSections = {};
                 for (let metadataSection of metadataSections) {
                     if ( metadataSection.is_conditional_section == 'yes') { 
                         const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
                         if ( conditionalSectionId.length ) {
-                            eventBusItemMetadata.conditionalSections[metadataSection.id] = {
+                            this.conditionalSections[metadataSection.id] = {
                                 sectionId: metadataSection.id,
                                 metadatumId: conditionalSectionId[0],
                                 metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
@@ -1067,22 +1062,13 @@ export default {
             });
 
         // Sets feedback variables
-        eventBusItemMetadata.$emitter.on('isUpdatingValue', (status) => {
-            this.isUpdatingValues = status;
-        });
-        eventBusItemMetadata.$emitter.on('hasErrorsOnForm', (hasErrors) => {
-            if (hasErrors)
-                this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
-            else
-                this.formErrorMessage = '';
-        });
         this.cleanLastUpdated();
 
         // Updates variables for metadata navigation from compound childs
-        eventBusItemMetadata.$emitter.on('isOnFirstMetadatumOfCompoundNavigation', (isOnFirstMetadatumOfCompoundNavigation) => {
+        this.$emitter.on('isOnFirstMetadatumOfCompoundNavigation', (isOnFirstMetadatumOfCompoundNavigation) => {
             this.isOnFirstMetadatumOfCompoundNavigation = isOnFirstMetadatumOfCompoundNavigation
         });
-        eventBusItemMetadata.$emitter.on('isOnLastMetadatumOfCompoundNavigation', (isOnLastMetadatumOfCompoundNavigation) => {
+        this.$emitter.on('isOnLastMetadatumOfCompoundNavigation', (isOnLastMetadatumOfCompoundNavigation) => {
             this.isOnLastMetadatumOfCompoundNavigation = isOnLastMetadatumOfCompoundNavigation
         });
 
@@ -1095,10 +1081,8 @@ export default {
             this.isMobileSubheaderOpen = true;
     },
     beforeUnmount () {
-        eventBusItemMetadata.$emitter.off('isUpdatingValue');
-        eventBusItemMetadata.$emitter.off('hasErrorsOnForm');
-        eventBusItemMetadata.$emitter.off('isOnFirstMetadatumOfCompoundNavigation');
-        eventBusItemMetadata.$emitter.off('isOnLastMetadatumOfCompoundNavigation');
+        this.$emitter.off('isOnFirstMetadatumOfCompoundNavigation');
+        this.$emitter.off('isOnLastMetadatumOfCompoundNavigation');
         window.removeEventListener('resize', this.handleWindowResize);
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
@@ -1166,7 +1150,7 @@ export default {
                 promise = this.updateItem(data);
 
             // Clear errors so we don't have them duplicated from api
-            eventBusItemMetadata.errors = [];
+            this.errors = [];
 
             promise.then(updatedItem => {
 
@@ -1225,7 +1209,7 @@ export default {
                 if (errors.errors) {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBusItemMetadata.errors.push({ 
+                            this.errors.push({ 
                                 metadatum_id: metadatum,
                                 errors: error[metadatum]
                             });
@@ -1238,6 +1222,12 @@ export default {
 
                 this.isLoading = false;
             });
+        },
+        hasErrorsOnForm(hasErrors) {
+            if (hasErrors)
+                this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
+            else
+                this.formErrorMessage = '';
         },
         onDiscard() {
             if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode)
@@ -1261,7 +1251,7 @@ export default {
             ]);
 
             // Clear errors so we don't have them duplicated from api
-            eventBusItemMetadata.errors = [];
+            this.errors = [];
 
             // Creates draft Item
             this.form.comment_status = this.form.comment_status == 'open' ? 'open' : 'closed';
@@ -1290,7 +1280,7 @@ export default {
 
                 // If a parameter was passed with a suggestion of item title, also send a patch to item metadata
                 if (this.$route.query.newitemtitle) {
-                    eventBusItemMetadata.$emit('input', {
+                    this.updateItemMetadataValue({
                         itemId: this.itemId,
                         metadatumId: this.$route.query.newmetadatumid,
                         values: this.$route.query.newitemtitle,
@@ -1334,8 +1324,8 @@ export default {
                         const currentItemMetadatum = metadata.find(anItemMetadatum => anItemMetadatum.metadatum.id == this.conditionalSections[conditionalSectionId].metadatumId);
                         if (currentItemMetadatum) {
                             const itemMetadatumValues = Array.isArray(currentItemMetadatum.value) ? currentItemMetadatum.value : [ currentItemMetadatum.value ];
-                            const conditionalValues = Array.isArray(eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues) ? eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues : [eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues];
-                            eventBusItemMetadata.conditionalSections[conditionalSectionId].hide = itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue) < 0);
+                            const conditionalValues = Array.isArray(this.conditionalSections[conditionalSectionId].metadatumValues) ? this.conditionalSections[conditionalSectionId].metadatumValues : [this.conditionalSections[conditionalSectionId].metadatumValues];
+                            this.conditionalSections[conditionalSectionId].hide = itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue) < 0);
                         }
                     }
 
@@ -1389,7 +1379,7 @@ export default {
                 .catch((errors) => {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBusItemMetadata.errors.push({ 
+                            this.errors.push({ 
                                 metadatum_id: metadatum, 
                                 errors: error[metadatum]
                             });
@@ -1472,7 +1462,7 @@ export default {
                 .catch((errors) => {
                     for (let error of errors.errors) {
                         for (let metadatum of Object.keys(error)){
-                            eventBusItemMetadata.errors.push({ 
+                            this.errors.push({ 
                                 metadatum_id: metadatum, 
                                 errors: error[metadatum]
                             });
@@ -1500,7 +1490,7 @@ export default {
             .catch((errors) => {
                 for (let error of errors.errors) {
                     for (let metadatum of Object.keys(error)){
-                        eventBusItemMetadata.errors.push({
+                        this.errors.push({
                             metadatum_id: metadatum,
                             errors: error[metadatum]
                         });
@@ -1575,7 +1565,7 @@ export default {
                         .catch((errors) => {
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)){
-                                    eventBusItemMetadata.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
+                                    this.errors.push({ metadatum_id: metadatum, errors: error[metadatum]});
                                 }
                             }
                             this.formErrorMessage = errors.error_message;
@@ -1646,13 +1636,13 @@ export default {
         },
         onChangeCollapse(event, index) {
             if (event && !this.metadataCollapses[index] && this.itemMetadata[index].metadatum && this.itemMetadata[index].metadatum['metadata_type'] === "Tainacan\\Metadata_Types\\GeoCoordinate")
-                eventBusItemMetadata.$emit('itemEditionFormResize');
+                this.$emitter.emit('itemEditionFormResize');
                 
             this.metadataCollapses.splice(index, 1, event);
         },
         toggleMetadataSectionCollapse(sectionIndex) {
             if (!this.isMetadataNavigation) 
-                Object.assign( this.metadataSectionCollapses, { [sectionIndex]: (this.errorMessage ? true : !this.metadataSectionCollapses[sectionIndex]) });
+                Object.assign( this.metadataSectionCollapses, { [sectionIndex]: (this.formErrorMessage ? true : !this.metadataSectionCollapses[sectionIndex]) });
         },
         onDeletePermanently() {
             this.$buefy.modal.open({
@@ -1786,7 +1776,7 @@ export default {
         },
         handleWindowResize: _.debounce( function() {
             nextTick(() => {
-                eventBusItemMetadata.$emit('itemEditionFormResize');
+                this.$emitter.emit('itemEditionFormResize');
                 if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth)
                     this.isMobileScreen = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 768;
             });
@@ -1796,14 +1786,14 @@ export default {
             const isPreviouslyFocusedOnCompoundMetadatum = previouslyFocusedMetadatum.metadatum && previouslyFocusedMetadatum.metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
             
             if (isPreviouslyFocusedOnCompoundMetadatum || this.isCurrentlyFocusedOnCompoundMetadatum)
-                eventBusItemMetadata.$emit('focusPreviousChildMetadatum');
+                this.$emitter.emit('focusPreviousChildMetadatum');
                 
             if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnFirstMetadatumOfCompoundNavigation) )
                 this.setMetadatumFocus({ index: this.focusedMetadatum - 1, scrollIntoView: true });
         },
         focusNextMetadatum() {
             if (this.isCurrentlyFocusedOnCompoundMetadatum && !this.isOnLastMetadatumOfCompoundNavigation)
-                eventBusItemMetadata.$emit('focusNextChildMetadatum');
+                this.$emitter.emit('focusNextChildMetadatum');
 
             if ( !this.isCurrentlyFocusedOnCompoundMetadatum || (this.isCurrentlyFocusedOnCompoundMetadatum && this.isOnLastMetadatumOfCompoundNavigation) )
                 this.setMetadatumFocus({ index: this.focusedMetadatum + 1, scrollIntoView: true });  

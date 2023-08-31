@@ -192,10 +192,10 @@ export default {
             'getMetadatumTypes'
         ]),
         addMetadatumViaButton(metadatumType) {
-            this.$eventBusMetadataList.emit('addMetadatumViaButton', metadatumType);
+            this.$emitter.emit('addMetadatumViaButton', metadatumType);
         },
         addMetadataSectionViaButton() {
-            this.$eventBusMetadataList.emit('addMetadataSectionViaButton');
+            this.$emitter.emit('addMetadataSectionViaButton');
         },
         getPreviewTemplateContent(metadatum) {
             return `<div class="metadata-type-preview tainacan-form">

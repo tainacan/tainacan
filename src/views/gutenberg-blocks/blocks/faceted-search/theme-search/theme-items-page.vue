@@ -930,7 +930,7 @@
                     this.openAdvancedSearch = this.$route.query.advancedSearch;
                 }
 
-                this.$root.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
+                this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
                     this.openAdvancedSearch = openAdvancedSearch;
                 });
             }
@@ -1467,7 +1467,7 @@
                     window.removeEventListener('resize', this.hideFiltersOnMobile);
                 // $root
                 if (!this.hideAdvancedSearch)
-                    this.$root.$emitter.off('openAdvancedSearch');
+                    this.$emitter.off('openAdvancedSearch');
                 // $eventBusSearch
                 this.$eventBusSearchEmitter.off('isLoadingItems');
                 this.$eventBusSearchEmitter.off('hasFiltered');

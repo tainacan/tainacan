@@ -1,11 +1,13 @@
-import { createApp } from 'vue';
-import store from './store/store'
-import mitt from 'mitt';
+import { mapActions } from 'vuex';
 
-const emitter = mitt();
-
-export const eventBusItemMetadata = createApp({
-    data: () => {
+export const itemMetadataMixin = {
+    created() {
+        this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
+    },
+    beforeDestroy() {
+        this.$emitter.off('removeCompoundGroup', this.removeItemMetadataGroup);
+    },
+    data () {
         return {
             errors : [],
             conditionalSections: {}
@@ -14,65 +16,50 @@ export const eventBusItemMetadata = createApp({
     watch: {
         errors: {
             handler() {
-                this.$emit('hasErrorsOnForm', this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length);
+                this.hasErrorsOnForm( this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length );
                 
                 if (this.errors.length > 0 && this.errors[0].errors && this.errors[0].errors.length) {
                     for (let error of this.errors) 
-                        this.$emit('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
+                        this.$emitter.on('updateErrorMessageOf#' + (error.metadatum_id + (error.parent_meta_id ? '-' + error.parent_meta_id : '')), error);
                 }
             },
             deep: true
         }
     },
-    emits: [
-        'input',
-        'itemEditionFormResize',
-        'focusPreviousChildMetadatum',
-        'focusNextChildMetadatum',
-        'removeCompoundGroup',
-        'isOnLastMetadatumOfCompoundNavigation',
-        'isOnFirstMetadatumOfCompoundNavigation',
-        'hasErrorsOnForm',
-        'updateErrorMessageOf#',
-        'hasRemovedItemMetadataGroup',
-        'isUpdatingValue'
-    ],
-    created() {
-        this.$emitter.on('input', this.updateValue);
-        this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
-    },
-    beforeUpdate() {
-        this.$emitter.off('input', this.updateValue);
-        this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
-    },
-    methods : {
-        updateValue({ itemId, metadatumId, values, parentMetaId, parentId }){
+    methods: {
+        ...mapActions('item', [
+            'updateItemMetadatum',
+            'updateItemSubmissionMetadatum',
+            'deleteItemMetadataGroup',
+            'deleteGroupFromItemSubmissionMetadatum'
+        ]),
+        updateItemMetadataValue({ itemId, metadatumId, values, parentMetaId, parentId }){
             
             if (itemId) {
 
-                this.$emit('isUpdatingValue', true);
+                this.isUpdatingValues = true;;
 
                 if (values.length > 0 && values[0] && values[0].value) {
                     let onlyValues = values.map((aValueObject) => aValueObject.value);
                     values = onlyValues;
                 }
                 
-                this.$store.dispatch('item/updateItemMetadatum', { 
+                this.updateItemMetadatum({ 
                     item_id: itemId, 
                     metadatum_id: metadatumId, 
                     values: Array.isArray(values[0])  ? values[0] : values,
                     parent_meta_id: parentMetaId ? parentMetaId : null
                 })
                     .then(() => { 
-                        this.$emit('isUpdatingValue', false);
+                        this.isUpdatingValues = false;
                         let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
                         if (index >= 0)
                             this.errors.splice( index, 1);
                         
-                        this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
+                        this.$emitter.emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
                     })
                     .catch(({ error_message, error, item_metadata }) => {
-                        this.$emit('isUpdatingValue', false);
+                        this.isUpdatingValues = false;;
                         let index = this.errors.findIndex( errorItem => errorItem.metadatum_id == metadatumId && (parentMetaId ? errorItem.parent_meta_id == parentMetaId : true ));
                         let messages = [];
 
@@ -81,10 +68,10 @@ export const eventBusItemMetadata = createApp({
 
                         if ( index >= 0) {
                             Object.assign( this.errors, { [index]: { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } });
-                            this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
+                            this.$emitter.emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[index]);
                         } else {
                             this.errors.push( { metadatum_id: metadatumId, parent_meta_id: parentMetaId, errors: messages } );
-                            this.$emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[0]);
+                            this.$emitter.emit('updateErrorMessageOf#' + (parentMetaId ? metadatumId + '-' + parentMetaId : metadatumId), this.errors[0]);
                         }
                         
                 });
@@ -97,7 +84,7 @@ export const eventBusItemMetadata = createApp({
                     values = JSON.parse(JSON.stringify(onlyValues));
                 }
                 
-                this.$store.dispatch('item/updateItemSubmissionMetadatum', { 
+                this.updateItemSubmissionMetadatum({ 
                     metadatum_id: metadatumId, 
                     values: Array.isArray(values[0]) ? values[0] : values,
                     child_group_index: parentMetaId,
@@ -107,7 +94,7 @@ export const eventBusItemMetadata = createApp({
                 // In the item submission, we don't want to block submission or clear errors before a re-submission is performed,
                 // as the validation depends on a single server-side request. Thus, we do not update error arary here.
 
-                this.$emit('isUpdatingValue', false);
+                this.isUpdatingValues = false;;
             }
 
             /** 
@@ -123,42 +110,37 @@ export const eventBusItemMetadata = createApp({
             }
             this.conditionalSections = updatedConditionalSections;
         },
+        clearAllErrors() {
+            this.errors = [];
+        },
         removeItemMetadataGroup({ itemId, metadatumId, parentMetaId, parentMetadatum }) {
             
-            this.$emit('isUpdatingValue', true);
+            this.isUpdatingValues = true;;
             
             if (itemId && metadatumId && parentMetaId) {
                 
-                this.$store.dispatch('item/deleteItemMetadataGroup', { 
+                this.deleteItemMetadataGroup({ 
                     item_id: itemId, 
                     metadatum_id: metadatumId,
                     parent_meta_id: parentMetaId
                 })
                     .then((res) => {
-                        this.$emit('hasRemovedItemMetadataGroup', res);
-                        this.$emit('isUpdatingValue', false);
+                        this.$emitter.emit('hasRemovedItemMetadataGroup', res);
+                        this.isUpdatingValues = false;
                     })
-                    .catch(() => this.$emit('isUpdatingValue', false));
+                    .catch(() => this.isUpdatingValues = false);
             
             // Item sbmission logic
             } else if (!itemId) {
                 
-                this.$store.dispatch('item/deleteGroupFromItemSubmissionMetadatum', { 
+                this.deleteGroupFromItemSubmissionMetadatum({ 
                     metadatum_id: metadatumId,
                     child_group_index: parentMetaId
                 });
                 
-                this.$emit('hasRemovedItemMetadataGroup', true);
-                this.$emit('isUpdatingValue', false);
+                this.$emitter.emit('hasRemovedItemMetadataGroup', true);
+                this.isUpdatingValues = false;
             }
         },
-        clearAllErrors() {
-           this.errors = [];
-        },
-        fetchCompoundFirstParentMetaId({ itemId, metadatumId }) {
-            return this.$store.dispatch('item/fetchCompoundFirstParentMetaId', { item_id: itemId, metadatum_id: metadatumId });
-        }
     }
-});
-eventBusItemMetadata.config.globalProperties.$emitter = emitter;
-eventBusItemMetadata.use(store);
+}

@@ -408,7 +408,7 @@
 
             this.expandResultsSection = this.shouldBeginWithListExpanded;
             
-            this.$parent.$emitter.on('updateTaxonomyInputs', ($event) => { 
+            this.$emitter.on('updateTaxonomyInputs', ($event) => { 
                 if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
                     this.optionName = '';

@@ -188,7 +188,7 @@ import ItemCreationStatusDialog from '../other/item-creation-status-dialog.vue';
 export default {
     props: {
         status: String,
-        collectionId: Number,
+        collectionId: Number|String,
         isOnSequenceEdit: Boolean,
         isCurrentItemOnSequenceEdit: Boolean,
         hasNextItemOnSequenceEdit: Boolean,
@@ -206,13 +206,13 @@ export default {
         'onDiscard',
     ],
     mounted() {
-        this.$parent.$emitter.on('toggleItemEditionFooterDropdown', () => {
+        this.$emitter.on('toggleItemEditionFooterDropdown', () => {
             if (this.$refs && this.$refs['item-edition-footer-dropdown'])
                 this.$refs['item-edition-footer-dropdown'].toggle();
         });
     },
     beforeUnmount() {
-        this.$parent.$emitter.off('toggleItemEditionFooterDropdown');
+        this.$emitter.off('toggleItemEditionFooterDropdown');
     },
     methods: {
         openItemCreationStatusDialog() {

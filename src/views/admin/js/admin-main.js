@@ -115,9 +115,6 @@ export default (element) => {
             const emitter = mitt();
             app.config.globalProperties.$emitter = emitter;
 
-            const eventBusMetadataList = mitt();
-            app.config.globalProperties.$eventBusMetadataList = emitter;
-
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
                 for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins))
@@ -240,7 +237,6 @@ export default (element) => {
             app.component('tainacan-title', TainacanTitle);
 
             // Event bus are needed to facilate comunication between child-parent-child components
-            app.use(eventBusMetadataList);
             app.use(eventBusSearch);
 
             // Changing title of pages

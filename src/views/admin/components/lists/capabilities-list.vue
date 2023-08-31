@@ -68,8 +68,8 @@
                         <complete-roles-list 
                                 v-if="capability.roles"
                                 :complete-roles-list="getCompleteRolesList(capability.roles, capability.roles_inherited)">
-                            <td
-                                    slot-scope="props"
+                            <template #props>
+                                <td
                                     class="table-creation column-small-width"
                                     :label="$i18n.get('label_associated_roles')"
                                     :aria-label="$i18n.get('label_associated_roles') + ': ' + props['complete-roles-list']">
@@ -85,7 +85,8 @@
                                             placement: 'auto-start'
                                         }"
                                         v-html="props['complete-roles-list']"/>
-                            </td>
+                                </td>
+                            </template>
                         </complete-roles-list>
                         <!-- Actions -->
                         <td  
@@ -121,6 +122,7 @@
 
     // Auxiliary component for avoinding multiple calls to getCompleteRolesList
     const CompleteRolesList = {
+        inheritAttrs: false,
         render() {
             return !!this.$slots.default && typeof this.$slots.default == 'function' ? this.$slots.default(this.$attrs) : '';
         }
@@ -132,7 +134,7 @@
         },
         props: {
             isLoading: false,
-            capabilities: Array
+            capabilities: Object
         },
         methods: {
             openCapabilitiyEditModal(capabilityKey) {

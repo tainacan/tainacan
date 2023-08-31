@@ -503,6 +503,7 @@
                                                 :hide-help-buttons="hideHelpButtons"
                                                 :help-info-bellow-label="helpInfoBellowLabel"
                                                 :is-collapsed="metadataCollapses[index]"
+                                                @input="updateItemMetadataValue"
                                                 @changeCollapse="onChangeCollapse($event, index)"/>
 
                                         <!-- JS-side hook for extra content -->
@@ -553,11 +554,11 @@
                     </div>
                     <div class="form-error-area-messages">
                         <strong>{{ formErrorMessage }}</strong>
-                        <template v-if="formErrors.length && formErrors[0].errors && formErrors[0].errors.length">
+                        <template v-if="errors.length && errors[0].errors && errors[0].errors.length">
                             <p>{{ $i18n.get('instruction_click_error_to_go_to_metadata') }}</p>
                             <ol>
                                 <template 
-                                        v-for="(error, index) of formErrors"
+                                        v-for="(error, index) of errors"
                                         :key="index">
                                     <li v-if="error.errors.length">
                                         <a 
@@ -745,12 +746,12 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { eventBusItemMetadata } from '../../../../admin/js/event-bus-item-metadata';
 import { formHooks } from '../../../../admin/js/mixins';
+import { itemMetadataMixin } from '../../../../admin/js/item-metadata-mixin';
 
 export default {
     name: 'ItemSubmissionForm',
-    mixins: [ formHooks ],
+    mixins: [ formHooks, itemMetadataMixin ],
     props: {
         collectionId: String,
         hideFileModalButton: Boolean,
@@ -863,27 +864,21 @@ export default {
         metadataSections() {
             return this.showSteppedLayout ? this.getMetadataSections().filter(aMetadataSection => !this.isSectionHidden(aMetadataSection.id)) : this.getMetadataSections();
         },
-        formErrors() {
-           return eventBusItemMetadata && eventBusItemMetadata.errors && eventBusItemMetadata.errors.length ? eventBusItemMetadata.errors : []
-        },
         hasMoreThanOneDocumentTypeOption() {
             return [ this.hideFileModalButton, this.hideTextModalButton, this.hideLinkModalButton ].filter((option) => { return option == false }).length > 1;
         },
         documentErrorMessage() {
-            const existingError = this.formErrors.find(error => error.metadatum_id == 'document');
+            const existingError = this.errors.find(error => error.metadatum_id == 'document');
             return existingError ? existingError.errors : '';
         },
         attachmentsErrorMessage() {
-            const existingError = this.formErrors.find(error => error['attachments'] || error.metadatum_id == 'attachments');
+            const existingError = this.errors.find(error => error['attachments'] || error.metadatum_id == 'attachments');
             return existingError ? existingError.errors : '';
         },
         thumbnailErrorMessage() {
-            const existingError = this.formErrors.find(error => error.metadatum_id == 'thumbnail');
+            const existingError = this.errors.find(error => error.metadatum_id == 'thumbnail');
             return existingError ? existingError.errors : '';
-        },
-        conditionalSections() {
-            return eventBusItemMetadata && eventBusItemMetadata.conditionalSections ? eventBusItemMetadata.conditionalSections : [];
-        },
+        }
     },
     created() {
         
@@ -901,24 +896,13 @@ export default {
                 // Initialize clear data from store
                 this.clearItemSubmission();
 
-                eventBusItemMetadata.clearAllErrors();
+                this.clearAllErrors();
                 this.formErrorMessage = '';
                 this.form.collection_id = this.collectionId;
 
                 // CREATING NEW ITEM SUBMISSION
                 this.createNewItem();
 
-                eventBusItemMetadata.$emitter.on('hasErrorsOnForm', (hasErrors) => {
-                    if (hasErrors) {
-                        if (Array.isArray(this.formErrors)) {
-                            for (let i = 0; i < this.metadataSectionCollapses.length; i++)
-                                Object.assign(this.metadataSectionCollapses, { [i]: true });
-                        }
-                        this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
-                        this.loadMetadataElements();
-                    } else
-                        this.formErrorMessage = '';
-                });
             })
             .catch(() => {
                 this.collecionAllowsItemSubmission = false;
@@ -938,12 +922,12 @@ export default {
                  * Creates the conditional metadata set to later watch values
                  * of certain metadata that control sections visibility.
                  */
-                eventBusItemMetadata.conditionalSections = {};
+                this.conditionalSections = {};
                 for (let metadataSection of metadataSections) {
                     if ( metadataSection.is_conditional_section == 'yes') { 
                         const conditionalSectionId = Object.keys(metadataSection.conditional_section_rules);
                         if ( conditionalSectionId.length ) {
-                            eventBusItemMetadata.conditionalSections[metadataSection.id] = {
+                            this.conditionalSections[metadataSection.id] = {
                                 sectionId: metadataSection.id,
                                 metadatumId: conditionalSectionId[0],
                                 metadatumValues: metadataSection.conditional_section_rules[conditionalSectionId[0]],
@@ -966,9 +950,6 @@ export default {
             this.form.document_type = 'text';
         else if (this.hideFileModalButton && this.hideTextModalButton && !this.hideLinkModalButton)
             this.form.document_type = 'url';
-    },
-    beforeUnmount () {
-        eventBusItemMetadata.$emitter.off('hasErrorsOnForm');
     },
     methods: {
         ...mapActions('item', [
@@ -1028,7 +1009,7 @@ export default {
             this.setItemSubmission(Object.assign(this.itemSubmission, data));
 
             // Clear errors so we don't have them duplicated from api
-            eventBusItemMetadata.errors = [];
+            this.errors = [];
 
             this.submitItemSubmission({
                     itemSubmission: this.itemSubmission,
@@ -1052,7 +1033,7 @@ export default {
                                 if (errors.errors) {
                                     for (let error of errors.errors) {
                                         for (let metadatum of Object.keys(error)) {
-                                            eventBusItemMetadata.errors.push({
+                                            this.errors.push({
                                                 metadatum_id: metadatum,
                                                 errors: error[metadatum]
                                             });
@@ -1071,7 +1052,7 @@ export default {
                     if (errors.errors) {
                         for (let error of errors.errors) {
                             for (let metadatum of Object.keys(error)) {
-                                eventBusItemMetadata.errors.push({
+                                this.errors.push({
                                     metadatum_id: metadatum,
                                     errors: error[metadatum]
                                 });
@@ -1085,11 +1066,22 @@ export default {
                     this.isUploading = false;
                 });
         },
+        hasErrorsOnForm(hasErrors) {
+            if (hasErrors) {
+                if (Array.isArray(this.errors)) {
+                    for (let i = 0; i < this.metadataSectionCollapses.length; i++)
+                        Object.assign(this.metadataSectionCollapses, { [i]: true });
+                }
+                this.formErrorMessage = this.formErrorMessage ? this.formErrorMessage : this.$i18n.get('info_errors_in_form');
+                this.loadMetadataElements();
+            } else
+                this.formErrorMessage = '';
+        },
         onDiscard() {
             // Initialize clear data from store
             this.clearItemSubmission();
 
-            eventBusItemMetadata.clearAllErrors();
+            this.clearAllErrors();
             this.formErrorMessage = '';
             this.form.collection_id = this.collectionId;
 
@@ -1099,7 +1091,7 @@ export default {
         createNewItem() {
 
             // Clear errors so we don't have them duplicated from api
-            eventBusItemMetadata.errors = [];
+            this.errors = [];
 
             let data = JSON.parse(JSON.stringify(this.form));
 
@@ -1168,7 +1160,7 @@ export default {
         },
         loadMetadataElements() {
             this.metadataElements = {};
-            this.formErrors.map((error) => {
+            this.errors.map((error) => {
                 this.metadataElements[error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : '')] = document.getElementById('tainacan-item-metadatum_id-' + error.metadatum_id + (error.parent_meta_id ? ('_parent_meta_id-' + error.parent_meta_id) : ''));
             });
         },

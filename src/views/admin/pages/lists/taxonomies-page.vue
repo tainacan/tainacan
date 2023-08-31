@@ -10,7 +10,6 @@
                         v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')"
                         class="header-item">
                     <router-link
-                            tag="button"
                             :to="{ path: $routerHelper.getNewTaxonomyPath() }"
                             custom
                             v-slot="{ navigate }">

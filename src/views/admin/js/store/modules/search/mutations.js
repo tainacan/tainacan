@@ -135,7 +135,6 @@ export const removePostIn = ( state ) => {
 };
 
 export const setTotalItems = ( state, total ) => {
-    console.log(total)
     state.totalItems = total;
 };
 

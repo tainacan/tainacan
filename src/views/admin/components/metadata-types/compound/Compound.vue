@@ -115,7 +115,7 @@
 
 <script>
     import { nextTick } from 'vue';
-    import { eventBusItemMetadata } from '../../../js/event-bus-item-metadata';
+    import { mapActions } from 'vuex';
 
     export default {
         props: {
@@ -181,16 +181,19 @@
             }
         },
         created() {
-            eventBusItemMetadata.$emitter.on('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
-            eventBusItemMetadata.$emitter.on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
-            eventBusItemMetadata.$emitter.on('focusNextChildMetadatum', this.focusNextChildMetadatum);
+            this.$emitter.on('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
+            this.$emitter.on('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            this.$emitter.on('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         beforeUnmount() {
-            eventBusItemMetadata.$emitter.off('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
-            eventBusItemMetadata.$emitter.off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
-            eventBusItemMetadata.$emitter.off('focusNextChildMetadatum', this.focusNextChildMetadatum);
+            this.$emitter.off('hasRemovedItemMetadataGroup', this.laterUpdateIsRemovingGroup);
+            this.$emitter.off('focusPreviousChildMetadatum', this.focusPreviousChildMetadatum);
+            this.$emitter.off('focusNextChildMetadatum', this.focusNextChildMetadatum);
         },
         methods: {
+            ...mapActions('item', [
+                'fetchCompoundFirstParentMetaId'
+            ]),
             createChildMetadataGroups() {
                 let currentChildItemMetadataGroups = [];
 
@@ -280,9 +283,9 @@
                 if (this.itemMetadatum.item && this.itemMetadatum.item.id) {
                 
                     // Sends value to api so we can obtain the parent_meta_id
-                    eventBusItemMetadata.fetchCompoundFirstParentMetaId({
-                        itemId: this.itemMetadatum.item.id,
-                        metadatumId: this.itemMetadatum.metadatum.id
+                    this.fetchCompoundFirstParentMetaId({
+                        item_id: this.itemMetadatum.item.id,
+                        metadatum_id: this.itemMetadatum.metadatum.id
                     }).then((parentMetaId) => {
 
                         // Create a new placeholder parent_meta_id group here.
@@ -352,7 +355,7 @@
                 
                 if (this.itemMetadatum.value && this.itemMetadatum.value[groupIndex] && this.itemMetadatum.value[groupIndex][0]) {
                     this.isRemovingGroup = true;
-                    eventBusItemMetadata.$emit('removeCompoundGroup', {
+                    this.$emitter.emit('removeCompoundGroup', {
                         itemId: this.itemMetadatum.item.id,
                         metadatumId: this.itemMetadatum.metadatum.id,
                         parentMetaId: this.itemMetadatum.item.id ? this.itemMetadatum.value[groupIndex][0].parent_meta_id : groupIndex
@@ -386,8 +389,8 @@
 
                 // This keeps the navigation going on when no child input exists
                 if (this.childItemMetadataGroups.length === 0) {
-                    eventBusItemMetadata.$emit('isOnFirstMetadatumOfCompoundNavigation', true);
-                    eventBusItemMetadata.$emit('isOnLastMetadatumOfCompoundNavigation', true);
+                    this.$emitter.emit('isOnFirstMetadatumOfCompoundNavigation', true);
+                    this.$emitter.emit('isOnLastMetadatumOfCompoundNavigation', true);
                 }
             },
             focusNextChildMetadatum() {
@@ -401,13 +404,13 @@
 
                 // This keeps the navigation going on when no child input exists
                 if (this.childItemMetadataGroups.length === 0) {
-                    eventBusItemMetadata.$emit('isOnFirstMetadatumOfCompoundNavigation', true);
-                    eventBusItemMetadata.$emit('isOnLastMetadatumOfCompoundNavigation', true);
+                    this.$emitter.emit('isOnFirstMetadatumOfCompoundNavigation', true);
+                    this.$emitter.emit('isOnLastMetadatumOfCompoundNavigation', true);
                 }
             },
             informItemEditionFormOfChildNavigation() {
-                eventBusItemMetadata.$emit('isOnFirstMetadatumOfCompoundNavigation', this.focusedGroupMetadatum === 0 && this.focusedChildMetadatum === 0);
-                eventBusItemMetadata.$emit('isOnLastMetadatumOfCompoundNavigation', (this.focusedGroupMetadatum === this.childItemMetadataGroups.length - 1) && (this.focusedChildMetadatum === this.childItemMetadataGroups[this.focusedGroupMetadatum].length - 1) );
+                this.$emitter.emit('isOnFirstMetadatumOfCompoundNavigation', this.focusedGroupMetadatum === 0 && this.focusedChildMetadatum === 0);
+                this.$emitter.emit('isOnLastMetadatumOfCompoundNavigation', (this.focusedGroupMetadatum === this.childItemMetadataGroups.length - 1) && (this.focusedChildMetadatum === this.childItemMetadataGroups[this.focusedGroupMetadatum].length - 1) );
             },
             setMetadatumChildFocus({ groupIndex = 0, childIndex = 0, scrollIntoView = false }) {
                 const previousGroupIndex = this.focusedGroupMetadatum;

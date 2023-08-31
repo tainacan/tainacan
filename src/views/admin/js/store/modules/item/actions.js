@@ -291,7 +291,7 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
             let total =  res.headers['x-wp-total'];
 
             commit('setAttachments', attachments);
-            commit('setTotalAttachments', total);
+            commit('setTotalAttachments', isNaN(total) ? 0 : Number(total));
 
             resolve( {
                 attachments: attachments,

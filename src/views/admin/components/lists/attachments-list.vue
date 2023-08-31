@@ -169,9 +169,8 @@
                     // excludeDocumentId: this.form.document,
                     // excludeThumbnailId: this.item.thumbnail_id
                 })
-                    .then((response) => {
+                    .then(() => {
                         this.isLoading = false;
-                        this.totalAttachments = response.total;
                     })
                     .catch((error) => {
                         this.isLoading = false;

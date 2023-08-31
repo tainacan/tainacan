@@ -14,8 +14,6 @@
                         :model-value="selected"
                         @update:model-value="onInput"
                         @blur="onBlur"
-                        @add="onAdd"
-                        @remove="onRemove"
                         :data="options"
                         :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                         autocomplete

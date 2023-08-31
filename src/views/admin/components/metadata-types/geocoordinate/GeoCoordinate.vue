@@ -93,8 +93,6 @@
     import iconUrl from 'leaflet/dist/images/marker-icon.png';
     import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
     import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
-    
-    import { eventBusItemMetadata } from '../../../js/event-bus-item-metadata';
 
     delete Icon.Default.prototype._getIconUrl;
     Icon.Default.mergeOptions({
@@ -202,7 +200,7 @@
             // We need to pass mapComponentRef here instead of creating it inside the function
             // otherwise the listener would conflict when multiple geo metadata are inserted.
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-            eventBusItemMetadata.$emitter.on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
+            this.$emitter.on('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         mounted() {
             nextTick(() => {
@@ -212,7 +210,7 @@
         },
         beforeUnmount() {
             const mapComponentRef = 'map--' + this.itemMetadatumIdentifier;
-            eventBusItemMetadata.$emitter.off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
+            this.$emitter.off('itemEditionFormResize', () => this.handleWindowResize(mapComponentRef));
         },
         methods: {
             onUpdateFromLatitudeInput: _.debounce( function($event) {

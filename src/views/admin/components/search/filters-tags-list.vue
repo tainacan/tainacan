@@ -135,7 +135,6 @@
         watch: {
             filterTags: {
                 handler() {
-                    console.log(this.swiper)
                     if (typeof this.swiper.update == 'function')
                         this.swiper.update();
                 },

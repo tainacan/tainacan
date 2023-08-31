@@ -62,6 +62,7 @@
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
                         @blur="performValueChange"
+                        :disabled="false"
                         :metadata-name-filter-string="metadataNameFilterString"
                         :hide-collapses="hideCollapses"
                         :hide-metadata-types="hideMetadataTypes"
@@ -85,6 +86,7 @@
                                     :item-metadatum="itemMetadatum"
                                     @input="changeValue"
                                     @blur="performValueChange"
+                                    :disabled="false"
                                     :metadata-name-filter-string="metadataNameFilterString"
                                     :hide-collapses="hideCollapses"
                                     :hide-metadata-types="hideMetadataTypes"
@@ -139,6 +141,7 @@
                         :item-metadatum="itemMetadatum"
                         @input="changeValue"
                         @blur="performValueChange"
+                        :disabled="false"
                         :is-last-metadatum="isLastMetadatum"
                         :hide-collapses="hideCollapses"
                         :hide-metadata-types="hideMetadataTypes"
@@ -156,7 +159,6 @@
 
 <script>
     import { nextTick } from 'vue';
-    import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
 
     export default {
         name: 'TainacanFormItem',
@@ -218,7 +220,7 @@
         },
         created() {
             this.setInitialValues();
-            eventBusItemMetadata.$emitter.on('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id), (errors) => {    
+            this.$emitter.on('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id), (errors) => {    
                 let updatedErrorMessage = '';
                 if (errors && errors.errors && this.itemMetadatum && this.itemMetadatum.metadatum && (this.itemMetadatum.parent_meta_id ? (this.itemMetadatum.parent_meta_id == errors.parent_meta_id && this.itemMetadatum.metadatum.id == errors.metadatum_id) : this.itemMetadatum.metadatum.id == errors.metadatum_id)) {
                     for (let error of errors.errors) { 
@@ -231,7 +233,7 @@
         },
         beforeUnmount() {
             if (this.itemMetadatum && this.itemMetadatum.metadatum) {
-                eventBusItemMetadata.$emitter.off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
+                this.$emitter.off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
             }
         },
         mounted () {
@@ -314,7 +316,7 @@
                 }
                 
                 // If none is the case, the value is update request is sent to the API
-                eventBusItemMetadata.$emit('input', {
+                this.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
                     values: this.values ? this.values : '',

@@ -15,7 +15,7 @@
 
         </div>
         <div 
-                v-if="!isLoading && !$adminOptions.hideItemEditionThumbnail"
+                v-if="!$adminOptions.hideItemEditionThumbnail"
                 class="section-box section-thumbnail">
             <div class="thumbnail-field">
                 <file-item

@@ -3,7 +3,7 @@
         <b-input
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :disabled="disabled"
-                :custom-class="{ 'is-danger': isInvalidDate && dateValue }"
+                :custom-class="isInvalidDate && dateValue ? 'is-danger' : ''"
                 type="text"
                 v-imask="dateMask"
                 v-model="dateValue"
