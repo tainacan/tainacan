@@ -21,31 +21,33 @@ export default (element) => {
                 
                 // Configure Vue logic before passing it to constructor:
                 let vueOptions = {
-                    data: {
-                        metadatumId: '',
-                        metadatumType: '', 
-                        collectionId: '',
-                        collectionSlug: '',
-                        parentTermId: null,  
-                        showImage: true,
-                        showItemsCount: true,
-                        showSearchBar: false,
-                        showLoadMore: false,
-                        nameInsideImage: false,
-                        linkTermFacetsToTermPage: true,
-                        appendChildTerms: false,
-                        imageSize: 'tainacan-medium',
-                        layout: 'grid',
-                        itemsCountStyle: 'default',
-                        cloudRate: 1,
-                        gridMargin: 24,
-                        maxFacetsNumber: 12,
-                        maxColumnsCount: 5,
-                        tainacanApiRoot: '',
-                        tainacanBaseUrl: '',
-                        tainacanSiteUrl: '',
-                        className: '',
-                        style: ''
+                    data: () => {
+                        return {
+                            metadatumId: '',
+                            metadatumType: '', 
+                            collectionId: '',
+                            collectionSlug: '',
+                            parentTermId: null,  
+                            showImage: true,
+                            showItemsCount: true,
+                            showSearchBar: false,
+                            showLoadMore: false,
+                            nameInsideImage: false,
+                            linkTermFacetsToTermPage: true,
+                            appendChildTerms: false,
+                            imageSize: 'tainacan-medium',
+                            layout: 'grid',
+                            itemsCountStyle: 'default',
+                            cloudRate: 1,
+                            gridMargin: 24,
+                            maxFacetsNumber: 12,
+                            maxColumnsCount: 5,
+                            tainacanApiRoot: '',
+                            tainacanBaseUrl: '',
+                            tainacanSiteUrl: '',
+                            className: '',
+                            style: ''
+                        }
                     },
                     render(){ 
                         return h(FacetsListTheme, {

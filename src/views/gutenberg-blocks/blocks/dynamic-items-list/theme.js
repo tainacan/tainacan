@@ -23,38 +23,40 @@ export default (element) => {
     
                 // Configure Vue logic before passing it to constructor:
                 let vueOptions = {
-                    data: {
-                        collectionId: '',  
-                        showImage: true,
-                        showName: true,
-                        layout: 'grid',
-                        gridMargin: 0,
-                        searchURL: '',
-                        selectedItems: [],
-                        loadStrategy: 'search',
-                        maxItemsNumber: 12,
-                        mosaicHeight: 40,
-                        mosaicDensity: 5,
-                        mosaicGridRows: 3,
-                        mosaicGridColumns: 3,
-                        mosaicItemFocalPointX : 0.5,
-                        mosaicItemFocalPointY : 0.5,
-                        maxColumnsCount: 4,
-                        imageSize: 'tainacan-medium',
-                        order: 'asc',
-                        orderBy: 'date',
-                        orderByMetaKey: '',
-                        showSearchBar: false,
-                        showCollectionHeader: false,
-                        showCollectionLabel: false,
-                        collectionBackgroundColor: '#373839',
-                        collectionTextColor: '#ffffff',
-                        tainacanApiRoot: '',
-                        tainacanBaseUrl: '',
-                        className: '',
-                        style: ''
+                    data: () => {
+                        return {
+                            collectionId: '',  
+                            showImage: true,
+                            showName: true,
+                            layout: 'grid',
+                            gridMargin: 0,
+                            searchURL: '',
+                            selectedItems: [],
+                            loadStrategy: 'search',
+                            maxItemsNumber: 12,
+                            mosaicHeight: 40,
+                            mosaicDensity: 5,
+                            mosaicGridRows: 3,
+                            mosaicGridColumns: 3,
+                            mosaicItemFocalPointX : 0.5,
+                            mosaicItemFocalPointY : 0.5,
+                            maxColumnsCount: 4,
+                            imageSize: 'tainacan-medium',
+                            order: 'asc',
+                            orderBy: 'date',
+                            orderByMetaKey: '',
+                            showSearchBar: false,
+                            showCollectionHeader: false,
+                            showCollectionLabel: false,
+                            collectionBackgroundColor: '#373839',
+                            collectionTextColor: '#ffffff',
+                            tainacanApiRoot: '',
+                            tainacanBaseUrl: '',
+                            className: '',
+                            style: ''
+                        }
                     },
-                    render(){ 
+                    render() { 
                         return h(DynamicItemsListTheme, {
                             props: {
                                 collectionId: this.collectionId,  

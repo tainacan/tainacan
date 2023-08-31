@@ -10,7 +10,7 @@
                 class="show" 
                 v-model="singleCollapseOpen"
                 animation="filter-item">
-            <template #trigger="{ props }">
+            <template #trigger="props">
                 <button
                         :for="'filter-input-id-' + filter.id"
                         :aria-controls="'filter-input-id-' + filter.id"
@@ -32,8 +32,8 @@
                     <span class="icon">
                         <i 
                                 :class="{
-                                    'tainacan-icon-arrowdown' : props.open,
-                                    'tainacan-icon-arrowright' : !props.open
+                                    'tainacan-icon-arrowdown' : props && props.open,
+                                    'tainacan-icon-arrowright' : props && !props.open
                                 }"
                                 class="tainacan-icon tainacan-icon-1-25em"/>
                     </span>

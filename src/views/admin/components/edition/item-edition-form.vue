@@ -730,7 +730,9 @@ import ItemFormFooterButtons from './item-form-footer-buttons.vue';
 import 'swiper/css';
 import 'swiper/css/mousewheel';
 import 'swiper/css/navigation';
-import Swiper, { Mousewheel, Navigation } from 'swiper';
+
+import Swiper from 'swiper';
+import { Mousewheel, Navigation } from 'swiper/modules';
 
 export default {
     name: 'ItemEditionForm',

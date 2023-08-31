@@ -22,33 +22,35 @@ export default (element) => {
             for (let blockId of blockIds) {
                 // Configure Vue logic before passing it to constructor:
                 let vueOptions = {
-                    data: {
-                        collectionId: '',  
-                        searchURL: '',
-                        selectedItems: [],
-                        loadStrategy: 'search',
-                        maxItemsNumber: 12,
-                        maxItemsPerScreen: 7,
-                        spaceBetweenItems: 32,
-                        spaceAroundCarousel: 50,
-                        arrowsPosition: 'around',
-                        largeArrows: false,
-                        arrowsStyle: 'type-1',
-                        autoPlay: false,
-                        autoPlaySpeed: 3,
-                        loopSlides: false,
-                        hideTitle: true,
-                        imageSize: 'tainacan-medium',
-                        showCollectionHeader: false,
-                        showCollectionLabel: false,
-                        collectionBackgroundColor: '#373839',
-                        collectionTextColor: '#ffffff',
-                        tainacanApiRoot: '',
-                        tainacanBaseUrl: '',
-                        className: '',
-                        style: ''
+                    data: () => {
+                        return {
+                            collectionId: '',  
+                            searchURL: '',
+                            selectedItems: [],
+                            loadStrategy: 'search',
+                            maxItemsNumber: 12,
+                            maxItemsPerScreen: 7,
+                            spaceBetweenItems: 32,
+                            spaceAroundCarousel: 50,
+                            arrowsPosition: 'around',
+                            largeArrows: false,
+                            arrowsStyle: 'type-1',
+                            autoPlay: false,
+                            autoPlaySpeed: 3,
+                            loopSlides: false,
+                            hideTitle: true,
+                            imageSize: 'tainacan-medium',
+                            showCollectionHeader: false,
+                            showCollectionLabel: false,
+                            collectionBackgroundColor: '#373839',
+                            collectionTextColor: '#ffffff',
+                            tainacanApiRoot: '',
+                            tainacanBaseUrl: '',
+                            className: '',
+                            style: ''
+                        }
                     },
-                    render(){ 
+                    render() { 
                         return h(CarouselItemsListTheme, {
                             props: {
                                 blockId: blockId,

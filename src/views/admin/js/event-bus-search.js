@@ -1,15 +1,15 @@
 import mitt from 'mitt';
 
-const emitter = mitt();
-
 export default {
 
     install(app, options = {}) {
-
-        app.config.globalProperties.$eventBusSearch = {
+        
+        const emitter = mitt();
+        const bus = {
             $store: app.config.globalProperties.$store,
             $router: app.config.globalProperties.$router,
             $route: app.config.globalProperties.$route,
+            $userPrefs: app.config.globalProperties.$userPrefs,
             errors : [],
             query: {},
             collectionId: undefined,
@@ -209,11 +209,11 @@ export default {
                 this.$store.dispatch('search/set_postquery', this.$route.query);
             },
             loadItems() {
-
+                console.log('loadItems')
                 // Forces fetch_only to be filled before any search happens
                 if (this.$store.getters['search/getPostQuery']['fetch_only'] != undefined) {  
 
-                    this.$eventBusSearchEmitter.emit( 'isLoadingItems', true);
+                    app.config.globalProperties.$eventBusSearchEmitter.emit( 'isLoadingItems', true);
                     // Cancels previous Request
                     if (this.searchCancel != undefined)
                         this.searchCancel.cancel('Item search Canceled.');
@@ -226,11 +226,11 @@ export default {
                     }).then((resp) => {
                         // The actual fetch item request
                         resp.request.then((res) => {
-                            this.$eventBusSearchEmitter.emit( 'isLoadingItems', false);
-                            this.$eventBusSearchEmitter.emit( 'hasFiltered', res.hasFiltered);
+                            app.config.globalProperties.$eventBusSearchEmitter.emit( 'isLoadingItems', false);
+                            app.config.globalProperties.$eventBusSearchEmitter.emit( 'hasFiltered', res.hasFiltered);
                         })
                         .catch(() => {
-                            this.$eventBusSearchEmitter.emit( 'isLoadingItems', false);
+                            app.config.globalProperties.$eventBusSearchEmitter.emit( 'isLoadingItems', false);
                         });
 
                         // Search Request Token for cancelling
@@ -260,26 +260,27 @@ export default {
                 this.updateURLQueries();
             }
         }
+        app.config.globalProperties.$eventBusSearch = bus;
 
         // Defines the global $eventBusSearchEmitter for handling events across different search components
         emitter.on('input', data => {
             if (data.taxonomy)
-                $eventBusSearch.addTaxquery(data);
+                app.config.globalProperties.$eventBusSearch.addTaxquery(data);
             else
-                $eventBusSearch.addMetaquery(data);
+                app.config.globalProperties.$eventBusSearch.addMetaquery(data);
         });
 
         emitter.on('closeAdvancedSearch', () => {
-            $eventBusSearch.$store.dispatch('search/setPage', 1);
+            app.config.globalProperties.$eventBusSearch.$store.dispatch('search/setPage', 1);
             
-            $eventBusSearch.performAdvancedSearch({});
+            app.config.globalProperties.$eventBusSearch.performAdvancedSearch({});
         });
 
         emitter.on('performAdvancedSearch', advancedSearchQuery => {
-            $eventBusSearch.$store.dispatch('search/setPage', 1);
-            $eventBusSearch.performAdvancedSearch(advancedSearchQuery);
+            app.config.globalProperties.$eventBusSearch.$store.dispatch('search/setPage', 1);
+            app.config.globalProperties.$eventBusSearch.performAdvancedSearch(advancedSearchQuery);
 
-            $eventBusSearch.updateURLQueries();
+            app.config.globalProperties.$eventBusSearch.updateURLQueries();
         });
 
         app.config.globalProperties.$eventBusSearchEmitter = emitter;

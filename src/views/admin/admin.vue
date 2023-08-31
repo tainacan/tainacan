@@ -54,7 +54,6 @@
     import TainacanHeader from './components/navigation/tainacan-header.vue';
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
-    import "floating-vue/dist/style.css";
 
     export default { 
         name: "AdminPage",
@@ -146,6 +145,7 @@
 </script>
 
 <style lang="scss">
+    @import url('floating-vue/dist/style.css');
 
     .is-fullheight {
         height: 100%;

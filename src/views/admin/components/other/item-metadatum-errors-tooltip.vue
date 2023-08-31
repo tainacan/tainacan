@@ -40,12 +40,12 @@
 </template>
 
 <script>
-import { VTooltip } from 'floating-vue'; 
+import { Tooltip } from 'floating-vue'; 
 export default {
     name: 'HelpButton',
-    components: [
-        VTooltip
-    ],
+    components: {
+        'v-tooltip': Tooltip
+    },
     props: {
         formErrors: Array
     },

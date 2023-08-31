@@ -31,7 +31,7 @@
             <button 
                     aria-controls="filters-modal"
                     :aria-expanded="isFiltersModalActive"
-                    v-if="!openAdvancedSearch && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+                    v-if="!openAdvancedSearch"
                     id="filter-menu-compress-button"
                     :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
                     @click="isFiltersModalActive = !isFiltersModalActive"
@@ -533,7 +533,7 @@
                     aria-modal
                     role="dialog"
                     id="filters-items-list"
-                    :collection-id="collectionId"
+                    :collection-id="collectionId + ''"
                     :is-repository-level="isRepositoryLevel"/>
         </b-modal>
 
@@ -583,20 +583,14 @@
                 </h3>
 
                 <div 
-                        v-show="(showLoading && 
-                                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].implements_skeleton == true))"
+                        v-show="showLoading"
                         class="loading-container">
 
                     <!--  Default loading, to be used view modes without any skeleton-->
-                    <b-loading
-                            v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
+                    <b-loading 
                             :is-full-page="false"
                             :model-value="showLoading"/>
 
-                    <!-- Custom skeleton templates used by some view modes -->
-                    <div
-                            v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
-                            v-html="registeredViewModes[viewMode].skeleton_template"/>
                 </div>  
 
                <!-- Alert if custom metada is being used for sorting -->
@@ -735,7 +729,7 @@
             AdvancedSearch
         },
         props: {
-            collectionId: Number
+            collectionId: String
         },
         data() {
             return {
@@ -822,14 +816,15 @@
         watch: {
             '$route': {
                 handler(to, from) {
-
+                    console.log('line 819')
                     // Should set Collection ID from URL only when in admin.
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.$eventBusSearch.setCollectionId( !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId) );
                     
+                    console.log('line 824')
                     // Fills the URL with appropriate default values in case a query is not passed
                     if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
-                        
+                        console.log('line 828')
                         // Items Per Page
                         if (this.$route.query.perpage == undefined || to.params.collectionId != from.params.collectionId) {
                             let perPageKey = (this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page');
@@ -842,11 +837,12 @@
                                 this.$userPrefs.set(perPageKey, 12);
                             }
                         }    
-                        
+                        console.log('line 841')
+                        console.log(this.$route.query, to.params, from.params);
                         // Page
                         if (this.$route.query.paged == undefined || to.params.collectionId != from.params.collectionId)
                             this.$route.query.paged = 1;
-                        
+                        console.log('line 845')
                         // Order (ASC, DESC)
                         if (this.$route.query.order == undefined || to.params.collectionId != from.params.collectionId) {
                             let orderKey = (this.collectionId != undefined ? 'order_' + this.collectionId : 'order');
@@ -859,7 +855,7 @@
                                 this.$userPrefs.set(orderKey, 'DESC');
                             }
                         }
-                        
+                        console.log('line 851')
                         // Order By (required extra work to deal with custom metadata ordering)
                         if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
                             let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
@@ -888,7 +884,7 @@
                         } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
                             this.$route.query.orderby = 'date'
                         }
-
+                        console.log('line 887')
                         // Theme View Modes
                         if ((this.$route.name == null || this.$route.name == undefined ) && 
                             this.$route.name != 'CollectionItemsPage' && this.$route.name != 'ItemsPage' &&
@@ -909,7 +905,7 @@
                         // Emit slideshow-from to start this view mode from index
                         if (this.$route.query.view_mode != 'slideshow' && this.$route.query['slideshow-from'] !== null && this.$route.query['slideshow-from'] !== undefined && this.$route.query['slideshow-from'] !== false)
                             this.$eventBusSearchEmitter.emit('startSlideshowFromItem', this.$route.query['slideshow-from']);
-
+                        console.log('line 908')
                         // Admin View Modes
                         if (this.$route.name != null && this.$route.name != undefined  && 
                             (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') &&
@@ -933,6 +929,7 @@
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
                         
+                        console.log('line 931')
                         // Checks current metaqueries and taxqueries to alert filters that should reload
                         // For some reason, this process is not working accessing to.query, so we need to check the path string. 
                         const oldQueryString = from.fullPath.replace(from.path + '?', '');
@@ -958,10 +955,14 @@
                         ) {
                             this.$eventBusSearchEmitter.emit('hasToReloadFacets', true);
                         }
-                        
+
+                        console.log('line 958')
+                        console.log(to.query, from.query);
                         // Finally, loads items
-                        if (to.fullPath != from.fullPath)
+                        //if (to.fullPath != from.fullPath) {
+                            console.log('vai')
                             this.$eventBusSearch.loadItems();
+                        //}
                     }
                 },
                 deep: true

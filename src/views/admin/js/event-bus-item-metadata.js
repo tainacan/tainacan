@@ -5,9 +5,11 @@ import mitt from 'mitt';
 const emitter = mitt();
 
 export const eventBusItemMetadata = createApp({
-    data: {
-        errors : [],
-        conditionalSections: {}
+    data: () => {
+        return {
+            errors : [],
+            conditionalSections: {}
+        }
     },
     watch: {
         errors: {

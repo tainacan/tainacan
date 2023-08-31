@@ -29,8 +29,7 @@ import {
     Toast,
     Numberinput
 } from '@ntohq/buefy-next';
-import VTooltip from 'floating-vue';
-import VueTheMask from 'vue-the-mask';
+import FloatingVue from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';
 
@@ -87,13 +86,13 @@ import {
 } from './utilities';
 import mitt from 'mitt';
 
-import { configureCompat } from 'vue'
-
-// Desabilita a compatibilidade Vue2 para certos recursos já tratados no código
-configureCompat({
-    COMPONENT_V_MODEL: false
-})
-
+// import { configureCompat } from 'vue';
+// configureCompat({
+//     COMPONENT_V_MODEL: false,
+//     ATTR_FALSE_VALUE: false,
+//     RENDER_FUNCTION: false,
+//     MODE: 3
+// })
 
 export default (element) => {
 
@@ -149,41 +148,41 @@ export default (element) => {
             app.use(Snackbar);
             app.use(Toast);
             app.use(Numberinput);
-            // app.use(VTooltip, {
-            //     popperTriggers: ['hover', 'touch'],
-            //     themes: {
-            //         'taianacan-tooltip': {
-            //             '$extend': 'tooltip',
-            //             triggers: ['hover', 'focus', 'touch'],
-            //             autoHide: true,
-            //             html: true
-            //         },
-            //         'tainacan-repository-tooltip': {
-            //             '$extend': 'tainacan-tooltip',
-            //             triggers: ['hover', 'focus', 'touch'],
-            //             autoHide: true,
-            //             html: true,
-            //         },
-            //         'tainacan-repository-tooltip': {
-            //             '$extend': 'tainacan-header-tooltip',
-            //             triggers: ['hover', 'focus', 'touch'],
-            //             autoHide: true,
-            //             html: true,
-            //         },
-            //         'tainacan-repository-tooltip': {
-            //             '$extend': 'tainacan-repository-header-tooltip',
-            //             triggers: ['hover', 'focus', 'touch'],
-            //             autoHide: true,
-            //             html: true,
-            //         },
-            //         'tainacan-helper-tooltip': {
-            //             '$extend': 'tainacan-tooltip',
-            //             triggers: ['hover', 'focus', 'touch'],
-            //             autoHide: true,
-            //             html: true,
-            //         }
-            //     }
-            // });
+            app.use(FloatingVue, {
+                popperTriggers: ['hover', 'touch'],
+                themes: {
+                    'taianacan-tooltip': {
+                        '$extend': 'tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true
+                    },
+                    'tainacan-repository-tooltip': {
+                        '$extend': 'tainacan-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-repository-tooltip': {
+                        '$extend': 'tainacan-header-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-repository-tooltip': {
+                        '$extend': 'tainacan-repository-header-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    },
+                    'tainacan-helper-tooltip': {
+                        '$extend': 'tainacan-tooltip',
+                        triggers: ['hover', 'focus', 'touch'],
+                        autoHide: true,
+                        html: true,
+                    }
+                }
+            });
             app.use(VueBlurHash);
             app.use(I18NPlugin);
             app.use(UserPrefsPlugin);
@@ -193,7 +192,6 @@ export default (element) => {
             app.use(OrderByHelperPlugin);
             app.use(StatusHelperPlugin);
             app.use(ConsolePlugin, {visual: false});
-            app.use(VueTheMask);
             app.use(CommentsStatusHelperPlugin);
             app.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
 
@@ -242,8 +240,8 @@ export default (element) => {
             app.component('tainacan-title', TainacanTitle);
 
             // Event bus are needed to facilate comunication between child-parent-child components
-            app.use(eventBusMetadataList, {});
-            app.use(eventBusSearch, { store: store, router: router });
+            app.use(eventBusMetadataList);
+            app.use(eventBusSearch);
 
             // Changing title of pages
             router.beforeEach((to, from, next) => {

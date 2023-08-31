@@ -33,7 +33,6 @@
 </template>
 
 <script>
-import "floating-vue/dist/style.css";
 export default {
     name: "ThemeSearch",
     created() {
@@ -46,6 +45,9 @@ export default {
 
     // TAINACAN Variables
     @import "../../../admin/scss/_variables.scss";
+
+    //Vue Tooltip
+    @import "../../../../../node_modules/floating-vue/dist/style.css";
 
     // Bulma imports
     @import "./theme-search/scss/theme-basics.sass";

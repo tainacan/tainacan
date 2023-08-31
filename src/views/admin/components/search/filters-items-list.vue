@@ -80,7 +80,6 @@
                         <template v-if="taxonomyFilter.length > 0">
                             <tainacan-filter-item
                                     :is-loading-items="isLoadingItems"
-                                    v-show="!isMenuCompressed"        
                                     :query="getQuery"
                                     v-for="(filter, filterIndex) in taxonomyFilter"
                                     :key="filterIndex"
@@ -129,8 +128,7 @@
                         </div>
                         <template v-if="taxonomyFilter.length > 0">
                             <tainacan-filter-item
-                                    :is-loading-items="isLoadingItems"
-                                    v-show="!isMenuCompressed"        
+                                    :is-loading-items="isLoadingItems" 
                                     :query="getQuery"
                                     v-for="(filter, filterIndex) in taxonomyFilter"
                                     :key="filterIndex"
@@ -183,8 +181,7 @@
                         </div>
                         <template v-if="repositoryCollectionFilter.length > 0">
                             <tainacan-filter-item
-                                    :is-loading-items="isLoadingItems"
-                                    v-show="!isMenuCompressed"        
+                                    :is-loading-items="isLoadingItems"   
                                     :query="getQuery"
                                     v-for="(filter, filterIndex) in repositoryCollectionFilter"
                                     :key="filterIndex"
@@ -233,8 +230,7 @@
                         </div>
                         <template v-if="repositoryCollectionFilter.length > 0">
                             <tainacan-filter-item
-                                    :is-loading-items="isLoadingItems"
-                                    v-show="!isMenuCompressed"        
+                                    :is-loading-items="isLoadingItems"       
                                     :query="getQuery"
                                     v-for="(filter, filterIndex) in repositoryCollectionFilter"
                                     :key="filterIndex"
@@ -259,7 +255,6 @@
             <template v-else>
                 <tainacan-filter-item
                         :is-loading-items="isLoadingItems"
-                        v-show="!isMenuCompressed"        
                         :query="getQuery"
                         v-for="(filter, index) in filters"
                         :key="index"

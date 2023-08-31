@@ -97,6 +97,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             hasFiltered: hasFiltered, 
                             itemsPerPage: res.headers['x-wp-itemperpage'] });                            
                     }
+                    console.log(res.headers['x-wp-total']);
                     dispatch('search/setTotalItems', res.headers['x-wp-total'], { root: true } );
                     dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
                     dispatch('search/setItemsPerPage', res.headers['x-wp-itemsperpage'], { root: true } );

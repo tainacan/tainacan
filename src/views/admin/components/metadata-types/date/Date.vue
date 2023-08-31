@@ -5,7 +5,7 @@
                 :disabled="disabled"
                 :custom-class="{ 'is-danger': isInvalidDate && dateValue }"
                 type="text"
-                v-mask="dateMask"
+                v-imask="dateMask"
                 v-model="dateValue"
                 @update:model-value="onInput"
                 @blur="onBlur"
@@ -21,8 +21,12 @@
 <script>
     import { dateInter } from "../../../js/mixins";
     import moment from 'moment';
+    import { IMaskDirective } from 'vue-imask';
 
     export default {
+        directives: {
+            imask: IMaskDirective
+        },
         mixins: [ dateInter ],
         props: {
             itemMetadatum: Object,

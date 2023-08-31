@@ -113,7 +113,7 @@
                                 v-else-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
                                 class="input"
                                 :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion.index].value)"
-                                v-mask="dateMask"
+                                v-imask="dateMask"
                                 @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
                                 :placeholder="dateFormat" 
                                 type="text"
@@ -236,9 +236,13 @@
     import { mapActions } from 'vuex';
     import { dateInter } from '../../js/mixins.js';
     import moment from 'moment';
+    import { IMaskDirective } from 'vue-imask';
 
     export default {
         name: "AdvancedSearch",
+        directives: {
+            imask: IMaskDirective
+        },
         mixins: [ dateInter ],
         props: {
             isRepositoryLevel: false,

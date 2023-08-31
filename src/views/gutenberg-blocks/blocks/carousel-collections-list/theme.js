@@ -22,25 +22,27 @@ export default (element) => {
 
                 // Configure Vue logic before passing it to constructor:
                 let vueOptions = {
-                    data: {
-                        selectedItem: [],
-                        maxItemsNumber: 12,
-                        arrowsPosition: 'around',
-                        autoPlay: false,
-                        autoPlaySpeed: 3,
-                        largeArrows: false,
-                        arrowsStyle: 'type-1',
-                        maxCollectionsPerScreen: 6,
-                        spaceBetweenCollections: 32,
-                        spaceAroundCarousel: 50,
-                        imageSize: 'tainacan-medium',
-                        loopSlides: false,
-                        hideName: true,
-                        showCollectionThumbnail: false,
-                        tainacanApiRoot: '',
-                        tainacanBaseUrl: '',
-                        className: '',
-                        style: ''
+                    data: () => {
+                        return {
+                            selectedItem: [],
+                            maxItemsNumber: 12,
+                            arrowsPosition: 'around',
+                            autoPlay: false,
+                            autoPlaySpeed: 3,
+                            largeArrows: false,
+                            arrowsStyle: 'type-1',
+                            maxCollectionsPerScreen: 6,
+                            spaceBetweenCollections: 32,
+                            spaceAroundCarousel: 50,
+                            imageSize: 'tainacan-medium',
+                            loopSlides: false,
+                            hideName: true,
+                            showCollectionThumbnail: false,
+                            tainacanApiRoot: '',
+                            tainacanBaseUrl: '',
+                            className: '',
+                            style: ''
+                        }
                     },
                     render() { 
                         return h(CarouselCollectionsListTheme, {

@@ -24,7 +24,6 @@ import {
 } from '@ntohq/buefy-next';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
-import VueTheMask from 'vue-the-mask';
 
 // Metadata Types
 import Text from '../../../admin/components/metadata-types/text/Text.vue';
@@ -61,30 +60,32 @@ export default (element) => {
 
             const VueItemSubmission = createApp({
                 el: '#tainacan-item-submission-form',
-                data: {
-                    collectionId: '',
-                    hideFileModalButton: false,
-                    hideTextModalButton: false,
-                    hideLinkModalButton: false,
-                    hideThumbnailSection: false,
-                    hideAttachmentsSection: false,
-                    showAllowCommentsSection: false,
-                    hideHelpButtons: false,
-                    hideMetadataTypes: false,
-                    hideCollapses: false,
-                    enabledMetadata: [],
-                    sentFormHeading: '',
-                    sentFormMessage: '',
-                    documentSectionLabel: '',
-                    thumbnailSectionLabel: '',
-                    attachmentsSectionLabel: '',
-                    metadataSectionLabel: '',
-                    showItemLinkButton: false,
-                    itemLinkButtonLabel: '',
-                    helpInfoBellowLabel: false,
-                    showItemLinkButton: false,
-                    termsAgreementMessage: '',
-                    isLayoutSteps: false
+                data: () => {
+                    return {
+                        collectionId: '',
+                        hideFileModalButton: false,
+                        hideTextModalButton: false,
+                        hideLinkModalButton: false,
+                        hideThumbnailSection: false,
+                        hideAttachmentsSection: false,
+                        showAllowCommentsSection: false,
+                        hideHelpButtons: false,
+                        hideMetadataTypes: false,
+                        hideCollapses: false,
+                        enabledMetadata: [],
+                        sentFormHeading: '',
+                        sentFormMessage: '',
+                        documentSectionLabel: '',
+                        thumbnailSectionLabel: '',
+                        attachmentsSectionLabel: '',
+                        metadataSectionLabel: '',
+                        showItemLinkButton: false,
+                        itemLinkButtonLabel: '',
+                        helpInfoBellowLabel: false,
+                        showItemLinkButton: false,
+                        termsAgreementMessage: '',
+                        isLayoutSteps: false
+                    }
                 },
                 beforeMount () {
                     // Collection source settings
@@ -206,7 +207,6 @@ export default (element) => {
             VueItemSubmission.use(StatusHelperPlugin);
             VueItemSubmission.use(RouterHelperPlugin);
             VueItemSubmission.use(ConsolePlugin, {visual: false});
-            VueItemSubmission.use(VueTheMask);
             VueItemSubmission.use(CommentsStatusHelperPlugin);
             VueItemSubmission.use(ThumbnailHelperPlugin);
             VueItemSubmission.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);

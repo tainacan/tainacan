@@ -81,7 +81,8 @@
     import 'swiper/css';
     import 'swiper/css/mousewheel';
     import 'swiper/css/navigation';
-    import Swiper, { Mousewheel, Navigation } from 'swiper';
+    import Swiper from 'swiper';
+    import { Mousewheel, Navigation } from 'swiper/modules';
 
     export default {
         name: 'FiltersTagsList',
@@ -134,6 +135,7 @@
         watch: {
             filterTags: {
                 handler() {
+                    console.log(this.swiper)
                     if (typeof this.swiper.update == 'function')
                         this.swiper.update();
                 },

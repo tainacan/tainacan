@@ -153,7 +153,8 @@ import 'swiper/css';
 import 'swiper/css/a11y';
 import 'swiper/css/autoplay';
 import 'swiper/css/navigation';
-import Swiper, { Autoplay, Navigation, A11y } from 'swiper';
+import Swiper from 'swiper';
+import { Autoplay, Navigation, A11y } from 'swiper/modules';
 
 export default {
     name: "CarouselCollectionsListTheme",

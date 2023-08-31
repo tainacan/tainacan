@@ -8,6 +8,13 @@ import { I18NPlugin } from './wp-i18n-plugin';
 
 import RolesPage from '../roles.vue';
 
+// import { configureCompat } from 'vue'
+// configureCompat({
+//     COMPONENT_V_MODEL: false,
+//     RENDER_FUNCTION: false,
+//     MODE: 3
+// })
+
 export default (element) => {
 
     function renderTainacanRolePage() {

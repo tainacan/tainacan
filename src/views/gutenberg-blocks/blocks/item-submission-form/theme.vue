@@ -28,7 +28,6 @@
 </template>
 
 <script>
-import "floating-vue/dist/style.css";
 export default {
     name: "ItemSubmission"
 }
@@ -38,6 +37,9 @@ export default {
 
     // TAINACAN Variables
     @import "../../../admin/scss/_variables.scss";
+
+    //Vue Tooltip
+    @import "../../../../../node_modules/floating-vue/dist/style.css";
 
     // Bulma imports
     @import "./item-submission/scss/item-submission-basics.sass";

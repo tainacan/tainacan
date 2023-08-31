@@ -1,5 +1,5 @@
 // Main imports
-import { createApp, h } from 'vue';
+import { createApp, h, onMounted } from 'vue';
 import {
     Field,
     Input,
@@ -46,6 +46,13 @@ import {
 } from '../../../admin/js/utilities';
 import mitt from 'mitt';
 
+// import { configureCompat } from 'vue';
+// configureCompat({
+//     COMPONENT_V_MODEL: false,
+//     ATTR_FALSE_VALUE: false,
+//     RENDER_FUNCTION: false
+// })
+
 export default (element) => {
 
     function renderTainacanItemsListComponent() {
@@ -58,37 +65,38 @@ export default (element) => {
 
             const VueItemsList = createApp({
                 el: '#tainacan-items-page',
-                data: {
-                    termId: '',
-                    taxonomy: '',
-                    collectionId: '',
-                    defaultViewMode: '',
-                    defaultOrder: 'ASC',
-                    defaultOrderBy: 'date',
-                    defaultOrderByMeta: '',
-                    defaultOrderByType: '',
-                    isForcedViewMode: false,
-                    enabledViewModes: {},
-                    defaultItemsPerPage: '',
-                    hideFilters: false,
-                    hideHideFiltersButton: false,
-                    hideSearch: false,
-                    hideAdvancedSearch: false,
-                    hideDisplayedMetadataButton: false,
-                    hideSortByButton: false,
-                    hideSortingArea: false,
-                    hideItemsThumbnail: false,
-                    hideItemsPerPageButton: false,
-                    hideGoToPageButton: false,
-                    hidePaginationArea: false,
-                    showFiltersButtonInsideSearchControl: false,
-                    startWithFiltersHidden: false,
-                    filtersAsModal: false,
-                    showInlineViewModeOptions: false,
-                    showFullscreenWithViewModes: false
+                data: () => {
+                    return {
+                        termId: '',
+                        taxonomy: '',
+                        collectionId: '',
+                        defaultViewMode: '',
+                        defaultOrder: 'ASC',
+                        defaultOrderBy: 'date',
+                        defaultOrderByMeta: '',
+                        defaultOrderByType: '',
+                        isForcedViewMode: false,
+                        enabledViewModes: {},
+                        defaultItemsPerPage: '',
+                        hideFilters: false,
+                        hideHideFiltersButton: false,
+                        hideSearch: false,
+                        hideAdvancedSearch: false,
+                        hideDisplayedMetadataButton: false,
+                        hideSortByButton: false,
+                        hideSortingArea: false,
+                        hideItemsThumbnail: false,
+                        hideItemsPerPageButton: false,
+                        hideGoToPageButton: false,
+                        hidePaginationArea: false,
+                        showFiltersButtonInsideSearchControl: false,
+                        startWithFiltersHidden: false,
+                        filtersAsModal: false,
+                        showInlineViewModeOptions: false,
+                        showFullscreenWithViewModes: false
+                    }
                 },
-                beforeMount() {
-                    
+                created() {
                     // Loads params if passed previously 
                     if (this.$route.hash && this.$route.hash.split('#/?') && this.$route.hash.split('#/?')[1]) {
                         const existingQueries = qs.parse(this.$route.hash.split('#/?')[1]); 
@@ -96,7 +104,9 @@ export default (element) => {
                         for (let key of Object.keys(existingQueries))
                             this.$route.query[key] = existingQueries[key];
                     }
-
+                },
+                mounted() {
+                    
                     // Collection or Term source settings
                     if (this.$el.attributes['collection-id'] != undefined)
                         this.collectionId = this.$el.attributes['collection-id'].value;

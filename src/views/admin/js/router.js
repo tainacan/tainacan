@@ -90,7 +90,6 @@ export default createRouter({
     },
     stringifyQuery(query) {
         let result = qs.stringify(query);
-
-        return result ? ('?' + result) : '';
+        return result ? result : '';
     }
 });

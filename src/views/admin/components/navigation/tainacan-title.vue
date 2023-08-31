@@ -68,7 +68,7 @@ export default {
     },
     computed: {
         slotPassed() {
-            return this.$slots && this.$slots.default && (!!this.$slots.default[0].text || !!this.$slots.default[0].tag)
+            return this.$slots && this.$slots.default && this.$slots.default[0] && (!!this.$slots.default[0].text || !!this.$slots.default[0].tag)
         },
         collection() {
             return this.getCollection();

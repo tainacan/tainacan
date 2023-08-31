@@ -46,7 +46,7 @@ export default {
                     (this.collectionId != this.$route.params.collectionId)
                 ) {
                     this.isLoadingCollectionBasics = true;
-                    this.collectionId = this.$route.params.collectionId;
+                    this.collectionId = Number(this.$route.params.collectionId);
                     this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
                         .then(() => {
                             this.isLoadingCollectionBasics = false;
@@ -61,7 +61,7 @@ export default {
         }
     },
     created() {
-        this.collectionId = this.$route.params.collectionId;
+        this.collectionId = Number(this.$route.params.collectionId);
         this.$eventBusSearch.setCollectionId(this.collectionId);
 
         // Loads to store basic collection info such as name, url, current_user_can_edit... etc.

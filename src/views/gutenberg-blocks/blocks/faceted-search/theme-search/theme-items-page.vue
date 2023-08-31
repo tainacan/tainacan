@@ -443,7 +443,7 @@
                         :role="filtersAsModal ? 'dialog' : ''"
                         id="filters-items-list"
                         :taxonomy="taxonomy"
-                        :collection-id="collectionId"
+                        :collection-id="collectionId + ''"
                         :is-repository-level="isRepositoryLevel"
                         :filters-as-modal="filtersAsModal"
                         :has-filtered="hasFiltered"

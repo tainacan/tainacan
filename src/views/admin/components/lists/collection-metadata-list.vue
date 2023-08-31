@@ -94,6 +94,7 @@
                         put: [ 'metadata-sections' ]
                     },
                     sort: (openedMetadataSectionId == '' || openedMetadataSectionId == undefined) && (openedMetadatumId == '' || openedMetadatumId == undefined),
+                    direction: 'vertical',
                     handle: '.handle',
                     ghostClass: 'sortable-ghost',
                     chosenClass: 'sortable-chosen',
@@ -273,6 +274,7 @@
                                     },
                                     sort: (openedMetadatumId == '' || openedMetadatumId == undefined) && (openedMetadataSectionId == '' || openedMetadataSectionId == undefined),
                                     handle: '.handle',
+                                    direction: 'vertical',
                                     ghostClass: 'sortable-ghost',
                                     chosenClass: 'sortable-chosen',
                                     filter: '.not-sortable-item',
@@ -466,7 +468,7 @@
                                         :is-parent-multiple="metadatum.multiple == 'yes'"
                                         :is-repository-level="false"
                                         :collapse-all="collapseAll"
-                                        :section-id="metadataSection.id" />
+                                        :section-id="metadataSection.id + ''" />
                                 
                                 <!-- Metadata edition form, for each metadata -->
                                 <b-modal 
@@ -565,7 +567,7 @@ export default {
             set(value) {
                 this.updateMetadataSections(value);
             }
-        }
+        },
     },
     watch: {
         '$route.query': {
@@ -643,7 +645,8 @@ export default {
             'moveMetadatumDown'
         ]),
         ...mapGetters('metadata',[
-            'getMetadataSections'
+            'getMetadataSections',
+            'getMetadatumTypes'
         ]),
         handleSectionChange($event) {
             switch ( $event.type ) {
@@ -669,9 +672,11 @@ export default {
         handleChange($event, sectionIndex) {
             switch ( $event.type ) {
                 case 'add':
-                    if ( !this.activeMetadataSectionsList[sectionIndex].metadata_object_list[$event.oldIndex]['id'] )
-                        this.addNewMetadatum(this.activeMetadataSectionsList[sectionIndex].metadata_object_list[$event.oldIndex], $event.newIndex, sectionIndex);
-                    else {
+                    
+                    if ( !$event.from.classList.contains('active-metadata-area') ) {
+                        this.addNewMetadatum(this.getMetadatumTypes()[$event.oldIndex], $event.newIndex, sectionIndex);
+                        $event.originalTarget.removeChild($event.item)
+                    } else {
                         
                         this.updateMetadatum({
                             collectionId: this.collectionId,
@@ -699,6 +704,7 @@ export default {
                     this.updateMetadataOrder(sectionIndex);
                     break;
             }   
+
         },
         updateMetadataOrder(sectionIndex) {
             let metadataOrder = [];
@@ -711,8 +717,13 @@ export default {
             
             this.isUpdatingMetadataOrder = true;
             this.updateCollectionMetadataOrder({ collectionId: this.collectionId, metadataOrder: metadataOrder, metadataSectionId: this.activeMetadataSectionsList[sectionIndex].id  })
-                .then(() => this.isUpdatingMetadataOrder = false)
+                .then(() => {
+                    this.isUpdatingMetadataOrder = false
+                
+                    
+                })
                 .catch(() => this.isUpdatingMetadataOrder = false);
+                
         },
         updateMetadataSectionsOrder() {
             let metadataSectionsOrder = [];
@@ -782,9 +793,7 @@ export default {
                 sectionId: this.activeMetadataSectionsList[sectionIndex].id
             })
             .then((metadatum) => {
-
                 this.updateMetadataOrder(sectionIndex);
-
                 this.toggleMetadatumEdition(metadatum)
                 this.highlightedMetadatum = '';
                 this.isUpdatingMetadatum = false;

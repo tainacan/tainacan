@@ -360,7 +360,8 @@ import 'swiper/css';
 import 'swiper/css/mousewheel';
 import 'swiper/css/navigation';
 import 'swiper/css/virtual';
-import Swiper, {Navigation, Virtual, Mousewheel } from 'swiper';
+import Swiper from 'swiper';
+import { Navigation, Virtual, Mousewheel } from 'swiper/modules';
 import CircularCounter from './circular-counter.vue';
 import SlidesHelpModal from './slides-help-modal.vue'
 import { viewModesMixin } from '../js/view-modes-mixin.js';

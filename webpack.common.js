@@ -45,7 +45,7 @@ module.exports = {
             tls: false
         },
         alias: {
-            vue: '@vue/compat'
+            vue: 'vue/dist/vue.esm-bundler.js',
         }
     },
     module: {
@@ -53,15 +53,7 @@ module.exports = {
             {
                 test: /\.vue$/,
                 exclude: /node_modules/,
-                loader: 'vue-loader',
-                options: {
-                    compilerOptions: {
-                        compatConfig: {
-                            // Default everything to Vue 2 behavior
-                            MODE: 2
-                        }
-                    }
-                }
+                loader: 'vue-loader'
             },
             {
                 test: /\.js$/,
@@ -75,6 +67,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: [
+                    'style-loader',
                     'css-loader',
                     'postcss-loader',
                 ],
@@ -108,7 +101,7 @@ module.exports = {
         new webpack.DefinePlugin({
             'TAINACAN_ENV': JSON.stringify(process.env.NODE_ENV),
             __VUE_OPTIONS_API__: true,
-            __VUE_PROD_DEVTOOLS__: true,
+            __VUE_PROD_DEVTOOLS__: false,
         }),
         new VueLoaderPlugin({
             prettify: false

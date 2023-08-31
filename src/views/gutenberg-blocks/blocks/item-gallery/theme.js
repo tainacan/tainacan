@@ -5,7 +5,8 @@
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/dist/photoswipe.css';
-import Swiper, { Navigation, A11y, Thumbs } from 'swiper';
+import Swiper from 'swiper';
+import { Navigation, A11y, Thumbs } from 'swiper';
 
 const { __ } = wp.i18n;
 

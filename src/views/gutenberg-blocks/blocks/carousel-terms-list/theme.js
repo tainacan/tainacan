@@ -22,28 +22,30 @@ export default (element) => {
 
                 // Configure Vue logic before passing it to constructor:
                 let vueOptions = {
-                    data: {
-                        selectedItem: [],
-                        maxItemsNumber: 12,
-                        arrowsPosition: 'around',
-                        autoPlay: false,
-                        autoPlaySpeed: 3,
-                        largeArrows: false,
-                        arrowsStyle: 'type-1',
-                        maxTermsPerScreen: 6,
-                        spaceBetweenTerms: 32,
-                        spaceAroundCarousel: 50,
-                        imageSize: 'tainacan-medium',
-                        loopSlides: false,
-                        hideName: true,
-                        showTermThumbnail: false,
-                        tainacanApiRoot: '',
-                        tainacanBaseUrl: '',
-                        className: '',
-                        taxonomyId: '',
-                        style: ''
+                    data: () => {
+                        return {
+                            selectedItem: [],
+                            maxItemsNumber: 12,
+                            arrowsPosition: 'around',
+                            autoPlay: false,
+                            autoPlaySpeed: 3,
+                            largeArrows: false,
+                            arrowsStyle: 'type-1',
+                            maxTermsPerScreen: 6,
+                            spaceBetweenTerms: 32,
+                            spaceAroundCarousel: 50,
+                            imageSize: 'tainacan-medium',
+                            loopSlides: false,
+                            hideName: true,
+                            showTermThumbnail: false,
+                            tainacanApiRoot: '',
+                            tainacanBaseUrl: '',
+                            className: '',
+                            taxonomyId: '',
+                            style: ''
+                        }
                     },
-                    render(){ 
+                    render() { 
                         return h(CarouselTermsListTheme, {
                             props: {
                                 blockId: blockId,
