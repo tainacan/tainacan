@@ -747,7 +747,7 @@ export default {
             viewModesList: [],
             fromImporter: '',
             registeredViewModes: tainacan_plugin.registered_view_modes,
-            reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + 'admin.php?page=tainacan_item_submission',
+            reCAPTCHASettingsPagePath: tainacan_plugin.admin_url + '?page=tainacan_item_submission',
             newPagePath: tainacan_plugin.admin_url + 'post-new.php?post_type=page',
             isUpdatingSlug: false,
             entityName: 'collection',

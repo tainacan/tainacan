@@ -166,7 +166,7 @@
                 page: 1,
                 activeTab: 0,
                 editItemModalOpen: false,
-                adminURL: tainacan_plugin.admin_url + 'admin.php?',
+                adminURL: tainacan_plugin.admin_url + '?',
                 currentUserCanEditItems: false,
                 selectedValuesAsHtml: []
             }

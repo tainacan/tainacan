@@ -386,11 +386,10 @@ class Admin {
 	}
 
 	function admin_body_class( $classes ) {
-		global $pagenow;
-		if ( $pagenow == 'admin.php' && isset( $_GET['page'] ) && $_GET['page'] == $this->menu_slug ) {
-			$classes .= ' tainacan-admin-page';
-		}
 
+		if ( isset( $_GET['page'] ) && $_GET['page'] == $this->menu_slug )
+			$classes .= ' tainacan-admin-page';
+		
 		return $classes;
 	}
 
