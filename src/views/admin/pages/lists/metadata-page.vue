@@ -5,44 +5,34 @@
         <tainacan-title 
                 :bread-crumb-items="[{ path: '', label: $i18n.get('metadata') }]"/>
         
+        <h2>{{ isRepositoryLevel ? repositoryPageLabel : collectionPageLabel }}</h2>
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
             <br>
         </template>
         
         <div class="metadata-list-page">
-            <b-tabs 
+            <div 
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata') || (!isRepositoryLevel && collection && collection.current_user_can_edit_metadata))"
-                    v-model="activeTab">    
-                <b-tab-item :label="isRepositoryLevel ? repositoryTabLabel : collectionTabLabel">
-                    <div class="columns">
+                    class="columns">
 
-                        <!-- Active Metadata and Sections Area -->
-                        <repository-metadata-list
-                                v-if="isRepositoryLevel"
-                                :metadata-type-filter-options="metadataTypeFilterOptions"
-                                @onUpdatehightlightedMetadatum="(newValue) => hightlightedMetadatum = newValue" />
-                        <collection-metadata-list
-                                v-else
-                                :metadata-type-filter-options="metadataTypeFilterOptions"
-                                @onUpdatehightlightedMetadatum="(newValue) => hightlightedMetadatum = newValue" />
+                <!-- Active Metadata and Sections Area -->
+                <repository-metadata-list
+                        v-if="isRepositoryLevel"
+                        :metadata-type-filter-options="metadataTypeFilterOptions"
+                        @onUpdatehightlightedMetadatum="(newValue) => hightlightedMetadatum = newValue" />
+                <collection-metadata-list
+                        v-else
+                        :metadata-type-filter-options="metadataTypeFilterOptions"
+                        @onUpdatehightlightedMetadatum="(newValue) => hightlightedMetadatum = newValue" />
 
-                        <!-- Available Metadata Area -->
-                        <metadata-types-list 
-                                :hightlighted-metadatum="hightlightedMetadatum"
-                                :is-repository-level="isRepositoryLevel"
-                                @onFinishedLoadingMetadataTypes="createMetadataTypeFilterOptions"/>
-                    </div>
-                </b-tab-item>
+                <!-- Available Metadata Area -->
+                <metadata-types-list 
+                        :hightlighted-metadatum="hightlightedMetadatum"
+                        :is-repository-level="isRepositoryLevel"
+                        @onFinishedLoadingMetadataTypes="createMetadataTypeFilterOptions"/>
+            </div>
 
-                <!-- Mapping ------------------- -->
-                <b-tab-item :label="$i18n.get('mapping')">
-                    <metadata-mapping-list
-                            v-if="activeTab == 1"
-                            :is-repository-level="isRepositoryLevel"/>
-                </b-tab-item>
-            </b-tabs>
-            
             <section 
                     v-else
                     class="section">
@@ -62,7 +52,6 @@
 <script>
 import RepositoryMetadataList from '../../components/lists/repository-metadata-list.vue';
 import CollectionMetadataList from '../../components/lists/collection-metadata-list.vue';
-import MetadataMappingList from '../../components/lists/metadata-mapping-list.vue';
 import MetadataTypesList from '../../components/lists/metadata-types-list.vue';
 import { mapGetters } from 'vuex';
 
@@ -71,8 +60,7 @@ export default {
     components: {
         RepositoryMetadataList,
         CollectionMetadataList,
-        MetadataTypesList,
-        MetadataMappingList,
+        MetadataTypesList
     },
     data() {
         return {
@@ -86,7 +74,7 @@ export default {
         collection() {
             return this.getCollection();
         },
-        repositoryTabLabel() {
+        repositoryPageLabel() {
             let label = this.$i18n.get('metadata');
             const metadata = this.getMetadata();
 
@@ -95,7 +83,7 @@ export default {
                 
             return label;
         },
-        collectionTabLabel() {
+        collectionPageLabel() {
             let label = this.$i18n.get('label_metadata_and_sections');
             const metadataSections  = this.getMetadataSections();
 

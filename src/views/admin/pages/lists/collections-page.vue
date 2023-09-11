@@ -366,7 +366,7 @@ export default {
             totalCollections: 0,
             page: 1,
             collectionsPerPage: 12,
-            isLoadingMetadatumMappers: true,
+            isLoadingMappers: true,
             isLoadingCollectionTaxonomies: false,
             status: '',
             order: 'desc',
@@ -448,7 +448,7 @@ export default {
             'fetchCollectionTaxonomies'
         ]),
         ...mapActions('metadata', [
-            'fetchMetadatumMappers'
+            'fetchMappers'
         ]),
         ...mapGetters('collection', [
             'getCollections',

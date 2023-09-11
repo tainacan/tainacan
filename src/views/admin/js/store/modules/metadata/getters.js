@@ -10,6 +10,10 @@ export const getMetadatumTypes = state => {
     return state.metadatumTypes;
 }
 
-export const getMetadatumMappers = state => {
-    return state.metadatumMappers;
+export const getMappers = state => {
+    return state.mappers;
+}
+
+export const getMapper = (state, { mapperSlug }) => {
+    return state.mapper[0];
 }

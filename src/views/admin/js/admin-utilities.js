@@ -220,6 +220,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionFiltersPath(collectionId) {
             return '/collections/'+ collectionId + '/filters/';
         },
+        getCollectionMappersPath(collectionId) {
+            return '/collections/'+ collectionId + '/mappers/';
+        },
         getCollectionActivitiesPath(collectionId) {
             return '/collections/'+ collectionId + '/activities/';
         },
@@ -240,6 +243,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getActivitiesPath(query) {
             return '/activities/?' + qs.stringify(query);
+        },
+        getMappersPath() {
+            return '/mappers/';
         },
         getCapabilitiesPath() {
             return '/capabilities';
@@ -324,6 +330,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         },
         getCollectionFilterEditPath(collectionId, filterId) {
             return '/collections/' + collectionId + '/filters/?edit=' + filterId;
+        },
+        getMapperEditPath(mapperSlug) {
+            return '/mappers/' + mapperSlug;
         },
         getTaxonomyEditPath(id, isRecent) {
             return isRecent != undefined ? '/taxonomies/' + id + '/edit?recent=true'  : '/taxonomies/' + id + '/edit';

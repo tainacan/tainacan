@@ -96,8 +96,8 @@ export const setMetadatumTypes = (state, metadatumTypes) => {
     state.metadatumTypes = metadatumTypes;
 }
 
-export const setMetadatumMappers = (state, metadatumMappers) => {
-    state.metadatumMappers = metadatumMappers;
+export const setMappers = (state, mappers) => {
+    state.mappers = mappers;
 }
 
 export const cleanMetadata = (state) => {
@@ -240,4 +240,8 @@ export const moveMetadatumUp = (state, { index, sectionIndex }) => {
 
 export const moveMetadatumDown = (state, { index, sectionIndex }) => {
     state.metadataSections[sectionIndex].metadata_object_list.splice(index + 1, 0, state.metadataSections[sectionIndex].metadata_object_list.splice(index, 1)[0]);
+}
+
+export const updateMapper = (state, { mapper }) => {
+    //state.mappers ...;
 }

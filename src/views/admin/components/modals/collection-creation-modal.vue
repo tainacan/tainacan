@@ -59,7 +59,7 @@
                     v-if="selectedEstrategy == 'mappers'"
                     class="collection-creation-options-container"
                     role="list">
-                <template v-for="metadatumMapper in metadatumMappers">
+                <template v-for="metadatumMapper in mappers">
                     <button
                             class="collection-creation-option"
                             @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $parent.close();"
@@ -89,7 +89,7 @@
 
             <b-loading 
                     :is-full-page="false"
-                    :active.sync="isLoadingMetadatumMappers" 
+                    :active.sync="isLoadingMappers" 
                     :can-cancel="false"/>
 
             <b-loading 
@@ -119,14 +119,14 @@ export default {
     data(){
         return {
             selectedEstrategy: 'mappers',
-            isLoadingMetadatumMappers: true,
+            isLoadingMappers: true,
             collectionPresets: [],
             isCreatingCollectionPreset: false
         }
     },
     computed: {
-        metadatumMappers() {
-            return this.getMetadatumMappers();
+        mappers() {
+            return this.getMappers();
         },
         hasPresetsHook() {
             if (wp !== undefined && wp.hooks !== undefined)
@@ -152,12 +152,12 @@ export default {
     mounted() {
         this.isLoadingMetadatumTypes = true;
 
-        this.fetchMetadatumMappers()
+        this.fetchMappers()
             .then(() => {
-                this.isLoadingMetadatumMappers = false;
+                this.isLoadingMappers = false;
             })
             .catch(() => {
-                this.isLoadingMetadatumMappers = false;
+                this.isLoadingMappers = false;
             });
 
         if (this.$refs.collectionCreationModal)
@@ -165,10 +165,10 @@ export default {
     },
     methods: {
         ...mapActions('metadata', [
-            'fetchMetadatumMappers'
+            'fetchMappers'
         ]),
         ...mapGetters('metadata', [
-            'getMetadatumMappers'
+            'getMappers'
         ]),
         onNewCollectionPreset(collectionPreset) {
             this.isCreatingCollectionPreset = true;

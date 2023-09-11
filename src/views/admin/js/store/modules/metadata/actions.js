@@ -259,13 +259,13 @@ export const updateMetadatumTypes = ({commit}, metadatumTypes) => {
 };
 
 // METADATA MAPPERS
-export const fetchMetadatumMappers = ({commit}) => {
+export const fetchMappers = ({commit}) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.get('/metadatum-mappers')
             .then((res) => {
-                let metadatumMappers = res.data;
-                commit('setMetadatumMappers', metadatumMappers);
-                resolve(metadatumMappers);
+                let mappers = res.data;
+                commit('setMappers', mappers);
+                resolve(mappers);
             })
             .catch((error) => {
                 console.log(error);
@@ -274,7 +274,7 @@ export const fetchMetadatumMappers = ({commit}) => {
     });
 }
 
-export const updateMetadataMapperMetadata = ({ dispatch }, {metadataMapperMetadata, mapper}) => {
+export const updateMapper = ({ dispatch }, {metadataMapperMetadata, mapper}) => {
     return new Promise((resolve, reject) => {
         var param = {
                 metadata_mappers: metadataMapperMetadata,
@@ -290,8 +290,8 @@ export const updateMetadataMapperMetadata = ({ dispatch }, {metadataMapperMetada
     });
 }
 
-export const updateMetadatumMappers = ({commit}, metadatumMappers) => {
-    commit('setMetadatumMappers', metadatumMappers);
+export const updateMappers = ({commit}, mappers) => {
+    commit('setMappers', mappers);
 };
 
 // METADATA SECTIONS
@@ -437,3 +437,18 @@ export const fetchMetadataSectionMetadata = ({commit}, { collectionId , metadata
     });
 }
 
+// MAPPERS
+export const fetchMapper = ({commit}, { collectionId, mapperSlug }) => {
+    return new Promise((resolve, reject) => {
+        axios.tainacan.get('/mappers/' + mapperSlug)
+            .then((res) => {
+                let mapper = res.data;
+                commit('updateMapper', mapper);
+                resolve(mapper);
+            })
+            .catch((error) => {
+                console.log(error);
+                reject(error);
+            });
+    });
+}

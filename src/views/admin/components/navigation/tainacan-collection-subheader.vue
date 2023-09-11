@@ -89,6 +89,20 @@
                     </router-link>
                 </li>
                 <li 
+                        v-if="collection && collection.current_user_can_edit_metadata"
+                        :class="activeRoute == 'CollectionMappersPage' ? 'is-active':''" 
+                        class="level-item">
+                    <router-link 
+                            tag="a" 
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionMappersPath(collection.id) : ''}" 
+                            :aria-label="$i18n.get('label_collection_mappers')">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes tainacan-icon-rotate-90"/>
+                        </span>
+                    <span class="menu-text">{{ $i18n.get('mappers') }}</span>
+                    </router-link>
+                </li>
+                <li 
                         v-if="$userCaps.hasCapability('tnc_rep_read_logs')"
                         :class="activeRoute == 'CollectionActivitiesPage' ? 'is-active':''"
                         class="level-item">

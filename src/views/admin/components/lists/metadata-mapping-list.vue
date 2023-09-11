@@ -3,28 +3,11 @@
         <b-loading
                 :can-cancel="false"
                 :is-full-page="false"
-                :active.sync="isLoadingMetadatumMappers"/>
+                :active.sync="isLoadingMapper"/>
         <b-loading
                 :can-cancel="false"
                 :is-full-page="false"
                 :active.sync="isLoadingMetadata"/>
-
-        <b-field>
-            <p style="line-height: 2em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
-            <b-select
-                    id="mappers-options-dropdown"
-                    size="is-small"
-                    :placeholder="$i18n.get('instruction_select_a_mapper')"
-                    :value="mapper"
-                    @input="onSelectMetadataMapper($event)">
-                <option
-                        v-for="metadatumMapper in metadatumMappers"
-                        :key="metadatumMapper.slug"
-                        :value="metadatumMapper">
-                    {{ metadatumMapper.name }}
-                </option>
-            </b-select>
-        </b-field>
 
         <!-- No metadata found warning -->
         <section 
@@ -47,7 +30,7 @@
 
             <div class="mapping-control">
                 <div
-                        v-if="mapper != '' && mapper.allow_extra_metadata"
+                        v-if="mapper && mapper.allow_extra_metadata"
                         class="modal-new-link">
                     <a
                             v-if="collectionId != null && collectionId != undefined"
@@ -134,17 +117,17 @@
             </div>
 
              <div 
-                    v-if="mapper != '' && !isLoadingMetadatumMappers"
+                    v-if="mapper && !isLoadingMapper"
                     class="field is-grouped form-submit fixed-form-submit">
                 <div class="control">
                     <button
                             class="button is-outlined"
                             type="button"
-                            @click="onCancelUpdateMetadataMapperMetadata">{{ $i18n.get('cancel') }}</button>
+                            @click="onCancelUpdateMapper">{{ $i18n.get('cancel') }}</button>
                 </div>
                 <div class="control">
                     <button
-                            @click.prevent="onUpdateMetadataMapperMetadataClick"
+                            @click.prevent="onUpdateMapperClick"
                             :class="{ 'is-loading': isMapperMetadataLoading }"
                             class="button is-success">{{ $i18n.get('save') }}</button>
                 </div>
@@ -210,14 +193,14 @@ import { mapActions, mapGetters } from 'vuex';
 export default {
     name: 'MetadataMappingList',
     props: {
-        isRepositoryLevel: Boolean
+        isRepositoryLevel: Boolean,
+        mapper: Object
     },
     data() {
         return {
             collectionId: '',
-            isLoadingMetadatumMappers: true,
+            isLoadingMapper: true,
             isLoadingMetadata: false,
-            mapper: '',
             mapperMetadata: [],
             isMapperMetadataLoading: false,
             isMapperMetadataCreating: false,
@@ -228,9 +211,6 @@ export default {
         }
     },
     computed: {
-        metadatumMappers() {
-            return this.getMetadatumMappers();
-        },
         isNewMetadataMapperMetadataDisabled() {
             return !this.newMetadataLabel || !this.newMetadataUri;
         },
@@ -256,7 +236,7 @@ export default {
             }).then((resp) => {
                 resp.request
                     .then(() => {
-                        this.loadMetadataMappers();
+                        this.loadMapperMetadata();
                         this.isLoadingMetadata = false;
                     })
                     .catch(() => {
@@ -265,49 +245,34 @@ export default {
             })
             .catch(() => this.isLoadingMetadata = false); 
         } else {
-            this.loadMetadataMappers();
+            this.loadMapperMetadata();
         }
     },
     methods: {
         ...mapActions('metadata', [
             'fetchMetadata',
             'cleanMetadata',
-            'fetchMetadatumMappers',
-            'updateMetadataMapperMetadata',
+            'fetchMappers',
+            'updateMapper',
         ]),
         ...mapGetters('metadata',[
-            'getMetadatumMappers',
             'getMetadata'
         ]),
-        loadMetadataMappers() {
-            this.isLoadingMetadatumMappers = true;
-            this.fetchMetadatumMappers()
-                .then(() => {
-                    this.isLoadingMetadatumMappers = false;
-                    
-                    if (this.metadatumMappers.length >= 1)
-                        this.onSelectMetadataMapper(this.metadatumMappers[0])
-                })
-                .catch(() => {
-                    this.isLoadingMetadatumMappers = false;
-                });
-        },
-        onSelectMetadataMapper(metadatumMapper) {
+        loadMapperMetadata() {
 
             this.isMapperMetadataLoading = true;
-            this.mapper = metadatumMapper; //TODO try to use v-model again
             this.mapperMetadata = [];
             
-            if (metadatumMapper != '') {
-                for (var k in metadatumMapper.metadata) {
-                    var item = metadatumMapper.metadata[k];
+            if (this.mapper) {
+                for (var k in this.mapper.metadata) {
+                    var item = this.mapper.metadata[k];
                     item.slug = k;
                     item.selected = '';
                     item.isCustom = false;
                     this.activeMetadatumList.forEach((metadatum) => {
                         if (
-                            Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, metadatumMapper.slug) &&
-                            metadatum.exposer_mapping[metadatumMapper.slug] == item.slug
+                            Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, this.mapper.slug) &&
+                            metadatum.exposer_mapping[this.mapper.slug] == item.slug
                         ) {
                             item.selected = metadatum.id;
                             this.mappedMetadata.push(metadatum.id);
@@ -317,12 +282,12 @@ export default {
                 }
                 this.activeMetadatumList.forEach((metadatum) => {
                     if (
-                        Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, metadatumMapper.slug) &&
-                        typeof metadatum.exposer_mapping[metadatumMapper.slug] == 'object'
+                        Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, this.mapper.slug) &&
+                        typeof metadatum.exposer_mapping[this.mapper.slug] == 'object'
                     ) {
-                        this.newMapperMetadataList.push(Object.assign({},metadatum.exposer_mapping[metadatumMapper.slug]));
+                        this.newMapperMetadataList.push(Object.assign({},metadatum.exposer_mapping[this.mapper.slug]));
                         this.mappedMetadata.push(metadatum.id);
-                        var item = Object.assign({},metadatum.exposer_mapping[metadatumMapper.slug]);
+                        var item = Object.assign({},metadatum.exposer_mapping[this.mapper.slug]);
                         item.selected = metadatum.id;
                         item.isCustom = true;
                         this.mapperMetadata.push(item);
@@ -342,7 +307,7 @@ export default {
                 }
             });
         },
-        onUpdateMetadataMapperMetadataClick() {
+        onUpdateMapperClick() {
             this.isMapperMetadataLoading = true;
             var metadataMapperMetadata = [];
             this.mapperMetadata.forEach((item) => {
@@ -375,7 +340,7 @@ export default {
                     }
                 });
             });
-            this.updateMetadataMapperMetadata({
+            this.updateMapper({
                     metadataMapperMetadata: metadataMapperMetadata,
                     mapper: this.mapper.slug
             }).then(() => {
@@ -385,7 +350,7 @@ export default {
                 this.isMapperMetadataLoading = false;
             });
         },
-        onCancelUpdateMetadataMapperMetadata() {
+        onCancelUpdateMapper() {
             this.isMapperMetadataLoading = true;
             this.onSelectMetadataMapper(this.mapper);
             this.isMapperMetadataLoading = false;

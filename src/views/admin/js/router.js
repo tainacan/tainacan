@@ -9,6 +9,7 @@ import CollectionPage from '../pages/singles/collection-page.vue'
 import ItemsPage from '../pages/lists/items-page.vue'
 import ItemPage from '../pages/singles/item-page.vue'
 import MetadataPage from '../pages/lists/metadata-page.vue'
+import MappersPage from '../pages/lists/mappers-page.vue'
 import FiltersPage from '../pages/lists/filters-page.vue'
 import TaxonomyPage from '../pages/lists/taxonomies-page.vue'
 import ActivitiesPage from '../pages/lists/activities-page.vue'
@@ -24,6 +25,7 @@ import ItemEditionForm from '../components/edition/item-edition-form.vue'
 import ItemBulkEditionForm from '../components/edition/item-bulk-edition-form.vue'
 import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
 import ExporterEditionForm from '../components/edition/exporter-edition-form.vue'
+import MapperEditionForm from '../components/edition/mapper-edition-form.vue'
 
 Vue.use(VueRouter);
 
@@ -51,6 +53,8 @@ const routes = [
         { path: 'settings', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_collection_settings') } },
         { path: 'metadata', component: MetadataPage, name: 'CollectionMetadataPage', meta: {title: i18nGet('title_collection_metadata_edit') } },
         { path: 'filters', component: FiltersPage, name: 'CollectionFiltersPage', meta: {title: i18nGet('title_collection_filters_edit') } },
+        { path: 'mappers', component: MappersPage, name: 'CollectionMappersPage', meta: { title: i18nGet('title_collection_mappers') } },
+        { path: 'mappers/:mapperSlug', component: MapperEditionForm, name: 'CollectionMapperEditionForm', meta: { title: i18nGet('title_collection_mappers_edit') } },
         { path: 'activities', component: ActivitiesPage, name: 'CollectionActivitiesPage', meta: {title: i18nGet('title_collection_activities') } },
         { path: 'capabilities', component: CapabilitiesPage, name: 'CollectionCapabilitiesPage', meta: {title: i18nGet('title_collection_capabilities') } },
         { path: 'sequence/:sequenceId', name: 'SavedSequenceEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item') } },
@@ -60,11 +64,12 @@ const routes = [
 
     { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page') } },
     { path: '/items/new', name: 'ItemCreationForm', component: ItemEditionForm, meta: {title: i18nGet('title_create_item') } },
-
-    { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: i18nGet('title_repository_filters_page') } },
-
     { path: '/metadata', name: 'MetadataPage', component: MetadataPage, meta: {title: i18nGet('title_repository_metadata_page') } },
-
+    { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: i18nGet('title_repository_filters_page') } },
+    
+    { path: '/mappers', name: 'MappersPage', component: MappersPage, meta: {title: i18nGet('title_repository_mappers_page') } },
+    { path: '/mappers/:mapperSlug', name: 'MappersEditionForm', component: MapperEditionForm, meta: { title: i18nGet('title_repository_mappers_edit_page') } },
+    
     { path: '/taxonomies', name: 'TaxonomyPage', component: TaxonomyPage, meta: {title: i18nGet('title_taxonomies_page') } },
     { path: '/taxonomies/new', name: 'TaxonomyCreationForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_create_taxonomy_page') } },
     { path: '/taxonomies/:taxonomyId/edit', name: 'TaxonomyEditionForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_taxonomy_edit_page') } },
