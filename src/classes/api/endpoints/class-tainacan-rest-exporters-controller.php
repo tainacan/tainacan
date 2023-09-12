@@ -322,7 +322,7 @@ class REST_Exporters_Controller extends REST_Controller {
 					'readonly'     => true
 				],
 				'options_form' => [
-					'description'  => esc_html__( 'The form to input the set set of options exporter may have its own.', 'tainacan' ),
+					'description'  => esc_html__( 'The HTML form with a set of options that the exporter may have.', 'tainacan' ),
 					'type'         => 'string',
 					'context'      => array( 'view' ),
 					'readonly'     => true

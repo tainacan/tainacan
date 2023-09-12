@@ -245,7 +245,7 @@ class REST_Facets_Controller extends REST_Controller {
 							],
 							'parent' => [
 								'type' => 'string',
-								'description' => __( 'Parent metadatum id, if the metadtumof the facet', 'tainacan' ),
+								'description' => __( 'Parent term id, if coming from a Taxonomy metadata type tha has hierarchy.', 'tainacan' ),
 							],
 							'total_items' => [
 								'type' => 'integer',
