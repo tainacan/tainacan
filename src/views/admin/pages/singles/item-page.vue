@@ -415,7 +415,7 @@
                             class="button sequence-button is-pulled-right"
                             :href="item.url">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
                         </span>
                         <span>{{ $i18n.get('label_item_page_on_website') }}</span>
                     </a>

@@ -21,7 +21,7 @@
                         target="_blank"
                         :href="themeItemsListURL">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_items_on_theme') }}</span>
                 </a>
@@ -155,7 +155,7 @@
                         :href="themeCollectionListURL"
                         style="position: relative">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_collections_on_theme') }}</span>
                 </a>
