@@ -101,6 +101,17 @@
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
                 </li>
+                <li v-if="!$adminOptions.hidePrimaryMenuProcessesButton">
+                    <router-link
+                            tag="a"
+                            to="/processes"
+                            :class="activeRoute == 'ProcessesPage' ? 'is-active':''">
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes"/>
+                        </span>
+                        <span class="menu-text">{{ $i18n.get('processes') }}</span>
+                    </router-link>
+                </li>
                 <li 
                         class="is-hidden-mobile"
                         v-if="$userCaps.hasCapability('tnc_rep_edit_users') && !$adminOptions.hidePrimaryMenuCapabilitiesButton">

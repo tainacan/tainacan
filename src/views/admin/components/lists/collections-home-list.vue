@@ -231,6 +231,23 @@
                             <!-- <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span> -->
                         </router-link>
                     </li>
+                    <li v-if="collection.current_user_can_edit_metadata && !$adminOptions.hideHomeCollectionMappersButton">
+                        <router-link  
+                                tag="a" 
+                                :to="{ path: $routerHelper.getCollectionMappersPath(collection.id) }"
+                                :aria-label="$i18n.get('label_collection_mappers')">
+                            <span
+                                    v-tooltip.bottom="{
+                                        content: $i18n.getFrom('mappers'),
+                                        autoHide: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip']     
+                                    }"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes tainacan-icon-rotate-90"/>
+                            </span>
+                            <!-- <span class="menu-text">{{ $i18n.getFrom('mappers') }}</span> -->
+                        </router-link>
+                    </li>
                     <li v-if="$userCaps.hasCapability('tnc_rep_read_logs') && !$adminOptions.hideHomeCollectionActivitiesButton">
                         <router-link 
                                 tag="a" 

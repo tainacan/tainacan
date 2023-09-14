@@ -13,6 +13,7 @@ import MappersPage from '../pages/lists/mappers-page.vue'
 import FiltersPage from '../pages/lists/filters-page.vue'
 import TaxonomyPage from '../pages/lists/taxonomies-page.vue'
 import ActivitiesPage from '../pages/lists/activities-page.vue'
+import ProcessesPage from '../pages/lists/processes-page.vue'
 import AvailableExportersPage from '../pages/lists/available-exporters-page.vue'
 import AvailableImportersPage from '../pages/lists/available-importers-page.vue'
 import CapabilitiesPage from '../pages/lists/capabilities-page.vue'
@@ -36,56 +37,57 @@ const i18nGet = function (key) {
 
 const routes = [
     { path: '/', redirect:'/home' },
-    { path: '/home', name: 'HomePage', component: HomePage, meta: {title: 'Tainacan'} },
+    { path: '/home', name: 'HomePage', component: HomePage, meta: { title: 'Tainacan'} },
 
     { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: { title: i18nGet('title_repository_collections_page') } },
-    { path: '/collections/new', name: 'CollectionCreationForm', component: CollectionEditionForm, meta: {title: i18nGet('title_create_collection') } },
-    { path: '/collections/new/:mapper', name: 'MappedCollectionCreationForm', component: CollectionEditionForm, meta: {title: i18nGet('title_create_collection') } },
+    { path: '/collections/new', name: 'CollectionCreationForm', component: CollectionEditionForm, meta: { title: i18nGet('title_create_collection') } },
+    { path: '/collections/new/:mapper', name: 'MappedCollectionCreationForm', component: CollectionEditionForm, meta: { title: i18nGet('title_create_collection') } },
 
-    { path: '/collections/:collectionId', component: CollectionPage, meta: {title: i18nGet('title_collection_page') },
+    { path: '/collections/:collectionId', component: CollectionPage, meta: { title: i18nGet('title_collection_page') },
       children: [
         { path: '', redirect: 'items'},
-        { path: 'items', component: ItemsPage, name: 'CollectionItemsPage', meta: {title: i18nGet('title_collection_page') }, props: { isOnTheme: false } },
-        { path: 'items/:itemId/edit', name: 'ItemEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item') } },
-        { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: {title: i18nGet('title_create_item_collection') } },
-        { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page') } },
-        { path: 'bulk-add', name: 'CollectionItemBulkAddPage', component: ItemBulkEditionForm, meta: {title: i18nGet('title_item_bulk_add') } },
-        { path: 'settings', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: {title: i18nGet('title_collection_settings') } },
-        { path: 'metadata', component: MetadataPage, name: 'CollectionMetadataPage', meta: {title: i18nGet('title_collection_metadata_edit') } },
-        { path: 'filters', component: FiltersPage, name: 'CollectionFiltersPage', meta: {title: i18nGet('title_collection_filters_edit') } },
+        { path: 'items', component: ItemsPage, name: 'CollectionItemsPage', meta: { title: i18nGet('title_collection_page') }, props: { isOnTheme: false } },
+        { path: 'items/:itemId/edit', name: 'ItemEditionForm', component: ItemEditionForm, meta: { title:  i18nGet('title_edit_item') } },
+        { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: { title: i18nGet('title_create_item_collection') } },
+        { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: { title: i18nGet('title_item_page') } },
+        { path: 'bulk-add', name: 'CollectionItemBulkAddPage', component: ItemBulkEditionForm, meta: { title: i18nGet('title_item_bulk_add') } },
+        { path: 'settings', component: CollectionEditionForm,  name: 'CollectionEditionForm', meta: { title: i18nGet('title_collection_settings') } },
+        { path: 'metadata', component: MetadataPage, name: 'CollectionMetadataPage', meta: { title: i18nGet('title_collection_metadata_edit') } },
+        { path: 'filters', component: FiltersPage, name: 'CollectionFiltersPage', meta: { title: i18nGet('title_collection_filters_edit') } },
         { path: 'mappers', component: MappersPage, name: 'CollectionMappersPage', meta: { title: i18nGet('title_collection_mappers') } },
         { path: 'mappers/:mapperSlug', component: MapperEditionForm, name: 'CollectionMapperEditionForm', meta: { title: i18nGet('title_collection_mappers_edit') } },
-        { path: 'activities', component: ActivitiesPage, name: 'CollectionActivitiesPage', meta: {title: i18nGet('title_collection_activities') } },
-        { path: 'capabilities', component: CapabilitiesPage, name: 'CollectionCapabilitiesPage', meta: {title: i18nGet('title_collection_capabilities') } },
-        { path: 'sequence/:sequenceId', name: 'SavedSequenceEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item') } },
-        { path: 'sequence/:sequenceId/:itemPosition', name: 'SequenceEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item') } },
+        { path: 'activities', component: ActivitiesPage, name: 'CollectionActivitiesPage', meta: { title: i18nGet('title_collection_activities') } },
+        { path: 'capabilities', component: CapabilitiesPage, name: 'CollectionCapabilitiesPage', meta: { title: i18nGet('title_collection_capabilities') } },
+        { path: 'sequence/:sequenceId', name: 'SavedSequenceEditionForm', component: ItemEditionForm, meta: { title:  i18nGet('title_edit_item') } },
+        { path: 'sequence/:sequenceId/:itemPosition', name: 'SequenceEditionForm', component: ItemEditionForm, meta: { title:  i18nGet('title_edit_item') } },
     ]
     },
 
-    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page') } },
-    { path: '/items/new', name: 'ItemCreationForm', component: ItemEditionForm, meta: {title: i18nGet('title_create_item') } },
-    { path: '/metadata', name: 'MetadataPage', component: MetadataPage, meta: {title: i18nGet('title_repository_metadata_page') } },
-    { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: i18nGet('title_repository_filters_page') } },
+    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: { title: i18nGet('title_items_page') } },
+    { path: '/items/new', name: 'ItemCreationForm', component: ItemEditionForm, meta: { title: i18nGet('title_create_item') } },
+    { path: '/metadata', name: 'MetadataPage', component: MetadataPage, meta: { title: i18nGet('title_repository_metadata_page') } },
+    { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: { title: i18nGet('title_repository_filters_page') } },
     
-    { path: '/mappers', name: 'MappersPage', component: MappersPage, meta: {title: i18nGet('title_repository_mappers_page') } },
+    { path: '/mappers', name: 'MappersPage', component: MappersPage, meta: { title: i18nGet('title_repository_mappers_page') } },
     { path: '/mappers/:mapperSlug', name: 'MappersEditionForm', component: MapperEditionForm, meta: { title: i18nGet('title_repository_mappers_edit_page') } },
     
-    { path: '/taxonomies', name: 'TaxonomyPage', component: TaxonomyPage, meta: {title: i18nGet('title_taxonomies_page') } },
-    { path: '/taxonomies/new', name: 'TaxonomyCreationForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_create_taxonomy_page') } },
-    { path: '/taxonomies/:taxonomyId/edit', name: 'TaxonomyEditionForm', component: TaxonomyEditionForm, meta: {title: i18nGet('title_taxonomy_edit_page') } },
+    { path: '/taxonomies', name: 'TaxonomyPage', component: TaxonomyPage, meta: { title: i18nGet('title_taxonomies_page') } },
+    { path: '/taxonomies/new', name: 'TaxonomyCreationForm', component: TaxonomyEditionForm, meta: { title: i18nGet('title_create_taxonomy_page') } },
+    { path: '/taxonomies/:taxonomyId/edit', name: 'TaxonomyEditionForm', component: TaxonomyEditionForm, meta: { title: i18nGet('title_taxonomy_edit_page') } },
     { path: '/taxonomies/:taxonomyId', redirect: '/taxonomies/:taxonomyId/edit' },
 
-    { path: '/activities',  name: 'ActivitiesPage', component: ActivitiesPage, meta: {title: i18nGet('title_repository_activities_page') } },
+    { path: '/activities',  name: 'ActivitiesPage', component: ActivitiesPage, meta: { title: i18nGet('title_repository_activities_page') } },
+    { path: '/processes',  name: 'ProcessesPage', component: ProcessesPage, meta: { title: i18nGet('processes') } },
 
-    { path: '/capabilities', component: CapabilitiesPage, name: 'CapabilitiesPage', meta: {title: i18nGet('title_repository_capabilities') } },
+    { path: '/capabilities', component: CapabilitiesPage, name: 'CapabilitiesPage', meta: { title: i18nGet('title_repository_capabilities') } },
 
-    { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: {title: i18nGet('title_importers_page') } },
-    { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: {title: i18nGet('title_importer_page') } },
+    { path: '/importers/', name: 'AvailableImportersPage', component: AvailableImportersPage, meta: { title: i18nGet('title_importers_page') } },
+    { path: '/importers/:importerSlug', name: 'ImporterEditionForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page') } },
     { path: '/importers/:importerSlug/:sessionId', name: 'ImporterCreationForm', component: ImporterEditionForm, meta: { title: i18nGet('title_importer_page') } },
-    { path: '/importers/:importerType/:sessionId/mapping/:collectionId', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: {title: i18nGet('title_importer_mapping_page') } },
+    { path: '/importers/:importerType/:sessionId/mapping/:collectionId', name: 'ImporterMappingForm', component: ImporterMappingForm, meta: { title: i18nGet('title_importer_mapping_page') } },
 
-    { path: '/exporters/', name: 'ExportersPage', component: AvailableExportersPage, meta: {title: i18nGet('title_exporters_page') } },
-    { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: {title: i18nGet('title_exporter_page') }},
+    { path: '/exporters/', name: 'ExportersPage', component: AvailableExportersPage, meta: { title: i18nGet('title_exporters_page') } },
+    { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: { title: i18nGet('title_exporter_page') }},
 
     { path: '*', redirect: '/'}
 ];

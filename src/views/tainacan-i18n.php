@@ -129,7 +129,7 @@ return apply_filters( 'tainacan-i18n', [
 	'title_collection_activities'                    => __( 'Collection Activities', 'tainacan' ),
 	'title_filter_page'                              => __( 'Filter', 'tainacan' ),
 	'title_taxonomy_page'                            => __( 'Taxonomy', 'tainacan' ),
-	'title_term_edit'                             => __( 'Term edit', 'tainacan' ),
+	'title_term_edit'                             	 => __( 'Term edit', 'tainacan' ),
 	'title_term_creation'                            => __( 'Create a new term', 'tainacan' ),
 	'title_activity_page'                            => __( 'Activity', 'tainacan' ),
 	'title_create_collection'                        => __( 'Collection Creation', 'tainacan' ),

@@ -68,6 +68,16 @@
                             <span class="menu-text">{{ $i18n.get('title_repository_filters_page') }}</span>
                         </router-link>
                     </li>
+                    <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata') && !$adminOptions.hideHomeMappersButton">
+                        <router-link
+                                tag="a"
+                                to="/mappers">
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-processes tainacan-icon-rotate-90"/>
+                            </span>
+                            <span class="menu-text">{{ $i18n.get('title_repository_mappers_page' ) }}</span>
+                        </router-link>
+                    </li>
                     <li v-if="!$adminOptions.hideHomeTaxonomiesButton">
                         <router-link
                                 tag="a"
@@ -86,6 +96,16 @@
                                 <i class="tainacan-icon tainacan-icon-36px tainacan-icon-activities"/>
                             </span>
                             <span class="menu-text">{{ $i18n.get('title_repository_activities_page') }}</span>
+                        </router-link>
+                    </li>
+                    <li v-if="!$adminOptions.hideHomeProcessesButton">
+                        <router-link
+                                tag="a"
+                                to="/processes">
+                            <span class="icon is-medium">
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-processes"/>
+                            </span>
+                            <span class="menu-text">{{ $i18n.get('processes') }}</span>
                         </router-link>
                     </li>
                     <li v-if="!$adminOptions.hideHomeImportersButton">
@@ -390,11 +410,16 @@ export default {
         }
 
         .repository-menu-list {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
             width: calc(100% + 1.25em);
             justify-content: space-between;
             flex-wrap: wrap;
             margin: 0 -0.75em;
+
+            @media screen and (min-width: 1646px) {       
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
 
             li {
                 padding: 1em;
@@ -403,27 +428,7 @@ export default {
                 flex-grow: 1;
                 margin: 0.75em;
                 height: 120px; 
-                min-width: 13%;
-                flex-basis: 13%;
-                max-width: 15%;
                 transition: background-color 0.3s ease;
-
-                @media screen and (max-width: 580px) {
-                    max-width: calc(100% - 52px);
-                    min-width: calc(100% - 52px);
-                }
-                @media screen and (min-width: 581px) and (max-width: 767px) {
-                    min-width: calc(50% - 26px);
-                    max-width: calc(50% - 26px);
-                }
-                @media screen and (min-width: 768px) and (max-width: 1023px) {
-                    min-width: calc(33.33% - 26px);
-                    max-width: calc(33.33% - 26px);
-                }
-                @media screen and (min-width: 1024px) and (max-width: 1280px) {
-                    min-width: 30%;
-                    max-width: 30%;
-                }
 
                 &:hover {
                     background-color: var(--tainacan-gray2);
