@@ -15,7 +15,7 @@
                     target="_blank"
                     :href="form.url">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
                 </span>
                 <span class="menu-text">{{ $i18n.get('label_term_page_on_website') }}</span>
             </a>
