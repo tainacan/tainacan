@@ -59,20 +59,21 @@ export default {
 <style lang="scss" scoped>
 
     .importer-types-container {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin: 20px;
 
         .importer-type {
             border: 1px solid var(--tainacan-gray2);
             padding: 15px;
-            margin: 20px;
+            min-height: 100px;
             cursor: pointer;
-            max-width: 20%;
-            flex-grow: 1;
-            flex-basis: 20%;
-            transition: border 0.3s ease;
+            background-color: var(--tainacan-item-background-color);
+            transition: border 0.3s ease, background-color 0.15s ease;
 
             &:hover {
+                background-color: var(--tainacan-item-hover-background-color);
                 border: 1px solid var(--tainacan-gray3);
             }
         }
