@@ -780,9 +780,16 @@ class Item extends Entity {
 			// Renders the metadatum name
 			$metadatum_title_before = $args['before_title'];
 			$metadatum_title_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-title', $metadatum_title_before, $item_metadatum );
+			
+			$metadatum_status_info = '';
+			if ( $item_metadatum->get_metadatum()->get_status() != 'publish' ) {
+				$metadatum_status_object = get_post_status_object( $item_metadatum->get_metadatum()->get_status() );
+				$metadatum_status_info = ( $metadatum_status_object && $metadatum_status_object->label ? __( $metadatum_status_object->label, 'tainacan') : $item_metadatum->get_metadatum()->get_status() ) . ': ';
+			}
+			
 			$metadatum_title_after = $args['after_title'];
 			$metadatum_title_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-title', $metadatum_title_after, $item_metadatum );
-			$return .= $metadatum_title_before . $item_metadatum->get_metadatum()->get_name() . $metadatum_title_after;
+			$return .= $metadatum_title_before . $metadatum_status_info . $item_metadatum->get_metadatum()->get_name() . $metadatum_title_after;
 			
 			// Renders the metadatum value
 			$metadatum_value_before = $args['before_value'];

@@ -109,7 +109,17 @@
                                                     )"
                                                     :key="index"
                                                     class="field">
-                                                <label class="label">{{ itemMetadatum.metadatum.name }}</label>
+                                                <label class="label">
+                                                    {{ itemMetadatum.metadatum.name }}
+                                                    <span 
+                                                            v-if="itemMetadatum.metadatum.status !== 'publish'"
+                                                            class="icon has-text-gray">
+                                                        <i 
+                                                                class="tainacan-icon tainacan-icon-1em"
+                                                                :class="$statusHelper.getIcon(itemMetadatum.metadatum.status)"
+                                                        />
+                                                    </span>
+                                                </label>
                                                 <div
                                                         :class="{
                                                             'metadata-type-textarea': itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-textarea',
