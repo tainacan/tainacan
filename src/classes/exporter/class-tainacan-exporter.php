@@ -124,7 +124,7 @@ abstract class Exporter {
 	 *
 	 * Add and remove transient data using add_transient() and delete_transient() methods
 	 *
-	 * Transitens can be strings, numbers or arrays. Avoid storing objects.
+	 * Transients can be strings, numbers or arrays. Avoid storing objects.
 	 * 
 	 * @var array
 	 */
