@@ -60,7 +60,7 @@ Object.keys(POST_TYPES).forEach((postType) => {
         title: postName,
         icon: itemsIcon,
         category: 'tainacan-blocks-variations',
-        description: __('Displays a list of Tainacan itens from a collection', 'tainacan'),
+        description: __('Displays a list of Tainacan items from a collection', 'tainacan'),
         isActive: ( { namespace, query } ) => {
                 return (
                     namespace === VARIATION_NAME
