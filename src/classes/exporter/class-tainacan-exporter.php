@@ -131,7 +131,7 @@ abstract class Exporter {
 	protected $transients = [];
 
 	/**
-	 * Wether to abort importer/exporter execution.
+	 * Whether to abort importer/exporter execution.
 	 * @var bool
 	 */
 	protected $abort = false;
@@ -386,7 +386,7 @@ abstract class Exporter {
 	}
 
 	/**
-	 * Return wether importer should abort execution or not
+	 * Return whether importer should abort execution or not
 	 * @return bool 
 	 */
 	public function get_abort() {

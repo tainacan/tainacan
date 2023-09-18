@@ -661,7 +661,7 @@ class Metadata extends Repository {
 	 *
 	 * @param array $result Response from method fetch_by_collection
 	 * @param Entities\Collection $collection
-	 * @param bool $include_disabled Wether to include disabled metadata in the results or not
+	 * @param bool $include_disabled Whether to include disabled metadata in the results or not
 	 *
 	 * @return array
 	 */

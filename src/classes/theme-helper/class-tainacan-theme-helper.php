@@ -757,12 +757,12 @@ class Theme_Helper {
 	 * 												 Default view-mode-{$slug}
 	 * 		@type string		$thumbnail			 Full URL to an thumbnail that represents the view mode. Displayed in admin.
 	 * 		@type string		$icon 				 HTML that outputs an icon that represents the view mode. Displayed in front end.
-	 * 		@type bool			$show_pagination	 Wether to display or not pagination controls. Default true.
-	 * 		@type bool			$full_screen		 Wether the view mode will display full screen or not. Default false.
-	 * 		@type bool			$dynamic_metadata	 Wether to display or not (and use or not) the "displayed metadata" selector. Default false.
-	 * 		@type bool			$implements_skeleton Wether the view mode has its own strategy for disaplying loading state.
+	 * 		@type bool			$show_pagination	 Whether to display or not pagination controls. Default true.
+	 * 		@type bool			$full_screen		 Whether the view mode will display full screen or not. Default false.
+	 * 		@type bool			$dynamic_metadata	 Whether to display or not (and use or not) the "displayed metadata" selector. Default false.
+	 * 		@type bool			$implements_skeleton Whether the view mode has its own strategy for disaplying loading state.
 	 * 		@type string		$skeleton_template	 If the view mode is a template, this is the html of its loading state.
-	 * 		@type bool			$required_thumbnail	 Wether the view mode considers essential that the item thumbnail is available, even if it is a placeholder.
+	 * 		@type bool			$required_thumbnail	 Whether the view mode considers essential that the item thumbnail is available, even if it is a placeholder.
 	 * }
 	 * 
 	 * @return void
@@ -1667,7 +1667,7 @@ class Theme_Helper {
 		 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
 		 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
 		 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
-		 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+		 *     @type bool        $hide_empty                Whether to hide or not metadata the item has no value to
 		 *                                                  Default: true
 		 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value. Default ''
 		 *     @type string      $before                    String to be added before each metadata block

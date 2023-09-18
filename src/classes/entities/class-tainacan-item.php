@@ -537,7 +537,7 @@ class Item extends Entity {
 	 *
 	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
 	 *
-	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+	 *     @type bool        $hide_empty                Whether to hide or not metadata the item has no value to
 	 *                                                  Default: true
 	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value.
 	 *                                                  Default: ''
@@ -707,7 +707,7 @@ class Item extends Entity {
 	 * @param array|string $args {
 	 *     Optional. Array or string of arguments.
 	 * 
-	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+	 *     @type bool        $hide_empty                Whether to hide or not metadata the item has no value to
 	 *                                                  Default: true
 	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value.
 	 *                                                  Default: ''
@@ -982,7 +982,7 @@ class Item extends Entity {
 	 *
 	 *     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
 	 *
-	 *     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	 *     @type bool        $hide_empty                	Whether to hide or not metadata sections if there are no metadata list or they are empty
 	 *                                                  	Default: true
 	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	 *                                                  	Default: ''
@@ -1142,7 +1142,7 @@ class Item extends Entity {
 	 *
 	 *     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
 	 *
-	 *     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	 *     @type bool        $hide_empty                	Whether to hide or not metadata sections if there are no metadata list or they are empty
 	 *                                                  	Default: true
 	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	 *                                                  	Default: ''

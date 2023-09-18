@@ -40,7 +40,7 @@ class Entity {
 	public $WP_Post;
 	
 	/**
-	 * Indicates wether an entity was validated, calling the validate() method
+	 * Indicates whether an entity was validated, calling the validate() method
 	 *
 	 * Entities MUST be validated before attempt to save
 	 * 

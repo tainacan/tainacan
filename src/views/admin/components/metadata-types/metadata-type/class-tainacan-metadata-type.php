@@ -91,7 +91,7 @@ abstract class Metadata_Type  {
     private $preview_template;
 
     /**
-     * Indicates wether this metadata type will generate metadata that should be available as sorting options in the items list UI.
+     * Indicates whether this metadata type will generate metadata that should be available as sorting options in the items list UI.
      */
     private $sortable = true;
 
