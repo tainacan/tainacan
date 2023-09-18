@@ -251,7 +251,7 @@
                     });
             }
 
-            // Checks if current user can edit itens on the related collection to offer modal
+            // Checks if current user can edit items on the related collection to offer modal
             if (this.collection && this.collection.id == this.collectionId)
                 this.currentUserCanEditItems = this.collection.current_user_can_edit_items;
             else {

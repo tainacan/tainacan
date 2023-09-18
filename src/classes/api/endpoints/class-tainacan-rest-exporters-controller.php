@@ -472,13 +472,13 @@ class REST_Exporters_Controller extends REST_Controller {
 					'readonly'     => true
 				],
 				'manual_mapping' => [
-					'description'  => esc_html__( 'Wether Tainacan must present the user with an interface to manually choose a mapping standard. This will allow them to export the items mapped to a chosen standard instead of in its original form.', 'tainacan' ),
+					'description'  => esc_html__( 'Whether Tainacan must present the user with an interface to manually choose a mapping standard. This will allow them to export the items mapped to a chosen standard instead of in its original form.', 'tainacan' ),
 					'type'         => 'boolean',
 					'context'      => array( 'view' ),
 					'readonly'     => true
 				],
 				'manual_collection' => [
-					'description'  => esc_html__( 'Wether Tainacan will let the user choose the source collection. If set to true, Tainacan give the user a select box from where he/she will Choose one (and only one) Collection to export items from. Otherwise, the child exporter class must choose the collections somehow.', 'tainacan' ),
+					'description'  => esc_html__( 'Whether Tainacan will let the user choose the source collection. If set to true, Tainacan give the user a select box from where he/she will Choose one (and only one) Collection to export items from. Otherwise, the child exporter class must choose the collections somehow.', 'tainacan' ),
 					'type'         => 'boolean',
 					'context'      => array( 'view' ),
 					'readonly'     => true
