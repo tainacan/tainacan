@@ -417,7 +417,7 @@ class Item_Metadata_Entity extends Entity {
 	}
 	
 	/**
-	 * Check wether the item has a value stored in the database or not
+	 * Check whether the item has a value stored in the database or not
 	 *
 	 * @return bool
 	 */

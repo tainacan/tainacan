@@ -197,12 +197,12 @@ class REST_Filters_Controller extends REST_Controller {
 			$collection = $this->collection_repository->fetch( $request['collection_id'] );
 
 			if ( $collection instanceof Entities\Collection ) {
-				return current_user_can( 'tnc_col_' . $collection->get_id() . '_manage_filters' );
+				return $collection->user_can( 'edit_filters' );
 			}
 
 		} else {
 
-			return current_user_can( 'tnc_rep_manage_filters' );
+			return current_user_can( 'tnc_rep_edit_filters' );
 
 		}
 

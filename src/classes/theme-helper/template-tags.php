@@ -23,7 +23,7 @@ use \Tainacan\Repositories;
 	 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
 	 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
 	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
-	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+	 *     @type bool        $hide_empty                Whether to hide or not metadata the item has no value to
 	 *                                                  Default: true
 	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value. Default ''
 	 *     @type string      $before                    String to be added before each metadata block
@@ -465,7 +465,7 @@ function tainacan_get_the_media_component(
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-paginations swiper-pagination_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
+						<div class="swiper-pagination swiper-pagination_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
@@ -834,7 +834,7 @@ function tainacan_get_item($post_id = 0) {
 /**
  * To be used inside The Loop of a faceted serach view mode template.
  *
- * Returns true or false indicating wether a certain property or metadata is
+ * Returns true or false indicating whether a certain property or metadata is
  * selected to be displayed
  *
  * @param string|integer The property to be checked. If a string is passed, it will check against
@@ -1157,7 +1157,7 @@ function tainacan_the_item_gallery($args = []) {
 	*
 	*     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
 	*
-	*     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	*     @type bool        $hide_empty                	Whether to hide or not metadata sections if there are no metadata list or they are empty
 	*                                                  	Default: true
 	*     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	*                                                  	Default: ''
