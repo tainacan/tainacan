@@ -757,12 +757,12 @@ class Theme_Helper {
 	 * 												 Default view-mode-{$slug}
 	 * 		@type string		$thumbnail			 Full URL to an thumbnail that represents the view mode. Displayed in admin.
 	 * 		@type string		$icon 				 HTML that outputs an icon that represents the view mode. Displayed in front end.
-	 * 		@type bool			$show_pagination	 Wether to display or not pagination controls. Default true.
-	 * 		@type bool			$full_screen		 Wether the view mode will display full screen or not. Default false.
-	 * 		@type bool			$dynamic_metadata	 Wether to display or not (and use or not) the "displayed metadata" selector. Default false.
-	 * 		@type bool			$implements_skeleton Wether the view mode has its own strategy for disaplying loading state.
+	 * 		@type bool			$show_pagination	 Whether to display or not pagination controls. Default true.
+	 * 		@type bool			$full_screen		 Whether the view mode will display full screen or not. Default false.
+	 * 		@type bool			$dynamic_metadata	 Whether to display or not (and use or not) the "displayed metadata" selector. Default false.
+	 * 		@type bool			$implements_skeleton Whether the view mode has its own strategy for disaplying loading state.
 	 * 		@type string		$skeleton_template	 If the view mode is a template, this is the html of its loading state.
-	 * 		@type bool			$required_thumbnail	 Wether the view mode considers essential that the item thumbnail is available, even if it is a placeholder.
+	 * 		@type bool			$required_thumbnail	 Whether the view mode considers essential that the item thumbnail is available, even if it is a placeholder.
 	 * }
 	 * 
 	 * @return void
@@ -1614,6 +1614,48 @@ class Theme_Helper {
 			$wrapper_attributes .=	'class="tainacan-media-component"';
 		}
 
+		/**
+		 * Filters the Swiper options for the main slider
+		 * 
+		 * @param Object item The current item object
+		 * @param Object args Arguments passed to the get_tainacan_item_gallery function
+		 */
+		$extra_swiper_main_options = [];
+		$extra_swiper_main_options = apply_filters( 'tainacan-swiper-main-options', $extra_swiper_main_options, $item, $args );
+
+		$swiper_main_options = array_merge(
+			$extra_swiper_main_options,
+			$layout_elements['main'] ? array(
+				'navigation' => array(
+					'nextEl' => sprintf('.swiper-navigation-next_tainacan-item-gallery-block_id-%s-main', $block_id),
+					'prevEl' => sprintf('.swiper-navigation-prev_tainacan-item-gallery-block_id-%s-main', $block_id),
+					'preloadImages' => false,
+					'lazy' => true
+				)
+			) : []
+		);
+
+		/**
+		 * Filters the Swiper options for the thumbnails slider
+		 * 
+		 * @param Object item The current item object
+		 * @param Object args Arguments passed to the get_tainacan_item_gallery function
+		 */
+		$extra_swiper_thumbs_options = [];
+		$extra_swiper_thumbs_options = apply_filters( 'tainacan-swiper-thumbs-options', $extra_swiper_thumbs_options, $item, $args );
+
+		$swiper_thumbs_options = array_merge(
+			$extra_swiper_thumbs_options,
+			( $layout_elements['thumbnails'] && !$layout_elements['main'] ) ? array(
+				'navigation' => array(
+					'nextEl' => sprintf('.swiper-navigation-next_tainacan-item-gallery-block_id-%s-thumbs', $block_id),
+					'prevEl' => sprintf('.swiper-navigation-prev_tainacan-item-gallery-block_id-%s-thumbs', $block_id),
+					'preloadImages' => false,
+					'lazy' => true
+				)
+			) : []
+		);
+		
 		return tainacan_get_the_media_component(
 			'tainacan-item-gallery-block_id-' . $block_id,
 			$layout_elements['thumbnails'] ? $media_items_thumbnails : null,
@@ -1622,22 +1664,8 @@ class Theme_Helper {
 				'wrapper_attributes' => $wrapper_attributes,
 				'class_main_div' => '',
 				'class_thumbs_div' => '',
-				'swiper_main_options' => $layout_elements['main'] ? array(
-					'navigation' => array(
-						'nextEl' => sprintf('.swiper-navigation-next_tainacan-item-gallery-block_id-%s-main', $block_id),
-						'prevEl' => sprintf('.swiper-navigation-prev_tainacan-item-gallery-block_id-%s-main', $block_id),
-						'preloadImages' => false,
-						'lazy' => true
-					)
-				) : '',
-				'swiper_thumbs_options' => ( $layout_elements['thumbnails'] && !$layout_elements['main'] ) ? array(
-					'navigation' => array(
-						'nextEl' => sprintf('.swiper-navigation-next_tainacan-item-gallery-block_id-%s-thumbs', $block_id),
-						'prevEl' => sprintf('.swiper-navigation-prev_tainacan-item-gallery-block_id-%s-thumbs', $block_id),
-						'preloadImages' => false,
-						'lazy' => true
-					)
-				) : '',
+				'swiper_main_options' => $swiper_main_options,
+				'swiper_thumbs_options' => $swiper_thumbs_options,
 				'swiper_arrows_as_svg' => $show_arrows_as_svg,
 				'disable_lightbox' => !$open_lightbox_on_click,
 				'hide_media_name' => $hide_file_name_lightbox,
@@ -1667,7 +1695,7 @@ class Theme_Helper {
 		 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
 		 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
 		 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
-		 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+		 *     @type bool        $hide_empty                Whether to hide or not metadata the item has no value to
 		 *                                                  Default: true
 		 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value. Default ''
 		 *     @type string      $before                    String to be added before each metadata block

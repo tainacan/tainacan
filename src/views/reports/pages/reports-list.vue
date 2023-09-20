@@ -298,7 +298,7 @@ export default {
             startDate: 'getStartDate'
         }),
         collectionEditionPage() {
-            return (this.selectedCollection && this.selectedCollection != 'default') ? (tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#/collections/' + this.selectedCollection) : '';
+            return (this.selectedCollection && this.selectedCollection != 'default') ? (tainacan_plugin.admin_url + '?page=tainacan_admin#/collections/' + this.selectedCollection) : '';
         },
         isRepositoryLevel() {
             return !this.selectedCollection || this.selectedCollection == 'default';

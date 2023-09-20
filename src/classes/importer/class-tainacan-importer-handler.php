@@ -115,7 +115,7 @@ class Importer_Handler {
 	 * 	   @type string		 $slug					A unique slug for the importer. e.g. 'This is an example importer description'
 	 * 	   @type string		 $description			The importer description. e.g. 'example-importer'
 	 * 	   @type string		 $class_name			The Importer Class. e.g. '\Tainacan\Importer\Test_Importer'
-	 * 	   @type bool		 $manual_mapping		Wether Tainacan must present the user with an interface to manually map
+	 * 	   @type bool		 $manual_mapping		Whether Tainacan must present the user with an interface to manually map
 	 * 												the metadata from the source to the target collection.
 	 *
 	 * 												If set to true, Importer Class must implement the method
@@ -123,7 +123,7 @@ class Importer_Handler {
 	 *
 	 * 												Note that this will only work when importing items to one single collection.
 	 *
-	 * 	   @type bool		 $manual_collection		Wether Tainacan will let the user choose a destination collection.
+	 * 	   @type bool		 $manual_collection		Whether Tainacan will let the user choose a destination collection.
 	 *
 	 * 												If set to true, the API endpoints will handle Collection creation and will assign it to
 	 * 												the importer object using add_collection() method.

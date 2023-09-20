@@ -124,14 +124,14 @@ abstract class Exporter {
 	 *
 	 * Add and remove transient data using add_transient() and delete_transient() methods
 	 *
-	 * Transitens can be strings, numbers or arrays. Avoid storing objects.
+	 * Transients can be strings, numbers or arrays. Avoid storing objects.
 	 * 
 	 * @var array
 	 */
 	protected $transients = [];
 
 	/**
-	 * Wether to abort importer/exporter execution.
+	 * Whether to abort importer/exporter execution.
 	 * @var bool
 	 */
 	protected $abort = false;
@@ -386,7 +386,7 @@ abstract class Exporter {
 	}
 
 	/**
-	 * Return wether importer should abort execution or not
+	 * Return whether importer should abort execution or not
 	 * @return bool 
 	 */
 	public function get_abort() {

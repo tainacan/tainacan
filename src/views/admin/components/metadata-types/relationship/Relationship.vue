@@ -169,7 +169,7 @@
                 page: 1,
                 activeTab: 0,
                 editItemModalOpen: false,
-                adminURL: tainacan_plugin.admin_url + 'admin.php?',
+                adminURL: tainacan_plugin.admin_url + '?',
                 currentUserCanEditItems: false,
                 selectedValuesAsHtml: []
             }
@@ -254,7 +254,7 @@
                     });
             }
 
-            // Checks if current user can edit itens on the related collection to offer modal
+            // Checks if current user can edit items on the related collection to offer modal
             if (this.collection && this.collection.id == this.collectionId)
                 this.currentUserCanEditItems = this.collection.current_user_can_edit_items;
             else {

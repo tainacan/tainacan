@@ -93,7 +93,7 @@ abstract class Importer {
 	 *
 	 * Add and remove transient data using add_transient() and delete_transient() methods
 	 *
-	 * Transitens can be strings, numbers or arrays. Avoid storing objects.
+	 * Transients can be strings, numbers or arrays. Avoid storing objects.
 	 *
 	 * @var array
 	 */
@@ -484,7 +484,7 @@ abstract class Importer {
 	}
 
 	/**
-	 * Return wether importer should abort execution or not
+	 * Return whether importer should abort execution or not
 	 * @return bool
 	 */
 	public function get_abort() {

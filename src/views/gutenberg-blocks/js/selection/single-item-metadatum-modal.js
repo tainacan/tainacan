@@ -66,7 +66,7 @@ export default class SingleItemModal extends React.Component {
         if (this.props.existingCollectionId && !this.props.isTemplateMode) {
             this.fetchCollection(this.props.existingCollectionId);
             this.setState({ 
-                searchURL: tainacan_blocks.admin_url + 'admin.php?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish'
+                searchURL: tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/'+ this.props.existingCollectionId + '/items/?status=publish'
             });
 
             if (this.props.existingItemId) {
@@ -155,7 +155,7 @@ export default class SingleItemModal extends React.Component {
     selectCollection(selectedCollectionId) {
         this.setState({
             collectionId: selectedCollectionId,
-            searchURL: tainacan_blocks.admin_url + 'admin.php?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?status=publish'
+            searchURL: tainacan_blocks.admin_url + '?itemsSingleSelectionMode=true&page=tainacan_admin#/collections/' + selectedCollectionId + '/items/?status=publish'
         });
 
         this.props.onSelectCollection(selectedCollectionId);

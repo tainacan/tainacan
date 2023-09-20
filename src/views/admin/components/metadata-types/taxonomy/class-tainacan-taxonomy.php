@@ -354,6 +354,9 @@ class Taxonomy extends Metadata_Type {
 	public function get_value_as_html(Item_Metadata_Entity $item_metadata) {
 		$value = $item_metadata->get_value();
 		$return = '';
+
+		if ( !isset($value) )
+			return $return;
 		
 		if ( $item_metadata->is_multiple() ) {
 			$count = 1;

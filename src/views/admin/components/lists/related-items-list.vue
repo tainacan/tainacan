@@ -169,7 +169,7 @@
                 editItemId: false,
                 editCollectionId: false,
                 editItemModal: false,
-                adminURL: tainacan_plugin.admin_url + 'admin.php?',
+                adminURL: tainacan_plugin.admin_url + '?',
                 isUpdatingRelatedItems: false
             }
         },

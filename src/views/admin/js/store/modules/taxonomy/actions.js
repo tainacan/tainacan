@@ -251,7 +251,7 @@ export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent
 // Used only on Term Edit form, for autocomplete search for parents
 export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search, offset } ) => {
 
-    const excludeTree = termId ? qs.stringify({ exclude_tree: termId }) : '';
+    const excludeTree = termId && termId != 'new' ? qs.stringify({ exclude_tree: termId }) : '';
 
     let endpoint = '/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&hideempty=0&offset=0&number=20&order=asc&' + excludeTree;
 

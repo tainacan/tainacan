@@ -386,39 +386,39 @@
                 border: 1px solid var(--tainacan-block-gray3, $gray3) !important;
             }
 
-            &.max-itens-per-screen-9 {
+            &.max-items-per-screen-9 {
                 width: calc((100% / 9) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 9) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-8 {
+            &.max-items-per-screen-8 {
                 width: calc((100% / 8) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 8) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-7 {
+            &.max-items-per-screen-7 {
                 width: calc((100% / 7) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 7) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-6 {
+            &.max-items-per-screen-6 {
                 width: calc((100% / 6) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 6) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-5 {
+            &.max-items-per-screen-5 {
                 width: calc((100% / 5) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 5) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-4 {
+            &.max-items-per-screen-4 {
                 width: calc((100% / 4) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 4) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-3 {
+            &.max-items-per-screen-3 {
                 width: calc((100% / 3) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 3) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-2 {
+            &.max-items-per-screen-2 {
                 width: calc((100% / 2) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 2) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-1 {
+            &.max-items-per-screen-1 {
                 width: calc(100% - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc(100% - var(--spaceBetweenItems, 32px) );
             }
@@ -430,36 +430,36 @@
             width: calc(16.666% - var(--spaceBetweenItems, 32px) ); 
             min-width: calc(16.666% - var(--spaceBetweenItems, 32px) );
             
-            &.max-itens-per-screen-9 {
+            &.max-items-per-screen-9 {
                 width: calc((100% / 8) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 8) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-8 {
+            &.max-items-per-screen-8 {
                 width: calc((100% / 7) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 7) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-7 {
+            &.max-items-per-screen-7 {
                 width: calc((100% / 6) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 6) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-6 {
+            &.max-items-per-screen-6 {
                 width: calc((100% / 5) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 5) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-5 {
+            &.max-items-per-screen-5 {
                 width: calc((100% / 4) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 4) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-4 {
+            &.max-items-per-screen-4 {
                 width: calc((100% / 3) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 3) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-3 {
+            &.max-items-per-screen-3 {
                 width: calc((100% / 2) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 2) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-2,
-            &.max-itens-per-screen-1 {
+            &.max-items-per-screen-2,
+            &.max-items-per-screen-1 {
                 width: calc(100% - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc(100% - var(--spaceBetweenItems, 32px) );
             }
@@ -471,33 +471,33 @@
             width: calc(20% - var(--spaceBetweenItems, 32px) ); 
             min-width: calc(20% - var(--spaceBetweenItems, 32px) );
             
-            &.max-itens-per-screen-9 {
+            &.max-items-per-screen-9 {
                 width: calc((100% / 7) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 7) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-8 {
+            &.max-items-per-screen-8 {
                 width: calc((100% / 6) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 6) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-7 {
+            &.max-items-per-screen-7 {
                 width: calc((100% / 5) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 5) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-6 {
+            &.max-items-per-screen-6 {
                 width: calc((100% / 4) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 4) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-5 {
+            &.max-items-per-screen-5 {
                 width: calc((100% / 3) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 3) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-4 {
+            &.max-items-per-screen-4 {
                 width: calc((100% / 2) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 2) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-3,
-            &.max-itens-per-screen-2,
-            &.max-itens-per-screen-1 {
+            &.max-items-per-screen-3,
+            &.max-items-per-screen-2,
+            &.max-items-per-screen-1 {
                 width: calc(100% - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc(100% - var(--spaceBetweenItems, 32px) );
             }
@@ -509,30 +509,30 @@
             width: calc(25% - var(--spaceBetweenItems, 32px) ); 
             min-width: calc(25% - var(--spaceBetweenItems, 32px) ); 
 
-            &.max-itens-per-screen-9 {
+            &.max-items-per-screen-9 {
                 width: calc((100% / 6) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 6) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-8 {
+            &.max-items-per-screen-8 {
                 width: calc((100% / 5) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 5) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-7 {
+            &.max-items-per-screen-7 {
                 width: calc((100% / 4) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 4) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-6 {
+            &.max-items-per-screen-6 {
                 width: calc((100% / 3) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 3) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-5 {
+            &.max-items-per-screen-5 {
                 width: calc((100% / 2) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 2) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-4,
-            &.max-itens-per-screen-3,
-            &.max-itens-per-screen-2,
-            &.max-itens-per-screen-1 {
+            &.max-items-per-screen-4,
+            &.max-items-per-screen-3,
+            &.max-items-per-screen-2,
+            &.max-items-per-screen-1 {
                 width: calc(100% - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc(100% - var(--spaceBetweenItems, 32px) );
             }
@@ -544,27 +544,27 @@
             width: calc(33.333% - var(--spaceBetweenItems, 32px) ); 
             min-width: calc(33.333% - var(--spaceBetweenItems, 32px) );
 
-            &.max-itens-per-screen-9 {
+            &.max-items-per-screen-9 {
                 width: calc((100% / 5) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 5) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-8 {
+            &.max-items-per-screen-8 {
                 width: calc((100% / 4) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 4) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-7 {
+            &.max-items-per-screen-7 {
                 width: calc((100% / 3) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 3) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-6 {
+            &.max-items-per-screen-6 {
                 width: calc((100% / 2) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 2) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-5,
-            &.max-itens-per-screen-4,
-            &.max-itens-per-screen-3,
-            &.max-itens-per-screen-2,
-            &.max-itens-per-screen-1 {
+            &.max-items-per-screen-5,
+            &.max-items-per-screen-4,
+            &.max-items-per-screen-3,
+            &.max-items-per-screen-2,
+            &.max-items-per-screen-1 {
                 width: calc(100% - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc(100% - var(--spaceBetweenItems, 32px) );
             }
@@ -576,24 +576,24 @@
             width: calc(50% - var(--spaceBetweenItems, 32px) ); 
             min-width: calc(50% - var(--spaceBetweenItems, 32px) );
 
-            &.max-itens-per-screen-9 {
+            &.max-items-per-screen-9 {
                 width: calc((100% / 4) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 4) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-8 {
+            &.max-items-per-screen-8 {
                 width: calc((100% / 3) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 3) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-7 {
+            &.max-items-per-screen-7 {
                 width: calc((100% / 2) - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc((100% / 2) - var(--spaceBetweenItems, 32px) );
             }
-            &.max-itens-per-screen-6,
-            &.max-itens-per-screen-5,
-            &.max-itens-per-screen-4,
-            &.max-itens-per-screen-3,
-            &.max-itens-per-screen-2,
-            &.max-itens-per-screen-1 {
+            &.max-items-per-screen-6,
+            &.max-items-per-screen-5,
+            &.max-items-per-screen-4,
+            &.max-items-per-screen-3,
+            &.max-items-per-screen-2,
+            &.max-items-per-screen-1 {
                 width: calc(100% - var(--spaceBetweenItems, 32px) ); 
                 min-width: calc(100% - var(--spaceBetweenItems, 32px) );
             }

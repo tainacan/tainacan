@@ -89,7 +89,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         return (
             <li 
                 key={ item.id }
-                className={ 'swiper-slide item-list-item ' + (maxItemsPerScreen ? ' max-itens-per-screen-' + maxItemsPerScreen : '') + (['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 ? ' is-forced-square' : '') }>   
+                className={ 'swiper-slide item-list-item ' + (maxItemsPerScreen ? ' max-items-per-screen-' + maxItemsPerScreen : '') + (['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 ? ' is-forced-square' : '') }>   
                 { loadStrategy == 'selection' ?
                     <Button
                         onClick={ () => removeItemOfId(item.id) }

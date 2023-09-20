@@ -6,7 +6,7 @@ import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/dist/photoswipe.css';
 import Swiper from 'swiper';
-import { Navigation, A11y, Thumbs } from 'swiper/modules';
+import { Navigation, A11y, Thumbs, Pagination } from 'swiper/modules';
 
 const { __ } = wp.i18n;
 
@@ -54,6 +54,7 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
             let thumbsSwiperOptions = {
                 spaceBetween: 12,
                 slidesPerView: 'auto',
+                watchSlidesProgress: true,
                 navigation: {
                     nextEl: '.swiper-navigation-next_' + this.thumbs_gallery_selector,
                     prevEl: '.swiper-navigation-prev_' + this.thumbs_gallery_selector,
@@ -61,8 +62,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 pagination: {
                     el: '.swiper-pagination_' + this.thumbs_gallery_selector
                 },
-                // centeredSlides: true,
-                // centeredSlidesBounds: true,
+                centeredSlides: true,
+                centeredSlidesBounds: true,
                 centerInsufficientSlides: true,
                 slideToClickedSlide: true,
                 watchOverflow: true,
@@ -72,7 +73,24 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
                     lastSlideMessage: __('This is the last slide', 'tainacan')
                 },
-                modules: [Navigation, A11y]
+                modules: [Navigation, A11y, Pagination],
+                on: {
+                    init: function(swiper) {
+                        swiper.el.classList.add('swiper-is-beginning');
+                    },
+                    slideChange: function(swiper) {
+
+                        if (swiper.isBeginning)
+                            swiper.el.classList.add('swiper-is-beginning');
+                        else
+                            swiper.el.classList.remove('swiper-is-beginning');
+
+                        if (swiper.isEnd)
+                            swiper.el.classList.add('swiper-is-end');
+                        else
+                            swiper.el.classList.remove('swiper-is-end');
+                    }
+                }
             };
             thumbsSwiperOptions = {...thumbsSwiperOptions, ...this.options.swiper_thumbs_options };
             this.thumbsSwiper = new Swiper(this.thumbs_gallery_selector, thumbsSwiperOptions);
@@ -89,7 +107,11 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     firstSlideMessage: __('This is the first slide', 'tainacan'),
                     lastSlideMessage: __('This is the last slide', 'tainacan')
                 },
-                modules: [Navigation, A11y]
+                pagination: {
+                    el: '.swiper-pagination_' + this.main_gallery_selector,
+                    clickable: true
+                },
+                modules: [Navigation, A11y, Pagination]
             };
             mainSwiperOptions = {...mainSwiperOptions, ...this.options.swiper_main_options };
         
@@ -98,10 +120,20 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     swiper: this.thumbsSwiper,
                     autoScrollOffset: 3
                 }
-                mainSwiperOptions.modules = [Navigation, A11y, Thumbs];
+                mainSwiperOptions.modules = [Navigation, A11y, Thumbs, Pagination];
             }
 
             this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
+
+            if (this.thumbs_gallery_selector && this.thumbsSwiper && this.mainSwiper) {
+
+                const refToMainSwiper = this.mainSwiper;
+                const refToThumbSwiper = this.thumbsSwiper;
+
+                this.mainSwiper.on('slideChangeTransitionStart', function() {
+                    refToThumbSwiper.slideTo(refToMainSwiper.activeIndex);
+                });
+            }
         }
         
     }
