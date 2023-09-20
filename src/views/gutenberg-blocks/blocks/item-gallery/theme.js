@@ -107,7 +107,8 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     lastSlideMessage: __('This is the last slide', 'tainacan')
                 },
                 pagination: {
-                    el: '.swiper-pagination_' + this.main_gallery_selector
+                    el: '.swiper-pagination_' + this.main_gallery_selector,
+                    clickable: true
                 },
                 modules: [Navigation, A11y, Pagination]
             };
@@ -118,10 +119,20 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                     swiper: this.thumbsSwiper,
                     autoScrollOffset: 3
                 }
-                mainSwiperOptions.modules = [Navigation, A11y, Thumbs];
+                mainSwiperOptions.modules = [Navigation, A11y, Thumbs, Pagination];
             }
 
             this.mainSwiper = new Swiper(this.main_gallery_selector, mainSwiperOptions);
+
+            if (this.thumbs_gallery_selector && this.thumbsSwiper && this.mainSwiper) {
+
+                const refToMainSwiper = this.mainSwiper;
+                const refToThumbSwiper = this.thumbsSwiper;
+
+                this.mainSwiper.on('slideChangeTransitionStart', function() {
+                    refToThumbSwiper.slideTo(refToMainSwiper.activeIndex);
+                });
+            }
         }
         
     }

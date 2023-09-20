@@ -465,7 +465,7 @@ function tainacan_get_the_media_component(
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-paginations swiper-pagination_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
+						<div class="swiper-pagination swiper-pagination_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
