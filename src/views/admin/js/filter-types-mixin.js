@@ -19,7 +19,7 @@ export const filterTypeMixin = {
         isRepositoryLevel: Boolean,
         isUsingElasticSearch: Boolean,
         isLoadingItems: Boolean,
-        currentCollectionId: String|Number
+        currentCollectionId: [Number, String]
     },
     created() {
         this.collectionId = this.filter.collection_id ? this.filter.collection_id : this.collectionId;

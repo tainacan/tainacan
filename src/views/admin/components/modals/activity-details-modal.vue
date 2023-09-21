@@ -551,7 +551,7 @@
                 <button
                         class="button is-outlined"
                         type="button"
-                        @click="$parent.close()">
+                        @click="$emit('close')">
                     {{ $i18n.get('close') }}
                 </button>
                 <div class="buttons is-pulled-right">
@@ -590,7 +590,7 @@
 
                     <!-- <button
                             v-if="activity.status == 'publish'"
-                            @click="$parent.close()"
+                            @click="$emit('close')"
                             type="button"
                             class="button is-secondary">
                         <span>OK</span>
@@ -670,7 +670,7 @@
             '$route': {
                 handler(to, from) {
                     if (to !== from)
-                        this.$parent.close();
+                        this.$emit('close');
                 },
                 deep: true
             }

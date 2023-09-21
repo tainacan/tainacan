@@ -775,10 +775,10 @@ export default {
             swiper: {},
             selected: 'Home',
             pageTitle: '',
-            itemId: Number,
+            itemId: [String, Number],
             item: {},
             itemRequestCancel: undefined,
-            collectionId: Number,
+            collectionId: [String, Number],
             sequenceId: Number,
             itemPosition: Number,
             isCreatingNewItem: false,
@@ -790,7 +790,7 @@ export default {
             metadataSectionCollapses: [],
             collapseAll: true,
             form: {
-                collectionId: Number,
+                collectionId: [String, Number],
                 status: '',
                 document: '',
                 document_type: '',
@@ -831,6 +831,7 @@ export default {
         },
         itemMetadata() {
             const realItemMetadata = JSON.parse(JSON.stringify(this.getItemMetadata()));
+            console.log(realItemMetadata)
             const tweakedItemMetadata = realItemMetadata.map((anItemMetadatum) => {
 
                 // We need this because repository level metadata have an array of section IDs

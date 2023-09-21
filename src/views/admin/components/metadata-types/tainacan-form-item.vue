@@ -74,6 +74,7 @@
                         :is-metadata-navigation="isMetadataNavigation" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
+                            tag="div"
                             name="filter-item"
                             class="multiple-inputs">
                         <template 

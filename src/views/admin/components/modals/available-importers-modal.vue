@@ -41,7 +41,7 @@
                         <button 
                                 class="button is-outlined" 
                                 type="button" 
-                                @click="$parent.close()">Close</button>
+                                @click="$emit('close')">Close</button>
                     </div>
                     <!-- <div class="control">
                         <button class="button is-success">Confirm</button>
@@ -87,7 +87,7 @@ export default {
         ]),
         onSelectImporter(importerType) {
             this.$router.push({ path: this.$routerHelper.getImporterEditionPath(importerType.slug), query: { targetCollection: this.targetCollection } });
-            this.$parent.close();
+            this.$emit('close');
         }
     }
 }

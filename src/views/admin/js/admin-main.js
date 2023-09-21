@@ -235,7 +235,7 @@ export default (element) => {
             /* Others */
             app.component('help-button', HelpButton);
             app.component('tainacan-title', TainacanTitle);
-
+            
             // Event bus are needed to facilate comunication between child-parent-child components
             app.use(eventBusSearch);
 

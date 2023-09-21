@@ -64,7 +64,7 @@
                         :key="metadatumMapper.slug">
                     <button
                             class="collection-creation-option"
-                            @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $parent.close();"
+                            @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $emit('close');"
                             v-if="metadatumMapper.metadata != false"
                             aria-role="listitem">
                         <h3>{{ metadatumMapper.name }}</h3>
@@ -103,7 +103,7 @@
                     <button 
                             class="button is-outlined" 
                             type="button" 
-                            @click="$parent.close()">{{ $i18n.get('close') }}</button>
+                            @click="$emit('close')">{{ $i18n.get('close') }}</button>
                 </div>
             </footer>
         </section>
@@ -187,7 +187,7 @@ export default {
                     });
                     this.isCreatingCollectionPreset = false;
                     this.$router.push(this.$routerHelper.getCollectionsPath());
-                    this.$parent.close();
+                    this.$emit('close');
                 })
                 .catch((error) =>{
                     if (typeof collectionPreset.onError === 'function') {

@@ -67,13 +67,13 @@
                         id="button-cancel-url-link-selection"
                         class="button is-outlined"
                         type="button"
-                        @click="$parent.close()">
+                        @click="$emit('close')">
                     {{ $i18n.get('cancel') }}</button>
             </div>
             <div class="control">
                 <button
                         id="button-submit-url-link-selection"
-                        @click.prevent="confirmURLSelection();$parent.close();"
+                        @click.prevent="confirmURLSelection();$emit('close');"
                         class="button is-success">
                     {{ $i18n.get('save') }}</button>
             </div>

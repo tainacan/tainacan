@@ -83,7 +83,7 @@
                     id="button-cancel-importer-edition"
                     class="button is-outlined"
                     type="button"
-                    @click="$parent.close()">
+                    @click="$emit('close')">
                 {{ $i18n.get('exit') }}</button>
         </div>
     </div>

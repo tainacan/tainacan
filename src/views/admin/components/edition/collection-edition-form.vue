@@ -704,7 +704,7 @@ export default {
     mixins: [ wpAjax, formHooks ],
     data(){
         return {
-            collectionId: Number,
+            collectionId: [String, Number],
             collection: null,
             isLoading: false,
             form: {

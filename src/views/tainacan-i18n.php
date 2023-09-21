@@ -697,6 +697,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_multiple_terms'							 => __( 'Multiple terms', 'tainacan' ),
 	'label_multiple'								 => __( 'Multiple', 'tainacan' ),
 	'label_separator'								 => __( 'Separator', 'tainacan' ),
+	'label_loading_items'							 => __( 'Loading items...', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

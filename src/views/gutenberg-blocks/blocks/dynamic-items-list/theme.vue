@@ -281,7 +281,7 @@ import debounce from 'lodash/debounce.js';
 export default {
     name: "DynamicItemsListTheme",
     props: {
-        collectionId: String,  
+        collectionId: [String, Number],  
         showImage: Boolean,
         showName: Boolean,
         layout: String,

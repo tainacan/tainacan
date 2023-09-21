@@ -30,7 +30,7 @@ const i18nGet = function (key) {
 };
 
 const routes = [
-    { path: '/', redirect:'/home' },
+    { path: '/', redirect: { name: 'HomePage' } },
     { path: '/home', name: 'HomePage', component: HomePage, meta: {title: 'Tainacan'} },
 
     { path: '/collections', name: 'CollectionsPage', component: CollectionsPage, meta: { title: i18nGet('title_repository_collections_page') } },
@@ -39,8 +39,12 @@ const routes = [
 
     { path: '/collections/:collectionId', component: CollectionPage, meta: {title: i18nGet('title_collection_page') },
       children: [
-        { path: '', redirect: { name: 'CollectionItemsPage' }},
-        { path: 'items', component: ItemsPage, name: 'CollectionItemsPage', meta: {title: i18nGet('title_collection_page') }, props: { isOnTheme: false } },
+        /**
+         * Previously, the first child route had a path: ''. Due to the following Vue3 update, we're doing it like that
+         * https://router.vuejs.org/guide/migration/#Named-children-routes-with-an-empty-path-no-longer-appends-a-slash
+         */
+        { path: '/collections/:collectionId', redirect: { name: 'CollectionItemsPage' }},
+        { path: 'items', component: ItemsPage, name: 'CollectionItemsPage', meta: {title: i18nGet('title_collection_page') }, meta: { isOnTheme: false } },
         { path: 'items/:itemId/edit', name: 'ItemEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item') } },
         { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: {title: i18nGet('title_create_item_collection') } },
         { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page') } },
@@ -55,7 +59,7 @@ const routes = [
     ]
     },
 
-    { path: '/items', name: 'ItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page') } },
+    { path: '/items', name: 'RepositoryItemsPage', component: ItemsPage, meta: {title: i18nGet('title_items_page') } },
     { path: '/items/new', name: 'ItemCreationForm', component: ItemEditionForm, meta: {title: i18nGet('title_create_item') } },
 
     { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: {title: i18nGet('title_repository_filters_page') } },
@@ -79,6 +83,7 @@ const routes = [
     { path: '/exporters/', name: 'ExportersPage', component: AvailableExportersPage, meta: {title: i18nGet('title_exporters_page') } },
     { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: {title: i18nGet('title_exporter_page') }},
 
+    { path: '/:pathMatch(.*)*', redirect: { name: 'HomePage' } }
 ];
 
 export default createRouter({

@@ -34,8 +34,8 @@
                 </li>
                 <li v-if="!$adminOptions.hidePrimaryMenuItemsButton">
                     <router-link
-                            :to="$routerHelper.getItemsPath()"
-                            :class="activeRoute == 'ItemsPage' ? 'is-active':''">
+                            :to="{name: 'RepositoryItemsPage' }"
+                            :class="activeRoute == 'RepositoryItemsPage' ? 'is-active':''">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
                         </span>

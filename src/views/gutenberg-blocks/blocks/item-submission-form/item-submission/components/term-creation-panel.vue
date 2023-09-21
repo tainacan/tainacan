@@ -114,7 +114,7 @@
     import { mapActions } from 'vuex';
 
     export default {
-        name: 'TermEditionForm',
+        name: 'TermCreationPanel',
         mixins: [ formHooks ],
         props: {
             originalForm: Object,

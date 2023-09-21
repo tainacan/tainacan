@@ -753,7 +753,7 @@ export default {
     name: 'ItemSubmissionForm',
     mixins: [ formHooks, itemMetadataMixin ],
     props: {
-        collectionId: String,
+        collectionId: [String, Number],
         hideFileModalButton: Boolean,
         hideTextModalButton: Boolean,
         hideLinkModalButton: Boolean,

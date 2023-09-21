@@ -6,10 +6,10 @@ export default {
         
         const emitter = mitt();
         const bus = {
+            $userPrefs: app.config.globalProperties.$userPrefs,
             $store: app.config.globalProperties.$store,
             $router: app.config.globalProperties.$router,
             $route: app.config.globalProperties.$route,
-            $userPrefs: app.config.globalProperties.$userPrefs,
             errors : [],
             query: {},
             collectionId: undefined,
@@ -171,7 +171,7 @@ export default {
                 this.$store.dispatch('search/setAdminViewMode', adminViewMode);
                 this.updateURLQueries();  
             },
-            setSelectedItemsForIframe(selectedItems, singleSelection) {
+            async setSelectedItemsForIframe(selectedItems, singleSelection) {
 
                 if (singleSelection)
                     this.$store.dispatch('search/cleanSelectedItems');
@@ -180,36 +180,48 @@ export default {
 
                 let currentSelectedItems = this.$store.getters['search/getSelectedItems'];
 
-                if (window.history.pushState) {
+                if (window.history.replaceState) {
                     let searchParams = new URLSearchParams(window.location.search);
                     searchParams.delete('selecteditems');
                     for (let selectedItem of currentSelectedItems)
                         searchParams.append('selecteditems', selectedItem);
 
                     let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + searchParams.toString() + window.location.hash;
-                    window.history.pushState({path: newurl}, '', newurl);
+
+                    await this.$router.push(newurl)
+                    window.history.replaceState({ ...window.history.state, ...{ path: newurl } }, '')
                 }      
             },
             cleanSelectedItems() {
                 this.$store.dispatch('search/cleanSelectedItems');
             },
             filterBySelectedItems(selectedItems) {
-                this.$router.replace({ query: {} });
-                this.$router.replace({ query: { postin: selectedItems } });
+                if ( app.config.globalProperties.$route.name ) {
+                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: {} });
+                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: { postin: selectedItems } });
+                } else {
+                    this.$router.replace({ path: '', query: {} });
+                    this.$router.replace({ path: '', query: { postin: selectedItems } });
+                }
             },
             highlightsItem(itemId) {
                 this.$store.dispatch('search/highlightsItem', itemId);
                 this.updateURLQueries();
             },
             updateURLQueries() {
-                this.$router.replace({ query: {} });
-                this.$router.replace({ query: this.$store.getters['search/getPostQuery'] });
+                if ( app.config.globalProperties.$route.name ) {
+                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: {} });
+                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: this.$store.getters['search/getPostQuery'] });
+                } else {
+                    this.$router.replace({ path: '', query: {} });
+                    this.$router.replace({ path: '', query: this.$store.getters['search/getPostQuery'] });
+                }
             },
             updateStoreFromURL() {
                 this.$store.dispatch('search/set_postquery', this.$route.query);
             },
             loadItems() {
-                console.log('loadItems')
+                
                 // Forces fetch_only to be filled before any search happens
                 if (this.$store.getters['search/getPostQuery']['fetch_only'] != undefined) {  
 
@@ -220,7 +232,7 @@ export default {
 
                     this.$store.dispatch('collection/fetchItems', {
                         'collectionId': this.collectionId,
-                        'isOnTheme': (this.$route.name == null),
+                        'isOnTheme': app.config.globalProperties.$route.meta && app.config.globalProperties.$route.meta.isOnTheme,
                         'termId': this.termId,
                         'taxonomy': this.taxonomy
                     }).then((resp) => {

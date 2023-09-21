@@ -131,7 +131,7 @@
                 return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.map_provider ? this.itemMetadatum.metadatum.metadata_type_options.map_provider : 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
             },
             initialZoom() {
-                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.initial_zoom ? this.itemMetadatum.metadatum.metadata_type_options.initial_zoom : 5;
+                return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.initial_zoom ? Number(this.itemMetadatum.metadatum.metadata_type_options.initial_zoom) : 5;
             },
             maxZoom() {
                 return this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.maximum_zoom ? this.itemMetadatum.metadatum.metadata_type_options.maximum_zoom : 12;
@@ -171,7 +171,7 @@
             },
             shouldAddMore() {
                 // MaxTags value may come from a preset prop (bulk adition, for example) or from the actual maxMultipleValues setting.
-                const hasMaxTagsValue = ( this.maxtags != undefined ? this.maxtags : (this.itemMetadatum.metadatum.multiple == 'yes' || this.allowNew === true ? (this.maxMultipleValues !== undefined ? this.maxMultipleValues : null) : '1') );
+                const hasMaxTagsValue = ( this.maxtags != undefined ? this.maxtags : (this.itemMetadatum.metadatum.multiple == 'yes' ? (this.maxMultipleValues !== undefined ? this.maxMultipleValues : null) : '1') );
                 // For multivalued metadata without maxMultipleValues, the limit is infinet, so we should let add anyway.
                 return (hasMaxTagsValue !== null ? (this.selected.length < hasMaxTagsValue) : true);
             }

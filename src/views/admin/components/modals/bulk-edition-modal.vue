@@ -30,6 +30,7 @@
                                 :disabled="!!bulkEditionProcedures[criterion].metadatum || metadataIsLoading"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                 :placeholder="$i18n.get('instruction_select_a_metadatum')"
+                                inherit-attrs="false"
                                 @update:model-value="addToBulkEditionProcedures($event, 'metadatum', criterion)">
                             <template 
                                     v-for="(metadatum, index) in metadata"
@@ -292,7 +293,7 @@
             <footer class="field is-grouped form-submit">
                 <p class="control">
                     <button
-                            @click="$eventBusSearch.loadItems(); $parent.close()"
+                            @click="$eventBusSearch.loadItems(); $emit('close')"
                             :disabled="(Object.keys(bulkEditionProcedures).length &&
                                 bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) || false"
                             type="button"
@@ -305,7 +306,7 @@
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$root.$emit('openProcessesPopup'); $eventBusSearch.loadItems(); $parent.close();">
+                            @click="$root.$emit('openProcessesPopup'); $eventBusSearch.loadItems(); $emit('close');">
                         {{ $i18n.get('finish') }}
                     </button>
                 </p>
@@ -324,7 +325,7 @@
             totalItems: Array,
             objectType: String,
             selectedForBulk: Object,
-            collectionId: Number
+            collectionId: [String, Number]
         },
         data() {
             return {

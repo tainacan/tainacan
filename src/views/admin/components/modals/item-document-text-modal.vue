@@ -17,14 +17,14 @@
                         id="button-cancel-text-content-writing"
                         class="button is-outlined"
                         type="button"
-                        @click="$emit('cancelTextWriting');$parent.close();">
+                        @click="$emit('cancelTextWriting');$emit('close');">
                     {{ $i18n.get('cancel') }}</button>
             </div>
             <div class="control">
                 <button
                         id="button-submit-text-content-writing"
                         type="submit"
-                        @click.prevent="confirmTextWriting();$parent.close();"
+                        @click.prevent="confirmTextWriting();$emit('close');"
                         class="button is-success">
                     {{ $i18n.get('save') }}</button>
             </div>

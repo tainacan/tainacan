@@ -172,7 +172,8 @@
                         class="modal-card-body tainacan-finder-columns-container"
                         :style="{ height: expandResultsSection ? 'auto' : '0px' }"
                         name="page-left"
-                        ref="tainacan-finder-scrolling-container">
+                        ref="tainacan-finder-scrolling-container"
+                        tag="div">
                     <div 
                             v-for="(finderColumn, key) in finderColumns"
                             class="tainacan-finder-column"
@@ -328,7 +329,7 @@
             parent: Number,
             taxonomy_id: Number,
             taxonomy: String,
-            collectionId: Number,
+            collectionId: [Number, String],
             metadatumId: Number,
             metadatum: Object,
             selected: Array,

@@ -48,7 +48,7 @@
                         <button 
                                 class="button is-outlined" 
                                 type="button" 
-                                @click="$parent.close()">Close</button>
+                                @click="$emit('close')">Close</button>
                     </div>
                 </footer>
             </section>
@@ -92,7 +92,7 @@ export default {
         ]),
         onSelectCollection(collection) {
             this.$router.push(this.$routerHelper.getNewItemPath(collection.id));
-            this.$parent.close();
+            this.$emit('close');
         }
     }
 }

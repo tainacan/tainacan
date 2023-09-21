@@ -316,7 +316,7 @@ export default {
     },
     computed: {
         hasSomeMetadataTypeFilterApplied() {
-            return this.metadataTypeFilterOptions.length && this.metadataTypeFilterOptions.some((metadatumType) => metadatumType.enabled);
+            return this.metadataTypeFilterOptions.length > 0 && this.metadataTypeFilterOptions.some((metadatumType) => metadatumType.enabled);
         },
         activeMetadatumList: {
             get() {

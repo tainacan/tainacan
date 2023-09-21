@@ -4,7 +4,7 @@ import qs from 'qs';
 const themeRoutes = [];
 
 export default createRouter ({
-    history: createWebHistory(),
+    history: createWebHistory(window.document.location.pathname),
     routes: themeRoutes,
     // set custom query resolver
     parseQuery(query) {

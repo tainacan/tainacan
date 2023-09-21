@@ -32,7 +32,7 @@ export default {
     },
     data() {
         return {
-            collectionId: Number,
+            collectionId: [String, Number],
             isLoadingCollectionBasics: Boolean
         }
     },

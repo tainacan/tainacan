@@ -160,7 +160,7 @@
             isLoading: Boolean,
             isEditable: Boolean,
             itemId: String,
-            collectionId: String,
+            collectionId: [String, Number],
             isMobileScreen: Boolean
         },
         data() {

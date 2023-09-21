@@ -163,7 +163,7 @@ export default {
     name: "CarouselItemsListTheme",
     props: {
         blockId: String,
-        collectionId: String,  
+        collectionId: [String, Number],  
         searchURL: String,
         selectedItems: Array,
         loadStrategy: String,

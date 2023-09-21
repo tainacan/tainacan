@@ -464,13 +464,14 @@
         mixins: [formHooks],
         data() {
             return {
-                collectionId: Number,
+                collectionId: [String, Number],
                 itemId: Number,
                 itemRequestCancel: undefined,
                 isLoading: false,
                 isLoadingMetadataSections: false,
                 open: true,
                 urls_open: false,
+                entityName: 'item',
                 activeTab: 'metadata'
             }
         },

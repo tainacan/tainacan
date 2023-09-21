@@ -168,7 +168,8 @@
                     <transition-group
                             v-if="!isSearching && isTaxonomy"
                             class="modal-card-body tainacan-finder-columns-container"
-                            name="page-left">
+                            name="page-left"
+                            tag="div">
                         <div 
                                 v-for="(finderColumn, key) in finderColumns"
                                 class="tainacan-finder-column"
@@ -304,7 +305,7 @@
                     <button
                             class="button is-outlined"
                             type="button"
-                            @click="$parent.close()">{{ $i18n.get('cancel') }}
+                            @click="$emit('close')">{{ $i18n.get('cancel') }}
                     </button>
                 </div>
                 <div class="control">
@@ -329,14 +330,14 @@
         mixins: [ dynamicFilterTypeMixin ],
         props: {
             filter: '',
-            parent: Number,
-            taxonomy_id: Number,
+            parent: [Number, String],
+            taxonomy_id: [Number, String],
             taxonomy: String,
-            collectionId: Number,
-            metadatumId: Number,
+            collectionId: [String, Number],
+            metadatumId: [Number, String],
             metadatum: Object,
             selected: Array,
-            currentCollectionId: String,
+            currentCollectionId: [Number, String],
             isTaxonomy: {
                 type: Boolean,
                 default: false,
@@ -806,7 +807,7 @@
             },
             applyFilter() {
                 if (this.isModal)
-                    this.$parent.close();
+                    this.$emit('close');
                 else    
                     this.initializeValues();
 

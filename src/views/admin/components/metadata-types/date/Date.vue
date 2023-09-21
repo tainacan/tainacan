@@ -1,11 +1,22 @@
 <template>
     <div>
-        <b-input
+        <!-- <b-input
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :disabled="disabled"
                 :custom-class="isInvalidDate && dateValue ? 'is-danger' : ''"
                 type="text"
                 v-imask="dateMask"
+                v-model="dateValue"
+                @update:model-value="onInput"
+                @blur="onBlur"
+                @focus="onMobileSpecialFocus"
+                :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : dateFormat.toLowerCase()" /> -->
+        <!-- TODO: FIX IMASK -->    
+        <b-input
+                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                :disabled="disabled"
+                :custom-class="isInvalidDate && dateValue ? 'is-danger' : ''"
+                type="text"
                 v-model="dateValue"
                 @update:model-value="onInput"
                 @blur="onBlur"

@@ -53,7 +53,7 @@
                         type="submit"
                         class="button is-outlined"
                         :disabled="isLoading"
-                        @click="onConfirm(newItems); $parent.close();">
+                        @click="onConfirm(newItems); $emit('close');">
                     {{ hasCopied ? $i18n.get('label_return_to_list') : $i18n.get('cancel') }}
                 </button>
                 <button 
@@ -68,7 +68,7 @@
                 <button 
                         v-if="copyCount == 1 && hasCopied && newItems.length == 1"
                         class="button is-secondary" 
-                        @click.prevent="$router.push($routerHelper.getItemEditPath(collectionId, newItems[0].id)); $parent.close();"
+                        @click.prevent="$router.push($routerHelper.getItemEditPath(collectionId, newItems[0].id)); $emit('close');"
                         type="submit">
                     {{ $i18n.getFrom('items','edit_item') }}
                 </button>
@@ -105,7 +105,7 @@
                 type: Function,
                 default: () => {}
             },
-            collectionId: String,
+            collectionId: [String, Number],
             itemId: String
         },
         data() {
@@ -169,7 +169,7 @@
                     let sequenceId = group.id;
                     this.isCreatingSequenceEditGroup = false;
                     this.$router.push(this.$routerHelper.getCollectionSequenceEditPath(this.collectionId, sequenceId, 1));
-                    this.$parent.close();
+                    this.$emit('close');
                 });
             },
             openBulkEditionModal() {
@@ -192,7 +192,7 @@
                     closeButtonAriaLabel: this.$i18n.get('close')
                 }); 
 
-                this.$parent.close();
+                this.$emit('close');
             },
         }
     }

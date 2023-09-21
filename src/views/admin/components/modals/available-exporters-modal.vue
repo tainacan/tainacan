@@ -37,7 +37,7 @@
                                 id="button-cancel-exporter-selection"
                                 class="button is-outlined"
                                 type="button"
-                                @click="$parent.close();">
+                                @click="$emit('close');">
                             {{ $i18n.get('cancel') }}</button>
                     </div>
                 </footer>
@@ -85,7 +85,7 @@
             ]),
             onSelectExporter(exporterType) {
                 this.$router.push({ path: this.$routerHelper.getExporterEditionPath(exporterType.slug), query: { sourceCollection: this.sourceCollection } });
-                this.$parent.close();
+                this.$emit('close');
             }
         }
     }

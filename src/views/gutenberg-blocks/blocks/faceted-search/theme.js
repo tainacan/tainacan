@@ -1,5 +1,5 @@
 // Main imports
-import { createApp, h, onMounted } from 'vue';
+import { createApp, h, defineAsyncComponent } from 'vue';
 import {
     Field,
     Input,
@@ -77,7 +77,7 @@ export default (element) => {
                         defaultOrderByType: '',
                         isForcedViewMode: false,
                         enabledViewModes: {},
-                        defaultItemsPerPage: '',
+                        defaultItemsPerPage: 12,
                         hideFilters: false,
                         hideHideFiltersButton: false,
                         hideSearch: false,
@@ -161,7 +161,7 @@ export default (element) => {
 
                     // Other Tweaks
                     if (this.$el.attributes['default-items-per-page'] != undefined)
-                        this.defaultItemsPerPage = this.$el.attributes['default-items-per-page'].value;
+                        this.defaultItemsPerPage = Number(this.$el.attributes['default-items-per-page'].value);
                     if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
                         this.showFiltersButtonInsideSearchControl = this.isParameterTrue('show-filters-button-inside-search-control');
                     if (this.$el.attributes['start-with-filters-hidden'] != undefined)
@@ -254,9 +254,7 @@ export default (element) => {
             }
 
             if ( !possibleHideFilters ) {
-                import('../../../admin/components/search/filters-items-list.vue')
-                    .then(importedModule => VueItemsList.component('filters-items-list', importedModule.default))
-                    .catch(error => console.log(error));
+                VueItemsList.component('filters-items-list', defineAsyncComponent(() => import('../../../admin/components/search/filters-items-list.vue')));
             }
 
             /* Main page component */
@@ -285,15 +283,13 @@ export default (element) => {
             // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
             possibleViewModes.forEach(viewModeSlug => {
                 if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
-                    import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')
-                        .then(importedModule => VueItemsList.component('view-mode-' + viewModeSlug, importedModule.default) )
-                        .catch(error => console.log(error)); 
+                    VueItemsList.component('view-mode-' + viewModeSlug, defineAsyncComponent(() => import('./theme-search/components/view-mode-' + viewModeSlug + '.vue')));
             });
 
             const emitter = mitt();
             VueItemsList.config.globalProperties.$emitter = emitter;
-
-            VueItemsList.use(eventBusSearch, { store: store, router: routerTheme });
+            
+            VueItemsList.use(eventBusSearch);
 
             VueItemsList.mount('#tainacan-items-page');
 

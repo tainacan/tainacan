@@ -29,7 +29,8 @@
             box-shadow: none !important;
             text-decoration: none !important;
         }
-        &[disabled=disabled] {
+        &[disabled=disabled],
+        &:disabled {
             background: var(--tainacan-gray1) !important;
         }
         &:hover,

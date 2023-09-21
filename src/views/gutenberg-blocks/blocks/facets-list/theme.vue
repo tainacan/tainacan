@@ -176,7 +176,7 @@ export default {
     props: {
         metadatumId: String,  
         metadatumType: String,  
-        collectionId: String,  
+        collectionId: [String, Number],  
         collectionSlug: String,
         parentTermId: String,
         showImage: Boolean,

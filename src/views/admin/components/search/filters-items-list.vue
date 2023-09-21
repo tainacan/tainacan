@@ -306,7 +306,7 @@
             FiltersTagsList
         },
         props: {
-            collectionId: String,
+            collectionId: [String, Number],
             isRepositoryLevel: Boolean,
             taxonomy: String,
             filtersAsModal: Boolean,

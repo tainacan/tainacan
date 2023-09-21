@@ -75,7 +75,6 @@
         mixins: [ filterTypeMixin ],
         props: {
             isRepositoryLevel: Boolean,
-            currentCollectionId: String,
             filtersAsModal: Boolean
         },
         emits: [

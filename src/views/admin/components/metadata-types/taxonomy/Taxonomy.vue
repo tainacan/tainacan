@@ -83,13 +83,13 @@
 </template>
 
 <script>
-    import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
+    import TaxonomyTagInput from './TaxonomyTaginput.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
     import { tainacan as axios } from '../../../js/axios.js';
 
     export default {
         components: {
-            TainacanTaxonomyTagInput,
+            TaxonomyTagInput,
             CheckboxRadioMetadataInput
         },
         props: {

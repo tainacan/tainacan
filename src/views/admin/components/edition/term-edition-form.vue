@@ -318,7 +318,7 @@
                             this.form = {};
                             this.formErrors = {};
                             this.isLoading = false;
-                            this.$parent.close();
+                            this.$emit('close');
                         })
                         .catch((errors) => {
                             this.isLoading = false;
@@ -350,7 +350,7 @@
                         .then((term) => {
                             this.formErrors = {};
                             this.$emit('onEditionFinished', { term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
-                            this.$parent.close();
+                            this.$emit('close');
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
@@ -363,7 +363,7 @@
                 }
             },
             cancelEdition() {
-                this.$parent.close();
+                this.$emit('close');
             },
             deleteHeaderImage() {
                 this.form = Object.assign({},

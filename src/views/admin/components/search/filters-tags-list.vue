@@ -7,7 +7,7 @@
                     class="filter-tags-info">
                 <span 
                         style="margin-right: 1em"
-                        v-html="totalItems == 1 ? $i18n.getWithVariables('info_item_%s_found', [totalItems]) : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />
+                        v-html="totalItems === null ? $i18n.get('label_loading_items') : totalItems == 1 ? $i18n.getWithVariables('info_item_%s_found', [totalItems]) : $i18n.getWithVariables('info_items_%s_found', [totalItems])" />
                 <span>
                     <span v-html="filterTags.length == 1 ? $i18n.getWithVariables('info_%s_applied_filter', [filterTags.length]) : $i18n.getWithVariables('info_%s_applied_filters', [filterTags.length])" />
                     &nbsp;

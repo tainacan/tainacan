@@ -17,6 +17,7 @@
 
         <!-- Hierarchical lists -->
         <transition-group
+                tag="div"
                 class="tainacan-hierarchical-list-columns-container"
                 name="page-left"
                 ref="tainacan-finder-scrolling-container">

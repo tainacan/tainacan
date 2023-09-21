@@ -7,7 +7,7 @@ export const viewModesMixin = {
         }
     },
     props: {
-        collectionId: Number,
+        collectionId: [String, Number],
         displayedMetadata: Array,
         items:  {
             type: Array,

@@ -188,7 +188,7 @@ import ItemCreationStatusDialog from '../other/item-creation-status-dialog.vue';
 export default {
     props: {
         status: String,
-        collectionId: Number|String,
+        collectionId: [Number, String],
         isOnSequenceEdit: Boolean,
         isCurrentItemOnSequenceEdit: Boolean,
         hasNextItemOnSequenceEdit: Boolean,

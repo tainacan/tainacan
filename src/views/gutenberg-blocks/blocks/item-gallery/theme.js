@@ -224,9 +224,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 let currentURL = window.location.toString();
                 if (currentURL.indexOf("#") > 0) {
                     currentURL = currentURL.substring(0, currentURL.indexOf("#"));
-                    window.history.replaceState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));
+                    window.history.replaceState(window.history.state, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));
                 } else {
-                    window.history.pushState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));  
+                    window.history.pushState(window.history.state, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));  
                 } 
             }
         });

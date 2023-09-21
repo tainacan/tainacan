@@ -44,13 +44,13 @@
                         v-if="!hideCancel"
                         class="button is-outlined" 
                         type="button"
-                        @click="$parent.close()">
+                        @click="$emit('close')">
                     {{ $i18n.get('cancel') }}
                 </button>
                 <button 
                         type="submit"
                         class="button is-success"
-                        @click="onConfirm(); $parent.close();">
+                        @click="onConfirm(); $emit('close');">
                     {{ $i18n.get('continue') }}
                 </button>
             </footer>

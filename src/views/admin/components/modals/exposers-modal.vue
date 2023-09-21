@@ -236,7 +236,7 @@
                     <button 
                             class="button is-outlined" 
                             type="button" 
-                            @click="$parent.close()">Close</button>
+                            @click="$emit('close')">Close</button>
                 </div>
             </footer>
         </section>
@@ -260,9 +260,9 @@ export default {
         }
     },
     props: {
-        collectionId: Number,
+        collectionId: [String, Number],
         totalItems: Number,
-        itemId: Number,
+        itemId: [String, Number],
         itemURL: String,
         selectedItems: Array
     },
