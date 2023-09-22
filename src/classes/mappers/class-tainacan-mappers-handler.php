@@ -37,6 +37,7 @@ class Mappers_Handler {
 	
 	function init() {
 		$this->register_mapper('Tainacan\Mappers\Dublin_Core');
+		$this->register_mapper('Tainacan\Mappers\Wiki_Data');
 		
 		do_action('tainacan-register-mappers', $this);
 	}

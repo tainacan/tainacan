@@ -261,7 +261,7 @@ export const updateMetadatumTypes = ({commit}, metadatumTypes) => {
 // METADATA MAPPERS
 export const fetchMappers = ({commit}) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/metadatum-mappers')
+        axios.tainacan.get('/mappers')
             .then((res) => {
                 let mappers = res.data;
                 commit('setMappers', mappers);
@@ -280,7 +280,7 @@ export const updateMapper = ({ dispatch }, {metadataMapperMetadata, mapper}) => 
                 metadata_mappers: metadataMapperMetadata,
         };
         param[tainacan_plugin.exposer_mapper_param] = mapper;
-        axios.tainacan.post('/metadatum-mappers', param).then((res) => {
+        axios.tainacan.post('/mappers', param).then((res) => {
                 resolve(res.data);
             })
             .catch((error) => {

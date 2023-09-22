@@ -44,7 +44,8 @@ abstract class Mapper {
 			'metadata' => $this->metadata,
 			'prefix' => $this->prefix,
 			'sufix' => $this->sufix,
-			'header' => $this->header
+			'header' => $this->header,
+			'add_meta_form' => ''
 		];
 	}
 	
