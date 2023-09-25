@@ -4,7 +4,8 @@ namespace Tainacan\Mappers;
 
 abstract class Mapper {
 	public $slug = null; // Slug of Mapper, used as option on api call 
-	public $name = null; // Public name do mapper
+	public $name = null; // Public name of the mapper
+	public $description = null; // Public descript of the mapper
 	public $allow_extra_metadata = true; // Allow more metadatum to be register
 	public $context_url = null; // URL of mapper documentation
 	public $type = ''; // The Class of the ontology that this mapping refers to. For example `CreativeWork`, which is a class of Schema.org if applied
@@ -39,6 +40,7 @@ abstract class Mapper {
 		return [
 			'slug' => $this->slug,
 			'name' => $this->name,
+			'description' => $this->description,
 			'allow_extra_metadata' => $this->allow_extra_metadata,
 			'context_url' => $this->context_url,
 			'metadata' => $this->metadata,

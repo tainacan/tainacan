@@ -10,6 +10,7 @@ namespace Tainacan\Mappers;
 class Dublin_Core extends Mapper {
 	public $slug = 'dublin-core';
 	public $name = 'Dublin Core';
+	public $description = 'The mapper of the Dublin Core standard';
 	public $allow_extra_metadata = true;
 	public $context_url = 'http://dublincore.org/documents/dcmi-terms/';
 	public $header = '<?xml version="1.0"?><!DOCTYPE rdf:RDF SYSTEM "http://dublincore.org/2000/12/01-dcmes-xml-dtd.dtd"><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" ></rdf:RDF>';

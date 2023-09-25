@@ -100,8 +100,8 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_items( $request ) {
-		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : '';
-		$disabled_mappers = get_post_meta($collection_id, 'disabled_mappers');
+		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : 'default';
+		$disabled_mappers = get_post_meta($collection_id, 'disabled_mappers', false);
 		$Tainacan_Mappers = \Tainacan\Mappers_Handler::get_instance();
 
 		$metadatum_mappers = $Tainacan_Mappers->get_mappers( 'OBJECT' );
@@ -110,7 +110,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 		foreach ($metadatum_mappers as $metadatum_mapper){
 			if($metadatum_mapper->show_ui) {
 				$mapper = $this->prepare_item_for_response($metadatum_mapper, $request);
-				$mapper['disabled'] = in_array($metadatum_mapper->slug, $disabled_mappers) ? true : false;
+				$mapper['disabled'] = !empty($disabled_mappers) && in_array($metadatum_mapper->slug, $disabled_mappers) ? true : false;
 				array_push($prepared, $mapper);
 			}
 		}
@@ -123,16 +123,29 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function get_item( $request ) {
+		if( !isset( $request['slug'] ) ) {
+			return new \WP_REST_Response([
+				'error_message' => __('Slug mapper not informed', 'tainacan'),
+			], 422);
+		}
+		
+		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : 'default';
+		$disabled_mappers = get_post_meta($collection_id, 'disabled_mappers', false);
 		$Tainacan_Mappers = \Tainacan\Mappers_Handler::get_instance();
-
 		$metadatum_mappers = $Tainacan_Mappers->get_mappers( 'OBJECT' );
 
-		$prepared = [];
-		foreach ($metadatum_mappers as $metadatum_mapper){
-			if($metadatum_mapper->show_ui) array_push($prepared, $this->prepare_item_for_response($metadatum_mapper, $request));
+		$slug_mapper = $request['slug'];
+		$mapper_key = array_search($slug_mapper, array_column($metadatum_mappers, 'slug') );
+		if( $mapper_key === false ) {
+			return new \WP_REST_Response([
+				'error_message' => __('Mapper not found', 'tainacan'),
+			], 400);
 		}
+		$mapper = $metadatum_mappers[$mapper_key];
+		$prepared_mapper = $this->prepare_item_for_response($mapper, $request);
+		$prepared_mapper['disabled'] = !empty($disabled_mappers) && in_array($slug_mapper, $disabled_mappers) ? true : false;
 
-		return new \WP_REST_Response($prepared, 200);
+		return new \WP_REST_Response($prepared_mapper, 200);
 	}
 
 	/**
