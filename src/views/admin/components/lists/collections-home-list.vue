@@ -235,17 +235,17 @@
                         <router-link  
                                 tag="a" 
                                 :to="{ path: $routerHelper.getCollectionMappersPath(collection.id) }"
-                                :aria-label="$i18n.get('label_collection_mappers')">
+                                :aria-label="$i18n.get('mappers')">
                             <span
                                     v-tooltip.bottom="{
-                                        content: $i18n.getFrom('mappers'),
+                                        content: $i18n.get('mappers'),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip']     
                                     }"
                                     class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes tainacan-icon-rotate-90"/>
                             </span>
-                            <!-- <span class="menu-text">{{ $i18n.getFrom('mappers') }}</span> -->
+                            <!-- <span class="menu-text">{{ $i18n.get('mappers') }}</span> -->
                         </router-link>
                     </li>
                     <li v-if="$userCaps.hasCapability('tnc_rep_read_logs') && !$adminOptions.hideHomeCollectionActivitiesButton">
