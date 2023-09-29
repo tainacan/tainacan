@@ -159,6 +159,17 @@ class Mappers_Handler {
 		} 
 		return apply_filters('tainacan-get-mapper-from-request', $return_mapper, $request); 
 	}
+
+	public static function get_mapper_by_slug($mapper_slug) {
+		$Tainacan_Mappers = self::get_instance();
+		if($Tainacan_Mappers->mapper_exists($mapper_slug))
+		{
+			$mapper = $Tainacan_Mappers->check_class_name($mapper_slug, true, self::MAPPER_CLASS_PREFIX);
+			$return_mapper = new $mapper;
+		}
+		return apply_filters('tainacan-get-mapper-by-slug', $return_mapper, $mapper_slug); 
+
+	}
 	
 	/**
 	 * Return array of mapped metadatum 

@@ -330,6 +330,14 @@ class Collections extends Repository {
 					]
 				]
 			],
+			'disabled_mappers' => [
+				'map'         => 'meta',
+				'title'       => __( 'The list of mappers disabled in collection', 'tainacan' ),
+				'description' => __( 'The list of mappers disabled in collection', 'tainacan' ),
+				'type'        => 'array',
+				'items'       => [ 'type' => 'string' ],
+				'default'     => [],
+			],
 		] );
 	}
 

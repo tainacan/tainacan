@@ -40,7 +40,8 @@ class Collection extends Entity {
 		$hide_items_thumbnail_on_lists,
 		$submission_anonymous_user,
 		$submission_default_status,
-		$submission_use_recaptcha;
+		$submission_use_recaptcha,
+		$disabled_mappers;
 
 	/**
 	 * {@inheritDoc}
@@ -616,6 +617,15 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Get the list of disabled mappers in collection.
+	 *
+	 * @return array[string] 
+	 */
+	function get_disabled_mappers() {
+		return $this->get_mapped_property( 'disabled_mappers' );
+	}	
+
+	/**
 	 * Set the collection name
 	 *
 	 * @param [string] $value
@@ -886,6 +896,16 @@ class Collection extends Entity {
 	 */
 	function set_default_metadata_section_properties( $value ) {
 		return $this->set_mapped_property( 'default_metadata_section_properties', $value);
+	}
+
+
+	/**
+	 * Set the list of disabled mappers in collection.
+	 *
+	 * @return void
+	 */
+	function set_disabled_mappers($value) {
+		return $this->set_mapped_property( 'disabled_mappers', $value);
 	}
 
 	/**
