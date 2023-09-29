@@ -42,6 +42,13 @@ class REST_Exposers_Controller extends REST_Controller {
 				'permission_callback' => array($this, 'get_items_permissions_check')
 			)
 		));
+		register_rest_route($this->namespace, '/collection/(?P<collection_id>[\d]+)/' . $this->rest_base, array(
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_items'),
+				'permission_callback' => array($this, 'get_items_permissions_check')
+			)
+		));
 	}
 
 	/**
@@ -52,14 +59,22 @@ class REST_Exposers_Controller extends REST_Controller {
 	public function get_items( $request ) {
 		
 		$exposers = $this->exposers->get_exposers();
+
+		$collection_id = isset($request['collection_id']) ? $request['collection_id'] : 'default';
+		$collection = \Tainacan\Repositories\Collections::get_instance()->fetch($collection_id);
+		$disabled_mappers = isset($collection) ? $collection->get_disabled_mappers() : [];
 		
 		$response = [];
 		
 		
 		foreach ($exposers as $exposer) {
 			if ( class_exists($exposer) ) {
-				$e = new $exposer();
-				$response[] = $e->_toArray();
+				$e = (new $exposer())->_toArray();
+				$e['mappers'] = array_filter($e['mappers'], function($n) use ($disabled_mappers) {
+					return !in_array($n, $disabled_mappers);
+				});
+				$response[] = $e;
+				
 			}
 		}
 		

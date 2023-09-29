@@ -260,7 +260,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 					if ($disabled == true && !in_array($slug_mapper, $disabled_mappers)) {
 						$disabled_mappers[] = $slug_mapper;
 					} elseif (
-						($disabled == false && $key = array_search($slug_mapper, $disabled_mappers)) !== false
+						$disabled == false && (($key = array_search($slug_mapper, $disabled_mappers)) !== false)
 					) {
 						unset($disabled_mappers[$key]);
 					}
