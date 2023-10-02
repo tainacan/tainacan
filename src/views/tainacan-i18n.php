@@ -917,6 +917,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_target_collection_helper'                  => __( 'The collection where imported item will be added. Only those that you have permission are listed.', 'tainacan' ),
 	'info_source_file_upload'                        => __( 'The file containing the data to be imported.', 'tainacan' ),
 	'info_no_metadata_source_file'                   => __( 'No metadata was found from the source file.', 'tainacan' ),
+	'info_no_metadata_from_mapper'                   => __( 'No metadata was found from this mapper.', 'tainacan' ),
 	'info_no_special_fields_available'               => __( 'No special field was found.', 'tainacan' ),
 	'info_special_fields_mapped_default'             => __( 'Mapped to default field on collection.', 'tainacan' ),
 	'info_metadata_mapping_helper'                   => __( 'Map each file metadata with the corresponding one in selected collection.', 'tainacan' ),
@@ -1051,6 +1052,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_%s_terms_created'							 => __( '%s terms created with success.', 'tainacan' ),
 	'info_terms_creation_failed_due_to_value_%s'	 => __( 'Terms creation failed due to value: %s.', 'tainacan' ),
 	'info_terms_creation_failed_due_to_values_%s'	 => __( 'Terms creation failed due to values: %s.', 'tainacan' ),
+	'info_mapper_extra_metadata'					 => __( 'You may create new metadata inside the mapper to map them to your own metadata.', 'tainacan' ),
 
 	/* Activity actions */
 	'action_update-metadata-value'	=> __( 'Item Metadata Value Updates', 'tainacan'),

@@ -1,13 +1,12 @@
 <template>
     <div class="metadata-mappers-area">
-        <b-loading
-                :can-cancel="false"
-                :is-full-page="false"
-                :active.sync="isLoadingMapper"/>
+
         <b-loading
                 :can-cancel="false"
                 :is-full-page="false"
                 :active.sync="isLoadingMetadata"/>
+
+        <p>{{ mapper.description }}</p>
 
         <!-- No metadata found warning -->
         <section 
@@ -44,8 +43,7 @@
                 </div>
             </div>
             <div 
-                    class="mapping-header"
-                    v-if="mapperMetadata.length > 0">
+                    class="mapping-header">
                 <p>{{ $i18n.get('label_from_source_mapper') }}</p>
                 <hr>
                 <span class="icon">
@@ -55,7 +53,21 @@
                 <p>{{ $i18n.get('label_to_target_mapper') }}</p>
             </div>
 
+            <section 
+                    v-if="mapperMetadata.length <= 0"
+                    class="section">
+                <div class="content has-text-grey has-text-centered">
+                    <p>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-processes tainacan-icon-rotate-90"/>
+                        </span>
+                    </p>
+                    <p>{{ $i18n.get('info_no_metadata_from_mapper') }} <span v-if="mapper.allow_extra_metadata">{{ $i18n.get('info_mapper_extra_metadata') }}</span></p>
+                </div>
+            </section>
+
             <div 
+                    v-else
                     v-for="(mapperMetadatum, index) of mapperMetadata"
                     :key="index"
                     class="source-metadatum">
@@ -117,7 +129,7 @@
             </div>
 
              <div 
-                    v-if="mapper && !isLoadingMapper"
+                    v-if="mapper"
                     class="field is-grouped form-submit fixed-form-submit">
                 <div class="control">
                     <button
@@ -199,7 +211,6 @@ export default {
     data() {
         return {
             collectionId: '',
-            isLoadingMapper: true,
             isLoadingMetadata: false,
             mapperMetadata: [],
             isMapperMetadataLoading: false,
@@ -219,34 +230,30 @@ export default {
         }
     },
     mounted() {
-        
-        /* If we're in a collection list, the metadata won't exist as they are read inside sections */        
-        if ( !this.isRepositoryLevel ) {
-            this.collectionId = this.$route.params.collectionId;
+               
+        this.collectionId = this.$route.params.collectionId;
 
-            this.isLoadingMetadata = true;
-            
-            this.cleanMetadata();
-            this.fetchMetadata({
-                collectionId: this.collectionId,
-                isRepositoryLevel: false, 
-                isContextEdit: true, 
-                includeDisabled: true,
-                includeOptionsAsHtml: false
-            }).then((resp) => {
-                resp.request
-                    .then(() => {
-                        this.loadMapperMetadata();
-                        this.isLoadingMetadata = false;
-                    })
-                    .catch(() => {
-                        this.isLoadingMetadata = false;
-                    });
-            })
-            .catch(() => this.isLoadingMetadata = false); 
-        } else {
-            this.loadMapperMetadata();
-        }
+        this.isLoadingMetadata = true;
+        
+        this.cleanMetadata();
+        this.fetchMetadata({
+            collectionId: this.collectionId,
+            isRepositoryLevel: this.isRepositoryLevel, 
+            isContextEdit: true, 
+            includeDisabled: true,
+            includeOptionsAsHtml: false
+        }).then((resp) => {
+            resp.request
+                .then(() => {
+                    this.loadMapperMetadata();
+                    this.isLoadingMetadata = false;
+                })
+                .catch(() => {
+                    this.isLoadingMetadata = false;
+                });
+        })
+        .catch(() => this.isLoadingMetadata = false); 
+
     },
     methods: {
         ...mapActions('metadata', [
@@ -263,9 +270,9 @@ export default {
             this.isMapperMetadataLoading = true;
             this.mapperMetadata = [];
             
-            if (this.mapper) {
-                for (var k in this.mapper.metadata) {
-                    var item = this.mapper.metadata[k];
+            if ( this.mapper && this.mapper.metadata ) {
+                for (let k in this.mapper.metadata) {
+                    let item = this.mapper.metadata[k];
                     item.slug = k;
                     item.selected = '';
                     item.isCustom = false;
@@ -287,7 +294,7 @@ export default {
                     ) {
                         this.newMapperMetadataList.push(Object.assign({},metadatum.exposer_mapping[this.mapper.slug]));
                         this.mappedMetadata.push(metadatum.id);
-                        var item = Object.assign({},metadatum.exposer_mapping[this.mapper.slug]);
+                        let item = Object.assign({},metadatum.exposer_mapping[this.mapper.slug]);
                         item.selected = metadatum.id;
                         item.isCustom = true;
                         this.mapperMetadata.push(item);
@@ -309,10 +316,10 @@ export default {
         },
         onUpdateMapperClick() {
             this.isMapperMetadataLoading = true;
-            var metadataMapperMetadata = [];
+            let metadataMapperMetadata = [];
             this.mapperMetadata.forEach((item) => {
                 if (item.selected.length != 0) {
-                    var map = {
+                    let map = {
                             metadatum_id: item.selected,
                             mapper_metadata: item.slug
                     };
@@ -321,7 +328,7 @@ export default {
             });
             this.activeMetadatumList.forEach((item) => {
                 if(this.mappedMetadata.indexOf(item.id) == -1) {
-                    var map = {
+                    let map = {
                             metadatum_id: item.id,
                             mapper_metadata: ''
                     };
@@ -329,10 +336,10 @@ export default {
                 }
             });
             this.newMapperMetadataList.forEach((item) => {
-                var slug = item.slug;
+                let slug = item.slug;
                 metadataMapperMetadata.forEach( (meta, index) => {
                     if(meta.mapper_metadata == slug) {
-                        var item_clone = Object.assign({}, item); // TODO check if still need to clone
+                        let item_clone = Object.assign({}, item); // TODO check if still need to clone
                         delete item_clone.selected;
                         delete item_clone.isCustom;
                         meta.mapper_metadata = item_clone;
@@ -341,8 +348,10 @@ export default {
                 });
             });
             this.updateMapper({
-                    metadataMapperMetadata: metadataMapperMetadata,
-                    mapper: this.mapper.slug
+                isRepositoryLevel: this.isRepositoryLevel,
+                collectionId: this.collectionId,
+                metadataMapperMetadata: metadataMapperMetadata,
+                mapper: this.mapper.slug
             }).then(() => {
                 this.isMapperMetadataLoading = false;
             })
@@ -366,13 +375,13 @@ export default {
         },
         onSaveNewMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
-            var newMapperMetadata = {
+            let newMapperMetadata = {
                     label: this.newMetadataLabel,
                     uri: this.newMetadataUri,
                     slug: this.stringToSlug(this.newMetadataLabel),
                     isCustom: true
             };
-            var selected = '';
+            let selected = '';
             if(this.new_metadata_slug != '') { // Editing
                 this.newMapperMetadataList.forEach((meta, index) => {
                     if(meta.slug == this.new_metadata_slug) {
@@ -400,10 +409,10 @@ export default {
             str = str.toLowerCase();
 
             // remove accents, swap ñ for n, etc
-            var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-            var to   = "aaaaeeeeiiiioooouuuunc------";
+            const from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+            const to   = "aaaaeeeeiiiioooouuuunc------";
 
-            for (var i=0, l=from.length ; i<l ; i++) {
+            for (let i=0, l=from.length ; i<l ; i++) {
                 str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
             }
 
@@ -421,11 +430,11 @@ export default {
             this.isMapperMetadataCreating = true;
         },
         removeMetadatumCustomMapper(customMapperMeta) {
-            var itemid = 0;
+            let itemid = 0;
             this.newMapperMetadataList.forEach((meta, index) => {
                 if(meta.slug == customMapperMeta.slug) {
                     this.newMapperMetadataList.splice(index);
-                    var rem = this.mappedMetadata.indexOf(meta.selected);
+                    let rem = this.mappedMetadata.indexOf(meta.selected);
                     this.mappedMetadata.splice(rem);
                     itemid = customMapperMeta.selected;
                 }
@@ -554,13 +563,17 @@ export default {
     }
 
     .fixed-form-submit {
-        margin-top: 24px;
-        position: sticky !important;
+        padding: 14px var(--tainacan-one-column);
+        position: fixed;
         bottom: 0;
-        background: var(--tainacan-background-color, white);
-        z-index: 9;
-        padding: 12px;
-        border-top: 1px solid  var(--tainacan-gray3);
-        box-shadow: 0 -5px 12px -14px var(--tainacan-gray5);
+        right: 0;
+        z-index: 9999;
+        background-color: var(--tainacan-gray1);
+        width: calc(100% - var(--tainacan-sidebar-width, 3.25em));
+        height: 60px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        transition: bottom 0.5s ease, width 0.2s linear;
     }
 </style>

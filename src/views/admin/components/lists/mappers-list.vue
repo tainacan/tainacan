@@ -5,12 +5,19 @@
             <div
                     class="mapper"
                     v-for="mapper in mappers"
-                    :key="mapper.slug"
-                    @click="goToMapperEditionPage(mapper.slug)">
-                <h4>{{ mapper.name }}</h4>
-                <p>{{ mapper.description }}</p>       
-                <b-switch 
-                        v-model="mapper.enabled"
+                    :key="mapper.slug">
+                <button 
+                        class="mapper-clickable"
+                        @click="goToMapperEditionPage(mapper.slug)">
+                    <h4>{{ mapper.name }}</h4>
+                    <p>{{ mapper.description }}</p>  
+                </button>     
+                <b-switch
+                        style="z-index: 1;position: relative;"
+                        :false-value="true"
+                        :true-value="false" 
+                        :value="mapper.disabled"
+                        @input="updateCurrentMapper($event, mapper.slug)"
                         size="is-small" />     
             </div>
 
@@ -24,15 +31,32 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex';
+
     export default {
         name: 'MappersList',
         props: {
             isLoading: false,
+            isRepositoryLevel: false,
             mappers: Array
         },
         methods: {
+            ...mapActions('metadata', [
+                'updateMapper',
+            ]),
             goToMapperEditionPage(mapperSlug) {
-                this.$router.push(this.$routerHelper.getMapperEditPath(mapperSlug));
+                if ( this.isRepositoryLevel )
+                    this.$router.push(this.$routerHelper.getMapperEditPath(mapperSlug));
+                else
+                    this.$router.push(this.$routerHelper.getCollectionMapperEditPath(this.$route.params.collectionId, mapperSlug));
+            },
+            updateCurrentMapper($event, mapperSlug) {
+                this.updateMapper({
+                    isRepositoryLevel: this.isRepositoryLevel,
+                    collectionId: this.$route.params.collectionId,
+                    disabled: $event,
+                    mapper: mapperSlug
+                });
             }
         },
     }
@@ -49,13 +73,25 @@
             border: 1px solid var(--tainacan-gray2);
             padding: 15px;
             min-height: 100px;
-            cursor: pointer;
             background-color: var(--tainacan-item-background-color);
             transition: border 0.3s ease, background-color 0.15s ease;
 
             &:hover {
                 background-color: var(--tainacan-item-hover-background-color);
                 border: 1px solid var(--tainacan-gray3);
+            }
+
+            .switch {
+                float: left;
+                margin-top: 12px;
+            }
+
+            .mapper-clickable {
+                text-align: start;
+                border: none;
+                background: none;
+                width: 100%;
+                cursor: pointer;
             }
         }
     }

@@ -242,6 +242,6 @@ export const moveMetadatumDown = (state, { index, sectionIndex }) => {
     state.metadataSections[sectionIndex].metadata_object_list.splice(index + 1, 0, state.metadataSections[sectionIndex].metadata_object_list.splice(index, 1)[0]);
 }
 
-export const updateMapper = (state, { mapper }) => {
-    //state.mappers ...;
+export const updateMapper = (state, mapper) => {
+    state.mapper = mapper;
 }

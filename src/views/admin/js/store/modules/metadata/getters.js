@@ -14,6 +14,6 @@ export const getMappers = state => {
     return state.mappers;
 }
 
-export const getMapper = (state, { mapperSlug }) => {
-    return state.mapper[0];
+export const getMapper = (state) => {
+    return state.mapper;
 }

@@ -281,6 +281,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
         getCollectionActivityPath(collectionId, activityId) {
             return '/collections/' + collectionId + '/activities/' + activityId;
         },
+        getCollectionMapperEditPath(collectionId, mapperSlug) {
+            return '/collections/'+ collectionId + '/mappers/' + mapperSlug;
+        },
         // New
         getNewCollectionPath() {
             return '/collections/new';

@@ -69,7 +69,7 @@ const routes = [
     { path: '/filters', name: 'FiltersPage', component: FiltersPage, meta: { title: i18nGet('title_repository_filters_page') } },
     
     { path: '/mappers', name: 'MappersPage', component: MappersPage, meta: { title: i18nGet('title_repository_mappers_page') } },
-    { path: '/mappers/:mapperSlug', name: 'MappersEditionForm', component: MapperEditionForm, meta: { title: i18nGet('title_repository_mappers_edit_page') } },
+    { path: '/mappers/:mapperSlug', name: 'MappersEditionForm', component: MapperEditionForm, meta: { title: i18nGet('title_repository_mappers_edit') } },
     
     { path: '/taxonomies', name: 'TaxonomyPage', component: TaxonomyPage, meta: { title: i18nGet('title_taxonomies_page') } },
     { path: '/taxonomies/new', name: 'TaxonomyCreationForm', component: TaxonomyEditionForm, meta: { title: i18nGet('title_create_taxonomy_page') } },

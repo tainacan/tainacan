@@ -274,13 +274,24 @@ export const fetchMappers = ({commit}) => {
     });
 }
 
-export const updateMapper = ({ dispatch }, {metadataMapperMetadata, mapper}) => {
+export const updateMapper = ({ commit }, { isRepositoryLevel, collectionId, metadataMapperMetadata, disabled, mapper }) => {
     return new Promise((resolve, reject) => {
-        var param = {
-                metadata_mappers: metadataMapperMetadata,
-        };
-        param[tainacan_plugin.exposer_mapper_param] = mapper;
-        axios.tainacan.post('/mappers', param).then((res) => {
+        let params = {};
+
+        if ( metadataMapperMetadata )
+            params['metadata_mappers'] = metadataMapperMetadata;
+
+        if ( disabled !== undefined )
+            params['disabled'] = disabled;
+
+        let endpoint = '/mappers/' + mapper;
+
+        if ( collectionId && !isRepositoryLevel )
+            endpoint = '/collection/' + collectionId + endpoint;
+
+        axios.tainacan.post(endpoint, params)
+            .then((res) => {
+                commit('updateMapper', mapper);
                 resolve(res.data);
             })
             .catch((error) => {
@@ -439,8 +450,14 @@ export const fetchMetadataSectionMetadata = ({commit}, { collectionId , metadata
 
 // MAPPERS
 export const fetchMapper = ({commit}, { collectionId, mapperSlug }) => {
+
+    let endpoint = '/mappers/' + mapperSlug;
+
+    if ( collectionId )
+        endpoint = '/collection/' + collectionId + endpoint;
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/mappers/' + mapperSlug)
+        axios.tainacan.get(endpoint)
             .then((res) => {
                 let mapper = res.data;
                 commit('updateMapper', mapper);

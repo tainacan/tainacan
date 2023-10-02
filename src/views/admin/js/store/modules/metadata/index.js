@@ -6,6 +6,7 @@ const state = {
     metadata: [],
     metadatumTypes: [],
     mappers: [],
+    mapper: {},
     metadataSections: []
 };
 
