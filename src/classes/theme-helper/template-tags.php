@@ -1019,7 +1019,15 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
 			$icon_file = 'placeholder_square';
 	}
 	
-	return $images_path . $icon_file . $image_size . '.png';
+	/**
+	 * Filter the image source for the empty thumbnail placeholder.
+	 * 
+	 * @param string src The image source for the empty thumbnail placeholder.
+	 *               Default is 'placeholder_square'.
+	 * @param string mime_type The document type of the item.
+	 * @param string image_size The size of the image to be loaded.
+	 */
+	return apply_filters('tainacan-get-the-mime-type-icon', $images_path . $icon_file . $image_size . '.png', $mime_type, $image_size);
 }
 
 /**
