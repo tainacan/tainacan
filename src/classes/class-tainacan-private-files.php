@@ -228,7 +228,7 @@ class Private_Files {
 			if ( !$existing_file && \file_exists( $prefixed_both ) ) {
 				$existing_file = $prefixed_both;
 			}
-			echo "-----------> $file <br> $prefixed_file <br> $prefixed_collection $prefixed_both: $existing_file";
+
 			if ($existing_file) {
 
 				$item = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $item_id, (int) $collection_id );
