@@ -291,7 +291,7 @@ export const updateMapper = ({ commit }, { isRepositoryLevel, collectionId, meta
 
         axios.tainacan.post(endpoint, params)
             .then((res) => {
-                commit('updateMapper', mapper);
+                commit('updateMapper', res.data);
                 resolve(res.data);
             })
             .catch((error) => {
@@ -460,7 +460,7 @@ export const fetchMapper = ({commit}, { collectionId, mapperSlug }) => {
         axios.tainacan.get(endpoint)
             .then((res) => {
                 let mapper = res.data;
-                commit('updateMapper', mapper);
+                commit('updateMapper', res.data);
                 resolve(mapper);
             })
             .catch((error) => {

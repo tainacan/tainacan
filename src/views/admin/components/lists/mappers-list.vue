@@ -13,6 +13,7 @@
                     <p>{{ mapper.description }}</p>  
                 </button>     
                 <b-switch
+                        v-if="!isRepositoryLevel"
                         style="z-index: 1;position: relative;"
                         :false-value="true"
                         :true-value="false" 

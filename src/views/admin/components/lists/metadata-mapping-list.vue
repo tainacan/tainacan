@@ -32,7 +32,6 @@
                         v-if="mapper && mapper.allow_extra_metadata"
                         class="modal-new-link">
                     <a
-                            v-if="collectionId != null && collectionId != undefined"
                             class="is-inline is-pulled-right add-link"
                             @click="onNewMetadataMapperMetadata()">
                         <span class="icon is-small">
@@ -75,7 +74,8 @@
                 <b-select
                         :name="'mappers-metadatum-select-' + mapperMetadatum.slug"
                         v-model="mapperMetadatum.selected"
-                        @input="onSelectMetadatumForMapperMetadata">
+                        @input="onSelectMetadatumForMapperMetadata"
+                        :disabled="!isRepositoryLevel && mapperMetadatum.isRepositoryLevel">
                     <option
                             value="">
                         {{ $i18n.get('instruction_select_a_metadatum') }}
@@ -178,6 +178,16 @@
                             required
                             v-model="newMetadataUri"/>
                 </b-field>
+                
+                <!-- Hook for extra Form options -->
+                <template 
+                        v-if="mapper.add_meta_form">  
+                    <form 
+                        id="form-mapper-metadata"
+                        class="form-hook-region"
+                        v-html="mapper.add_meta_form"/>
+                </template>
+
                 <div class="field is-grouped form-submit">
                     <div class="control">
                         <button
@@ -218,7 +228,11 @@ export default {
             mappedMetadata: [],
             newMapperMetadataList: [],
             newMetadataLabel: '',
-            newMetadataUri: ''
+            newMetadataUri: '',
+            newMetadataSlug: '',
+            customForm: {
+                'teste': 'aaa'
+            }
         }
     },
     computed: {
@@ -236,6 +250,7 @@ export default {
         this.isLoadingMetadata = true;
         
         this.cleanMetadata();
+
         this.fetchMetadata({
             collectionId: this.collectionId,
             isRepositoryLevel: this.isRepositoryLevel, 
@@ -271,32 +286,39 @@ export default {
             this.mapperMetadata = [];
             
             if ( this.mapper && this.mapper.metadata ) {
-                for (let k in this.mapper.metadata) {
-                    let item = this.mapper.metadata[k];
-                    item.slug = k;
+
+                for (let metadatum in this.mapper.metadata) {
+                    let item = this.mapper.metadata[metadatum];
+                    item.slug = metadatum;
                     item.selected = '';
                     item.isCustom = false;
-                    this.activeMetadatumList.forEach((metadatum) => {
+
+                    this.activeMetadatumList.forEach((activeMetadatum) => {
                         if (
-                            Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, this.mapper.slug) &&
-                            metadatum.exposer_mapping[this.mapper.slug] == item.slug
+                            Object.prototype.hasOwnProperty.call(activeMetadatum.exposer_mapping, this.mapper.slug) &&
+                            activeMetadatum.exposer_mapping[this.mapper.slug] == item.slug
                         ) {
-                            item.selected = metadatum.id;
-                            this.mappedMetadata.push(metadatum.id);
+                            item.selected = activeMetadatum.id;
+                            item.isRepositoryLevel = activeMetadatum.collection_id === 'default';
+                            this.mappedMetadata.push(activeMetadatum.id);
                         }
                     });
                     this.mapperMetadata.push(item);
                 }
-                this.activeMetadatumList.forEach((metadatum) => {
+
+                this.activeMetadatumList.forEach((activeMetadatum) => {
                     if (
-                        Object.prototype.hasOwnProperty.call(metadatum.exposer_mapping, this.mapper.slug) &&
-                        typeof metadatum.exposer_mapping[this.mapper.slug] == 'object'
+                        Object.prototype.hasOwnProperty.call(activeMetadatum.exposer_mapping, this.mapper.slug) &&
+                        typeof activeMetadatum.exposer_mapping[this.mapper.slug] == 'object'
                     ) {
-                        this.newMapperMetadataList.push(Object.assign({},metadatum.exposer_mapping[this.mapper.slug]));
-                        this.mappedMetadata.push(metadatum.id);
-                        let item = Object.assign({},metadatum.exposer_mapping[this.mapper.slug]);
-                        item.selected = metadatum.id;
+                        this.newMapperMetadataList.push(Object.assign({},activeMetadatum.exposer_mapping[this.mapper.slug]));
+                        this.mappedMetadata.push(activeMetadatum.id);
+
+                        let item = Object.assign( {}, activeMetadatum.exposer_mapping[this.mapper.slug] );
+                        item.selected = activeMetadatum.id;
                         item.isCustom = true;
+                        item.isRepositoryLevel = activeMetadatum.collection_id === 'default';
+
                         this.mapperMetadata.push(item);
                     }
                 });
@@ -308,41 +330,39 @@ export default {
         },
         onSelectMetadatumForMapperMetadata() {
             this.mappedMetadata = [];
-            this.mapperMetadata.forEach((item) => {
-                if(item.selected.length != 0) {
-                    this.mappedMetadata.push(item.selected);
-                }
+            this.mapperMetadata.forEach((metadatum) => {
+                if ( metadatum.selected.length != 0 ) 
+                    this.mappedMetadata.push(metadatum.selected);
             });
         },
         onUpdateMapperClick() {
             this.isMapperMetadataLoading = true;
             let metadataMapperMetadata = [];
-            this.mapperMetadata.forEach((item) => {
-                if (item.selected.length != 0) {
+            this.mapperMetadata.forEach((metadatum) => {
+                if (metadatum.selected.length != 0) {
                     let map = {
-                            metadatum_id: item.selected,
-                            mapper_metadata: item.slug
+                            metadatum_id: metadatum.selected,
+                            mapper_metadata: metadatum.slug
                     };
                     metadataMapperMetadata.push(map);
                 }
             });
-            this.activeMetadatumList.forEach((item) => {
-                if(this.mappedMetadata.indexOf(item.id) == -1) {
+            this.activeMetadatumList.forEach( metadatum => {
+                if(this.mappedMetadata.indexOf(metadatum.id) == -1) {
                     let map = {
-                            metadatum_id: item.id,
+                            metadatum_id: metadatum.id,
                             mapper_metadata: ''
                     };
                     metadataMapperMetadata.push(map);
                 }
             });
-            this.newMapperMetadataList.forEach((item) => {
-                let slug = item.slug;
+            this.newMapperMetadataList.forEach( metadatum => {
                 metadataMapperMetadata.forEach( (meta, index) => {
-                    if(meta.mapper_metadata == slug) {
-                        let item_clone = Object.assign({}, item); // TODO check if still need to clone
-                        delete item_clone.selected;
-                        delete item_clone.isCustom;
-                        meta.mapper_metadata = item_clone;
+                    if ( meta.mapper_metadata == metadatum.slug ) {
+                        let itemClone = Object.assign({}, metadatum); // TODO check if still need to clone
+                        delete itemClone.selected;
+                        delete itemClone.isCustom;
+                        meta.mapper_metadata = itemClone;
                         metadataMapperMetadata[index] = meta;
                     }
                 });
@@ -366,29 +386,41 @@ export default {
         },
         onNewMetadataMapperMetadata() {
             this.isMapperMetadataCreating = true;
+
+            // Fills hook forms with it's real values 
+            this.$nextTick()
+                .then(() => {
+                    this.updateExtraFormData(this.customForm);
+                });
         },
         onCancelNewMetadataMapperMetadata() {
             this.isMapperMetadataCreating = false;
             this.newMetadataLabel = '';
             this.newMetadataUri = '';
-            this.new_metadata_slug = '';
+            this.newMetadataSlug = '';
         },
         onSaveNewMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
+
+            this.fillExtraFormData(this.customform);
+            
             let newMapperMetadata = {
-                    label: this.newMetadataLabel,
-                    uri: this.newMetadataUri,
-                    slug: this.stringToSlug(this.newMetadataLabel),
-                    isCustom: true
+                label: this.newMetadataLabel,
+                uri: this.newMetadataUri,
+                slug: this.stringToSlug(this.newMetadataLabel),
+                isCustom: true
             };
+
             let selected = '';
-            if(this.new_metadata_slug != '') { // Editing
+            if ( this.newMetadataSlug != '' ) { // Editing
+                
                 this.newMapperMetadataList.forEach((meta, index) => {
-                    if(meta.slug == this.new_metadata_slug) {
+                    if ( meta.slug == this.newMetadataSlug ) {
+
                         this.newMapperMetadataList.splice(index);
-                        this.mapperMetadata.forEach((item, index2) => {
-                            if (item.slug == this.new_metadata_slug) {
-                                selected = item.selected;
+                        this.mapperMetadata.forEach((metadatum, index2) => {
+                            if (metadatum.slug == this.newMetadataSlug) {
+                                selected = metadatum.selected;
                                 this.mapperMetadata.splice(index2);
                             }
                         });
@@ -400,19 +432,18 @@ export default {
             this.mapperMetadata.push(newMapperMetadata);
             this.newMetadataLabel = '';
             this.newMetadataUri = '';
-            this.new_metadata_slug = '';
+            this.newMetadataSlug = '';
             this.isMapperMetadataCreating = false;
             this.isMapperMetadataLoading = false;
         },
         stringToSlug(str) { // adapted from https://gist.github.com/spyesx/561b1d65d4afb595f295
-            str = str.replace(/^\s+|\s+$/g, ''); // trim
-            str = str.toLowerCase();
+            str = str.replace(/^\s+|\s+$/g, '').toLowerCase();
 
             // remove accents, swap ñ for n, etc
             const from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
             const to   = "aaaaeeeeiiiioooouuuunc------";
 
-            for (let i=0, l=from.length ; i<l ; i++) {
+            for (let i = 0, l = from.length ; i < l ; i++) {
                 str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
             }
 
@@ -426,28 +457,80 @@ export default {
         editMetadatumCustomMapper(customMapperMeta) {
             this.newMetadataLabel = customMapperMeta.label;
             this.newMetadataUri = customMapperMeta.uri;
-            this.new_metadata_slug = customMapperMeta.slug;
+            this.newMetadataSlug = customMapperMeta.slug;
             this.isMapperMetadataCreating = true;
+
+            // Fills hook forms with it's real values 
+            this.$nextTick()
+                .then(() => {
+                    this.updateExtraFormData(this.customForm);
+                });
         },
         removeMetadatumCustomMapper(customMapperMeta) {
-            let itemid = 0;
+            let metadatumId = 0;
+
             this.newMapperMetadataList.forEach((meta, index) => {
-                if(meta.slug == customMapperMeta.slug) {
+                if ( meta.slug == customMapperMeta.slug ) {
                     this.newMapperMetadataList.splice(index);
                     let rem = this.mappedMetadata.indexOf(meta.selected);
                     this.mappedMetadata.splice(rem);
-                    itemid = customMapperMeta.selected;
+                    metadatumId = customMapperMeta.selected;
                 }
             });
-            if(itemid != '' && itemid > 0) {
-                this.mapperMetadata.forEach((item, index) => {
-                    if (item.selected == itemid) {
+
+            if ( metadatumId != '' && metadatumId > 0 ) {
+                this.mapperMetadata.forEach((metadatum, index) => {
+                    if ( metadatum.selected == metadatumId )
                         this.mapperMetadata.splice(index);
-                    }
                 });
             }
             return true;
-        }
+        },
+        fillExtraFormData(data) {
+
+            let formElement = document.getElementById('form-mapper-metadata');
+            if (formElement) {  
+                for (let element of formElement.elements) {
+                    if (element.type == "checkbox" || (element.type == "select" && element.multiple != undefined && element.multiple == true)) {
+                        if (element.checked && element.name != undefined && element.name != '') {
+                            if (!Array.isArray(data[element.name]))
+                                data[element.name] = [];
+                            data[element.name].push(element.value);
+                        }
+                    } else if (element.type == "radio") {
+                        if (element.checked && element.name != undefined && element.name != '')
+                            data[element.name] = element.value;
+                    } else {
+                        data[element.name] = element.value;
+                    }
+                }
+            }
+        },
+        updateExtraFormData(entityObject) {
+            console.log(entityObject)
+            let formElement = document.getElementById('form-mapper-metadata');
+            console.log(formElement)
+            if (formElement) { 
+                for (let element of formElement.elements) {
+                    for (let key of Object.keys(entityObject)) {
+                        if (element['name'] == key)  {
+                            if (Array.isArray(entityObject[key])) {
+                                let obj = entityObject[key].find((value) => { return value == element['value'] });
+                                element['checked'] = obj != undefined ? true : false;
+                            } else {
+                                if (entityObject[key] != null && entityObject[key] != undefined && entityObject[key] != ''){
+                                    if (element.type == "radio")
+                                        element['checked'] = entityObject[key] == element['value'] ? true : false;
+                                    else 
+                                        element['value'] = entityObject[key];
+                                }
+                                    
+                            }
+                        }
+                    }
+                }
+            }
+        },
     }
 }
 </script>

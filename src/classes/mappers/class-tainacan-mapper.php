@@ -30,7 +30,7 @@ abstract class Mapper {
 	 * @var array
 	 */
 	public $metadata = false;
-	
+	public $add_meta_form = '';
 	public $prefix = ''; // Tag prefix like "dc:"
 	public $sufix = ''; // Tag sufix
 	public $header = false; // API response header or file header to be used with
@@ -47,7 +47,7 @@ abstract class Mapper {
 			'prefix' => $this->prefix,
 			'sufix' => $this->sufix,
 			'header' => $this->header,
-			'add_meta_form' => ''
+			'add_meta_form' => $this->add_meta_form
 		];
 	}
 	

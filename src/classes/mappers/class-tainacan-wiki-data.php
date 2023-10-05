@@ -19,5 +19,10 @@ class Wiki_Data extends Mapper {
 	];
 	public $metadata = [
 		
-	];	
+	];
+	public $add_meta_form = '<input
+	class="input"
+	type="text"
+	placeholder="Alguma coisa"
+	name="teste">';	
 }
