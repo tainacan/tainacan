@@ -1172,6 +1172,11 @@ export default {
                 
                 this.isLoading = false;
 
+                if ( wp && wp.hooks && wp.hooks.hasFilter(`tainacan_item_edition_form_submit--redirect`) ) {
+                    window.location = wp.hooks.applyFilters(`tainacan_item_edition_form_submit--redirect`, this.item, this.form.collectionId, tainacan_plugin.admin_url);
+                    return;
+                }
+
                 if (!this.$adminOptions.itemEditionMode && !this.$adminOptions.mobileAppMode) {
 
                     if (!this.isOnSequenceEdit) {

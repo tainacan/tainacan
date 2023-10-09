@@ -233,7 +233,9 @@
             originalForm: Object,
             taxonomyId: '',
             isHierarchical: Boolean,
-            isTermInsertionFlow: false
+            isTermInsertionFlow: false,
+            metadatumId: [String, Number],
+            itemId: [String, Number]
         },
         data() {
             return {
@@ -308,7 +310,9 @@
                     this.isLoading = true;
                     this.sendChildTerm({
                         taxonomyId: this.taxonomyId,
-                        term: data
+                        term: data,
+                        metadatumId: this.metadatumId,
+                        itemId: this.itemId
                     })
                         .then((term) => {
                             this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
@@ -342,7 +346,9 @@
                     this.isLoading = true;
                     this.updateTerm({
                         taxonomyId: this.taxonomyId,
-                        term: data
+                        term: data,
+                        metadatumId: this.metadatumId,
+                        itemId: this.itemId
                     })
                         .then((term) => {
                             this.formErrors = {};

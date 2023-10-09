@@ -159,7 +159,14 @@ export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offse
     });
 };
 
-export const sendChildTerm = ({ commit }, { taxonomyId, term }) => {
+export const sendChildTerm = ({ commit }, { taxonomyId, term, itemId, metadatumId }) => {
+    
+    if ( itemId != undefined )
+        term['item_id'] = itemId;
+    
+    if ( metadatumId != undefined )
+        term['metadatum_id'] = metadatumId;
+
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post(`/taxonomy/${taxonomyId}/terms/`, term)
             .then( res => {
@@ -172,7 +179,14 @@ export const sendChildTerm = ({ commit }, { taxonomyId, term }) => {
     });
 };
 
-export const updateTerm = ({}, { taxonomyId, term }) => {
+export const updateTerm = ({}, { taxonomyId, term, itemId, metadatumId }) => {
+
+    if ( itemId != undefined )
+        term['item_id'] = itemId;
+
+    if ( metadatumId != undefined )
+        term['metadatum_id'] = metadatumId;
+
     return new Promise(( resolve, reject ) => {
         axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${term.id}`, term)
             .then( res => {
