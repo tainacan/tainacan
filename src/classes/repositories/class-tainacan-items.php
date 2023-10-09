@@ -26,7 +26,7 @@ class Items extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_filter( 'tainacan-item-comments_open', [$this, 'hook_comments_open'], 10, 2);
+		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
 		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
 	}
@@ -582,19 +582,19 @@ class Items extends Repository {
 	/**
 	 * Return if comment are open for this item (post_id) and the collection too
 	 *
-	 * @param string $open_comment
+	 * @param bool $comments_open
 	 * @param integer $post_id Item id
-	 * @return string
+	 * @return bool
 	 */
-	public function hook_comments_open($open_comment, $post_id) {
+	public function hook_comments_open($comments_open, $post_id) {
 		$item = self::get_entity_by_post($post_id);
 
 		if($item != false && $item instanceof Entities\Item) {
 			$collection = $item->get_collection();
-			if( $collection != null && $collection->get_allow_comments() !== 'open' ) return 'closed';
+			if( $collection != null && $collection->get_allow_comments() !== 'open' ) return false;
 		}
 
-		return $open_comment;
+		return $comments_open;
 	}
 
 	/**
