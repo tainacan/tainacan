@@ -315,6 +315,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_select_all_terms'                    	 => __( 'Select all taxonomy terms', 'tainacan' ),
 	'label_all_terms_selected'     		             => __( 'All terms selected', 'tainacan' ),
 	'label_add_or_update_attachments'                => __( 'Add or update attachments', 'tainacan' ),
+	/* translators: by default this the plural of attachments */	
+	'label_add_or_update_%s'						 => __( 'Add or update %s', 'tainacan' ),
 	'label_blank_collection'                         => __( 'Blank collection', 'tainacan' ),
 	/* translators: the metadata scheme https://dublincore.org/ */
 	'label_dublin_core'                              => __( 'Dublin Core', 'tainacan' ),
@@ -697,7 +699,9 @@ return apply_filters( 'tainacan-i18n', [
 	'label_multiple_terms'							 => __( 'Multiple terms', 'tainacan' ),
 	'label_multiple'								 => __( 'Multiple', 'tainacan' ),
 	'label_separator'								 => __( 'Separator', 'tainacan' ),
-
+	'label_item_edition_form_options'				 => __( 'Item edition form options', 'tainacan' ),
+	'label_item_submission_options'				 	 => __( 'Item submission options', 'tainacan' ),
+	
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
 	'instruction_delete_selected_items'              => __( 'Delete selected items', 'tainacan' ),

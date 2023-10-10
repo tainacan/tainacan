@@ -199,7 +199,7 @@
                                 <span class="icon has-text-gray4 tainacan-icon-1-125em">
                                     <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))"/>
                                 </span>
-                                {{ item.document != undefined && item.document != null && item.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}
+                                {{ collection && collection.item_document_label ? collection.item_document_label : ( (item.document != undefined && item.document != null && item.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
                             </label>
                         </div>
                         <div 
@@ -207,8 +207,8 @@
                                 class="section-box document-field">
                             <div
                                     v-if="item.document !== undefined && item.document !== null &&
-                                            item.document_type !== undefined && item.document_type !== null &&
-                                            item.document !== '' && item.document_type !== 'empty'"
+                                          item.document_type !== undefined && item.document_type !== null &&
+                                          item.document !== '' && item.document_type !== 'empty'"
                                     class="document-field-content">
                                 <div v-html="item.document_as_html"/>
                             </div>
@@ -225,7 +225,7 @@
                                 <span class="icon has-text-gray4">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-image"/>
                                 </span>
-                                {{ $i18n.get('label_thumbnail') }}
+                                {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
                             </label>
                         </div>
                         <div 
@@ -270,14 +270,14 @@
 
                         <!-- Attachments -------------------------------- -->
                         <div 
-                                v-if="!$adminOptions.hideItemSingleAttachments"
+                                v-if="shouldDisplayItemSingleAttachments"
                                 class="section-label">
                             <label slot="header">
                                 <span class="icon has-text-gray4">
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments"/>
                                 </span>
                                 <span>
-                                    {{ $i18n.get('label_attachments') }}&nbsp;
+                                    {{ collection && collection.item_attachment_label_plural ? collection.item_attachment_label_plural : $i18n.get('label_attachments') }}&nbsp;
                                     <span
                                             v-if="totalAttachments"
                                             class="has-text-gray has-text-weight-normal">
@@ -287,7 +287,7 @@
                             </label> 
                         </div>   
                         <div 
-                                v-if="item != undefined && item.id != undefined && !isLoading && !$adminOptions.hideItemSingleAttachments"
+                                v-if="item != undefined && item.id != undefined && !isLoading && shouldDisplayItemSingleAttachments"
                                 class="section-box section-attachments">
                             <attachments-list
                                     :item="item"
@@ -304,8 +304,7 @@
 
                     </div>
                 </div>
-
-                
+   
             </div>
             <footer class="footer">
 
@@ -537,6 +536,9 @@
                 }
                 return pageTabs;
             },
+            shouldDisplayItemSingleAttachments() {
+                return !this.$adminOptions.hideItemSingleAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');
+            }
         },
         created() {
             // Obtains item and collection ID

@@ -8,7 +8,7 @@
                 <span class="icon has-text-gray4">
                     <i class="tainacan-icon tainacan-icon-attachments"/>
                 </span>
-                {{ $i18n.get('label_attachments') }}&nbsp;
+                {{ collection && collection.item_attachment_label_plural ? collection.item_attachment_label_plural : $i18n.get('label_attachments') }}&nbsp;
                 <span 
                         v-if="totalAttachments"
                         class="has-text-gray has-text-weight-normal"
@@ -28,7 +28,7 @@
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-edit"/>
                 </span>
-                {{ $i18n.get('label_add_or_update_attachments') }}
+                {{ $i18n.getWithVariables('label_add_or_update_%s', [ collection && collection.item_attachment_label_plural ? collection.item_attachment_label_plural : $i18n.get('label_attachments') ]) }}
             </button>
         </div>
         <div 
@@ -55,6 +55,7 @@ export default {
     props: {
         item: Object,
         form: Object,
+        collection: Object,
         totalAttachments: Number,
         isLoading: Boolean,
         shouldLoadAttachments: Boolean
