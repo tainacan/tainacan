@@ -683,90 +683,91 @@
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'cover_page_id')" 
                                 :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
-                        <b-autocomplete
-                                id="tainacan-text-cover-page"
-                                :placeholder="$i18n.get('instruction_cover_page')"
-                                :data="coverPages"
-                                v-model="coverPageTitle"
-                                @select="onSelectCoverPage($event)"
-                                :loading="isFetchingPages"
-                                @input="fecthCoverPages"
-                                @focus="clearErrors('cover_page_id')"
-                                v-if="coverPage == undefined || coverPage.title == undefined"
-                                :disabled="form.enable_cover_page != 'yes'"
-                                check-infinite-scroll
-                                @infinite-scroll="fetchMoreCoverPages">
-                            <template slot-scope="props">
-                                {{ props.option.title.rendered }}
-                            </template>
-                            <template slot="empty">{{ $i18n.get('info_no_page_found') }}</template>
-                        </b-autocomplete>
-  
-                        <div 
-                                v-if="coverPage != undefined && coverPage.title != undefined"
-                                class="control selected-cover-page">
-                            <span v-html="coverPage.title.rendered" />
-                            <span class="selected-cover-page-control">
+                        <template v-if="form.enable_cover_page == 'yes'">
+                            <b-autocomplete
+                                    id="tainacan-text-cover-page"
+                                    :placeholder="$i18n.get('instruction_cover_page')"
+                                    :data="coverPages"
+                                    v-model="coverPageTitle"
+                                    @select="onSelectCoverPage($event)"
+                                    :loading="isFetchingPages"
+                                    @input="fecthCoverPages"
+                                    @focus="clearErrors('cover_page_id')"
+                                    v-if="coverPage == undefined || coverPage.title == undefined"
+                                    check-infinite-scroll
+                                    @infinite-scroll="fetchMoreCoverPages">
+                                <template slot-scope="props">
+                                    {{ props.option.title.rendered }}
+                                </template>
+                                <template slot="empty">{{ $i18n.get('info_no_page_found') }}</template>
+                            </b-autocomplete>
+    
+                            <div 
+                                    v-if="coverPage != undefined && coverPage.title != undefined"
+                                    class="control selected-cover-page">
+                                <span v-html="coverPage.title.rendered" />
+                                <span class="selected-cover-page-control">
+                                    <a 
+                                            target="_blank"
+                                            @click.prevent="removeCoverPage()">
+                                        <span 
+                                                v-tooltip="{
+                                                    content: $i18n.get('remove_value'),
+                                                    autoHide: true,
+                                                    placement: 'bottom',
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']  
+                                                }"
+                                                class="icon is-small">
+                                            <i class="tainacan-icon tainacan-icon-close"/>
+                                        </span>
+                                    </a>
+                                </span>
+                            </div>
+                            <span 
+                                    :class="{'disabled': form.enable_cover_page != 'yes' || coverPage == undefined || coverPage.title == undefined}"
+                                    class="selected-cover-page-buttons">
                                 <a 
-                                        target="_blank"
-                                        @click.prevent="removeCoverPage()">
+                                        target="_blank" 
+                                        :href="coverPage.link">
                                     <span 
                                             v-tooltip="{
-                                                content: $i18n.get('remove_value'),
+                                                content: $i18n.get('see'),
                                                 autoHide: true,
                                                 placement: 'bottom',
-                                                popperClass: ['tainacan-tooltip', 'tooltip']  
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-close"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                                    </span>
+                                </a>
+                                &nbsp;&nbsp;
+                                <a 
+                                        target="blank" 
+                                        :href="coverPageEditPath">
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('edit'),
+                                                autoHide: true,
+                                                placement: 'bottom',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
+                                            }"
+                                            class="icon is-small">
+                                        <i class="tainacan-icon tainacan-icon-edit"/>
                                     </span>
                                 </a>
                             </span>
-                        </div>
-                        <span 
-                                :class="{'disabled': form.enable_cover_page != 'yes' || coverPage == undefined || coverPage.title == undefined}"
-                                class="selected-cover-page-buttons">
-                            <a 
-                                    target="_blank" 
-                                    :href="coverPage.link">
-                                <span 
-                                        v-tooltip="{
-                                            content: $i18n.get('see'),
-                                            autoHide: true,
-                                            placement: 'bottom',
-                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                        }"
-                                        class="icon is-small">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                            <br>
+                            <a
+                                    class="add-link"  
+                                    style="font-size: 0.875em;" 
+                                    :class="{'disabled': form.enable_cover_page != 'yes'}"
+                                    target="_blank"  
+                                    :href="newPagePath">
+                                <span class="icon is-small">
+                                    <i class="tainacan-icon tainacan-icon-add"/>
                                 </span>
-                            </a>
-                            &nbsp;&nbsp;
-                            <a 
-                                    target="blank" 
-                                    :href="coverPageEditPath">
-                                <span 
-                                        v-tooltip="{
-                                            content: $i18n.get('edit'),
-                                            autoHide: true,
-                                            placement: 'bottom',
-                                            popperClass: ['tainacan-tooltip', 'tooltip']
-                                        }"
-                                        class="icon is-small">
-                                    <i class="tainacan-icon tainacan-icon-edit"/>
-                                </span>
-                            </a>
-                        </span>
-                        <br>
-                        <a
-                                class="add-link"  
-                                style="font-size: 0.875em;" 
-                                :class="{'disabled': form.enable_cover_page != 'yes'}"
-                                target="_blank"  
-                                :href="newPagePath">
-                            <span class="icon is-small">
-                                <i class="tainacan-icon tainacan-icon-add"/>
-                            </span>
-                            {{ $i18n.get('label_create_new_page') }}</a>                        
+                                {{ $i18n.get('label_create_new_page') }}</a>            
+                        </template>            
                     </b-field>
 
                     <!-- Parent Collection -------------------------------- --> 
@@ -1591,6 +1592,18 @@ export default {
             height: 1px;
             background-color: var(--tainacan-gray2);
             margin-left: 42px;
+            transition: background-color 0.2s ease, height 0.2s ease;
+        }
+        
+        &:hover {
+            .icon,
+            strong {
+                color: var(--tainacan-secondary);
+            }
+            hr {
+                background-color: var(--tainacan-primary );
+                height: 2px;
+            }
         }
     }
 
