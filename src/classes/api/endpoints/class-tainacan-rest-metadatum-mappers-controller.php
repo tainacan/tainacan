@@ -175,8 +175,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 			   is_array($body) &&
 			   array_key_exists('metadata_mappers', $body) &&
 			   is_array($body['metadata_mappers']) &&
-			   count($body['metadata_mappers']) > 0 &&
-			   \Tainacan\Mappers_Handler::get_mapper_from_request($request)
+			   count($body['metadata_mappers']) > 0
 		) {
 			$metadatum_mapper = $body['metadata_mappers'][0];
 			$metadatum = \Tainacan\Repositories\Repository::get_entity_by_post($metadatum_mapper['metadatum_id']);

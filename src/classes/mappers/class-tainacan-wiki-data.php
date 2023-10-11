@@ -17,34 +17,11 @@ class Wiki_Data extends Mapper {
 	public $prefixes = [
 		'dc' => 'http://purl.org/dc/elements/1.1/'
 	];
-	public $metadata = [
-		
-	];	
+	public $metadata = [];	
 
-	public function get_metadata($collection_id = null) {
-		if($collection_id == null)
-			return $this->metadata;
-		
-		$metadatum_repository = \tainacan_metadata();
-		$collection = new \Tainacan\Entities\Collection( $collection_id );
-		$args = [
-			'meta_query' => [
-				[
-					'key'     => 'exposer_mapping',
-					'compare' => 'EXISTS',
-				]
-			],
-			'posts_per_page' => -1
-		];
-		$metadata = $metadatum_repository->fetch_by_collection( $collection, $args );
-		$prepared_custom_mapper = [];
-		foreach ( $metadata as $item ) {
-			$exposer_mapping = $item->get_exposer_mapping();
-			if(isset($exposer_mapping[$this->slug])) {
-				$slug = $exposer_mapping[$this->slug]['slug'];
-				$prepared_custom_mapper[$slug] = $exposer_mapping[$this->slug];
-			}
-		}
-		return array_merge( $this->metadata,  $prepared_custom_mapper);
-	}
+	public $add_meta_form = '<input
+	class="input"
+	type="text"
+	placeholder="Alguma coisa"
+	name="teste">';
 }
