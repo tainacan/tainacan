@@ -51,7 +51,7 @@
                         <b-input
                                 id="tainacan-text-description"
                                 type="textarea"
-                                rows="3"
+                                rows="4"
                                 :placeholder="$i18n.get('instruction_collection_description')"
                                 v-model="form.description"
                                 @focus="clearErrors('description')"/>
@@ -75,151 +75,172 @@
                                 :loading="isUpdatingSlug"/>
                     </b-field>
 
-                    <!-- Change Default OrderBy Select and Order Button-->
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.get('label_default_orderby')"
-                            :type="editFormErrors['default_orderby'] != undefined ? 'is-danger' : ''" 
-                            :message="editFormErrors['default_orderby'] != undefined ? editFormErrors['default_orderby'] : $i18n.get('info_default_orderby')">
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'default_orderby')" 
-                                :message="$i18n.getHelperMessage('collections', 'default_orderby')"/>
-                        <div class="control sorting-options">
-                            <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
-                            <b-select
-                                    id="tainacan-select-default_order"
-                                    v-model="form.default_order">
-                                <option
-                                        role="button"
-                                        :class="{ 'is-active': form.default_order == 'DESC' }"
-                                        :value="'DESC'">
-                                    {{ $i18n.get('label_descending') }}
-                                </option>
-                                <option
-                                        role="button"
-                                        :class="{ 'is-active': form.default_order == 'ASC' }"
-                                        :value="'ASC'">
-                                    {{ $i18n.get('label_ascending') }}
-                                </option>
-                            </b-select>
-                            <span
-                                    class="label"
-                                    style="padding: 0 0.65em;">
-                                {{ $i18n.get('info_by_inner') }}
-                            </span>
-                            <b-select
-                                    expanded
-                                    :loading="isLoadingMetadata"
-                                    v-model="localDefaultOrderBy"
-                                    id="tainacan-select-default_orderby">
-                                <option
-                                        v-for="metadatum of sortingMetadata"
-                                        :value="metadatum.id"
-                                        :key="metadatum.id">
-                                    {{ metadatum.name }}
-                                </option>
-                            </b-select>
-                        </div>
-                    </b-field>
+                    <!-- Items list options ------------------------ -->
+                     <div 
+                             @click="showItemsListOptions = !showItemsListOptions;"
+                            class="collection-form-section">
+                        <span class="icon">
+                            <i 
+                                    class="tainacan-icon"
+                                    :class="showItemsListOptions ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                        </span>
+                        <strong>{{ $i18n.get('label_items_list_options') }}</strong>
+                        <hr>
 
-
-                    <label class="label">{{ $i18n.get('label_view_modes_public_list') }}</label>
-                    <div class="items-view-mode-options">
-
-                        <!-- Enabled View Modes ------------------------------- --> 
-                        <div class="field">
-                            <label class="label">{{ $i18n.get('label_view_modes_available') }}</label>
-                            <help-button 
-                                        :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
-                                        :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
-                            <div class="control">
-                                <b-dropdown
-                                        class="enabled-view-modes-dropdown"
-                                        ref="enabledViewModesDropdown"
-                                        :mobile-modal="true"
-                                        :disabled="Object.keys(registeredViewModes).length < 0"
-                                        aria-role="list"
-                                        trap-focus
-                                        position="is-top-right">
-                                    <button
-                                            class="button is-white"
-                                            slot="trigger"
-                                            position="is-top-right"
-                                            type="button">
-                                        <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
-                                        <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                                        </span>
-                                    </button>
-                                    <b-dropdown-item
-                                            v-for="(viewMode, index) in Object.keys(registeredViewModes)"
-                                            :key="index"
-                                            custom
-                                            aria-role="listitem">
-                                        <b-checkbox
-                                                v-if="registeredViewModes[viewMode] != undefined"
-                                                @input="updateViewModeslist(viewMode)"
-                                                :value="checkIfViewModeEnabled(viewMode)"
-                                                :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1">
-                                            <p>
-                                                <strong>
-                                                    <span 
-                                                            class="gray-icon"
-                                                            :class="{ 
-                                                                'has-text-secondary' : checkIfViewModeEnabled(viewMode),
-                                                                'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
-                                                            }"
-                                                            v-html="registeredViewModes[viewMode].icon"/>
-                                                    &nbsp;{{ registeredViewModes[viewMode].label }}
-                                                </strong>
-                                            </p>
-                                            <p v-if="registeredViewModes[viewMode].description">{{ registeredViewModes[viewMode].description }}</p>
-                                        </b-checkbox>
-                                    </b-dropdown-item>   
-                                </b-dropdown>
-                            </div>
-                        </div>
-                        
-                        <!-- Default View Mode -------------------------------- --> 
-                        <b-field
-                                v-if="form.enabled_view_modes.length > 0"
-                                :addons="false" 
-                                :label="$i18n.get('label_default')"
-                                :type="editFormErrors['default_view_mode'] != undefined ? 'is-danger' : ''" 
-                                :message="editFormErrors['default_view_mode'] != undefined ? editFormErrors['default_view_mode'] : ''">
-                            <help-button 
-                                    :title="$i18n.getHelperTitle('collections', 'default_view_mode')" 
-                                    :message="$i18n.getHelperMessage('collections', 'default_view_mode')"/>
-                            <b-select
-                                    expanded
-                                    id="tainacan-select-default_view_mode"
-                                    v-model="form.default_view_mode"
-                                    @focus="clearErrors('default_view_mode')">
-                                <option
-                                        v-for="(viewMode, index) of validDefaultViewModes"
-                                        :key="index"
-                                        :value="viewMode">
-                                    {{ registeredViewModes[viewMode].label }}
-                                </option>
-                            </b-select>
-                        </b-field>
                     </div>
+                    <transition name="filter-item">
+                        <div 
+                                v-show="showItemsListOptions"
+                                class="options-columns">
 
-                    <!-- Hide Items Thumbnail on Lists ------------------------ --> 
-                    <b-field
-                            :addons="false" 
-                            :label="$i18n.getHelperTitle('collections', 'hide_items_thumbnail_on_lists')">
-                        &nbsp;
-                        <b-switch
-                                id="tainacan-checkbox-hide-items-thumbnail-on-lists"
-                                size="is-small"
-                                true-value="yes" 
-                                false-value="no"
-                                v-model="form.hide_items_thumbnail_on_lists" />
-                        <help-button 
-                                :title="$i18n.getHelperTitle('collections', 'hide_items_thumbnail_on_lists')" 
-                                :message="$i18n.getHelperMessage('collections', 'hide_items_thumbnail_on_lists')"/>
-                    </b-field>
+                            <!-- Change Default OrderBy Select and Order Button-->
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.get('label_default_orderby')"
+                                    :type="editFormErrors['default_orderby'] != undefined ? 'is-danger' : ''" 
+                                    :message="editFormErrors['default_orderby'] != undefined ? editFormErrors['default_orderby'] : $i18n.get('info_default_orderby')">
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'default_orderby')" 
+                                        :message="$i18n.getHelperMessage('collections', 'default_orderby')"/>
+                                <div class="control sorting-options">
+                                    <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
+                                    <b-select
+                                            id="tainacan-select-default_order"
+                                            v-model="form.default_order">
+                                        <option
+                                                role="button"
+                                                :class="{ 'is-active': form.default_order == 'DESC' }"
+                                                :value="'DESC'">
+                                            {{ $i18n.get('label_descending') }}
+                                        </option>
+                                        <option
+                                                role="button"
+                                                :class="{ 'is-active': form.default_order == 'ASC' }"
+                                                :value="'ASC'">
+                                            {{ $i18n.get('label_ascending') }}
+                                        </option>
+                                    </b-select>
+                                    <span
+                                            class="label"
+                                            style="padding: 0 0.65em;">
+                                        {{ $i18n.get('info_by_inner') }}
+                                    </span>
+                                    <b-select
+                                            expanded
+                                            :loading="isLoadingMetadata"
+                                            v-model="localDefaultOrderBy"
+                                            id="tainacan-select-default_orderby">
+                                        <option
+                                                v-for="metadatum of sortingMetadata"
+                                                :value="metadatum.id"
+                                                :key="metadatum.id">
+                                            {{ metadatum.name }}
+                                        </option>
+                                    </b-select>
+                                </div>
+                            </b-field>
+
+
+                            <label class="label">{{ $i18n.get('label_view_modes_public_list') }}</label>
+                            <div class="items-view-mode-options">
+
+                                <!-- Enabled View Modes ------------------------------- --> 
+                                <div class="field">
+                                    <label class="label">{{ $i18n.get('label_view_modes_available') }}</label>
+                                    <help-button 
+                                                :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
+                                                :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
+                                    <div class="control">
+                                        <b-dropdown
+                                                class="enabled-view-modes-dropdown"
+                                                ref="enabledViewModesDropdown"
+                                                :mobile-modal="true"
+                                                :disabled="Object.keys(registeredViewModes).length < 0"
+                                                aria-role="list"
+                                                trap-focus
+                                                position="is-top-right">
+                                            <button
+                                                    class="button is-white"
+                                                    slot="trigger"
+                                                    position="is-top-right"
+                                                    type="button">
+                                                <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
+                                                <span class="icon">
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                                </span>
+                                            </button>
+                                            <b-dropdown-item
+                                                    v-for="(viewMode, index) in Object.keys(registeredViewModes)"
+                                                    :key="index"
+                                                    custom
+                                                    aria-role="listitem">
+                                                <b-checkbox
+                                                        v-if="registeredViewModes[viewMode] != undefined"
+                                                        @input="updateViewModeslist(viewMode)"
+                                                        :value="checkIfViewModeEnabled(viewMode)"
+                                                        :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1">
+                                                    <p>
+                                                        <strong>
+                                                            <span 
+                                                                    class="gray-icon"
+                                                                    :class="{ 
+                                                                        'has-text-secondary' : checkIfViewModeEnabled(viewMode),
+                                                                        'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
+                                                                    }"
+                                                                    v-html="registeredViewModes[viewMode].icon"/>
+                                                            &nbsp;{{ registeredViewModes[viewMode].label }}
+                                                        </strong>
+                                                    </p>
+                                                    <p v-if="registeredViewModes[viewMode].description">{{ registeredViewModes[viewMode].description }}</p>
+                                                </b-checkbox>
+                                            </b-dropdown-item>   
+                                        </b-dropdown>
+                                    </div>
+                                </div>
+                                
+                                <!-- Default View Mode -------------------------------- --> 
+                                <b-field
+                                        v-if="form.enabled_view_modes.length > 0"
+                                        :addons="false" 
+                                        :label="$i18n.get('label_default')"
+                                        :type="editFormErrors['default_view_mode'] != undefined ? 'is-danger' : ''" 
+                                        :message="editFormErrors['default_view_mode'] != undefined ? editFormErrors['default_view_mode'] : ''">
+                                    <help-button 
+                                            :title="$i18n.getHelperTitle('collections', 'default_view_mode')" 
+                                            :message="$i18n.getHelperMessage('collections', 'default_view_mode')"/>
+                                    <b-select
+                                            expanded
+                                            id="tainacan-select-default_view_mode"
+                                            v-model="form.default_view_mode"
+                                            @focus="clearErrors('default_view_mode')">
+                                        <option
+                                                v-for="(viewMode, index) of validDefaultViewModes"
+                                                :key="index"
+                                                :value="viewMode">
+                                            {{ registeredViewModes[viewMode].label }}
+                                        </option>
+                                    </b-select>
+                                </b-field>
+                            </div>
+
+                            <!-- Hide Items Thumbnail on Lists ------------------------ --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'hide_items_thumbnail_on_lists')">
+                                &nbsp;
+                                <b-switch
+                                        id="tainacan-checkbox-hide-items-thumbnail-on-lists"
+                                        size="is-small"
+                                        true-value="yes" 
+                                        false-value="no"
+                                        v-model="form.hide_items_thumbnail_on_lists" />
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'hide_items_thumbnail_on_lists')" 
+                                        :message="$i18n.getHelperMessage('collections', 'hide_items_thumbnail_on_lists')"/>
+                            </b-field>
+
+                        </div>
+                    </transition>
 
                     <!-- Item edition form options ------------------------ -->
                     <div 
@@ -933,6 +954,7 @@ export default {
             isLoadingMetadata: true,
             sortingMetadata: [],
             localDefaultOrderBy: 'date',
+            showItemsListOptions: false,
             showItemEditionFormOptions: false,
             showItemSubmissionOptions: false
         }

@@ -699,6 +699,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_multiple_terms'							 => __( 'Multiple terms', 'tainacan' ),
 	'label_multiple'								 => __( 'Multiple', 'tainacan' ),
 	'label_separator'								 => __( 'Separator', 'tainacan' ),
+	'label_items_list_options'				 		 => __( 'Items list options', 'tainacan' ),
 	'label_item_edition_form_options'				 => __( 'Item edition form options', 'tainacan' ),
 	'label_item_submission_options'				 	 => __( 'Item submission options', 'tainacan' ),
 	'label_metadata_related_features'				 => __( 'Metadata related features', 'tainacan' ),
