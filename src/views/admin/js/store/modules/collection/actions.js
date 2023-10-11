@@ -236,7 +236,7 @@ export const fetchCollection = ({ commit, }, id) => {
 
 export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }) => {
     return new Promise((resolve, reject) => { 
-        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,status,allow_comments,hide_items_thumbnail_on_lists,item_enabled_document_types,item_document_label,item_thumbnail_label,item_attachment_label_singular,item_attachment_label_plural,item_enable_attachments,item_enable_metadata_focus_mode,item_enable_metadata_required_filter,item_enable_metadata_searchbar,item_enable_metadata_collapses';
+        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,status,allow_comments,hide_items_thumbnail_on_lists,item_enabled_document_types,item_document_label,item_thumbnail_label,item_attachment_label,item_enable_attachments,item_enable_metadata_focus_mode,item_enable_metadata_required_filter,item_enable_metadata_searchbar,item_enable_metadata_collapses';
         
         if (isContextEdit)
             endpoint += '&context=edit';

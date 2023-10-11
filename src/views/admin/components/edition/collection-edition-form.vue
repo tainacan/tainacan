@@ -239,6 +239,28 @@
                                 v-show="showItemEditionFormOptions"
                                 class="options-columns">
 
+                            <!-- Allowed types of main document -------------------------------- --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.getHelperTitle('collections', 'item_enabled_document_types')">
+                                <help-button 
+                                        :title="$i18n.getHelperTitle('collections', 'item_enabled_document_types')" 
+                                        :message="$i18n.getHelperMessage('collections', 'item_enabled_document_types')"/>
+                                <div class="status-radios">
+                                    <b-checkbox
+                                            v-for="(documentType, slug) in form.item_enabled_document_types"
+                                            :key="slug"
+                                            v-model="documentType.enabled"
+                                            true-value="yes"
+                                            false-value="no">
+                                        <span class="icon">
+                                            <i :class="'tainacan-icon tainacan-icon-' + documentType.icon" />
+                                        </span>
+                                        {{ documentType.label }}
+                                    </b-checkbox>
+                                </div>
+                            </b-field>
+
                             <!-- Document and Thumbnail Label -------------------------------- -->
                             <div>
                                 <b-field
@@ -265,46 +287,68 @@
                             </div>
 
                             <!-- Allow attachments ------------------------ --> 
-                            <b-field
-                                    style="margin-top: 0.5rem; margin-bottom: 0.5rem;"
-                                    :addons="false" 
-                                    :label="$i18n.getHelperTitle('collections', 'item_enable_attachments')">
-                                &nbsp;
-                                <b-switch
-                                        id="tainacan-checkbox-item-enable-attachments" 
-                                        size="is-small"
-                                        true-value="yes" 
-                                        false-value="no"
-                                        v-model="form.item_enable_attachments" />
-                                <help-button 
-                                        :title="$i18n.getHelperTitle('collections', 'item_enable_attachments')" 
-                                        :message="$i18n.getHelperMessage('collections', 'item_enable_attachments')"/>
-                            </b-field>
-
-                            <!-- Attachments Label -------------------------------- -->
-                            <div v-if="form.item_enable_attachments === 'yes'">
+                            <div>
                                 <b-field
+                                        style="margin-top: 1.5rem; margin-bottom: 0rem;"
                                         :addons="false" 
-                                        :label="$i18n.getHelperTitle('collections', 'item_attachment_label_singular')">
+                                        :label="$i18n.getHelperTitle('collections', 'item_enable_attachments')">
+                                    &nbsp;
+                                    <b-switch
+                                            id="tainacan-checkbox-item-enable-attachments" 
+                                            size="is-small"
+                                            true-value="yes" 
+                                            false-value="no"
+                                            v-model="form.item_enable_attachments" />
                                     <help-button 
-                                            :title="$i18n.getHelperTitle('collections', 'item_attachment_label_singular')" 
-                                            :message="$i18n.getHelperMessage('collections', 'item_attachment_label_singular')"/>
-                                    <b-input
-                                            id="tainacan-text-item-attachment-label-singular"
-                                            v-model="form.item_attachment_label_singular" />
+                                            :title="$i18n.getHelperTitle('collections', 'item_enable_attachments')" 
+                                            :message="$i18n.getHelperMessage('collections', 'item_enable_attachments')"/>
                                 </b-field>
 
+                                <!-- Attachments Label -------------------------------- -->
                                 <b-field
+                                        v-if="form.item_enable_attachments === 'yes'"
                                         :addons="false" 
-                                        :label="$i18n.getHelperTitle('collections', 'item_attachment_label_plural')">
+                                        :label="$i18n.getHelperTitle('collections', 'item_attachment_label')">
                                     <help-button 
-                                            :title="$i18n.getHelperTitle('collections', 'item_attachment_label_plural')" 
-                                            :message="$i18n.getHelperMessage('collections', 'item_attachment_label_plural')"/>
+                                            :title="$i18n.getHelperTitle('collections', 'item_attachment_label')" 
+                                            :message="$i18n.getHelperMessage('collections', 'item_attachment_label')"/>
                                     <b-input
                                             id="tainacan-text-item-attachment-label-singular"
-                                            v-model="form.item_attachment_label_plural" />
+                                            v-model="form.item_attachment_label" />
                                 </b-field>
                             </div>
+
+                            <!-- Features related to how metadata are shown in the item edition form -------------------------------- --> 
+                            <b-field
+                                    :addons="false" 
+                                    :label="$i18n.get('label_metadata_related_features')">
+                                <div class="status-radios">
+                                    <b-checkbox
+                                            v-model="form.item_enable_metadata_collapses"
+                                            true-value="yes"
+                                            false-value="no">
+                                        {{ $i18n.getHelperTitle('collections', 'item_enable_metadata_collapses') }}
+                                    </b-checkbox>
+                                    <b-checkbox
+                                            v-model="form.item_enable_metadata_focus_mode"
+                                            true-value="yes"
+                                            false-value="no">
+                                        {{ $i18n.getHelperTitle('collections', 'item_enable_metadata_focus_mode') }}
+                                    </b-checkbox>
+                                    <b-checkbox
+                                            v-model="form.item_enable_metadata_required_filter"
+                                            true-value="yes"
+                                            false-value="no">
+                                        {{ $i18n.getHelperTitle('collections', 'item_enable_metadata_required_filter') }}
+                                    </b-checkbox>
+                                    <b-checkbox
+                                            v-model="form.item_enable_metadata_searchbar"
+                                            true-value="yes"
+                                            false-value="no">
+                                        {{ $i18n.getHelperTitle('collections', 'item_enable_metadata_searchbar') }}
+                                    </b-checkbox>
+                                </div>
+                            </b-field>
 
                             <!-- Comment Status ------------------------ --> 
                             <b-field
@@ -852,8 +896,7 @@ export default {
                 },
                 item_document_label: this.$i18n.get( 'Document', 'tainacan' ),
                 item_thumbnail_label: this.$i18n.get( 'Thumbnail', 'tainacan' ),
-                item_attachment_label_singular: this.$i18n.get( 'Attachment', 'tainacan' ),
-                item_attachment_label_plural: this.$i18n.get( 'Attachments', 'tainacan' ),
+                item_attachment_label: this.$i18n.get( 'Attachments', 'tainacan' ),
                 item_enable_attachments: 'yes',
                 item_enable_metadata_focus_mode: 'yes',
                 item_enable_metadata_required_filter: 'yes',
@@ -984,8 +1027,7 @@ export default {
                 this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
                 this.form.item_document_label = this.collection.item_document_label;
                 this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
-                this.form.item_attachment_label_singular = this.collection.item_attachment_label_singular;
-                this.form.item_attachment_label_plural = this.collection.item_attachment_label_plural;
+                this.form.item_attachment_label = this.collection.item_attachment_label;
                 this.form.item_enable_attachments = this.collection.item_enable_attachments;
                 this.form.item_enable_metadata_focus_mode = this.collection.item_enable_metadata_focus_mode;
                 this.form.item_enable_metadata_required_filter = this.collection.item_enable_metadata_required_filter;
@@ -1105,8 +1147,7 @@ export default {
                 item_enabled_document_types: this.form.item_enabled_document_types,
                 item_document_label: this.form.item_document_label,
                 item_thumbnail_label: this.form.item_thumbnail_label,
-                item_attachment_label_singular: this.form.item_attachment_label_singular,
-                item_attachment_label_plural: this.form.item_attachment_label_plural,
+                item_attachment_label: this.form.item_attachment_label,
                 item_enable_attachments: this.form.item_enable_attachments,
                 item_enable_metadata_focus_mode: this.form.item_enable_metadata_focus_mode,
                 item_enable_metadata_required_filter: this.form.item_enable_metadata_required_filter,
@@ -1143,8 +1184,7 @@ export default {
                     this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
                     this.form.item_document_label = this.collection.item_document_label;
                     this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
-                    this.form.item_attachment_label_singular = this.collection.item_attachment_label_singular;
-                    this.form.item_attachment_label_plural = this.collection.item_attachment_label_plural;
+                    this.form.item_attachment_label = this.collection.item_attachment_label;
                     this.form.item_enable_attachments = this.collection.item_enable_attachments;
                     this.form.item_enable_metadata_focus_mode = this.collection.item_enable_metadata_focus_mode;
                     this.form.item_enable_metadata_required_filter = this.collection.item_enable_metadata_required_filter;
@@ -1213,8 +1253,7 @@ export default {
                 this.form.item_enabled_document_types = this.collection.item_enabled_document_types;
                 this.form.item_document_label = this.collection.item_document_label;
                 this.form.item_thumbnail_label = this.collection.item_thumbnail_label;
-                this.form.item_attachment_label_singular = this.collection.item_attachment_label_singular;
-                this.form.item_attachment_label_plural = this.collection.item_attachment_label_plural;
+                this.form.item_attachment_label = this.collection.item_attachment_label;
                 this.form.item_enable_attachments = this.collection.item_enable_attachments;
                 this.form.item_enable_metadata_focus_mode = this.collection.item_enable_metadata_focus_mode;
                 this.form.item_enable_metadata_required_filter = this.collection.item_enable_metadata_required_filter;

@@ -10,7 +10,7 @@
                 {{ collection && collection.item_document_label ? collection.item_document_label : ( (form.document != undefined && form.document != null && form.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
             </label>
             <help-button
-                    :title="$i18n.getHelperTitle('items', 'document')"
+                    :title="collection && collection.item_document_label ? collection.item_document_label : $i18n.getHelperTitle('items', 'document')"
                     :message="$i18n.getHelperMessage('items', 'document')"/>
         </div>
         <div 

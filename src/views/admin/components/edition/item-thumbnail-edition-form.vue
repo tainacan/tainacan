@@ -10,7 +10,7 @@
                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
             </label>
             <help-button
-                    :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
+                    :title="collection && collection.item_thumbnail_label ? collection.item_thumbnail_label: $i18n.getHelperTitle('items', '_thumbnail_id')"
                     :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
 
         </div>

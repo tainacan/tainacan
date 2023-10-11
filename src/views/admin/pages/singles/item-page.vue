@@ -277,7 +277,7 @@
                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments"/>
                                 </span>
                                 <span>
-                                    {{ collection && collection.item_attachment_label_plural ? collection.item_attachment_label_plural : $i18n.get('label_attachments') }}&nbsp;
+                                    {{ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') }}&nbsp;
                                     <span
                                             v-if="totalAttachments"
                                             class="has-text-gray has-text-weight-normal">
@@ -291,7 +291,8 @@
                                 class="section-box section-attachments">
                             <attachments-list
                                     :item="item"
-                                    :form="item" />
+                                    :form="item"
+                                    :collection="collection" />
                         </div>   
 
                         <!-- Hook for extra Form options -->

@@ -387,15 +387,7 @@ class Collections extends Repository {
 				'default'     => __( 'Thumbnail', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
-			'item_attachment_label_singular' => [
-				'map'         => 'meta',
-				'title'       => __( 'Attachments singular label', 'tainacan' ),
-				'type'        => 'string',
-				'description' => __( 'The singular label for the attachments section in the item edition form', 'tainacan' ),
-				'default'     => __( 'Attachment', 'tainacan' ),
-				//'validation' => v::stringType(),
-			],
-			'item_attachment_label_plural' => [
+			'item_attachment_label' => [
 				'map'         => 'meta',
 				'title'       => __( 'Attachments plural label', 'tainacan' ),
 				'type'        => 'string',

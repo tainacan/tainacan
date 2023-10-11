@@ -44,8 +44,7 @@ class Collection extends Entity {
 		$item_enabled_document_types,
 		$item_document_label,
 		$item_thumbnail_label,
-		$item_attachment_label_singular,
-		$item_attachment_label_plural,
+		$item_attachment_label,
 		$item_enable_attachments,
 		$item_enable_metadata_focus_mode,
 		$item_enable_metadata_required_filter,
@@ -651,21 +650,12 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Get the singular label for the attachment section in this collection.
-	 *
-	 * @return string The singular label for the attachment section.
-	 */
-	function get_item_attachment_label_singular() {
-		return $this->get_mapped_property('item_attachment_label_singular');
-	}
-
-	/**
 	 * Get the plural label for the attachment section in this collection.
 	 *
 	 * @return string The plural label for the attachment section.
 	 */
-	function get_item_attachment_label_plural() {
-		return $this->get_mapped_property('item_attachment_label_plural');
+	function get_item_attachment_label() {
+		return $this->get_mapped_property('item_attachment_label');
 	}
 
 	/**
@@ -1019,23 +1009,13 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Set the singular label for the attachment section in this collection.
-	 *
-	 * @param string $value The singular label for the attachment section.
-	 * @return void
-	 */
-	function set_item_attachment_label_singular( $value ) {
-		$this->set_mapped_property('item_attachment_label_singular', $value);
-	}
-
-	/**
 	 * Set the plural label for the attachment section in this collection.
 	 *
 	 * @param string $value The plural label for the attachment section.
 	 * @return void
 	 */
-	function set_item_attachment_label_plural( $value ) {
-		$this->set_mapped_property('item_attachment_label_plural', $value);
+	function set_item_attachment_label( $value ) {
+		$this->set_mapped_property('item_attachment_label', $value);
 	}
 
 	/**

@@ -636,7 +636,7 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
         * hideItemEditionMetadataTypes
         * allowItemEditionModalInsideModal // Not recommended!
         * itemEditionDocumentInsideTabs
-        * itemEditionAttachmentInsideTabs
+        * itemEditionAttachmentsInsideTabs
         
         * hideBulkEditionPageTitle
         

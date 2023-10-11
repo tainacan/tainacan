@@ -891,7 +891,7 @@ export default {
                 pageTabs.push({
                     slug: 'attachments',
                     icon: 'attachments',
-                    name: this.collection && this.collection.item_attachment_label_plural ? this.collection.item_attachment_label_plural : this.$i18n.get('label_attachments'),
+                    name: this.collection && this.collection.item_attachment_label ? this.collection.item_attachment_label : this.$i18n.get('label_attachments'),
                     total: this.totalAttachments
                 });
             }
