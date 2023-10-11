@@ -36,19 +36,23 @@ abstract class Mapper {
 	public $header = false; // API response header or file header to be used with
 	public $show_ui = true; // Show mapper in ui and api calls
 	
-	public function _toArray() {
+	public function _toArray($collection_id = null) {
 		return [
 			'slug' => $this->slug,
 			'name' => $this->name,
 			'description' => $this->description,
 			'allow_extra_metadata' => $this->allow_extra_metadata,
 			'context_url' => $this->context_url,
-			'metadata' => $this->metadata,
+			'metadata' => $this->get_metadata($collection_id),
 			'prefix' => $this->prefix,
 			'sufix' => $this->sufix,
 			'header' => $this->header,
 			'add_meta_form' => ''
 		];
+	}
+
+	public function get_metadata($collection_id = null) {
+		return $this->metadata;
 	}
 	
 	/**

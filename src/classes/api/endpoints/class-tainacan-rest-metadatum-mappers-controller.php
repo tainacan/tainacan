@@ -68,14 +68,15 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	}
 
 	/**
-	 * @param \Tainacan\Exposers\Mappers\Mapper $mapper
+	 * @param \Tainacan\Mappers\Mapper $mapper
 	 * @param \WP_REST_Request $request
 	 *map
 	 * @return mixed|\WP_Error|\WP_REST_Response
 	 */
 	public function prepare_item_for_response( $mapper, $request ) {
 
-		$metadatum_arr = $mapper->_toArray();
+		$collection_id = isset($request['collection_id']) && $request['collection_id'] != 'default' ? $request['collection_id'] : null;
+		$metadatum_arr = $mapper->_toArray($collection_id);
 
 		return $metadatum_arr;
 	}
