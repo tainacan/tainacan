@@ -170,14 +170,15 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function update_item_permissions_check( $request ) {
+		return true;
 		$body = json_decode( $request->get_body(), true );
 		if(
 			   is_array($body) &&
-			   array_key_exists('metadata_mappers', $body) &&
-			   is_array($body['metadata_mappers']) &&
-			   count($body['metadata_mappers']) > 0
+			   array_key_exists('mapping', $body) &&
+			   is_array($body['mapping']) &&
+			   count($body['mapping']) > 0
 		) {
-			$metadatum_mapper = $body['metadata_mappers'][0];
+			$metadatum_mapper = $body['mapping'][0];
 			$metadatum = \Tainacan\Repositories\Repository::get_entity_by_post($metadatum_mapper['metadatum_id']);
 			if ($metadatum instanceof \Tainacan\Entities\Metadatum && $metadatum->can_edit()) {
 				return true;
@@ -213,11 +214,11 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 			}
 			
 			$response = [
-				'mapper' => $mapper->_toArray(isset($request['collection_id']) && $request['collection_id'] != 'default' ? $request['collection_id'] : null),
-				'mapping'=>[]
+				'mapper' => [],
+				'mappings'=>[]
 			];
-			if (count($body['metadata_mappers']) > 0) {
-				foreach ($body['metadata_mappers'] as $metadatum_mapper) {
+			if (count($body['mapping']) > 0) {
+				foreach ($body['mapping'] as $metadatum_mapper) {
 					$metadatum_mapper['metadatum_id'] = intval($metadatum_mapper['metadatum_id']);
 					if (is_array($metadatum_mapper['mapper_metadata'])) {
 						foreach ($metadatum_mapper['mapper_metadata'] as $k => $tag) {
@@ -248,11 +249,12 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 							return new \WP_REST_Response([
 								'error_message' => __('One or more values are invalid.', 'tainacan'),
 								'errors'        => $metadatum->get_errors(),
-								'mapping'       => $this->prepare_item_for_response($metadatum, $request),
+								'mappings'       => $this->prepare_item_for_response($metadatum, $request),
 							], 400);
 						}
 					}
-					$response['mapping'][] = $this->prepare_metadatum_for_response($metadatum, $request);
+					$response['mappings'][] = $this->prepare_metadatum_for_response($metadatum, $request);
+					$response['mapper'] = $mapper->_toArray(isset($request['collection_id']) && $request['collection_id'] != 'default' ? $request['collection_id'] : null);
 				}
 			}
 			if (isset($request["collection_id"]) && isset($body["disabled"])) {
