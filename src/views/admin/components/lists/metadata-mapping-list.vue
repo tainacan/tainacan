@@ -153,6 +153,7 @@
                 aria-modal
                 aria-role="dialog"
                 custom-class="tainacan-modal"
+                width="800px"
                 :close-button-aria-label="$i18n.get('close')">
             <div 
                     autofocus
@@ -165,7 +166,6 @@
                     <hr>
                 </div>
 
-               
                 <b-field :addons="false">
                     <label class="label is-inline">
                         {{ $i18n.get('label') }}
@@ -204,7 +204,7 @@
                         <button
                                 :class="{ 'is-loading': isMapperMetadataLoading, 'is-success': !isMapperMetadataLoading }"
                                 @click.prevent="onSaveNewMetadataMapperMetadata"
-                                :disabled="!mapper.add_meta_form && (isNewMetadataMapperMetadataDisabled || isMapperMetadataLoading)"
+                                :disabled="isNewMetadataMapperMetadataDisabled || isMapperMetadataLoading"
                                 class="button">{{ $i18n.get('save') }}
                         </button>
                     </div>
@@ -240,7 +240,7 @@ export default {
     },
     computed: {
         isNewMetadataMapperMetadataDisabled() {
-            return !this.newMetadataLabel || !this.newMetadataUri;
+            return !this.newMetadataLabel || (!this.mapper.add_meta_form && !this.newMetadataUri);
         },
         activeMetadatumList() { 
             return this.getMetadata();
@@ -249,37 +249,14 @@ export default {
     watch: {
         mapper: {
             handler() {
-                this.loadMapperMetadata();   
+                this.loadMetadata();   
             },
             deep: true
         }
     },
-    mounted() {
-            
+    mounted() {   
         this.collectionId = this.$route.params.collectionId;
-
-        this.isLoadingMetadata = true;
-        
-        this.cleanMetadata();
-
-        this.fetchMetadata({
-            collectionId: this.collectionId,
-            isRepositoryLevel: this.isRepositoryLevel, 
-            isContextEdit: true, 
-            includeDisabled: true,
-            includeOptionsAsHtml: false
-        }).then((resp) => {
-            resp.request
-                .then(() => {
-                    this.loadMapperMetadata();
-                    this.isLoadingMetadata = false;
-                })
-                .catch(() => {
-                    this.isLoadingMetadata = false;
-                });
-        })
-        .catch(() => this.isLoadingMetadata = false); 
-
+        this.loadMetadata();
     },
     methods: {
         ...mapActions('metadata', [
@@ -291,10 +268,34 @@ export default {
         ...mapGetters('metadata',[
             'getMetadata'
         ]),
-        loadMapperMetadata() {
+        loadMetadata() {
+            this.isLoadingMetadata = true;
+        
+            this.cleanMetadata();
+
+            this.fetchMetadata({
+                collectionId: this.collectionId,
+                isRepositoryLevel: this.isRepositoryLevel, 
+                isContextEdit: true, 
+                includeDisabled: true,
+                includeOptionsAsHtml: false
+            }).then((resp) => {
+                resp.request
+                    .then(() => {
+                        this.buildMappingRows();
+                        this.isLoadingMetadata = false;
+                    })
+                    .catch(() => {
+                        this.isLoadingMetadata = false;
+                    });
+            })
+            .catch(() => this.isLoadingMetadata = false); 
+        },
+        buildMappingRows() {
 
             this.isMapperMetadataLoading = true;
             this.mapperMetadata = [];
+            this.mappedMetadata = [];
             
             if ( this.mapper && this.mapper.metadata ) {
 
