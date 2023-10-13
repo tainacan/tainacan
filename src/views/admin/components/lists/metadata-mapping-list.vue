@@ -64,13 +64,12 @@
                     <p>{{ $i18n.get('info_no_metadata_from_mapper') }} <span v-if="mapper.allow_extra_metadata">{{ $i18n.get('info_mapper_extra_metadata') }}</span></p>
                 </div>
             </section>
-
             <div 
                     v-else
                     v-for="(mapperMetadatum, index) of mapperMetadata"
                     :key="index"
                     class="source-metadatum">
-                
+                                 
                 <b-select
                         :name="'mappers-metadatum-select-' + mapperMetadatum.slug"
                         v-model="mapperMetadatum.selected"
@@ -296,8 +295,8 @@ export default {
 
             this.isMapperMetadataLoading = true;
             this.mapperMetadata = [];
-            console.log(this.mapper)
-            if ( this.mapper && this.mapper ) {
+            
+            if ( this.mapper && this.mapper.metadata ) {
 
                 for (let metadatum in this.mapper.metadata) {
                     let item = this.mapper.metadata[metadatum];
@@ -317,7 +316,7 @@ export default {
                     });
                     this.mapperMetadata.push(item);
                 }
-
+                
                 this.activeMetadatumList.forEach((activeMetadatum) => {
                     if (
                         Object.prototype.hasOwnProperty.call(activeMetadatum.exposer_mapping, this.mapper.slug) &&
@@ -331,9 +330,17 @@ export default {
                         item.isCustom = true;
                         item.isRepositoryLevel = activeMetadatum.collection_id === 'default';
 
-                        this.mapperMetadata.push(item);
+                        const existingMapperMetadataIndex = this.mapperMetadata.findIndex((mapperMetadata) => {
+                            return mapperMetadata.slug == item.slug;
+                        });
+                        
+                        if ( existingMapperMetadataIndex >= 0 )
+                            this.mapperMetadata[existingMapperMetadataIndex] = item;
+                        else  
+                            this.mapperMetadata.push(item);
                     }
                 });
+
             }
             
             this.isMapperMetadataLoading = false;
@@ -355,8 +362,8 @@ export default {
             this.mapperMetadata.forEach((metadatum) => {
                 if (metadatum.selected.length != 0) {
                     let map = {
-                            metadatum_id: metadatum.selected,
-                            mapper_metadata: metadatum.slug
+                        metadatum_id: metadatum.selected,
+                        mapper_metadata: metadatum.slug
                     };
                     mapping.push(map);
                 }
@@ -364,16 +371,16 @@ export default {
             this.activeMetadatumList.forEach( metadatum => {
                 if(this.mappedMetadata.indexOf(metadatum.id) == -1) {
                     let map = {
-                            metadatum_id: metadatum.id,
-                            mapper_metadata: ''
+                        metadatum_id: metadatum.id,
+                        mapper_metadata: ''
                     };
                     mapping.push(map);
                 }
             });
             this.newMapperMetadataList.forEach( metadatum => {
                 mapping.forEach( (meta, index) => {
-                    if ( meta.mapper_metadata == metadatum.slug ) {
-                        let itemClone = Object.assign({}, metadatum); // TODO check if still need to clone
+                    if ( meta.mapper_metadata == metadatum.slug && metadatum.slug.length && metadatum.label.length ) {
+                        let itemClone = Object.assign({}, metadatum);
                         delete itemClone.selected;
                         delete itemClone.isCustom;
                         meta.mapper_metadata = itemClone;
@@ -412,6 +419,7 @@ export default {
             this.newMetadataLabel = '';
             this.newMetadataUri = '';
             this.newMetadataSlug = '';
+            this.customForm = {};
         },
         onSaveNewMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
@@ -419,10 +427,13 @@ export default {
             
             let newMapperMetadata = {
                 label: this.newMetadataLabel,
-                uri: this.newMetadataUri,
                 slug: this.stringToSlug(this.newMetadataLabel),
                 isCustom: true
             };
+            if ( this.mapper.add_meta_form )
+                newMapperMetadata = { ...newMapperMetadata, ...this.customForm };
+            else 
+                newMapperMetadata['uri'] = this.newMetadataUri;
 
             let selected = '';
             if ( this.newMetadataSlug != '' ) { // Editing
@@ -446,6 +457,7 @@ export default {
             this.newMetadataLabel = '';
             this.newMetadataUri = '';
             this.newMetadataSlug = '';
+            this.customForm = {};
             this.isMapperMetadataCreating = false;
             this.isMapperMetadataLoading = false;
         },
@@ -469,8 +481,17 @@ export default {
         },
         editMetadatumCustomMapper(customMapperMeta) {
             this.newMetadataLabel = customMapperMeta.label;
-            this.newMetadataUri = customMapperMeta.uri;
             this.newMetadataSlug = customMapperMeta.slug;
+            
+            if ( this.mapper.add_meta_form ) {
+                for (let fieldName of Object.keys(customMapperMeta)) {
+                    if (fieldName != 'label' && fieldName != 'uri' && fieldName != 'slug' && fieldName != 'selected' && fieldName != 'isCustom')
+                        this.customForm[fieldName] = customMapperMeta[fieldName];
+                }
+            } else {
+                this.newMetadataUri = customMapperMeta.uri;
+            }
+
             this.isMapperMetadataCreating = true;
 
             // Fills hook forms with it's real values 

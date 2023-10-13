@@ -444,7 +444,7 @@ export const updateMapper = ({ commit }, { isRepositoryLevel, collectionId, mapp
         let params = {};
 
         if ( mapping )
-            params['metadata_mappers'] = mapping;
+            params['mapping'] = mapping;
 
         if ( disabled !== undefined )
             params['disabled'] = disabled;
