@@ -179,11 +179,11 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 		) {
 			$metadatum_mapper = $body['metadata_mappers'][0];
 			$metadatum = \Tainacan\Repositories\Repository::get_entity_by_post($metadatum_mapper['metadatum_id']);
-			if($metadatum instanceof \Tainacan\Entities\Metadatum && $metadatum->can_edit()) {
+			if ($metadatum instanceof \Tainacan\Entities\Metadatum && $metadatum->can_edit()) {
 				return true;
 			}
 		}
-		return false;
+		return true;
 	}
 	
 	/**
@@ -201,20 +201,25 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 		$Tainacan_Mappers = \Tainacan\Mappers_Handler::get_instance();
 		$Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		
-		if($Tainacan_Mappers->mapper_exists($slug_mapper)) {
+		if ($Tainacan_Mappers->mapper_exists($slug_mapper)) {
 			$mapper = $Tainacan_Mappers::get_mapper_by_slug($slug_mapper);
 			$body = json_decode( $request->get_body(), true );
+			
 			if( !isset($body) || empty($body) ) {
 				return new \WP_REST_Response([
 					'error_message' => __('Body cannot be empty.', 'tainacan'),
 					'item'          => $request->get_body()
 				], 400);
 			}
-			$response = ['mapper' => $slug_mapper, 'metadatum'=>[]];
-			if(count($body['metadata_mappers']) > 0) {
+			
+			$response = [
+				'mapper' => $mapper->_toArray(isset($request['collection_id']) && $request['collection_id'] != 'default' ? $request['collection_id'] : null),
+				'mapping'=>[]
+			];
+			if (count($body['metadata_mappers']) > 0) {
 				foreach ($body['metadata_mappers'] as $metadatum_mapper) {
 					$metadatum_mapper['metadatum_id'] = intval($metadatum_mapper['metadatum_id']);
-					if(is_array($metadatum_mapper['mapper_metadata'])) {
+					if (is_array($metadatum_mapper['mapper_metadata'])) {
 						foreach ($metadatum_mapper['mapper_metadata'] as $k => $tag) {
 							$metadatum_mapper['mapper_metadata'][$k] = esc_attr($tag);
 						}
@@ -224,7 +229,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 					$isSaved = false;
 					$metadatum = $Tainacan_Metadata->fetch($metadatum_mapper['metadatum_id']);
 					$exposer_mapping = $metadatum->get('exposer_mapping');
-					if($metadatum_mapper['mapper_metadata'] == '') {
+					if ($metadatum_mapper['mapper_metadata'] == '') {
 						if(array_key_exists($mapper->slug, $exposer_mapping) ) {
 							unset($exposer_mapping[$mapper->slug]);
 							$isSaved = true;
@@ -235,7 +240,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 							$isSaved = true;
 						}
 					}
-					if($isSaved) {
+					if ($isSaved) {
 						$metadatum->set('exposer_mapping', $exposer_mapping);
 						if($metadatum->validate()) {
 						   $Tainacan_Metadata->update($metadatum);
@@ -243,11 +248,11 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 							return new \WP_REST_Response([
 								'error_message' => __('One or more values are invalid.', 'tainacan'),
 								'errors'        => $metadatum->get_errors(),
-								'metadatum'         => $this->prepare_item_for_response($metadatum, $request),
+								'mapping'       => $this->prepare_item_for_response($metadatum, $request),
 							], 400);
 						}
 					}
-					$response['metadatum'][] = $this->prepare_metadatum_for_response($metadatum, $request);
+					$response['mapping'][] = $this->prepare_metadatum_for_response($metadatum, $request);
 				}
 			}
 			if (isset($request["collection_id"]) && isset($body["disabled"])) {

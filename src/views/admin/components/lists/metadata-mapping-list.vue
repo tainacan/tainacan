@@ -160,27 +160,33 @@
                     role="dialog"
                     tabindex="-1"
                     aria-modal
-                    class="tainacan-modal-content">
+                    class="tainacan-modal-content tainacan-form">
                 <div class="tainacan-modal-title">
                     <h2>{{ $i18n.get('instruction_insert_mapper_metadatum_info') }}</h2>
                     <hr>
                 </div>
-                <b-field>
+
+               
+                <b-field :addons="false">
+                    <label class="label is-inline">
+                        {{ $i18n.get('label') }}
+                    </label>
                     <b-input
                             v-model="newMetadataLabel"
                             required
                             :placeholder="$i18n.get('label_name')"/>
                 </b-field>
-                <b-field>
+
+                <b-field v-if="!mapper.add_meta_form">
                     <b-input
                             placeholder="URI"
                             type="url"
                             required
                             v-model="newMetadataUri"/>
                 </b-field>
-                
-                <!-- Hook for extra Form options -->
-                <template 
+
+                 <!-- Hook for extra Form options -->
+                 <template 
                         v-if="mapper.add_meta_form">  
                     <form 
                         id="form-mapper-metadata"
@@ -199,7 +205,7 @@
                         <button
                                 :class="{ 'is-loading': isMapperMetadataLoading, 'is-success': !isMapperMetadataLoading }"
                                 @click.prevent="onSaveNewMetadataMapperMetadata"
-                                :disabled="isNewMetadataMapperMetadataDisabled || isMapperMetadataLoading"
+                                :disabled="!mapper.add_meta_form && (isNewMetadataMapperMetadataDisabled || isMapperMetadataLoading)"
                                 class="button">{{ $i18n.get('save') }}
                         </button>
                     </div>
@@ -230,9 +236,7 @@ export default {
             newMetadataLabel: '',
             newMetadataUri: '',
             newMetadataSlug: '',
-            customForm: {
-                'teste': 'aaa'
-            }
+            customForm: {}
         }
     },
     computed: {
@@ -243,8 +247,16 @@ export default {
             return this.getMetadata();
         }
     },
+    watch: {
+        mapper: {
+            handler() {
+                this.loadMapperMetadata();   
+            },
+            deep: true
+        }
+    },
     mounted() {
-               
+            
         this.collectionId = this.$route.params.collectionId;
 
         this.isLoadingMetadata = true;
@@ -284,8 +296,8 @@ export default {
 
             this.isMapperMetadataLoading = true;
             this.mapperMetadata = [];
-            
-            if ( this.mapper && this.mapper.metadata ) {
+            console.log(this.mapper)
+            if ( this.mapper && this.mapper ) {
 
                 for (let metadatum in this.mapper.metadata) {
                     let item = this.mapper.metadata[metadatum];
@@ -323,6 +335,7 @@ export default {
                     }
                 });
             }
+            
             this.isMapperMetadataLoading = false;
         },
         isMetadatumSelected(id) {
@@ -337,14 +350,15 @@ export default {
         },
         onUpdateMapperClick() {
             this.isMapperMetadataLoading = true;
-            let metadataMapperMetadata = [];
+            let mapping = [];
+            
             this.mapperMetadata.forEach((metadatum) => {
                 if (metadatum.selected.length != 0) {
                     let map = {
                             metadatum_id: metadatum.selected,
                             mapper_metadata: metadatum.slug
                     };
-                    metadataMapperMetadata.push(map);
+                    mapping.push(map);
                 }
             });
             this.activeMetadatumList.forEach( metadatum => {
@@ -353,24 +367,24 @@ export default {
                             metadatum_id: metadatum.id,
                             mapper_metadata: ''
                     };
-                    metadataMapperMetadata.push(map);
+                    mapping.push(map);
                 }
             });
             this.newMapperMetadataList.forEach( metadatum => {
-                metadataMapperMetadata.forEach( (meta, index) => {
+                mapping.forEach( (meta, index) => {
                     if ( meta.mapper_metadata == metadatum.slug ) {
                         let itemClone = Object.assign({}, metadatum); // TODO check if still need to clone
                         delete itemClone.selected;
                         delete itemClone.isCustom;
                         meta.mapper_metadata = itemClone;
-                        metadataMapperMetadata[index] = meta;
+                        mapping[index] = meta;
                     }
                 });
             });
             this.updateMapper({
                 isRepositoryLevel: this.isRepositoryLevel,
                 collectionId: this.collectionId,
-                metadataMapperMetadata: metadataMapperMetadata,
+                mapping: mapping,
                 mapper: this.mapper.slug
             }).then(() => {
                 this.isMapperMetadataLoading = false;
@@ -390,7 +404,7 @@ export default {
             // Fills hook forms with it's real values 
             this.$nextTick()
                 .then(() => {
-                    this.updateExtraFormData(this.customForm);
+                    this.updateExtraFormData();
                 });
         },
         onCancelNewMetadataMapperMetadata() {
@@ -401,8 +415,7 @@ export default {
         },
         onSaveNewMetadataMapperMetadata() {
             this.isMapperMetadataLoading = true;
-
-            this.fillExtraFormData(this.customform);
+            this.fillExtraFormData();
             
             let newMapperMetadata = {
                 label: this.newMetadataLabel,
@@ -463,7 +476,7 @@ export default {
             // Fills hook forms with it's real values 
             this.$nextTick()
                 .then(() => {
-                    this.updateExtraFormData(this.customForm);
+                    this.updateExtraFormData();
                 });
         },
         removeMetadatumCustomMapper(customMapperMeta) {
@@ -486,43 +499,41 @@ export default {
             }
             return true;
         },
-        fillExtraFormData(data) {
+        fillExtraFormData() { 
 
             let formElement = document.getElementById('form-mapper-metadata');
             if (formElement) {  
                 for (let element of formElement.elements) {
                     if (element.type == "checkbox" || (element.type == "select" && element.multiple != undefined && element.multiple == true)) {
                         if (element.checked && element.name != undefined && element.name != '') {
-                            if (!Array.isArray(data[element.name]))
-                                data[element.name] = [];
-                            data[element.name].push(element.value);
+                            if (!Array.isArray(this.customForm[element.name]))
+                                this.customForm[element.name] = [];
+                            this.customForm[element.name].push(element.value);
                         }
                     } else if (element.type == "radio") {
                         if (element.checked && element.name != undefined && element.name != '')
-                            data[element.name] = element.value;
+                            this.customForm[element.name] = element.value;
                     } else {
-                        data[element.name] = element.value;
+                        this.customForm[element.name] = element.value;
                     }
                 }
             }
         },
-        updateExtraFormData(entityObject) {
-            console.log(entityObject)
+        updateExtraFormData() {
             let formElement = document.getElementById('form-mapper-metadata');
-            console.log(formElement)
             if (formElement) { 
                 for (let element of formElement.elements) {
-                    for (let key of Object.keys(entityObject)) {
+                    for (let key of Object.keys(this.customForm)) {
                         if (element['name'] == key)  {
-                            if (Array.isArray(entityObject[key])) {
-                                let obj = entityObject[key].find((value) => { return value == element['value'] });
+                            if (Array.isArray(this.customForm[key])) {
+                                let obj = this.customForm[key].find((value) => { return value == element['value'] });
                                 element['checked'] = obj != undefined ? true : false;
                             } else {
-                                if (entityObject[key] != null && entityObject[key] != undefined && entityObject[key] != ''){
+                                if (this.customForm[key] != null && this.customForm[key] != undefined && this.customForm[key] != ''){
                                     if (element.type == "radio")
-                                        element['checked'] = entityObject[key] == element['value'] ? true : false;
+                                        element['checked'] = this.customForm[key] == element['value'] ? true : false;
                                     else 
-                                        element['value'] = entityObject[key];
+                                        element['value'] = this.customForm[key];
                                 }
                                     
                             }

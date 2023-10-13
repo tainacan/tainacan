@@ -35,6 +35,8 @@ abstract class Mapper {
 	public $sufix = ''; // Tag sufix
 	public $header = false; // API response header or file header to be used with
 	public $show_ui = true; // Show mapper in ui and api calls
+
+	public function __construct() {}
 	
 	public function _toArray($collection_id = null) {
 		return [
