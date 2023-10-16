@@ -40,7 +40,17 @@ class Collection extends Entity {
 		$hide_items_thumbnail_on_lists,
 		$submission_anonymous_user,
 		$submission_default_status,
-		$submission_use_recaptcha;
+		$submission_use_recaptcha,
+		$item_enabled_document_types,
+		$item_document_label,
+		$item_thumbnail_label,
+		$item_enable_thubmnail,
+		$item_attachment_label,
+		$item_enable_attachments,
+		$item_enable_metadata_focus_mode,
+		$item_enable_metadata_required_filter,
+		$item_enable_metadata_searchbar,
+		$item_enable_metadata_collapses;
 
 	/**
 	 * {@inheritDoc}
@@ -607,14 +617,103 @@ class Collection extends Entity {
 	/**
 	 * Get the default metadata section properties.
 	 *
-	 * @param [string] $value
-	 *
 	 * @return void
 	 */
 	function get_default_metadata_section_properties( ) {
 		return $this->get_mapped_property( 'default_metadata_section_properties' );
 	}
 
+	/**
+	 * Get the enabled document types for this collection.
+	 *
+	 * @return array The enabled document types.
+	 */
+	function get_item_enabled_document_types() {
+		return $this->get_mapped_property('item_enabled_document_types');
+	}
+
+	/**
+	 * Get the label for the section in this collection.
+	 *
+	 * @return string The label for the section.
+	 */
+	function get_item_document_label() {
+		return $this->get_mapped_property('item_document_label');
+	}
+
+	/**
+	 * Get the label for the thumbnail section in this collection.
+	 *
+	 * @return string The label for the thumbnail section.
+	 */
+	function get_item_thumbnail_label() {
+		return $this->get_mapped_property('item_thumbnail_label');
+	}
+
+	/**
+	 * Check if thumbnail are enabled for this collection.
+	 *
+	 * @return string 'yes' if thumbnail are enabled, 'no' otherwise.
+	 */
+	function get_item_enable_thumbnail() {
+		return $this->get_mapped_property('item_enable_thumbnail');
+	}
+
+	/**
+	 * Get the plural label for the attachment section in this collection.
+	 *
+	 * @return string The plural label for the attachment section.
+	 */
+	function get_item_attachment_label() {
+		return $this->get_mapped_property('item_attachment_label');
+	}
+
+	/**
+	 * Check if attachments are enabled for this collection.
+	 *
+	 * @return string 'yes' if attachments are enabled, 'no' otherwise.
+	 */
+	function get_item_enable_attachments() {
+		return $this->get_mapped_property('item_enable_attachments');
+	}
+
+	/**
+	 * Check if metadata focus mode is enabled for this collection.
+	 *
+	 * @return string 'yes' if metadata focus mode is enabled, 'no' otherwise.
+	 */
+	function get_item_enable_metadata_focus_mode() {
+		return $this->get_mapped_property('item_enable_metadata_focus_mode');
+	}
+
+	/**
+	 * Check if metadata required filter is enabled for this collection.
+	 *
+	 * @return string 'yes' if metadata required filter is enabled, 'no' otherwise.
+	 */
+	function get_item_enable_metadata_required_filter() {
+		return $this->get_mapped_property('item_enable_metadata_required_filter');
+	}
+
+	/**
+	 * Check if metadata search bar is enabled for this collection.
+	 *
+	 * @return string 'yes' if metadata search bar is enabled, 'no' otherwise.
+	 */
+	function get_item_enable_metadata_searchbar() {
+		return $this->get_mapped_property('item_enable_metadata_searchbar');
+	}
+
+	/**
+	 * Check if metadata collapses are enabled for this collection.
+	 *
+	 * @return bool True if metadata collapses are enabled, 'no' otherwise.
+	 */
+	function get_item_enable_metadata_collapses() {
+		return $this->get_mapped_property('item_enable_metadata_collapses');
+	}
+
+	// Setters
 	/**
 	 * Set the collection name
 	 *
@@ -750,7 +849,7 @@ class Collection extends Entity {
 	 * @return void
 	 */
 	function set_metadata_section_order( $value ) {
-		if( !empty($value) ) {
+		if( !empty( $value ) ) {
 			$metadata_order = array( );
 			foreach($value as $section) {
 				$metadata_order =  array_merge($metadata_order, $section['metadata_order']);
@@ -886,6 +985,107 @@ class Collection extends Entity {
 	 */
 	function set_default_metadata_section_properties( $value ) {
 		return $this->set_mapped_property( 'default_metadata_section_properties', $value);
+	}
+
+
+	/**
+	 * Set the enabled document types for this collection.
+	 *
+	 * @param array $value The enabled document types.
+	 * @return void
+	 */
+	function set_item_enabled_document_types( $value ) {
+		$this->set_mapped_property('item_enabled_document_types', $value);
+	}
+
+	/**
+	 * Set the label for the document section in this collection.
+	 *
+	 * @param string $value The label for the document section.
+	 * @return void
+	 */
+	function set_item_document_label( $value ) {
+		$this->set_mapped_property('item_document_label', $value);
+	}
+
+	/**
+	 * Set the label for the thumbnail section in this collection.
+	 *
+	 * @param string $value The label for the thumbnail section.
+	 * @return void
+	 */
+	function set_item_thumbnail_label( $value ) {
+		$this->set_mapped_property('item_thumbnail_label', $value);
+	}
+
+	/**
+	 * Enable or disable thumbnail for this collection.
+	 *
+	 * @param string $value 'yes' to enable thumbnail, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_thumbnail( $value ) {
+		$this->set_mapped_property('item_enable_thumbnail', $value);
+	}
+
+	/**
+	 * Set the plural label for the attachment section in this collection.
+	 *
+	 * @param string $value The plural label for the attachment section.
+	 * @return void
+	 */
+	function set_item_attachment_label( $value ) {
+		$this->set_mapped_property('item_attachment_label', $value);
+	}
+
+	/**
+	 * Enable or disable attachments for this collection.
+	 *
+	 * @param string $value 'yes' to enable attachments, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_attachments( $value ) {
+		$this->set_mapped_property('item_enable_attachments', $value);
+	}
+
+	/**
+	 * Enable or disable metadata focus mode for this collection.
+	 *
+	 * @param string $value 'yes' to enable metadata focus mode, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_metadata_focus_mode( $value ) {
+		$this->set_mapped_property('item_enable_metadata_focus_mode', $value);
+	}
+
+	/**
+	 * Enable or disable metadata required filter for this collection.
+	 *
+	 * @param string $value 'yes' to enable metadata required filter, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_metadata_required_filter( $value ) {
+		$this->set_mapped_property('item_enable_metadata_required_filter', $value);
+	}
+
+	/**
+	 * Enable or disable metadata search bar for this collection.
+	 *
+	 * @param string $value 'yes' to enable metadata search bar, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_metadata_searchbar( $value ) {
+		$this->set_mapped_property('item_enable_metadata_searchbar', $value);
+	}
+
+	/**
+	 * Enable or disable metadata collapses for this collection.
+	 *
+	 * @param string $value 'yes' to enable metadata collapses, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_metadata_collapses( $value ) {
+		$this->set_mapped_property('item_enable_metadata_collapses', $value);
 	}
 
 	/**

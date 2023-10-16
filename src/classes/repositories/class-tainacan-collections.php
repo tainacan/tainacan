@@ -330,6 +330,131 @@ class Collections extends Repository {
 					]
 				]
 			],
+			'item_enabled_document_types' => [
+				'map'         => 'meta',
+				'title'       => __( 'Enabled document types', 'tainacan' ),
+				'type'        => 'object',
+				'description' => __( 'The document types that are available in the item edition form.', 'tainacan' ),
+				'items' => [
+					'type' => 'object', 
+					'properties' => [
+						'enabled' => [
+							'description' => __( 'Whether the document type is enabled or not.', 'tainacan' ),
+							'type' => 'string',
+							'enum'  => [ 'yes', 'no' ],
+						],
+						'label' => [
+							'description' => __( 'The label that will represent the document type.', 'tainacan' ),
+							'type' => 'string',
+						],
+						'icon' => [
+							'description' => __( 'The slug of the icon that will represent the document type.', 'tainacan' ),
+							'type' => 'string',
+						],
+					]
+				],
+				'default' => [
+					'attachment' => [
+						'enabled' =>  'yes',
+						'label' => __( 'File', 'tainacan' ),
+						'icon' => 'attachments'
+					],
+					'url' => [
+						'enabled' => 'yes',
+						'label' => __('URL', 'tainacan' ),
+						'icon' => 'url'
+					],
+					'text' => [
+						'enabled' => 'yes',
+						'label' => __('Text', 'tainacan' ),
+						'icon' => 'text'
+					]
+				]
+			],
+			'item_document_label' => [
+				'map'         => 'meta',
+				'title'       => __( 'Main document label', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The label for the main document section in the item edition form', 'tainacan' ),
+				'default'     => __( 'Document', 'tainacan' ),
+				//'validation' => v::stringType(),
+			],
+			'item_thumbnail_label' => [
+				'map'         => 'meta',
+				'title'       => __( 'Thumbnail label', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The label for the thumbnail section in the item edition form', 'tainacan' ),
+				'default'     => __( 'Thumbnail', 'tainacan' ),
+				//'validation' => v::stringType(),
+			],
+			'item_enable_thumbnail'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Item thumbnail', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, each item can have a thumbnail customized instead of the one automatically generated based on the item document.', 'tainacan' ),
+				'default'     => 'yes',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'item_attachment_label' => [
+				'map'         => 'meta',
+				'title'       => __( 'Attachments plural label', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'The plural label for the attachments section in the item edition form', 'tainacan' ),
+				'default'     => __( 'Attachments', 'tainacan' ),
+				//'validation' => v::stringType(),
+			],
+			'item_enable_attachments'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Item attachments', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, each item can have a set of files attached to it, complementary to the item document.', 'tainacan' ),
+				'default'     => 'yes',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'item_enable_metadata_focus_mode'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadata focus mode', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, a button can start a special navigation mode, that focus one metadatum per time in the item edition form.', 'tainacan' ),
+				'default'     => 'yes',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'item_enable_metadata_required_filter'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadata required filter', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, a switch can be toggled to display only required metadata in the item edition form.', 'tainacan' ),
+				'default'     => 'yes',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'item_enable_metadata_searchbar'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadata search bar', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, a search bar can be used for filtering the list of metadata in the item edition form.', 'tainacan' ),
+				'default'     => 'yes',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
+			'item_enable_metadata_collapses'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadata collapses', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, each metadata in the item form will be wrapped in a collapsable component.', 'tainacan' ),
+				'default'     => 'yes',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
 		] );
 	}
 

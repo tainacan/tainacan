@@ -315,6 +315,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_select_all_terms'                    	 => __( 'Select all taxonomy terms', 'tainacan' ),
 	'label_all_terms_selected'     		             => __( 'All terms selected', 'tainacan' ),
 	'label_add_or_update_attachments'                => __( 'Add or update attachments', 'tainacan' ),
+	/* translators: by default this the plural of attachments */	
+	'label_add_or_update_%s'						 => __( 'Add or update %s', 'tainacan' ),
 	'label_blank_collection'                         => __( 'Blank collection', 'tainacan' ),
 	/* translators: the metadata scheme https://dublincore.org/ */
 	'label_dublin_core'                              => __( 'Dublin Core', 'tainacan' ),
@@ -697,6 +699,10 @@ return apply_filters( 'tainacan-i18n', [
 	'label_multiple_terms'							 => __( 'Multiple terms', 'tainacan' ),
 	'label_multiple'								 => __( 'Multiple', 'tainacan' ),
 	'label_separator'								 => __( 'Separator', 'tainacan' ),
+	'label_items_list_options'				 		 => __( 'Items list options', 'tainacan' ),
+	'label_item_edition_form_options'				 => __( 'Item edition form options', 'tainacan' ),
+	'label_item_submission_options'				 	 => __( 'Item submission options', 'tainacan' ),
+	'label_metadata_related_features'				 => __( 'Metadata related features', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -862,6 +868,8 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
 	'info_showing_items'                             => __( 'Showing items ', 'tainacan' ),
 	'info_showing_attachments'                       => __( 'Showing attachments ', 'tainacan' ),
+	/* translators: This is displayed before sentences like "Showing attachments 2 to 8 of 12 */
+	'info_showing_%s'                       		 => __( 'Showing %s ', 'tainacan' ),
 	'info_showing_collections'                       => __( 'Showing collections ', 'tainacan' ),
 	'info_showing_taxonomies'                        => __( 'Showing taxonomies ', 'tainacan' ),
 	'info_showing_activities'                        => __( 'Showing activities ', 'tainacan' ),
@@ -900,6 +908,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_help_term_description'                     => __( 'The description of the Term.', 'tainacan' ),
 	'info_help_parent_term'                          => __( 'The parent term', 'tainacan' ),
 	'info_no_attachments_on_item_yet'                => __( 'The are no attachments on this item so far.', 'tainacan' ),
+	/* translators: This is displayed to indicate that there are no attachments yet. The attachments label can be tweked by user. */
+	'info_no_%s_on_item_yet'		                 => __( 'The are no %s on this item so far.', 'tainacan' ),
 	'info_repository_metadata_inheritance'           => __( 'Repository Metadata will be inherited by all collections.', 'tainacan' ),
 	'info_repository_filters_inheritance'            => __( 'Repository Filters will be inherited by all collections.', 'tainacan' ),
 	'info_create_filters'                            => __( 'Click or Drag and Drop Metadata here for creating a new Filter.', 'tainacan' ),
