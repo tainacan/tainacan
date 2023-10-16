@@ -191,7 +191,7 @@ class Private_Files {
 			$upload_dir = wp_get_upload_dir();
 			$base_upload_url = preg_replace('/^https?:\/\//', '', $upload_dir['baseurl']);
 
-			$requested_uri = ($_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
+			$requested_uri = ($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 			if ( strpos($requested_uri, $base_upload_url) === false ) {
 				// Not uploads
