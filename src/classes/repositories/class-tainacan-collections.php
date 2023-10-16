@@ -387,6 +387,16 @@ class Collections extends Repository {
 				'default'     => __( 'Thumbnail', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
+			'item_enable_thumbnail'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Item thumbnail', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, each item can have a thumbnail customized instead of the one automatically generated based on the item document.', 'tainacan' ),
+				'default'     => 'yes',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			],
 			'item_attachment_label' => [
 				'map'         => 'meta',
 				'title'       => __( 'Attachments plural label', 'tainacan' ),

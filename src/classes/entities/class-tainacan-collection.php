@@ -44,6 +44,7 @@ class Collection extends Entity {
 		$item_enabled_document_types,
 		$item_document_label,
 		$item_thumbnail_label,
+		$item_enable_thubmnail,
 		$item_attachment_label,
 		$item_enable_attachments,
 		$item_enable_metadata_focus_mode,
@@ -650,6 +651,15 @@ class Collection extends Entity {
 	}
 
 	/**
+	 * Check if thumbnail are enabled for this collection.
+	 *
+	 * @return string 'yes' if thumbnail are enabled, 'no' otherwise.
+	 */
+	function get_item_enable_thumbnail() {
+		return $this->get_mapped_property('item_enable_thumbnail');
+	}
+
+	/**
 	 * Get the plural label for the attachment section in this collection.
 	 *
 	 * @return string The plural label for the attachment section.
@@ -1006,6 +1016,16 @@ class Collection extends Entity {
 	 */
 	function set_item_thumbnail_label( $value ) {
 		$this->set_mapped_property('item_thumbnail_label', $value);
+	}
+
+	/**
+	 * Enable or disable thumbnail for this collection.
+	 *
+	 * @param string $value 'yes' to enable thumbnail, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_thumbnail( $value ) {
+		$this->set_mapped_property('item_enable_thumbnail', $value);
 	}
 
 	/**

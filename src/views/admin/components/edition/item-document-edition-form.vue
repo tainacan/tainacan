@@ -1,8 +1,6 @@
 <template>
-    <div>
-        <div 
-                v-if="!$adminOptions.hideItemEditionDocument"
-                class="section-label">
+    <div v-if="!$adminOptions.hideItemEditionDocument && ( !$adminOptions.hideItemEditionDocumentFileInput && !$adminOptions.hideItemEditionDocumentTextInput && !$adminOptions.hideItemEditionDocumentUrlInput )">
+        <div class="section-label">
             <label>
                 <span class="icon has-text-gray4">
                     <i :class="'tainacan-icon tainacan-icon-' + ( (!form.document_type || form.document_type == 'empty' ) ? 'item' : (form.document_type == 'attachment' ? 'attachments' : form.document_type))"/>
@@ -13,9 +11,7 @@
                     :title="collection && collection.item_document_label ? collection.item_document_label : $i18n.getHelperTitle('items', 'document')"
                     :message="$i18n.getHelperMessage('items', 'document')"/>
         </div>
-        <div 
-                v-if="!$adminOptions.hideItemEditionDocument"
-                class="section-box document-field">
+        <div class="section-box document-field">
             <div
                     v-if="form.document != undefined && form.document != null &&
                             form.document_type != undefined && form.document_type != null &&

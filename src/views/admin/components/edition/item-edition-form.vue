@@ -142,7 +142,7 @@
                             <span>{{ $i18n.get('label_all_metadata') }}</span>
                         </button>
                         <button 
-                                v-if="!$adminOptions.hideItemEditionDocument"
+                                v-if="shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail"
                                 @click="activeTab = 'document'; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-item" /></span>
                             <span>{{ $i18n.get('label_document_and_thumbnail') }}</span>
@@ -177,7 +177,7 @@
                     <div
                             class="column main-column"
                             :class="
-                                (( (!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
+                                (( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
                                 (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
@@ -535,7 +535,7 @@
                     </div>
 
                     <div 
-                            v-if="( (!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
+                            v-if="( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
                                 (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)"
                             class="column is-5">
                 
@@ -553,7 +553,7 @@
 
                             <!-- Document -------------------------------- -->
                             <item-document-edition-form 
-                                    v-if="!$adminOptions.itemEditionDocumentInsideTabs"
+                                    v-if="shouldDisplayItemEditionDocument && !$adminOptions.itemEditionDocumentInsideTabs"
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
@@ -562,11 +562,12 @@
                                     @onSetFileDocument="setFileDocument"
                                     @onSetTextDocument="setTextDocument"
                                     @onSetURLDocument="setURLDocument" />
-                            <hr>
+
+                            <hr v-if="shouldDisplayItemEditionDocument && shouldDisplayItemEditionThumbnail">
 
                             <!-- Thumbnail -------------------------------- -->
                             <item-thumbnail-edition-form 
-                                    v-if="!$adminOptions.itemEditionDocumentInsideTabs"
+                                    v-if="shouldDisplayItemEditionThumbnail && !$adminOptions.itemEditionDocumentInsideTabs"
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
@@ -880,7 +881,7 @@ export default {
                 name: this.$i18n.get('metadata'),
                 total: this.itemMetadata.length
             }];
-            if ( this.$adminOptions.itemEditionDocumentInsideTabs && (!this.$adminOptions.hideItemEditionDocument || !this.$adminOptions.hideItemEditionThumbnail) ) {
+            if ( this.$adminOptions.itemEditionDocumentInsideTabs && (this.shouldDisplayItemEditionDocument || this.shouldDisplayItemEditionThumbnail) ) {
                 pageTabs.push({
                     slug: 'document',
                     icon: 'item',
@@ -909,6 +910,18 @@ export default {
             if (!this.isMetadataNavigation || !this.itemMetadata[this.focusedMetadatum])
                 return false;
             return this.itemMetadata[this.focusedMetadatum].metadatum && this.itemMetadata[this.focusedMetadatum].metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
+        },
+        shouldDisplayItemEditionDocument() {
+            return !this.$adminOptions.hideItemEditionDocument && 
+                ( this.collection && this.collection.item_enabled_document_types && (
+                    ( this.collection.item_enabled_document_types['attachment'] && this.collection.item_enabled_document_types['attachment']['enabled'] === 'yes' ) || 
+                    ( this.collection.item_enabled_document_types['text'] && this.collection.item_enabled_document_types['text']['enabled'] === 'yes' ) || 
+                    ( this.collection.item_enabled_document_types['url'] && this.collection.item_enabled_document_types['url']['enabled'] === 'yes' )
+                )
+            );
+        },
+        shouldDisplayItemEditionThumbnail() {
+            return !this.$adminOptions.hideItemEditionThumbnail && (this.collection && this.collection.item_enable_thumbnail === 'yes');
         },
         shouldDisplayItemEditionAttachments() {
             return !this.$adminOptions.hideItemEditionAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');

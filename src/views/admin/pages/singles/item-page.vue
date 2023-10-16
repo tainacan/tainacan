@@ -36,7 +36,7 @@
 
                 <div
                         class="column"
-                        :class="!$adminOptions.hideItemSingleDocument || !$adminOptions.hideItemSingleThumbnail ? 'is-7' : 'is-12'">
+                        :class="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail ? 'is-7' : 'is-12'">
 
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginRightForm">
@@ -179,7 +179,7 @@
                 </div>
 
                 <div 
-                        v-if="!$adminOptions.hideItemSingleDocument || !$adminOptions.hideItemSingleThumbnail"
+                        v-if="shouldDisplayItemSingleDocument || shouldDisplayItemSingleThumbnail"
                         class="column is-5">
                     <div class="sticky-container">
 
@@ -193,7 +193,7 @@
 
                         <!-- Document -------------------------------- -->
                         <div 
-                                v-if="!$adminOptions.hideItemSingleDocument"
+                                v-if="shouldDisplayItemSingleDocument"
                                 class="section-label">
                             <label>
                                 <span class="icon has-text-gray4 tainacan-icon-1-125em">
@@ -203,7 +203,7 @@
                             </label>
                         </div>
                         <div 
-                                v-if="!$adminOptions.hideItemSingleDocument"
+                                v-if="shouldDisplayItemSingleDocument"
                                 class="section-box document-field">
                             <div
                                     v-if="item.document !== undefined && item.document !== null &&
@@ -216,10 +216,9 @@
                                 <p>{{ $i18n.get('info_no_document_to_item') }}</p>
                             </div>
                         </div>
-
                         <!-- Thumbnail -------------------------------- -->
                         <div 
-                                v-if="!$adminOptions.hideItemSingleThumbnail"
+                                v-if="shouldDisplayItemSingleThumbnail"
                                 class="section-label">
                             <label>
                                 <span class="icon has-text-gray4">
@@ -229,7 +228,7 @@
                             </label>
                         </div>
                         <div 
-                                v-if="!$adminOptions.hideItemSingleThumbnail"
+                                v-if="shouldDisplayItemSingleThumbnail"
                                 class="section-box section-thumbnail">
                             <div class="thumbnail-field">
                                 <file-item
@@ -536,6 +535,18 @@
                     });
                 }
                 return pageTabs;
+            },
+            shouldDisplayItemSingleDocument() {
+                return !this.$adminOptions.hideItemSingleDocument && 
+                    ( this.collection && this.collection.item_enabled_document_types && (
+                        ( this.collection.item_enabled_document_types['attachment'] && this.collection.item_enabled_document_types['attachment']['enabled'] === 'yes' ) || 
+                        ( this.collection.item_enabled_document_types['text'] && this.collection.item_enabled_document_types['text']['enabled'] === 'yes' ) || 
+                        ( this.collection.item_enabled_document_types['url'] && this.collection.item_enabled_document_types['url']['enabled'] === 'yes' )
+                    )
+                );
+            },
+            shouldDisplayItemSingleThumbnail() {
+                return !this.$adminOptions.hideItemSingleThumbnail && (this.collection && this.collection.item_enable_thumbnail === 'yes');
             },
             shouldDisplayItemSingleAttachments() {
                 return !this.$adminOptions.hideItemSingleAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');
