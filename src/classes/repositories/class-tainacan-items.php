@@ -103,7 +103,7 @@ class Items extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Document', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The document itself. An ID in case of attachment, an URL in case of link or a text in the case of text.', 'tainacan' ),
+				'description' => __( 'The item main content. May be a file attached, an URL or a text depending on the type of the document.', 'tainacan' ),
 				'on_error'    => __( 'Invalid document', 'tainacan' ),
 				'default'     => ''
 			],

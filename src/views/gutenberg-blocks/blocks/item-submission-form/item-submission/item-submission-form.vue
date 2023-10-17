@@ -220,7 +220,9 @@
                             {{ $i18n.getHelperMessage('items', '_thumbnail_id') }}
                         </p>
                     </div>
-                    <div class="section-toggle">
+                    <div 
+                            v-if="!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton"
+                            class="section-toggle">
                         <p>{{ showThumbnailInput ? $i18n.get('info_thumbnail_custom') : $i18n.get('info_thumbnail_default_from_document') }}</p>
                         <div class="field has-addons">
                             <b-switch
@@ -232,7 +234,7 @@
                         </div>
                     </div>
                     <div
-                            v-if="!isLoading && showThumbnailInput"
+                            v-if="!isLoading && showThumbnailInput || (hideFileModalButton && hideTextModalButton && hideLinkModalButton)"
                             class="section-box section-thumbnail"
                             id="tainacan-item-metadatum_id-thumbnail">
                         <b-upload
