@@ -235,6 +235,25 @@
                                                 class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                     </span>
                                 </a>
+                                <a 
+                                        v-if="!isOnTrash"
+                                        id="button-open-external" 
+                                        :aria-label="$i18n.getFrom('taxonomies','view_item')"
+                                        @click.stop="" 
+                                        target="_blank"
+                                        :href="themeTaxonomiesURL + taxonomy.slug">                      
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('label_taxonomy_page_on_website'),
+                                                autoHide: true,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                placement: 'auto',
+                                                html: true
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                    </span>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -263,7 +282,8 @@
                 selected: [],
                 allOnPageSelected: false,
                 isSelecting: false,
-                adminUrl: tainacan_plugin.admin_url
+                adminUrl: tainacan_plugin.admin_url,
+                themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url
             }
         },
         computed: {

@@ -136,9 +136,23 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-delete"/>
                                     </span>
                                 </button>
+                                <a 
+                                        target="_blank"
+                                        :href="term.url">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('label_term_page_on_website'),
+                                                autoHide: true,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                    </span>
+                                </a>
                             </div>
                         </label>
                         <button
