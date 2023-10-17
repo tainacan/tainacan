@@ -578,7 +578,7 @@ export default {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        min-height: 247px;
+        min-height: 150px;
     }
     .form-submit {
         margin-top: 24px;
@@ -640,7 +640,7 @@ export default {
     .source-metadatum {
         padding: 2px 0;
         min-height: 35px;
-        width: 100%;
+        width: calc(100% - 32px);
         margin: 3px 16px 6px 16px;
         display: flex;
         justify-content: space-between;

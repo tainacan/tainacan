@@ -67,6 +67,12 @@
                 .then(res => {
                     this.taxonomy = res.taxonomy;
                     this.isLoading = false;
+
+                    if (!this.isRepositoryLevel)
+                        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                            { path: this.$routerHelper.getMappersPath(), label: this.$i18n.get('mappers') },
+                            { path: '', label: (this.mapper != null && this.mapper.name != undefined) ? this.mapper.name : this.$i18n.get('mapper') }
+                        ]);
                 })
                 .catch(() => this.isLoading = false);
         },
