@@ -297,12 +297,21 @@ class Admin {
 		$cur_user  = wp_get_current_user();
 		$user_caps = array();
 		$prefs     = array();
+		$user_data = array();
 		if ( $cur_user instanceof \WP_User ) {
 			$tainacan_caps = \tainacan_roles()->get_repository_caps_slugs();
 			foreach ($tainacan_caps as $tcap) {
 				$user_caps[$tcap] = current_user_can( $tcap );
 			}
 			$prefs = get_user_meta( $cur_user->ID, 'tainacan_prefs', true );
+
+			if ( $cur_user->data && isset($cur_user->data->user_email) && isset($cur_user->data->display_name) ) {
+				$user_data = array(
+					'ID' => $cur_user->ID,
+					'email' => $cur_user->data->user_email,
+					'display_name' => $cur_user->data->display_name
+				);
+			}
 		}
 
 		$settings = [
@@ -314,6 +323,7 @@ class Admin {
 			'i18n'                   	=> $tainacan_admin_i18n,
 			'user_caps'              	=> $user_caps,
 			'user_prefs'             	=> $prefs,
+			'user_data'					=> $user_data,
 			'base_url'               	=> $TAINACAN_BASE_URL,
 			'plugin_dir_url'			=> plugin_dir_url( __DIR__ ),
 			'admin_url'              	=> admin_url(),
