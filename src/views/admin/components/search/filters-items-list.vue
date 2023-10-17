@@ -273,7 +273,7 @@
         <section
                 v-if="!isLoadingFilters &&
                     !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                class="is-grouped-centered section">
+                class="is-grouped-centered">
             <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon is-large">
