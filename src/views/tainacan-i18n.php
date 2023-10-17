@@ -839,6 +839,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_no_user_found'                             => __( 'No user was found with this name.', 'tainacan' ),
 	'info_no_item_found_filter'                      => __( 'No item was found here with these filters.', 'tainacan' ),
 	'info_no_item_found'                             => __( 'No item was found.', 'tainacan' ),
+	'info_no_item_authored_by_you_found'			 => __( 'No item authored by you was found.', 'tainacan' ),
 	'info_item_not_saved'                            => __( 'Warning: Item not saved.', 'tainacan' ),
 	'info_no_associated_role' 						 => __( 'No associated role.', 'tainacan' ),
 	'info_error_deleting_collection'                 => __( 'Error on deleting collection.', 'tainacan' ),

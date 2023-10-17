@@ -56,7 +56,7 @@
                     <template 
                             v-if="!isLoading"
                             slot="empty">
-                        {{ $i18n.get('info_no_item_found') }}
+                        {{ isAcceptingOnlyItemsAuthoredByCurrentUser ? $i18n.get('info_no_item_authored_by_you_found') : $i18n.get('info_no_item_found') }}
                     </template>
                     <template
                             v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)" 
@@ -405,7 +405,7 @@
                     query['status'] = ['publish','private','draft'];
 
                 if ( this.isAcceptingOnlyItemsAuthoredByCurrentUser )
-                    query['author'] = tainacan_plugin.user_data.ID;
+                    query['authorid'] = tainacan_plugin.user_data.ID;
 
                 if (this.selected.length > 0)
                     query['exclude'] = this.selected.map((item) => item.value);
