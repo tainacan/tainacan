@@ -56,7 +56,7 @@
                     <template 
                             v-if="!isLoading"
                             slot="empty">
-                        {{ $i18n.get('info_no_item_found') }}
+                        {{ isAcceptingOnlyItemsAuthoredByCurrentUser ? $i18n.get('info_no_item_authored_by_you_found') : $i18n.get('info_no_item_found') }}
                     </template>
                     <template
                             v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)" 
@@ -209,6 +209,12 @@
                        this.itemMetadatum.metadatum &&
                        this.itemMetadatum.metadatum.metadata_type_options &&
                        this.itemMetadatum.metadatum.metadata_type_options.accept_draft_items === 'yes';
+            },
+            isAcceptingOnlyItemsAuthoredByCurrentUser() {
+                return this.itemMetadatum &&
+                       this.itemMetadatum.metadatum &&
+                       this.itemMetadatum.metadatum.metadata_type_options &&
+                       this.itemMetadatum.metadatum.metadata_type_options.accept_only_items_authored_by_current_user === 'yes';
             }
         },
         watch: {
@@ -230,7 +236,8 @@
                 query['order'] = 'asc';
                 query['fetch_only'] = 'title,document_mimetype,thumbnail';
                 query['fetch_only_meta'] = this.isDisplayingRelatedItemMetadata ? (this.itemMetadatum.metadatum.metadata_type_options.display_related_item_metadata.filter(metadatumId => metadatumId !== 'thumbnail') + '') : (this.itemMetadatum.metadatum.metadata_type_options.search ? this.itemMetadatum.metadatum.metadata_type_options.search : '');
-                if (this.isAcceptingDraftItems)
+                
+                if ( this.isAcceptingDraftItems )
                     query['status'] = ['publish','private','draft'];
 
                 axios.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
@@ -396,6 +403,9 @@
 
                 if (this.isAcceptingDraftItems)
                     query['status'] = ['publish','private','draft'];
+
+                if ( this.isAcceptingOnlyItemsAuthoredByCurrentUser )
+                    query['authorid'] = tainacan_plugin.user_data.ID;
 
                 if (this.selected.length > 0)
                     query['exclude'] = this.selected.map((item) => item.value);
