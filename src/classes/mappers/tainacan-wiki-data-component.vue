@@ -46,11 +46,6 @@
                                 ({{ props.option.value }})
                             </div>
                         </div>
-                        <!-- <div 
-                                v-else
-                                class="tainacan-wiki-data-group">
-                            <div v-html="props.option.valuesAsHtml" />
-                        </div> -->
                     </template>
                     <template 
                             v-if="!isLoading"
@@ -78,7 +73,18 @@
                                 v-for="(itemValue, index) of selected"
                                 :key="index"
                                 style="position: relative;">
-                            <!-- <div v-html="itemValue.valuesAsHtml" /> -->
+                            <div class="media">
+                                <div 
+                                        class="media-content"
+                                        style="display: block;">
+                                    {{ itemValue.label }}
+                                    <br v-if="itemValue.description">
+                                    <small v-if="itemValue.description">{{ itemValue.description }}</small>
+                                </div>
+                                <div class="has-text-gray media-right">
+                                    ({{ itemValue.value }})
+                                </div>
+                            </div>
                             <a 
                                     @click="removeFromSelected(itemValue.value)"
                                     class="wiki-data-value-button--remove">
@@ -129,6 +135,17 @@ export default {
         isLastMetadatum: false,
         isMobileScreen: false
     },
+    data() {
+        return {
+            selected:[],
+            options: [],
+            isLoading: false,
+            searchQuery: '',
+            totalItems: 0,
+            page: 1,
+            activeTab: 0,
+        }
+    },
     computed: {
         wikidataPropertyId() {
             return this.itemMetadatum.metadatum &&
@@ -137,7 +154,7 @@ export default {
                    this.itemMetadatum.metadatum.exposer_mapping['wiki-data']['wikidataPropertyId'] ? this.itemMetadatum.metadatum.exposer_mapping['wiki-data']['wikidataPropertyId'] : false;
         },
         wikidataEndpoint() {
-            return 'https://www.wikidata.org/w/api.php?origin=*&action=wbsearchentities&format=json&language=pt-br&uselang=pt-br&props=claims&claim=' + this.wikidataPropertyId + '&';
+            return 'https://www.wikidata.org/w/api.php?origin=*&action=wbsearchentities&format=json&type=item&language=pt-br&uselang=pt-br&claim=' + this.wikidataPropertyId + '&';
         },
         maxMultipleValues() {
             return (
@@ -155,33 +172,26 @@ export default {
                 return '';
         },
     },
-    data() {
-        return {
-            selected:[],
-            options: [],
-            isLoading: false,
-            searchQuery: '',
-            totalItems: 0,
-            page: 1,
-            activeTab: 0,
-        }
-    },
     created() {
-        if (this.wikiDataPropertyId && this.itemMetadatum.value && (Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true )) {
-            let query = [];
-            
-            query['postin'] = Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ];
-            query['nopaging'] = 1;
-            query['order'] = 'asc';
+        if (
+            this.itemMetadatum.metadatum &&
+            this.itemMetadatum.metadatum.exposer_mapping &&
+            this.itemMetadatum.metadatum.exposer_mapping['wiki-data'] &&
+            this.itemMetadatum.metadatum.exposer_mapping['wiki-data']['wikidataPropertyId'] &&
+            this.itemMetadatum.value &&
+            ( Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true ) 
+        ) {
+            const originalValues = Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ]
+            const originalValuesAsObjects = originalValues.map(aValue => JSON.parse(aValue));
 
-            this.fetchFromWikidata(this.wikidataEndpoint +  + qs.stringify(query) )
+            this.fetchFromWikidata('https://www.wikidata.org/w/api.php?origin=*&action=wbgetentities&format=json&ids=' + originalValuesAsObjects.map(aValue => aValue.value).join('|')  )
                 .then( res => {
-                    if (res.search) {
-                        for (let item of res.search) {
+                    if (res.entities && Object.keys(res.entities).length > 0) {
+                        for (let item of Object.values(res.entities)) {
                             this.selected.push({
-                                label: item.label,
+                                label: item.labels && item.labels['pt-br'] && item.labels['pt-br']['value'] ? item.labels['pt-br']['value'] : item.title,
                                 value: item.id,
-                                description: item.description
+                                description: item.descriptions && item.descriptions['pt-br'] && item.descriptions['pt-br']['value'] ? item.descriptions['pt-br']['value'] : ''
                             });
                         }
                     }
@@ -203,8 +213,7 @@ export default {
                 const data = await res.json();
                 return data;
             } catch(e) {
-                console.log(e, e.response)
-                return [];
+                return e;
             }
         },
         onInput(newSelected) {
@@ -212,7 +221,7 @@ export default {
             this.search('');
 
             this.selected = newSelected;
-            this.$emit('input', newSelected.map((item) => item.value));
+            this.$emit('input', newSelected.map((valueObject) => JSON.stringify(valueObject)));
         },
         onBlur() {
             this.$emit("blur");

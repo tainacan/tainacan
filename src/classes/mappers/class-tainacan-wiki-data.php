@@ -23,15 +23,30 @@ class Wiki_Data extends Mapper {
 	public function __construct() {
 		parent::__construct();
 		$this->init_filters();
+		$this->register_assets();
 		$this->add_meta_form = $this->create_meta_form();
+	}
+
+	public function register_assets() {
+		global $TAINACAN_BASE_URL;
+
+		wp_register_script(
+			'tainacan-wikidata-component-scripts',
+			$TAINACAN_BASE_URL . '/assets/js/tainacan_wikidata_component.js',
+			[ 'tainacan-pages-common-scripts' ],
+			TAINACAN_VERSION
+		);
+		wp_enqueue_script( 'tainacan-wikidata-component-scripts' );
 	}
 
 	public function init_filters() {
 		add_filter( 'tainacan-metadatum-get-metadata-type-object', function ( $object_type, $metadatum ) {
 			$exposer_mapping = $metadatum->get_exposer_mapping();
-			if( isset($exposer_mapping[$this->slug]) && !empty($exposer_mapping[$this->slug]) ) {
-				$object_type->set_component('tainacan-wikidata');
+			
+			if ( isset($exposer_mapping[$this->slug]) && !empty($exposer_mapping[$this->slug]) ) {
+				$object_type->set_component('tainacan-wiki-data');
 			}
+			
 			return $object_type;
 		}, 10, 2 );
 	}
