@@ -59,6 +59,8 @@
                 custom-class="tainacan-modal"
                 :close-button-aria-label="$i18n.get('close')">
             <term-edition-form
+                    :metadatum-id="itemMetadatum.metadatum.id"
+                    :item-id="itemMetadatum.item.id"
                     :is-hierarchical="isHierarchical"
                     :taxonomy-id="taxonomyId"
                     :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
@@ -71,6 +73,8 @@
         <!-- Term creation panel, used on item submission block for a simpler term creation -->
         <transition name="filter-item">
             <term-creation-panel
+                    :metadatum-id="itemMetadatum.metadatum.id"
+                    :item-id="itemMetadatum.item.id"
                     :is-hierarchical="isHierarchical"
                     v-if="isTermCreationPanelOpen"
                     :taxonomy-id="taxonomyId"
@@ -162,7 +166,7 @@
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
 
-            this.allowNewFromOptions = this.allowNew === false ? false : metadata_type_options.allow_new_terms == 'yes';
+            this.allowNewFromOptions = this.allowNew === false ? false : metadata_type_options.allow_new_terms == 'yes' && this.$userCaps.hasCapability('tnc_rep_edit_taxonomies');
 
             this.getTermsId();
         },

@@ -284,7 +284,7 @@ function tainacan_blocks_get_category_icon_script() {
 	wp_enqueue_script(
 		'tainacan-blocks-register-category-icon',
 		$TAINACAN_BASE_URL . '/assets/js/tainacan_blocks_category_icon.js',
-		array('wp-blocks'),
+		array('wp-blocks', 'wp-element'),
 		$TAINACAN_VERSION
 	);
 }

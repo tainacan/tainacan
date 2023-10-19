@@ -142,19 +142,19 @@
                             <span>{{ $i18n.get('label_all_metadata') }}</span>
                         </button>
                         <button 
-                                v-if="!$adminOptions.hideItemEditionDocument"
+                                v-if="shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail"
                                 @click="activeTab = 'document'; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-item" /></span>
                             <span>{{ $i18n.get('label_document_and_thumbnail') }}</span>
                         </button>
                         <button 
-                                v-if="!$adminOptions.hideItemEditionAttachments"
+                                v-if="shouldDisplayItemEditionAttachments"
                                 @click="activeTab = 'attachments'; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-attachments" /></span>
                             <span>{{ $i18n.get('label_all_attachments') }}</span>
                         </button>
                         <button 
-                                v-if="!$adminOptions.hideItemEditionRequiredOnlySwitch"
+                                v-if="!$adminOptions.hideItemEditionRequiredOnlySwitch && (collection && collection.item_enable_metadata_required_filter === 'yes')"
                                 @click="showOnlyRequiredMetadata = true; isMobileSubheaderOpen = false;">
                             <span><i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" /></span>
                             <span>{{ $i18n.get('label_only_required_metadata') }}</span>
@@ -177,8 +177,8 @@
                     <div
                             class="column main-column"
                             :class="
-                                (( (!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
-                                (!$adminOptions.hideItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
+                                (( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
+                                (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginRightForm">
@@ -287,7 +287,7 @@
                                                 class="header-item metadata-navigation"
                                                 :style="$adminOptions.hideItemEditionCollapses ? 'padding-left: 0.35em !important;' : ''">
                                             <b-button
-                                                    v-if="!$adminOptions.hideItemEditionFocusMode && !isMetadataNavigation && !showOnlyRequiredMetadata && !metadataNameFilterString" 
+                                                    v-if="!$adminOptions.hideItemEditionFocusMode && (collection && collection.item_enable_metadata_focus_mode === 'yes') && !isMetadataNavigation && !showOnlyRequiredMetadata && !metadataNameFilterString" 
                                                     @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
                                                     class="collapse-all has-text-secondary"
                                                     size="is-small">
@@ -340,7 +340,7 @@
                                         </span>
 
                                         <b-switch
-                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && itemMetadata && itemMetadata.length > 3"
+                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && (collection && collection.item_enable_metadata_required_filter === 'yes') && itemMetadata && itemMetadata.length > 3"
                                                 id="tainacan-switch-required-metadata"
                                                 :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
                                                 size="is-small"
@@ -349,7 +349,7 @@
                                         </b-switch>
 
                                         <b-field 
-                                                v-if="!isMetadataNavigation && itemMetadata && itemMetadata.length > 5"
+                                                v-if="!isMetadataNavigation && (collection && collection.item_enable_metadata_searchbar === 'yes') && itemMetadata && itemMetadata.length > 5"
                                                 class="header-item metadata-name-search">
                                             <b-input
                                                     v-if="!isMobileScreen || openMetadataNameFilter"
@@ -433,7 +433,7 @@
                                                             :item-metadatum="itemMetadatum"
                                                             :metadata-name-filter-string="metadataNameFilterString"
                                                             :is-collapsed="metadataCollapses[index]"
-                                                            :hide-collapses="$adminOptions.hideItemEditionCollapses || isMetadataNavigation"
+                                                            :hide-collapses="$adminOptions.hideItemEditionCollapses || isMetadataNavigation || (collection && collection.item_enable_metadata_collapses === 'no')"
                                                             :hide-metadata-types="hideMetadataTypes"
                                                             :hide-help-buttons="false"
                                                             :help-info-bellow-label="false"
@@ -495,6 +495,7 @@
                                     <item-document-edition-form 
                                             :item="item"
                                             :form="form"
+                                            :collection="collection"
                                             @onSetDocument="setDocument"
                                             @onRemoveDocument="removeDocument"
                                             @onSetFileDocument="setFileDocument"
@@ -503,6 +504,7 @@
                                     <item-thumbnail-edition-form 
                                             :item="item"
                                             :form="form"
+                                            :collection="collection"
                                             :is-loading="isLoading"
                                             @onDeleteThumbnail="deleteThumbnail"
                                             @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
@@ -511,7 +513,7 @@
 
                                 <!-- Attachments on mobile modal -->
                                 <div    
-                                        v-if="activeTab === 'attachments' && $adminOptions.itemEditionAttachmentsInsideTabs"
+                                        v-if="activeTab === 'attachments' && shouldDisplayItemEditionAttachments && $adminOptions.itemEditionAttachmentsInsideTabs"
                                         class="tab-item"
                                         role="tabpanel"
                                         aria-labelledby="attachments-tab-label"
@@ -519,6 +521,7 @@
                                     <item-attachments-edition-form
                                             :item="item"
                                             :form="form"
+                                            :collection="collection"
                                             :is-loading="isLoading"
                                             :total-attachments="totalAttachments"
                                             :should-load-attachments="shouldLoadAttachments"
@@ -532,8 +535,8 @@
                     </div>
 
                     <div 
-                            v-if="( (!$adminOptions.hideItemEditionDocument || !$adminOptions.hideItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
-                                (!$adminOptions.hideItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)"
+                            v-if="( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
+                                (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)"
                             class="column is-5">
                 
                         <div 
@@ -550,33 +553,37 @@
 
                             <!-- Document -------------------------------- -->
                             <item-document-edition-form 
-                                    v-if="!$adminOptions.itemEditionDocumentInsideTabs"
+                                    v-if="shouldDisplayItemEditionDocument && !$adminOptions.itemEditionDocumentInsideTabs"
                                     :item="item"
                                     :form="form"
+                                    :collection="collection"
                                     @onSetDocument="setDocument"
                                     @onRemoveDocument="removeDocument"
                                     @onSetFileDocument="setFileDocument"
                                     @onSetTextDocument="setTextDocument"
                                     @onSetURLDocument="setURLDocument" />
-                            <hr>
+
+                            <hr v-if="shouldDisplayItemEditionDocument && shouldDisplayItemEditionThumbnail">
 
                             <!-- Thumbnail -------------------------------- -->
                             <item-thumbnail-edition-form 
-                                    v-if="!$adminOptions.itemEditionDocumentInsideTabs"
+                                    v-if="shouldDisplayItemEditionThumbnail && !$adminOptions.itemEditionDocumentInsideTabs"
                                     :item="item"
                                     :form="form"
+                                    :collection="collection"
                                     :is-loading="isLoading"
                                     @onDeleteThumbnail="deleteThumbnail"
                                     @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
                                     @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
 
-                            <hr v-if="!$adminOptions.itemEditionAttachmentsInsideTabs || hasEndLeftForm">
+                            <hr v-if="(shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs) || hasEndLeftForm">
 
                             <!-- Attachments -->
                             <item-attachments-edition-form
-                                    v-if="!$adminOptions.itemEditionAttachmentsInsideTabs"
+                                    v-if="shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs"
                                     :item="item"
                                     :form="form"
+                                    :collection="collection"
                                     :is-loading="isLoading"
                                     :total-attachments="totalAttachments"
                                     :should-load-attachments="shouldLoadAttachments"
@@ -874,18 +881,18 @@ export default {
                 name: this.$i18n.get('metadata'),
                 total: this.itemMetadata.length
             }];
-            if ( this.$adminOptions.itemEditionDocumentInsideTabs && (!this.$adminOptions.hideItemEditionDocument || !this.$adminOptions.hideItemEditionThumbnail) ) {
+            if ( this.$adminOptions.itemEditionDocumentInsideTabs && (this.shouldDisplayItemEditionDocument || this.shouldDisplayItemEditionThumbnail) ) {
                 pageTabs.push({
                     slug: 'document',
                     icon: 'item',
-                    name: this.$i18n.get('label_document')
+                    name: this.collection && this.collection.item_document_label ? this.collection.item_document_label : this.$i18n.get('label_document')
                 });
             }
-            if ( this.$adminOptions.itemEditionAttachmentsInsideTabs && !this.$adminOptions.hideItemEditionAttachments ) {
+            if ( this.$adminOptions.itemEditionAttachmentsInsideTabs && this.shouldDisplayItemEditionAttachments ) {
                 pageTabs.push({
                     slug: 'attachments',
                     icon: 'attachments',
-                    name: this.$i18n.get('label_attachments'),
+                    name: this.collection && this.collection.item_attachment_label ? this.collection.item_attachment_label : this.$i18n.get('label_attachments'),
                     total: this.totalAttachments
                 });
             }
@@ -903,6 +910,21 @@ export default {
             if (!this.isMetadataNavigation || !this.itemMetadata[this.focusedMetadatum])
                 return false;
             return this.itemMetadata[this.focusedMetadatum].metadatum && this.itemMetadata[this.focusedMetadatum].metadatum.metadata_type === 'Tainacan\\Metadata_Types\\Compound';
+        },
+        shouldDisplayItemEditionDocument() {
+            return !this.$adminOptions.hideItemEditionDocument && 
+                ( this.collection && this.collection.item_enabled_document_types && (
+                    ( this.collection.item_enabled_document_types['attachment'] && this.collection.item_enabled_document_types['attachment']['enabled'] === 'yes' ) || 
+                    ( this.collection.item_enabled_document_types['text'] && this.collection.item_enabled_document_types['text']['enabled'] === 'yes' ) || 
+                    ( this.collection.item_enabled_document_types['url'] && this.collection.item_enabled_document_types['url']['enabled'] === 'yes' )
+                )
+            );
+        },
+        shouldDisplayItemEditionThumbnail() {
+            return !this.$adminOptions.hideItemEditionThumbnail && (this.collection && this.collection.item_enable_thumbnail === 'yes');
+        },
+        shouldDisplayItemEditionAttachments() {
+            return !this.$adminOptions.hideItemEditionAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');
         }
     },
     watch: {

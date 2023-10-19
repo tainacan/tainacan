@@ -191,7 +191,7 @@ class Private_Files {
 			$upload_dir = wp_get_upload_dir();
 			$base_upload_url = preg_replace('/^https?:\/\//', '', $upload_dir['baseurl']);
 
-			$requested_uri = ($_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
+			$requested_uri = ($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
 
 			if ( strpos($requested_uri, $base_upload_url) === false ) {
 				// Not uploads
@@ -228,7 +228,7 @@ class Private_Files {
 			if ( !$existing_file && \file_exists( $prefixed_both ) ) {
 				$existing_file = $prefixed_both;
 			}
-			echo "-----------> $file <br> $prefixed_file <br> $prefixed_collection $prefixed_both: $existing_file";
+
 			if ($existing_file) {
 
 				$item = \Tainacan\Repositories\Items::get_instance()->fetch( (int) $item_id, (int) $collection_id );

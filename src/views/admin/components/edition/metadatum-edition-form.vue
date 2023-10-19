@@ -610,6 +610,18 @@
                 height: 1px;
                 background-color: var(--tainacan-gray2);
                 margin-left: 42px;
+                transition: background-color 0.2s ease, height 0.2s ease;
+            }
+
+            &:hover {
+                .icon,
+                strong {
+                    color: var(--tainacan-secondary);
+                }
+                hr {
+                    background-color: var(--tainacan-primary);
+                    height: 2px;
+                }
             }
         }
 
