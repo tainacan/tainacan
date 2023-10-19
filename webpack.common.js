@@ -11,6 +11,8 @@ module.exports = {
         tainacan_blocks_category_icon: './src/views/gutenberg-blocks/js/tainacan-blocks-category-icon.js',
         tainacan_blocks_query_variations: './src/views/gutenberg-blocks/js/tainacan-blocks-query-variations.js',
 
+        tainacan_wikidata_component: './src/classes/mappers/tainacan-wiki-data-component.js',
+
         block_terms_list: './src/views/gutenberg-blocks/blocks/terms-list/index.js',
         block_items_list: './src/views/gutenberg-blocks/blocks/items-list/index.js',
         block_dynamic_items_list: './src/views/gutenberg-blocks/blocks/dynamic-items-list/index.js',
