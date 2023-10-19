@@ -79,7 +79,12 @@ export default {
         ]),
         loadMappers() {
             this.isLoading = true;
-            this.fetchMappers()
+            let params = {}
+            
+            if (this.$route.params.collectionId !== undefined)
+                params.collectionId = this.$route.params.collectionId;
+
+            this.fetchMappers(params)
                 .then(() => {
                     this.isLoading = false;
                 })

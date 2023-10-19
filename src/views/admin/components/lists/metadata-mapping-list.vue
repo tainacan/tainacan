@@ -262,7 +262,6 @@ export default {
         ...mapActions('metadata', [
             'fetchMetadata',
             'cleanMetadata',
-            'fetchMappers',
             'updateMapper',
         ]),
         ...mapGetters('metadata',[

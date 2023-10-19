@@ -424,9 +424,14 @@ export const fetchMapper = ({commit}, { collectionId, mapperSlug }) => {
     });
 }
 
-export const fetchMappers = ({commit}) => {
+export const fetchMappers = ({commit}, { collectionId }) => {
+    let endpoint = '/mappers';
+
+    if ( collectionId )
+        endpoint = '/collection/' + collectionId + endpoint;
+
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/mappers')
+        axios.tainacan.get(endpoint)
             .then((res) => {
                 let mappers = res.data;
                 commit('setMappers', mappers);
