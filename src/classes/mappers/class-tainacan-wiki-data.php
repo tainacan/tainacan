@@ -22,7 +22,18 @@ class Wiki_Data extends Mapper {
 	
 	public function __construct() {
 		parent::__construct();
+		$this->init_filters();
 		$this->add_meta_form = $this->create_meta_form();
+	}
+
+	public function init_filters() {
+		add_filter( 'tainacan-metadatum-get-metadata-type-object', function ( $object_type, $metadatum ) {
+			$exposer_mapping = $metadatum->get_exposer_mapping();
+			if( isset($exposer_mapping[$this->slug]) && !empty($exposer_mapping[$this->slug]) ) {
+				$object_type->set_component('tainacan-wikidata');
+			}
+			return $object_type;
+		}, 10, 2 );
 	}
 
 	public function create_meta_form() {
