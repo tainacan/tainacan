@@ -217,7 +217,7 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 				'mapper' => [],
 				'mappings'=>[]
 			];
-			if (count($body['mapping']) > 0) {
+			if (isset($body['mapping']) && count($body['mapping']) > 0) {
 				foreach ($body['mapping'] as $metadatum_mapper) {
 					$metadatum_mapper['metadatum_id'] = intval($metadatum_mapper['metadatum_id']);
 					if (is_array($metadatum_mapper['mapper_metadata'])) {
@@ -274,6 +274,12 @@ class REST_Metadatum_Mappers_Controller extends REST_Controller {
 					$collection->set_disabled_mappers($disabled_mappers);
 					if ($collection->validate()) {
 						$collections_repository->update($collection);
+					} else {
+						return new \WP_REST_Response([
+							'error_message' => __('One or more values are invalid.', 'tainacan'),
+							'errors'        => $collection->get_errors(),
+							'mapper'    => $this->prepare_item_for_response($mapper, $request)
+						], 400);
 					}
 					$response['disabled'] = $disabled;
 				}

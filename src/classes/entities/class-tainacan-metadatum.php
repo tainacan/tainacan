@@ -193,7 +193,7 @@ class Metadatum extends Entity {
 
 		$object_type = new $class_name();
 		$object_type->set_options( $this->get_mapped_property('metadata_type_options') );
-		return $object_type;
+		return apply_filters("tainacan-metadatum-get-metadata-type-object", $object_type, $this);
 	}
 
 	/**
