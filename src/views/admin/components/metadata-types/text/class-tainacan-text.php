@@ -35,6 +35,10 @@ class Text extends Metadata_Type {
             'display_suggestions' => [
                 'title' => __( 'Display suggestions', 'tainacan' ),
                 'description' => __( 'Show an autocomplete input suggesting values inserted previously on other items for this metadatum.', 'tainacan' ),
+			],
+			'mask' => [
+                'title' => __( 'Mask input', 'tainacan' ),
+                'description' => __( 'Define a pattern that will be used to mask the input.', 'tainacan' ),
             ]
         ];
     }

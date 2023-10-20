@@ -14,6 +14,18 @@
                     :title="$i18n.getHelperTitle('tainacan-text', 'display_suggestions')"
                     :message="$i18n.getHelperMessage('tainacan-text', 'display_suggestions')"/>
         </b-field>
+        <b-field :addons="false">
+            <label class="label is-inline">
+                {{ $i18n.getHelperTitle('tainacan-text', 'mask') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('metadata', 'mask')"
+                        :message="$i18n.getHelperMessage('metadata', 'mask')" />
+            </label>
+            <b-input
+                    v-model="mask"
+                    name="mask"
+                    @input="onUpdateMask"/>
+        </b-field>
     </section>
 </template>
 
@@ -24,16 +36,22 @@
         },
         data() {
             return {
-                displaySuggestions: String
+                displaySuggestions: String,
+                mask: String
             }
         },
         created() {
             this.displaySuggestions = this.value && this.value.display_suggestions ? this.value.display_suggestions : 'no';
+            this.mask = this.value && this.value.mask ? this.value.mask : '';
         },
         methods: {
             onUpdateDisplaySuggestions(value) {
                 this.displaySuggestions = value;
-                this.$emit('input', { display_suggestions: value });
+                this.$emit('input', { display_suggestions: value, mask: this.mask });
+            },
+            onUpdateMask(value) {
+                this.mask = value;
+                this.$emit('input', { display_suggestions: this.displaySuggestions, mask: value });
             }
         }
     }
