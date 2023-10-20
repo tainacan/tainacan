@@ -196,7 +196,8 @@
                                             'b-checkbox checkbox': isCheckbox,
                                             'b-radio radio': !isCheckbox, 
                                             'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
-                                        }" >
+                                        }" 
+                                        @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null">
                                     <input 
                                             :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
                                             @input="updateLocalSelection($event.target.value)"
@@ -305,8 +306,8 @@
                 </div>
             </b-tab-item>
         </b-tabs>
-        <!-- <pre>{{ hierarchicalPath }}</pre>
-        <pre>{{ finderColumns }}</pre> -->
+        <!-- <pre>{{ hierarchicalPath }}</pre> -->
+        <!-- <pre>{{ finderColumns }}</pre> -->
         <!--<pre>{{ totalRemaining }}</pre>-->
         <!-- <pre>{{ selected }}</pre> -->
         <!--<pre>{{ options }}</pre>-->
