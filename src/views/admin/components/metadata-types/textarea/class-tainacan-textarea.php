@@ -15,6 +15,7 @@ class Textarea extends Metadata_Type {
         parent::__construct();
         $this->set_primitive_type('long_string');
 		$this->set_component('tainacan-textarea');
+		$this->set_form_component('tainacan-form-textarea');
 		$this->set_name( __('Textarea', 'tainacan') );
 		$this->set_description( __('A textarea with multiple lines', 'tainacan') );
 		$this->set_preview_template('
@@ -25,6 +26,18 @@ class Textarea extends Metadata_Type {
 			</div>
 		');
 	
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function get_form_labels(){
+		return [
+			'maxlength' => [
+				'title' => __( 'Maximum of characters', 'tainacan' ),
+				'description' => __( 'Limits the character input to a maximum value an displays a counter.', 'tainacan' ),
+			]
+		];
 	}
 	
 	public function get_multivalue_prefix() {

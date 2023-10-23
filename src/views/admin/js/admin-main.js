@@ -48,6 +48,7 @@ import User from '../components/metadata-types/user/User.vue';
 import GeoCoordinate from '../components/metadata-types/geocoordinate/GeoCoordinate.vue'
 
 import FormText from '../components/metadata-types/text/FormText.vue';
+import FormTextarea from '../components/metadata-types/textarea/FormTextarea.vue';
 import FormRelationship from '../components/metadata-types/relationship/FormRelationship.vue';
 import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue';
 import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.vue';
@@ -202,6 +203,7 @@ export default (element) => {
 
             /* Metadata Option forms */
             Vue.component('tainacan-form-text', FormText);
+            Vue.component('tainacan-form-textarea', FormTextarea);
             Vue.component('tainacan-form-relationship', FormRelationship);
             Vue.component('tainacan-form-taxonomy', FormTaxonomy);
             Vue.component('tainacan-form-selectbox', FormSelectbox);
