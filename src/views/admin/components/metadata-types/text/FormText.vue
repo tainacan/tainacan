@@ -18,13 +18,14 @@
             <label class="label is-inline">
                 {{ $i18n.getHelperTitle('tainacan-text', 'mask') }}
                 <help-button
-                        :title="$i18n.getHelperTitle('metadata', 'mask')"
-                        :message="$i18n.getHelperMessage('metadata', 'mask')" />
+                        :title="$i18n.getHelperTitle('tainacan-text', 'mask')"
+                        :message="$i18n.getHelperMessage('tainacan-text', 'mask')" />
             </label>
             <b-input
-                    v-model="mask"
+                    :value="displaySuggestions === 'yes' ? '' : mask"
+                    :disabled="displaySuggestions === 'yes'"
                     name="mask"
-                    @input="onUpdateMask"/>
+                    @input="onUpdateMask" />
         </b-field>
     </section>
 </template>
@@ -47,7 +48,7 @@
         methods: {
             onUpdateDisplaySuggestions(value) {
                 this.displaySuggestions = value;
-                this.$emit('input', { display_suggestions: value, mask: this.mask });
+                this.$emit('input', { display_suggestions: value, mask: value == 'yes' ? '' : this.mask });
             },
             onUpdateMask(value) {
                 this.mask = value;
