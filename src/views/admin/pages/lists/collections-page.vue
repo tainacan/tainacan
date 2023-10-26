@@ -102,6 +102,24 @@
                 </b-field>
             </template>
 
+            <!-- Author filtering options ----  -->
+            <b-field class="header-item">
+                <label class="label">{{ $i18n.get('show') }}&nbsp;</label>
+                <b-select
+                        class="author-filter-select"
+                        :disabled="collections.length <= 0 && isLoading"
+                        @input="onChangeAuthorFilter($event)"
+                        :value="authorFilter"
+                        :label="$i18n.get('show')">
+                    <option
+                            v-for="(option, index) in authorFilterOptions"
+                            :value="option.value"
+                            :key="index">
+                        {{ option.label }}
+                    </option>
+                </b-select>
+            </b-field>
+
             <!-- Sorting options ----  -->
             <b-field class="header-item">
                 <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
@@ -372,10 +390,16 @@ export default {
             order: 'desc',
             orderBy: 'date',
             searchQuery: '',
+            authorFilter: '',
             sortingOptions: [
                 { label: this.$i18n.get('label_title'), value: 'title' },
                 { label: this.$i18n.get('label_creation_date'), value: 'date' },
                 { label: this.$i18n.get('label_modification_date'), value: 'modified' }
+            ],
+            authorFilterOptions: [
+                { label: this.$i18n.get('label_all_collections'), value: '' },
+                { label: this.$i18n.get('label_collections_created_by_me' ), value: 'current-author' },
+                // { label: this.$i18n.get('label_collections_that_i_can_edit'), value: 'can-edit' }
             ],
             maxCollectionsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
         }
@@ -483,6 +507,19 @@ export default {
             this.orderBy = newOrderBy;
             this.loadCollections();
         },
+        onChangeAuthorFilter(newAuthorFilter) {
+            if (newAuthorFilter != this.authorFilter) { 
+                this.$userPrefs.set('collections_author_filter', newAuthorFilter)
+                    .then((newAuthorFilter) => {
+                        this.authorFilter = newAuthorFilter;
+                    })
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for collections author filter")
+                    });
+            }
+            this.authorFilter = newAuthorFilter;
+            this.loadCollections();
+        },
         onChangeCollectionsPerPage(value) {
             
             if (value != this.collectionsPerPage) {
@@ -521,6 +558,7 @@ export default {
                 orderby: this.orderBy,
                 search: this.searchQuery,
                 collectionTaxonomies: this.collectionTaxonomies,
+                authorid: this.authorFilter === 'current-author' && tainacan_plugin.user_data && tainacan_plugin.user_data.ID ? tainacan_plugin.user_data.ID : ''
             })
             .then((res) => {
                 this.isLoading = false;

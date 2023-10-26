@@ -94,6 +94,7 @@ return apply_filters( 'tainacan-i18n', [
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
 	'add'	                                    	 => __( 'Add', 'tainacan' ),
+	'show'	                                    	 => __( 'Show', 'tainacan' ),
 
 	// Wordpress Comments Status
 	'comments_status_open'                           => __( 'Open', 'tainacan' ),
@@ -296,6 +297,8 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: 'Published' here refers to the sum of public and private items, not including draft or trashed ones. The are visible to those with permission */
 	'label_all_items'                      			 => __( 'All items', 'tainacan' ),
 	'label_all_collections'                          => __( 'All collections', 'tainacan' ),
+	'label_collections_created_by_me'                => __( 'Collections created by me', 'tainacan' ),
+	'label_collections_that_i_can_edit'              => __( 'Collections that I can edit', 'tainacan' ),
 	'label_all_taxonomies'                           => __( 'All taxonomies', 'tainacan' ),
 	'label_bulk_actions'                             => __( 'Bulk actions', 'tainacan' ),
 	'label_delete_selected_collections'              => __( 'Delete selected collections', 'tainacan' ),

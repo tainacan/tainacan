@@ -146,7 +146,7 @@ export const deleteItem = ({ commit }, { itemId, isPermanently }) => {
     });
 };
  
-export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby, search, collectionTaxonomies }) => {
+export const fetchCollections = ({commit} , { page, collectionsPerPage, status, contextEdit, order, orderby, search, collectionTaxonomies, authorid }) => {
     
     return new Promise((resolve, reject) => {
         let endpoint = '/collections?paged='+page+'&perpage='+collectionsPerPage;
@@ -186,6 +186,9 @@ export const fetchCollections = ({commit} , { page, collectionsPerPage, status, 
             if (taxQuery['taxquery'].length)
                 endpoint = endpoint + '&' + qs.stringify(taxQuery);
         }
+
+        if (authorid != '' && authorid != undefined)
+            endpoint = endpoint + '&authorid=' + authorid;
 
         axios.tainacan.get(endpoint)
             .then(res => {
