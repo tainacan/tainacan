@@ -9,7 +9,9 @@
                 <span>
                     <b-checkbox 
                             @click.native="selectAllCollectionsOnPage()" 
-                            :value="allCollectionsOnPageSelected">{{ $i18n.get('label_select_all_collections_page') }}</b-checkbox>
+                            :native-value="allCollectionsOnPageSelected">
+                        {{ $i18n.get('label_select_all_collections_page') }}
+                    </b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">

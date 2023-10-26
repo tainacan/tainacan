@@ -142,6 +142,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
             'taxonomies_order_by': 'title',
             'collections_order': 'desc',
             'collections_order_by': 'date',
+            'collections_author_filter': '',
             'map_view_mode_selected_geocoordinate_metadatum': 0
         },
         init() {
