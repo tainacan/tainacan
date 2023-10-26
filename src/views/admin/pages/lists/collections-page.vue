@@ -106,20 +106,17 @@
             <b-field   
                     id="collections-page-author-filter"
                     class="header-item">
-                <label class="label">{{ $i18n.get('show') }}&nbsp;</label>
-                <b-select
-                        class="author-filter-select"
+                <label class="label">{{ $i18n.get('label_show_only_created_by_me') }}&nbsp;</label>
+                <b-switch
+                        size="is-small"
+                        class="author-filter-switch"
                         :disabled="collections.length <= 0 && isLoading"
                         @input="onChangeAuthorFilter($event)"
                         :value="authorFilter"
-                        :label="$i18n.get('show')">
-                    <option
-                            v-for="(option, index) in authorFilterOptions"
-                            :value="option.value"
-                            :key="index">
-                        {{ option.label }}
-                    </option>
-                </b-select>
+                        :true-value="'current-author'"
+                        :false-value="''"
+                        :label="$i18n.get('label_show_only_created_by_me')">
+                </b-switch>
             </b-field>
 
             <!-- Sorting options ----  -->
@@ -404,11 +401,6 @@ export default {
                 { label: this.$i18n.get('label_creation_date'), value: 'date' },
                 { label: this.$i18n.get('label_modification_date'), value: 'modified' }
             ],
-            authorFilterOptions: [
-                { label: this.$i18n.get('label_all_collections'), value: '' },
-                { label: this.$i18n.get('label_collections_created_by_me' ), value: 'current-author' },
-                // { label: this.$i18n.get('label_collections_that_i_can_edit'), value: 'can-edit' }
-            ],
             maxCollectionsPerPage: tainacan_plugin.api_max_items_per_page ? Number(tainacan_plugin.api_max_items_per_page) : 96
         }
     },
@@ -646,9 +638,11 @@ export default {
             .label {
                 font-size: 0.875em;
                 font-weight: normal;
-                margin-top: 5px;
+                margin-top: 2px;
                 margin-bottom: 2px;
                 cursor: default;
+                display: flex;
+                align-items: center;
             }
 
             &:not(:first-child) {
@@ -682,7 +676,9 @@ export default {
                 font-size: 1.125em !important;
                 height: 1.75em
             }
-
+            .collections-page-author-filter {
+                display: flex;
+            }
             .dropdown-menu {
                 display: block;
 

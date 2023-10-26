@@ -297,7 +297,7 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: 'Published' here refers to the sum of public and private items, not including draft or trashed ones. The are visible to those with permission */
 	'label_all_items'                      			 => __( 'All items', 'tainacan' ),
 	'label_all_collections'                          => __( 'All collections', 'tainacan' ),
-	'label_collections_created_by_me'                => __( 'Collections created by me', 'tainacan' ),
+	'label_show_only_created_by_me'                	 => __( 'Show only created by me', 'tainacan' ),
 	'label_collections_that_i_can_edit'              => __( 'Collections that I can edit', 'tainacan' ),
 	'label_all_taxonomies'                           => __( 'All taxonomies', 'tainacan' ),
 	'label_bulk_actions'                             => __( 'Bulk actions', 'tainacan' ),
