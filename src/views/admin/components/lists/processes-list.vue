@@ -517,6 +517,10 @@
 
     .sub-header {
       @include logs-container();
+
+      .header-item {
+        min-height: 1.875em;
+      }
     }
 
     .selection-control {

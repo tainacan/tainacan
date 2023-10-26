@@ -103,7 +103,9 @@
             </template>
 
             <!-- Author filtering options ----  -->
-            <b-field class="header-item">
+            <b-field   
+                    id="collections-page-author-filter"
+                    class="header-item">
                 <label class="label">{{ $i18n.get('show') }}&nbsp;</label>
                 <b-select
                         class="author-filter-select"
@@ -121,7 +123,9 @@
             </b-field>
 
             <!-- Sorting options ----  -->
-            <b-field class="header-item">
+            <b-field 
+                    id="collections-page-sorting-options"
+                    class="header-item">
                 <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                 <b-dropdown
                         :mobile-modal="true"
@@ -190,7 +194,9 @@
             </b-field>
 
             <!-- Textual Search -------------->
-            <b-field class="header-item">
+            <b-field 
+                    id="collection-page-search"
+                    class="header-item">
                 <b-input 
                         :placeholder="$i18n.get('instruction_search')"
                         type="search"
@@ -270,6 +276,8 @@
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
                             <p v-else>{{ $i18n.get('info_no_collections_' + status) }}</p>
+                            <p v-if="searchQuery">{{ $i18n.get('info_try_empting_the_textual_search') }}</p>
+                            <p v-if="authorFilter !== '' && !searchQuery">{{ $i18n.get('info_try_selecting_all_collections_in_filter') }}</p>
                             <div v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         id="collection-creation-options-dropdown"
@@ -463,6 +471,13 @@ export default {
             this.$userPrefs.set('collections_order_by', 'date');
         }
 
+        if (this.authorFilter != this.$userPrefs.get('collections_author_filter'))
+            this.authorFilter = this.$userPrefs.get('collections_author_filter');
+        if (this.authorFilter === undefined) {
+            this.authorFilter = '';
+            this.$userPrefs.set('collections_author_filter', '');
+        }
+
         this.loadCollections();
     },
     methods: {
@@ -606,20 +621,20 @@ export default {
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        min-height: $header-height;
+        min-height: 2.5em;
+        padding: 0.5em 0;
         height: auto;
-        padding-left: 0;
-        padding-right: 0;
         border-bottom: 1px solid #ddd;
         display: inline-flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         width: 100%;
+        gap: 4px;
 
         .header-item {
             margin-bottom: 0 !important;
-            min-height: 2em;
+            min-height: 1.875em;
 
             &:first-child {
                 margin-right: auto;
@@ -698,7 +713,6 @@ export default {
         }
 
         @media screen and (max-width: 769px) {
-            height: 120px;
             margin-top: -0.5em;
             padding-top: 0.9em;
 
