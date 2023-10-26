@@ -115,8 +115,8 @@
                         :value="authorFilter"
                         :true-value="'current-author'"
                         :false-value="''"
-                        :label="$i18n.get('label_show_only_created_by_me')">
-                </b-switch>
+                        :label="$i18n.get('label_show_only_created_by_me')" />
+                
             </b-field>
 
             <!-- Sorting options ----  -->
