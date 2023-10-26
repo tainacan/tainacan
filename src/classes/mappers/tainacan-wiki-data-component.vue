@@ -182,7 +182,14 @@ export default {
             ( Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value.length > 0 : true ) 
         ) {
             const originalValues = Array.isArray( this.itemMetadatum.value ) ? this.itemMetadatum.value : [ this.itemMetadatum.value ]
-            const originalValuesAsObjects = originalValues.map(aValue => JSON.parse(aValue));
+            const originalValuesAsObjects = originalValues.map(aValue => {
+                try {
+                    return JSON.parse(aValue);
+                } catch(e) {
+                    console.log("Error trying to convert value to JSON: ", aValue);
+                    return { value: aValue };
+                }
+            });
 
             this.fetchFromWikidata('https://www.wikidata.org/w/api.php?origin=*&action=wbgetentities&format=json&ids=' + originalValuesAsObjects.map(aValue => aValue.value).join('|')  )
                 .then( res => {
@@ -331,6 +338,7 @@ export default {
         margin-top: calc(-1 * (0.5em + 1px));
         margin-bottom: calc(-1 * (0.5em + 1px));
         display: flex;
+        flex-direction: column;
         overflow: auto;
         padding: 12px;
         max-height: 40vh;
@@ -348,10 +356,21 @@ export default {
     /deep/ .tainacan-wiki-data-results-container .tainacan-wiki-data-group .tainacan-wiki-data-metadatum .tainacan-wiki-data-metadatum-header {
         padding-right: 64px;
     }
-    /deep/ .tainacan-wiki-data-results-container .tainacan-wiki-data-group .tainacan-wiki-data-metadatum .tainacan-wiki-data-metadatum-header .label{
+    /deep/ .tainacan-wiki-data-results-container .tainacan-wiki-data-group .tainacan-wiki-data-metadatum .tainacan-wiki-data-metadatum-header .label {
         font-size: 0.875em;
     }
 
+    /deep/ .tainacan-wiki-data-results-container .tainacan-wiki-data-group .wiki-data-value-button--remove {
+        position: absolute;
+        top: 0px;
+        right: 4px;
+        background-color: var(--tainacan-white);
+        border-radius: 100%;
+        padding: 2px;
+    }
+    /deep/ .tainacan-wiki-data-results-container .tainacan-wiki-data-group .media-right {
+        padding-right: 36px;
+    }
     /deep/ .tainacan-wiki-data-results-container .tainacan-wiki-data-group .tainacan-wiki-data-metadatum >div>.multivalue-separator {
         display: block;
         max-height: 1px;
