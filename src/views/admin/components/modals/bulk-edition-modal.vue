@@ -213,7 +213,7 @@
                                 :style="{
                                     marginRight: !bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting ? '-7.4px': 0
                                 }"
-                                class="field buttons-r-bulk">
+                                class="field bulk-last-field">
 
                             <button
                                     v-if="!bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting"
@@ -643,7 +643,7 @@
                 padding-left: 0 !important;
             }
 
-            .buttons-r-bulk {
+            .bulk-last-field {
                 margin-left: 0 !important;
                 justify-content: center !important;
             }
@@ -786,9 +786,26 @@
             &:not(:first-child) {
                 padding-left: 13px;
             }
+
+            /deep/ .is-special-hidden-for-mobile,
+            /deep/ .is-special-hidden-for-mobile:focus,
+            /deep/ .is-special-hidden-for-mobile:focus-visible {
+                opacity: 0;
+                width: 0;
+                height: 0 !important;
+                min-height: 0;
+                min-width: 0;
+                padding: 0 !important;
+                line-height: 0px !important;
+                border: none !important;
+                border-color: transparent !important;
+                border-width: 0px !important;
+                font-size: 0px !important;
+                display: block !important;
+            }
         }
 
-        .buttons-r-bulk {
+        .bulk-last-field {
             display: flex;
             align-items: center;
             height: 32px;

@@ -48,41 +48,43 @@
             </a>
         </div>
 
-        <!-- Term creation modal, used on admin for a complete term creation -->
-        <b-modal
-                v-model="isTermCreationModalOpen"
-                :width="768"
-                trap-focus
-                aria-role="dialog"
-                aria-modal
-                :can-cancel="['outside', 'escape']"
-                custom-class="tainacan-modal"
-                :close-button-aria-label="$i18n.get('close')">
-            <term-edition-form
-                    :metadatum-id="itemMetadatum.metadatum.id"
-                    :item-id="itemMetadatum.item.id"
-                    :is-hierarchical="isHierarchical"
-                    :taxonomy-id="taxonomyId"
-                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
-                    :is-term-insertion-flow="true"
-                    @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
-                    @onEditionCanceled="() => $console.log('Editing canceled')"
-                    @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
-        </b-modal>
+        <template v-if="allowNew && itemMetadatum.item">
+            <!-- Term creation modal, used on admin for a complete term creation -->
+            <b-modal
+                    v-model="isTermCreationModalOpen"
+                    :width="768"
+                    trap-focus
+                    aria-role="dialog"
+                    aria-modal
+                    :can-cancel="['outside', 'escape']"
+                    custom-class="tainacan-modal"
+                    :close-button-aria-label="$i18n.get('close')">
+                <term-edition-form
+                        :metadatum-id="itemMetadatum.metadatum.id"
+                        :item-id="itemMetadatum.item.id"
+                        :is-hierarchical="isHierarchical"
+                        :taxonomy-id="taxonomyId"
+                        :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                        :is-term-insertion-flow="true"
+                        @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
+                        @onEditionCanceled="() => $console.log('Editing canceled')"
+                        @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+            </b-modal>
 
-        <!-- Term creation panel, used on item submission block for a simpler term creation -->
-        <transition name="filter-item">
-            <term-creation-panel
-                    :metadatum-id="itemMetadatum.metadatum.id"
-                    :item-id="itemMetadatum.item.id"
-                    :is-hierarchical="isHierarchical"
-                    v-if="isTermCreationPanelOpen"
-                    :taxonomy-id="taxonomyId"
-                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
-                    @onEditionFinished="($event) => addTermToBeCreated($event)"
-                    @onEditionCanceled="() => isTermCreationPanelOpen = false"
-                    @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
-        </transition>
+            <!-- Term creation panel, used on item submission block for a simpler term creation -->
+            <transition name="filter-item">
+                <term-creation-panel
+                        :metadatum-id="itemMetadatum.metadatum.id"
+                        :item-id="itemMetadatum.item.id"
+                        :is-hierarchical="isHierarchical"
+                        v-if="isTermCreationPanelOpen"
+                        :taxonomy-id="taxonomyId"
+                        :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                        @onEditionFinished="($event) => addTermToBeCreated($event)"
+                        @onEditionCanceled="() => isTermCreationPanelOpen = false"
+                        @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+            </transition>
+        </template>
     </div>
 </template>
 
@@ -173,7 +175,7 @@
         methods: {
             getTermsId() {
                 let values = [];
-                
+
                 if (this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input') {
                     values = this.value.map(term => term.id).filter(term => term !== undefined);
                     this.valueComponent = (values.length > 0 && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple === 'no') ? values[0] : values;

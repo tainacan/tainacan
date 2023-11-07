@@ -82,6 +82,8 @@
         created() {
             if (this.value && this.value.length > 0)
                 this.selected = this.value;
+
+            this.labels = this.selected.map(term => { return { label: term.name, value: term.id } });
         },
         methods: {
             ...mapActions('taxonomy', [
