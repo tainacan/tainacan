@@ -5,12 +5,11 @@
             :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             size="is-small"
             icon="magnify"
-            :allow-new="false"
             @add="emitAdd"
             @remove="emitRemove"
             v-model="selected"
-            :data="labels"
-            :maxtags="maxtags"
+            :data="options"
+            :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"            
             field="label"
             :remove-on-keys="[]"
             :dropdown-position="isLastMetadatum ? 'top' :'auto'"
@@ -21,10 +20,12 @@
             :loading="isFetching"
             :class="{ 'has-selected': selected != undefined && selected != [] }"
             autocomplete
-            @typing="loadTerms"
+            @typing="search"
             check-infinite-scroll
-            @infinite-scroll="loadMoreTerms"
-            :has-counter="false">
+            @infinite-scroll="searchMore"
+            :has-counter="false"
+            :append-to-body="!itemMetadatum.item"
+            :open-on-focus="false">
         <template slot-scope="props">
             <div class="media">
                 <div class="media-content">
@@ -33,12 +34,12 @@
             </div>
         </template>
         <template 
-                v-if="!isFetching"
+                v-if="!isFetching && options.length <= 0 && searchName.length > 0"
                 slot="empty">
             {{ $i18n.get('info_no_terms_found') }}
         </template>
         <template 
-                v-if="allowNew"
+                v-if="allowNew && !isFetching && searchName.length > 0"
                 slot="footer">
                 <a @click="$emit('showAddNewTerm', { name: searchName })">
                 {{ $i18n.get('label_create_new_term') + ' "' + searchName + '"' }}
@@ -57,57 +58,64 @@
             allowNew: Boolean,
             taxonomyId: Number,
             disabled: false,
-            allowSelectToCreate: false,
             maxtags: '',
             isLastMetadatum: false
         },
         data() {
             return {
                 selected: [],
-                labels: [],
+                options: [],
                 isFetching: false,
                 offset: 0,
                 searchName: '',
                 totalTerms: 0
             }
         },
+        computed: {
+            maxMultipleValues() {
+                return (
+                    this.itemMetadatum &&
+                    this.itemMetadatum.metadatum &&
+                    this.itemMetadatum.metadatum.cardinality &&
+                    !isNaN(this.itemMetadatum.metadatum.cardinality) &&
+                    this.itemMetadatum.metadatum.cardinality > 1
+                ) ? this.itemMetadatum.metadatum.cardinality : undefined;
+            },
+        },
         watch: {
-            selected() {
-                if (this.allowSelectToCreate && this.selected[0]) {
-                    this.selected[0].label.includes(`(${this.$i18n.get('select_to_create')})`);
-                    this.selected[0].label = this.selected[0].label.split('(')[0];
-                }
+            value() {
+                if ( this.value && this.value.length > 0 && this.value[0].label )
+                    this.selected = JSON.parse(JSON.stringify(this.value));
             }
         },
-        created() {
-            if (this.value && this.value.length > 0)
-                this.selected = this.value;
-
-            this.labels = this.selected.map(term => { return { label: term.name, value: term.id } });
+        mounted() {
+            if ( this.value && this.value.length > 0 && this.value[0].label )
+                this.selected = JSON.parse(JSON.stringify(this.value));
         },
         methods: {
             ...mapActions('taxonomy', [
                 'fetchTerms'
             ]),
-            loadTerms: _.debounce( function(value) {                
+            search: _.debounce( function(value) {                
 
                 // String update
-                if (value != this.searchName) {
+                if ( value != this.searchName ) {
                     this.searchName = value;
-                    this.labels = [];
+                    this.options = [];
                     this.offset = 0;
                 } 
                 
                 // String cleared
-                if (!value.length) {
+                if ( !value.length ) {
                     this.searchName = value;
-                    this.labels = [];
+                    this.options = [];
                     this.offset = 0;
+                    return;
                 }
 
                 // No need to load more
-                if (this.offset > 0 && this.labels.length >= this.totalTerms)
-                    return
+                if ( this.offset > 0 && this.options.length >= this.totalTerms )
+                    return;
 
                 this.isFetching = true;
 
@@ -130,10 +138,7 @@
                 }).then((res) => {
                     
                     for (let term of res.terms)
-                        this.labels.push({ label: term.name, value: term.id });
-
-                    if (res.terms.length <= 0 && this.allowSelectToCreate)
-                        this.labels.push({ label: `${value} (${this.$i18n.get('select_to_create')})`, value: value })
+                        this.options.push({ label: term.name, value: term.id });
 
                     this.offset += 12;
                     this.totalTerms = res.total;
@@ -144,8 +149,8 @@
                     throw error;
                 });
             }, 500),
-            loadMoreTerms: _.debounce(function () {
-                this.loadTerms(this.searchName)
+            searchMore: _.debounce(function () {
+                this.search(this.searchName)
             }, 250),
             updateSelectedValues(){
                 let selected = [];
@@ -158,7 +163,7 @@
             emitAdd(){
                 let val = this.selected;
                 let results = [];
-
+                
                 if (val.length > 0) {
                     for (let term of val)
                         results.push( term.value );

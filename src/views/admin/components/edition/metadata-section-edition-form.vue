@@ -205,7 +205,6 @@
                                     :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
                                     :value="selectedConditionalValue"
                                     :allow-new="false"
-                                    :allow-select-to-create="false"
                                     :maxtags="1"
                                     @input="$event => selectedConditionalValue = $event"
                             />

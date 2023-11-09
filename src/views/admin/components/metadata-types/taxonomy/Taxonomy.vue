@@ -1,12 +1,10 @@
 <template>
     <div>
-        <taxonomy-tag-input
+        <tainacan-taxonomy-tag-input
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
-                :disabled="disabled"
-                :is="getComponent"
+                :disabled="disabled || isFetchingTerms"
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 v-model="valueComponent"
-                :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNewFromOptions"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_term')"
                 :taxonomy-id="taxonomyId"
@@ -92,6 +90,7 @@
     import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
     import { tainacan as axios } from '../../../js/axios.js';
+    import { mapActions } from 'vuex';
 
     export default {
         components: {
@@ -105,7 +104,6 @@
             forcedComponentType: '',
             maxtags: '',
             allowNew: false,
-            allowSelectToCreate: false,
             isMobileScreen: false,
         },
         data(){
@@ -118,7 +116,8 @@
                 isTermCreationModalOpen: false,
                 isTermCreationPanelOpen: false,
                 newTermName: '',
-                allowNewFromOptions: false
+                allowNewFromOptions: false,
+                isFetchingTerms: false
             }
         },
         computed: {
@@ -167,21 +166,48 @@
 
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
-
+            
             this.allowNewFromOptions = this.allowNew === false ? false : metadata_type_options.allow_new_terms == 'yes' && this.$userCaps.hasCapability('tnc_rep_edit_taxonomies');
 
             this.getTermsId();
         },
         methods: {
+            ...mapActions('taxonomy', [
+                'fetchTerms'
+            ]),
             getTermsId() {
                 let values = [];
 
-                if (this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input') {
+                if ( this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input' ) {
                     values = this.value.map(term => term.id).filter(term => term !== undefined);
                     this.valueComponent = (values.length > 0 && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple === 'no') ? values[0] : values;
+
                 } else if (this.value && this.itemMetadatum.metadatum && this.getComponent == 'tainacan-taxonomy-tag-input') {
-                    values = this.value.map((term) => { return { label: term.name, value: term.id } });
-                    this.valueComponent = values;
+
+                    if ( this.value[0] && this.value[0] && this.value[0].id ) {
+                        values = this.value.map((term) => { return { label: term.name, value: term.id } });
+                        this.valueComponent = values;
+                    } else {
+                        this.isFetchingTerms = true;
+                        this.fetchTerms({ 
+                            taxonomyId: this.taxonomyId,
+                            fetchOnly: { 
+                                fetch_only: {
+                                    0: 'name',
+                                    1: 'id'
+                                }
+                            },
+                            all: true,
+                            include: this.value
+                        }).then((res) => {
+                            values = res.terms.map((term) => { return { label: term.name, value: term.id } });
+                            this.valueComponent = values;
+                            this.isFetchingTerms = false;    
+                        }).catch((error) => {
+                            this.isFetchingTerms = false;
+                            throw error;
+                        });
+                    }
                 }
             },
             addRecentlyCreatedTerm(term) {
