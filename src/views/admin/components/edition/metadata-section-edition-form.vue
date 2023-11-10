@@ -180,7 +180,8 @@
                             </label>
                             <b-select 
                                     v-model="selectedConditionalMetadatumId"
-                                    :placeholder="$i18n.get('label_select_metadatum')">
+                                    :placeholder="$i18n.get('label_select_metadatum')"
+                                    @input="reloadConditionalValueComponent()">
                                 <option 
                                         v-for="conditionalMetadatum of availableConditionalMetadata"
                                         :key="conditionalMetadatum.id"
@@ -200,6 +201,7 @@
                                 {{ selectedConditionalMetadatum.name }}
                             </label>
                             <component
+                                    v-if="shouldUpdateConditionalValue"
                                     :is="selectedConditionalMetadatum.metadata_type_object.component"
                                     :forced-component-type="selectedConditionalMetadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
                                     :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
@@ -268,7 +270,8 @@
                 isUpdating: false,
                 selectedConditionalMetadatumId: undefined,
                 selectedConditionalValue: [],
-                hideConditionalSectionSettings: false
+                hideConditionalSectionSettings: false,
+                shouldUpdateConditionalValue: true
             }
         },
         computed: {
@@ -290,7 +293,7 @@
             },
             selectedConditionalMetadatum() {
                 return this.availableConditionalMetadata.find(aMetadatum => aMetadatum.id == this.selectedConditionalMetadatumId)
-            }
+            },
         },
         created() {
             this.form = JSON.parse(JSON.stringify(this.originalMetadataSection));
@@ -361,6 +364,11 @@
                 this.closedByForm = true;
                 this.$emit('onEditionCanceled');
             },
+            reloadConditionalValueComponent() {
+                this.shouldUpdateConditionalValue = false;
+                this.selectedConditionalValue = [];
+                this.$nextTick(() => this.shouldUpdateConditionalValue = true);
+            }
         }
     }
 </script>

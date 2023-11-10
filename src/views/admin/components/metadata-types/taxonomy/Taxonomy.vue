@@ -178,16 +178,20 @@
             getTermsId() {
                 let values = [];
 
+
                 if ( this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input' ) {
                     values = this.value.map(term => term.id).filter(term => term !== undefined);
                     this.valueComponent = (values.length > 0 && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple === 'no') ? values[0] : values;
 
                 } else if (this.value && this.itemMetadatum.metadatum && this.getComponent == 'tainacan-taxonomy-tag-input') {
 
+                    // This first scenario happens in the item edition form, as the item metadata returns the terms as objects
                     if ( this.value[0] && this.value[0] && this.value[0].id ) {
                         values = this.value.map((term) => { return { label: term.name, value: term.id } });
                         this.valueComponent = values;
-                    } else {
+
+                    // If the term is not returned as object, we're in bulk edition modal or in the metadata section condition metadata input, where value is a an array of IDs
+                    } else if ( this.value.length ) {
                         this.isFetchingTerms = true;
                         this.fetchTerms({ 
                             taxonomyId: this.taxonomyId,
@@ -207,6 +211,8 @@
                             this.isFetchingTerms = false;
                             throw error;
                         });
+                    } else {
+                        this.valueComponent = [];
                     }
                 }
             },
