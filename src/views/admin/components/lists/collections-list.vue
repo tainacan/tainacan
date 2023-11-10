@@ -9,7 +9,9 @@
                 <span>
                     <b-checkbox 
                             @click.native="selectAllCollectionsOnPage()" 
-                            :value="allCollectionsOnPageSelected">{{ $i18n.get('label_select_all_collections_page') }}</b-checkbox>
+                            :native-value="allCollectionsOnPageSelected">
+                        {{ $i18n.get('label_select_all_collections_page') }}
+                    </b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
@@ -575,7 +577,7 @@ export default {
     .selection-control {
         
         padding: 6px 0px 0px 12px;
-        background: var(--tainacan-white);
+        background: var(--tainacan-background-color);
         height: 40px;
 
         .select-all {

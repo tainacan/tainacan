@@ -35,6 +35,14 @@ class Text extends Metadata_Type {
             'display_suggestions' => [
                 'title' => __( 'Display suggestions', 'tainacan' ),
                 'description' => __( 'Show an autocomplete input suggesting values inserted previously on other items for this metadatum.', 'tainacan' ),
+			],
+			'mask' => [
+                'title' => __( 'Mask input', 'tainacan' ),
+                'description' => sprintf(
+					__( 'Define a pattern that will be used to mask the input. Learn how to build mask patterns <a target="_blank" href="%1$s">here</a> or, for a more advanced usage, type a <a target="_blank" href="%2$s">Regular Expression</a>.', 'tainacan' ),
+					'https://imask.js.org/guide.html#masked-pattern',
+					'https://en.wikipedia.org/wiki/Regular_expression'
+				)
             ]
         ];
     }

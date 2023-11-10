@@ -542,13 +542,13 @@
 
                     <!--  Default loading, to be used view modes without any skeleton-->
                     <b-loading 
-                            v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
+                            v-if="registeredViewModes[viewMode] != undefined && !registeredViewModes[viewMode].implements_skeleton && !registeredViewModes[viewMode].skeleton_template" 
                             :is-full-page="false"
                             :active.sync="showLoading"/>
 
                     <!-- Custom skeleton templates used by some view modes --> 
                     <div
-                            v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
+                            v-if="registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].implements_skeleton && registeredViewModes[viewMode].skeleton_template"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
                 </div>  
                 

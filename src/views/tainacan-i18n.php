@@ -96,6 +96,7 @@ return apply_filters( 'tainacan-i18n', [
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
 	'add'	                                    	 => __( 'Add', 'tainacan' ),
+	'show'	                                    	 => __( 'Show', 'tainacan' ),
 
 	// Wordpress Comments Status
 	'comments_status_open'                           => __( 'Open', 'tainacan' ),
@@ -302,6 +303,8 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: 'Published' here refers to the sum of public and private items, not including draft or trashed ones. The are visible to those with permission */
 	'label_all_items'                      			 => __( 'All items', 'tainacan' ),
 	'label_all_collections'                          => __( 'All collections', 'tainacan' ),
+	'label_show_only_created_by_me'                	 => __( 'Show only created by me', 'tainacan' ),
+	'label_collections_that_i_can_edit'              => __( 'Collections that I can edit', 'tainacan' ),
 	'label_all_taxonomies'                           => __( 'All taxonomies', 'tainacan' ),
 	'label_bulk_actions'                             => __( 'Bulk actions', 'tainacan' ),
 	'label_delete_selected_collections'              => __( 'Delete selected collections', 'tainacan' ),
@@ -1049,6 +1052,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_you_searched_for_%s'						 => __( 'You searched for %s', 'tainacan' ),
 	'info_try_enabling_search_by_word'				 => __( 'Try enabling the search by words.', 'tainacan' ),
 	'info_try_disabling_search_by_word'				 => __( 'Try disabling the search by words, to search for the complete phrase.', 'tainacan' ),
+	'info_try_empting_the_textual_search'			 => __( 'Try empting the textual search.', 'tainacan' ),
+	'info_try_selecting_all_collections_in_filter'	 => __( 'Try selecting All Collections in the filter above.', 'tainacan' ),
 	'info_details_about_search_by_word'				 => __( 'They may be located on different metadata and order, but you will still be able to use quotes to group them.', 'tainacan' ),
 	'info_item_submission_draft_status'				 => __( 'Warning: draft items may be submitted even without filling all required metadata.', 'tainacan' ),
 	'info_empty_geocoordinate_metadata_list'		 => __( 'No geocoordinate metadata was found. Try enabling it in the "displayed metadata" dropdown.', 'tainacan' ),

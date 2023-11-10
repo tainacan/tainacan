@@ -56,7 +56,7 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 					'methods'             => \WP_REST_Server::READABLE,
 					'callback'            => array($this, 'get_item_in_sequence'),
 					'permission_callback' => array($this, 'sequence_edit_permissions_check'),
-					'args'                => $this->get_sequence_params()
+					'args'                => $this->get_sequence_index_params()
 				),
 				'schema' => [$this, 'get_sequence_index_schema']
 			)
@@ -212,12 +212,36 @@ class REST_Sequence_Edit_Controller extends REST_Controller {
 	}
 
 
-		/**
+	/**
 	 * @param string $method
 	 *
 	 * @return array|mixed
 	 */
 	public function get_sequence_params() {
+		$endpoint_args = [
+			'collection_id' => [
+				'type'        => 'string',
+				'description' => __( 'Collection ID', 'tainacan' ),
+				'required' => true,
+			],
+			'group_id' => [
+				'type'        => 'string',
+				'description' => __( 'Group ID', 'tainacan' ),
+				'required' => true,
+			]
+		];
+
+		return $endpoint_args;
+	}
+
+
+
+	/**
+	 * @param string $method
+	 *
+	 * @return array|mixed
+	 */
+	public function get_sequence_index_params() {
 		$endpoint_args = [
 			'collection_id' => [
 				'type'        => 'string',

@@ -46,8 +46,13 @@ button.link-style:active {
         background: var(--tainacan-success) !important;
         color: var(--tainacan-white) !important;
     }
-    &.is-white, &.is-white:hover, &.is-white:focus, &.is-outlined:hover, &.is-outlined:focus {
-        background-color: transparent !important;
+    &.is-white,
+    &.is-outlined:hover, &.is-outlined:focus {
+        transition: background-color 0.2s ease-out;
+        background-color: rgba(125,125,125,0.0) !important;
+    }
+    &.is-white:hover, &.is-white:focus {
+        background-color: rgba(125,125,125,0.05) !important;
     }
     &.is-loading, &.is-loading:hover, &.is-loading:focus,
     &.is-loading.is-success, &.is-loading.is-success:hover, &.is-loading.is-success:focus,

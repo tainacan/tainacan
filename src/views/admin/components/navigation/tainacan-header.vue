@@ -192,7 +192,7 @@
             }
             .logo-area {
                 height: $header-height;
-                min-width: 10em;
+                min-width: 11em;
                 cursor: pointer;
 
                 h1 {

@@ -2693,7 +2693,7 @@ export default {
     .selection-control {
         margin-bottom: 6px;
         padding: 6px 0px 0px 12px;
-        background: var(--tainacan-white);
+        background: var(--tainacan-background-color);
         height: 40px;
         display: flex;
         align-items: center;

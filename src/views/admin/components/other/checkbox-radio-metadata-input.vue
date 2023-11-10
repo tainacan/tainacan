@@ -196,7 +196,8 @@
                                             'b-checkbox checkbox': isCheckbox,
                                             'b-radio radio': !isCheckbox, 
                                             'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
-                                        }" >
+                                        }" 
+                                        @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null">
                                     <input 
                                             :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
                                             @input="updateLocalSelection($event.target.value)"
@@ -305,8 +306,8 @@
                 </div>
             </b-tab-item>
         </b-tabs>
-        <!-- <pre>{{ hierarchicalPath }}</pre>
-        <pre>{{ finderColumns }}</pre> -->
+        <!-- <pre>{{ hierarchicalPath }}</pre> -->
+        <!-- <pre>{{ finderColumns }}</pre> -->
         <!--<pre>{{ totalRemaining }}</pre>-->
         <!-- <pre>{{ selected }}</pre> -->
         <!--<pre>{{ options }}</pre>-->
@@ -444,7 +445,11 @@
                         axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
                             .then((res) => {
                                 for (const term of res.data)
-                                    this.saveSelectedTagName(term.id, term.name, term.url);
+                                    this.saveSelectedTagName(
+                                        term.id,
+                                        !this.isCheckbox && term.hierarchy_path ? ( term.hierarchy_path + term.name ) : term.name,
+                                        term.url
+                                    );
 
                                 this.isSelectedTermsLoading = false;
                             })
@@ -803,15 +808,15 @@
                         });
                 }
             },
-            renderHierarchicalPath(hierachyPath, label) {
-                return '<span style="color: var(--tainacan-info-color);">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
+            renderHierarchicalPath(hierarchyPath, label) {
+                return '<span style="color: var(--tainacan-info-color);">' + hierarchyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
             },
             onMobileSpecialFocus($event) {
                 $event.target.blur();
                 this.$emit('mobileSpecialFocus');
             },
             isOptionSelected(optionValue) {
-                if (Array.isArray(this.selected))
+                if ( Array.isArray(this.selected) )
                     return (this.selected.indexOf((isNaN(Number(optionValue)) ? optionValue : Number(optionValue))) >= 0)
                 else
                     return optionValue == this.selected;
@@ -1211,7 +1216,7 @@
         padding: 0px !important;
         display: inline;
 
-        .control {
+        .field.is-grouped > .control:not(:last-child) {
             margin-bottom: 0.25rem;
             margin-right: 0.25rem;
         }
@@ -1222,6 +1227,11 @@
 
         section p {
             font-size: 0.875em;
+        }
+
+        /deep/ .field {
+            padding: 0.25rem !important;
+            margin: 0 !important;
         }
     }
 

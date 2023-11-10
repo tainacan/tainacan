@@ -1,14 +1,20 @@
 <template>
     <div>
-        <b-input
+        <div 
                 v-if="!getDisplayAutocomplete"
-                :disabled="disabled"
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
-                :value="value"
-                :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
-                @input="onInput($event)"
-                @blur="onBlur"
-                @focus="onMobileSpecialFocus" />
+                class="control is-clearfix">
+            <input  
+                    class="input"
+                    :disabled="disabled"
+                    :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                    :value="value"
+                    :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
+                    @focus="onMobileSpecialFocus"
+                    v-imask="getMask"
+                    @complete="($event) => getMask ? onInput($event.detail.value) : null"
+                    @input="($event) => getMask ? null : onInput($event.target.value)"
+                    @blur="onBlur" >
+        </div>
         <b-autocomplete
                 v-else
                 :disabled="disabled"
@@ -44,8 +50,12 @@
 <script>
     import { isCancel } from '../../../js/axios';
     import { dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
+    import { IMaskDirective } from 'vue-imask';
 
     export default {
+        directives: {
+            imask: IMaskDirective
+        },
         mixins: [dynamicFilterTypeMixin],
         props: {
             itemMetadatum: Object,
@@ -70,6 +80,15 @@
             getDisplayAutocomplete() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.display_suggestions)
                     return this.itemMetadatum.metadatum.metadata_type_options.display_suggestions == 'yes';
+                else
+                    return false;
+            },
+            getMask() {
+                if (this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.mask)
+                    return {
+                        mask: this.itemMetadatum.metadatum.metadata_type_options.mask,
+                        lazy: false
+                    };
                 else
                     return false;
             }

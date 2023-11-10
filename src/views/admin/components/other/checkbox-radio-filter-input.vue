@@ -187,7 +187,9 @@
                                         :id="`${key}.${index}-tainacan-li-checkbox-model`"
                                         :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                                         :key="index">
-                                    <label class="b-checkbox checkbox">
+                                    <label  
+                                            @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null"
+                                            class="b-checkbox checkbox">
                                         <input 
                                                 @input="$emit('input', $event.target.value)"
                                                 :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
@@ -829,8 +831,8 @@
 
                 this.$emit('appliedCheckBoxModal');
             },
-            renderHierarchicalPath(hierachyPath, label) {
-                return '<span style="color: var(--tainacan-info-color);">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
+            renderHierarchicalPath(hierarchyPath, label) {
+                return '<span style="color: var(--tainacan-info-color);">' + hierarchyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
             }
         }
     }

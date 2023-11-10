@@ -798,6 +798,10 @@
         max-width: calc((90vh * 9) / 16); }
       .tainacan-photoswipe-layer .pswp__container .tainacan-content-embed.tainacan-embed-aspect-1-2 {
         max-width: calc((90vh * 1) / 2); }
+    .tainacan-photoswipe-layer .pswp__container .pswp__content {
+      display: flex;
+      justify-content: center;
+      align-content: center; }
     .tainacan-photoswipe-layer .pswp__container .pswp__content > .tainacan-content-embed:not(.attachment-without-image) {
       margin-top: 60px; }
     .tainacan-photoswipe-layer .pswp__container a:first-of-type,

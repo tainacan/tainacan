@@ -19,10 +19,23 @@ class Core_Description extends Metadata_Type {
         $this->set_core(true);
         $this->set_related_mapped_prop('description');
         $this->set_component('tainacan-textarea');
+		$this->set_form_component('tainacan-form-textarea');
         $this->set_name( __('Core Description', 'tainacan') );
         $this->set_description( __('The "Core Description" is a compulsory metadata automatically created for all collections by default. This is the main description displayed in items lists and where the basic research tools will do their searches.', 'tainacan') );
 		$this->set_sortable( false );
     }
+
+	/**
+	 * @inheritdoc
+	 */
+	public function get_form_labels(){
+		return [
+			'maxlength' => [
+				'title' => __( 'Maximum of characters', 'tainacan' ),
+				'description' => __( 'Limits the character input to a maximum value an displays a counter.', 'tainacan' ),
+			]
+		];
+	}
 
     /**
      * generate the metadata for this metadatum type

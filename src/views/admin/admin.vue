@@ -171,7 +171,7 @@
         --tainacan-sidebar-width: 3.0em;
     }
     #primary-menu:not(.is-compressed)~.is-main-content {
-        --tainacan-sidebar-width: 10em;
+        --tainacan-sidebar-width: 11em;
     }
 
     .is-secondary-content {

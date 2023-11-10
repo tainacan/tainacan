@@ -362,7 +362,7 @@
                             <b-field
                                     :addons="false" 
                                     :label="$i18n.get('label_metadata_related_features')">
-                                <div class="status-radios">
+                                <div class="options-checkboxes">
                                     <b-checkbox
                                             v-model="form.item_enable_metadata_collapses"
                                             true-value="yes"
@@ -477,7 +477,7 @@
                                         <help-button 
                                                 :title="$i18n.getHelperTitle('collections', 'submission_default_status')" 
                                                 :message="$i18n.getHelperMessage('collections', 'submission_default_status')"/>
-                                        <div class="status-radios">
+                                        <div class="options-checkboxes">
                                             <b-radio
                                                     v-model="form.submission_default_status"
                                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash')"
@@ -1771,7 +1771,20 @@ export default {
     .status-radios {
         display: flex;
         margin: 5px 0;
-        .control-lable {
+
+        .control-label {
+            display: flex;
+            align-items: center;
+        }
+    }
+    .options-checkboxes {
+        display: flex;
+        margin: 5px 0;
+        justify-content: space-between;
+        /deep/ .b-checkbox.checkbox {
+            width: auto
+        }
+        .control-label {
             display: flex;
             align-items: center;
         }

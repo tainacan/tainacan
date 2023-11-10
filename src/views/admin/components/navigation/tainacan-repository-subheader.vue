@@ -168,7 +168,7 @@ export default {
         padding-top: 10px;
         padding-bottom: 10px;
         padding-right: 0;
-        padding-left: calc((var(--tainacan-one-column) - 6.666666667px) + 10em);
+        padding-left: calc((var(--tainacan-one-column) - 6.666666667px) + 11em);
         margin: 0px;
         display: flex;
         vertical-align: middle; 
