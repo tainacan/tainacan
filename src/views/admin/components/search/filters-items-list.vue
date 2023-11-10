@@ -90,12 +90,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"/>
                         </template>
-                        <!-- <p   
-                                class="has-text-gray"
-                                style="font-size: 0.75em;"
-                                v-if="taxonomyFilter.length <= 0">
-                            {{ $i18n.get('info_there_is_no_filter') }}    
-                        </p> -->
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
                 </template>
@@ -140,12 +134,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen" />
                         </template>
-                        <!-- <p   
-                                class="has-text-gray"
-                                style="font-size: 0.75em;"
-                                v-if="taxonomyFilter.length <= 0">
-                            {{ $i18n.get('info_there_is_no_filter') }}    
-                        </p> -->
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
                 </template>
@@ -194,12 +182,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen" />
                         </template>
-                        <!-- <p   
-                                class="has-text-gray"
-                                style="font-size: 0.75em;"
-                                v-if="taxonomyFilter.length <= 0">
-                            {{ $i18n.get('info_there_is_no_filter') }}    
-                        </p> -->
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
                 </template>
@@ -244,12 +226,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen" />
                         </template>
-                        <!-- <p   
-                                class="has-text-gray"
-                                style="font-size: 0.75em;"
-                                v-if="taxonomyFilter.length <= 0">
-                            {{ $i18n.get('info_there_is_no_filter') }}    
-                        </p> -->
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
                 </template>
@@ -271,8 +247,11 @@
             </template>
         </div>
         <section
-                v-if="!isLoadingFilters &&
-                    !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
+                v-if="!isLoadingFilters && (
+                    ( taxonomy && taxonomyFilters && Object.keys(taxonomyFilters).length <= 0 ) ||
+                    ( isRepositoryLevel && !taxonomy && repositoryCollectionFilters && Object.keys(repositoryCollectionFilters).length <= 0 ) ||
+                    ( !isRepositoryLevel && !taxonomy && filters && filters.length <= 0 )
+                )"
                 class="is-grouped-centered">
             <div class="content has-text-gray has-text-centered">
                 <p>
@@ -281,6 +260,7 @@
                     </span>
                 </p>
                 <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
+                <p v-if="isRepositoryLevel && $route.name != null">{{ $i18n.get('info_collection_filter_on_repository_level') }}</p>
                 <router-link
                         v-if="!$adminOptions.hideItemsListFilterCreationButton && $route.name != null && ((isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters')) || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                         id="button-create-filter"
