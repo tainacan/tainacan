@@ -113,6 +113,11 @@ export default {
 
             &.document-field-content--text {
                 padding-bottom: 2rem;
+
+                /deep/ article {
+                    max-height: calc(32vh - 2rem);
+                    overflow-y: auto;
+                }
             }
 
             /deep/ img,
