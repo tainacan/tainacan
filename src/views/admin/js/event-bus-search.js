@@ -148,6 +148,10 @@ export default {
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
+
+                        // Finally, loads items even berfore facets so they won't stuck them
+                        if (to.fullPath != from.fullPath)
+                            this.loadItems();
                         
                         // Checks current metaqueries and taxqueries to alert filters that should reload
                         // For some reason, this process is not working accessing to.query, so we need to check the path string. 
@@ -174,10 +178,6 @@ export default {
                         ) {
                             this.$emit('has-to-reload-facets', true);
                         }
-                        
-                        // Finally, loads items
-                        if (to.fullPath != from.fullPath)
-                            this.loadItems();
                     }
                 }
             },
