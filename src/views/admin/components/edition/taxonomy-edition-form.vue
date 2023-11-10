@@ -555,7 +555,7 @@
     .status-radios {
         display: flex;
     }
-    .status-radios .control-lable {
+    .status-radios .control-label {
         display: flex;
         align-items: center;
     }

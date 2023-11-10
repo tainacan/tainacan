@@ -98,7 +98,7 @@ export const eventBusItemMetadata = new Vue({
             for (let conditionalSectionId in updatedConditionalSections) {
                 if ( updatedConditionalSections[conditionalSectionId].metadatumId == metadatumId ) {
                     const conditionalValues = Array.isArray(updatedConditionalSections[conditionalSectionId].metadatumValues) ? updatedConditionalSections[conditionalSectionId].metadatumValues : [ this.conditionalSections[conditionalSectionId].metadatumValues ];
-                    updatedConditionalSections[conditionalSectionId].hide = values.every(aValue => conditionalValues.indexOf(aValue) < 0);
+                    updatedConditionalSections[conditionalSectionId].hide = Array.isArray(values) ? values.every(aValue => conditionalValues.indexOf(aValue) < 0) : conditionalValues.indexOf(values) < 0 ;
                 }
             }
             this.conditionalSections = updatedConditionalSections;

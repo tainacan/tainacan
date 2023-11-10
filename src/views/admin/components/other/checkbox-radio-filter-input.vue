@@ -831,8 +831,8 @@
 
                 this.$emit('appliedCheckBoxModal');
             },
-            renderHierarchicalPath(hierachyPath, label) {
-                return '<span style="color: var(--tainacan-info-color);">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
+            renderHierarchicalPath(hierarchyPath, label) {
+                return '<span style="color: var(--tainacan-info-color);">' + hierarchyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
             }
         }
     }

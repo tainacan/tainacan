@@ -25,7 +25,7 @@
                         :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_item')"
                         :loading="isLoading"
                         :aria-close-label="$i18n.get('remove_value')"
-                        :class="{'has-selected': selected != undefined && selected != []}"
+                        :class="{ 'has-selected': selected != undefined && selected != [] }"
                         field="label"
                         @typing="search"
                         check-infinite-scroll

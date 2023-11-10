@@ -123,7 +123,7 @@ export const fetchTaxonomyName = ({ commit }, taxonomyId) => {
 };
 
 // TAXONOMY TERMS
-export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offset, number, exclude }) => {
+export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offset, number, exclude, include }) => {
 
     let query = '';
 
@@ -147,6 +147,9 @@ export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offse
 
     if (exclude != undefined)
         query += '&' + qs.stringify({ exclude: exclude });
+
+    if (include != undefined)
+        query += '&' + qs.stringify({ include: include });
 
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
