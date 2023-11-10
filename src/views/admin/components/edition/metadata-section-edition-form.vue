@@ -208,7 +208,7 @@
                                     :value="selectedConditionalValue"
                                     :allow-new="false"
                                     :maxtags="1"
-                                    @input="$event => selectedConditionalValue = $event"
+                                    @input="selectConditionalValue"
                             />
                         </b-field>
                     </transition>
@@ -279,7 +279,7 @@
                 'getMetadataSections'
             ]),
             availableConditionalMetadata() {
-                if (this.getMetadataSections.length) {
+                if ( this.getMetadataSections.length ) {
                     const otherMetadataSections = this.getMetadataSections.filter(aMetadataSection => aMetadataSection.id != this.form.id);
                     const availableMetadata = [];
                     for (let aMetadataSection of otherMetadataSections)
@@ -363,6 +363,10 @@
             cancelEdition() {
                 this.closedByForm = true;
                 this.$emit('onEditionCanceled');
+            },
+            selectConditionalValue(selected) {
+                const selectedValues = Array.isArray(selected) ? selected : [ selected ]; 
+                this.selectedConditionalValue = selectedValues.map( aSelected => aSelected.value ? aSelected.value : aSelected );
             },
             reloadConditionalValueComponent() {
                 this.shouldUpdateConditionalValue = false;
