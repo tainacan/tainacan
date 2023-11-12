@@ -189,11 +189,12 @@ class Items extends Repository {
 	 * @see \Tainacan\Repositories\Repository::register_post_type()
 	 */
 	public function register_post_type() {
-
+		
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
 
-		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
+		// TODO: This can be a problem in large repositories.
+		$collections = $Tainacan_Collections->fetch( ['nopaging' => true], 'OBJECT' );
 		$taxonomies  = $Tainacan_Taxonomies->fetch( [
 			'status' => [
 				'auto-draft',
@@ -220,7 +221,7 @@ class Items extends Repository {
 		}
 
 		// register taxonomies to collections considering metadata inheritance
-		$Tainacan_Taxonomies->register_taxonomies_for_all_collections();
+		$Tainacan_Taxonomies->register_taxonomies_for_all_collections($collections);
 
 	}
 

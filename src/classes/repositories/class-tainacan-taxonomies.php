@@ -336,21 +336,43 @@ class Taxonomies extends Repository {
 		
 	}
 	
-	public function register_taxonomies_for_all_collections() {
+	public function register_taxonomies_for_all_collections($all_collections = null) {
+		global $wpdb;
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 
 		// TODO: This can be a problem in large repositories. 
-		$collections = $Tainacan_Collections->fetch( ['nopaging' => true], 'OBJECT' );
-		
+		$collections = $all_collections != null ? $all_collections : $Tainacan_Collections->fetch( ['nopaging' => true], 'OBJECT' );
 		if ( ! is_array( $collections ) ) {
 			return;
 		}
 
-		// register taxonomies to other collections considering metadata inheritance
-		foreach ( $collections as $collection ) {
-			$taxonomies = $this->fetch_by_collection($collection, ['nopaging' => true]);
-			foreach ( $taxonomies as $taxonomy ) {
-				register_taxonomy_for_object_type( $taxonomy->get_db_identifier(), $collection->get_db_identifier() );
+		$query = $wpdb->prepare("
+			SELECT 
+				meta.post_id as meta_id, meta.meta_value as tax_id, col.meta_value as collection_id 
+			FROM 
+				$wpdb->postmeta meta INNER JOIN (
+					SELECT post_id, meta_value FROM $wpdb->postmeta WHERE meta_key='collection_id'
+				) as col ON meta.post_id = col.post_id
+			WHERE 
+				meta.meta_key='_option_taxonomy_id' 
+				AND meta.post_id IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key='metadata_type' and meta_value='Tainacan\\\Metadata_Types\\\Taxonomy');
+		", []);
+
+		$taxonomies_res = $wpdb->get_results( $query );
+
+		foreach ($taxonomies_res as $tax_res) {
+			// Aqui você pode acessar os valores de cada coluna
+			$tax_id = $tax_res->tax_id;
+			$collection_id = $tax_res->collection_id;
+
+			$tax_db_identifier_by_id = $this->get_db_identifier_by_id($tax_id);
+			if ($collection_id != 'default' ) {
+				$collection_slug = Entities\Collection::$db_identifier_prefix . $collection_id . Entities\Collection::$db_identifier_sufix;
+				register_taxonomy_for_object_type($tax_db_identifier_by_id ,$collection_slug);
+			} else {
+				foreach ( $collections as $collection ) {
+					register_taxonomy_for_object_type($tax_db_identifier_by_id, $collection->get_db_identifier());
+				}
 			}
 		}
 	}
