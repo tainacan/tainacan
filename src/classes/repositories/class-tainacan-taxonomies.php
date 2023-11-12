@@ -346,7 +346,7 @@ class Taxonomies extends Repository {
 			return;
 		}
 
-		$query = $wpdb->prepare("
+		$taxonomies_res = $wpdb->get_results("
 			SELECT 
 				meta.post_id as meta_id, meta.meta_value as tax_id, col.meta_value as collection_id 
 			FROM 
@@ -356,9 +356,7 @@ class Taxonomies extends Repository {
 			WHERE 
 				meta.meta_key='_option_taxonomy_id' 
 				AND meta.post_id IN (SELECT post_id FROM $wpdb->postmeta WHERE meta_key='metadata_type' and meta_value='Tainacan\\\Metadata_Types\\\Taxonomy');
-		", []);
-
-		$taxonomies_res = $wpdb->get_results( $query );
+		");
 
 		foreach ($taxonomies_res as $tax_res) {
 			// Aqui você pode acessar os valores de cada coluna

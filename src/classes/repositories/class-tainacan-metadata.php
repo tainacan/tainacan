@@ -737,8 +737,8 @@ class Metadata extends Repository {
 	public function insert( $metadatum ) {
 		$this->pre_update_taxonomy_metadatum( $metadatum );
 		$new_metadatum = parent::insert( $metadatum );
-		$this->update_taxonomy_metadatum( $new_metadatum );
 		$this->update_metadata_type_index( $new_metadatum );
+		$this->update_taxonomy_metadatum( $new_metadatum );
 		return $new_metadatum;
 	}
 
