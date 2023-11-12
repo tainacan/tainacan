@@ -209,7 +209,8 @@
                                     v-if="item.document !== undefined && item.document !== null &&
                                           item.document_type !== undefined && item.document_type !== null &&
                                           item.document !== '' && item.document_type !== 'empty'"
-                                    class="document-field-content">
+                                    class="document-field-content"
+                                    :class="'document-field-content--' + item.document_type">
                                 <div v-html="item.document_as_html"/>
                             </div>
                             <div v-else>
@@ -887,6 +888,15 @@
     .document-field {
         .document-field-content {
             max-height: 32vh;
+
+            &.document-field-content--text {
+                padding-bottom: 2rem;
+
+                /deep/ article {
+                    max-height: calc(32vh - 2rem);
+                    overflow-y: auto;
+                }
+            }
 
             /deep/ img,
             /deep/ video,
