@@ -976,7 +976,7 @@ export default {
             isLoadingMetadata: true,
             sortingMetadata: [],
             localDefaultOrderBy: 'date',
-            showItemsListOptions: false,
+            showItemsListOptions: true,
             showItemEditionFormOptions: false,
             showItemSubmissionOptions: false
         }
