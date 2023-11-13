@@ -2,7 +2,6 @@
     <aside 
             aria-labelledby="filters-label-landmark"
             :aria-busy="isLoadingFilters">
-
         <b-loading
                 :is-full-page="false"
                 :active.sync="isLoadingFilters"/>
@@ -411,7 +410,7 @@
                 this.isLoadingFilters = true;
             
                 // Normal filter loading, only collection ones
-                if (!this.taxonomy) {
+                if ( !this.taxonomy ) {
                     this.fetchFilters({
                         collectionId: this.collectionId,
                         isRepositoryLevel: this.isRepositoryLevel,
@@ -420,7 +419,29 @@
                     })
                         .then((resp) => {
                             resp.request
-                                .then(() => this.isLoadingFilters = false)
+                                .then(() => {
+                                    if ( !this.isRepositoryLevel )
+                                        this.isLoadingFilters = false;
+
+                                    // On repository level we also fetch collection filters
+                                    else {
+                                        
+                                        // Cancels previous Request
+                                        if (this.repositoryFiltersSearchCancel != undefined)
+                                            this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
+                                       
+                                        this.fetchRepositoryCollectionFilters()
+                                            .then((anotherResp) => {
+
+                                                anotherResp.request
+                                                    .then(() => this.isLoadingFilters = false)
+                                                    .catch(() => this.isLoadingFilters = false);
+
+                                                this.repositoryFiltersSearchCancel = anotherResp.source;
+                                            })
+                                            .catch(() => this.isLoadingFilters = false);
+                                    }
+                                })
                                 .catch(() => this.isLoadingFilters = false);
     
                             // Search Request Token for cancelling
@@ -448,18 +469,6 @@
                         
                 }
 
-                // On repository level we also fetch collection filters
-                if ( !this.taxonomy && this.isRepositoryLevel ) {
-                    
-                    // Cancels previous Request
-                    if (this.repositoryFiltersSearchCancel != undefined)
-                        this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
-     
-                    this.fetchRepositoryCollectionFilters()
-                        .then((source) => {
-                            this.repositoryFiltersSearchCancel = source;
-                        });
-                }
             },
             updateIsLoadingItems(isLoadingItems) {
                 this.$emit('updateIsLoadingItemsState', isLoadingItems); 

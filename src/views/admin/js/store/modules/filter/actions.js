@@ -144,15 +144,15 @@ export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filters
 export const fetchFilterTypes = ({ commit} ) => {
     return new Promise((resolve, reject) => {
         axios.tainacan.get('/filter-types')
-        .then((res) => {
-            let filterTypes = res.data;
-            commit('setFilterTypes', filterTypes);
-            resolve (filterTypes);
-        })
-        .catch((error) => {
-            console.log(error);
-            reject(error);
-        });
+            .then((res) => {
+                let filterTypes = res.data;
+                commit('setFilterTypes', filterTypes);
+                resolve (filterTypes);
+            })
+            .catch((error) => {
+                console.log(error);
+                reject(error);
+            });
     });
 };
 
@@ -165,64 +165,65 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
     
     commit('clearRepositoryCollectionFilters');
 
-    return new Promise((resolve, reject) => {
+    const source = axios.CancelToken.source();
 
-        dispatch('collection/fetchAllCollectionNames', { } ,{ root: true })
-            .then((resp) => {
-                resp.request
-                    .then((res) => {
-                        let collections = res;
-                        if (collections != undefined && collections.length != undefined) {
+    return Object({
+        request: new Promise((resolve, reject) => {
 
-                            let promises = [];
+            dispatch('collection/fetchAllCollectionNames', { } ,{ root: true })
+                .then((resp) => {
+                    resp.request
+                        .then((res) => {
+                            let collections = res;
+                            if (collections != undefined && collections.length != undefined) {
 
-                            // First, we add repository level filters
-                            promises.push(
-                                axios.tainacan.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false')
-                                    .then((resp) => { return { filters: resp.data, collectionId: 'default' } }) 
-                                    .catch((error) => {
-                                        reject(error);
-                                    })
-                            );
+                                let promises = [];
 
-                            // Then we add collection level filters
-                            collections.forEach(collection => {
+                                // First, we add repository level filters
                                 promises.push(
-                                    axios.tainacan.get('/collection/' + collection.id + '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&metaquery[0][key]=collection_id&metaquery[0][value]=default&metaquery[0][compare]=!=&metaquery[1][key]=display_in_repository_level_lists&metaquery[1][value]=no&metaquery[1][compare]=!=')
-                                        .then((resp) => { return { filters: resp.data, collectionId: collection.id } }) 
+                                    axios.tainacan.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false')
+                                        .then((resp) => { return { filters: resp.data, collectionId: 'default' } }) 
                                         .catch((error) => {
                                             reject(error);
                                         })
                                 );
-                            });
-                            
-                            // Process it all
-                            axios.all(promises)
-                                .then((results) => {
-                                    let futureRepositoryCollectionFilters = {};
-                                    
-                                    for (let resp of results) {
-                                        if (resp.filters.length > 0)
-                                            futureRepositoryCollectionFilters[resp.collectionId != 'default' ? resp.collectionId : 'repository-filters'] = resp.filters;
-                                    }
 
-                                    commit('setRepositoryCollectionFilters', futureRepositoryCollectionFilters);
+                                // Then we add collection level filters
+                                collections.forEach(collection => {
+                                    promises.push(
+                                        axios.tainacan.get('/collection/' + collection.id + '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&metaquery[0][key]=collection_id&metaquery[0][value]=default&metaquery[0][compare]=!=&metaquery[1][key]=display_in_repository_level_lists&metaquery[1][value]=no&metaquery[1][compare]=!=')
+                                            .then((resp) => { return { filters: resp.data, collectionId: collection.id } }) 
+                                            .catch((error) => {
+                                                reject(error);
+                                            })
+                                    );
+                                });
+                                
+                                // Process it all
+                                axios.all(promises)
+                                    .then((results) => {
+                                        let futureRepositoryCollectionFilters = {};
+                                        
+                                        for (let resp of results) {
+                                            if (resp.filters.length > 0)
+                                                futureRepositoryCollectionFilters[resp.collectionId != 'default' ? resp.collectionId : 'repository-filters'] = resp.filters;
+                                        }
+                                        commit('setRepositoryCollectionFilters', futureRepositoryCollectionFilters);
 
-                                    resolve();
-                                })  
-                                .catch((error) => {
-                                    console.log(error);
-                                    reject(error);
-                                })   
-                        }
-                    })
-                    .catch(() => {
-                        reject();
-                    });
-
-                    // Search Request Token for cancelling
-                    resolve(resp.source);
-            });
+                                        resolve();
+                                    })  
+                                    .catch((error) => {
+                                        console.log(error);
+                                        reject(error);
+                                    })   
+                            }
+                        })
+                        .catch(() => {
+                            reject();
+                        });
+                });
+        }),
+        source: source
     });
 };
 
