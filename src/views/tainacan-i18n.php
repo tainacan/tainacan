@@ -906,6 +906,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_there_is_no_metadatum'                     => __( 'There is no metadata here yet.', 'tainacan' ),
 	'info_there_is_no_metadata_section'              => __( 'There is no metadata section here yet.', 'tainacan' ),
 	'info_there_is_no_filter'                        => __( 'There is no filter here yet.', 'tainacan' ),
+	'info_collection_filter_on_repository_level'     => __( 'If there are filters set in the collections, you can also set them to be displayed at repository level.', 'tainacan' ),
 	'info_changes'                                   => __( 'Changes', 'tainacan' ),
 	'info_possible_external_sources'                 => __( 'Possible external sources: CSV, Instagram, YouTube, etc.', 'tainacan' ),
 	'info_help_term_name'                            => __( 'The term name', 'tainacan' ),
