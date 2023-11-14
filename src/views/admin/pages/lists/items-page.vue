@@ -875,8 +875,6 @@
                 else
                     this.$eventBusSearch.setInitialAdminViewMode('table');
             }
-            
-            this.showItemsHiddingDueSortingDialog();
 
             this.$eventBusSearch.cleanSelectedItems();
 

@@ -972,7 +972,6 @@
             if (this.defaultItemsPerPage)
                 this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
 
-            this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile
             if (!this.hideFilters) {            
