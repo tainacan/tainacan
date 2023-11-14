@@ -1476,7 +1476,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 					
 					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] === 'before' ) 
 						echo '<span class="term-items-count">' . $term->count . '</span>&nbsp;';
-					echo ($term->count == 1 || $term->count == '1') ? __('Item', 'tainacan') : __('Itens', 'tainacan');
+					echo ($term->count == 1 || $term->count == '1') ? __('Item', 'tainacan') : __('Items', 'tainacan');
 					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] !== 'before' ) 
 						echo '&nbsp;<span class="term-items-count">(' . $term->count . ')</span>';
 					
