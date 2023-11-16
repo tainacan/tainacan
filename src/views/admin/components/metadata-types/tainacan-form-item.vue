@@ -20,6 +20,12 @@
                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
             </span>
             <label class="label">
+                <span
+                        v-if="enumerateMetadatum"
+                        style="opacity: 0.65;"
+                        class="metadatum-section-enumeration">
+                    {{ enumerateMetadatum }}.
+                </span>
                 {{ itemMetadatum.metadatum.name }}
             </label>
             <span
@@ -147,7 +153,8 @@
                         :metadata-name-filter-string="metadataNameFilterString"
                         @mobileSpecialFocus="onMobileSpecialFocus"
                         :is-focused="isFocused"
-                        :is-metadata-navigation="isMetadataNavigation" />
+                        :is-metadata-navigation="isMetadataNavigation"
+                        :enumerate-metadatum="enumerateMetadatum" />
             </div>
         </transition>
     </b-field>
@@ -169,7 +176,8 @@
             metadataNameFilterString: '',
             isMobileScreen: false,
             isFocused: false,
-            isMetadataNavigation: false
+            isMetadataNavigation: false,
+            enumerateMetadatum: [String, Boolean]
         },
         data(){
             return {

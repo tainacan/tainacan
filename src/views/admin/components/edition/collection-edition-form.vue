@@ -387,6 +387,12 @@
                                             false-value="no">
                                         {{ $i18n.getHelperTitle('collections', 'item_enable_metadata_searchbar') }}
                                     </b-checkbox>
+                                    <b-checkbox
+                                            v-model="form.item_enable_metadata_enumeration"
+                                            true-value="yes"
+                                            false-value="no">
+                                        {{ $i18n.getHelperTitle('collections', 'item_enable_metadata_enumeration') }}
+                                    </b-checkbox>
                                 </div>
                             </b-field>
 
@@ -944,7 +950,8 @@ export default {
                 item_enable_metadata_focus_mode: 'yes',
                 item_enable_metadata_required_filter: 'yes',
                 item_enable_metadata_searchbar: 'yes',
-                item_enable_metadata_collapses: 'yes'
+                item_enable_metadata_collapses: 'yes',
+                item_enable_metadata_enumeration: 'yes',
             },
             thumbnail: {},
             cover: {},
@@ -1078,6 +1085,7 @@ export default {
                 this.form.item_enable_metadata_required_filter = this.collection.item_enable_metadata_required_filter;
                 this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                 this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
+                this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
 
                 // Generates CoverPage from current cover_page_id info
                 if (this.form.cover_page_id != undefined && this.form.cover_page_id != '') {
@@ -1198,7 +1206,8 @@ export default {
                 item_enable_metadata_focus_mode: this.form.item_enable_metadata_focus_mode,
                 item_enable_metadata_required_filter: this.form.item_enable_metadata_required_filter,
                 item_enable_metadata_searchbar: this.form.item_enable_metadata_searchbar,
-                item_enable_metadata_collapses: this.form.item_enable_metadata_collapses
+                item_enable_metadata_collapses: this.form.item_enable_metadata_collapses,
+                item_enable_metadata_enumeration: this.form.item_enable_metadata_enumeration,
             };
             this.fillExtraFormData(data);
 
@@ -1237,6 +1246,7 @@ export default {
                     this.form.item_enable_metadata_required_filter = this.collection.item_enable_metadata_required_filter;
                     this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                     this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
+                    this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
                     
                     this.isLoading = false;
                     this.formErrorMessage = '';
@@ -1307,6 +1317,7 @@ export default {
                 this.form.item_enable_metadata_required_filter = this.collection.item_enable_metadata_required_filter;
                 this.form.item_enable_metadata_searchbar = this.collection.item_enable_metadata_searchbar;
                 this.form.item_enable_metadata_collapses = this.collection.item_enable_metadata_collapses;
+                this.form.item_enable_metadata_enumeration = this.collection.item_enable_metadata_enumeration;
 
                 // Pre-fill status with publish to incentivate it
                 this.form.status = 'publish';
@@ -1780,6 +1791,8 @@ export default {
     .options-checkboxes {
         display: flex;
         margin: 5px 0;
+        flex-wrap: wrap;
+        gap: 0.5rem;
         justify-content: space-between;
         /deep/ .b-checkbox.checkbox {
             width: auto

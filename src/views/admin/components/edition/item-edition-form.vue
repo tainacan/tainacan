@@ -398,6 +398,12 @@
                                                     <span class="icon has-text-gray4">
                                                         <i class="tainacan-icon tainacan-icon-metadata"/>
                                                     </span>
+                                                    <span
+                                                            v-if="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes'"
+                                                            style="opacity: 0.65;"
+                                                            class="metadata-section-enumeration">
+                                                        {{ Number(sectionIndex) + 1 }}.
+                                                    </span>
                                                     {{ metadataSection.name }}&nbsp;
                                                     <span 
                                                             v-if="metadataSection.metadata_object_list && metadataSection.metadata_object_list.length"
@@ -438,6 +444,7 @@
                                                             :hide-help-buttons="false"
                                                             :help-info-bellow-label="false"
                                                             :is-mobile-screen="isMobileScreen"
+                                                            :enumerate-metadatum="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(index) + 1) ) : false"
                                                             :is-last-metadatum="index > 2 && (index == itemMetadata.length - 1)"
                                                             :is-focused="focusedMetadatum === index"
                                                             :is-metadata-navigation="isMetadataNavigation"
