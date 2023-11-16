@@ -13,7 +13,7 @@ class CSV extends Exporter {
 		$this->accept_no_mapping = true;
 		if ($current_collection = $this->get_current_collection_object()) {
 			$name = $current_collection->get_name();
-			$this->collection_name = sanitize_title($name) . "_csv_export.csv";;
+			$this->collection_name = sanitize_title($name) . "_csv_export.csv";
 		} else {
 			$this->collection_name = "csv_export.csv";
 		}

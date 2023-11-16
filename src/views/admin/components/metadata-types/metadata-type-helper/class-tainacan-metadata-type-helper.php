@@ -26,7 +26,7 @@ class Metadata_Type_Helper {
 
 	private function __construct() {
 		$this->registered_metadata_type = [];
-		$this->Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();;
+		$this->Tainacan_Metadata = \Tainacan\Repositories\Metadata::get_instance();
 		$this->init();
 	}
 
