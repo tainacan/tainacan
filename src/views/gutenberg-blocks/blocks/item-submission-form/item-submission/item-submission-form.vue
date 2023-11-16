@@ -461,7 +461,15 @@
                                             }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
-                                <label>{{ metadataSection.name }}</label>
+                                <label>
+                                    <span
+                                            v-if="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes'"
+                                            style="opacity: 0.65;"
+                                            class="metadata-section-enumeration">
+                                        {{ Number(sectionIndex) + 1 }}.
+                                    </span>
+                                    {{ metadataSection.name }}
+                                </label>
                                 <help-button
                                         v-if="!hideHelpButtons &&
                                                 !helpInfoBellowLabel &&
@@ -505,6 +513,7 @@
                                                 :hide-help-buttons="hideHelpButtons"
                                                 :help-info-bellow-label="helpInfoBellowLabel"
                                                 :is-collapsed="metadataCollapses[index]"
+                                                :enumerate-metadatum="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(index) + 1) ) : false"
                                                 @changeCollapse="onChangeCollapse($event, index)"/>
 
                                         <!-- JS-side hook for extra content -->
@@ -782,6 +791,7 @@ export default {
     data(){
         return {
             collecionAllowsItemSubmission: true,
+            collectionItemMetadataEnumeration: 'no',
             isLoading: false,
             isLoadingMetadataSections: false,
             isSubmitting: false,
@@ -899,6 +909,7 @@ export default {
 
                 // Gets update info from the collecion in case it has been updated
                 this.collecionAllowsItemSubmission = collection.allows_submission == 'yes' ? true : false;
+                this.collectionItemMetadataEnumeration = collection.item_enable_metadata_enumeration;
                 this.useCaptcha = collection.submission_use_recaptcha;
 
                 // Initialize clear data from store

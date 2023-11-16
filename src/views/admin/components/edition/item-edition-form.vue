@@ -400,7 +400,8 @@
                                                     </span>
                                                     <span
                                                             v-if="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes'"
-                                                            style="opacity: 0.65;">
+                                                            style="opacity: 0.65;"
+                                                            class="metadata-section-enumeration">
                                                         {{ Number(sectionIndex) + 1 }}.
                                                     </span>
                                                     {{ metadataSection.name }}&nbsp;

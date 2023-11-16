@@ -167,7 +167,7 @@
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
             
-            this.allowNewFromOptions = this.allowNew === false ? false : metadata_type_options.allow_new_terms == 'yes' && this.$userCaps.hasCapability('tnc_rep_edit_taxonomies');
+            this.allowNewFromOptions = this.allowNew === false ? false : metadata_type_options.allow_new_terms == 'yes' && (!this.$userCaps || this.$userCaps.hasCapability('tnc_rep_edit_taxonomies'));
 
             this.getTermsId();
         },

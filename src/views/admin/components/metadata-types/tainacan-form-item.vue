@@ -22,7 +22,8 @@
             <label class="label">
                 <span
                         v-if="enumerateMetadatum"
-                        style="opacity: 0.65;">
+                        style="opacity: 0.65;"
+                        class="metadatum-section-enumeration">
                     {{ enumerateMetadatum }}.
                 </span>
                 {{ itemMetadatum.metadatum.name }}

@@ -32,7 +32,8 @@
                         <label class="label has-tooltip">
                             <span
                                     v-if="enumerateMetadatum"
-                                    style="opacity: 0.65;">
+                                    style="opacity: 0.65;"
+                                    class="metadatum-section-enumeration">
                                 {{ enumerateMetadatum }}.
                             </span>
                             {{ childItemMetadatum.metadatum.name }}
@@ -168,7 +169,7 @@
         },
         watch: {
             /*  This will create the input object structure for 
-             *   <tainacan-item-form :item-metadatum="childItemMetadatum" />
+             *   <tainacan-form-item :item-metadatum="childItemMetadatum" />
              *   looking at the values from the parent (this.itemMetadatum)   
              */  
             'itemMetadatum.value': {
