@@ -50,7 +50,8 @@ class Collection extends Entity {
 		$item_enable_metadata_focus_mode,
 		$item_enable_metadata_required_filter,
 		$item_enable_metadata_searchbar,
-		$item_enable_metadata_collapses;
+		$item_enable_metadata_collapses,
+		$item_enable_metadata_enumeration;
 
 	/**
 	 * {@inheritDoc}
@@ -707,10 +708,19 @@ class Collection extends Entity {
 	/**
 	 * Check if metadata collapses are enabled for this collection.
 	 *
-	 * @return bool True if metadata collapses are enabled, 'no' otherwise.
+	 * @return bool 'yes' if metadata collapses are enabled, 'no' otherwise.
 	 */
 	function get_item_enable_metadata_collapses() {
 		return $this->get_mapped_property('item_enable_metadata_collapses');
+	}
+
+	/**
+	 * Check if metadata and metadata section should be enumerated in the edition form.
+	 *
+	 * @return bool 'yes' if metadata are enumerated, 'no' otherwise.
+	 */
+	function get_item_enable_metadata_enumeration() {
+		return $this->get_mapped_property('item_enable_metadata_enumeration');
 	}
 
 	// Setters
@@ -1086,6 +1096,16 @@ class Collection extends Entity {
 	 */
 	function set_item_enable_metadata_collapses( $value ) {
 		$this->set_mapped_property('item_enable_metadata_collapses', $value);
+	}
+
+	/**
+	 * Enable or disable metadata and metadata sections enumeration for the item edition form this collection.
+	 *
+	 * @param string $value 'yes' to enable metadata enumeration, 'no' to disable.
+	 * @return void
+	 */
+	function set_item_enable_metadata_enumeration( $value ) {
+		$this->set_mapped_property('item_enable_metadata_enumeration', $value);
 	}
 
 	/**

@@ -455,6 +455,16 @@ class Collections extends Repository {
 				'enum'  => [ 'yes', 'no' ],
 				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
 			],
+			'item_enable_metadata_enumeration'  => [
+				'map'         => 'meta',
+				'title'       => __( 'Metadata enumeration', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'If enabled, the metadata sections and their metadata in the item form will be enumerated automatically.', 'tainacan' ),
+				'default'     => 'no',
+				'on_error'    => __( 'Value should be yes or no', 'tainacan' ),
+				'enum'  => [ 'yes', 'no' ],
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+			]
 		] );
 	}
 
