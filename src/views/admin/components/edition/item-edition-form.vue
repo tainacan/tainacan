@@ -1351,7 +1351,9 @@ export default {
                         if (currentItemMetadatum) {
                             const itemMetadatumValues = Array.isArray(currentItemMetadatum.value) ? currentItemMetadatum.value : [ currentItemMetadatum.value ];
                             const conditionalValues = Array.isArray(eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues) ? eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues : [eventBusItemMetadata.conditionalSections[conditionalSectionId].metadatumValues];
-                            eventBusItemMetadata.conditionalSections[conditionalSectionId].hide = Array.isArray(itemMetadatumValues) ? itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue) < 0) : conditionalValues.indexOf(itemMetadatumValues) < 0;
+                            console.log(itemMetadatumValues, conditionalValues);
+                            eventBusItemMetadata.conditionalSections[conditionalSectionId].hide = Array.isArray(itemMetadatumValues) ? itemMetadatumValues.every(aValue => conditionalValues.indexOf(aValue['id'] ? aValue['id'] : aValue) < 0) : conditionalValues.indexOf(itemMetadatumValues) < 0;
+                            console.log(eventBusItemMetadata.conditionalSections[conditionalSectionId].hide)
                         }
                     }
 
