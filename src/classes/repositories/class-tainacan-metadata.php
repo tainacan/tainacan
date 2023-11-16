@@ -1426,6 +1426,7 @@ class Metadata extends Repository {
 					'parent' => $r->parent,
 					'total_items' => $total_items,
 					'type' => 'Taxonomy',
+					'description' => term_description($r->term_id),
 					'hierarchy_path' => get_term_parents_list($r->term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 				];
 

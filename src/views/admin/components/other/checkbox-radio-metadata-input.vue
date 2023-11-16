@@ -81,6 +81,13 @@
                                     <span class="check" /> 
                                     <span class="control-label">
                                         <span 
+                                                v-tooltip="{
+                                                    content: option.description,
+                                                    autoHide: true,
+                                                    html: true,
+                                                    placement: 'auto-start',
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                                }"
                                                 class="checkbox-label-text"
                                                 v-html="`${ option.name ? option.name : (option.label ? (option.hierarchy_path ? renderHierarchicalPath(option.hierarchy_path, option.label) : option.label) : '') }`" /> 
                                     </span>
@@ -147,7 +154,15 @@
                                         :type="isCheckbox ? 'checkbox' : 'radio'"> 
                                 <span class="check" /> 
                                 <span class="control-label">
-                                    <span class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
+                                    <span 
+                                            v-tooltip="{
+                                                content: option.description,
+                                                autoHide: true,
+                                                html: true,
+                                                placement: 'auto-start',
+                                                popperClass: ['tainacan-tooltip', 'tooltip']
+                                            }"
+                                            class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
                                 </span>
                             </label>
                         </li>
@@ -206,7 +221,15 @@
                                             :type="isCheckbox ? 'checkbox' : 'radio'"> 
                                     <span class="check" /> 
                                     <span class="control-label">
-                                        <span class="checkbox-label-text">{{ option.label }}</span>
+                                        <span 
+                                                v-tooltip="{
+                                                    content: option.description,
+                                                    autoHide: true,
+                                                    html: true,
+                                                    placement: 'auto-start',
+                                                    popperClass: ['tainacan-tooltip', 'tooltip']
+                                                }"
+                                                class="checkbox-label-text">{{ option.label }}</span>
                                     </span>
                                 </label>
                                 <a
