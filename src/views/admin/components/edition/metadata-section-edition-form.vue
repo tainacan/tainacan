@@ -10,7 +10,12 @@
             v-if="form && Object.keys(form).length"
             class="tainacan-modal-content">
         <div class="tainacan-modal-title">
-            <h2 v-html="form.name ? ($i18n.get('instruction_configure_the_metadata_section') + ' <em>' + form.name + '</em>') : $i18n.get('instruction_configure_new_metadata_section')" />
+            <h2 v-if="form.name">
+                {{ $i18n.get('instruction_configure_the_metadata_section') }}&nbsp;<em>{{ form.name }}</em>
+            </h2>
+            <h2 v-else>
+                {{ $i18n.get('instruction_configure_new_metadata_section') }}
+            </h2>
             <hr>
         </div>
         <div class="tainacan-form">
