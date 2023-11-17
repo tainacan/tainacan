@@ -37,7 +37,7 @@ export const tainacanErrorHandler = function(error) {
                     break;
             }
             Snackbar.open({
-                message: errorMessage,
+                message: errorMessage.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;'),
                 type: 'is-danger',
                 duration: duration,
                 actionText: errorMessageDetail != '' ? i18nGet('label_know_more') : null,

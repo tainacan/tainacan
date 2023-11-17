@@ -751,7 +751,7 @@ export default {
                             let errorMessage = errors.length > 1 ? this.$i18n.getWithVariables('info_terms_creation_failed_due_to_values_%s', [ wrongValues ]) : this.$i18n.getWithVariables('info_terms_creation_failed_due_to_value_%s', [ wrongValues ]); 
                             errorMessage += ' ' + errors[0]['errors'][0]['name'];
                             this.$buefy.snackbar.open({
-                                message: errorMessage,
+                                message: errorMessage.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;'),
                                 type: 'is-danger',
                                 position: 'is-bottom-right',
                                 pauseOnHover: true,

@@ -15,7 +15,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         log(something) {
             if (options.visual) {
                 Vue.prototype.$buefy.snackbar.open({
-                    message: something,
+                    message: something.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;'),
                     type: 'is-secondary',
                     position: 'is-bottom-right',
                     indefinite: true,
@@ -28,7 +28,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         info(someInfo) {
             if (options.visual) {
                 Vue.prototype.$buefy.snackbar.open({
-                    message: someInfo,
+                    message: someInfo.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;'),
                     type: 'is-primary',
                     position: 'is-bottom-right',
                     duration: 5000,
@@ -41,7 +41,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         error(someError) {
             if (options.visual) {
                 Vue.prototype.$buefy.snackbar.open({
-                    message: someError,
+                    message: someError.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;'),
                     type: 'is-danger',
                     position: 'is-bottom-right',
                     indefinite: true,
