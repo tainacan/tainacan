@@ -962,6 +962,10 @@
     .tainacan-finder-columns-container {
         background-color: var(--tainacan-white);
         border: 1px solid var(--tainacan-gray1);
+        border-bottom-left-radius: var(--tainacan-dropdownmenu-border-radius);
+        border-bottom-right-radius: var(--tainacan-dropdownmenu-border-radius);
+        border-top-right-radius: 0px;
+        border-top-left-radius: 0px;
         border-top: 0px;
         margin-top: -1px;
         height: auto;

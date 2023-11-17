@@ -69,7 +69,7 @@
 .tainacan-modal-content {
     font-family: var(--tainacan-font-family, inherit);
     font-size: 1rem;
-    border-radius: 0px;
+    border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
     background-color: var(--tainacan-background-color);
     padding: 40px var(--tainacan-one-column);
     padding: 40px 4.166666667vw;
@@ -166,7 +166,7 @@
             width: 100%;
 
             .button {
-                border-radius: 4px !important;
+                border-radius: var(--tainacan-button-border-radius, 4px) !important;
                 font-weight: normal;
                 padding: 2px 15px !important;
                 margin-top: 0px !important;

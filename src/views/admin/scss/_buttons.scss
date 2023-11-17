@@ -17,7 +17,7 @@ button.link-style:active {
     }
 }
 .button {
-    border-radius: 4px !important;
+    border-radius: var(--tainacan-button-border-radius, 4px) !important;
     min-height: 2.125em;
     font-weight: normal;
     text-transform: inherit;
@@ -117,7 +117,7 @@ kbd {
     border-left-width: 2px;
     border-right-width: 3px;
     border-bottom-width: 4px;
-    border-radius: 4px;
+    border-radius: var(--tainacan-button-border-radius, 4px);
     border-style: solid;
     border-color: var(--tainacan-gray2, #dbdbdb);
     border-bottom-color: var(--tainacan-gray3, #a5a5a5);

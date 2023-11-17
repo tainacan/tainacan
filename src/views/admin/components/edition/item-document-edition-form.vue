@@ -166,6 +166,7 @@ export default {
             justify-content: space-evenly;
             padding: 1.5rem 1rem 2rem 1rem;
             border: 1px solid var(--tainacan-input-border-color);
+            border-radius: var(--tainacan-input-border-radius, 1px);
 
             li {
                 text-align: center;

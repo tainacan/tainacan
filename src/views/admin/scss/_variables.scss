@@ -63,6 +63,11 @@ $yellow2-invert: findColorInvert($yellow2);
 $tainacan-input-color: #1d1d1d;
 $tainacan-input-color-invert: findColorInvert($tainacan-input-color);
 
+// Input border radius
+$tainacan-input-border-radius: 1px;
+$tainacan-button-border-radius: 4px;
+$tainacan-dropdownmenu-border-radius: 0px;
+
 // Skeleton colors
 $skeleton-color: #eeeeee;
 $skeleton-color-invert: findColorInvert(#eeeeee);

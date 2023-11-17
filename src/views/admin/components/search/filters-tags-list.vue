@@ -213,7 +213,7 @@
         }
 
         .filter-tag {
-            border-radius: 3px;
+            border-radius: var(--tainacan-button-border-radius, 4px);
             padding: 3px 8px 2px 8px;
             position: relative;
             background-color: var(--tainacan-input-background-color);

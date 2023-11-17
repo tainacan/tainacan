@@ -671,7 +671,7 @@
             .button {
                 display: flex;
                 align-items: center;
-                border-radius: 0px !important;
+                border-radius: var(--tainacan-button-border-radius, 4px) !important;
                 height: 100% !important;
             }
             

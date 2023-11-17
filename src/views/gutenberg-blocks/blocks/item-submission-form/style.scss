@@ -157,7 +157,7 @@
             height: 1.5em;
             width: 18%;
             border: 2px solid var(--tainacan-input-border-color, rgba(200,200,200, 0.3));
-            border-radius: 3px;
+            border-radius: var(--tainacan-input-border-radius, 1px);
             display: inline-block;
         }
         .fake-textarea {
@@ -165,7 +165,7 @@
             height: 2.5em;
             width: 100%;
             border: 2px solid var(--tainacan-input-border-color, rgba(200,200,200, 0.3));
-            border-radius: 3px;
+            border-radius: var(--tainacan-input-border-radius, 1px);
             display: inline-block;
         }
         .fake-button {
@@ -176,7 +176,7 @@
             max-width: 3.45em;
             min-width: 1em;
             margin-left: 6px;
-            border-radius: 3px;
+            border-radius: var(--tainacan-button-border-radius, 4px);
             display: flex;
             align-items: center;
             margin-right: auto;

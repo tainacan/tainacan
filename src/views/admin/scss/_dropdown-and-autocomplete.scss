@@ -29,7 +29,7 @@
         font-size: 1em;
         padding: 0px;
         margin-top: 0;
-        border-radius: 0px;
+        border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
         min-width: 6em;
         border: none;
         z-index: 999991;
@@ -37,7 +37,7 @@
 
         .dropdown-content {
             padding: 0px 0px 1px 0px;
-            border-radius: 0px !important;
+            border-radius: var(--tainacan-dropdownmenu-border-radius, 0px) !important;
             max-height: 240px;
             overflow-y: auto;
             box-shadow: none;
@@ -146,7 +146,7 @@
     box-shadow: none;
 }
 .taginput-container {
-    border-radius: 1px !important;
+    border-radius: var(--tainacan-input-border-radius, 1px) !important;
     padding: 0px !important;
     background-color: transparent !important;
 

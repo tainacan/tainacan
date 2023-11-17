@@ -45,6 +45,9 @@
     --tainacan-label-color: var(--tainacan-gray5);
     --tainacan-info-color: var(--tainacan-gray4);
     --tainacan-heading-color: var(--tainacan-black);
+    --tainacan-input-border-radius: #{$tainacan-input-border-radius};
+    --tainacan-button-border-radius: #{$tainacan-button-border-radius};
+    --tainacan-dropdownmenu-border-radius: #{$tainacan-dropdownmenu-border-radius};
 
     // Skeleton color
     --tainacan-skeleton-color: #{$skeleton-color};

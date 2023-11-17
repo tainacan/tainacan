@@ -236,7 +236,7 @@
         }
 
         .taginput-container {
-            border-radius: 1px !important;
+            border-radius: var(--tainacan-input-border-radius, 1px) !important;
             box-shadow: none !important;
             transition: background-color 0.1s;
         }

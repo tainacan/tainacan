@@ -342,7 +342,10 @@ export default {
     .tainacan-hierarchical-list-columns-container {
         background-color: var(--tainacan-background-color);
         border: 1px solid var(--tainacan-gray2);
-        border-radius: 2px;
+        border-bottom-left-radius: var(--tainacan-dropdownmenu-border-radius);
+        border-bottom-right-radius: var(--tainacan-dropdownmenu-border-radius);
+        border-top-right-radius: 0px;
+        border-top-left-radius: 0px;
         margin-top: 0px;
         display: flex;
         height: auto;

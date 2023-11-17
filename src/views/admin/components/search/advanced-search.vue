@@ -143,7 +143,7 @@
                 <div class="field">
                     <button
                             @click.prevent="removeCriterion(searchCriterion)"
-                            class="button is-white is-pulled-right has-text-secondary"
+                            class="button button-remove-criterion is-pulled-right has-text-secondary"
                             type="button"
                             :aria-label="$i18n.get('remove_search_criterion')">
                         <span 
@@ -651,6 +651,7 @@
     .tnc-advanced-search-container {
         position: relative;
         padding: 1.25em;
+        border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
 
         h3 {
             font-size: 1em !important;
@@ -681,6 +682,13 @@
             display: inline-flex;
             align-items: center;
             margin-right: 1em;
+        }
+
+        .button-remove-criterion {
+            color: var(--tainacan-input-color);
+            background: transparent;
+            border: none;
+            border-radius: var(--tainacan-button-border-radius, 4px);
         }
 
         @media screen and (max-width: 768px) {

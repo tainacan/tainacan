@@ -20,7 +20,7 @@ input[type="week"].input {
     line-height: 1em;
     font-size: 0.875em;
     font-family: var(--tainacan-font-family, inherit);
-    border-radius: 1px !important;
+    border-radius: var(--tainacan-input-border-radius, 1px) !important;
     box-shadow: none !important;
     background-color: var(--tainacan-input-background-color);
     border: 1px solid var(--tainacan-input-border-color);
