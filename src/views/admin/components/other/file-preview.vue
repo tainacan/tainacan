@@ -19,7 +19,7 @@
         <div class="field is-grouped form-submit">
             <div class="control">
                 <button
-                        id="button-cancel-importer-edition"
+                        id="button-cancel-file-preview"
                         class="button is-outlined"
                         type="button"
                         @click="$parent.close()">
