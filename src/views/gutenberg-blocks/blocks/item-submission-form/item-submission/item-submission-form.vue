@@ -513,7 +513,7 @@
                                                 :hide-help-buttons="hideHelpButtons"
                                                 :help-info-bellow-label="helpInfoBellowLabel"
                                                 :is-collapsed="metadataCollapses[index]"
-                                                :enumerate-metadatum="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(index) + 1) ) : false"
+                                                :enumerate-metadatum="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
                                                 @changeCollapse="onChangeCollapse($event, index)"/>
 
                                         <!-- JS-side hook for extra content -->
@@ -792,6 +792,7 @@ export default {
         return {
             collecionAllowsItemSubmission: true,
             collectionItemMetadataEnumeration: 'no',
+            collectionMetadataSectionOrder: [],
             isLoading: false,
             isLoadingMetadataSections: false,
             isSubmitting: false,
@@ -910,6 +911,7 @@ export default {
                 // Gets update info from the collecion in case it has been updated
                 this.collecionAllowsItemSubmission = collection.allows_submission == 'yes' ? true : false;
                 this.collectionItemMetadataEnumeration = collection.item_enable_metadata_enumeration;
+                this.collectionMetadataSectionOrder = collection.metadata_section_order;
                 this.useCaptcha = collection.submission_use_recaptcha;
 
                 // Initialize clear data from store
@@ -1209,6 +1211,19 @@ export default {
         },
         isSectionHidden(sectionId) {
             return this.conditionalSections[sectionId] && this.conditionalSections[sectionId].hide;
+        },
+        getMetadatumOrderInSection(sectionIndex, metadatum) {
+
+            if ( !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
+                return -1;
+
+            let enabledMetadata = [];
+            for (let metadatum of this.collection['metadata_section_order'][sectionIndex]['metadata_order']) {
+                if ( metadatum.enabled )
+                    enabledMetadata.push(metadatum.id);
+            }
+
+            return enabledMetadata.indexOf(metadatum.id);
         }
     }
 }

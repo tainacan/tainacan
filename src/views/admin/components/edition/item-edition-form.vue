@@ -444,7 +444,7 @@
                                                             :hide-help-buttons="false"
                                                             :help-info-bellow-label="false"
                                                             :is-mobile-screen="isMobileScreen"
-                                                            :enumerate-metadatum="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(index) + 1) ) : false"
+                                                            :enumerate-metadatum="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
                                                             :is-last-metadatum="index > 2 && (index == itemMetadata.length - 1)"
                                                             :is-focused="focusedMetadatum === index"
                                                             :is-metadata-navigation="isMetadataNavigation"
@@ -932,6 +932,13 @@ export default {
         },
         shouldDisplayItemEditionAttachments() {
             return !this.$adminOptions.hideItemEditionAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');
+        },
+        metadataOrderRelativeToSections() {
+            return this.metadataSections.map((aMetadataSection) => {
+                return Object.keys(aMetadataSection.metadata_object_list).map((aMetadatumOrder) => {
+                    return aMetadatum.id;
+                });
+            });
         }
     },
     watch: {
@@ -1876,6 +1883,19 @@ export default {
         },
         isSectionHidden(sectionId) {
             return this.conditionalSections[sectionId] && this.conditionalSections[sectionId].hide;
+        },
+        getMetadatumOrderInSection(sectionIndex, metadatum) {
+
+            if ( !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
+                return -1;
+
+            let enabledMetadata = [];
+            for (let metadatum of this.collection['metadata_section_order'][sectionIndex]['metadata_order']) {
+                if ( metadatum.enabled )
+                    enabledMetadata.push(metadatum.id);
+            }
+
+            return enabledMetadata.indexOf(metadatum.id);
         }
     }
 }

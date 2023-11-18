@@ -239,7 +239,7 @@ export const fetchCollection = ({ commit, }, id) => {
 
 export const fetchCollectionBasics = ({ commit }, {collectionId, isContextEdit }) => {
     return new Promise((resolve, reject) => { 
-        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,status,allow_comments,hide_items_thumbnail_on_lists,item_enabled_document_types,item_document_label,item_thumbnail_label,item_enable_thumbnail,item_attachment_label,item_enable_attachments,item_enable_metadata_focus_mode,item_enable_metadata_required_filter,item_enable_metadata_searchbar,item_enable_metadata_collapses,item_enable_metadata_enumeration';
+        let endpoint = '/collections/' + collectionId + '?fetch_only=name,url,status,allow_comments,hide_items_thumbnail_on_lists,item_enabled_document_types,item_document_label,item_thumbnail_label,item_enable_thumbnail,item_attachment_label,item_enable_attachments,item_enable_metadata_focus_mode,item_enable_metadata_required_filter,item_enable_metadata_searchbar,item_enable_metadata_collapses,item_enable_metadata_enumeration,metadata_section_order';
         
         if (isContextEdit)
             endpoint += '&context=edit';
@@ -310,7 +310,7 @@ export const fetchCollectionForExposer = ({ commit }, collectionId) => {
 
 export const fetchCollectionForItemSubmission = ({ commit }, collectionId) => {
     return new Promise((resolve, reject) => { 
-        let endpoint = '/collections/' + collectionId + '?fetch_only=name,allows_submission,submission_use_recaptcha,item_enable_metadata_enumeration';
+        let endpoint = '/collections/' + collectionId + '?fetch_only=name,allows_submission,submission_use_recaptcha,item_enable_metadata_enumeration,metadata_section_order';
         axios.tainacan.get(endpoint)
         .then(res => {
             resolve( res.data );
