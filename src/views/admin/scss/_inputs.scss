@@ -41,14 +41,14 @@ input[type="week"].input {
         background-color: var(--tainacan-input-background-color);
     }  
     &:hover {
-        border: 1px solid var(--tainacan-gray3);
+        border: 1px solid var(--tainacan-secondary);
     }  
     &[disabled] {
         color: var(--tainacan-info-color) !important;
         background-color: var(--tainacan-input-border-color) !important;
     }
     &.readonly, &[readonly] {
-        background-color: var(--tainacan-white) !important;
+        background-color: var(--tainacan-input-background-color) !important;
     }
     &::placeholder {
         font-size: 0.875em;

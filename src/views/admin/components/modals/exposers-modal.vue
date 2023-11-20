@@ -508,7 +508,7 @@ export default {
         
         p {
             font-size: 1em;
-            color: var(--tainacan-gray5);
+            color: var(--tainacan-label-color);
             padding: 0em 1.25em;
             margin-top: 0.75em;
             margin-bottom: 0;
@@ -542,13 +542,13 @@ export default {
                 }
                 p {
                     font-size: 0.75em;
-                    color: var(--tainacan-gray5);
+                    color: var(--tainacan-label-color);
                     padding: 0em 0.5em;
                     margin-bottom: 0;
                 }
 
                 &:hover {
-                    border: 1px solid var(--tainacan-gray3);
+                    border: 1px solid var(--tainacan-item-hover-background-color);
                 }
             }
         }
@@ -566,7 +566,7 @@ export default {
             }
             .collapse-handler:hover {
                 cursor: pointer;
-                background-color: var(--tainacan-gray1);
+                background-color: var(--tainacan-item-hover-background-color);
             }
             .collapse-handle {
                 cursor: pointer;
@@ -626,9 +626,9 @@ export default {
             }
         }
         &:hover {
-            background-color: var(--tainacan-gray1);
+            background-color: var(--tainacan-item-hover-background-color);
             .exposer-item-actions {
-                background-color: var(--tainacan-gray2);
+                background-color: var(--tainacan-item-hover-background-color);
             }
         }
         .exposer-item-actions {
@@ -646,7 +646,7 @@ export default {
                 animation-name: appear-from-top-tooltip;
                 animation-duration: 0.3s;
                 position: absolute;
-                background: var(--tainacan-gray1);
+                background: var(--tainacan-item-hover-background-color);
                 padding: 0.5em 0.875em 0.75em 0.875em;
                 border-radius: 4px;
                 top: 44px;
@@ -660,8 +660,8 @@ export default {
                 }
                 p { padding: 0 0 0.5em 0; }
                 input {
-                    background-color: var(--tainacan-white);
-                    border: 1px solid var(--tainacan-gray2);
+                    background-color: var(--tainacan-input-background-color);
+                    border: 1px solid var(--tainacan-input-border-color);
                     border-radius: 0;
                     padding: 2px 8px;
                 }
@@ -673,7 +673,7 @@ export default {
                     width: 0;
                     height: 0;
                     border-style: solid;
-                    border-color: transparent transparent var(--tainacan-gray1) transparent;
+                    border-color: transparent transparent var(--tainacan-item-hover-background-color) transparent;
                     border-right-width: 14px;
                     border-bottom-width: 16px;
                     border-left-width: 14px;
