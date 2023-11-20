@@ -317,9 +317,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_select_all_processes_page'                => __( 'Select all processes on page', 'tainacan' ),
 	'label_select_all_terms'                    	 => __( 'Select all taxonomy terms', 'tainacan' ),
 	'label_all_terms_selected'     		             => __( 'All terms selected', 'tainacan' ),
-	'label_add_or_update_attachments'                => __( 'Add or update attachments', 'tainacan' ),
-	/* translators: by default this the plural of attachments */	
-	'label_add_or_update_%s'						 => __( 'Add or update %s', 'tainacan' ),
+	/* translators: this refers to attachments */	
+	'label_add_or_update'						 	 => __( 'Add or update', 'tainacan' ),
 	'label_blank_collection'                         => __( 'Blank collection', 'tainacan' ),
 	/* translators: the metadata scheme https://dublincore.org/ */
 	'label_dublin_core'                              => __( 'Dublin Core', 'tainacan' ),
