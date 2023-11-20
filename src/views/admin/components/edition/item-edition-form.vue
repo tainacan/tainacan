@@ -932,13 +932,6 @@ export default {
         },
         shouldDisplayItemEditionAttachments() {
             return !this.$adminOptions.hideItemEditionAttachments && (this.collection && this.collection.item_enable_attachments === 'yes');
-        },
-        metadataOrderRelativeToSections() {
-            return this.metadataSections.map((aMetadataSection) => {
-                return Object.keys(aMetadataSection.metadata_object_list).map((aMetadatumOrder) => {
-                    return aMetadatum.id;
-                });
-            });
         }
     },
     watch: {
