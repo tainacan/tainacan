@@ -207,6 +207,17 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 	}
 
+	protected function sanitize_value($value) {
+		if (is_numeric($value) || empty($value) ) {
+			return $value;
+		}
+
+		$allowed_html = wp_kses_allowed_html('post');
+		unset($allowed_html["a"]);
+	
+		return trim(wp_kses($value, $allowed_html));
+	}
+
 	/**
 	 * @param $mapped
 	 * @param $request
@@ -219,6 +230,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	 */
 	private function prepare_meta($mapped, $request, $query, $mapped_v, $args){
 		$request_meta_query = $request[$mapped];
+		$query_field_scaped = ["value", "terms"];
 
 		// if the meta/date/taxquery has a root relation
         if( isset( $request_meta_query['relation']) )
@@ -231,10 +243,15 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 				foreach ( $query as $mapped_meta => $meta_v ) {
 					if ( isset( $a[ $mapped_meta ] ) ) {
-						$valeu =  is_array($request[ $mapped ][ $index1 ][ $mapped_meta ])
-							? array_map('sanitize_text_field', $request[ $mapped ][ $index1 ][ $mapped_meta ])
-							: sanitize_text_field($request[ $mapped ][ $index1 ][ $mapped_meta ]);
-						$args[ $mapped_v ][ $index1 ][ $meta_v ] = $valeu;
+						if( in_array($mapped_meta, $query_field_scaped) ) {
+							$valeu =  is_array($request[ $mapped ][ $index1 ][ $mapped_meta ])
+								? array_map([$this, 'sanitize_value'], $request[ $mapped ][ $index1 ][ $mapped_meta ])
+								: $this->sanitize_value($request[ $mapped ][ $index1 ][ $mapped_meta ]);
+							$args[ $mapped_v ][ $index1 ][ $meta_v ] = $valeu;
+						} else {
+							$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $mapped_meta ];
+
+						}
 					}
 				}
 
@@ -243,9 +260,13 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		} else {
 			foreach ( $query as $mapped_meta => $meta_v ) {
 				if(isset($request[$mapped][$mapped_meta])) {
-					$args[ $mapped_v ][ $meta_v ] =  is_array($request[ $mapped ][ $mapped_meta ])
-						? array_map('sanitize_text_field', $request[ $mapped ][ $mapped_meta ])
-						: sanitize_text_field($request[ $mapped ][ $mapped_meta ]);
+					if( in_array($mapped_meta, $query_field_scaped) ) {
+						$args[ $mapped_v ][ $meta_v ] =  is_array($request[ $mapped ][ $mapped_meta ])
+							? array_map([$this, 'sanitize_value'], $request[ $mapped ][ $mapped_meta ])
+							: $this->sanitize_value($request[ $mapped ][ $mapped_meta ]);
+					} else {
+						$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $mapped_meta ];
+					}
 				}
 			}
 		}
