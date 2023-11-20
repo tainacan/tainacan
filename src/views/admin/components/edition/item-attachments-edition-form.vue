@@ -28,7 +28,7 @@
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-edit"/>
                 </span>
-                {{ $i18n.getWithVariables('label_add_or_update_%s', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) }}
+                {{ $i18n.get('label_add_or_update') }}
             </button>
         </div>
         <div 
