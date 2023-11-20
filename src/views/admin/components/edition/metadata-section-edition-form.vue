@@ -210,7 +210,7 @@
                                     :is="selectedConditionalMetadatum.metadata_type_object.component"
                                     :forced-component-type="selectedConditionalMetadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
                                     :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
-                                    :value="selectedConditionalValue"
+                                    :value="Array.isArray(selectedConditionalValue) ? selectedConditionalValue[0] : selectedConditionalValue"
                                     :allow-new="false"
                                     :maxtags="1"
                                     @input="selectConditionalValue"
