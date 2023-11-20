@@ -36,12 +36,14 @@ input[type="week"].input {
     &:focus, &:active {
         box-shadow: none !important;
     }  
-    &:not(.is-danger):focus, &:not(.is-danger):active {
-        border: 1px solid var(--tainacan-gray4) !important;
+    &:not(.is-danger):focus,
+    &:not(.is-danger):focus-visible,
+    &:not(.is-danger):active {
+        border: 1px solid var(--tainacan-secondary) !important;
         background-color: var(--tainacan-input-background-color);
     }  
     &:hover {
-        border: 1px solid var(--tainacan-secondary);
+        border: 1px solid var(--tainacan-input-color);
     }  
     &[disabled] {
         color: var(--tainacan-info-color) !important;

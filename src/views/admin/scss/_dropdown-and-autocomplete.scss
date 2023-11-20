@@ -146,21 +146,25 @@
     box-shadow: none;
 }
 .taginput-container {
-    border-radius: var(--tainacan-input-border-radius, 1px) !important;
     padding: 0px !important;
-    background-color: transparent !important;
+    background-color: var(--tainacan-input-background-color);
+    border: 1px solid var(--tainacan-input-border-color) !important;
+    border-radius: var(--tainacan-input-border-radius, 1px) !important;
 
-    &:focus, &:active {
-        border: 1px solid transparent !important;
+    &:focus, &:active, &.is-focused {
+        border: 1px solid var(--tainacan-secondary) !important;
     }
     .input {
         margin-bottom: 0px !important;
         text-overflow: ellipsis;
-        background-color: var(--tainacan-input-background-color);
+        background-color: none;
     }
-    .input.has-selected, .input:focus, .input:active {
+    input[type="text"].input:not(.is-danger).has-selected,
+    input[type="text"].input:not(.is-danger):focus,
+    input[type="text"].input:not(.is-danger):focus-visible,
+    input[type="text"].input:not(.is-danger):active {
         background-color: var(--tainacan-input-background-color);
-        border: 1px solid var(--tainacan-input-border-color) !important;
+        border: none !important;
     }
     .tags {
         margin:  0.17em 0.25em 0.08em 0.25em !important;

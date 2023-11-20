@@ -25,9 +25,12 @@
         option:checked, option:hover {
             background: var(--tainacan-input-border-color) !important;
         }
-        &:focus, &:active {
+        &:not(.is-danger):focus,
+        &:not(.is-danger):focus-visible,
+        &:not(.is-danger):active {
             box-shadow: none !important;
             text-decoration: none !important;
+            border: 1px solid var(--tainacan-secondary) !important;
         }
         &[disabled=disabled] {
             background: var(--tainacan-gray1) !important;
@@ -35,6 +38,9 @@
         &:hover,
         &:focus {
             color: var(--tainacan-input-color) !important;
+        }
+        &:hover {
+            border: 1px solid var(--tainacan-input-color) !important;
         }
         
     }

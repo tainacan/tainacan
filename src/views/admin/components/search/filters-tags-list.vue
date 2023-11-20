@@ -240,9 +240,13 @@
                 right: 2px;
                 top: 2px;
                 border-radius: 50px;
+                background-color: transparent;
 
-                &:not(:hover) {
-                    background-color: transparent;
+                &:hover,
+                &:focus {
+                    border: none;
+                    background-color: var(--tainacan-item-hover-background-color);
+                    color: var(--tainacan-secondary);
                 }
             }
             &.is-readonly {
