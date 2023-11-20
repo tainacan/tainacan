@@ -9,6 +9,10 @@ const i18nGet = function (key) {
     return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";
 };
 
+const tainacanSanitize = function(htmlString) {
+    return htmlString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;')
+}
+
 export const tainacanErrorHandler = function(error) {
     if (error.response && error.response.status) {
         // The request was made and the server responded with a status code
@@ -37,7 +41,7 @@ export const tainacanErrorHandler = function(error) {
                     break;
             }
             Snackbar.open({
-                message: errorMessage.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;'),
+                message: tainacanSanitize(errorMessage),
                 type: 'is-danger',
                 duration: duration,
                 actionText: errorMessageDetail != '' ? i18nGet('label_know_more') : null,

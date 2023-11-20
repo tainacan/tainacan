@@ -7,6 +7,21 @@ const wpApi = axios.create({
 
 wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 
+const tainacanSanitize = function(htmlString) {
+    return htmlString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;')
+}
+
+// HTML SANITIZE PLUGIN - Helps sanitizing html string from javascript.
+export const HtmlSanitizerPlugin = {};
+HtmlSanitizerPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$htmlSanitizer = {
+        sanitize(htmlString) {
+            return tainacanSanitize(htmlString);
+        }
+    }
+};
+
 // CONSOLE PLUGIN - Allows custom use of console functions and avoids eslint warnings.
 export const ConsolePlugin = {};
 ConsolePlugin.install = function (Vue, options = { visual: false }) {
@@ -15,7 +30,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         log(something) {
             if (options.visual) {
                 Vue.prototype.$buefy.snackbar.open({
-                    message: something.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;'),
+                    message: htmlString(something),
                     type: 'is-secondary',
                     position: 'is-bottom-right',
                     indefinite: true,
@@ -28,7 +43,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         info(someInfo) {
             if (options.visual) {
                 Vue.prototype.$buefy.snackbar.open({
-                    message: someInfo.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;'),
+                    message: tainacanSanitize(someInfo),
                     type: 'is-primary',
                     position: 'is-bottom-right',
                     duration: 5000,
@@ -41,7 +56,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         error(someError) {
             if (options.visual) {
                 Vue.prototype.$buefy.snackbar.open({
-                    message: someError.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;'),
+                    message: tainacanSanitize(someError),
                     type: 'is-danger',
                     position: 'is-bottom-right',
                     indefinite: true,
