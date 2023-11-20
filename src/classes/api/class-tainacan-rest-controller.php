@@ -434,7 +434,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 		$metaquery_properties = array(
 			'key'      => array(
-				'type'        => 'string',
+				'type'        => ['integer', 'string'],
 				'description' => __('Custom metadata key.'),
 			),
 			'value'    => array(
@@ -520,21 +520,6 @@ abstract class REST_Controller extends \WP_REST_Controller {
 					'type'            => 'object',
 					'properties'  => $metaquery_properties,
 				),
-				// 'sanitize_callback' => function($value, $request, $param) {
-					// if(isset($value['value'])) {
-					// 	$value['value'] = sanitize_text_field($value['value']);
-					// } else if(is_array($value)) {
-					// 	$value = array_map( function($v) {
-					// 		if( isset($v['value']))
-					// 			$v['value'] = is_array($v['value'])
-					// 				? array_map('sanitize_text_field', $v['value'])
-					// 				: sanitize_text_field($v['value']);
-					// 		return $v;
-					// 	}, $value);
-					// }
-					// error_log("sanitize_callback" . json_encode($value));
-					// return $value;
-				// }
 			),
 			'datequery'    => array(
 				'description' => __('Limits the result set to items that were created or modified in some specific date'),
