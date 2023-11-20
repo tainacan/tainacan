@@ -57,13 +57,13 @@ class REST_Items_Controller extends REST_Controller {
 					'callback'            => array($this, 'get_items'),
 					'permission_callback' => array($this, 'get_items_permissions_check'),
 					'args'                => array_merge([
-						'collection_id' => [
-							'description' => __( 'Collection ID', 'tainacan' ),
-							'required' => true,
+							'collection_id' => [
+								'description' => __( 'Collection ID', 'tainacan' ),
+								'required' => true,
+							],
 						],
-					],
-					$this->get_wp_query_params()
-				),
+						$this->get_wp_query_params()
+					),
 				),
 				array(
 					'methods'             => \WP_REST_Server::CREATABLE,
@@ -457,6 +457,7 @@ class REST_Items_Controller extends REST_Controller {
 	private function prepare_filters_arguments ( $args, $collection_id = false ) {
 		$filters_arguments = array();
 		$meta_query = isset($args['meta_query']) ? $args['meta_query'] : [];
+		if(isset($meta_query['value'])) $meta_query =  [$meta_query];
 		$tax_query = isset($args['tax_query']) ? $args['tax_query'] : [];
 
 		foreach($tax_query as $tax) {
