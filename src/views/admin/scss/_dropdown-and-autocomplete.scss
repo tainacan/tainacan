@@ -154,10 +154,11 @@
     &:focus, &:active, &.is-focused {
         border: 1px solid var(--tainacan-secondary) !important;
     }
-    .input {
+    input[type="text"].input:not(.is-danger) {
         margin-bottom: 0px !important;
         text-overflow: ellipsis;
         background-color: none;
+        border: none !important;
     }
     input[type="text"].input:not(.is-danger).has-selected,
     input[type="text"].input:not(.is-danger):focus,
