@@ -661,9 +661,9 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Get the plural label for the attachment section in this collection.
+	 * Get the label for the attachment section in this collection.
 	 *
-	 * @return string The plural label for the attachment section.
+	 * @return string The label for the attachment section.
 	 */
 	function get_item_attachment_label() {
 		return $this->get_mapped_property('item_attachment_label');
@@ -1039,9 +1039,9 @@ class Collection extends Entity {
 	}
 
 	/**
-	 * Set the plural label for the attachment section in this collection.
+	 * Set the label for the attachment section in this collection.
 	 *
-	 * @param string $value The plural label for the attachment section.
+	 * @param string $value The label for the attachment section.
 	 * @return void
 	 */
 	function set_item_attachment_label( $value ) {

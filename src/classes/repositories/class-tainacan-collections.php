@@ -399,9 +399,9 @@ class Collections extends Repository {
 			],
 			'item_attachment_label' => [
 				'map'         => 'meta',
-				'title'       => __( 'Attachments plural label', 'tainacan' ),
+				'title'       => __( 'Attachments label', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The plural label for the attachments section in the item edition form', 'tainacan' ),
+				'description' => __( 'The label for the attachments section in the item edition form', 'tainacan' ),
 				'default'     => __( 'Attachments', 'tainacan' ),
 				//'validation' => v::stringType(),
 			],
