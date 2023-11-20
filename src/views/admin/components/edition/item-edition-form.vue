@@ -262,10 +262,10 @@
 
                                         <!-- Metadata navigation Progress -->
                                         <div
-                                                v-if="isMetadataNavigation && itemMetadata && itemMetadata.length > 3"
+                                                v-if="isMetadataNavigation"
                                                 class="sequence-progress-background" />
                                         <div
-                                                v-if="isMetadataNavigation && focusedMetadatum !== false && itemMetadata && itemMetadata.length > 3"
+                                                v-if="isMetadataNavigation && focusedMetadatum !== false"
                                                 :style="{ width: ((focusedMetadatum + 1)/itemMetadata.length)*100 + '%' }"
                                                 class="sequence-progress" />
 
@@ -340,7 +340,7 @@
                                         </span>
 
                                         <b-switch
-                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && (collection && collection.item_enable_metadata_required_filter === 'yes') && itemMetadata && itemMetadata.length > 3"
+                                                v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && (collection && collection.item_enable_metadata_required_filter === 'yes')"
                                                 id="tainacan-switch-required-metadata"
                                                 :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
                                                 size="is-small"
@@ -349,7 +349,7 @@
                                         </b-switch>
 
                                         <b-field 
-                                                v-if="!isMetadataNavigation && (collection && collection.item_enable_metadata_searchbar === 'yes') && itemMetadata && itemMetadata.length > 5"
+                                                v-if="!isMetadataNavigation && (collection && collection.item_enable_metadata_searchbar === 'yes')"
                                                 class="header-item metadata-name-search">
                                             <b-input
                                                     v-if="!isMobileScreen || openMetadataNameFilter"
