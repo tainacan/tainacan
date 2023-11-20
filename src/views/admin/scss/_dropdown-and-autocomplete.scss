@@ -322,10 +322,14 @@
             border: none !important;
             padding: 0.5em 0.75em;
 
+            &.is-selectable {
+                color: var(--tainacan-secondary)
+            }
+
             &.is-selectable.is-first-hovered,
             &.is-selectable.is-last-hovered {
                 color: var(--tainacan-info-color) !important;
-                background-color: var(--tainacan-gray3) !important;
+                background-color: var(--tainacan-item-hover-background-color) !important;
             }
             &.is-today,
             &.is-today:hover {
@@ -335,7 +339,7 @@
             &.is-selected,
             &.is-selected:hover {
                 color: var(--tainacan-white) !important;
-                background-color: var(--tainacan-turquoise5) !important;
+                background-color: var(--tainacan-secondary) !important;
             }
         }
 
