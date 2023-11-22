@@ -6,6 +6,15 @@
     input[type="radio"] + .check::before {
         background-color: var(--tainacan-input-color) !important;
     }
+    &:focus input[type="radio"] + .check, 
+    &:active input[type="radio"] + .check, 
+    &:hover input[type="radio"] + .check {
+        border-color: var(--tainacan-secondary) !important;
+    }
+    input[type="radio"]:checked + .check {
+        background: var(--tainacan-input-background-color);
+        border-color: var(--tainacan-secondary) !important;
+    }
     & input[type="radio"] + .check,
     &:focus input[type="radio"] + .check,
     &:active input[type="radio"] + .check,

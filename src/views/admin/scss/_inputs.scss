@@ -20,7 +20,7 @@ input[type="week"].input {
     line-height: 1em;
     font-size: 0.875em;
     font-family: var(--tainacan-font-family, inherit);
-    border-radius: 1px !important;
+    border-radius: var(--tainacan-input-border-radius, 1px) !important;
     box-shadow: none !important;
     background-color: var(--tainacan-input-background-color);
     border: 1px solid var(--tainacan-input-border-color);
@@ -36,19 +36,21 @@ input[type="week"].input {
     &:focus, &:active {
         box-shadow: none !important;
     }  
-    &:not(.is-danger):focus, &:not(.is-danger):active {
-        border: 1px solid var(--tainacan-gray4) !important;
+    &:not(.is-danger):focus,
+    &:not(.is-danger):focus-visible,
+    &:not(.is-danger):active {
+        border: 1px solid var(--tainacan-secondary) !important;
         background-color: var(--tainacan-input-background-color);
     }  
     &:hover {
-        border: 1px solid var(--tainacan-gray3);
+        border: 1px solid var(--tainacan-input-color);
     }  
     &[disabled] {
         color: var(--tainacan-info-color) !important;
         background-color: var(--tainacan-input-border-color) !important;
     }
     &.readonly, &[readonly] {
-        background-color: var(--tainacan-white) !important;
+        background-color: var(--tainacan-input-background-color) !important;
     }
     &::placeholder {
         font-size: 0.875em;

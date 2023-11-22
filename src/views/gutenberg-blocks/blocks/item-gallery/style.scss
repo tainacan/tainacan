@@ -2,6 +2,7 @@
 @import '../../../../../node_modules/swiper/modules/navigation/navigation.scss';
 @import '../../../../../node_modules/swiper/modules/a11y/a11y.scss';
 @import '../../../../../node_modules/swiper/modules/autoplay/autoplay.scss';
+@import '../../../../../node_modules/swiper/modules/pagination/pagination.scss';
 
 .item-gallery-edit-container {
     .tainacan-media-component {
@@ -58,7 +59,9 @@
     --tainacan-media-thumbs-carousel-item-size: 136px;
 
     height: auto;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     background-color: var(--tainacan-media-background, transparent);
     box-sizing: border-box;
 
@@ -149,6 +152,7 @@
             text-align: center;
             font-size: 0.875em;
             margin-bottom: 1em;
+            margin-top: 1rem;
             
             &.hide-name .swiper-slide-metadata__name {
                 display: none;
@@ -246,7 +250,7 @@
             background: var(--tainacan-media-background, #ffffff);
             border-radius: 3px;
             word-wrap: break-word;
-            padding: 1rem 2rem;
+            padding: 0rem 2rem;
             display: block;
         }
         audio {
@@ -278,6 +282,17 @@
 .tainacan-media-component__swiper-thumbs {
     width: 100%;
     max-width: var(--tainacan-media-thumbs-carousel-width, 100%);
+
+    &.swiper-is-beginning {
+        .swiper-start-border {
+            display: none;
+        }
+    }
+    &.swiper-is-end {
+        .swiper-end-border {
+            display: none;
+        }
+    }
 
     ul.swiper-wrapper { 
         max-width: calc(100% - var(--swiper-navigation-size, 44px) - var(--swiper-navigation-size, 44px));
@@ -582,6 +597,11 @@
             &.tainacan-embed-aspect-1-2 {
                 max-width: calc((90vh * 1) / 2);
             }
+        }
+        .pswp__content {
+            display: flex;
+            justify-content: center;
+            align-content: center;
         }
         .pswp__content>.tainacan-content-embed:not(.attachment-without-image) {
             margin-top: 60px;

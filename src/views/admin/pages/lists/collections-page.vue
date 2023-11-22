@@ -102,8 +102,27 @@
                 </b-field>
             </template>
 
+            <!-- Author filtering options ----  -->
+            <b-field   
+                    id="collections-page-author-filter"
+                    class="header-item">
+                <label class="label">{{ $i18n.get('label_show_only_created_by_me') }}&nbsp;</label>
+                <b-switch
+                        size="is-small"
+                        class="author-filter-switch"
+                        :disabled="collections.length <= 0 && isLoading"
+                        @input="onChangeAuthorFilter($event)"
+                        :value="authorFilter"
+                        :true-value="'current-author'"
+                        :false-value="''"
+                        :label="$i18n.get('label_show_only_created_by_me')" />
+                
+            </b-field>
+
             <!-- Sorting options ----  -->
-            <b-field class="header-item">
+            <b-field 
+                    id="collections-page-sorting-options"
+                    class="header-item">
                 <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                 <b-dropdown
                         :mobile-modal="true"
@@ -172,7 +191,9 @@
             </b-field>
 
             <!-- Textual Search -------------->
-            <b-field class="header-item">
+            <b-field 
+                    id="collection-page-search"
+                    class="header-item">
                 <b-input 
                         :placeholder="$i18n.get('instruction_search')"
                         type="search"
@@ -252,6 +273,8 @@
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
                             <p v-else>{{ $i18n.get('info_no_collections_' + status) }}</p>
+                            <p v-if="searchQuery">{{ $i18n.get('info_try_empting_the_textual_search') }}</p>
+                            <p v-if="authorFilter !== '' && !searchQuery">{{ $i18n.get('info_try_selecting_all_collections_in_filter') }}</p>
                             <div v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         id="collection-creation-options-dropdown"
@@ -372,6 +395,7 @@ export default {
             order: 'desc',
             orderBy: 'date',
             searchQuery: '',
+            authorFilter: '',
             sortingOptions: [
                 { label: this.$i18n.get('label_title'), value: 'title' },
                 { label: this.$i18n.get('label_creation_date'), value: 'date' },
@@ -439,6 +463,13 @@ export default {
             this.$userPrefs.set('collections_order_by', 'date');
         }
 
+        if (this.authorFilter != this.$userPrefs.get('collections_author_filter'))
+            this.authorFilter = this.$userPrefs.get('collections_author_filter');
+        if (this.authorFilter === undefined) {
+            this.authorFilter = '';
+            this.$userPrefs.set('collections_author_filter', '');
+        }
+
         this.loadCollections();
     },
     methods: {
@@ -483,6 +514,19 @@ export default {
             this.orderBy = newOrderBy;
             this.loadCollections();
         },
+        onChangeAuthorFilter(newAuthorFilter) {
+            if (newAuthorFilter != this.authorFilter) { 
+                this.$userPrefs.set('collections_author_filter', newAuthorFilter)
+                    .then((newAuthorFilter) => {
+                        this.authorFilter = newAuthorFilter;
+                    })
+                    .catch(() => {
+                        this.$console.log("Error settings user prefs for collections author filter")
+                    });
+            }
+            this.authorFilter = newAuthorFilter;
+            this.loadCollections();
+        },
         onChangeCollectionsPerPage(value) {
             
             if (value != this.collectionsPerPage) {
@@ -521,6 +565,7 @@ export default {
                 orderby: this.orderBy,
                 search: this.searchQuery,
                 collectionTaxonomies: this.collectionTaxonomies,
+                authorid: this.authorFilter === 'current-author' && tainacan_plugin.user_data && tainacan_plugin.user_data.ID ? tainacan_plugin.user_data.ID : ''
             })
             .then((res) => {
                 this.isLoading = false;
@@ -568,20 +613,20 @@ export default {
     @import '../../scss/_variables.scss';
 
     .sub-header {
-        min-height: $header-height;
+        min-height: 2.5em;
+        padding: 0.5em 0;
         height: auto;
-        padding-left: 0;
-        padding-right: 0;
         border-bottom: 1px solid #ddd;
         display: inline-flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         width: 100%;
+        gap: 4px;
 
         .header-item {
             margin-bottom: 0 !important;
-            min-height: 2em;
+            min-height: 1.875em;
 
             &:first-child {
                 margin-right: auto;
@@ -593,9 +638,11 @@ export default {
             .label {
                 font-size: 0.875em;
                 font-weight: normal;
-                margin-top: 5px;
+                margin-top: 2px;
                 margin-bottom: 2px;
                 cursor: default;
+                display: flex;
+                align-items: center;
             }
 
             &:not(:first-child) {
@@ -629,7 +676,9 @@ export default {
                 font-size: 1.125em !important;
                 height: 1.75em
             }
-
+            .collections-page-author-filter {
+                display: flex;
+            }
             .dropdown-menu {
                 display: block;
 
@@ -660,7 +709,6 @@ export default {
         }
 
         @media screen and (max-width: 769px) {
-            height: 120px;
             margin-top: -0.5em;
             padding-top: 0.9em;
 

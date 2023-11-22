@@ -10,7 +10,9 @@
                 <span>
                     <b-checkbox 
                             @click.native="selectAllOnPage()" 
-                            :value="allOnPageSelected">{{ $i18n.get('label_select_all_taxonomies_page') }}</b-checkbox>
+                            :native-value="allOnPageSelected">
+                        {{ $i18n.get('label_select_all_taxonomies_page') }}
+                    </b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
@@ -235,6 +237,25 @@
                                                 class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                     </span>
                                 </a>
+                                <a 
+                                        v-if="!isOnTrash"
+                                        id="button-open-external" 
+                                        :aria-label="$i18n.getFrom('taxonomies','view_item')"
+                                        @click.stop="" 
+                                        target="_blank"
+                                        :href="themeTaxonomiesURL + taxonomy.slug">                      
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('label_taxonomy_page_on_website'),
+                                                autoHide: true,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                placement: 'auto',
+                                                html: true
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                    </span>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -263,7 +284,8 @@
                 selected: [],
                 allOnPageSelected: false,
                 isSelecting: false,
-                adminUrl: tainacan_plugin.admin_url
+                adminUrl: tainacan_plugin.admin_url,
+                themeTaxonomiesURL: tainacan_plugin.theme_taxonomy_list_url
             }
         },
         computed: {
@@ -396,7 +418,7 @@
                 let htmlList = '';
 
                 for (let i = 0; i < collections.length; i++) {
-                    htmlList += `<a target="_blank" href=${ this.adminUrl + 'admin.php?page=tainacan_admin#' + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name} (${metadata[collections[i].id].name})</a>`;
+                    htmlList += `<a target="_blank" href=${ this.adminUrl + '?page=tainacan_admin#' + this.$routerHelper.getCollectionPath(collections[i].id)}>${collections[i].name} (${metadata[collections[i].id].name})</a>`;
                     if (collections.length > 2 && i < collections.length - 1) {
                         if (i < collections.length - 2)
                             htmlList += ', '
@@ -418,7 +440,7 @@
     .selection-control {
         
         padding: 6px 0px 0px 12px;
-        background: var(--tainacan-white);
+        background: var(--tainacan-background-color);
         height: 40px;
 
         .select-all {

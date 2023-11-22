@@ -13,7 +13,7 @@
     animation-duration: 0.3s;
 
     .tag {
-        background-color: var(--tainacan-input-background-color);
+        background-color: transparent;
         margin-bottom: 0 !important;
         margin-right: 4px !important;
         max-width: calc(100% - 21px);
@@ -42,9 +42,9 @@
 
             &:hover,
             &:focus {
-                border: solid 1px var(--tainacan-gray3) !important;
-                background-color: var(--tainacan-input-border-color);
-                color: var(--tainacan-heading-color);
+                border: 1px solid var(--tainacan-input-border-color) !important;
+                background-color: var(--tainacan-item-hover-background-color);
+                color: var(--tainacan-secondary);
 
                 &:after {
                     transform: translateX(-50%) translateY(-50%) rotate(45deg) scale(1.15);

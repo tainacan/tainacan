@@ -2,7 +2,6 @@
     <aside 
             aria-labelledby="filters-label-landmark"
             :aria-busy="isLoadingFilters">
-
         <b-loading
                 :is-full-page="false"
                 :active.sync="isLoadingFilters"/>
@@ -90,12 +89,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen"/>
                         </template>
-                        <!-- <p   
-                                class="has-text-gray"
-                                style="font-size: 0.75em;"
-                                v-if="taxonomyFilter.length <= 0">
-                            {{ $i18n.get('info_there_is_no_filter') }}    
-                        </p> -->
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
                 </template>
@@ -140,12 +133,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen" />
                         </template>
-                        <!-- <p   
-                                class="has-text-gray"
-                                style="font-size: 0.75em;"
-                                v-if="taxonomyFilter.length <= 0">
-                            {{ $i18n.get('info_there_is_no_filter') }}    
-                        </p> -->
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
                 </template>
@@ -194,12 +181,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen" />
                         </template>
-                        <!-- <p   
-                                class="has-text-gray"
-                                style="font-size: 0.75em;"
-                                v-if="taxonomyFilter.length <= 0">
-                            {{ $i18n.get('info_there_is_no_filter') }}    
-                        </p> -->
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
                 </template>
@@ -244,12 +225,6 @@
                                     :filters-as-modal="filtersAsModal"
                                     :is-mobile-screen="isMobileScreen" />
                         </template>
-                        <!-- <p   
-                                class="has-text-gray"
-                                style="font-size: 0.75em;"
-                                v-if="taxonomyFilter.length <= 0">
-                            {{ $i18n.get('info_there_is_no_filter') }}    
-                        </p> -->
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
                 </template>
@@ -271,9 +246,12 @@
             </template>
         </div>
         <section
-                v-if="!isLoadingFilters &&
-                    !((filters.length >= 0 && isRepositoryLevel) || filters.length > 0)"
-                class="is-grouped-centered section">
+                v-if="!isLoadingFilters && (
+                    ( taxonomy && taxonomyFilters && Object.keys(taxonomyFilters).length <= 0 ) ||
+                    ( isRepositoryLevel && !taxonomy && repositoryCollectionFilters && Object.keys(repositoryCollectionFilters).length <= 0 ) ||
+                    ( !isRepositoryLevel && !taxonomy && filters && filters.length <= 0 )
+                )"
+                class="is-grouped-centered">
             <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon is-large">
@@ -281,6 +259,7 @@
                     </span>
                 </p>
                 <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
+                <p v-if="isRepositoryLevel && $route.name != null">{{ $i18n.get('info_collection_filter_on_repository_level') }}</p>
                 <router-link
                         v-if="!$adminOptions.hideItemsListFilterCreationButton && $route.name != null && ((isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters')) || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                         id="button-create-filter"
@@ -431,7 +410,7 @@
                 this.isLoadingFilters = true;
             
                 // Normal filter loading, only collection ones
-                if (!this.taxonomy) {
+                if ( !this.taxonomy && !this.isRepositoryLevel ) {
                     this.fetchFilters({
                         collectionId: this.collectionId,
                         isRepositoryLevel: this.isRepositoryLevel,
@@ -449,7 +428,7 @@
                         .catch(() => this.isLoadingFilters = false);
                 
                 // Custom filter loading, get's from collections that have items with that taxonomy
-                } else {
+                } else if ( this.taxonomy ) {
 
                     let collectionsIds = [];
                     
@@ -466,20 +445,24 @@
                     this.fetchTaxonomyFilters({ taxonomyId: taxonomyId[taxonomyId.length - 1], collectionsIds: collectionsIds })
                         .catch(() => this.isLoadingFilters = false);
                         
+                } else if ( this.isRepositoryLevel && !this.taxonomy ) {
+
+                     // Cancels previous Request
+                     if (this.repositoryFiltersSearchCancel != undefined)
+                        this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
+                    
+                    this.fetchRepositoryCollectionFilters()
+                        .then((anotherResp) => {
+                            anotherResp.request
+                                .then(() => this.isLoadingFilters = false)
+                                .catch(() => this.isLoadingFilters = false);
+
+                            this.repositoryFiltersSearchCancel = anotherResp.source;
+                        })
+                        .catch(() => this.isLoadingFilters = false);
+                
                 }
 
-                // On repository level we also fetch collection filters
-                if ( !this.taxonomy && this.isRepositoryLevel ) {
-                    
-                    // Cancels previous Request
-                    if (this.repositoryFiltersSearchCancel != undefined)
-                        this.repositoryFiltersSearchCancel.cancel('Repository Collection Filters search Canceled.');
-     
-                    this.fetchRepositoryCollectionFilters()
-                        .then((source) => {
-                            this.repositoryFiltersSearchCancel = source;
-                        });
-                }
             },
             updateIsLoadingItems(isLoadingItems) {
                 this.$emit('updateIsLoadingItemsState', isLoadingItems); 

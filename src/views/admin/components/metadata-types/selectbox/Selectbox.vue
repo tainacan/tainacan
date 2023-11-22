@@ -33,7 +33,7 @@
             disabled: false,
         },
         computed: {
-            getOptions(){
+            getOptions() {
                 if (this.itemMetadatum && this.itemMetadatum.metadatum.metadata_type_options && this.itemMetadatum.metadatum.metadata_type_options.options ) {
                     const metadata = this.itemMetadatum.metadatum.metadata_type_options.options;
                     return ( metadata ) ? metadata.split("\n") : [];

@@ -14,7 +14,7 @@
     }
     a {
         font-size: 0.8125em;
-        color: var(--tainacan-black) !important;
+        color: var(--tainacan-heading-color) !important;
         padding: 0.5em 1.45em;
         border-bottom: 4px solid transparent;
         transition: border-bottom-color ease 0.3s;
@@ -27,7 +27,7 @@
     }
     li.is-active a {
         border-bottom-color: var(--tainacan-secondary);
-        color: var(--tainacan-black) !important;
+        color: var(--tainacan-heading-color) !important;
     }
     .icon:first-child {
         margin-right: 0.2em;

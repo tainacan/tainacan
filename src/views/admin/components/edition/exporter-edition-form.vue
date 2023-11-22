@@ -123,7 +123,7 @@
                 exporterType: '',
                 exporterName: '',
                 collections: [],
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#', 
+                adminFullURL: tainacan_plugin.admin_url + '?page=tainacan_admin#', 
                 isFetchingCollections: false,
                 selectedMapping: undefined,
                 selectedCollection: undefined,

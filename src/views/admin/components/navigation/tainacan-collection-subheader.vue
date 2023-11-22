@@ -249,7 +249,7 @@ export default {
                 }
             }
             a {
-                color: var(--tainacan-white) !important;;
+                color: var(--tainacan-white) !important;
                 text-align: center;
                 white-space: nowrap;
                 padding: 6px 11px;

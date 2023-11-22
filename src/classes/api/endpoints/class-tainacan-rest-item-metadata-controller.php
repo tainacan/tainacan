@@ -132,7 +132,7 @@ class REST_Item_Metadata_Controller extends REST_Controller {
 	public function prepare_item_for_response( $item, $request ) {
 		$item_arr = $item->_toArray(true, true);
 
-		if($request['context'] === 'edit'){
+		if ($request['context'] === 'edit') {
 			$item_arr['current_user_can_edit'] = $item->can_edit();
 			$item_arr['current_user_can_delete'] = $item->can_delete();
 		}

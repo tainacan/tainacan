@@ -542,13 +542,13 @@
 
                     <!--  Default loading, to be used view modes without any skeleton-->
                     <b-loading 
-                            v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
+                            v-if="registeredViewModes[viewMode] != undefined && !registeredViewModes[viewMode].implements_skeleton && !registeredViewModes[viewMode].skeleton_template" 
                             :is-full-page="false"
                             :active.sync="showLoading"/>
 
                     <!-- Custom skeleton templates used by some view modes --> 
                     <div
-                            v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
+                            v-if="registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].implements_skeleton && registeredViewModes[viewMode].skeleton_template"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
                 </div>  
                 
@@ -622,12 +622,12 @@
 
                             <p v-if="searchQuery">
                                 <template v-if="!sentenceMode">
-                                    <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
                                     <br>
                                     {{ $i18n.get('info_details_about_search_by_word') }}
                                 </template>
                                 <template v-else>
-                                    <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
                                 </template>
                                 <br>
                                 <b-checkbox 
@@ -818,11 +818,6 @@
             },
             hasSearchByMoreThanOneWord() {
                 return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
-            },
-            searchedForSentence() {
-                if (this.searchQuery)
-                    return this.$i18n.getWithVariables('info_you_searched_for_%s', ['<em>"' + this.searchQuery + '"</em>']);
-                return '';
             }
         },
         watch: {
@@ -972,7 +967,6 @@
             if (this.defaultItemsPerPage)
                 this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
 
-            this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile
             if (!this.hideFilters) {            

@@ -517,12 +517,16 @@
 
     .sub-header {
       @include logs-container();
+
+      .header-item {
+        min-height: 1.875em;
+      }
     }
 
     .selection-control {
         
         padding: 6px 0px 0px 12px;
-        background: var(--tainacan-white);
+        background: var(--tainacan-background-color);
         height: 40px;
 
         .select-all {

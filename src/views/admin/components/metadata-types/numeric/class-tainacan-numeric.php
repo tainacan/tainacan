@@ -34,6 +34,14 @@ class Numeric extends Metadata_Type {
 			'step' => [
 				'title' => __( 'Step', 'tainacan' ),
 				'description' => __( 'The amount to be increased or decreased when clicking on the metadatum control buttons. This also defines whether the input accepts decimal numbers.', 'tainacan' ),
+			],
+			'min' => [
+				'title' => __( 'Minimum', 'tainacan' ),
+				'description' => __( 'The minimum value that the input will accept.', 'tainacan' ),
+			],
+			'max' => [
+				'title' => __( 'Maximum', 'tainacan' ),
+				'description' => __( 'The maximum value that the input will accept.', 'tainacan' ),
 			]
 		];
 	}

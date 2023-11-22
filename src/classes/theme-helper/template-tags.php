@@ -23,7 +23,7 @@ use \Tainacan\Repositories;
 	 *     @type bool		 $exclude_title				Exclude the Core Title Metadata from result. Default false
 	 *     @type bool		 $exclude_description		Exclude the Core Description Metadata from result. Default false
 	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
-	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+	 *     @type bool        $hide_empty                Whether to hide or not metadata the item has no value to
 	 *                                                  Default: true
 	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value. Default ''
 	 *     @type string      $before                    String to be added before each metadata block
@@ -465,7 +465,7 @@ function tainacan_get_the_media_component(
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['pagination']) ) : ?>
 						<!-- If we need pagination -->
-						<div class="swiper-paginations swiper-pagination_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
+						<div class="swiper-pagination swiper-pagination_<?php echo esc_attr($args['media_thumbs_id']) ?>"></div>
 					<?php endif; ?>
 
 					<?php if ( $args['swiper_thumbs_options'] && isset($args['swiper_thumbs_options']['navigation']) ) : ?>
@@ -834,7 +834,7 @@ function tainacan_get_item($post_id = 0) {
 /**
  * To be used inside The Loop of a faceted serach view mode template.
  *
- * Returns true or false indicating wether a certain property or metadata is
+ * Returns true or false indicating whether a certain property or metadata is
  * selected to be displayed
  *
  * @param string|integer The property to be checked. If a string is passed, it will check against
@@ -1019,7 +1019,15 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
 			$icon_file = 'placeholder_square';
 	}
 	
-	return $images_path . $icon_file . $image_size . '.png';
+	/**
+	 * Filter the image source for the empty thumbnail placeholder.
+	 * 
+	 * @param string src The image source for the empty thumbnail placeholder.
+	 *               Default is 'placeholder_square'.
+	 * @param string mime_type The document type of the item.
+	 * @param string image_size The size of the image to be loaded.
+	 */
+	return apply_filters('tainacan-get-the-mime-type-icon', $images_path . $icon_file . $image_size . '.png', $mime_type, $image_size);
 }
 
 /**
@@ -1157,7 +1165,7 @@ function tainacan_the_item_gallery($args = []) {
 	*
 	*     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
 	*
-	*     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	*     @type bool        $hide_empty                	Whether to hide or not metadata sections if there are no metadata list or they are empty
 	*                                                  	Default: true
 	*     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	*                                                  	Default: ''
@@ -1468,7 +1476,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 					
 					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] === 'before' ) 
 						echo '<span class="term-items-count">' . $term->count . '</span>&nbsp;';
-					echo ($term->count == 1 || $term->count == '1') ? __('Item', 'tainacan') : __('Itens', 'tainacan');
+					echo ($term->count == 1 || $term->count == '1') ? __('Item', 'tainacan') : __('Items', 'tainacan');
 					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] !== 'before' ) 
 						echo '&nbsp;<span class="term-items-count">(' . $term->count . ')</span>';
 					

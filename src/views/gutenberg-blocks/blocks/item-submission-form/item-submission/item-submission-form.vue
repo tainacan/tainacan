@@ -220,7 +220,9 @@
                             {{ $i18n.getHelperMessage('items', '_thumbnail_id') }}
                         </p>
                     </div>
-                    <div class="section-toggle">
+                    <div 
+                            v-if="!hideFileModalButton || !hideTextModalButton || !hideLinkModalButton"
+                            class="section-toggle">
                         <p>{{ showThumbnailInput ? $i18n.get('info_thumbnail_custom') : $i18n.get('info_thumbnail_default_from_document') }}</p>
                         <div class="field has-addons">
                             <b-switch
@@ -232,7 +234,7 @@
                         </div>
                     </div>
                     <div
-                            v-if="!isLoading && showThumbnailInput"
+                            v-if="!isLoading && showThumbnailInput || (hideFileModalButton && hideTextModalButton && hideLinkModalButton)"
                             class="section-box section-thumbnail"
                             id="tainacan-item-metadatum_id-thumbnail">
                         <b-upload
@@ -459,7 +461,15 @@
                                             }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
-                                <label>{{ metadataSection.name }}</label>
+                                <label>
+                                    <span
+                                            v-if="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes'"
+                                            style="opacity: 0.65;"
+                                            class="metadata-section-enumeration">
+                                        {{ Number(sectionIndex) + 1 }}.
+                                    </span>
+                                    {{ metadataSection.name }}
+                                </label>
                                 <help-button
                                         v-if="!hideHelpButtons &&
                                                 !helpInfoBellowLabel &&
@@ -503,6 +513,7 @@
                                                 :hide-help-buttons="hideHelpButtons"
                                                 :help-info-bellow-label="helpInfoBellowLabel"
                                                 :is-collapsed="metadataCollapses[index]"
+                                                :enumerate-metadatum="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
                                                 @changeCollapse="onChangeCollapse($event, index)"/>
 
                                         <!-- JS-side hook for extra content -->
@@ -780,6 +791,8 @@ export default {
     data(){
         return {
             collecionAllowsItemSubmission: true,
+            collectionItemMetadataEnumeration: 'no',
+            collectionMetadataSectionOrder: [],
             isLoading: false,
             isLoadingMetadataSections: false,
             isSubmitting: false,
@@ -897,6 +910,8 @@ export default {
 
                 // Gets update info from the collecion in case it has been updated
                 this.collecionAllowsItemSubmission = collection.allows_submission == 'yes' ? true : false;
+                this.collectionItemMetadataEnumeration = collection.item_enable_metadata_enumeration;
+                this.collectionMetadataSectionOrder = collection.metadata_section_order;
                 this.useCaptcha = collection.submission_use_recaptcha;
 
                 // Initialize clear data from store
@@ -1196,6 +1211,19 @@ export default {
         },
         isSectionHidden(sectionId) {
             return this.conditionalSections[sectionId] && this.conditionalSections[sectionId].hide;
+        },
+        getMetadatumOrderInSection(sectionIndex, metadatum) {
+
+            if ( !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
+                return -1;
+
+            let enabledMetadata = [];
+            for (let metadatum of this.collection['metadata_section_order'][sectionIndex]['metadata_order']) {
+                if ( metadatum.enabled )
+                    enabledMetadata.push(metadatum.id);
+            }
+
+            return enabledMetadata.indexOf(metadatum.id);
         }
     }
 }

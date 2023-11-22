@@ -177,7 +177,7 @@ abstract class Generic_Process {
 	}
 
 	/**
-	 * Return wether importer should abort execution or not
+	 * Return whether importer should abort execution or not
 	 * @return bool 
 	 */
 	public function get_abort() {

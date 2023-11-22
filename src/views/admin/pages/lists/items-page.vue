@@ -653,12 +653,12 @@
 
                         <p v-if="searchQuery">
                             <template v-if="!sentenceMode">
-                                <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
                                 <br>
                                 {{ $i18n.get('info_details_about_search_by_word') }}
                             </template>
                             <template v-else>
-                                <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
                             </template>
                             <br>
                             <b-checkbox 
@@ -784,11 +784,6 @@
             },
             hasSearchByMoreThanOneWord() {
                 return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
-            },
-            searchedForSentence() {
-                if (this.searchQuery)
-                    return this.$i18n.getWithVariables('info_you_searched_for_%s', ['<em>"' + this.searchQuery + '"</em>']);
-                return '';
             }
         },
         watch: {
@@ -875,8 +870,6 @@
                 else
                     this.$eventBusSearch.setInitialAdminViewMode('table');
             }
-            
-            this.showItemsHiddingDueSortingDialog();
 
             this.$eventBusSearch.cleanSelectedItems();
 

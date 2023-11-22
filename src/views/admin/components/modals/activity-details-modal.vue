@@ -623,7 +623,7 @@
                 dateFormat: '',
                 activityCreationDate: '',
                 isLoadingActivity: false,
-                adminFullURL: tainacan_plugin.admin_url + 'admin.php?page=tainacan_admin#', 
+                adminFullURL: tainacan_plugin.admin_url + '?page=tainacan_admin#', 
             }
         },
         computed: {

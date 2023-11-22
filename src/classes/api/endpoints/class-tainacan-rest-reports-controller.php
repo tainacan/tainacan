@@ -442,7 +442,7 @@ class REST_Reports_Controller extends REST_Controller {
 			'list' => array()
 		);
 		$collection_id = $request['collection_id'];
-		$taxonomy_metadata_id = $request['metadata_id'];;
+		$taxonomy_metadata_id = $request['metadata_id'];
 		$parent_id = 0;
 		if ( isset($request['parent']) ) {
 			$parent_id = (int) $request['parent'];

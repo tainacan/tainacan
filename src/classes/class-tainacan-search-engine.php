@@ -176,10 +176,16 @@ class Search_Engine {
 				$seperator = ' OR ';
 			}
 			if ( empty($search_meta_query) ) return '';
+			
+			$content_index_meta = '';
+			if ( defined('TAINACAN_INDEX_PDF_CONTENT') && true === TAINACAN_INDEX_PDF_CONTENT ) {
+				$content_index_meta_meta_key = \TAINACAN\Media::$content_index_meta;
+				$content_index_meta = "OR (m.meta_key='{$content_index_meta_meta_key}')";
+			}
 
 			$join = \is_user_logged_in() 
 				? ''
-				: " INNER JOIN $wpdb->posts pmeta ON m.meta_key = pmeta.ID AND pmeta.post_status = 'publish'";
+				: " INNER JOIN $wpdb->posts pmeta ON (m.meta_key = pmeta.ID AND pmeta.post_status = 'publish') $content_index_meta";
 			return "EXISTS (
 				SELECT m.post_id
 				FROM $wpdb->postmeta m $join

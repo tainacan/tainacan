@@ -307,7 +307,9 @@ class Item extends Entity {
 	 * @return string "open"|"closed"
 	 */
 	public function get_comment_status() {
-		return apply_filters('comments_open', $this->get_mapped_property('comment_status'), $this->get_id());
+		$comment_status = $this->get_mapped_property('comment_status');
+		$comment_status_filtered = apply_filters('comments_open', $comment_status == 'open', $this->get_id()) == true ? 'open' : 'closed';
+		return $comment_status_filtered;
 	}
 
 	/**
@@ -537,7 +539,7 @@ class Item extends Entity {
 	 *
 	 *     @type bool		 $exclude_core				Exclude Core Metadata (title and description) from result. Default false
 	 *
-	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+	 *     @type bool        $hide_empty                Whether to hide or not metadata the item has no value to
 	 *                                                  Default: true
 	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value.
 	 *                                                  Default: ''
@@ -707,7 +709,7 @@ class Item extends Entity {
 	 * @param array|string $args {
 	 *     Optional. Array or string of arguments.
 	 * 
-	 *     @type bool        $hide_empty                Wether to hide or not metadata the item has no value to
+	 *     @type bool        $hide_empty                Whether to hide or not metadata the item has no value to
 	 *                                                  Default: true
 	 *     @type string      $empty_value_message       Message string to display if $hide_empty is false and there is not metadata value.
 	 *                                                  Default: ''
@@ -780,9 +782,16 @@ class Item extends Entity {
 			// Renders the metadatum name
 			$metadatum_title_before = $args['before_title'];
 			$metadatum_title_before = apply_filters( 'tainacan-get-item-metadatum-as-html-before-title', $metadatum_title_before, $item_metadatum );
+			
+			$metadatum_status_info = '';
+			if ( $item_metadatum->get_metadatum()->get_status() != 'publish' ) {
+				$metadatum_status_object = get_post_status_object( $item_metadatum->get_metadatum()->get_status() );
+				$metadatum_status_info = ( $metadatum_status_object && $metadatum_status_object->label ? __( $metadatum_status_object->label, 'tainacan') : $item_metadatum->get_metadatum()->get_status() ) . ': ';
+			}
+			
 			$metadatum_title_after = $args['after_title'];
 			$metadatum_title_after = apply_filters( 'tainacan-get-item-metadatum-as-html-after-title', $metadatum_title_after, $item_metadatum );
-			$return .= $metadatum_title_before . $item_metadatum->get_metadatum()->get_name() . $metadatum_title_after;
+			$return .= $metadatum_title_before . $metadatum_status_info . $item_metadatum->get_metadatum()->get_name() . $metadatum_title_after;
 			
 			// Renders the metadatum value
 			$metadatum_value_before = $args['before_value'];
@@ -982,7 +991,7 @@ class Item extends Entity {
 	 *
 	 *     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
 	 *
-	 *     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	 *     @type bool        $hide_empty                	Whether to hide or not metadata sections if there are no metadata list or they are empty
 	 *                                                  	Default: true
 	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	 *                                                  	Default: ''
@@ -1142,7 +1151,7 @@ class Item extends Entity {
 	 *
 	 *     @type bool		 $hide_description				Do not display the Metadata Section description. Default true
 	 *
-	 *     @type bool        $hide_empty                	Wether to hide or not metadata sections if there are no metadata list or they are empty
+	 *     @type bool        $hide_empty                	Whether to hide or not metadata sections if there are no metadata list or they are empty
 	 *                                                  	Default: true
 	 *     @type string      $empty_metadata_list_message 	Message string to display if $hide_empty is false and there is not metadata section metadata list.
 	 *                                                  	Default: ''
@@ -1176,13 +1185,15 @@ class Item extends Entity {
 		if ( $metadata_section->is_conditional_section() ) {
 
 			$rules = $metadata_section->get_conditional_section_rules();
-			$item_id = $this->get_id();
+			if( !empty($rules) ) {
+				$item_id = $this->get_id();
 
-			foreach ( $rules as $meta_id => $meta_values_conditional ) {
+				foreach ( $rules as $meta_id => $meta_values_conditional ) {
 
-				$meta_values = get_post_meta( $item_id, $meta_id );
-				if (!array_intersect($meta_values, $meta_values_conditional))
-					return $return;
+					$meta_values = get_post_meta( $item_id, $meta_id );
+					if (!array_intersect($meta_values, $meta_values_conditional))
+						return $return;
+				}
 			}
 		}
 

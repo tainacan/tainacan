@@ -123,7 +123,7 @@ export const fetchTaxonomyName = ({ commit }, taxonomyId) => {
 };
 
 // TAXONOMY TERMS
-export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offset, number, exclude }) => {
+export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offset, number, exclude, include }) => {
 
     let query = '';
 
@@ -148,6 +148,9 @@ export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offse
     if (exclude != undefined)
         query += '&' + qs.stringify({ exclude: exclude });
 
+    if (include != undefined)
+        query += '&' + qs.stringify({ include: include });
+
     return new Promise((resolve, reject) => {
         axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {
@@ -159,7 +162,14 @@ export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offse
     });
 };
 
-export const sendChildTerm = ({ commit }, { taxonomyId, term }) => {
+export const sendChildTerm = ({ commit }, { taxonomyId, term, itemId, metadatumId }) => {
+    
+    if ( itemId != undefined )
+        term['item_id'] = itemId;
+    
+    if ( metadatumId != undefined )
+        term['metadatum_id'] = metadatumId;
+
     return new Promise(( resolve, reject ) => {
         axios.tainacan.post(`/taxonomy/${taxonomyId}/terms/`, term)
             .then( res => {
@@ -172,7 +182,14 @@ export const sendChildTerm = ({ commit }, { taxonomyId, term }) => {
     });
 };
 
-export const updateTerm = ({}, { taxonomyId, term }) => {
+export const updateTerm = ({}, { taxonomyId, term, itemId, metadatumId }) => {
+
+    if ( itemId != undefined )
+        term['item_id'] = itemId;
+
+    if ( metadatumId != undefined )
+        term['metadatum_id'] = metadatumId;
+
     return new Promise(( resolve, reject ) => {
         axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${term.id}`, term)
             .then( res => {
@@ -251,7 +268,7 @@ export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent
 // Used only on Term Edit form, for autocomplete search for parents
 export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, search, offset } ) => {
 
-    const excludeTree = termId ? qs.stringify({ exclude_tree: termId }) : '';
+    const excludeTree = termId && termId != 'new' ? qs.stringify({ exclude_tree: termId }) : '';
 
     let endpoint = '/taxonomy/' + taxonomyId + '/terms?searchterm=' + search + '&hierarchical=1&hideempty=0&offset=0&number=20&order=asc&' + excludeTree;
 

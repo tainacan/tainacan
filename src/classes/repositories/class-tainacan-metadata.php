@@ -661,7 +661,7 @@ class Metadata extends Repository {
 	 *
 	 * @param array $result Response from method fetch_by_collection
 	 * @param Entities\Collection $collection
-	 * @param bool $include_disabled Wether to include disabled metadata in the results or not
+	 * @param bool $include_disabled Whether to include disabled metadata in the results or not
 	 *
 	 * @return array
 	 */
@@ -737,8 +737,8 @@ class Metadata extends Repository {
 	public function insert( $metadatum ) {
 		$this->pre_update_taxonomy_metadatum( $metadatum );
 		$new_metadatum = parent::insert( $metadatum );
-		$this->update_taxonomy_metadatum( $new_metadatum );
 		$this->update_metadata_type_index( $new_metadatum );
+		$this->update_taxonomy_metadatum( $new_metadatum );
 		return $new_metadatum;
 	}
 
@@ -1426,6 +1426,7 @@ class Metadata extends Repository {
 					'parent' => $r->parent,
 					'total_items' => $total_items,
 					'type' => 'Taxonomy',
+					'description' => term_description($r->term_id),
 					'hierarchy_path' => get_term_parents_list($r->term_id, $taxonomy_slug, ['format'=>'name', 'separator'=>$separator, 'link'=>false, 'inclusive'=>false])
 				];
 

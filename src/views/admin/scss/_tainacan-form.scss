@@ -78,6 +78,7 @@
             height: auto !important;
             text-align: start;
         }
+        p.cont
         button.is-primary:disabled,
         button.is-primary:disabled:hover,
         button.is-primary:disabled:focus,
@@ -172,7 +173,7 @@
             justify-content: space-between;
             width: 100%;
             border: 1px solid var(--tainacan-input-border-color) !important;
-            border-radius: 0 !important;
+            border-radius: var(--tainacan-input-border-radius, 1px) !important;
             padding: 2px 14px 2px 18px !important
         }
     }

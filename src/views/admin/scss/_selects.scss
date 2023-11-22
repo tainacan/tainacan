@@ -1,6 +1,6 @@
 .select {
     padding-top: 0px !important;
-    border-radius: 1px;
+    border-radius: var(--tainacan-input-border-radius, 1px);
     
     &, 
     &:not(.is-multiple) {
@@ -12,22 +12,25 @@
     select {
         background: transparent; // WordPress 5.3 adds arrows here
         border: none;
-        border-radius: 1px !important;
+        border-radius: var(--tainacan-input-border-radius, 1px) !important;
         font-weight: normal;
         font-size: 0.875em !important;
         font-family: var(--tainacan-font-family, inherit);
         line-height: 1.75em !important;
         height: auto !important;
-        padding: calc(0.375em - 1px) 20px calc(0.375em - 1px) 10px !important;
+        padding: calc(0.375em - 1px) 24px calc(0.375em - 1px) 10px !important;
         margin-top: 0px !important;
         margin-bottom: 0px !important;
         color: var(--tainacan-input-color);
         option:checked, option:hover {
             background: var(--tainacan-input-border-color) !important;
         }
-        &:focus, &:active {
+        &:not(.is-danger):focus,
+        &:not(.is-danger):focus-visible,
+        &:not(.is-danger):active {
             box-shadow: none !important;
             text-decoration: none !important;
+            border: 1px solid var(--tainacan-secondary) !important;
         }
         &[disabled=disabled] {
             background: var(--tainacan-gray1) !important;
@@ -35,6 +38,9 @@
         &:hover,
         &:focus {
             color: var(--tainacan-input-color) !important;
+        }
+        &:hover {
+            border: 1px solid var(--tainacan-input-color) !important;
         }
         
     }

@@ -207,6 +207,17 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 	}
 
+	protected function sanitize_value($value) {
+		if (is_numeric($value) || empty($value) ) {
+			return $value;
+		}
+
+		$allowed_html = wp_kses_allowed_html('post');
+		unset($allowed_html["a"]);
+	
+		return trim(wp_kses($value, $allowed_html));
+	}
+
 	/**
 	 * @param $mapped
 	 * @param $request
@@ -219,6 +230,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	 */
 	private function prepare_meta($mapped, $request, $query, $mapped_v, $args){
 		$request_meta_query = $request[$mapped];
+		$query_field_scaped = ["value", "terms"];
 
 		// if the meta/date/taxquery has a root relation
         if( isset( $request_meta_query['relation']) )
@@ -231,7 +243,15 @@ abstract class REST_Controller extends \WP_REST_Controller {
 
 				foreach ( $query as $mapped_meta => $meta_v ) {
 					if ( isset( $a[ $mapped_meta ] ) ) {
-						$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $mapped_meta ];
+						if( in_array($mapped_meta, $query_field_scaped) ) {
+							$valeu =  is_array($request[ $mapped ][ $index1 ][ $mapped_meta ])
+								? array_map([$this, 'sanitize_value'], $request[ $mapped ][ $index1 ][ $mapped_meta ])
+								: $this->sanitize_value($request[ $mapped ][ $index1 ][ $mapped_meta ]);
+							$args[ $mapped_v ][ $index1 ][ $meta_v ] = $valeu;
+						} else {
+							$args[ $mapped_v ][ $index1 ][ $meta_v ] = $request[ $mapped ][ $index1 ][ $mapped_meta ];
+
+						}
 					}
 				}
 
@@ -240,7 +260,13 @@ abstract class REST_Controller extends \WP_REST_Controller {
 		} else {
 			foreach ( $query as $mapped_meta => $meta_v ) {
 				if(isset($request[$mapped][$mapped_meta])) {
-					$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $mapped_meta ];
+					if( in_array($mapped_meta, $query_field_scaped) ) {
+						$args[ $mapped_v ][ $meta_v ] =  is_array($request[ $mapped ][ $mapped_meta ])
+							? array_map([$this, 'sanitize_value'], $request[ $mapped ][ $mapped_meta ])
+							: $this->sanitize_value($request[ $mapped ][ $mapped_meta ]);
+					} else {
+						$args[ $mapped_v ][ $meta_v ] = $request[ $mapped ][ $mapped_meta ];
+					}
 				}
 			}
 		}
@@ -405,6 +431,50 @@ abstract class REST_Controller extends \WP_REST_Controller {
 	 * @return array
 	 */
 	protected function get_meta_queries_params(){
+
+		$metaquery_properties = array(
+			'key'      => array(
+				'type'        => ['integer', 'string'],
+				'description' => __('Custom metadata key.'),
+			),
+			'value'    => array(
+				'type'        => ['string', 'array'],
+				'items'       => array('type' => 'string'),
+				'description' => __('Custom metadata value. It can be an array only when compare is IN, NOT IN, BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up. (Note: Due to bug #23268, value is required for NOT EXISTS comparisons to work correctly prior to 3.9. You must supply some string for the value parameter. An empty string or NULL will NOT work. However, any other string will do the trick and will NOT show up in your SQL when using NOT EXISTS. Need inspiration? How about \'bug #23268\'.'),
+				'sanitize_callback'  => 'sanitize_text_field',
+			),
+			'compare'  => array(
+				'type'        => 'string',
+				'description' => __('Operator to test.'),
+				'default'     => '=',
+				'enum'		  => array(
+					'=',
+					'!=',
+					'>',
+					'>=',
+					'<',
+					'<=',
+					'LIKE',
+					'NOT LIKE',
+					'IN',
+					'NOT IN',
+					'BETWEEN',
+					'NOT BETWEEN',
+					'EXISTS',
+					'NOT EXISTS'
+				)
+			),
+			'relation' => array(
+				'type'        => 'string',
+				'description' => __('OR or AND, how the sub-arrays should be compared.'),
+				'default'     => 'AND',
+			),
+			'metadatumtype' => array(
+				'type'        => 'string',
+				'description' => __('Custom metadata type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
+			),
+		);
+
 		return array(
 			'metakey'      => array(
 				'type'        => ['integer', 'string'],
@@ -413,6 +483,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			'metavalue'    => array(
 				'type'        => ['string', 'array'],
 				'description' => __('Custom metadata value'),
+				'sanitize_callback'  => 'sanitize_text_field',
 			),
 			'metavaluenum' => array(
 				'type'        => 'number',
@@ -443,50 +514,11 @@ abstract class REST_Controller extends \WP_REST_Controller {
 			),
 			'metaquery'    => array(
 				'description' => __('Limits result set to items that have specific custom metadata'),
-				'type'        => ['array', 'object'],
+				'type'        => ['array', 'object',],
+				'properties'  => $metaquery_properties,
 				'items'       => array(
-					'keys' => array(
-						'key'      => array(
-							'type'        => 'string',
-							'description' => __('Custom metadata key.'),
-						),
-						'value'    => array(
-							'type'        => ['string', 'array'],
-							'description' => __('Custom metadata value. It can be an array only when compare is IN, NOT IN, BETWEEN, or NOT BETWEEN. You dont have to specify a value when using the EXISTS or NOT EXISTS comparisons in WordPress 3.9 and up.
-	(Note: Due to bug #23268, value is required for NOT EXISTS comparisons to work correctly prior to 3.9. You must supply some string for the value parameter. An empty string or NULL will NOT work. However, any other string will do the trick and will NOT show up in your SQL when using NOT EXISTS. Need inspiration? How about \'bug #23268\'.'),
-						),
-						'compare'  => array(
-							'type'        => 'string',
-							'description' => __('Operator to test.'),
-							'default'     => '=',
-							'enum'		  => array(
-								'=',
-								'!=',
-								'>',
-								'>=',
-								'<',
-								'<=',
-								'LIKE',
-								'NOT LIKE',
-								'IN',
-								'NOT IN',
-								'BETWEEN',
-								'NOT BETWEEN',
-								'EXISTS',
-								'NOT EXISTS'
-							)
-						),
-						'relation' => array(
-							'type'        => 'string',
-							'description' => __('OR or AND, how the sub-arrays should be compared.'),
-							'default'     => 'AND',
-						),
-						'metadatumtype' => array(
-							'type'        => 'string',
-							'description' => __('Custom metadata type. Possible values are NUMERIC, BINARY, CHAR, DATE, DATETIME, DECIMAL, SIGNED, TIME, UNSIGNED. Default value is CHAR. You can also specify precision and scale for the DECIMAL and NUMERIC types (for example, DECIMAL(10,5) or NUMERIC(10) are valid). The type DATE works with the compare value BETWEEN only if the date is stored at the format YYYY-MM-DD and tested with this format.'),
-						),
-					),
-					'type'            => ['array', 'object']
+					'type'            => 'object',
+					'properties'  => $metaquery_properties,
 				),
 			),
 			'datequery'    => array(
@@ -586,6 +618,7 @@ abstract class REST_Controller extends \WP_REST_Controller {
 						),
 						'terms'    => array(
 							'type'        => ['integer', 'string', 'array'],
+							'sanitize_callback'  => 'sanitize_text_field',
 							'description' => __('Taxonomy term(s).'),
 						),
 						'operator' => array(

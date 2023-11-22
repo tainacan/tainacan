@@ -7,9 +7,10 @@ namespace Tainacan;
 class Media {
 
 	private static $instance = null;
-	private static $file_handle = null;
 	private static $file_name = null;
 	private $attachment_html_url_base = 'tainacan_attachment_html';
+
+	public static $content_index_meta = 'document_content_index';
 
 	public static function get_instance() {
 			if(!isset(self::$instance)) {
@@ -246,10 +247,8 @@ class Media {
 			return;
 		}
 
-		$content_index_meta = 'document_content_index';
-
 		if ($file == null) {
-			$meta_id = update_post_meta( $item_id, $content_index_meta, null );
+			update_post_meta( $item_id, SELF::$content_index_meta, null );
 			return true;
 		}
 
@@ -274,9 +273,8 @@ class Media {
 			$wp_charset = get_bloginfo('charset');
 			$content_charset = mb_detect_encoding($content);
 			$content = mb_convert_encoding($content, $wp_charset, $content_charset);
-
-			$meta_id = update_post_meta( $item_id, $content_index_meta, $content );
-		} catch(Exception $e) {
+			update_post_meta( $item_id, SELF::$content_index_meta, $content );
+		} catch(\Exception $e) {
 			error_log('Caught exception: ' .  $e->getMessage() . "\n");
 			return false;
 		}
