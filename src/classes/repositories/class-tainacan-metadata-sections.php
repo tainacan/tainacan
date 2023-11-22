@@ -285,7 +285,7 @@ class Metadata_Sections extends Repository {
 
 				// Add public states.
 				$statuses = get_post_stati( array( 'public' => true ) );
-				$read_private_cap = 'tnc_col_' . $parent_id . '_read_private_metadata_section';
+				$read_private_cap = 'tnc_col_' . $parent_id . '_read_private_metasection';
 				if ( current_user_can($read_private_cap) ) {
 					$statuses = array_merge( $statuses, get_post_stati( array( 'private' => true ) ) );
 				}
