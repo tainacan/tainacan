@@ -2,9 +2,9 @@
 Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah, eduardohumberto, ravipassos, jessicafpx, marinagiolo, omarceloavila, vnmedeiros, tainacan, r-guimaraes, suelanesilva, ccaio, alanargomes, ateneagarcia123, rodrigo0freire, clarandreozzi
 Tags: museums, libraries, archives, GLAM, collections, repository
 Requires at least: 5.9
-Tested up to: 6.3
+Tested up to: 6.4
 Requires PHP: 7.0
-Stable tag: 0.20.4
+Stable tag: 0.20.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
