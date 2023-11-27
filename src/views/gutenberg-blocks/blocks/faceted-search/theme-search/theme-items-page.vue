@@ -1425,13 +1425,16 @@
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
                         const previousMobileScreen = this.isMobileScreen;
                         const previousWindowWidth = this.windowWidth;
-
+                        
                         this.windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
                         this.isMobileScreen = this.windowWidth <= 768;
 
+                        // The window size didn't changed (the resize event is triggered by scrolls on mobile)
+                        if (previousWindowWidth == this.windowWidth)
+                            return;
+
                         if (                                                    // We DO NOT want to open the filters due to this resize event IF:
                             (!previousMobileScreen && this.isMobileScreen) ||   // We're coming from a non-mobile screen to a mobile screen, or
-                            (previousWindowWidth == this.windowWidth) ||        // The window size didn't changed (the resize event is triggered by scrolls on mobile), or
                             this.startWithFiltersHidden ||                      // Filters should begin disabled, or
                             this.openAdvancedSearch                             // Advanced search is opened
                         )
