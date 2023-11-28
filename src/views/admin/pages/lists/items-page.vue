@@ -794,7 +794,9 @@
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
                     this.futureSearchQuery = '';
-                    this.isFiltersModalActive = true;
+                    
+                    if ( !this.isMobileScreen )
+                        this.isFiltersModalActive = !this.startWithFiltersHidden;
                 } else {
                     this.isFiltersModalActive = false;
                 }

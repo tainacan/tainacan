@@ -827,7 +827,9 @@
             openAdvancedSearch(newValue){
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
-                    this.isFiltersModalActive = !this.startWithFiltersHidden;
+
+                    if ( !this.isMobileScreen )
+                        this.isFiltersModalActive = !this.startWithFiltersHidden;
                 } else {
                     this.isFiltersModalActive = false;
                 }
