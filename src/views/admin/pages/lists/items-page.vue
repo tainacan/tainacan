@@ -1462,14 +1462,12 @@
         border-top-right-radius: 2px;
         border-bottom-right-radius: 2px;
         cursor: pointer;
+        display: flex;
+        align-items: center;
         transition: top 0.3s;
 
         &:focus {
             outline: none !important;
-        }
-
-        .icon {
-            margin-top: -1px;
         }
 
         @media screen and (max-width: 768px) {
@@ -1477,15 +1475,6 @@
             width: auto;
             padding: 3px 6px 3px 0px;
             height: 1.625em;
-
-            .icon {
-                position: relative;
-                top: -3px;
-            }
-            .text {
-                position: relative;
-                top: -2px;
-            }
         }
     }
 
