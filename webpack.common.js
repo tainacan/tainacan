@@ -101,7 +101,7 @@ module.exports = {
         new webpack.DefinePlugin({
             'TAINACAN_ENV': JSON.stringify(process.env.NODE_ENV),
             __VUE_OPTIONS_API__: true,
-            __VUE_PROD_DEVTOOLS__: false,
+            __VUE_PROD_DEVTOOLS__: true,
         }),
         new VueLoaderPlugin({
             prettify: false

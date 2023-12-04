@@ -71,7 +71,8 @@
 
             <!-- Term creation panel, used on item submission block for a simpler term creation -->
             <transition name="filter-item">
-                <term-creation-panel
+                <component
+                        :is="'term-creation-panel'"
                         :metadatum-id="itemMetadatum.metadatum.id"
                         :item-id="itemMetadatum.item.id"
                         :is-hierarchical="isHierarchical"

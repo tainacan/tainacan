@@ -136,7 +136,7 @@
             metadataNameFilterString: '',
             isMobileScreen: false,
             isMetadataNavigation: false,
-            enumerateMetadatum: [Boolean|String],
+            enumerateMetadatum: [Boolean,String],
             isFocused: false
         },
         data() {

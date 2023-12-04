@@ -159,16 +159,17 @@
                                                 aria-role="list"
                                                 trap-focus
                                                 position="is-top-right">
-                                            <button
-                                                    class="button is-white"
-                                                    slot="trigger"
-                                                    position="is-top-right"
-                                                    type="button">
-                                                <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
-                                                <span class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                                                </span>
-                                            </button>
+                                            <template #trigger>
+                                                <button
+                                                        class="button is-white"
+                                                        position="is-top-right"
+                                                        type="button">
+                                                    <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
+                                                    <span class="icon">
+                                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                                    </span>
+                                                </button>
+                                            </template>
                                             <b-dropdown-item
                                                     v-for="(viewMode, index) in Object.keys(registeredViewModes)"
                                                     :key="index"

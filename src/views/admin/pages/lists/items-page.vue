@@ -279,6 +279,7 @@
                     <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                     <b-dropdown
                             :mobile-modal="true"
+                            :model-value="order"
                             @update:model-value="onChangeOrder"
                             aria-role="list"
                             trap-focus>
@@ -301,7 +302,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': order == 'DESC' }"
-                                :model-value="'DESC'"
+                                :value="'DESC'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
@@ -312,7 +313,7 @@
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': order == 'ASC' }"
-                                :model-value="'ASC'"
+                                :value="'ASC'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
                                 <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
@@ -920,9 +921,9 @@
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
-
-                         // Finally, loads items even berfore facets so they won't stuck them
-                         if (to.fullPath != from.fullPath)
+                        console.log(to, from)
+                        // Finally, loads items even berfore facets so they won't stuck them 
+                        if (to.fullPath != from.fullPath)
                             this.$eventBusSearch.loadItems();
                         
                         // Checks current metaqueries and taxqueries to alert filters that should reload

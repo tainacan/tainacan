@@ -88,13 +88,5 @@ const routes = [
 
 export default createRouter({
     routes,
-    history: createWebHashHistory(),
-    // set custom query resolver
-    parseQuery(query) {
-        return qs.parse(query);
-    },
-    stringifyQuery(query) {
-        let result = qs.stringify(query);
-        return result ? result : '';
-    }
+    history: createWebHashHistory()
 });

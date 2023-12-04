@@ -154,6 +154,7 @@ export default {
                 }
             },
             setAdminViewMode(adminViewMode) {
+                console.log('setAdminViewMode', adminViewMode);
                 this.$store.dispatch('search/setAdminViewMode', adminViewMode);
                 this.updateURLQueries();  
 
@@ -211,7 +212,7 @@ export default {
             updateURLQueries() {
                 if ( app.config.globalProperties.$route.name ) {
                     this.$router.replace({ name: app.config.globalProperties.$route.name, query: {} });
-                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: this.$store.getters['search/getPostQuery'] });
+                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: this.$store.getters['search/getPostQuery'], onabort: () => { console.log('abort'); }, onerror: () => { console.log('error'); }, onready: () => { console.log('ready'); }, onsuccess: () => { console.log('success'); } });
                 } else {
                     this.$router.replace({ path: '', query: {} });
                     this.$router.replace({ path: '', query: this.$store.getters['search/getPostQuery'] });
