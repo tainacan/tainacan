@@ -10,7 +10,12 @@
             v-if="form && Object.keys(form).length"
             class="tainacan-modal-content">
         <div class="tainacan-modal-title">
-            <h2 v-html="form.name ? ($i18n.get('instruction_configure_the_metadatum') + ' <em>' + form.name + '</em>') : $i18n.get('instruction_configure_new_metadatum')" />
+            <h2 v-if="form.name">
+                {{ $i18n.get('instruction_configure_the_metadatum') }}&nbsp;<em>{{ form.name }}</em>
+            </h2>
+            <h2 v-else>
+                {{ $i18n.get('instruction_configure_new_metadatum') }}
+            </h2>
             <!-- <a 
                     class="back-link" 
                     @click="onEditionCanceled()">
@@ -616,6 +621,18 @@
                 height: 1px;
                 background-color: var(--tainacan-gray2);
                 margin-left: 42px;
+                transition: background-color 0.2s ease, height 0.2s ease;
+            }
+
+            &:hover {
+                .icon,
+                strong {
+                    color: var(--tainacan-secondary);
+                }
+                hr {
+                    background-color: var(--tainacan-primary);
+                    height: 2px;
+                }
             }
         }
 

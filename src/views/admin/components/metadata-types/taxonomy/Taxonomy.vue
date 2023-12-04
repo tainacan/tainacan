@@ -1,9 +1,8 @@
 <template>
     <div>
-        <taxonomy-tag-input
+        <tainacan-taxonomy-tag-input
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
-                :disabled="disabled"
-                :is="getComponent"
+                :disabled="disabled || isFetchingTerms"
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 v-model:value="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
@@ -47,49 +46,55 @@
                 &nbsp;{{ $i18n.get('label_create_new_term') }}
             </a>
         </div>
+        <template v-if="allowNewFromOptions && itemMetadatum.item">
+            <!-- Term creation modal, used on admin for a complete term creation -->
+            <b-modal
+                    :active.sync="isTermCreationModalOpen"
+                    :width="768"
+                    trap-focus
+                    aria-role="dialog"
+                    aria-modal
+                    :can-cancel="['outside', 'escape']"
+                    custom-class="tainacan-modal"
+                    :close-button-aria-label="$i18n.get('close')">
+                <term-edition-form
+                        :metadatum-id="itemMetadatum.metadatum.id"
+                        :item-id="itemMetadatum.item.id"
+                        :is-hierarchical="isHierarchical"
+                        :taxonomy-id="taxonomyId"
+                        :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                        :is-term-insertion-flow="true"
+                        @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
+                        @onEditionCanceled="() => $console.log('Editing canceled')"
+                        @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+            </b-modal>
 
-        <!-- Term creation modal, used on admin for a complete term creation -->
-        <b-modal
-                v-model="isTermCreationModalOpen"
-                :width="768"
-                trap-focus
-                aria-role="dialog"
-                aria-modal
-                :can-cancel="['outside', 'escape']"
-                custom-class="tainacan-modal"
-                :close-button-aria-label="$i18n.get('close')">
-            <term-edition-form
-                    :is-hierarchical="isHierarchical"
-                    :taxonomy-id="taxonomyId"
-                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
-                    :is-term-insertion-flow="true"
-                    @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
-                    @onEditionCanceled="() => $console.log('Editing canceled')"
-                    @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
-        </b-modal>
-
-        <!-- Term creation panel, used on item submission block for a simpler term creation -->
-        <transition name="filter-item">
-            <term-creation-panel
-                    :is-hierarchical="isHierarchical"
-                    v-if="isTermCreationPanelOpen"
-                    :taxonomy-id="taxonomyId"
-                    :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
-                    @onEditionFinished="($event) => addTermToBeCreated($event)"
-                    @onEditionCanceled="() => isTermCreationPanelOpen = false"
-                    @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
-        </transition>
+            <!-- Term creation panel, used on item submission block for a simpler term creation -->
+            <transition name="filter-item">
+                <term-creation-panel
+                        :metadatum-id="itemMetadatum.metadatum.id"
+                        :item-id="itemMetadatum.item.id"
+                        :is-hierarchical="isHierarchical"
+                        v-if="isTermCreationPanelOpen"
+                        :taxonomy-id="taxonomyId"
+                        :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
+                        @onEditionFinished="($event) => addTermToBeCreated($event)"
+                        @onEditionCanceled="() => isTermCreationPanelOpen = false"
+                        @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+            </transition>
+        </template>
     </div>
 </template>
 
 <script>
-    import TaxonomyTagInput from './TaxonomyTaginput.vue';
+    import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
     import { tainacan as axios } from '../../../js/axios.js';
+    import { mapActions } from 'vuex';
 
     export default {
         components: {
-            TaxonomyTagInput,
+            TainacanTaxonomyTagInput,
             CheckboxRadioMetadataInput
         },
         props: {
@@ -99,7 +104,6 @@
             forcedComponentType: '',
             maxtags: '',
             allowNew: false,
-            allowSelectToCreate: false,
             isMobileScreen: false,
         },
         emits: [
@@ -117,7 +121,8 @@
                 isTermCreationModalOpen: false,
                 isTermCreationPanelOpen: false,
                 newTermName: '',
-                allowNewFromOptions: false
+                allowNewFromOptions: false,
+                isFetchingTerms: false
             }
         },
         computed: {
@@ -169,21 +174,55 @@
 
             this.taxonomyId = metadata_type_options.taxonomy_id;
             this.taxonomy = metadata_type_options.taxonomy;
-
-            this.allowNewFromOptions = this.allowNew === false ? false : metadata_type_options.allow_new_terms == 'yes';
+            
+            this.allowNewFromOptions = this.allowNew === false ? false : metadata_type_options.allow_new_terms == 'yes' && (!this.$userCaps || this.$userCaps.hasCapability('tnc_rep_edit_taxonomies'));
 
             this.getTermsId();
         },
         methods: {
+            ...mapActions('taxonomy', [
+                'fetchTerms'
+            ]),
             getTermsId() {
                 let values = [];
-                
-                if (this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input') {
+
+
+                if ( this.value && this.itemMetadatum.metadatum && this.getComponent != 'tainacan-taxonomy-tag-input' ) {
                     values = this.value.map(term => term.id).filter(term => term !== undefined);
                     this.valueComponent = (values.length > 0 && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.multiple === 'no') ? values[0] : values;
+
                 } else if (this.value && this.itemMetadatum.metadatum && this.getComponent == 'tainacan-taxonomy-tag-input') {
-                    values = this.value.map((term) => { return { label: term.name, value: term.id } });
-                    this.valueComponent = values;
+                    
+                    // This first scenario happens in the item edition form, as the item metadata returns the terms as objects
+                    const valuesInArray = Array.isArray(this.value) ? this.value : [this.value];
+                    if ( valuesInArray[0] && valuesInArray[0] && valuesInArray[0].id ) {
+                        values = valuesInArray.map((term) => { return { label: term.name, value: term.id } });
+                        this.valueComponent = values;
+
+                    // If the term is not returned as object, we're in bulk edition modal or in the metadata section condition metadata input, where value is a an array of IDs
+                    } else if ( valuesInArray.length > 0 ) {
+                        this.isFetchingTerms = true;
+                        this.fetchTerms({ 
+                            taxonomyId: this.taxonomyId,
+                            fetchOnly: { 
+                                fetch_only: {
+                                    0: 'name',
+                                    1: 'id'
+                                }
+                            },
+                            all: true,
+                            include: valuesInArray
+                        }).then((res) => {
+                            values = res.terms.map((term) => { return { label: term.name, value: term.id } });
+                            this.valueComponent = values;
+                            this.isFetchingTerms = false;    
+                        }).catch((error) => {
+                            this.isFetchingTerms = false;
+                            throw error;
+                        });
+                    } else {
+                        this.valueComponent = [];
+                    }
                 }
             },
             addRecentlyCreatedTerm(term) {
@@ -224,7 +263,7 @@
             },
             openTermCreationModal(newTerm) {
                 this.newTermName = newTerm.name;
-
+                
                 if (this.isOnItemSubmissionForm)
                     this.isTermCreationPanelOpen = true;
                 else

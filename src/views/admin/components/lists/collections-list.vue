@@ -8,8 +8,10 @@
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox 
-                            @click="selectAllCollectionsOnPage()" 
-                            :model-value="allCollectionsOnPageSelected">{{ $i18n.get('label_select_all_collections_page') }}</b-checkbox>
+                            @click.native="selectAllCollectionsOnPage()" 
+                            :model-value="allCollectionsOnPageSelected">
+                        {{ $i18n.get('label_select_all_collections_page') }}
+                    </b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
@@ -348,6 +350,24 @@
                                                 class="tainacan-icon tainacan-icon-1-25em"/>
                                     </span>
                                 </a>
+                                <a 
+                                        id="button-open-external" 
+                                        :aria-label="$i18n.getFrom('collections','view_item')"
+                                        @click.stop="" 
+                                        target="_blank"
+                                        :href="collection.url">                      
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('label_view_collection_on_website'),
+                                                autoHide: true,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                placement: 'auto',
+                                                html: true
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                    </span>
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -561,7 +581,7 @@ export default {
     .selection-control {
         
         padding: 6px 0px 0px 12px;
-        background: var(--tainacan-white);
+        background: var(--tainacan-background-color);
         height: 40px;
 
         .select-all {

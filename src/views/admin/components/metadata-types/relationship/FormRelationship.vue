@@ -119,6 +119,21 @@
                     :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_draft_items')"/>
         </b-field>
 
+        <b-field
+                :addons="false"
+                :label="$i18n.getHelperTitle('tainacan-relationship', 'accept_only_items_authored_by_current_user')">
+                &nbsp;
+            <b-switch
+                    size="is-small" 
+                    v-model="modelAcceptOnlyItemsAuthoredByCurrentUser"
+                    @input="emitValues()"
+                    true-value="yes"
+                    false-value="no" />
+            <help-button
+                    :title="$i18n.getHelperTitle('tainacan-relationship', 'accept_only_items_authored_by_current_user')"
+                    :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_only_items_authored_by_current_user')"/>
+        </b-field>
+
     </section>
 </template>
 
@@ -149,6 +164,7 @@
                 collectionMessage: '',
                 displayRelatedItemMetadata: [],
                 modelAcceptDraftItems: 'no',
+                modelAcceptOnlyItemsAuthoredByCurrentUser: 'no',
                 isMetaqueryRelationshipEnabled: tainacan_plugin && tainacan_plugin.tainacan_enable_relationship_metaquery == true ? tainacan_plugin.tainacan_enable_relationship_metaquery : false
             }
         },
@@ -173,6 +189,7 @@
                     this.modelSearch = '';
                     this.modelDisplayInRelatedItems = 'no';
                     this.modelAcceptDraftItems = 'no';
+                    this.modelAcceptOnlyItemsAuthoredByCurrentUser = 'no';
                     this.emitValues();
                 }
             },
@@ -194,6 +211,7 @@
             this.displayRelatedItemMetadata = this.value && this.value.display_related_item_metadata && Array.isArray(this.value.display_related_item_metadata) ? this.value.display_related_item_metadata : [];
             this.modelDisplayInRelatedItems = this.value && this.value.display_in_related_items ? this.value.display_in_related_items : 'no';
             this.modelAcceptDraftItems = this.value && this.value.accept_draft_items ? this.value.accept_draft_items : 'no';
+            this.modelAcceptOnlyItemsAuthoredByCurrentUser = this.value && this.value.accept_only_items_authored_by_current_user ? this.value.accept_only_items_authored_by_current_user : 'no';
         },
         methods: {
             setErrorsAttributes( type, message ){
@@ -284,7 +302,8 @@
                     search: this.modelSearch,
                     display_in_related_items: this.modelDisplayInRelatedItems,
                     display_related_item_metadata: this.displayRelatedItemMetadata,
-                    accept_draft_items: this.modelAcceptDraftItems
+                    accept_draft_items: this.modelAcceptDraftItems,
+                    accept_only_items_authored_by_current_user: this.modelAcceptOnlyItemsAuthoredByCurrentUser
                 });
             }
         }

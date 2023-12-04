@@ -46,6 +46,7 @@ import User from '../components/metadata-types/user/User.vue';
 import GeoCoordinate from '../components/metadata-types/geocoordinate/GeoCoordinate.vue'
 
 import FormText from '../components/metadata-types/text/FormText.vue';
+import FormTextarea from '../components/metadata-types/textarea/FormTextarea.vue';
 import FormRelationship from '../components/metadata-types/relationship/FormRelationship.vue';
 import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue';
 import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.vue';
@@ -78,7 +79,8 @@ import {
     UserCapabilitiesPlugin,
     StatusHelperPlugin,
     CommentsStatusHelperPlugin,
-    AdminOptionsHelperPlugin 
+    AdminOptionsHelperPlugin,
+    HtmlSanitizerPlugin 
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -188,6 +190,7 @@ export default (element) => {
             app.use(ThumbnailHelperPlugin);
             app.use(OrderByHelperPlugin);
             app.use(StatusHelperPlugin);
+            app.use(HtmlSanitizerPlugin);
             app.use(ConsolePlugin, {visual: false});
             app.use(CommentsStatusHelperPlugin);
             app.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
@@ -215,6 +218,7 @@ export default (element) => {
 
             /* Metadata Option forms */
             app.component('tainacan-form-text', FormText);
+            app.component('tainacan-form-textarea', FormTextarea);
             app.component('tainacan-form-relationship', FormRelationship);
             app.component('tainacan-form-taxonomy', FormTaxonomy);
             app.component('tainacan-form-selectbox', FormSelectbox);

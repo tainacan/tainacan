@@ -19,7 +19,8 @@ class Filter extends Entity {
         $max_options,
         $filter_type,
         $filter_type_options,
-        $begin_with_filter_collapsed;
+        $begin_with_filter_collapsed,
+        $display_in_repository_level_lists;
 
     static $post_type = 'tainacan-filter';
     public $enabled_for_collection = true;
@@ -179,6 +180,15 @@ class Filter extends Entity {
         return $this->get_mapped_property('begin_with_filter_collapsed');
     }
 
+    /**
+     * Return 'yes' or 'no' to the option of display in repository level lists
+     * 
+     * @return string
+     */
+    public function get_display_in_repository_level_lists() {
+        return $this->get_mapped_property('display_in_repository_level_lists');
+    }
+
 
     /**
      * Define the filter name
@@ -250,6 +260,15 @@ class Filter extends Entity {
      */
     public function set_begin_with_filter_collapsed($begin_with_filter_collapsed) {
         $this->set_mapped_property('begin_with_filter_collapsed', $begin_with_filter_collapsed);
+    }
+
+    /**
+     * Tells if filter should appear in repository level lists, even belonging to a collection
+     * 
+     * @param string $display_in_repository_level_lists
+     */
+    public function set_display_in_repository_level_lists($display_in_repository_level_lists) {
+        $this->set_mapped_property('display_in_repository_level_lists', $display_in_repository_level_lists);
     }
 
 	/**

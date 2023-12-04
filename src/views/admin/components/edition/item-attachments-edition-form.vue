@@ -8,7 +8,7 @@
                 <span class="icon has-text-gray4">
                     <i class="tainacan-icon tainacan-icon-attachments"/>
                 </span>
-                {{ $i18n.get('label_attachments') }}&nbsp;
+                {{ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') }}&nbsp;
                 <span 
                         v-if="totalAttachments"
                         class="has-text-gray has-text-weight-normal"
@@ -17,7 +17,7 @@
                 </span>
             </label>
             <help-button
-                    :title="$i18n.get('label_attachments')"
+                    :title="collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments')"
                     :message="$i18n.get('info_edit_attachments')"/>
             <button
                     style="float: right; font-size: 0.875em; margin: 2px 5px;"
@@ -28,7 +28,7 @@
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-edit"/>
                 </span>
-                {{ $i18n.get('label_add_or_update_attachments') }}
+                {{ $i18n.get('label_add_or_update') }}
             </button>
         </div>
         <div 
@@ -38,6 +38,7 @@
             <attachments-list
                     :item="item"
                     :form="form"
+                    :collection="collection"
                     :is-editable="true"
                     :should-load-attachments="shouldLoadAttachments"
                     @onDeleteAttachment="($event) => $emit('onDeleteAttachment', $event)"/>
@@ -55,6 +56,7 @@ export default {
     props: {
         item: Object,
         form: Object,
+        collection: Object,
         totalAttachments: Number,
         isLoading: Boolean,
         shouldLoadAttachments: Boolean

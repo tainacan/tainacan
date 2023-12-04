@@ -15,7 +15,7 @@
                     target="_blank"
                     :href="form.url">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
                 </span>
                 <span class="menu-text">{{ $i18n.get('label_term_page_on_website') }}</span>
             </a>
@@ -233,7 +233,9 @@
             originalForm: Object,
             taxonomyId: '',
             isHierarchical: Boolean,
-            isTermInsertionFlow: false
+            isTermInsertionFlow: false,
+            metadatumId: [String, Number],
+            itemId: [String, Number]
         },
         emits: [
             'onEditionFinished'
@@ -311,7 +313,9 @@
                     this.isLoading = true;
                     this.sendChildTerm({
                         taxonomyId: this.taxonomyId,
-                        term: data
+                        term: data,
+                        metadatumId: this.metadatumId,
+                        itemId: this.itemId
                     })
                         .then((term) => {
                             this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
@@ -345,7 +349,9 @@
                     this.isLoading = true;
                     this.updateTerm({
                         taxonomyId: this.taxonomyId,
-                        term: data
+                        term: data,
+                        metadatumId: this.metadatumId,
+                        itemId: this.itemId
                     })
                         .then((term) => {
                             this.formErrors = {};

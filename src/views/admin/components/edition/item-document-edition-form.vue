@@ -1,21 +1,17 @@
 <template>
-    <div>
-        <div 
-                v-if="!$adminOptions.hideItemEditionDocument"
-                class="section-label">
+    <div v-if="!$adminOptions.hideItemEditionDocument && ( !$adminOptions.hideItemEditionDocumentFileInput && !$adminOptions.hideItemEditionDocumentTextInput && !$adminOptions.hideItemEditionDocumentUrlInput )">
+        <div class="section-label">
             <label>
                 <span class="icon has-text-gray4">
                     <i :class="'tainacan-icon tainacan-icon-' + ( (!form.document_type || form.document_type == 'empty' ) ? 'item' : (form.document_type == 'attachment' ? 'attachments' : form.document_type))"/>
                 </span>
-                {{ form.document != undefined && form.document != null && form.document != '' ? $i18n.get('label_document') : $i18n.get('label_document_empty') }}
+                {{ collection && collection.item_document_label ? collection.item_document_label : ( (form.document != undefined && form.document != null && form.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
             </label>
             <help-button
-                    :title="$i18n.getHelperTitle('items', 'document')"
+                    :title="collection && collection.item_document_label ? collection.item_document_label : $i18n.getHelperTitle('items', 'document')"
                     :message="$i18n.getHelperMessage('items', 'document')"/>
         </div>
-        <div 
-                v-if="!$adminOptions.hideItemEditionDocument"
-                class="section-box document-field">
+        <div class="section-box document-field">
             <div
                     v-if="form.document != undefined && form.document != null &&
                             form.document_type != undefined && form.document_type != null &&
@@ -63,7 +59,7 @@
             <ul 
                     v-else
                     class="document-field-placeholder">
-                <li v-if="!$adminOptions.hideItemEditionDocumentFileInput">
+                <li v-if="!$adminOptions.hideItemEditionDocumentFileInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['attachment'] && collection.item_enabled_document_types['attachment']['enabled'] === 'yes')">
                     <button
                             type="button"
                             @click.prevent="($event) => $emit('onSetFileDocument', $event)">
@@ -73,7 +69,7 @@
                     </button>
                     <p>{{ $i18n.get('label_file') }}</p>
                 </li>
-                <li v-if="!$adminOptions.hideItemEditionDocumentTextInput">
+                <li v-if="!$adminOptions.hideItemEditionDocumentTextInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['text'] && collection.item_enabled_document_types['text']['enabled'] === 'yes')">
                     <button
                             type="button"
                             @click.prevent="$emit('onSetTextDocument')">
@@ -83,7 +79,7 @@
                     </button>
                     <p>{{ $i18n.get('label_text') }}</p>
                 </li>
-                <li v-if="!$adminOptions.hideItemEditionDocumentUrlInput">
+                <li v-if="!$adminOptions.hideItemEditionDocumentUrlInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['url'] && collection.item_enabled_document_types['url']['enabled'] === 'yes')">
                     <button
                             type="button"
                             @click.prevent="$emit('onSetURLDocument')">
@@ -102,7 +98,8 @@
 export default {
     props: {
         item: Object,
-        form: Object
+        form: Object,
+        collection: Object
     },
     emits: [
         'onSetFileDocument',
@@ -123,6 +120,11 @@ export default {
 
             &.document-field-content--text {
                 padding-bottom: 2rem;
+
+                :deep(article) {
+                    max-height: calc(32vh - 2rem);
+                    overflow-y: auto;
+                }
             }
 
             :deep(img),
@@ -169,6 +171,7 @@ export default {
             justify-content: space-evenly;
             padding: 1.5rem 1rem 2rem 1rem;
             border: 1px solid var(--tainacan-input-border-color);
+            border-radius: var(--tainacan-input-border-radius, 1px);
 
             li {
                 text-align: center;

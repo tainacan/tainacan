@@ -307,7 +307,9 @@ class Item extends Entity {
 	 * @return string "open"|"closed"
 	 */
 	public function get_comment_status() {
-		return apply_filters('tainacan-item-comments_open', $this->get_mapped_property('comment_status'), $this->get_id());
+		$comment_status = $this->get_mapped_property('comment_status');
+		$comment_status_filtered = apply_filters('comments_open', $comment_status == 'open', $this->get_id()) == true ? 'open' : 'closed';
+		return $comment_status_filtered;
 	}
 
 	/**
@@ -1183,13 +1185,15 @@ class Item extends Entity {
 		if ( $metadata_section->is_conditional_section() ) {
 
 			$rules = $metadata_section->get_conditional_section_rules();
-			$item_id = $this->get_id();
+			if( !empty($rules) ) {
+				$item_id = $this->get_id();
 
-			foreach ( $rules as $meta_id => $meta_values_conditional ) {
+				foreach ( $rules as $meta_id => $meta_values_conditional ) {
 
-				$meta_values = get_post_meta( $item_id, $meta_id );
-				if (!array_intersect($meta_values, $meta_values_conditional))
-					return $return;
+					$meta_values = get_post_meta( $item_id, $meta_id );
+					if (!array_intersect($meta_values, $meta_values_conditional))
+						return $return;
+				}
 			}
 		}
 

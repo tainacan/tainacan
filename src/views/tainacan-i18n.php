@@ -94,6 +94,7 @@ return apply_filters( 'tainacan-i18n', [
 	'delete'                                    	 => __( 'Delete', 'tainacan' ),
 	'skip'	                                    	 => __( 'Skip', 'tainacan' ),
 	'add'	                                    	 => __( 'Add', 'tainacan' ),
+	'show'	                                    	 => __( 'Show', 'tainacan' ),
 
 	// Wordpress Comments Status
 	'comments_status_open'                           => __( 'Open', 'tainacan' ),
@@ -296,6 +297,8 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: 'Published' here refers to the sum of public and private items, not including draft or trashed ones. The are visible to those with permission */
 	'label_all_items'                      			 => __( 'All items', 'tainacan' ),
 	'label_all_collections'                          => __( 'All collections', 'tainacan' ),
+	'label_show_only_created_by_me'                	 => __( 'Show only created by me', 'tainacan' ),
+	'label_collections_that_i_can_edit'              => __( 'Collections that I can edit', 'tainacan' ),
 	'label_all_taxonomies'                           => __( 'All taxonomies', 'tainacan' ),
 	'label_bulk_actions'                             => __( 'Bulk actions', 'tainacan' ),
 	'label_delete_selected_collections'              => __( 'Delete selected collections', 'tainacan' ),
@@ -314,7 +317,8 @@ return apply_filters( 'tainacan-i18n', [
 	'label_select_all_processes_page'                => __( 'Select all processes on page', 'tainacan' ),
 	'label_select_all_terms'                    	 => __( 'Select all taxonomy terms', 'tainacan' ),
 	'label_all_terms_selected'     		             => __( 'All terms selected', 'tainacan' ),
-	'label_add_or_update_attachments'                => __( 'Add or update attachments', 'tainacan' ),
+	/* translators: this refers to attachments */	
+	'label_add_or_update'						 	 => __( 'Add or update', 'tainacan' ),
 	'label_blank_collection'                         => __( 'Blank collection', 'tainacan' ),
 	/* translators: the metadata scheme https://dublincore.org/ */
 	'label_dublin_core'                              => __( 'Dublin Core', 'tainacan' ),
@@ -698,6 +702,10 @@ return apply_filters( 'tainacan-i18n', [
 	'label_multiple'								 => __( 'Multiple', 'tainacan' ),
 	'label_separator'								 => __( 'Separator', 'tainacan' ),
 	'label_loading_items'							 => __( 'Loading items...', 'tainacan' ),
+	'label_items_list_options'				 		 => __( 'Items list options', 'tainacan' ),
+	'label_item_edition_form_options'				 => __( 'Item edition form options', 'tainacan' ),
+	'label_item_submission_options'				 	 => __( 'Item submission options', 'tainacan' ),
+	'label_metadata_related_features'				 => __( 'Metadata related features', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),
@@ -834,6 +842,7 @@ return apply_filters( 'tainacan-i18n', [
 	'info_no_user_found'                             => __( 'No user was found with this name.', 'tainacan' ),
 	'info_no_item_found_filter'                      => __( 'No item was found here with these filters.', 'tainacan' ),
 	'info_no_item_found'                             => __( 'No item was found.', 'tainacan' ),
+	'info_no_item_authored_by_you_found'			 => __( 'No item authored by you was found.', 'tainacan' ),
 	'info_item_not_saved'                            => __( 'Warning: Item not saved.', 'tainacan' ),
 	'info_no_associated_role' 						 => __( 'No associated role.', 'tainacan' ),
 	'info_error_deleting_collection'                 => __( 'Error on deleting collection.', 'tainacan' ),
@@ -863,6 +872,8 @@ return apply_filters( 'tainacan-i18n', [
 	/* translators: This is displayed before sentences like "Showing items 2 to 8 of 12 */
 	'info_showing_items'                             => __( 'Showing items ', 'tainacan' ),
 	'info_showing_attachments'                       => __( 'Showing attachments ', 'tainacan' ),
+	/* translators: This is displayed before sentences like "Showing attachments 2 to 8 of 12 */
+	'info_showing_%s'                       		 => __( 'Showing %s ', 'tainacan' ),
 	'info_showing_collections'                       => __( 'Showing collections ', 'tainacan' ),
 	'info_showing_taxonomies'                        => __( 'Showing taxonomies ', 'tainacan' ),
 	'info_showing_activities'                        => __( 'Showing activities ', 'tainacan' ),
@@ -895,12 +906,15 @@ return apply_filters( 'tainacan-i18n', [
 	'info_there_is_no_metadatum'                     => __( 'There is no metadata here yet.', 'tainacan' ),
 	'info_there_is_no_metadata_section'              => __( 'There is no metadata section here yet.', 'tainacan' ),
 	'info_there_is_no_filter'                        => __( 'There is no filter here yet.', 'tainacan' ),
+	'info_collection_filter_on_repository_level'     => __( 'If there are filters set in the collections, you can also set them to be displayed at repository level.', 'tainacan' ),
 	'info_changes'                                   => __( 'Changes', 'tainacan' ),
 	'info_possible_external_sources'                 => __( 'Possible external sources: CSV, Instagram, YouTube, etc.', 'tainacan' ),
 	'info_help_term_name'                            => __( 'The term name', 'tainacan' ),
 	'info_help_term_description'                     => __( 'The description of the Term.', 'tainacan' ),
 	'info_help_parent_term'                          => __( 'The parent term', 'tainacan' ),
 	'info_no_attachments_on_item_yet'                => __( 'The are no attachments on this item so far.', 'tainacan' ),
+	/* translators: This is displayed to indicate that there are no attachments yet. The attachments label can be tweked by user. */
+	'info_no_%s_on_item_yet'		                 => __( 'The are no %s on this item so far.', 'tainacan' ),
 	'info_repository_metadata_inheritance'           => __( 'Repository Metadata will be inherited by all collections.', 'tainacan' ),
 	'info_repository_filters_inheritance'            => __( 'Repository Filters will be inherited by all collections.', 'tainacan' ),
 	'info_create_filters'                            => __( 'Click or Drag and Drop Metadata here for creating a new Filter.', 'tainacan' ),
@@ -1031,6 +1045,8 @@ return apply_filters( 'tainacan-i18n', [
 	'info_you_searched_for_%s'						 => __( 'You searched for %s', 'tainacan' ),
 	'info_try_enabling_search_by_word'				 => __( 'Try enabling the search by words.', 'tainacan' ),
 	'info_try_disabling_search_by_word'				 => __( 'Try disabling the search by words, to search for the complete phrase.', 'tainacan' ),
+	'info_try_empting_the_textual_search'			 => __( 'Try empting the textual search.', 'tainacan' ),
+	'info_try_selecting_all_collections_in_filter'	 => __( 'Try selecting All Collections in the filter above.', 'tainacan' ),
 	'info_details_about_search_by_word'				 => __( 'They may be located on different metadata and order, but you will still be able to use quotes to group them.', 'tainacan' ),
 	'info_item_submission_draft_status'				 => __( 'Warning: draft items may be submitted even without filling all required metadata.', 'tainacan' ),
 	'info_empty_geocoordinate_metadata_list'		 => __( 'No geocoordinate metadata was found. Try enabling it in the "displayed metadata" dropdown.', 'tainacan' ),

@@ -69,6 +69,32 @@
                 </button>
             </div>
         </b-field>
+        <b-field :addons="false">
+            <label class="label is-inline">
+                {{ $i18n.getHelperTitle('tainacan-numeric', 'min') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-numeric', 'min')"
+                        :message="$i18n.getHelperMessage('tainacan-numeric', 'min')" />
+            </label>
+            <b-numberinput
+                    v-model="min"
+                    name="min"
+                    step="1"
+                    @input="onUpdateMin"/>
+        </b-field>
+        <b-field :addons="false">
+            <label class="label is-inline">
+                {{ $i18n.getHelperTitle('tainacan-numeric', 'max') }}
+                <help-button
+                        :title="$i18n.getHelperTitle('tainacan-numeric', 'max')"
+                        :message="$i18n.getHelperMessage('tainacan-numeric', 'max')" />
+            </label>
+            <b-numberinput
+                    v-model="max"
+                    name="max"
+                    step="1"
+                    @input="onUpdateMax"/>
+        </b-field>
     </section>
 </template>
 
@@ -81,15 +107,25 @@
         data() {
             return {
                 step: [Number, String],
+                min: [Number, null],
+                max: [Number, null],
                 showEditStepOptions: false
             }
         },
         created() {
             this.step = this.value && this.value.step ? this.value.step : 0.01;
+            this.min = this.value && this.value.min ? Number(this.value.min) : null;
+            this.max = this.value && this.value.max ? Number(this.value.max) : null;
         },
         methods: {
             onUpdateStep(value) {
-                this.$emit('input', { step: value });
+                this.$emit('input', { step: value, min: this.min, max: this.max });
+            },
+            onUpdateMin(value) {
+                this.$emit('input', { step: this.step, min: value, max: this.max });
+            },
+            onUpdateMax(value) {
+                this.$emit('input', { step: this.step, min: this.min, max: value });
             }
         }
     }

@@ -422,7 +422,7 @@
                 text-decoration: none;
 
                 &:hover {
-                    background-color: #0073aa;;
+                    background-color: #0073aa;
                     color: white;
                 }
             }

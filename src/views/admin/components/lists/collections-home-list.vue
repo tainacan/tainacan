@@ -246,7 +246,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip']     
                                     }"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                             </span>
                         </a>
                     </li>

@@ -17,7 +17,7 @@ button.link-style:active {
     }
 }
 .button {
-    border-radius: 4px !important;
+    border-radius: var(--tainacan-button-border-radius, 4px) !important;
     min-height: 2.125em;
     font-weight: normal;
     text-transform: inherit;
@@ -28,7 +28,6 @@ button.link-style:active {
     height: inherit !important;
     box-shadow: none !important;
     cursor: pointer;
-    background-color: var(--tainacan-white);
     text-shadow: none !important;
 
     &:not(.hidden) {
@@ -46,8 +45,13 @@ button.link-style:active {
         background: var(--tainacan-success) !important;
         color: var(--tainacan-white) !important;
     }
-    &.is-white, &.is-white:hover, &.is-white:focus, &.is-outlined:hover, &.is-outlined:focus {
-        background-color: transparent !important;
+    &.is-white,
+    &.is-outlined:hover, &.is-outlined:focus {
+        transition: background-color 0.2s ease-out;
+        background-color: rgba(125,125,125,0.0) !important;
+    }
+    &.is-white:hover, &.is-white:focus {
+        background-color: rgba(125,125,125,0.05) !important;
     }
     &.is-loading, &.is-loading:hover, &.is-loading:focus,
     &.is-loading.is-success, &.is-loading.is-success:hover, &.is-loading.is-success:focus,
@@ -112,7 +116,7 @@ kbd {
     border-left-width: 2px;
     border-right-width: 3px;
     border-bottom-width: 4px;
-    border-radius: 4px;
+    border-radius: var(--tainacan-button-border-radius, 4px);
     border-style: solid;
     border-color: var(--tainacan-gray2, #dbdbdb);
     border-bottom-color: var(--tainacan-gray3, #a5a5a5);

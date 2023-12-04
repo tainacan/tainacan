@@ -13,7 +13,7 @@ class CSV extends Exporter {
 		$this->accept_no_mapping = true;
 		if ($current_collection = $this->get_current_collection_object()) {
 			$name = $current_collection->get_name();
-			$this->collection_name = sanitize_title($name) . "_csv_export.csv";;
+			$this->collection_name = sanitize_title($name) . "_csv_export.csv";
 		} else {
 			$this->collection_name = "csv_export.csv";
 		}
@@ -285,13 +285,13 @@ class CSV extends Exporter {
 			$current_user = wp_get_current_user();
 			$author_name = $current_user->user_login;
 
-			$message = __('target collections:', 'tainacan');
+			$message = __('Target collections:', 'tainacan');
 			$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
 			$message .= __('Exported by:', 'tainacan');
 			$message .= " <b> $author_name </b><br/>";
 			$message .= __('Your CSV file is ready! Access it in the link below:', 'tainacan');
 			$message .= '<br/><br/>';
-			$message .= '<a href="' . $file['url'] . '">Download</a>';
+			$message .= '<a target="_blank" href="' . $file['url'] . '">Download</a>';
 			
 			return $message;
 			

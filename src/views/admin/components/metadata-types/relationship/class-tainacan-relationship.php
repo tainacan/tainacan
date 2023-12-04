@@ -71,6 +71,10 @@ class Relationship extends Metadata_Type {
 			'accept_draft_items' => [
 				'title' => __( 'List and accept draft items on the relation', 'tainacan' ),
 				'description' => __( 'Include draft items as possible options to the relationship metadata.', 'tainacan' ),
+			],
+			'accept_only_items_authored_by_current_user' => [
+				'title' => __( 'Bind items only by current author', 'tainacan' ),
+				'description' => __( 'Accept stabelishing the replationship only with items authored by the current user editing the item.', 'tainacan' ),
 			]
 		];
 	}
@@ -121,6 +125,7 @@ class Relationship extends Metadata_Type {
 
 						case 'display_in_related_items':
 						case 'accept_draft_items':
+						case 'accept_only_items_authored_by_current_user':
 							if ($option_value == 'yes')
 								$readable_option_value = __('Yes', 'tainacan');
 							else if ($option_value == 'no')
@@ -177,13 +182,19 @@ class Relationship extends Metadata_Type {
 		// empty is ok
 		if ( !empty($this->get_option('display_in_related_items')) && !in_array($this->get_option('display_in_related_items'), ['yes', 'no']) ) {
 			return [
-				'display_in_related_items' => __('Display in related items must be a option yes or no','tainacan')
+				'display_in_related_items' => __('Display in related items must be an option yes or no','tainacan')
 			];
 		}
 		// empty is ok
 		if ( !empty($this->get_option('accept_draft_items')) && !in_array($this->get_option('accept_draft_items'), ['yes', 'no']) ) {
 			return [
-				'accept_draft_items' => __('Accept draft items must be a option yes or no','tainacan')
+				'accept_draft_items' => __('Accept draft items must be an option yes or no','tainacan')
+			];
+		}
+		// empty is ok
+		if ( !empty($this->get_option('accept_only_items_authored_by_current_user')) && !in_array($this->get_option('accept_only_items_authored_by_current_user'), ['yes', 'no']) ) {
+			return [
+				'accept_only_items_authored_by_current_user' => __('Bind items only by current author must be an option yes or no','tainacan')
 			];
 		}
 		

@@ -79,6 +79,16 @@ class Filters extends Repository {
 				'enum'		  => [ 'yes', 'no' ],
 				'default'     => 'no'
 			],
+			'display_in_repository_level_lists' => [
+				'map'         => 'meta',
+				'title'       => __( 'Display in repository level lists', 'tainacan' ),
+				'type'        => 'string',
+				'description' => __( 'With this option enabled, the filter will appear even in repository level items lists, such as the complete items list and the term items list.', 'tainacan' ),
+				'on_error'    => __( 'Please set the "Display in repository level lists" value as "yes" or "no"', 'tainacan' ),
+				'validation'  => v::stringType()->in( [ 'yes', 'no' ] ), // yes or no
+				'enum'		  => [ 'yes', 'no' ],
+				'default'     => 'no'
+			],
 			'collection_id'       => [
 				'map'         => 'meta',
 				'title'       => __( 'Collection', 'tainacan' ),

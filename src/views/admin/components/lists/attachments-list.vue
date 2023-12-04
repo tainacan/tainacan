@@ -18,7 +18,7 @@
                         <span 
                                 v-if="form.document == attachment.id"
                                 class="file-attachment-document-tag">
-                            {{ $i18n.get('label_document') }}
+                            {{ collection && collection.item_document_label ? collection.item_document_label : $i18n.get('label_document') }}
                         </span>
                         <file-item
                                 :show-name="true"
@@ -52,7 +52,7 @@
                                 <i class="tainacan-icon tainacan-icon-30px tainacan-icon-attachments"/>
                             </span>
                         </p>
-                        <p>{{ $i18n.get('info_no_attachments_on_item_yet') }}</p>
+                        <p>{{ $i18n.getWithVariables('info_no_%s_on_item_yet', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) }}</p>
                     </div>
                 </section>
             </div>
@@ -63,7 +63,7 @@
                 v-if="attachments.length > 0">
             <div class="shown-items">
                 {{
-                    $i18n.get('info_showing_attachments') + ' ' +
+                    $i18n.getWithVariables('info_showing_%s', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) + ' ' +
                     (attachmentsPerPage * (attachmentsPage - 1) + 1) +
                     $i18n.get('info_to') +
                     getLastAttachmentsNumber() +
@@ -99,6 +99,7 @@
         props: {
             item: Object,
             form: Object,
+            collection: Object,
             shouldLoadAttachments: Boolean,
             isEditable: Boolean,
         },

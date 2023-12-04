@@ -236,27 +236,12 @@
         }
 
         .taginput-container {
-            border-radius: 1px !important;
+            border-radius: var(--tainacan-input-border-radius, 1px) !important;
             box-shadow: none !important;
             transition: background-color 0.1s;
         }
 
         .taginput-container {
-            border: none !important;
-            &.is-focused, 
-            &.is-focused:active, 
-            &.is-focused:focus, 
-            &.is-focusable,
-            &.is-focusable:active 
-            &.is-focusable:focus  {
-                border: none !important;
-                input:active, input:focus {
-                    border: 1px solid var(--tainacan-input-border-color) !important;
-                }
-            }    
-            input{
-                border: 1px solid var(--tainacan-input-border-color) !important;
-            }
             .tags {
                 display: none !important;
             }

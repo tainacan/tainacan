@@ -137,9 +137,23 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-delete"/>
                                     </span>
                                 </button>
+                                <a 
+                                        target="_blank"
+                                        :href="term.url">
+                                    <span
+                                            v-tooltip="{
+                                                content: $i18n.get('label_term_page_on_website'),
+                                                autoHide: true,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                placement: 'bottom'
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                    </span>
+                                </a>
                             </div>
                         </label>
                         <button
@@ -745,7 +759,7 @@ export default {
                             let errorMessage = errors.length > 1 ? this.$i18n.getWithVariables('info_terms_creation_failed_due_to_values_%s', [ wrongValues ]) : this.$i18n.getWithVariables('info_terms_creation_failed_due_to_value_%s', [ wrongValues ]); 
                             errorMessage += ' ' + errors[0]['errors'][0]['name'];
                             this.$buefy.snackbar.open({
-                                message: errorMessage,
+                                message: this.$htmlSanitizer.sanitize(errorMessage),
                                 type: 'is-danger',
                                 position: 'is-bottom-right',
                                 pauseOnHover: true,
@@ -860,7 +874,10 @@ export default {
     .tainacan-hierarchical-list-columns-container {
         background-color: var(--tainacan-background-color);
         border: 1px solid var(--tainacan-gray2);
-        border-radius: 2px;
+        border-bottom-left-radius: var(--tainacan-dropdownmenu-border-radius);
+        border-bottom-right-radius: var(--tainacan-dropdownmenu-border-radius);
+        border-top-right-radius: 0px;
+        border-top-left-radius: 0px;
         margin-top: 0px;
         display: flex;
         height: auto;

@@ -69,7 +69,7 @@ class Theme_Helper {
 		
 		$this->register_view_mode('table', [
 			'label' => __('Table', 'tainacan'),
-			'description' => 'The classic table display.',
+			'description' => __('The classic table display.', 'tainacan'),
 			'dynamic_metadata' => true,
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewtable tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
@@ -79,7 +79,7 @@ class Theme_Helper {
 		$this->register_view_mode('cards', [
 			'label' => __('Cards', 'tainacan'),
 			'dynamic_metadata' => false,
-			'description' => 'A cards view, displaying cropped thumbnails, title and description.',
+			'description' => __('A cards view, displaying cropped thumbnails, title and description.', 'tainacan'),
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewcards tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,
@@ -88,7 +88,7 @@ class Theme_Helper {
 		$this->register_view_mode('records', [
 			'label' => __('Records', 'tainacan'),
 			'dynamic_metadata' => true,
-			'description' => 'A records view, similiar to cards, but flexible for metadata.',
+			'description' => __('A records view, similiar to cards, but flexible for metadata.', 'tainacan'),
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewrecords tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,
@@ -97,7 +97,7 @@ class Theme_Helper {
 		$this->register_view_mode('masonry', [
 			'label' => __('Masonry', 'tainacan'),
 			'dynamic_metadata' => false,
-			'description' => 'A masonry view, similar to pinterest, which will display images without cropping.',
+			'description' => __('A masonry view, similar to pinterest, which will display images without cropping.', 'tainacan'),
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewmasonry tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true
@@ -105,7 +105,7 @@ class Theme_Helper {
 		$this->register_view_mode('slideshow', [
 			'label' => __('Slides', 'tainacan'),
 			'dynamic_metadata' => false,
-			'description' => 'A fullscreen slideshow view, that shows the item document instead of just thumbnails.',
+			'description' => __('A fullscreen slideshow view, that shows the item document instead of just thumbnails.', 'tainacan'),
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'show_pagination' => false,
@@ -114,7 +114,7 @@ class Theme_Helper {
 		$this->register_view_mode('list', [
 			'label' => __('List', 'tainacan'),
 			'dynamic_metadata' => true,
-			'description' => 'A list view, similiar to the records, but full width.',
+			'description' => __('A list view, similiar to the records, but full width.', 'tainacan'),
 			'icon' => '<span class="icon"><i class="tainacan-icon tainacan-icon-viewlist tainacan-icon-1-25em"></i></span>',
 			'type' => 'component',
 			'implements_skeleton' => true,
@@ -123,7 +123,7 @@ class Theme_Helper {
 		$this->register_view_mode('map', [
 			'label' => __('Map', 'tainacan'),
 			'dynamic_metadata' => true,
-			'description' => 'A map view, for displaying items that have geocoordinate metadata.',
+			'description' => __('A map view, for displaying items that have geocoordinate metadata.', 'tainacan'),
 			'icon' => '<span class="icon">
 							<i>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--tainacan-info-color, #505253)" width="1.25em" height="1.25em">

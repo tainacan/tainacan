@@ -152,7 +152,7 @@
                 </div>
             </b-field>
 
-             <b-field 
+            <b-field 
                     :addons="false"
                     :label="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
                     :type="formErrors['begin_with_filter_collapsed'] != undefined ? 'is-danger' : ''"
@@ -169,6 +169,28 @@
                 <help-button
                         :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
                         :message="$i18n.getHelperMessage('filters', 'begin_with_filter_collapsed')"
+                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                </b-switch>
+            </b-field>
+
+            <b-field 
+                    v-if="form.collection_id && form.collection_id !== 'default'"
+                    :addons="false"
+                    :label="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
+                    :type="formErrors['display_in_repository_level_lists'] != undefined ? 'is-danger' : ''"
+                    :message="formErrors['display_in_repository_level_lists'] != undefined ? formErrors['display_in_repository_level_lists'] : ''">
+                    &nbsp;
+                <b-switch
+                        size="is-small"
+                        @input="clearErrors('display_in_repository_level_lists')"
+                        v-model="form.display_in_repository_level_lists"
+                        :true-value="'yes'"
+                        :false-value="'no'"
+                        :native-value="form.display_in_repository_level_lists == 'yes' ? 'yes' : 'no'"
+                        name="display_in_repository_level_lists">
+                <help-button
+                        :title="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
+                        :message="$i18n.getHelperMessage('filters', 'display_in_repository_level_lists')"
                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                 </b-switch>
             </b-field>
@@ -280,11 +302,13 @@ export default {
                 
                 this.isLoading = true;
                 for (let [key, value] of Object.entries(this.form)) {
-                    if (key === 'begin_with_filter_collapsed')
+                    if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists')
                         this.form[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
                 }
                 if (this.form['begin_with_filter_collapsed'] === undefined)
                     this.form['begin_with_filter_collapsed'] = 'no';
+                if (this.form['display_in_repository_level_lists'] === undefined)
+                    this.form['display_in_repository_level_lists'] = 'no';
                 
                 this.updateFilter({ filterId: filter.id, index: this.index, options: this.form })
                     .then(() => {
@@ -313,13 +337,15 @@ export default {
                 let formObj = {};
                 
                 for (let [key, value] of formData.entries()) {
-                    if (key === 'begin_with_filter_collapsed')
+                    if (key === 'begin_with_filter_collapsed' || key === 'display_in_repository_level_lists')
                         formObj[key] = (value == 'yes' || value == true) ? 'yes' : 'no';
                     else
                         formObj[key] = value;
                 }
                 if (formObj['begin_with_filter_collapsed'] === undefined)
                     formObj['begin_with_filter_collapsed'] = 'no';
+                if (formObj['display_in_repository_level_lists'] === undefined)
+                    formObj['display_in_repository_level_lists'] = 'no';
                     
                 this.fillExtraFormData(formObj);
                 this.isLoading = true;

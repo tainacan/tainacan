@@ -31,6 +31,12 @@
                             <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
                         <label class="label has-tooltip">
+                            <span
+                                    v-if="enumerateMetadatum"
+                                    style="opacity: 0.65;"
+                                    class="metadatum-section-enumeration">
+                                {{ enumerateMetadatum }}.
+                            </span>
                             {{ childItemMetadatum.metadatum.name }}
                         </label>
                         <span
@@ -69,6 +75,7 @@
                         }"
                         :is-focused="(focusedGroupMetadatum === groupIndex) && (focusedChildMetadatum === childIndex)"
                         :is-metadata-navigation="isMetadataNavigation"
+                        :enumerate-metadatum="enumerateMetadatum ? ( enumerateMetadatum + ( childItemMetadataGroups.length > 1 ? ( '.' + (Number(groupIndex) + 1) ) : '' ) + '.' + (Number(childIndex) + 1) ) : false"
                         @touchstart="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
                         @mousedown="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
                         @mobileSpecialFocus="setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: true })"
@@ -129,6 +136,7 @@
             metadataNameFilterString: '',
             isMobileScreen: false,
             isMetadataNavigation: false,
+            enumerateMetadatum: [Boolean|String],
             isFocused: false
         },
         data() {
@@ -161,7 +169,7 @@
         },
         watch: {
             /*  This will create the input object structure for 
-             *   <tainacan-item-form :item-metadatum="childItemMetadatum" />
+             *   <tainacan-form-item :item-metadatum="childItemMetadatum" />
              *   looking at the values from the parent (this.itemMetadatum)   
              */  
             'itemMetadatum.value': {

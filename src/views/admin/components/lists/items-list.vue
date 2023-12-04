@@ -302,6 +302,25 @@
                                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                             </span>
                         </a>
+                        <a 
+                                v-if="!isOnTrash"
+                                id="button-open-external" 
+                                :aria-label="$i18n.getFrom('items','view_item')"
+                                @click.stop="" 
+                                target="_blank"
+                                :href="item.url">                      
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('label_item_page_on_website'),
+                                        autoHide: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                        placement: 'auto',
+                                        html: true
+                                    }"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                            </span>
+                        </a>
                     </div>
 
                 </div>
@@ -447,6 +466,25 @@
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                 </span>
                             </a>
+                            <a 
+                                    v-if="!isOnTrash"
+                                    id="button-open-external" 
+                                    :aria-label="$i18n.getFrom('items','view_item')"
+                                    @click.stop="" 
+                                    target="_blank"
+                                    :href="item.url">                      
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('label_item_page_on_website'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                            placement: 'auto',
+                                            html: true
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                </span>
+                            </a>
                         </div>
                     </div>
                 </li>
@@ -576,6 +614,25 @@
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                            </span>
+                        </a>
+                        <a 
+                                v-if="!isOnTrash"
+                                id="button-open-external" 
+                                :aria-label="$i18n.getFrom('items','view_item')"
+                                @click.stop="" 
+                                target="_blank"
+                                :href="item.url">                      
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('label_item_page_on_website'),
+                                        autoHide: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                        placement: 'auto',
+                                        html: true
+                                    }"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                             </span>
                         </a>
                     </div>
@@ -799,6 +856,25 @@
                                     <i
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                </span>
+                            </a>
+                            <a 
+                                    v-if="!isOnTrash"
+                                    id="button-open-external" 
+                                    :aria-label="$i18n.getFrom('items','view_item')"
+                                    @click.stop="" 
+                                    target="_blank"
+                                    :href="item.url">                      
+                                <span 
+                                        v-tooltip="{
+                                            content: $i18n.get('label_item_page_on_website'),
+                                            autoHide: true,
+                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                            placement: 'auto',
+                                            html: true
+                                        }"
+                                        class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                                 </span>
                             </a>
                         </div>
@@ -1147,7 +1223,26 @@
                                     <i
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                             class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
-                                </span>
+                                    </span>
+                                </a>
+                                <a 
+                                        v-if="!isOnTrash"
+                                        id="button-open-external" 
+                                        :aria-label="$i18n.getFrom('items','view_item')"
+                                        @click.stop="" 
+                                        target="_blank"
+                                        :href="item.url">                      
+                                    <span 
+                                            v-tooltip="{
+                                                content: $i18n.get('label_item_page_on_website'),
+                                                autoHide: true,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                placement: 'auto',
+                                                html: true
+                                            }"
+                                            class="icon">
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                    </span>
                                 </a>
                             </div>
                         </td>
@@ -1302,6 +1397,25 @@
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
                                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                            </span>
+                        </a>
+                        <a 
+                                v-if="!isOnTrash"
+                                id="button-open-external" 
+                                :aria-label="$i18n.getFrom('items','view_item')"
+                                @click.stop="" 
+                                target="_blank"
+                                :href="item.url">                      
+                            <span 
+                                    v-tooltip="{
+                                        content: $i18n.get('label_item_page_on_website'),
+                                        autoHide: true,
+                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                        placement: 'auto',
+                                        html: true
+                                    }"
+                                    class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                             </span>
                         </a>
                     </div>
@@ -1778,6 +1892,25 @@
                                                         class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
                                             </span>
                                         </a>
+                                        <a 
+                                                v-if="!isOnTrash"
+                                                id="button-open-external" 
+                                                :aria-label="$i18n.getFrom('items','view_item')"
+                                                @click.stop="" 
+                                                target="_blank"
+                                                :href="item.url">                      
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: $i18n.get('label_item_page_on_website'),
+                                                        autoHide: true,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                        placement: 'auto',
+                                                        html: true
+                                                    }"
+                                                    class="icon">
+                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                            </span>
+                                        </a>
                                     </div>
 
                                     <!-- Remaining metadata -->
@@ -2239,9 +2372,8 @@ export default {
                     collectionId: this.collectionId,
                     itemId: itemId,
                     onConfirm: (newItems) => {
-                        if (newItems != null && newItems != undefined && newItems.length > 0) {
+                        if (newItems != null && newItems != undefined && newItems.length > 0)
                             this.$eventBusSearch.loadItems();
-                        }
                     }
                 },
                 trapFocus: true,
@@ -2271,9 +2403,7 @@ export default {
                             this.untrashItemsInBulk({
                                 collectionId: this.collectionId,
                                 groupId: groupId
-                            }).then(() => {
-                                this.$eventBusSearch.loadItems();
-                            });
+                            }).then(() => this.$eventBusSearch.loadItems() );
                         });
                     }
                 },
@@ -2296,9 +2426,7 @@ export default {
                         this.deleteItem({
                             itemId: itemId,
                             isPermanently: this.isOnTrash
-                        }).then(() => {
-                            this.$eventBusSearch.loadItems();
-                        });
+                        }).then(() => this.$eventBusSearch.loadItems() );
                     }
                 },
                 trapFocus: true,
@@ -2569,7 +2697,7 @@ export default {
     .selection-control {
         margin-bottom: 6px;
         padding: 6px 0px 0px 12px;
-        background: var(--tainacan-white);
+        background: var(--tainacan-background-color);
         height: 40px;
         display: flex;
         align-items: center;

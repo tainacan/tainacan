@@ -46,6 +46,7 @@ export default {
 
     // Buefy imports
     @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/utils/_all.scss";
+    @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_form.scss";
     @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_datepicker.scss";
     @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_checkbox.scss";
     @import "../../../../../node_modules/@ntohq/buefy-next/src/scss/components/_radio.scss";

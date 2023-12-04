@@ -72,7 +72,15 @@ export const ThumbnailHelperFunctions = () => {
                     imageSrc = 'placeholder_square';
             }
 
-            return this.getEmptyThumbnailPlaceholderBySize(imageSrc, tainacanSize);
+            /**
+             * Filter the image source for the empty thumbnail placeholder.
+             * 
+             * @param string imageSrc The image source for the empty thumbnail placeholder.
+             *               Default is 'placeholder_square'.
+             * @param string documentType The document type of the item.
+             * @param string size The size of the image to be loaded.
+             */
+            return wp.hooks.applyFilters('tainacan_get_the_mime_type_icon', this.getEmptyThumbnailPlaceholderBySize(imageSrc, tainacanSize), documentType, tainacanSize);
         },
         getEmptyThumbnailPlaceholderBySize(imageSrc, tainacanSize) {
             switch(tainacanSize) {

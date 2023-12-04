@@ -1,5 +1,5 @@
 /**
- * Swiper 10.2.0
+ * Swiper 11.0.5
  * Most modern mobile touch slider and framework with hardware accelerated transitions
  * https://swiperjs.com
  *
@@ -7,7 +7,7 @@
  *
  * Released under the MIT License
  *
- * Released on: August 17, 2023
+ * Released on: November 22, 2023
  */
 @font-face {
   font-family: 'swiper-icons';
@@ -32,7 +32,6 @@
   margin-right: auto;
   position: relative;
   overflow: hidden;
-  overflow: clip;
   list-style: none;
   padding: 0;
   /* Fix of Webkit flickering */

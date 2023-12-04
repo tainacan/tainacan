@@ -598,6 +598,11 @@
                 max-width: calc((90vh * 1) / 2);
             }
         }
+        .pswp__content {
+            display: flex;
+            justify-content: center;
+            align-content: center;
+        }
         .pswp__content>.tainacan-content-embed:not(.attachment-without-image) {
             margin-top: 60px;
         }

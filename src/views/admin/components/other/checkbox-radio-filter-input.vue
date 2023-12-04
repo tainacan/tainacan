@@ -188,7 +188,9 @@
                                         :id="`${key}.${index}-tainacan-li-checkbox-model`"
                                         :ref="`${key}.${index}-tainacan-li-checkbox-model`"
                                         :key="index">
-                                    <label class="b-checkbox checkbox">
+                                    <label  
+                                            @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null"
+                                            class="b-checkbox checkbox">
                                         <input 
                                                 @input="$emit('input', $event.target.value)"
                                                 :value="(isNaN(Number(option.value)) ? option.value : Number(option.value))"
@@ -834,8 +836,8 @@
 
                 this.$emit('appliedCheckBoxModal');
             },
-            renderHierarchicalPath(hierachyPath, label) {
-                return '<span style="color: var(--tainacan-info-color);">' + hierachyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
+            renderHierarchicalPath(hierarchyPath, label) {
+                return '<span style="color: var(--tainacan-info-color);">' + hierarchyPath.replace(/>/g, '&nbsp;<span class="hierarchy-separator"> &gt; </span>&nbsp;') + '</span>' + label;
             }
         }
     }
@@ -893,12 +895,12 @@
         display: flex;
         justify-content: center;
         cursor: pointer;
-        border: 1px solid var(--tainacan-gray1);
+        border: 1px solid var(--tainacan-input-border-color);
         margin-top: 10px;
         margin-bottom: 0.1em;
 
         &:hover {
-            background-color: var(--tainacan-blue1);
+            background-color: var(--tainacan-item-hover-background-color);
         }
     }
 
@@ -927,7 +929,7 @@
         }
 
         &:hover {
-            background-color: var(--tainacan-gray1);
+            background-color: var(--tainacan-input-border-color);
         }
 
     }
@@ -949,7 +951,7 @@
         }
 
         &:hover {
-            background-color: var(--tainacan-gray1);
+            background-color: var(--tainacan-item-hover-background-color);
         }
         &.result-info {
             padding: 0.5rem 0.25rem 0.25rem 0.25rem;
@@ -963,8 +965,12 @@
     }
 
     .tainacan-finder-columns-container {
-        background-color: var(--tainacan-white);
-        border: 1px solid var(--tainacan-gray1);
+        background-color: var(--tainacan-background-color);
+        border: 1px solid var(--tainacan-input-border-color);
+        border-bottom-left-radius: var(--tainacan-dropdownmenu-border-radius);
+        border-bottom-right-radius: var(--tainacan-dropdownmenu-border-radius);
+        border-top-right-radius: 0px;
+        border-top-left-radius: 0px;
         border-top: 0px;
         margin-top: -1px;
         height: auto;
@@ -980,7 +986,7 @@
     }
 
     .tainacan-finder-column {
-        border-right: solid 1px var(--tainacan-gray1);        
+        border-right: solid 1px var(--tainacan-input-border-color);        
         flex-basis: auto;
         flex-grow: 1;
         max-width: 600px;
@@ -1041,7 +1047,7 @@
             padding: 0.45em 0.75em;
             margin: 0;
             position: relative;
-            border-bottom: 1px solid var(--tainacan-gray1);
+            border-bottom: 1px solid var(--tainacan-input-border-color);
         }
 
         &:not(:first-child) .column-label {
@@ -1067,7 +1073,7 @@
             }
             &::before {
                 top: 0px;
-                border-color: transparent transparent transparent var(--tainacan-gray1);
+                border-color: transparent transparent transparent var(--tainacan-input-border-color);
                 border-left-width: 12px;
                 border-top-width: calc(1.2em + 1px);
                 border-bottom-width: calc(1.2em + 0px);
@@ -1129,6 +1135,13 @@
         }
     }
 
+    .tainacan-finder-columns-container,
+    .tainacan-checkbox-list-container {
+        :deep(.b-checkbox.checkbox) {
+            font-size: 1em;
+        }
+    }
+
     .tainacan-checkbox-list-page-changer {
         height: 100%;
         position: absolute;
@@ -1136,7 +1149,7 @@
         right: auto;
         align-items: center;
         display: flex;
-        background-color: var(--tainacan-gray1);
+        background-color: var(--tainacan-item-hover-background-color);
 
         &:hover {
             background-color: var(--tainacan-primary);

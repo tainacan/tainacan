@@ -45,6 +45,9 @@
     --tainacan-label-color: var(--tainacan-gray5);
     --tainacan-info-color: var(--tainacan-gray4);
     --tainacan-heading-color: var(--tainacan-black);
+    --tainacan-input-border-radius: #{$tainacan-input-border-radius};
+    --tainacan-button-border-radius: #{$tainacan-button-border-radius};
+    --tainacan-dropdownmenu-border-radius: #{$tainacan-dropdownmenu-border-radius};
 
     // Skeleton color
     --tainacan-skeleton-color: #{$skeleton-color};
@@ -150,10 +153,14 @@
         background-color: var(--tainacan-success) !important;
         color: var(--tainacan-white) !important;
     }
-    .is-white, 
+    .is-white {
+        color: var(--tainacan-black) !important;
+        transition: background-color 0.2s ease-out;
+        background-color: rgba(125,125,125,0.0) !important;
+    }
     .is-white:hover, 
     .is-white:focus {
-        background-color: transparent !important;
+        background-color: rgba(125,125,125,0.05) !important;
         color: var(--tainacan-black) !important;
     }
     .button.is-loading, .button.is-loading:hover, .button.is-loading:focus,

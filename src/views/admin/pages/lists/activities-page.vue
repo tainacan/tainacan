@@ -652,7 +652,7 @@
 
         .header-item {
             margin-bottom: 0 !important;
-            min-height: 2em;
+            min-height: 1.875em;
             display: flex;
             align-items: center;
 
@@ -671,7 +671,7 @@
             .button {
                 display: flex;
                 align-items: center;
-                border-radius: 0px !important;
+                border-radius: var(--tainacan-button-border-radius, 4px) !important;
                 height: 100% !important;
             }
             

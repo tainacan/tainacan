@@ -26,7 +26,7 @@ class Items extends Repository {
 
 	protected function __construct() {
 		parent::__construct();
-		add_filter( 'tainacan-item-comments_open', [$this, 'hook_comments_open'], 10, 2);
+		add_filter( 'comments_open', [$this, 'hook_comments_open'], 10, 2);
 		add_action( 'tainacan-api-item-updated', array( &$this, 'hook_api_updated_item' ), 10, 2 );
 		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
 	}
@@ -103,7 +103,7 @@ class Items extends Repository {
 				'map'         => 'meta',
 				'title'       => __( 'Document', 'tainacan' ),
 				'type'        => 'string',
-				'description' => __( 'The document itself. An ID in case of attachment, an URL in case of link or a text in the case of text.', 'tainacan' ),
+				'description' => __( 'The item main content. May be a file attached, an URL or a text depending on the type of the document.', 'tainacan' ),
 				'on_error'    => __( 'Invalid document', 'tainacan' ),
 				'default'     => ''
 			],
@@ -189,11 +189,12 @@ class Items extends Repository {
 	 * @see \Tainacan\Repositories\Repository::register_post_type()
 	 */
 	public function register_post_type() {
-
+		
 		$Tainacan_Collections = \Tainacan\Repositories\Collections::get_instance();
 		$Tainacan_Taxonomies  = \Tainacan\Repositories\Taxonomies::get_instance();
 
-		$collections = $Tainacan_Collections->fetch( [], 'OBJECT' );
+		// TODO: This can be a problem in large repositories.
+		$collections = $Tainacan_Collections->fetch( ['nopaging' => true], 'OBJECT' );
 		$taxonomies  = $Tainacan_Taxonomies->fetch( [
 			'status' => [
 				'auto-draft',
@@ -220,7 +221,7 @@ class Items extends Repository {
 		}
 
 		// register taxonomies to collections considering metadata inheritance
-		$Tainacan_Taxonomies->register_taxonomies_for_all_collections();
+		$Tainacan_Taxonomies->register_taxonomies_for_all_collections($collections);
 
 	}
 
@@ -582,19 +583,19 @@ class Items extends Repository {
 	/**
 	 * Return if comment are open for this item (post_id) and the collection too
 	 *
-	 * @param string $open_comment
+	 * @param bool $comments_open
 	 * @param integer $post_id Item id
-	 * @return string
+	 * @return bool
 	 */
-	public function hook_comments_open($open_comment, $post_id) {
+	public function hook_comments_open($comments_open, $post_id) {
 		$item = self::get_entity_by_post($post_id);
 
 		if($item != false && $item instanceof Entities\Item) {
 			$collection = $item->get_collection();
-			if( $collection != null && $collection->get_allow_comments() !== 'open' ) return 'closed';
+			if( $collection != null && $collection->get_allow_comments() !== 'open' ) return false;
 		}
 
-		return $open_comment;
+		return $comments_open;
 	}
 
 	/**

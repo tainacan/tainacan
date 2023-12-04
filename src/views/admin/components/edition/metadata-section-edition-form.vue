@@ -10,7 +10,12 @@
             v-if="form && Object.keys(form).length"
             class="tainacan-modal-content">
         <div class="tainacan-modal-title">
-            <h2 v-html="form.name ? ($i18n.get('instruction_configure_the_metadata_section') + ' <em>' + form.name + '</em>') : $i18n.get('instruction_configure_new_metadata_section')" />
+            <h2 v-if="form.name">
+                {{ $i18n.get('instruction_configure_the_metadata_section') }}&nbsp;<em>{{ form.name }}</em>
+            </h2>
+            <h2 v-else>
+                {{ $i18n.get('instruction_configure_new_metadata_section') }}
+            </h2>
             <hr>
         </div>
         <div class="tainacan-form">
@@ -179,8 +184,9 @@
                                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                             </label>
                             <b-select 
-                                    v-model="selectedConditionalMetadatum"
-                                    :placeholder="$i18n.get('label_select_metadatum')">
+                                    v-model="selectedConditionalMetadatumId"
+                                    :placeholder="$i18n.get('label_select_metadatum')"
+                                    @input="reloadConditionalValueComponent()">
                                 <option 
                                         v-for="conditionalMetadatum of availableConditionalMetadata"
                                         :key="conditionalMetadatum.id"
@@ -192,22 +198,23 @@
                     </transition>
                     <transition name="filter-item">
                         <b-field
-                                v-if="isConditionalSection && selectedConditionalMetadatum"
+                                v-if="isConditionalSection && selectedConditionalMetadatumId && selectedConditionalMetadatum && selectedConditionalMetadatum.name"
                                 :addons="false"
                                 :type="formErrors['conditional_section_rules'] != undefined ? 'is-danger' : ''"
                                 :message="formErrors['conditional_section_rules'] != undefined ? formErrors['conditional_section_rules'] : ''">
                             <label class="label is-inline">
-                                {{ availableConditionalMetadata.find((availableMetadatum) => availableMetadatum.id == selectedConditionalMetadatum).name }}
+                                {{ selectedConditionalMetadatum.name }}
                             </label>
-                            <div style="overflow-y: auto; overflow-x: hidden; max-height: 100px;">
-                                <b-checkbox
-                                        v-model="selectedConditionalValue"
-                                        v-for="(conditionalValue, conditionalValueIndex) of availableConditionalMetadata.find((availableMetadatum) => availableMetadatum.id == selectedConditionalMetadatum).metadata_type_object.options.options.split('\n')"
-                                        :key="conditionalValueIndex"
-                                        :native-value="conditionalValue">
-                                    {{ conditionalValue }}
-                                </b-checkbox>
-                            </div>
+                            <component
+                                    v-if="shouldUpdateConditionalValue"
+                                    :is="selectedConditionalMetadatum.metadata_type_object.component"
+                                    :forced-component-type="selectedConditionalMetadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                    :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
+                                    :value="Array.isArray(selectedConditionalValue) ? selectedConditionalValue[0] : selectedConditionalValue"
+                                    :allow-new="false"
+                                    :maxtags="1"
+                                    @input="selectConditionalValue"
+                            />
                         </b-field>
                     </transition>
                 </div>
@@ -271,9 +278,10 @@
                 closedByForm: false,
                 entityName: 'metadataSection',
                 isUpdating: false,
-                selectedConditionalMetadatum: undefined,
+                selectedConditionalMetadatumId: undefined,
                 selectedConditionalValue: [],
-                hideConditionalSectionSettings: false
+                hideConditionalSectionSettings: false,
+                shouldUpdateConditionalValue: true
             }
         },
         computed: {
@@ -281,18 +289,21 @@
                 'getMetadataSections'
             ]),
             availableConditionalMetadata() {
-                if (this.getMetadataSections.length) {
+                if ( this.getMetadataSections.length ) {
                     const otherMetadataSections = this.getMetadataSections.filter(aMetadataSection => aMetadataSection.id != this.form.id);
                     const availableMetadata = [];
                     for (let aMetadataSection of otherMetadataSections)
                         availableMetadata.push.apply(availableMetadata, aMetadataSection.metadata_object_list);
-                    return availableMetadata.filter(aMetadatum => aMetadatum.metadata_type === 'Tainacan\\Metadata_Types\\Selectbox');
+                    return availableMetadata.filter(aMetadatum => aMetadatum.metadata_type === 'Tainacan\\Metadata_Types\\Selectbox' || aMetadatum.metadata_type === 'Tainacan\\Metadata_Types\\Taxonomy');
                 }
-                return {};
+                return [];
             },
             isConditionalSection() {
                 return this.form.is_conditional_section == 'yes';
-            }
+            },
+            selectedConditionalMetadatum() {
+                return this.availableConditionalMetadata.find(aMetadatum => aMetadatum.id == this.selectedConditionalMetadatumId)
+            },
         },
         created() {
             this.form = JSON.parse(JSON.stringify(this.originalMetadataSection));
@@ -302,7 +313,7 @@
 
             if ( this.form.is_conditional_section == 'yes' && Object.keys(this.form.conditional_section_rules).length ) {
                 const conditionalMetadatum = Object.keys(this.form.conditional_section_rules)[0];
-                this.selectedConditionalMetadatum = conditionalMetadatum;
+                this.selectedConditionalMetadatumId = conditionalMetadatum;
                 this.selectedConditionalValue = this.form.conditional_section_rules[conditionalMetadatum];
             }
 
@@ -321,10 +332,9 @@
                 'updateMetadataSection'
             ]),
             saveEdition(metadataSection) {
-
-                if ( this.form.is_conditional_section == 'yes' && this.selectedConditionalMetadatum && this.selectedConditionalValue ) {
+                if ( this.form.is_conditional_section == 'yes' && this.selectedConditionalMetadatumId && this.selectedConditionalValue ) {
                     this.form.conditional_section_rules = {}
-                    this.form.conditional_section_rules[this.selectedConditionalMetadatum] = this.selectedConditionalValue;
+                    this.form.conditional_section_rules[this.selectedConditionalMetadatumId] = this.selectedConditionalValue;
                 } else
                     this.form.conditional_section_rules = null;
 
@@ -364,6 +374,15 @@
                 this.closedByForm = true;
                 this.$emit('onEditionCanceled');
             },
+            selectConditionalValue(selected) {
+                const selectedValues = Array.isArray(selected) ? selected : [ selected ]; 
+                this.selectedConditionalValue = selectedValues.map( aSelected => aSelected.value ? aSelected.value : aSelected );
+            },
+            reloadConditionalValueComponent() {
+                this.shouldUpdateConditionalValue = false;
+                this.selectedConditionalValue = [];
+                this.$nextTick(() => this.shouldUpdateConditionalValue = true);
+            }
         }
     }
 </script>
@@ -441,6 +460,18 @@
                 height: 1px;
                 background-color: var(--tainacan-gray2);
                 margin-left: 42px;
+                transition: background-color 0.2s ease, height 0.2s ease;
+            }
+
+            &:hover {
+                .icon,
+                strong {
+                    color: var(--tainacan-secondary);
+                }
+                hr {
+                    background-color: var(--tainacan-primary);
+                    height: 2px;
+                }
             }
         }
 
@@ -450,6 +481,24 @@
                 -webkit-column-count: 1;
                 column-count: 1;
             }
+        }
+    }
+    :deep(.is-special-hidden-for-mobile) {
+        &,
+        &:focus,
+        &:focus-visible {
+            opacity: 0;
+            width: 0;
+            height: 0 !important;
+            min-height: 0;
+            min-width: 0;
+            padding: 0 !important;
+            line-height: 0px !important;
+            border: none !important;
+            border-color: transparent !important;
+            border-width: 0px !important;
+            font-size: 0px !important;
+            display: block !important;
         }
     }
     .form-submit {

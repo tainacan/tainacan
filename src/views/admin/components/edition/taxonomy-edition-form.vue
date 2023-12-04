@@ -231,7 +231,7 @@
                                 class="button link-button"
                                 :href="themeTaxonomiesURL + taxonomy.slug">
                             <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
                             </span>
                             <span>{{ $i18n.get('label_taxonomy_page_on_website') }}</span>
                         </a>
@@ -556,7 +556,7 @@
     .status-radios {
         display: flex;
     }
-    .status-radios .control-lable {
+    .status-radios .control-label {
         display: flex;
         align-items: center;
     }

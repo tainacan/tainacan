@@ -199,10 +199,9 @@
         top: calc(-1 * var(--tainacan-container-padding));
         z-index: 2;
         background: var(--tainacan-background-color);
-        min-height: $header-height;
+        min-height: 2.5em;
+        padding: 0.5em 0;
         height: auto;
-        padding-left: 0;
-        padding-right: 0;
         border-bottom: 1px solid #ddd;
         display: inline-flex;
         justify-content: space-between;
@@ -212,7 +211,7 @@
 
         .header-item {
             margin-bottom: 0 !important;
-            min-height: 2em;
+            min-height: 1.875em;
 
             &:first-child {
                 margin-right: auto;

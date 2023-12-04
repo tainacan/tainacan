@@ -78,7 +78,7 @@
                         class="button"
                         id="view-collection-button">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                     </span>
                     <span class="is-hidden-mobile">{{ $i18n.get('label_view_collection_on_website') }}</span>
                 </a>
@@ -91,7 +91,7 @@
                         class="button"
                         id="view-repository-button--taxonomies">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                     </span>
                     <span class="is-hidden-mobile">{{ $i18n.get('label_view_taxonomies_on_website') }}</span>
                 </a>
@@ -104,7 +104,7 @@
                         class="button"
                         id="view-repository-button">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                     </span>
                     <span class="is-hidden-mobile">{{ $i18n.get('label_view_collections_on_website') }}</span>
                 </a>
@@ -174,7 +174,7 @@ export default {
         padding-top: 10px;
         padding-bottom: 10px;
         padding-right: 0;
-        padding-left: calc((var(--tainacan-one-column) - 6.666666667px) + 10em);
+        padding-left: calc((var(--tainacan-one-column) - 6.666666667px) + 11em);
         margin: 0px;
         display: flex;
         vertical-align: middle; 

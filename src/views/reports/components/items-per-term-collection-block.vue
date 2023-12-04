@@ -412,9 +412,6 @@ export default {
             'setTaxonomyTerms',
             'setReportLatestCachedOn'
         ]),
-        ...mapActions('metadata', [
-            'fetchMetadata'
-        ]),
         buildMetadatumTermsChart() {
             this.isBuildingChart = true;
             

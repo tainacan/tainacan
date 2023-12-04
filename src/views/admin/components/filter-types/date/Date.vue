@@ -71,7 +71,7 @@
                 @update:model-value="emitOnlyYear($event)"
                 v-model="yearsOnlyValue"/> -->
         <b-datepicker
-                position="is-bottom-left"
+                position="is-bottom-right"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
                 v-model="value"
@@ -104,7 +104,7 @@
                     $i18n.get('datepicker_month_october'),
                     $i18n.get('datepicker_month_november'),
                     $i18n.get('datepicker_month_december')
-                ]"/>
+                ]" />
                 <!-- filterTypeOptions FOR TYPE 
                     v-else
                     :type="filterTypeOptions.type == 'month' ? 'month' : null" 

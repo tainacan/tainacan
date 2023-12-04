@@ -7,6 +7,21 @@ const wpApi = axios.create({
 
 wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 
+const tainacanSanitize = function(htmlString) {
+    return htmlString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;')
+}
+
+// HTML SANITIZE PLUGIN - Helps sanitizing html string from javascript.
+export const HtmlSanitizerPlugin = {};
+HtmlSanitizerPlugin.install = function (app, options = {}) {
+    
+    app.config.globalProperties.$htmlSanitizer = {
+        sanitize(htmlString) {
+            return tainacanSanitize(htmlString);
+        }
+    }
+};
+
 // CONSOLE PLUGIN - Allows custom use of console functions and avoids eslint warnings.
 export const ConsolePlugin = {};
 ConsolePlugin.install = function (app, options = { visual: false }) {
@@ -15,7 +30,7 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
         log(something) {
             if (options.visual) {
                 app.config.globalProperties.$buefy.snackbar.open({
-                    message: something,
+                    message: tainacanSanitize(something),
                     type: 'is-secondary',
                     position: 'is-bottom-right',
                     indefinite: true,
@@ -28,7 +43,7 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
         info(someInfo) {
             if (options.visual) {
                 app.config.globalProperties.$buefy.snackbar.open({
-                    message: someInfo,
+                    message: tainacanSanitize(someInfo),
                     type: 'is-primary',
                     position: 'is-bottom-right',
                     duration: 5000,
@@ -41,7 +56,7 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
         error(someError) {
             if (options.visual) {
                 app.config.globalProperties.$buefy.snackbar.open({
-                    message: someError,
+                    message: tainacanSanitize(someError),
                     type: 'is-danger',
                     position: 'is-bottom-right',
                     indefinite: true,
@@ -142,6 +157,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
             'taxonomies_order_by': 'title',
             'collections_order': 'desc',
             'collections_order_by': 'date',
+            'collections_author_filter': '',
             'map_view_mode_selected_geocoordinate_metadatum': 0
         },
         init() {
@@ -636,7 +652,7 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
         * hideItemEditionMetadataTypes
         * allowItemEditionModalInsideModal // Not recommended!
         * itemEditionDocumentInsideTabs
-        * itemEditionAttachmentInsideTabs
+        * itemEditionAttachmentsInsideTabs
         
         * hideBulkEditionPageTitle
         

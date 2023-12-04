@@ -550,13 +550,13 @@
 
                     <!--  Default loading, to be used view modes without any skeleton-->
                     <b-loading 
-                            v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)" 
+                            v-if="registeredViewModes[viewMode] != undefined && !registeredViewModes[viewMode].implements_skeleton && !registeredViewModes[viewMode].skeleton_template" 
                             :is-full-page="false"
                             v-model="showLoading"/>
 
                     <!-- Custom skeleton templates used by some view modes --> 
                     <div
-                            v-if="(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].skeleton_template != undefined)"
+                            v-if="registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].implements_skeleton && registeredViewModes[viewMode].skeleton_template"
                             v-html="registeredViewModes[viewMode].skeleton_template"/>
                 </div>  
                 
@@ -630,12 +630,12 @@
 
                             <p v-if="searchQuery">
                                 <template v-if="!sentenceMode">
-                                    <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_enabling_search_by_word') }}
+                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_enabling_search_by_word') }}
                                     <br>
                                     {{ $i18n.get('info_details_about_search_by_word') }}
                                 </template>
                                 <template v-else>
-                                    <span v-html="searchedForSentence" />. {{ $i18n.get('info_try_disabling_search_by_word') }}
+                                    <span v-if="searchQuery">{{ $i18n.getWithVariables('info_you_searched_for_%s', ['"' + searchQuery + '"']) }}</span>. {{ $i18n.get('info_try_disabling_search_by_word') }}
                                 </template>
                                 <br>
                                 <b-checkbox 
@@ -827,11 +827,6 @@
             },
             hasSearchByMoreThanOneWord() {
                 return this.futureSearchQuery && this.futureSearchQuery.split(' ').length > 1;
-            },
-            searchedForSentence() {
-                if (this.searchQuery)
-                    return this.$i18n.getWithVariables('info_you_searched_for_%s', ['<em>"' + this.searchQuery + '"</em>']);
-                return '';
             }
         },
         watch: {
@@ -948,6 +943,10 @@
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
                         
+                         // Finally, loads items even berfore facets so they won't stuck them
+                         if (to.fullPath != from.fullPath)
+                            this.$eventBusSearch.loadItems();
+
                         // Checks current metaqueries and taxqueries to alert filters that should reload
                         // For some reason, this process is not working accessing to.query, so we need to check the path string. 
                         const oldQueryString = from.fullPath.replace(from.path + '?', '');
@@ -973,12 +972,6 @@
                         ) {
                             this.$eventBusSearchEmitter.emit('hasToReloadFacets', true);
                         }
-
-                        console.log(to == from);
-                        // Finally, loads items
-                        //if (to.fullPath != from.fullPath) {
-                            this.$eventBusSearch.loadItems();
-                        //}
                     }
                 },
                 deep: true
@@ -991,8 +984,10 @@
             },
             openAdvancedSearch(newValue){
                 if (newValue == false){
-                    this.$eventBusSearchEmitter.emit('closeAdvancedSearch');
-                    this.isFiltersModalActive = !this.startWithFiltersHidden;
+                    this.$eventBusSearchEmitter.$emit('closeAdvancedSearch');
+
+                    if ( !this.isMobileScreen )
+                        this.isFiltersModalActive = !this.startWithFiltersHidden;
                 } else {
                     this.isFiltersModalActive = false;
                 }
@@ -1132,7 +1127,6 @@
             if (this.defaultItemsPerPage)
                 this.$eventBusSearch.setItemsPerPage(this.defaultItemsPerPage, true); 
 
-            this.showItemsHiddingDueSortingDialog();
 
             // Watches window resize to adjust filter's top position and compression on mobile
             if (!this.hideFilters) {            
@@ -1591,15 +1585,18 @@
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
                         const previousMobileScreen = this.isMobileScreen;
                         const previousWindowWidth = this.windowWidth;
-
+                        
                         this.windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
                         this.isMobileScreen = this.windowWidth <= 768;
 
+                        // The window size didn't changed (the resize event is triggered by scrolls on mobile)
+                        // Also if we're on advanced search we should not open the filters
+                        if (previousWindowWidth == this.windowWidth || this.openAdvancedSearch)
+                            return;
+
                         if (                                                    // We DO NOT want to open the filters due to this resize event IF:
                             (!previousMobileScreen && this.isMobileScreen) ||   // We're coming from a non-mobile screen to a mobile screen, or
-                            (previousWindowWidth == this.windowWidth) ||        // The window size didn't changed (the resize event is triggered by scrolls on mobile), or
-                            this.startWithFiltersHidden ||                      // Filters should begin disabled, or
-                            this.openAdvancedSearch                             // Advanced search is opened
+                            this.startWithFiltersHidden                         // Filters should begin disabled
                         )
                             this.isFiltersModalActive = false;
                         else
@@ -1691,13 +1688,11 @@
         border-bottom-right-radius: 2px;
         cursor: pointer;
         transition: top 0.3s;
+        display: flex;
+        align-items: center;
 
         &:focus {
             outline: none !important;
-        }
-
-        .icon {
-            margin-top: -1px;
         }
 
         @media screen and (max-width: 768px) {
@@ -1705,15 +1700,6 @@
             width: auto;
             padding: 3px 6px 3px 0px;
             height: 1.625em;
-
-            .icon {
-                position: relative;
-                top: -3px;
-            }
-            .text {
-                position: relative;
-                top: -2px;
-            }
         }
     }
 

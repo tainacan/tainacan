@@ -1019,7 +1019,15 @@ function tainacan_get_the_mime_type_icon($mime_type, $image_size = 'medium') {
 			$icon_file = 'placeholder_square';
 	}
 	
-	return $images_path . $icon_file . $image_size . '.png';
+	/**
+	 * Filter the image source for the empty thumbnail placeholder.
+	 * 
+	 * @param string src The image source for the empty thumbnail placeholder.
+	 *               Default is 'placeholder_square'.
+	 * @param string mime_type The document type of the item.
+	 * @param string image_size The size of the image to be loaded.
+	 */
+	return apply_filters('tainacan-get-the-mime-type-icon', $images_path . $icon_file . $image_size . '.png', $mime_type, $image_size);
 }
 
 /**
@@ -1468,7 +1476,7 @@ function tainacan_get_single_taxonomy_content($post, $args = []) {
 					
 					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] === 'before' ) 
 						echo '<span class="term-items-count">' . $term->count . '</span>&nbsp;';
-					echo ($term->count == 1 || $term->count == '1') ? __('Item', 'tainacan') : __('Itens', 'tainacan');
+					echo ($term->count == 1 || $term->count == '1') ? __('Item', 'tainacan') : __('Items', 'tainacan');
 					if ( !$args['hide_term_items_count'] && $args['term_items_count_position'] !== 'before' ) 
 						echo '&nbsp;<span class="term-items-count">(' . $term->count . ')</span>';
 					

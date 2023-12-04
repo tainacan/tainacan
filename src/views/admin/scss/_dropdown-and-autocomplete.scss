@@ -29,7 +29,7 @@
         font-size: 1em;
         padding: 0px;
         margin-top: 0;
-        border-radius: 0px;
+        border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
         min-width: 6em;
         border: none;
         z-index: 999991;
@@ -37,7 +37,7 @@
 
         .dropdown-content {
             padding: 0px 0px 1px 0px;
-            border-radius: 0px !important;
+            border-radius: var(--tainacan-dropdownmenu-border-radius, 0px) !important;
             max-height: 240px;
             overflow-y: auto;
             box-shadow: none;
@@ -146,21 +146,26 @@
     box-shadow: none;
 }
 .taginput-container {
-    border-radius: 1px !important;
     padding: 0px !important;
-    background-color: transparent !important;
+    background-color: var(--tainacan-input-background-color);
+    border: 1px solid var(--tainacan-input-border-color) !important;
+    border-radius: var(--tainacan-input-border-radius, 1px) !important;
 
-    &:focus, &:active {
-        border: 1px solid transparent !important;
+    &:focus, &:active, &.is-focused {
+        border: 1px solid var(--tainacan-secondary) !important;
     }
-    .input {
+    input[type="text"].input:not(.is-danger) {
         margin-bottom: 0px !important;
         text-overflow: ellipsis;
-        background-color: var(--tainacan-input-background-color);
+        background-color: none;
+        border: none !important;
     }
-    .input.has-selected, .input:focus, .input:active {
+    input[type="text"].input:not(.is-danger).has-selected,
+    input[type="text"].input:not(.is-danger):focus,
+    input[type="text"].input:not(.is-danger):focus-visible,
+    input[type="text"].input:not(.is-danger):active {
         background-color: var(--tainacan-input-background-color);
-        border: 1px solid var(--tainacan-input-border-color) !important;
+        border: none !important;
     }
     .tags {
         margin:  0.17em 0.25em 0.08em 0.25em !important;
@@ -322,10 +327,14 @@
             border: none !important;
             padding: 0.5em 0.75em;
 
+            &.is-selectable {
+                color: var(--tainacan-secondary)
+            }
+
             &.is-selectable.is-first-hovered,
             &.is-selectable.is-last-hovered {
                 color: var(--tainacan-info-color) !important;
-                background-color: var(--tainacan-gray3) !important;
+                background-color: var(--tainacan-item-hover-background-color) !important;
             }
             &.is-today,
             &.is-today:hover {
@@ -335,7 +344,7 @@
             &.is-selected,
             &.is-selected:hover {
                 color: var(--tainacan-white) !important;
-                background-color: var(--tainacan-turquoise5) !important;
+                background-color: var(--tainacan-secondary) !important;
             }
         }
 
