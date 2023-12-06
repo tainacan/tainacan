@@ -89,67 +89,67 @@ export default (element) => {
                 },
                 beforeMount () {
                     // Collection source settings
-                    if (this.$el.attributes['collection-id'] != undefined)
-                        this.collectionId = this.$el.attributes['collection-id'].value;
+                    if (blockElement.attributes['collection-id'] != undefined)
+                        this.collectionId = blockElement.attributes['collection-id'].value;
 
                     // Elements shown on form
-                    if (this.$el.attributes['hide-file-modal-button'] != undefined)
+                    if (blockElement.attributes['hide-file-modal-button'] != undefined)
                         this.hideFileModalButton = this.isParameterTrue('hide-file-modal-button');
-                    if (this.$el.attributes['hide-text-modal-button'] != undefined)
+                    if (blockElement.attributes['hide-text-modal-button'] != undefined)
                         this.hideTextModalButton = this.isParameterTrue('hide-text-modal-button');
-                    if (this.$el.attributes['hide-link-modal-button'] != undefined)
+                    if (blockElement.attributes['hide-link-modal-button'] != undefined)
                         this.hideLinkModalButton = this.isParameterTrue('hide-link-modal-button');
-                    if (this.$el.attributes['hide-thumbnail-section'] != undefined)
+                    if (blockElement.attributes['hide-thumbnail-section'] != undefined)
                         this.hideThumbnailSection = this.isParameterTrue('hide-thumbnail-section');
-                    if (this.$el.attributes['hide-attachments-section'] != undefined)
+                    if (blockElement.attributes['hide-attachments-section'] != undefined)
                         this.hideAttachmentsSection = this.isParameterTrue('hide-attachments-section');
-                    if (this.$el.attributes['show-allow-comments-section'] != undefined)
+                    if (blockElement.attributes['show-allow-comments-section'] != undefined)
                         this.showAllowCommentsSection = this.isParameterTrue('show-allow-comments-section');
-                    if (this.$el.attributes['hide-collapses'] != undefined)
+                    if (blockElement.attributes['hide-collapses'] != undefined)
                         this.hideCollapses = this.isParameterTrue('hide-collapses');
-                    if (this.$el.attributes['hide-help-buttons'] != undefined)
+                    if (blockElement.attributes['hide-help-buttons'] != undefined)
                         this.hideHelpButtons = this.isParameterTrue('hide-help-buttons');
-                    if (this.$el.attributes['hide-metadata-types'] != undefined)
+                    if (blockElement.attributes['hide-metadata-types'] != undefined)
                         this.hideMetadataTypes = this.isParameterTrue('hide-metadata-types');
-                    if (this.$el.attributes['help-info-bellow-label'] != undefined)
+                    if (blockElement.attributes['help-info-bellow-label'] != undefined)
                         this.helpInfoBellowLabel = this.isParameterTrue('help-info-bellow-label');
-                    if (this.$el.attributes['is-layout-steps'] != undefined)
+                    if (blockElement.attributes['is-layout-steps'] != undefined)
                         this.isLayoutSteps = this.isParameterTrue('is-layout-steps');
 
                     // Form sections labels
-                    if (this.$el.attributes['document-section-label'] != undefined)
-                        this.documentSectionLabel = this.$el.attributes['document-section-label'].value;
-                    if (this.$el.attributes['thumbnail-section-label'] != undefined)
-                        this.thumbnailSectionLabel = this.$el.attributes['thumbnail-section-label'].value;
-                    if (this.$el.attributes['attachments-section-label'] != undefined)
-                        this.attachmentsSectionLabel = this.$el.attributes['attachments-section-label'].value;
-                    if (this.$el.attributes['metadata-section-label'] != undefined)
-                        this.metadataSectionLabel = this.$el.attributes['metadata-section-label'].value;
+                    if (blockElement.attributes['document-section-label'] != undefined)
+                        this.documentSectionLabel = blockElement.attributes['document-section-label'].value;
+                    if (blockElement.attributes['thumbnail-section-label'] != undefined)
+                        this.thumbnailSectionLabel = blockElement.attributes['thumbnail-section-label'].value;
+                    if (blockElement.attributes['attachments-section-label'] != undefined)
+                        this.attachmentsSectionLabel = blockElement.attributes['attachments-section-label'].value;
+                    if (blockElement.attributes['metadata-section-label'] != undefined)
+                        this.metadataSectionLabel = blockElement.attributes['metadata-section-label'].value;
 
                     // Form submission feedback messages
-                    if (this.$el.attributes['sent-form-heading'] != undefined)
-                        this.sentFormHeading = this.$el.attributes['sent-form-heading'].value;
-                    if (this.$el.attributes['sent-form-message'] != undefined)
-                        this.sentFormMessage = this.$el.attributes['sent-form-message'].value;
-                    if (this.$el.attributes['item-link-button-label'] != undefined)
-                        this.itemLinkButtonLabel = this.$el.attributes['item-link-button-label'].value;
-                    if (this.$el.attributes['show-item-link-button'] != undefined)
+                    if (blockElement.attributes['sent-form-heading'] != undefined)
+                        this.sentFormHeading = blockElement.attributes['sent-form-heading'].value;
+                    if (blockElement.attributes['sent-form-message'] != undefined)
+                        this.sentFormMessage = blockElement.attributes['sent-form-message'].value;
+                    if (blockElement.attributes['item-link-button-label'] != undefined)
+                        this.itemLinkButtonLabel = blockElement.attributes['item-link-button-label'].value;
+                    if (blockElement.attributes['show-item-link-button'] != undefined)
                         this.showItemLinkButton = this.isParameterTrue('show-item-link-button');
                     
                     /* Terms agreements confirmation checkbox */
-                    if (this.$el.attributes['show-terms-agreement-checkbox'] != undefined)
+                    if (blockElement.attributes['show-terms-agreement-checkbox'] != undefined)
                         this.showTermsAgreementCheckbox = this.isParameterTrue('show-terms-agreement-checkbox');
-                    if (this.$el.attributes['terms-agreement-message'] != undefined)
-                        this.termsAgreementMessage = this.$el.attributes['terms-agreement-message'].value;
+                    if (blockElement.attributes['terms-agreement-message'] != undefined)
+                        this.termsAgreementMessage = blockElement.attributes['terms-agreement-message'].value;
     
                     // List of metadata
-                    if (this.$el.attributes['enabled-metadata'] != undefined && this.$el.attributes['enabled-metadata'].value)
-                        this.enabledMetadata = this.$el.attributes['enabled-metadata'].value.split(',');
+                    if (blockElement.attributes['enabled-metadata'] != undefined && blockElement.attributes['enabled-metadata'].value)
+                        this.enabledMetadata = blockElement.attributes['enabled-metadata'].value.split(',');
 
                 },
                 methods: {
                     isParameterTrue(parameter) {
-                        const value = this.$el.attributes[parameter].value;
+                        const value = blockElement.attributes[parameter].value;
                         return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
                     }
                 },

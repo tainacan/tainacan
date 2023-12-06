@@ -42,7 +42,9 @@
                 <span>&nbsp;>&nbsp;</span>
                 <router-link    
                         v-if="childBreadCrumbItem.path != ''"
-                        :to="{ path: childBreadCrumbItem.path, query: index === $i18n.get('items') ? { fromBreadcrumb: true } : null }">{{ childBreadCrumbItem.label }}</router-link>
+                        :to="{ path: childBreadCrumbItem.path, query: index === $i18n.get('items') ? { fromBreadcrumb: true } : null }">
+                    {{ childBreadCrumbItem.label }}
+                </router-link>
                 <span v-else>{{ childBreadCrumbItem.label }}</span>
             </template>
         </nav>
@@ -52,6 +54,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import { useSlots } from 'vue';
 
 export default {
     name: 'TainacanTitle',
@@ -68,7 +71,8 @@ export default {
     },
     computed: {
         slotPassed() {
-            return this.$slots && this.$slots.default && this.$slots.default[0] && (!!this.$slots.default[0].text || !!this.$slots.default[0].tag)
+            const slots = useSlots();
+            return !!slots['default'];
         },
         collection() {
             return this.getCollection();
@@ -124,7 +128,8 @@ export default {
         align-items: flex-end;
         justify-content: space-between;
 
-        h1, h2 {
+        :deep(h1),
+        :deep(h2) {
             font-size: 1.25em;
             font-weight: 500;
             color: var(--tainacan-heading-color);

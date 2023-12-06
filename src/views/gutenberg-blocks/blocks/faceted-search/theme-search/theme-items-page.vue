@@ -1011,7 +1011,7 @@
         },
         created() {
             this.isRepositoryLevel = (this.collectionId == undefined || this.collectionId == '' || this.collectionId == null);
-            
+
             this.$eventBusSearch.updateStoreFromURL();
 
             // Sets initial variables important to searchbus

@@ -214,8 +214,8 @@ export default {
                     this.$router.replace({ name: app.config.globalProperties.$route.name, query: {} });
                     this.$router.replace({ name: app.config.globalProperties.$route.name, query: this.$store.getters['search/getPostQuery'], onabort: () => { console.log('abort'); }, onerror: () => { console.log('error'); }, onready: () => { console.log('ready'); }, onsuccess: () => { console.log('success'); } });
                 } else {
-                    this.$router.replace({ path: '', query: {} });
-                    this.$router.replace({ path: '', query: this.$store.getters['search/getPostQuery'] });
+                    this.$router.replace({ path: this.$route.path, query: {} });
+                    this.$router.replace({ path: this.$route.path, query: this.$store.getters['search/getPostQuery'] });
                 }
             },
             updateStoreFromURL() {

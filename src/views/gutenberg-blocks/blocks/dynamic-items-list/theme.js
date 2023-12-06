@@ -16,124 +16,54 @@ export default (element) => {
 
             // Checks if this carousel isn't already mounted
             blocks = blocks.filter((block) => block.classList && !block.classList.contains('has-mounted'));
-            const blockIds = Object.values(blocks).map((block) => block.id);
     
             // Creates a new Vue Instance to manage each block isolatelly
-            for (let blockId of blockIds) {
+            blocks.forEach((block) => {
     
                 // Configure Vue logic before passing it to constructor:
-                let vueOptions = {
-                    data: () => {
-                        return {
-                            collectionId: '',  
-                            showImage: true,
-                            showName: true,
-                            layout: 'grid',
-                            gridMargin: 0,
-                            searchURL: '',
-                            selectedItems: [],
-                            loadStrategy: 'search',
-                            maxItemsNumber: 12,
-                            mosaicHeight: 40,
-                            mosaicDensity: 5,
-                            mosaicGridRows: 3,
-                            mosaicGridColumns: 3,
-                            mosaicItemFocalPointX : 0.5,
-                            mosaicItemFocalPointY : 0.5,
-                            maxColumnsCount: 4,
-                            imageSize: 'tainacan-medium',
-                            order: 'asc',
-                            orderBy: 'date',
-                            orderByMetaKey: '',
-                            showSearchBar: false,
-                            showCollectionHeader: false,
-                            showCollectionLabel: false,
-                            collectionBackgroundColor: '#373839',
-                            collectionTextColor: '#ffffff',
-                            tainacanApiRoot: '',
-                            tainacanBaseUrl: '',
-                            className: '',
-                            style: ''
-                        }
-                    },
+                const VueDynamicItemsList = createApp( {
                     render() { 
                         return h(DynamicItemsListTheme, {
-                            props: {
-                                collectionId: this.collectionId,  
-                                showImage: this.showImage,
-                                showName: this.showName,
-                                layout: this.layout,
-                                gridMargin: this.gridMargin,
-                                mosaicDensity: this.mosaicDensity,
-                                mosaicHeight: this.mosaicHeight,
-                                mosaicGridRows: this.mosaicGridRows,
-                                mosaicGridColumns: this.mosaicGridColumns,
-                                mosaicItemFocalPointX: this.mosaicItemFocalPointX,
-                                mosaicItemFocalPointY: this.mosaicItemFocalPointY,
-                                maxColumnsCount: this.maxColumnsCount,
-                                imageSize: this.imageSize,
-                                searchURL: this.searchURL,
-                                selectedItems: this.selectedItems,
-                                loadStrategy: this.loadStrategy,
-                                maxItemsNumber: this.maxItemsNumber,
-                                order: this.order,
-                                orderBy: this.orderBy,
-                                orderByMetaKey: this.orderByMetaKey,
-                                showSearchBar: this.showSearchBar,
-                                showCollectionHeader: this.showCollectionHeader,
-                                showCollectionLabel: this.showCollectionLabel,
-                                collectionBackgroundColor: this.collectionBackgroundColor,
-                                collectionTextColor: this.collectionTextColor,
-                                tainacanApiRoot: this.tainacanApiRoot,
-                                tainacanBaseUrl: this.tainacanBaseUrl,
-                                className: this.className,
-                                customStyle: this.style    
-                            }
+                            blockId: block.id,
+                            searchURL: block.attributes['search-url'] != undefined ? block.attributes['search-url'].value : undefined,
+                            selectedItems: block.attributes['selected-items'] != undefined ? JSON.parse(block.attributes['selected-items'].value) : undefined,
+                            loadStrategy: block.attributes['load-strategy'] != undefined ? block.attributes['load-strategy'].value : undefined,
+                            collectionId: block.attributes['collection-id'] != undefined ? block.attributes['collection-id'].value : undefined,
+                            showImage: block.attributes['show-image'] != undefined ? block.attributes['show-image'].value == 'true' : true,
+                            showName: block.attributes['show-name'] != undefined ? block.attributes['show-name'].value == 'true' : true,
+                            layout: block.attributes['layout'] != undefined ? block.attributes['layout'].value : undefined,
+                            gridMargin: block.attributes['grid-margin'] != undefined ? Number(block.attributes['grid-margin'].value) : undefined,
+                            mosaicDensity: block.attributes['mosaic-density'] != undefined ? Number(block.attributes['mosaic-density'].value) : undefined,
+                            mosaicHeight: block.attributes['mosaic-height'] != undefined ? Number(block.attributes['mosaic-height'].value) : undefined,
+                            mosaicGridRows: block.attributes['mosaic-grid-rows'] != undefined ? Number(block.attributes['mosaic-grid-rows'].value) : undefined,
+                            mosaicGridColumns: block.attributes['mosaic-grid-columns'] != undefined ? Number(block.attributes['mosaic-grid-columns'].value) : undefined,
+                            mosaicItemFocalPointX: block.attributes['mosaic-item-focal-point-x'] != undefined ? Number(block.attributes['mosaic-item-focal-point-x'].value) : undefined,
+                            mosaicItemFocalPointY: block.attributes['mosaic-item-focal-point-y'] != undefined ? Number(block.attributes['mosaic-item-focal-point-y'].value) : undefined,
+                            maxColumnsCount: block.attributes['max-columns-count'] != undefined ? block.attributes['max-columns-count'].value : 4,
+                            imageSize: block.attributes['image-size'] != undefined ? block.attributes['image-size'].value : 'tainacan-medium',
+                            maxItemsNumber: block.attributes['max-items-number'] != undefined ? block.attributes['max-items-number'].value : undefined,
+                            order: block.attributes['order'] != undefined ? block.attributes['order'].value : undefined,
+                            orderBy: block.attributes['order-by'] != undefined ? block.attributes['order-by'].value : undefined,
+                            orderByMetaKey: block.attributes['order-by-meta-key'] != undefined ? block.attributes['order-by-meta-key'].value : undefined,
+                            showSearchBar: block.attributes['show-search-bar'] != undefined ? block.attributes['show-search-bar'].value == 'true' : false,
+                            showCollectionHeader: block.attributes['show-collection-header'] != undefined ? block.attributes['show-collection-header'].value == 'true' : false,
+                            showCollectionLabel: block.attributes['show-collection-label'] != undefined ? block.attributes['show-collection-label'].value == 'true' : false,
+                            collectionBackgroundColor: block.attributes['collection-background-color'] != undefined ? block.attributes['collection-background-color'].value : undefined,
+                            collectionTextColor: block.attributes['collection-text-color'] != undefined ? block.attributes['collection-text-color'].value : undefined,
+                            tainacanApiRoot: block.attributes['tainacan-api-root'] != undefined ? block.attributes['tainacan-api-root'].value : undefined,
+                            tainacanBaseUrl: block.attributes['tainacan-base-url'] != undefined ? block.attributes['tainacan-base-url'].value : undefined
                         });
                     },
-                    beforeMount () {
-                        this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
-                        this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
-                        this.selectedItems = this.$el.attributes['selected-items'] != undefined ? JSON.parse(this.$el.attributes['selected-items'].value) : undefined;
-                        this.loadStrategy = this.$el.attributes['load-strategy'] != undefined ? this.$el.attributes['load-strategy'].value : undefined;
-                        this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
-                        this.showImage = this.$el.attributes['show-image'] != undefined ? this.$el.attributes['show-image'].value == 'true' : true;
-                        this.showName = this.$el.attributes['show-name'] != undefined ? this.$el.attributes['show-name'].value == 'true' : true;
-                        this.layout = this.$el.attributes['layout'] != undefined ? this.$el.attributes['layout'].value : undefined;
-                        this.gridMargin = this.$el.attributes['grid-margin'] != undefined ? Number(this.$el.attributes['grid-margin'].value) : undefined;
-                        this.mosaicDensity = this.$el.attributes['mosaic-density'] != undefined ? Number(this.$el.attributes['mosaic-density'].value) : undefined;
-                        this.mosaicHeight = this.$el.attributes['mosaic-height'] != undefined ? Number(this.$el.attributes['mosaic-height'].value) : undefined;
-                        this.mosaicGridRows = this.$el.attributes['mosaic-grid-rows'] != undefined ? Number(this.$el.attributes['mosaic-grid-rows'].value) : undefined;
-                        this.mosaicGridColumns = this.$el.attributes['mosaic-grid-columns'] != undefined ? Number(this.$el.attributes['mosaic-grid-columns'].value) : undefined;
-                        this.mosaicItemFocalPointX = this.$el.attributes['mosaic-item-focal-point-x'] != undefined ? Number(this.$el.attributes['mosaic-item-focal-point-x'].value) : undefined;
-                        this.mosaicItemFocalPointY = this.$el.attributes['mosaic-item-focal-point-y'] != undefined ? Number(this.$el.attributes['mosaic-item-focal-point-y'].value) : undefined;
-                        this.maxColumnsCount = this.$el.attributes['max-columns-count'] != undefined ? this.$el.attributes['max-columns-count'].value : 4;
-                        this.imageSize = this.$el.attributes['image-size'] != undefined ? this.$el.attributes['image-size'].value : 'tainacan-medium';
-                        this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
-                        this.order = this.$el.attributes['order'] != undefined ? this.$el.attributes['order'].value : undefined;
-                        this.orderBy = this.$el.attributes['order-by'] != undefined ? this.$el.attributes['order-by'].value : undefined;
-                        this.orderByMetaKey = this.$el.attributes['order-by-meta-key'] != undefined ? this.$el.attributes['order-by-meta-key'].value : undefined;
-                        this.showSearchBar = this.$el.attributes['show-search-bar'] != undefined ? this.$el.attributes['show-search-bar'].value == 'true' : false;
-                        this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
-                        this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;
-                        this.collectionBackgroundColor = this.$el.attributes['collection-background-color'] != undefined ? this.$el.attributes['collection-background-color'].value : undefined;
-                        this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
-                        this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
-                        this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
-                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
-                    },
-                    methods: {
-                        __(text, domain) {
-                            return wp.i18n.__(text, domain);
-                        }
+                    mounted() {
+                        block.classList.add('has-mounted');
                     }
-                };
-    
-                const VueDynamicItemsList = createApp( Object.assign({ el: '#' + blockId }, vueOptions) );
+                });
 
                 VueDynamicItemsList.use(ThumbnailHelperPlugin);
                 VueDynamicItemsList.use(VueBlurHash);
-            }
+
+                VueDynamicItemsList.mount('#' + block.id);
+            });
         }
     }
 

@@ -16,109 +16,48 @@ export default (element) => {
 
             // Checks if this carousel isn't already mounted
             blocks = blocks.filter((block) => block.classList && !block.classList.contains('has-mounted'));
-            const blockIds = blocks.map((block) => block.id);
-
+            
             // Creates a new Vue Instance to manage each block isolatelly
-            for (let blockId of blockIds) {
-                // Configure Vue logic before passing it to constructor:
-                let vueOptions = {
-                    data: () => {
-                        return {
-                            collectionId: '',  
-                            searchURL: '',
-                            selectedItems: [],
-                            loadStrategy: 'search',
-                            maxItemsNumber: 12,
-                            maxItemsPerScreen: 7,
-                            spaceBetweenItems: 32,
-                            spaceAroundCarousel: 50,
-                            arrowsPosition: 'around',
-                            largeArrows: false,
-                            arrowsStyle: 'type-1',
-                            autoPlay: false,
-                            autoPlaySpeed: 3,
-                            loopSlides: false,
-                            hideTitle: true,
-                            imageSize: 'tainacan-medium',
-                            showCollectionHeader: false,
-                            showCollectionLabel: false,
-                            collectionBackgroundColor: '#373839',
-                            collectionTextColor: '#ffffff',
-                            tainacanApiRoot: '',
-                            tainacanBaseUrl: '',
-                            className: '',
-                            style: ''
-                        }
-                    },
+            blocks.forEach((block) => {
+                
+                const VueCarouselItemsList = createApp( {
                     render() { 
-                        return h(CarouselItemsListTheme, {
-                            props: {
-                                blockId: blockId,
-                                collectionId: this.collectionId,  
-                                searchURL: this.searchURL,
-                                selectedItems: this.selectedItems,
-                                loadStrategy: this.loadStrategy,
-                                maxItemsNumber: this.maxItemsNumber,
-                                maxItemsPerScreen: this.maxItemsPerScreen,
-                                spaceBetweenItems: this.spaceBetweenItems,
-                                spaceAroundCarousel: this.spaceAroundCarousel,
-                                arrowsPosition: this.arrowsPosition,
-                                largeArrows: this.largeArrows,
-                                arrowsStyle: this.arrowsStyle,
-                                autoPlay: this.autoPlay,
-                                autoPlaySpeed: this.autoPlaySpeed,
-                                loopSlides: this.loopSlides,
-                                hideTitle: this.hideTitle,
-                                imageSize: this.imageSize,
-                                showCollectionHeader: this.showCollectionHeader,
-                                showCollectionLabel: this.showCollectionLabel,
-                                collectionBackgroundColor: this.collectionBackgroundColor,
-                                collectionTextColor: this.collectionTextColor,
-                                tainacanApiRoot: this.tainacanApiRoot,
-                                tainacanBaseUrl: this.tainacanBaseUrl,
-                                className: this.className,
-                                customStyle: this.style
-                            }
+                        return h(CarouselItemsListTheme, {   
+                            blockId: block.id,
+                            searchURL: block.attributes['search-url'] != undefined ? block.attributes['search-url'].value : undefined,
+                            selectedItems: block.attributes['selected-items'] != undefined ? JSON.parse(block.attributes['selected-items'].value) : [],
+                            loadStrategy: block.attributes['load-strategy'] != undefined ? block.attributes['load-strategy'].value : 'search',
+                            collectionId: block.attributes['collection-id'] != undefined ? block.attributes['collection-id'].value : undefined,
+                            maxItemsNumber: block.attributes['max-items-number'] != undefined ? Number(block.attributes['max-items-number'].value) : 12,
+                            maxItemsPerScreen: block.attributes['max-items-per-screen'] != undefined ? Number(block.attributes['max-items-per-screen'].value) : 7,
+                            spaceBetweenItems: block.attributes['space-between-items'] != undefined ? Number(block.attributes['space-between-items'].value) : 32,
+                            spaceAroundCarousel: block.attributes['space-around-carousel'] != undefined ? Number(block.attributes['space-around-carousel'].value) : 50,
+                            arrowsPosition: block.attributes['arrows-position'] != undefined ? block.attributes['arrows-position'].value : 'around',
+                            largeArrows: block.attributes['large-arrows'] != undefined ? block.attributes['large-arrows'].value == 'true' : false,
+                            arrowsStyle: block.attributes['arrows-style'] != undefined ? block.attributes['arrows-style'].value : 'type-1',
+                            autoPlay: block.attributes['auto-play'] != undefined ? block.attributes['auto-play'].value == 'true' : false,
+                            autoPlaySpeed: block.attributes['auto-play-speed'] != undefined ? Number(block.attributes['auto-play-speed'].value) : 3,
+                            loopSlides: block.attributes['loop-slides'] != undefined ? block.attributes['loop-slides'].value == 'true' : false,
+                            hideTitle: block.attributes['hide-title'] != undefined ? block.attributes['hide-title'].value == 'true' : false,
+                            imageSize: block.attributes['image-size'] != undefined ? block.attributes['image-size'].value : 'tainacan-medium',
+                            showCollectionHeader: block.attributes['show-collection-header'] != undefined ? block.attributes['show-collection-header'].value == 'true' : false,
+                            showCollectionLabel: block.attributes['show-collection-label'] != undefined ? block.attributes['show-collection-label'].value == 'true' : false,
+                            collectionBackgroundColor: block.attributes['collection-background-color'] != undefined ? block.attributes['collection-background-color'].value : '#373839',
+                            collectionTextColor: block.attributes['collection-text-color'] != undefined ? block.attributes['collection-text-color'].value : '#ffffff',
+                            tainacanApiRoot: block.attributes['tainacan-api-root'] != undefined ? block.attributes['tainacan-api-root'].value : undefined,
+                            tainacanBaseUrl: block.attributes['tainacan-base-url'] != undefined ? block.attributes['tainacan-base-url'].value : undefined
                         });
                     },
-                    beforeMount () {
-                        this.className = this.$el.attributes.class != undefined ? this.$el.attributes.class.value : undefined;
-                        this.searchURL = this.$el.attributes['search-url'] != undefined ? this.$el.attributes['search-url'].value : undefined;
-                        this.selectedItems = this.$el.attributes['selected-items'] != undefined ? JSON.parse(this.$el.attributes['selected-items'].value) : undefined;
-                        this.loadStrategy = this.$el.attributes['load-strategy'] != undefined ? this.$el.attributes['load-strategy'].value : undefined;
-                        this.collectionId = this.$el.attributes['collection-id'] != undefined ? this.$el.attributes['collection-id'].value : undefined;
-                        this.maxItemsNumber = this.$el.attributes['max-items-number'] != undefined ? this.$el.attributes['max-items-number'].value : undefined;
-                        this.maxItemsPerScreen = this.$el.attributes['max-items-per-screen'] != undefined ? this.$el.attributes['max-items-per-screen'].value : 7;
-                        this.spaceBetweenItems = this.$el.attributes['space-between-items'] != undefined ? this.$el.attributes['space-between-items'].value : 32;
-                        this.spaceAroundCarousel = this.$el.attributes['space-around-carousel'] != undefined ? this.$el.attributes['space-around-carousel'].value : 50;
-                        this.arrowsPosition = this.$el.attributes['arrows-position'] != undefined ? this.$el.attributes['arrows-position'].value : undefined;
-                        this.largeArrows = this.$el.attributes['large-arrows'] != undefined ? this.$el.attributes['large-arrows'].value == 'true' : false;
-                        this.arrowsStyle = this.$el.attributes['arrows-style'] != undefined ? this.$el.attributes['arrows-style'].value : undefined;
-                        this.autoPlay = this.$el.attributes['auto-play'] != undefined ? this.$el.attributes['auto-play'].value == 'true' : false;
-                        this.autoPlaySpeed = this.$el.attributes['auto-play-speed'] != undefined ? this.$el.attributes['auto-play-speed'].value : 3;
-                        this.loopSlides = this.$el.attributes['loop-slides'] != undefined ? this.$el.attributes['loop-slides'].value == 'true' : false;
-                        this.hideTitle = this.$el.attributes['hide-title'] != undefined ? this.$el.attributes['hide-title'].value == 'true' : false;
-                        this.imageSize = this.$el.attributes['image-size'] != undefined ? this.$el.attributes['image-size'].value : 'tainacan-medium';
-                        this.showCollectionHeader = this.$el.attributes['show-collection-header'] != undefined ? this.$el.attributes['show-collection-header'].value == 'true' : false;
-                        this.showCollectionLabel = this.$el.attributes['show-collection-label'] != undefined ? this.$el.attributes['show-collection-label'].value == 'true' : false;
-                        this.collectionBackgroundColor = this.$el.attributes['collection-background-color'] != undefined ? this.$el.attributes['collection-background-color'].value : undefined;
-                        this.collectionTextColor = this.$el.attributes['collection-text-color'] != undefined ? this.$el.attributes['collection-text-color'].value : undefined;
-                        this.tainacanApiRoot = this.$el.attributes['tainacan-api-root'] != undefined ? this.$el.attributes['tainacan-api-root'].value : undefined;
-                        this.tainacanBaseUrl = this.$el.attributes['tainacan-base-url'] != undefined ? this.$el.attributes['tainacan-base-url'].value : undefined;
-                        this.style = this.$el.attributes.style != undefined ? this.$el.attributes.style.value : undefined;
-                    },
-                    methods: {
-                        __(text, domain) {
-                            return wp.i18n.__(text, domain);
-                        }
+                    mounted() {
+                        block.classList.add('has-mounted');
                     }
-                };
-
-                const VueCarouselItemsList = createApp( Object.assign({ el: '#' + blockId }, vueOptions) );
+                });
 
                 VueCarouselItemsList.use(ThumbnailHelperPlugin);
                 VueCarouselItemsList.use(VueBlurHash);
-            }
+
+                VueCarouselItemsList.mount('#' + block.id);
+            });
         }
     }
 

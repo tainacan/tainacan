@@ -1,17 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import qs from 'qs';
+import ThemeItemsPage from '../theme-items-page.vue';
 
-const themeRoutes = [];
+const themeRoutes = [
+    // Catch-all route to handle any path
+    {
+        path: '/:catchAll(.*)*',
+        component: ThemeItemsPage, // The component where you want to respond to changes
+    }
+];
 
 export default createRouter ({
     history: createWebHistory(window.document.location.pathname),
-    routes: themeRoutes,
-    // set custom query resolver
-    parseQuery(query) {
-        return qs.parse(query);
-    },
-    stringifyQuery(query) {
-        let result = qs.stringify(query);
-        return result ? result : '';
-    }
+    routes: themeRoutes
 });

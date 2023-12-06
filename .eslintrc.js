@@ -26,7 +26,8 @@ module.exports = {
         "vue/no-v-model-argument": "off", // ADD
         'vue/multi-word-component-names': 'off',
         'vue/require-default-prop': 'off',
-        'vue/no-v-text-v-html-on-component': 'off'
+        'vue/no-v-text-v-html-on-component': 'off',
+        'vue/no-multiple-template-root': 'off' // In Vue3, this rule is deprecated
     },
     globals: {
         'wp': true,

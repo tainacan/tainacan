@@ -356,7 +356,7 @@
             collectionId: [Number, String],
             metadatumId: Number,
             metadatum: Object,
-            selected: Array,
+            selected: [Array,Number],
             allowNew: Boolean,
             isTaxonomy: {
                 type: Boolean,

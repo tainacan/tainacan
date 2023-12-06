@@ -96,7 +96,7 @@ export default (element) => {
                         showFullscreenWithViewModes: false
                     }
                 },
-                created() {
+                beforeMount() {
                     // Loads params if passed previously 
                     if (this.$route.hash && this.$route.hash.split('#/?') && this.$route.hash.split('#/?')[1]) {
                         const existingQueries = qs.parse(this.$route.hash.split('#/?')[1]); 
@@ -104,78 +104,76 @@ export default (element) => {
                         for (let key of Object.keys(existingQueries))
                             this.$route.query[key] = existingQueries[key];
                     }
-                },
-                mounted() {
-                    
+
                     // Collection or Term source settings
-                    if (this.$el.attributes['collection-id'] != undefined)
-                        this.collectionId = this.$el.attributes['collection-id'].value;
-                    if (this.$el.attributes['term-id'] != undefined)
-                        this.termId = this.$el.attributes['term-id'].value;
-                    if (this.$el.attributes['taxonomy'] != undefined)
-                        this.taxonomy = this.$el.attributes['taxonomy'].value;
+                    if (blockElement.attributes['collection-id'] != undefined)
+                        this.collectionId = blockElement.attributes['collection-id'].value;
+                    if (blockElement.attributes['term-id'] != undefined)
+                        this.termId = blockElement.attributes['term-id'].value;
+                    if (blockElement.attributes['taxonomy'] != undefined)
+                        this.taxonomy = blockElement.attributes['taxonomy'].value;
 
                     // Sorting options
-                    if (this.$el.attributes['default-order'] != undefined)
-                        this.defaultOrder = this.$el.attributes['default-order'].value;
-                    if (this.$el.attributes['default-orderby'] != undefined) {
-                        this.defaultOrderBy = this.maybeConvertFromJSON(this.$el.attributes['default-orderby'].value);
+                    if (blockElement.attributes['default-order'] != undefined)
+                        this.defaultOrder = blockElement.attributes['default-order'].value;
+                    if (blockElement.attributes['default-orderby'] != undefined) {
+                        this.defaultOrderBy = this.maybeConvertFromJSON(blockElement.attributes['default-orderby'].value);
                         this.defaultOrderBy === 'creation_date' ? 'date' : this.defaultOrderBy;
                     }
-                    if (this.$el.attributes['default-orderby-meta'] != undefined)
-                        this.defaultOrderByMeta = this.$el.attributes['default-orderby-meta'].value;
-                    if (this.$el.attributes['default-orderby-type'] != undefined)
-                        this.defaultOrderByType = this.maybeConvertFromJSON(this.$el.attributes['default-orderby-type'].value);
+                    if (blockElement.attributes['default-orderby-meta'] != undefined)
+                        this.defaultOrderByMeta = blockElement.attributes['default-orderby-meta'].value;
+                    if (blockElement.attributes['default-orderby-type'] != undefined)
+                        this.defaultOrderByType = this.maybeConvertFromJSON(blockElement.attributes['default-orderby-type'].value);
 
                     // View modes settings
-                    if (this.$el.attributes['is-forced-view-mode'] != undefined)
-                        this.isForcedViewMode = new Boolean(this.$el.attributes['is-forced-view-mode'].value);
+                    if (blockElement.attributes['is-forced-view-mode'] != undefined)
+                        this.isForcedViewMode = new Boolean(blockElement.attributes['is-forced-view-mode'].value);
                     
                     this.defaultViewMode = possibleDefaultViewMode;
                     this.enabledViewModes = possibleViewModes;
 
                     // Options related to hidding elements
                     this.hideFilters = possibleHideFilters;
-                    if (this.$el.attributes['hide-hide-filters-button'] != undefined)
+                    if (blockElement.attributes['hide-hide-filters-button'] != undefined)
                         this.hideHideFiltersButton = this.isParameterTrue('hide-hide-filters-button');
-                    if (this.$el.attributes['hide-search'] != undefined)
+                    if (blockElement.attributes['hide-search'] != undefined)
                         this.hideSearch = this.isParameterTrue('hide-search');
-                    if (this.$el.attributes['hide-advanced-search'] != undefined)
+                    if (blockElement.attributes['hide-advanced-search'] != undefined)
                         this.hideAdvancedSearch = this.isParameterTrue('hide-advanced-search');
-                    if (this.$el.attributes['hide-displayed-metadata-button'] != undefined)
+                    if (blockElement.attributes['hide-displayed-metadata-button'] != undefined)
                         this.hideDisplayedMetadataButton = this.isParameterTrue('hide-displayed-metadata-button');
-                    if (this.$el.attributes['hide-sorting-area'] != undefined)
+                    if (blockElement.attributes['hide-sorting-area'] != undefined)
                         this.hideSortingArea = this.isParameterTrue('hide-sorting-area');
-                    if (this.$el.attributes['hide-items-thumbnail'] != undefined)
+                    if (blockElement.attributes['hide-items-thumbnail'] != undefined)
                         this.hideItemsThumbnail = this.isParameterTrue('hide-items-thumbnail');
-                    if (this.$el.attributes['hide-sort-by-button'] != undefined)
+                    if (blockElement.attributes['hide-sort-by-button'] != undefined)
                         this.hideSortByButton = this.isParameterTrue('hide-sort-by-button');
-                    if (this.$el.attributes['hide-exposers-button'] != undefined)
+                    if (blockElement.attributes['hide-exposers-button'] != undefined)
                         this.hideExposersButton = this.isParameterTrue('hide-exposers-button');
-                    if (this.$el.attributes['hide-items-per-page-button'] != undefined)
+                    if (blockElement.attributes['hide-items-per-page-button'] != undefined)
                         this.hideItemsPerPageButton = this.isParameterTrue('hide-items-per-page-button');
-                    if (this.$el.attributes['hide-go-to-page-button'] != undefined)
+                    if (blockElement.attributes['hide-go-to-page-button'] != undefined)
                         this.hideGoToPageButton = this.isParameterTrue('hide-go-to-page-button');
-                    if (this.$el.attributes['hide-pagination-area'] != undefined)
+                    if (blockElement.attributes['hide-pagination-area'] != undefined)
                         this.hidePaginationArea = this.isParameterTrue('hide-pagination-area');
 
                     // Other Tweaks
-                    if (this.$el.attributes['default-items-per-page'] != undefined)
-                        this.defaultItemsPerPage = Number(this.$el.attributes['default-items-per-page'].value);
-                    if (this.$el.attributes['show-filters-button-inside-search-control'] != undefined)
+                    if (blockElement.attributes['default-items-per-page'] != undefined)
+                        this.defaultItemsPerPage = Number(blockElement.attributes['default-items-per-page'].value);
+                    if (blockElement.attributes['show-filters-button-inside-search-control'] != undefined)
                         this.showFiltersButtonInsideSearchControl = this.isParameterTrue('show-filters-button-inside-search-control');
-                    if (this.$el.attributes['start-with-filters-hidden'] != undefined)
+                    if (blockElement.attributes['start-with-filters-hidden'] != undefined)
                         this.startWithFiltersHidden = this.isParameterTrue('start-with-filters-hidden');
-                    if (this.$el.attributes['filters-as-modal'] != undefined)
+                    if (blockElement.attributes['filters-as-modal'] != undefined)
                         this.filtersAsModal = this.isParameterTrue('filters-as-modal');
-                    if (this.$el.attributes['show-inline-view-mode-options'] != undefined)
+                    if (blockElement.attributes['show-inline-view-mode-options'] != undefined)
                         this.showInlineViewModeOptions = this.isParameterTrue('show-inline-view-mode-options');
-                    if (this.$el.attributes['show-fullscreen-with-view-modes'] != undefined)
+                    if (blockElement.attributes['show-fullscreen-with-view-modes'] != undefined)
                         this.showFullscreenWithViewModes = this.isParameterTrue('show-fullscreen-with-view-modes');
                 },
                 methods: {
                     isParameterTrue(parameter) {
-                        const value = this.$el.attributes[parameter].value;
+                        const value = blockElement.attributes[parameter].value;
                         return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
                     },
                     maybeConvertFromJSON(someString) {
