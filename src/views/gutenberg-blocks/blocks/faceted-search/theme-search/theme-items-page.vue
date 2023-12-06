@@ -827,7 +827,9 @@
             openAdvancedSearch(newValue){
                 if (newValue == false){
                     this.$eventBusSearch.$emit('closeAdvancedSearch');
-                    this.isFiltersModalActive = !this.startWithFiltersHidden;
+
+                    if ( !this.isMobileScreen )
+                        this.isFiltersModalActive = !this.startWithFiltersHidden;
                 } else {
                     this.isFiltersModalActive = false;
                 }
@@ -1425,15 +1427,18 @@
                     if (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) {
                         const previousMobileScreen = this.isMobileScreen;
                         const previousWindowWidth = this.windowWidth;
-
+                        
                         this.windowWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
                         this.isMobileScreen = this.windowWidth <= 768;
 
+                        // The window size didn't changed (the resize event is triggered by scrolls on mobile)
+                        // Also if we're on advanced search we should not open the filters
+                        if (previousWindowWidth == this.windowWidth || this.openAdvancedSearch)
+                            return;
+
                         if (                                                    // We DO NOT want to open the filters due to this resize event IF:
                             (!previousMobileScreen && this.isMobileScreen) ||   // We're coming from a non-mobile screen to a mobile screen, or
-                            (previousWindowWidth == this.windowWidth) ||        // The window size didn't changed (the resize event is triggered by scrolls on mobile), or
-                            this.startWithFiltersHidden ||                      // Filters should begin disabled, or
-                            this.openAdvancedSearch                             // Advanced search is opened
+                            this.startWithFiltersHidden                         // Filters should begin disabled
                         )
                             this.isFiltersModalActive = false;
                         else
@@ -1525,13 +1530,11 @@
         border-bottom-right-radius: 2px;
         cursor: pointer;
         transition: top 0.3s;
+        display: flex;
+        align-items: center;
 
         &:focus {
             outline: none !important;
-        }
-
-        .icon {
-            margin-top: -1px;
         }
 
         @media screen and (max-width: 768px) {
@@ -1539,15 +1542,6 @@
             width: auto;
             padding: 3px 6px 3px 0px;
             height: 1.625em;
-
-            .icon {
-                position: relative;
-                top: -3px;
-            }
-            .text {
-                position: relative;
-                top: -2px;
-            }
         }
     }
 

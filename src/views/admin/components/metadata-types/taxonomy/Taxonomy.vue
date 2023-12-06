@@ -45,11 +45,10 @@
                 &nbsp;{{ $i18n.get('label_create_new_term') }}
             </a>
         </div>
-
-        <template v-if="allowNew && itemMetadatum.item">
+        <template v-if="allowNewFromOptions && itemMetadatum.item">
             <!-- Term creation modal, used on admin for a complete term creation -->
             <b-modal
-                    v-model="isTermCreationModalOpen"
+                    :active.sync="isTermCreationModalOpen"
                     :width="768"
                     trap-focus
                     aria-role="dialog"
@@ -255,7 +254,7 @@
             },
             openTermCreationModal(newTerm) {
                 this.newTermName = newTerm.name;
-
+                
                 if (this.isOnItemSubmissionForm)
                     this.isTermCreationPanelOpen = true;
                 else

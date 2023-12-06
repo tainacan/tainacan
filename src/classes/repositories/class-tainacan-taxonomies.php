@@ -295,9 +295,12 @@ class Taxonomies extends Repository {
 		$id = $taxonomy_id;
 		if ( ! empty( $id ) && is_numeric( $id ) && is_numeric($collection_id) ) {
 			$tax = $this->fetch( (int) $id );
-			$tax->add_collection_id( $collection_id );
-			if ( $tax->validate() ) {
-				$this->insert( $tax );
+
+			if ( $tax instanceof Entities\Taxonomy ) {
+				$tax->add_collection_id( $collection_id );
+				
+				if ( $tax->validate() )
+					$this->insert( $tax );
 			}
 		}
 		$this->update_taxonomy_registry_for_collection($taxonomy_id, $collection_id);
@@ -307,9 +310,12 @@ class Taxonomies extends Repository {
 		$id = $taxonomy_id;
 		if ( ! empty( $id ) && is_numeric( $id ) && is_numeric($collection_id) ) {
 			$tax = $this->fetch( (int) $id );
-			$tax->remove_collection_id( $collection_id );
-			if ( $tax->validate() ) {
-				$this->insert( $tax );
+			
+			if ( $tax instanceof Entities\Taxonomy ) {
+				$tax->remove_collection_id( $collection_id );
+
+				if ( $tax->validate() )
+					$this->insert( $tax );
 			}
 		}
 		$this->update_taxonomy_registry_for_collection($taxonomy_id, $collection_id);

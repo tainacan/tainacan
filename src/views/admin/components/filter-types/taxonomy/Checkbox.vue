@@ -264,7 +264,7 @@
                                 this.selected.push(newSelected);
                         } 
                     },
-                    width: 'calc(100% - (4 * var(--tainacan-one-column)))',
+                    width: 'max(768px, calc(100% - (4 * var(--tainacan-one-column))))',
                     trapFocus: true,
                     customClass: 'tainacan-modal',
                     closeButtonAriaLabel: this.$i18n.get('close')

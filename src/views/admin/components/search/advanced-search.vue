@@ -9,6 +9,7 @@
                     v-for="(searchCriterion, index) in searchCriteria"
                     :key="index + '-' + searchCriterion.index + '-' + searchCriterion.type"
                     grouped
+                    group-multiline
                     class="tainacan-form">
 
                 <!-- Metadata (Search criteria) -->
@@ -97,7 +98,7 @@
                 </b-field>
 
                 <!-- Inputs -->
-                <b-field class="column is-half">
+                <b-field class="column is-half is-10-mobile">
                     <template v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index]">
                         <b-input
                                 v-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float'"
@@ -646,52 +647,58 @@
         border: 1px solid var(--tainacan-input-border-color);
         border-radius: 1px;
         transition: height 0.2s ease;
-    }
 
-    .tnc-advanced-search-container {
-        position: relative;
-        padding: 1.25em;
-        border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
+        .tnc-advanced-search-container {
+            position: relative;
+            padding: 1.25em;
+            border-radius: var(--tainacan-dropdownmenu-border-radius, 0px);
 
-        h3 {
-            font-size: 1em !important;
-            padding-top: 0 !important;
-            color: var(--tainacan-heading-color) !important;
-            margin-bottom: 1em !important;
-        }
-        .tainacan-form {
-            margin-bottom: 0.125em !important;
-        }
-        .column {
-            padding: 0;
-        }
-        .control {
-            font-size: 1em;
-            margin-bottom: 0px !important;
+            h3 {
+                font-size: 1em !important;
+                padding-top: 0 !important;
+                color: var(--tainacan-heading-color) !important;
+                margin-bottom: 1em !important;
+            }
+            .tainacan-form {
+                margin-bottom: 0.125em !important;
+            }
+            .column {
+                padding: 0;
+            }
+            .control {
+                font-size: 1em;
+                margin-bottom: 0px !important;
 
-            .select{
-                width: 100% !important;
-                select{
+                .select{
                     width: 100% !important;
+                    select{
+                        width: 100% !important;
+                    }
                 }
             }
-        }
 
-        .add-link-advanced-search a {
-            font-size: 0.8125em;
-            display: inline-flex;
-            align-items: center;
-            margin-right: 1em;
-        }
+            .add-link-advanced-search a {
+                font-size: 0.8125em;
+                display: inline-flex;
+                align-items: center;
+                margin-right: 1em;
+            }
 
-        .button-remove-criterion {
-            color: var(--tainacan-input-color);
-            background: transparent;
-            border: none;
-            border-radius: var(--tainacan-button-border-radius, 4px);
+            .button-remove-criterion {
+                color: var(--tainacan-input-color);
+                background: transparent;
+                border: none;
+                border-radius: var(--tainacan-button-border-radius, 4px);
+            }
         }
-
         @media screen and (max-width: 768px) {
+            border-left: none;
+            border-right: none;
+
+            .tnc-advanced-search-container {
+                padding-right: 0;
+                padding-left: 0;
+            }
             .is-12>.columns {
                 flex-wrap: wrap;
             }
@@ -700,7 +707,6 @@
                 flex-basis: 100%;
             }
         }
-
     }
 
 </style>
