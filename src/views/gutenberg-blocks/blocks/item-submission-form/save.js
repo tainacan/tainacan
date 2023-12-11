@@ -76,7 +76,7 @@ export default function({ attributes }) {
                 hide-help-buttons={ hideHelpButtons.toString() }
                 hide-metadata-types={ hideMetadataTypes.toString() }
                 hide-collapses={ hideCollapses.toString() }
-                enabled-metadata={ enabledMetadata.toString() }
+                enabled-metadata={ JSON.stringify(enabledMetadata) }
                 sent-form-heading={ sentFormHeading }
                 sent-form-message={ sentFormMessage }
                 document-section-label={ documentSectionLabel }

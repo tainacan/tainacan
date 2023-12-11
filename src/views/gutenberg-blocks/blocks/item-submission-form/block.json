@@ -94,8 +94,8 @@
             "default": "#187181"
         },
         "enabledMetadata": {
-            "type": "array",
-            "default": []
+            "type": "object",
+            "default": {}
         },
         "collectionMetadata": {
             "type": "array",

@@ -14,7 +14,7 @@ const {
     Placeholder,
     PanelBody
 } = wp.components;
-
+const { useEffect } = wp.element;
 const { InspectorControls, BlockControls, RichText, useBlockProps } = wp.blockEditor;
 
 import tainacan from '../../js/axios.js';
@@ -104,6 +104,12 @@ export default function ({ attributes, setAttributes }) {
         setAttributes({ isLayoutSteps: isLayoutSteps });
     }
 
+    // Fill the enabledMetadata object with the metadata that are enabled initially
+    useEffect(() => {
+        if ( collectionId && collectionId != 'preview' )
+            loadCollectionMetadata(collectionId)
+    }, []);
+
     function openCollectionModal() {
         isCollectionModalOpen = true;
         setAttributes( {
@@ -111,10 +117,8 @@ export default function ({ attributes, setAttributes }) {
         } );
     }
 
-    function toggleIsEnabledMetadatum(isEnabled, index) {
-
-        enabledMetadata.splice(index, 1, isEnabled);
-
+    function toggleIsEnabledMetadatum(isEnabled, metadatumId) {
+        enabledMetadata[metadatumId] = isEnabled;
         setAttributes({
             enabledMetadata: JSON.parse(JSON.stringify(enabledMetadata))
         });
@@ -127,10 +131,11 @@ export default function ({ attributes, setAttributes }) {
         tainacan.get('/collection/' + selectedCollectionId + '/metadata/?nopaging=1&include_disabled=false&parent=0')
             .then(response => {
                 collectionMetadata = response.data;
-                enabledMetadata = new Array(response.data.length).fill(true);
-
+                collectionMetadata.forEach(aMetadatum => {
+                    if ( enabledMetadata[aMetadatum.id] === undefined )
+                        enabledMetadata[aMetadatum.id] = true;
+                });
                 isLoadingCollectionMetadata = false;
-
                 setAttributes({
                     isLoadingCollectionMetadata : isLoadingCollectionMetadata,
                     collectionMetadata: collectionMetadata,
@@ -262,16 +267,17 @@ export default function ({ attributes, setAttributes }) {
                                     help={ __('Uncheck the metadata that you do not want to be shown on the form', 'tainacan') }
                                 >
                                 <ul id="metadata-checkbox-list">
-                                    { enabledMetadata.length ?
-                                        enabledMetadata.map((isMetadatumEnabled, index) => {
+                                    { 
+                                        collectionMetadata.length ?
+                                        collectionMetadata.map(metadatum => {
                                             return (
                                                 <li>
                                                     <CheckboxControl
-                                                        label={ collectionMetadata[index].name + (collectionMetadata[index].required == 'yes' ? ' *' : '') }
-                                                        disabled={ collectionMetadata[index].required == 'yes' }
-                                                        checked={ isMetadatumEnabled ? true : false }
-                                                        help={ collectionMetadata[index].metadata_type_object.name + (collectionMetadata[index].required == 'yes' ? (', ' + __('Required', 'tainacan')) : '' ) + (collectionMetadata[index].collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
-                                                        onChange={  (isEnabled) => toggleIsEnabledMetadatum(isEnabled, index) }
+                                                        label={ metadatum.name + (metadatum.required == 'yes' ? ' *' : '') }
+                                                        disabled={ metadatum.required == 'yes' }
+                                                        checked={ enabledMetadata[metadatum.id] ? true : false }
+                                                        help={ metadatum.metadata_type_object.name + (metadatum.required == 'yes' ? (', ' + __('Required', 'tainacan')) : '' ) + (metadatum.collection_id != collectionId ? (' (' + __('Inherited', 'tainacan') + ')' ) : '') }
+                                                        onChange={  (isEnabled) => toggleIsEnabledMetadatum(isEnabled, metadatum.id) }
                                                     />
                                                 </li>
                                             )
