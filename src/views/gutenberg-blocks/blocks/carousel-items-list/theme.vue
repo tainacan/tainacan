@@ -23,7 +23,7 @@
                     <span
                             v-if="showCollectionLabel"
                             class="label">
-                        {{ wp.i18n.__('Collection', 'tainacan') }}
+                        {{ wpI18n('Collection', 'tainacan') }}
                         <br>
                     </span>
                     {{ collection && collection.name ? collection.name : '' }}
@@ -91,7 +91,7 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : wp.i18n.__( 'Thumbnail', 'tainacan' ))"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : wpI18n( 'Thumbnail', 'tainacan' ))"
                                 :transition-duration="500" />
                         <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
                     </a>
@@ -140,7 +140,7 @@
     <div
             v-else-if="items.length <= 0 && !isLoading"
             class="spinner-container">
-        {{ wp.i18n.__('No items found.', 'tainacan') }}
+        {{ wpI18n('No items found.', 'tainacan') }}
     </div>
 </template>
  
@@ -179,8 +179,7 @@ export default {
         showCollectionLabel: Boolean,
         collectionBackgroundColor: String,
         collectionTextColor: String,
-        tainacanApiRoot: String,
-        tainacanBaseUrl: String
+        tainacanApiRoot: String
     },
     data() {
         return {
@@ -217,6 +216,9 @@ export default {
             this.swiper.destroy();
     },
     methods: {
+        wpI18n(string, context) {
+            return wp && wp.i18n ? wp.i18n.__(string, context) : string;
+        },
         fetchItems() {
  
             this.isLoading = true;

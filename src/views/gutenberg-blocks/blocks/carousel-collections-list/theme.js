@@ -2,6 +2,7 @@ import { createApp, h } from 'vue';
 import CarouselCollectionsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
 import VueBlurHash from 'another-vue3-blurhash';
+import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 
 export default (element) => {
 
@@ -23,22 +24,21 @@ export default (element) => {
                     render() { 
                         return h(CarouselCollectionsListTheme, {
                             blockId: block.id,
-                            selectedCollections: block.attributes['selected-collections'] != undefined ? JSON.parse(block.attributes['selected-collections'].value) : undefined,
-                            maxItemsNumber: block.attributes['max-collections-number'] != undefined ? Number(block.attributes['max-collections-number'].value) : 12,
-                            maxCollectionsPerScreen: block.attributes['max-collections-per-screen'] != undefined ? Number(block.attributes['max-collections-per-screen'].value) : 6,
-                            spaceBetweenCollections: block.attributes['space-between-collections'] != undefined ? Number(block.attributes['space-between-collections'].value) : 32,
-                            spaceAroundCarousel: block.attributes['space-around-carousel'] != undefined ? Number(block.attributes['space-around-carousel'].value) : 50,
-                            arrowsPosition: block.attributes['arrows-position'] != undefined ? block.attributes['arrows-position'].value : undefined,
-                            autoPlay: block.attributes['auto-play'] != undefined ? block.attributes['auto-play'].value == 'true' : false,
-                            largeArrows: block.attributes['large-arrows'] != undefined ? block.attributes['large-arrows'].value == 'true' : false,
-                            arrowsStyle: block.attributes['arrows-style'] != undefined ? block.attributes['arrows-style'].value : 'type-1',
-                            autoPlaySpeed: block.attributes['auto-play-speed'] != undefined ? Number(block.attributes['auto-play-speed'].value) : 3,
-                            loopSlides: block.attributes['loop-slides'] != undefined ? block.attributes['loop-slides'].value == 'true' : false,
-                            imageSize: block.attributes['image-size'] != undefined ? block.attributes['image-size'].value : 'tainacan-medium',
-                            hideName: block.attributes['hide-name'] != undefined ? block.attributes['hide-name'].value == 'true' : false,
-                            showCollectionThumbnail: block.attributes['show-collection-thumbnail'] != undefined ? block.attributes['show-collection-thumbnail'].value == 'true' : false,
-                            tainacanApiRoot: block.attributes['tainacan-api-root'] != undefined ? block.attributes['tainacan-api-root'].value : undefined,
-                            tainacanBaseUrl: block.attributes['tainacan-base-url'] != undefined ? block.attributes['tainacan-base-url'].value : undefined,
+                            selectedCollections: JSON.parse(getDataAttribute(block, 'selected-collections', '[]')),
+                            maxItemsNumber: Number(getDataAttribute(block, 'max-collections-number', 12)),
+                            maxCollectionsPerScreen: Number(getDataAttribute(block, 'max-collections-per-screen', 9)),
+                            spaceBetweenCollections: Number(getDataAttribute(block, 'space-between-collections', 32)),
+                            spaceAroundCarousel: Number(getDataAttribute(block, 'space-around-carousel', 50)),
+                            arrowsPosition: getDataAttribute(block, 'arrows-position', 'around'),
+                            autoPlay: getDataAttribute(block, 'auto-play', 'false') == 'true',
+                            largeArrows: getDataAttribute(block, 'large-arrows', 'false') == 'true',
+                            arrowsStyle: getDataAttribute(block, 'arrows-style', 'type-1'),
+                            autoPlaySpeed: Number(getDataAttribute(block, 'auto-play-speed', 3)),
+                            loopSlides: getDataAttribute(block, 'loop-slides', 'false') == 'true',
+                            imageSize: getDataAttribute(block, 'image-size', 'tainacan-medium'),
+                            hideName: getDataAttribute(block, 'hide-name', 'false') == 'true',
+                            showCollectionThumbnail: getDataAttribute(block, 'show-collection-thumbnail', 'false') == 'true',
+                            tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root'),
                         });
                     },
                     mounted() {
