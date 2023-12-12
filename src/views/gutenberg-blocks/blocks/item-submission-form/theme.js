@@ -72,7 +72,7 @@ export default (element) => {
                         hideHelpButtons: false,
                         hideMetadataTypes: false,
                         hideCollapses: false,
-                        enabledMetadata: [],
+                        enabledMetadata: {},
                         sentFormHeading: '',
                         sentFormMessage: '',
                         documentSectionLabel: '',
@@ -143,8 +143,13 @@ export default (element) => {
                         this.termsAgreementMessage = blockElement.attributes['terms-agreement-message'].value;
     
                     // List of metadata
-                    if (blockElement.attributes['enabled-metadata'] != undefined && blockElement.attributes['enabled-metadata'].value)
-                        this.enabledMetadata = blockElement.attributes['enabled-metadata'].value.split(',');
+                    if (this.$el.attributes['enabled-metadata'] != undefined && this.$el.attributes['enabled-metadata'].value) {
+                        try {
+                            this.enabledMetadata = JSON.parse(this.$el.attributes['enabled-metadata'].value);
+                        } catch {
+                            this.enabledMetadata = {};
+                        }
+                    }
 
                 },
                 methods: {

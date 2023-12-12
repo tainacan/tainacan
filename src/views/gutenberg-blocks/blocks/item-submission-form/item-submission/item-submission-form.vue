@@ -506,7 +506,7 @@
                                                 v-html="getBeforeHook('metadatum', { metadatum: itemMetadatum.metadatum, index: index, metadataSection: metadataSection, sectionIndex: sectionIndex })" />
 
                                         <tainacan-form-item
-                                                v-if="enabledMetadata[index] == 'true'"
+                                                v-if="Object.keys(enabledMetadata).length == 0 || enabledMetadata[itemMetadatum.metadatum.id]"
                                                 :item-metadatum="itemMetadatum"
                                                 :hide-collapses="hideCollapses"
                                                 :hide-metadata-types="hideMetadataTypes"
@@ -774,7 +774,7 @@ export default {
         hideCollapses: Boolean,
         hideHelpButtons: Boolean,
         hideMetadataTypes: Boolean,
-        enabledMetadata: Array,
+        enabledMetadata: Object,
         sentFormHeading: String,
         sentFormMessage: String,
         documentSectionLabel: String,
@@ -872,6 +872,7 @@ export default {
                 };
                
             });
+            
             return tweakedItemMetadata;
         },
         metadataSections() {
@@ -917,7 +918,6 @@ export default {
 
                 // CREATING NEW ITEM SUBMISSION
                 this.createNewItem();
-
             })
             .catch(() => {
                 this.collecionAllowsItemSubmission = false;
@@ -1208,13 +1208,13 @@ export default {
             if ( !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
                 return -1;
 
-            let enabledMetadata = [];
+            let enabledMetadataInSection = [];
             for (let metadatum of this.collection['metadata_section_order'][sectionIndex]['metadata_order']) {
                 if ( metadatum.enabled )
-                    enabledMetadata.push(metadatum.id);
+                    enabledMetadataInSection.push(metadatum.id);
             }
 
-            return enabledMetadata.indexOf(metadatum.id);
+            return enabledMetadataInSection.indexOf(metadatum.id);
         }
     }
 }

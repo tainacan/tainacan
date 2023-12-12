@@ -922,7 +922,7 @@ class Item extends Entity {
 				$output .= $embed;
 			}
 		}
-		return wp_kses_tainacan($output);
+		return apply_filters("tainacan-item-get-attachment-as-html", wp_kses_tainacan($output), $img_size, $this);
 
 	}
 
