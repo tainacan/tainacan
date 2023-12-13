@@ -44,7 +44,7 @@
                                     ?    
                                 term.thumbnail['thumbnail'][0] 
                                     : 
-                                `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
+                                $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                             "
                             :data-src=" 
                                 term.thumbnail && term.thumbnail[imageSize] && term.thumbnail[imageSize][0] 
@@ -55,9 +55,9 @@
                                     ?    
                                 term.thumbnail['thumbnail'][0] 
                                     : 
-                                `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
+                                $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                             "
-                            :alt="term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : wp.i18n.__('Thumbnail', 'tainacan'))" >
+                            :alt="term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : wpI18n('Thumbnail', 'tainacan'))" >
                         <span v-if="!hideName">{{ term.name ? term.name : '' }}</span>
                     </a>
                     <a 
@@ -68,26 +68,26 @@
                             <blur-hash-image
                                     :height="termItems[term.id][0] ? $thumbHelper.getHeight(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 275"
                                     :width="termItems[term.id][0] ? $thumbHelper.getWidth(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 275"
-                                    :src="termItems[term.id][0] ? $thumbHelper.getSrc(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                    :srcset="termItems[term.id][0] ? $thumbHelper.getSrcSet(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                    :src="termItems[term.id][0] ? $thumbHelper.getSrc(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
+                                    :srcset="termItems[term.id][0] ? $thumbHelper.getSrcSet(termItems[term.id][0]['thumbnail'], 'tainacan-medium', termItems[term.id][0]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :hash="termItems[term.id][0] ? $thumbHelper.getBlurhashString(termItems[term.id][0]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                    :alt="termItems[term.id][0] && termItems[term.id][0].thumbnail_alt ? termItems[term.id][0].thumbnail_alt : (termItems[term.id][0] && termItems[term.id][0].name ? termItems[term.id][0].name : wp.i18n.__( 'Thumbnail', 'tainacan' ))"
+                                    :alt="termItems[term.id][0] && termItems[term.id][0].thumbnail_alt ? termItems[term.id][0].thumbnail_alt : (termItems[term.id][0] && termItems[term.id][0].name ? termItems[term.id][0].name : wpI18n( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                             <blur-hash-image
                                     :height="termItems[term.id][1] ? $thumbHelper.getHeight(termItems[term.id][1]['thumbnail'], 'tainacan-medium') : 275"
                                     :width="termItems[term.id][1] ? $thumbHelper.getWidth(termItems[term.id][1]['thumbnail'], 'tainacan-medium') : 275"
-                                    :src="termItems[term.id][1] ? $thumbHelper.getSrc(termItems[term.id][1]['thumbnail'], 'tainacan-medium', termItems[term.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                    :srcset="termItems[term.id][1] ? $thumbHelper.getSrcSet(termItems[term.id][1]['thumbnail'], 'tainacan-medium', termItems[term.id][1]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                    :src="termItems[term.id][1] ? $thumbHelper.getSrc(termItems[term.id][1]['thumbnail'], 'tainacan-medium', termItems[term.id][1]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
+                                    :srcset="termItems[term.id][1] ? $thumbHelper.getSrcSet(termItems[term.id][1]['thumbnail'], 'tainacan-medium', termItems[term.id][1]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :hash="termItems[term.id][1] ? $thumbHelper.getBlurhashString(termItems[term.id][1]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                    :alt="termItems[term.id][1] && termItems[term.id][1].thumbnail_alt ? termItems[term.id][1].thumbnail_alt : (termItems[term.id][1] && termItems[term.id][1].name ? termItems[term.id][1].name : wp.i18n.__( 'Thumbnail', 'tainacan' ))"
+                                    :alt="termItems[term.id][1] && termItems[term.id][1].thumbnail_alt ? termItems[term.id][1].thumbnail_alt : (termItems[term.id][1] && termItems[term.id][1].name ? termItems[term.id][1].name : wpI18n( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                             <blur-hash-image
                                     :height="termItems[term.id][2] ? $thumbHelper.getHeight(termItems[term.id][2]['thumbnail'], 'tainacan-medium') : 275"
                                     :width="termItems[term.id][2] ? $thumbHelper.getWidth(termItems[term.id][2]['thumbnail'], 'tainacan-medium') : 275"
-                                    :src="termItems[term.id][2] ? $thumbHelper.getSrc(termItems[term.id][2]['thumbnail'], 'tainacan-medium', termItems[term.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
-                                    :srcset="termItems[term.id][2] ? $thumbHelper.getSrcSet(termItems[term.id][2]['thumbnail'], 'tainacan-medium', termItems[term.id][2]['document_mimetype']) :`${tainacanBaseUrl}/assets/images/placeholder_square.png`"
+                                    :src="termItems[term.id][2] ? $thumbHelper.getSrc(termItems[term.id][2]['thumbnail'], 'tainacan-medium', termItems[term.id][2]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
+                                    :srcset="termItems[term.id][2] ? $thumbHelper.getSrcSet(termItems[term.id][2]['thumbnail'], 'tainacan-medium', termItems[term.id][2]['document_mimetype']) : $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize)"
                                     :hash="termItems[term.id][2] ? $thumbHelper.getBlurhashString(termItems[term.id][2]['thumbnail'], 'tainacan-medium') : 'V4P?:h00Rj~qM{of%MRjWBRjD%%MRjayofj[%M-;RjRj'"
-                                    :alt="termItems[term.id][2] && termItems[term.id][2].thumbnail_alt ? termItems[term.id][2].thumbnail_alt : (termItems[term.id][2] && termItems[term.id][2].name ? termItems[term.id][2].name : wp.i18n.__( 'Thumbnail', 'tainacan' ))"
+                                    :alt="termItems[term.id][2] && termItems[term.id][2].thumbnail_alt ? termItems[term.id][2].thumbnail_alt : (termItems[term.id][2] && termItems[term.id][2].name ? termItems[term.id][2].name : wpI18n( 'Thumbnail', 'tainacan' ))"
                                     :transition-duration="500" />
                         </div>
                         <span v-if="!hideName">{{ term.name ? term.name : '' }}</span>
@@ -137,7 +137,7 @@
     <div
             v-else-if="terms.length <= 0 && !isLoading"
             class="spinner-container">
-        {{ wp.i18n.__('No terms found.', 'tainacan') }}
+        {{ wpI18n('No terms found.', 'tainacan') }}
     </div>
 </template>
  
@@ -171,7 +171,6 @@ export default {
         imageSize: String,
         showTermThumbnail: Boolean,
         tainacanApiRoot: String,
-        tainacanBaseUrl: String,
         taxonomyId: String
     },
     data() {
@@ -206,6 +205,9 @@ export default {
             this.swiper.destroy();
     },
     methods: {
+        wpI18n(string, context) {
+            return wp && wp.i18n ? wp.i18n.__(string, context) : string;
+        },
         fetchTerms() {
             this.isLoading = true;
             this.errorMessage = 'No terms found.';

@@ -432,11 +432,9 @@
         color: inherit;
         text-decoration: none;
         display: block; }
-      .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper .is-forced-square > a > div {
-        padding-bottom: 100% !important; }
-        .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper .is-forced-square > a > div img {
-          object-fit: cover;
-          object-position: center; }
+      .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper .is-forced-square > a > div img {
+        object-fit: cover;
+        object-position: center; }
   .wp-block-tainacan-carousel-items-list .preview-warning {
     width: 100%;
     font-size: 0.875rem;
