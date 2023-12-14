@@ -23,7 +23,7 @@
                     <span
                             v-if="showCollectionLabel"
                             class="label">
-                        {{ $root.__('Collection', 'tainacan') }}
+                        {{ wpI18n('Collection', 'tainacan') }}
                         <br>
                     </span>
                     {{ collection && collection.name ? collection.name : '' }}
@@ -50,7 +50,7 @@
         <button
                 @click="localOrder = 'asc'; fetchItems()"
                 :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
-                :label="$root.__('Sort ascending', 'tainacan')">
+                :label="wpI18n('Sort ascending', 'tainacan')">
             <span class="icon">
                 <i>
                     <svg
@@ -65,7 +65,7 @@
         <button
                 @click="localOrder = 'desc'; fetchItems(); "
                 :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
-                :label="$root.__('Sort descending', 'tainacan')">
+                :label="wpI18n('Sort descending', 'tainacan')">
             <span class="icon">
                 <i>
                     <svg
@@ -80,7 +80,7 @@
         </button>  
         <button
                 @click="fetchItems()"
-                :label="$root.__('Search', 'tainacan')"
+                :label="wpI18n('Search', 'tainacan')"
                 class="search-button">
             <span class="icon">
                 <i>
@@ -109,7 +109,7 @@
                 class="previous-button"
                 v-if="paged > 1"
                 @click="paged--; fetchItems()"
-                :label="$root.__('Previous page', 'tainacan')">
+                :label="wpI18n('Previous page', 'tainacan')">
             <span class="icon">
                 <i>
                     <svg
@@ -129,7 +129,7 @@
                 class="next-button"
                 v-if="paged < totalItems/localMaxItemsNumber && items.length < totalItems"
                 @click="paged++; fetchItems()"
-                :label="$root.__('Next page', 'tainacan')">
+                :label="wpI18n('Next page', 'tainacan')">
             <span class="icon">
                 <i>
                     <svg
@@ -208,7 +208,7 @@
                             :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                             :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                            :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
+                            :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : wpI18n( 'Thumbnail', 'tainacan' ))"
                             :transition-duration="500" />
                     <span v-if="item.title">{{ item.title }}</span>
                 </a>
@@ -254,7 +254,7 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : $root.__( 'Thumbnail', 'tainacan' ))"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.name ? item.name : wpI18n( 'Thumbnail', 'tainacan' ))"
                                 :transition-duration="500" />
                         <span v-if="item.title">{{ item.title }}</span>
                     </a>
@@ -264,7 +264,7 @@
         <div
                 v-else-if="!isLoading && items.length <= 0"
                 class="spinner-container">
-            {{ $root.__(errorMessage, 'tainacan') }}
+            {{ wpI18n(errorMessage, 'tainacan') }}
         </div>
     </div>
 </template>
@@ -302,8 +302,7 @@ export default {
         showCollectionLabel: Boolean,
         collectionBackgroundColor: String,
         collectionTextColor: String,
-        tainacanApiRoot: String,
-        tainacanBaseUrl: String
+        tainacanApiRoot: String
     },    
     data() {
         return {
@@ -339,6 +338,9 @@ export default {
         this.fetchItems();
     },
     methods: {
+        wpI18n(string, context) {
+            return wp && wp.i18n ? wp.i18n.__(string, context) : string;
+        },
         applySearchString: debounce(function(event) { 
 
             let value = event.target.value;
@@ -409,10 +411,9 @@ export default {
                     queryObject.order = this.localOrder;
                 else if (queryObject.order != undefined)
                     this.localOrder = queryObject.order;
-                else {
-                    queryObject.order = 'asc';
-                    this.localOrder = 'asc';
-                }
+
+                if (!queryObject.order) // Avoid empty string query
+                    delete queryObject.order;
 
                 // Set up orderBy
                 if (this.orderBy != undefined)

@@ -17,9 +17,9 @@
                         ?    
                     facet.entity.thumbnail['thumbnail'][0] 
                         : 
-                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
+                    $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
                 "
-                :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : $root.__('Thumbnail', 'tainacan'))">
+                :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : wpI18n('Thumbnail', 'tainacan'))">
             <div :class=" 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '')">
                 <span>{{ facet.label ? facet.label : '' }}</span>
                 <span 
@@ -27,7 +27,7 @@
                         class="facet-item-count"
                         :style="{ display: !showItemsCount ? 'none' : '' }">
                     <template v-if="itemsCountStyle === 'below'">
-                        {{ facet.total_items != 1 ? (facet.total_items + ' ' + $root.__('items', 'tainacan' )) : (facet.total_items + ' ' + $root.__('item', 'tainacan' )) }}
+                        {{ facet.total_items != 1 ? (facet.total_items + ' ' + wpI18n('items', 'tainacan' )) : (facet.total_items + ' ' + wpI18n('item', 'tainacan' )) }}
                     </template>
                     <template v-else>
                         &nbsp;({{ facet.total_items }})
@@ -65,7 +65,7 @@
                         marginTop: showSearchBar ? '1.5em' : '4px'
                     }"
                     class="facets-list"
-                    :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+                    :class="'facets-layout-' + layout + ' facets-list-without-margin' + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
                 <li
                         :key="childFacet"
                         v-for="childFacet in Number(facet.total_children)"
@@ -74,7 +74,7 @@
                             minHeight: getSkeletonHeight(),
                             marginTop: layout == 'list' ? '4px' : '',
                             marginLeft: layout == 'list' ? '7px' : '',
-                            marginBottom: layout == 'grid' && showImage ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''
+                            marginBottom: layout == 'grid' && showImage ? gridMargin + 'px' : ''
                         }" />
             </ul>
             <template v-else>
@@ -91,7 +91,6 @@
                                     :child-facets-object="childFacetsObject"
                                     :facet="aChildTermFacet"
                                     :cloud-rate="cloudRate"
-                                    :tainacan-base-url="tainacanBaseUrl"
                                     :layout="layout"
                                     :append-child-terms="appendChildTerms"
                                     :metadatum-type="metadatumType"
@@ -105,7 +104,7 @@
                         <p 
                                 v-else 
                                 class="no-child-facet-found">
-                            {{ $root.__( 'The child terms of this facet do not contain items.', 'tainacan' ) }}
+                            {{ wpI18n( 'The child terms of this facet do not contain items.', 'tainacan' ) }}
                         </p>
                     </ul>
                 </transition>
@@ -119,7 +118,6 @@ export default {
     props: {
         appendChildTerms: Boolean,
         facet: Object,
-        tainacanBaseUrl: String,
         showImage: Boolean,
         showItemsCount: Boolean,
         showSearchBar: Boolean,
@@ -144,6 +142,9 @@ export default {
         }
     },
     methods: {
+        wpI18n(string, context) {
+            return wp && wp.i18n ? wp.i18n.__(string, context) : string;
+        },
         displayChildTerms(facetId) {
             this.$emit('onDisplayChildTerms', facetId)
         },

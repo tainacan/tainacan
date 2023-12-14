@@ -3,6 +3,7 @@ import { createApp, h } from 'vue';
 import DynamicItemsListTheme from './theme.vue';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities.js';
 import VueBlurHash from 'another-vue3-blurhash';
+import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 
 export default (element) => {
 
@@ -24,34 +25,32 @@ export default (element) => {
                 const VueDynamicItemsList = createApp( {
                     render() { 
                         return h(DynamicItemsListTheme, {
-                            blockId: block.id,
-                            searchURL: block.attributes['search-url'] != undefined ? block.attributes['search-url'].value : undefined,
-                            selectedItems: block.attributes['selected-items'] != undefined ? JSON.parse(block.attributes['selected-items'].value) : undefined,
-                            loadStrategy: block.attributes['load-strategy'] != undefined ? block.attributes['load-strategy'].value : undefined,
-                            collectionId: block.attributes['collection-id'] != undefined ? block.attributes['collection-id'].value : undefined,
-                            showImage: block.attributes['show-image'] != undefined ? block.attributes['show-image'].value == 'true' : true,
-                            showName: block.attributes['show-name'] != undefined ? block.attributes['show-name'].value == 'true' : true,
-                            layout: block.attributes['layout'] != undefined ? block.attributes['layout'].value : undefined,
-                            gridMargin: block.attributes['grid-margin'] != undefined ? Number(block.attributes['grid-margin'].value) : undefined,
-                            mosaicDensity: block.attributes['mosaic-density'] != undefined ? Number(block.attributes['mosaic-density'].value) : undefined,
-                            mosaicHeight: block.attributes['mosaic-height'] != undefined ? Number(block.attributes['mosaic-height'].value) : undefined,
-                            mosaicGridRows: block.attributes['mosaic-grid-rows'] != undefined ? Number(block.attributes['mosaic-grid-rows'].value) : undefined,
-                            mosaicGridColumns: block.attributes['mosaic-grid-columns'] != undefined ? Number(block.attributes['mosaic-grid-columns'].value) : undefined,
-                            mosaicItemFocalPointX: block.attributes['mosaic-item-focal-point-x'] != undefined ? Number(block.attributes['mosaic-item-focal-point-x'].value) : undefined,
-                            mosaicItemFocalPointY: block.attributes['mosaic-item-focal-point-y'] != undefined ? Number(block.attributes['mosaic-item-focal-point-y'].value) : undefined,
-                            maxColumnsCount: block.attributes['max-columns-count'] != undefined ? block.attributes['max-columns-count'].value : 4,
-                            imageSize: block.attributes['image-size'] != undefined ? block.attributes['image-size'].value : 'tainacan-medium',
-                            maxItemsNumber: block.attributes['max-items-number'] != undefined ? block.attributes['max-items-number'].value : undefined,
-                            order: block.attributes['order'] != undefined ? block.attributes['order'].value : undefined,
-                            orderBy: block.attributes['order-by'] != undefined ? block.attributes['order-by'].value : undefined,
-                            orderByMetaKey: block.attributes['order-by-meta-key'] != undefined ? block.attributes['order-by-meta-key'].value : undefined,
-                            showSearchBar: block.attributes['show-search-bar'] != undefined ? block.attributes['show-search-bar'].value == 'true' : false,
-                            showCollectionHeader: block.attributes['show-collection-header'] != undefined ? block.attributes['show-collection-header'].value == 'true' : false,
-                            showCollectionLabel: block.attributes['show-collection-label'] != undefined ? block.attributes['show-collection-label'].value == 'true' : false,
-                            collectionBackgroundColor: block.attributes['collection-background-color'] != undefined ? block.attributes['collection-background-color'].value : undefined,
-                            collectionTextColor: block.attributes['collection-text-color'] != undefined ? block.attributes['collection-text-color'].value : undefined,
-                            tainacanApiRoot: block.attributes['tainacan-api-root'] != undefined ? block.attributes['tainacan-api-root'].value : undefined,
-                            tainacanBaseUrl: block.attributes['tainacan-base-url'] != undefined ? block.attributes['tainacan-base-url'].value : undefined
+                            searchURL: getDataAttribute(block, 'search-url'),
+                            selectedItems: JSON.parse(getDataAttribute(block, 'selected-items', '[]')),
+                            loadStrategy: getDataAttribute(block, 'load-strategy'),
+                            collectionId: getDataAttribute(block, 'collection-id'),
+                            showImage: getDataAttribute(block, 'show-image', 'true') == 'true',
+                            showName: getDataAttribute(block, 'show-name', 'true') == 'true',
+                            layout: getDataAttribute(block, 'layout'),
+                            gridMargin: Number(getDataAttribute(block, 'grid-margin', 0)),
+                            mosaicDensity: Number(getDataAttribute(block, 'mosaic-density', 5)),
+                            mosaicHeight: Number(getDataAttribute(block, 'mosaic-height', 40)),
+                            mosaicGridRows: Number(getDataAttribute(block, 'mosaic-grid-rows', 3)),
+                            mosaicGridColumns: Number(getDataAttribute(block, 'mosaic-grid-columns', 3)),
+                            mosaicItemFocalPointX: Number(getDataAttribute(block, 'mosaic-item-focal-point-x', 0.5)),
+                            mosaicItemFocalPointY: Number(getDataAttribute(block, 'mosaic-item-focal-point-y', 0.5)),
+                            maxColumnsCount: Number(getDataAttribute(block, 'max-columns-count', 4)),
+                            imageSize: getDataAttribute(block, 'image-size', 'tainacan-medium'),
+                            maxItemsNumber: Number(getDataAttribute(block, 'max-items-number', 12)),
+                            order: getDataAttribute(block, 'order'),
+                            orderBy: getDataAttribute(block, 'order-by'),
+                            orderByMetaKey: getDataAttribute(block, 'order-by-meta-key'),
+                            showSearchBar: getDataAttribute(block, 'show-search-bar', 'false') == 'true',
+                            showCollectionHeader: getDataAttribute(block, 'show-collection-header', 'false') == 'true',
+                            showCollectionLabel: getDataAttribute(block, 'show-collection-label', 'false') == 'true',
+                            collectionBackgroundColor: getDataAttribute(block, 'collection-background-color'),
+                            collectionTextColor: getDataAttribute(block, 'collection-text-color'),
+                            tainacanApiRoot: getDataAttribute(block, 'tainacan-api-root')
                         });
                     },
                     mounted() {
