@@ -106,8 +106,9 @@ export default function ({ attributes, setAttributes }) {
 
     // Fill the enabledMetadata object with the metadata that are enabled initially
     useEffect(() => {
-        if ( collectionId && collectionId != 'preview' )
+        if ( collectionId && collectionId != 'preview' ) {
             loadCollectionMetadata(collectionId)
+        }
     }, []);
 
     function openCollectionModal() {
@@ -130,10 +131,13 @@ export default function ({ attributes, setAttributes }) {
 
         tainacan.get('/collection/' + selectedCollectionId + '/metadata/?nopaging=1&include_disabled=false&parent=0')
             .then(response => {
+                if ( Array.isArray(enabledMetadata) && enabledMetadata.length == 0 )
+                    enabledMetadata = {};
+                
                 collectionMetadata = response.data;
                 collectionMetadata.forEach(aMetadatum => {
-                    if ( enabledMetadata[aMetadatum.id] === undefined )
-                        enabledMetadata[aMetadatum.id] = true;
+                    if ( enabledMetadata['' + aMetadatum.id] === undefined )
+                        enabledMetadata['' + aMetadatum.id] = true;
                 });
                 isLoadingCollectionMetadata = false;
                 setAttributes({

@@ -24,6 +24,8 @@ import {
 } from '@ntohq/buefy-next';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
+import mitt from 'mitt';
+import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 
 // Metadata Types
 import Text from '../../../admin/components/metadata-types/text/Text.vue';
@@ -38,8 +40,7 @@ import User from '../../../admin/components/metadata-types/user/User.vue';
 import GeoCoordinate from '../../../admin/components/metadata-types/geocoordinate/GeoCoordinate.vue';
 
 // Main components
-import ItemSubmissionForm from './item-submission/item-submission-form.vue';
-import ItemSubmission from './theme.vue';
+import ItemSubmissionForm from './theme.vue';
 
 // Remaining imports
 import TainacanFormItem from '../../../admin/components/metadata-types/tainacan-form-item.vue';
@@ -48,6 +49,10 @@ import HelpButton from '../../../admin/components/other/help-button.vue';
 import store from '../../../admin/js/store/store';
 import { I18NPlugin, UserPrefsPlugin, RouterHelperPlugin, ConsolePlugin, StatusHelperPlugin, CommentsStatusHelperPlugin, AdminOptionsHelperPlugin } from '../../../admin/js/admin-utilities';
 import { ThumbnailHelperPlugin } from '../../../admin/js/utilities';
+
+const isParameterTrue = function(value) {
+    return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
+}
 
 export default (element) => {
     function renderItemSubmissionForm() {
@@ -59,106 +64,40 @@ export default (element) => {
         if ( blockElement && blockElement.classList && !blockElement.classList.contains('has-mounted') ) {
 
             const VueItemSubmission = createApp({
-                el: '#tainacan-item-submission-form',
-                data: () => {
-                    return {
-                        collectionId: '',
-                        hideFileModalButton: false,
-                        hideTextModalButton: false,
-                        hideLinkModalButton: false,
-                        hideThumbnailSection: false,
-                        hideAttachmentsSection: false,
-                        showAllowCommentsSection: false,
-                        hideHelpButtons: false,
-                        hideMetadataTypes: false,
-                        hideCollapses: false,
-                        enabledMetadata: {},
-                        sentFormHeading: '',
-                        sentFormMessage: '',
-                        documentSectionLabel: '',
-                        thumbnailSectionLabel: '',
-                        attachmentsSectionLabel: '',
-                        metadataSectionLabel: '',
-                        showItemLinkButton: false,
-                        itemLinkButtonLabel: '',
-                        helpInfoBellowLabel: false,
-                        showItemLinkButton: false,
-                        termsAgreementMessage: '',
-                        isLayoutSteps: false
-                    }
-                },
-                beforeMount () {
-                    // Collection source settings
-                    if (blockElement.attributes['collection-id'] != undefined)
-                        this.collectionId = blockElement.attributes['collection-id'].value;
-
-                    // Elements shown on form
-                    if (blockElement.attributes['hide-file-modal-button'] != undefined)
-                        this.hideFileModalButton = this.isParameterTrue('hide-file-modal-button');
-                    if (blockElement.attributes['hide-text-modal-button'] != undefined)
-                        this.hideTextModalButton = this.isParameterTrue('hide-text-modal-button');
-                    if (blockElement.attributes['hide-link-modal-button'] != undefined)
-                        this.hideLinkModalButton = this.isParameterTrue('hide-link-modal-button');
-                    if (blockElement.attributes['hide-thumbnail-section'] != undefined)
-                        this.hideThumbnailSection = this.isParameterTrue('hide-thumbnail-section');
-                    if (blockElement.attributes['hide-attachments-section'] != undefined)
-                        this.hideAttachmentsSection = this.isParameterTrue('hide-attachments-section');
-                    if (blockElement.attributes['show-allow-comments-section'] != undefined)
-                        this.showAllowCommentsSection = this.isParameterTrue('show-allow-comments-section');
-                    if (blockElement.attributes['hide-collapses'] != undefined)
-                        this.hideCollapses = this.isParameterTrue('hide-collapses');
-                    if (blockElement.attributes['hide-help-buttons'] != undefined)
-                        this.hideHelpButtons = this.isParameterTrue('hide-help-buttons');
-                    if (blockElement.attributes['hide-metadata-types'] != undefined)
-                        this.hideMetadataTypes = this.isParameterTrue('hide-metadata-types');
-                    if (blockElement.attributes['help-info-bellow-label'] != undefined)
-                        this.helpInfoBellowLabel = this.isParameterTrue('help-info-bellow-label');
-                    if (blockElement.attributes['is-layout-steps'] != undefined)
-                        this.isLayoutSteps = this.isParameterTrue('is-layout-steps');
-
-                    // Form sections labels
-                    if (blockElement.attributes['document-section-label'] != undefined)
-                        this.documentSectionLabel = blockElement.attributes['document-section-label'].value;
-                    if (blockElement.attributes['thumbnail-section-label'] != undefined)
-                        this.thumbnailSectionLabel = blockElement.attributes['thumbnail-section-label'].value;
-                    if (blockElement.attributes['attachments-section-label'] != undefined)
-                        this.attachmentsSectionLabel = blockElement.attributes['attachments-section-label'].value;
-                    if (blockElement.attributes['metadata-section-label'] != undefined)
-                        this.metadataSectionLabel = blockElement.attributes['metadata-section-label'].value;
-
-                    // Form submission feedback messages
-                    if (blockElement.attributes['sent-form-heading'] != undefined)
-                        this.sentFormHeading = blockElement.attributes['sent-form-heading'].value;
-                    if (blockElement.attributes['sent-form-message'] != undefined)
-                        this.sentFormMessage = blockElement.attributes['sent-form-message'].value;
-                    if (blockElement.attributes['item-link-button-label'] != undefined)
-                        this.itemLinkButtonLabel = blockElement.attributes['item-link-button-label'].value;
-                    if (blockElement.attributes['show-item-link-button'] != undefined)
-                        this.showItemLinkButton = this.isParameterTrue('show-item-link-button');
-                    
-                    /* Terms agreements confirmation checkbox */
-                    if (blockElement.attributes['show-terms-agreement-checkbox'] != undefined)
-                        this.showTermsAgreementCheckbox = this.isParameterTrue('show-terms-agreement-checkbox');
-                    if (blockElement.attributes['terms-agreement-message'] != undefined)
-                        this.termsAgreementMessage = blockElement.attributes['terms-agreement-message'].value;
-    
-                    // List of metadata
-                    if (this.$el.attributes['enabled-metadata'] != undefined && this.$el.attributes['enabled-metadata'].value) {
+                render: () => h(ItemSubmissionForm, {
+                    collectionId: getDataAttribute(blockElement, 'collection-id'),
+                    hideFileModalButton: isParameterTrue(getDataAttribute(blockElement,'hide-file-modal-button')),
+                    hideTextModalButton: isParameterTrue(getDataAttribute(blockElement,'hide-text-modal-button')),
+                    hideLinkModalButton: isParameterTrue(getDataAttribute(blockElement,'hide-link-modal-button')),
+                    hideThumbnailSection: isParameterTrue(getDataAttribute(blockElement,'hide-thumbnail-section')),
+                    hideAttachmentsSection: isParameterTrue(getDataAttribute(blockElement,'hide-attachments-section')),
+                    showAllowCommentsSection: isParameterTrue(getDataAttribute(blockElement,'show-allow-comments-section')),
+                    hideCollapses: isParameterTrue(getDataAttribute(blockElement,'hide-collapses')),
+                    hideHelpButtons: isParameterTrue(getDataAttribute(blockElement,'hide-help-buttons')),
+                    hideMetadataTypes: isParameterTrue(getDataAttribute(blockElement,'hide-metadata-types')),
+                    helpInfoBellowLabel: isParameterTrue(getDataAttribute(blockElement,'help-info-bellow-label')),
+                    isLayoutSteps: isParameterTrue(getDataAttribute(blockElement,'is-layout-steps')),
+                    documentSectionLabel: getDataAttribute(blockElement,'document-section-label'),
+                    thumbnailSectionLabel: getDataAttribute(blockElement,'thumbnail-section-label'),
+                    attachmentsSectionLabel: getDataAttribute(blockElement,'attachments-section-label'),
+                    metadataSectionLabel: getDataAttribute(blockElement,'metadata-section-label'),
+                    sentFormHeading: getDataAttribute(blockElement,'sent-form-heading'),
+                    sentFormMessage: getDataAttribute(blockElement,'sent-form-message'),
+                    itemLinkButtonLabel: getDataAttribute(blockElement,'item-link-button-label'),
+                    showItemLinkButton: isParameterTrue(getDataAttribute(blockElement,'show-item-link-button')),
+                    showTermsAgreementCheckbox: isParameterTrue(getDataAttribute(blockElement,'show-terms-agreement-checkbox')),
+                    termsAgreementMessage: getDataAttribute(blockElement,'terms-agreement-message'),
+                    enabledMetadata: (() => {
                         try {
-                            this.enabledMetadata = JSON.parse(this.$el.attributes['enabled-metadata'].value);
+                            return JSON.parse(getDataAttribute(blockElement,'enabled-metadata'));
                         } catch {
-                            this.enabledMetadata = {};
+                            return {};
                         }
-                    }
-
-                },
-                methods: {
-                    isParameterTrue(parameter) {
-                        const value = blockElement.attributes[parameter].value;
-                        return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
-                    }
-                },
-                render: () => h(ItemSubmission)
+                    })(),
+                }),
+                mounted() {
+                    blockElement.classList.add('has-mounted');
+                }
             });
 
             VueItemSubmission.use(store);
@@ -211,14 +150,14 @@ export default (element) => {
             VueItemSubmission.use(UserPrefsPlugin);
             VueItemSubmission.use(StatusHelperPlugin);
             VueItemSubmission.use(RouterHelperPlugin);
-            VueItemSubmission.use(ConsolePlugin, {visual: false});
+            VueItemSubmission.use(ConsolePlugin, { visual: false });
             VueItemSubmission.use(CommentsStatusHelperPlugin);
             VueItemSubmission.use(ThumbnailHelperPlugin);
             VueItemSubmission.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
 
             /* Registers Extra VueItemSubmission Components passed to the window.tainacan_extra_components  */
-            if (typeof window.tainacan_extra_components != "undefined") {
-                for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
+            if ( typeof window.tainacan_extra_components != "undefined" ) {
+                for ( let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components) ) {
                     VueItemSubmission.component(extraVueComponentName, extraVueComponentObject);
                 }
             }
@@ -235,16 +174,16 @@ export default (element) => {
             VueItemSubmission.component('tainacan-user', User);
             VueItemSubmission.component('tainacan-geocoordinate', GeoCoordinate);
 
-            /* Main page component */
-            VueItemSubmission.component('item-submission-form', ItemSubmissionForm);
-            VueItemSubmission.component('item-submission', ItemSubmission);
-
             /* Others */
             VueItemSubmission.component('tainacan-form-item', TainacanFormItem);
             VueItemSubmission.component('term-creation-panel', TermCreationPanel);
             VueItemSubmission.component('help-button', HelpButton);
 
-            VueItemSubmission.mount('#tainacan-item-submission-form');
+            // Global emitter
+            const emitter = mitt();
+            VueItemSubmission.config.globalProperties.$emitter = emitter;
+
+            VueItemSubmission.mount('#' + blockElement.id);
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

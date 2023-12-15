@@ -2,6 +2,243 @@ const { __ } = wp.i18n;
 const { RichText, useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
+    /* Deprecated during Vue 3 migration to prepend attributes with data- */
+    {
+        "attributes": {
+            "collectionId": {
+                "type": "string",
+                "default": ""
+            },
+            "isCollectionModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideFileModalButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideTextModalButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideLinkModalButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideThumbnailSection": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideAttachmentsSection": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideHelpButtons": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideMetadataTypes": {
+                "type": "boolean",
+                "default": false
+            },
+            "showAllowCommentsSection": {
+                "type": "boolean",
+                "default": false
+            },
+            "hideCollapses": {
+                "type": "boolean",
+                "default": false
+            },
+            "backgroundColor": {
+                "type": "string",
+                "default": "rgba(255,255,255,0)"
+            },
+            "baseFontSize": {
+                "type": "number",
+                "default": 16
+            },
+            "inputColor": {
+                "type": "string",
+                "default": "#1d1d1d"
+            },
+            "inputBackgroundColor": {
+                "type": "string",
+                "default": "#ffffff"
+            },
+            "inputBorderColor": {
+                "type": "string",
+                "default": "#dbdbdb"
+            },
+            "labelColor": {
+                "type": "string",
+                "default": "#373839"
+            },
+            "infoColor": {
+                "type": "string",
+                "default": "#505253"
+            },
+            "primaryColor": {
+                "type": "string",
+                "default": "#d9eced"
+            },
+            "secondaryColor": {
+                "type": "string",
+                "default": "#187181"
+            },
+            "enabledMetadata": {
+                "type": "object",
+                "default": {}
+            },
+            "collectionMetadata": {
+                "type": "array",
+                "default": []
+            },
+            "isLoadingCollectionMetadata": {
+                "type": "boolean",
+                "default": false
+            },
+            "sentFormHeading": {
+                "type": "string",
+                "default": "Form submitted!"
+            },
+            "sentFormMessage": {
+                "type": "string",
+                "default": "Thank you. Your item was submitted to the collection."
+            },
+            "documentSectionLabel": {
+                "type": "string",
+                "default": "Document"
+            },
+            "attachmentsSectionLabel": {
+                "type": "string",
+                "default": "Attachments"
+            },
+            "thumbnailSectionLabel": {
+                "type": "string",
+                "default": "Thumbnail"
+            },
+            "metadataSectionLabel": {
+                "type": "string",
+                "default": "Metadata"
+            },
+            "showItemLinkButton": {
+                "type": "boolean",
+                "default": false
+            },
+            "itemLinkButtonLabel": {
+                "type": "string",
+                "default": "Go to the item page"
+            },
+            "helpInfoBellowLabel": {
+                "type": "boolean",
+                "default": false
+            },
+            "showTermsAgreementCheckbox": {
+                "type": "boolean",
+                "default": false
+            },
+            "termsAgreementMessage": {
+                "type": "string",
+                "default": "I agree to submit this item information."
+            },
+            "isLayoutSteps": {
+                "type": "boolean",
+                "default": false
+            }
+        },
+        save: function({ attributes }) {
+            const {
+                collectionId,
+                backgroundColor,
+                hideFileModalButton,
+                hideTextModalButton,
+                hideLinkModalButton,
+                hideThumbnailSection,
+                hideAttachmentsSection,
+                showAllowCommentsSection,
+                hideHelpButtons,
+                hideMetadataTypes,
+                hideCollapses,
+                documentSectionLabel,
+                thumbnailSectionLabel,
+                attachmentsSectionLabel,
+                metadataSectionLabel,
+                baseFontSize,
+                inputColor,
+                inputBackgroundColor,
+                inputBorderColor,
+                labelColor,
+                infoColor,
+                primaryColor,
+                secondaryColor,
+                enabledMetadata,
+                sentFormHeading,
+                sentFormMessage,
+                showItemLinkButton,
+                itemLinkButtonLabel,
+                helpInfoBellowLabel,
+                showTermsAgreementCheckbox,
+                termsAgreementMessage,
+                isLayoutSteps
+            } = attributes;
+            
+            const blockProps = useBlockProps.save();
+            const className = blockProps.className;
+        
+            let termsAgreementMessageHTML = <RichText.Content { ...blockProps } tagName="p" value={ termsAgreementMessage } />;
+            termsAgreementMessageHTML = (termsAgreementMessageHTML && termsAgreementMessageHTML.props && termsAgreementMessageHTML.props.value) ? termsAgreementMessageHTML.props.value : '';
+        
+            if (backgroundColor.rgb != undefined) {
+                if (backgroundColor.rgb.a)
+                    backgroundColor = 'rgba(' + backgroundColor.rgb.r + ',' + backgroundColor.rgb.g + ',' + backgroundColor.rgb.b + ',' + backgroundColor.rgb.a + ')';
+                else
+                    backgroundColor = 'rgb(' + backgroundColor.rgb.r + ',' + backgroundColor.rgb.g + ',' + backgroundColor.rgb.b + ')';
+            }
+        
+            return <div 
+                        style={{
+                            'font-size': baseFontSize + 'px',
+                            '--tainacan-base-font-size': baseFontSize + 'px',
+                            '--tainacan-background-color': backgroundColor,
+                            '--tainacan-input-color': inputColor,
+                            '--tainacan-input-background-color': inputBackgroundColor,
+                            '--tainacan-input-border-color': inputBorderColor,
+                            '--tainacan-label-color': labelColor,
+                            '--tainacan-info-color': infoColor,
+                            '--tainacan-primary': primaryColor,
+                            '--tainacan-secondary': secondaryColor
+                        }}
+                        className={ className }>
+                <div 
+                        id="tainacan-item-submission-form"
+                        data-module="item-submission-form"
+                        collection-id={ collectionId }
+                        hide-file-modal-button={ hideFileModalButton.toString() }
+                        hide-text-modal-button={ hideTextModalButton.toString() }
+                        hide-link-modal-button={ hideLinkModalButton.toString() }
+                        hide-thumbnail-section={ hideThumbnailSection.toString() }
+                        hide-attachments-section={ hideAttachmentsSection.toString() }
+                        show-allow-comments-section={ showAllowCommentsSection.toString() }
+                        hide-help-buttons={ hideHelpButtons.toString() }
+                        hide-metadata-types={ hideMetadataTypes.toString() }
+                        hide-collapses={ hideCollapses.toString() }
+                        enabled-metadata={ JSON.stringify(enabledMetadata) }
+                        sent-form-heading={ sentFormHeading }
+                        sent-form-message={ sentFormMessage }
+                        document-section-label={ documentSectionLabel }
+                        thumbnail-section-label={ thumbnailSectionLabel }
+                        attachments-section-label={ attachmentsSectionLabel }
+                        metadata-section-label={ metadataSectionLabel }
+                        show-item-link-button={ showItemLinkButton ? showItemLinkButton.toString() : 'false' }
+                        show-terms-agreement-checkbox={ showTermsAgreementCheckbox ? showTermsAgreementCheckbox.toString() : 'false' }
+                        terms-agreement-message={ termsAgreementMessageHTML }
+                        item-link-button-label={ itemLinkButtonLabel ? itemLinkButtonLabel : __( 'Go to the item page', 'tainacan' ) }
+                        help-info-bellow-label={ helpInfoBellowLabel ? helpInfoBellowLabel.toString() : 'false' }
+                        is-layout-steps={ isLayoutSteps !== undefined ? isLayoutSteps.toString() : 'false' } >
+                </div>
+            </div>
+        }
+    },
     /* Deprecated in version 0.20.7 due to the change of enabledMetadata from array to object with IDs */
     {
         migrate( attributes ) {
