@@ -632,19 +632,19 @@ class Theme_Helper {
 		// If in a tainacan taxonomy
 		$term = tainacan_get_term($args);
 		if ($term) {
-			$props .= "term-id='" . $term->term_id . "' ";
-			$props .= "taxonomy='" . $term->taxonomy . "' ";
+			$props .= "data-term-id='" . $term->term_id . "' ";
+			$props .= "data-taxonomy='" . $term->taxonomy . "' ";
 		}
 		
-		$props .= "default-view-mode='" . $default_view_mode . "' ";
-		$props .= "enabled-view-modes='" . implode(',', $enabled_view_modes) . "' ";
-		$props .= "default-order='" . $default_order . "' ";
-		$props .= "default-orderby='" . (is_array($default_orderby) ? json_encode($default_orderby) : $default_orderby) . "' ";
+		$props .= "data-default-view-mode='" . $default_view_mode . "' ";
+		$props .= "data-enabled-view-modes='" . implode(',', $enabled_view_modes) . "' ";
+		$props .= "data-default-order='" . $default_order . "' ";
+		$props .= "data-default-orderby='" . (is_array($default_orderby) ? json_encode($default_orderby) : $default_orderby) . "' ";
 
 		// Passes arguments to custom props
 		foreach ($args as $key => $value) {
 			if ($value == true || $value == 'true') {
-				$props .= str_replace("_", "-", $key) . "='" . $value . "' ";
+				$props .= 'data-' . str_replace("_", "-", $key) . "='" . $value . "' ";
 			}
 		}
 
@@ -652,32 +652,32 @@ class Theme_Helper {
 			'div' => [
 				'id' => true,
 				'data-module' => true,
-				'collection-id' => true,
-				'term-id' => true,
-				'taxonomy' => true,
-				'default-view-mode' => true,
-				'is-forced-view-mode' => true,
-				'enabled-view-modes' => true,
-				'default-order' => true,
-				'default-orderby' => true,
-				'hide-filters' => true,
-				'hide-hide-filters-button' => true,
-				'hide-search' => true,
-				'hide-advanced-search' => true,
-				'hide-displayed-metadata-button' => true,
-				'hide-sorting-area' => true,
-				'hide-items-thumbnail' => true,
-				'hide-sort-by-button' => true,
-				'hide-exposers-button' => true,
-				'hide-items-per-page-button' => true,
-				'hide-go-to-page-button' => true,
-				'hide-pagination-area' => true,
-				'default-items-per-page' => true,
-				'show-filters-button-inside-search-control' => true,
-				'start-with-filters-hidden' => true,
-				'filters-as-modal' => true,
-				'show-inline-view-mode-options' => true,
-				'show-fullscreen-with-view-modes' => true
+				'data-collection-id' => true,
+				'data-term-id' => true,
+				'data-taxonomy' => true,
+				'data-default-view-mode' => true,
+				'data-is-forced-view-mode' => true,
+				'data-enabled-view-modes' => true,
+				'data-default-order' => true,
+				'data-default-orderby' => true,
+				'data-hide-filters' => true,
+				'data-hide-hide-filters-button' => true,
+				'data-hide-search' => true,
+				'data-hide-advanced-search' => true,
+				'data-hide-displayed-metadata-button' => true,
+				'data-hide-sorting-area' => true,
+				'data-hide-items-thumbnail' => true,
+				'data-hide-sort-by-button' => true,
+				'data-hide-exposers-button' => true,
+				'data-hide-items-per-page-button' => true,
+				'data-hide-go-to-page-button' => true,
+				'data-hide-pagination-area' => true,
+				'data-default-items-per-page' => true,
+				'data-show-filters-button-inside-search-control' => true,
+				'data-start-with-filters-hidden' => true,
+				'data-filters-as-modal' => true,
+				'data-show-inline-view-mode-options' => true,
+				'data-show-fullscreen-with-view-modes' => true
 			]
 		];
 

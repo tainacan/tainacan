@@ -27,7 +27,7 @@ import cssVars from 'css-vars-ponyfill';
 import qs from 'qs';
 import VueBlurHash from 'another-vue3-blurhash';
 
-import ThemeItemsPage from './theme-search/theme-items-page.vue';
+import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 import ThemeSearch from './theme.vue';
 
 // Remaining imports
@@ -53,6 +53,18 @@ import mitt from 'mitt';
 //     RENDER_FUNCTION: false
 // })
 
+const isParameterTrue = function(value) {
+    return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
+}
+
+const maybeConvertFromJSON = function(someString) {
+    try {
+        return JSON.parse(someString);
+    } catch(error) {
+        return someString;
+    }
+}
+
 export default (element) => {
 
     function renderTainacanItemsListComponent() {
@@ -63,39 +75,62 @@ export default (element) => {
         // Mount only if the div exists and it is not already mounted
         if ( blockElement && blockElement.classList && !blockElement.classList.contains('has-mounted') ) {
 
+            // Filters logic
+            const possibleHideFilters = isParameterTrue(getDataAttribute(blockElement,'hide-filters'));
+
+            // View Modes Logic
+            const registeredViewModes =
+                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
+                tainacan_plugin.registered_view_modes :
+                [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
+
+            // At first, we consider that all registered view modes are included.
+            let possibleViewModes = registeredViewModes;
+            if ( getDataAttribute(blockElement, 'enabled-view-modes') != undefined )
+                possibleViewModes = getDataAttribute(blockElement, 'enabled-view-modes').split(',');
+
+            // View Mode settings
+            let possibleDefaultViewMode = 'masonry';
+            if ( getDataAttribute(blockElement, 'default-view-mode') != undefined )
+                possibleDefaultViewMode = getDataAttribute(blockElement, 'default-view-mode');
+        
+            if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
+                possibleViewModes.push(possibleDefaultViewMode);
+
             const VueItemsList = createApp({
-                el: '#tainacan-items-page',
-                data: () => {
-                    return {
-                        termId: '',
-                        taxonomy: '',
-                        collectionId: '',
-                        defaultViewMode: '',
-                        defaultOrder: 'ASC',
-                        defaultOrderBy: 'date',
-                        defaultOrderByMeta: '',
-                        defaultOrderByType: '',
-                        isForcedViewMode: false,
-                        enabledViewModes: {},
-                        defaultItemsPerPage: 12,
-                        hideFilters: false,
-                        hideHideFiltersButton: false,
-                        hideSearch: false,
-                        hideAdvancedSearch: false,
-                        hideDisplayedMetadataButton: false,
-                        hideSortByButton: false,
-                        hideSortingArea: false,
-                        hideItemsThumbnail: false,
-                        hideItemsPerPageButton: false,
-                        hideGoToPageButton: false,
-                        hidePaginationArea: false,
-                        showFiltersButtonInsideSearchControl: false,
-                        startWithFiltersHidden: false,
-                        filtersAsModal: false,
-                        showInlineViewModeOptions: false,
-                        showFullscreenWithViewModes: false
-                    }
-                },
+                render: () => h(ThemeSearch, {
+                    collectionId: getDataAttribute(blockElement, 'collection-id'),
+                    termId: getDataAttribute(blockElement, 'term-id'),
+                    taxonomy: getDataAttribute(blockElement, 'taxonomy'),
+                    defaultOrder: getDataAttribute(blockElement, 'default-order', 'ASC'),
+                    defaultOrderBy: (() => {
+                        const defaultOrderByValue = maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby', 'date'));
+                        return defaultOrderByValue === 'creation_date' ? 'date' : defaultOrderByValue;
+                    })(),
+                    defaultOrderByMeta: getDataAttribute(blockElement, 'default-orderby-meta'),
+                    defaultOrderByType: maybeConvertFromJSON(getDataAttribute(blockElement, 'default-orderby-type')),
+                    defaultViewMode: possibleDefaultViewMode,
+                    enabledViewModes: possibleViewModes,
+                    isForcedViewMode: new Boolean(getDataAttribute(blockElement, 'is-forced-view-mode')),
+                    hideFilters: possibleHideFilters,
+                    hideHideFiltersButton: isParameterTrue(getDataAttribute(blockElement, 'hide-hide-filters-button')),
+                    hideSearch: isParameterTrue(getDataAttribute(blockElement, 'hide-search')),
+                    hideAdvancedSearch: isParameterTrue(getDataAttribute(blockElement, 'hide-advanced-search')),
+                    hideDisplayedMetadataButton: isParameterTrue(getDataAttribute(blockElement, 'hide-displayed-metadata-button')),
+                    hideSortingArea: isParameterTrue(getDataAttribute(blockElement, 'hide-sorting-area')),
+                    hideItemsThumbnail: isParameterTrue(getDataAttribute(blockElement, 'hide-items-thumbnail')),
+                    hideSortByButton: isParameterTrue(getDataAttribute(blockElement, 'hide-sort-by-button')),
+                    hideExposersButton: isParameterTrue(getDataAttribute(blockElement, 'hide-exposers-button')),
+                    hideItemsPerPageButton: isParameterTrue(getDataAttribute(blockElement, 'hide-items-per-page-button')),
+                    hideGoToPageButton: isParameterTrue(getDataAttribute(blockElement, 'hide-go-to-page-button')),
+                    hidePaginationArea: isParameterTrue(getDataAttribute(blockElement, 'hide-pagination-area')),
+                    defaultItemsPerPage: new Number(getDataAttribute(blockElement, 'default-items-per-page', 12)),
+                    showFiltersButtonInsideSearchControl: isParameterTrue(getDataAttribute(blockElement, 'show-filters-button-inside-search-control')),
+                    startWithFiltersHidden: isParameterTrue(getDataAttribute(blockElement, 'start-with-filters-hidden')),
+                    filtersAsModal: isParameterTrue(getDataAttribute(blockElement, 'filters-as-modal')),
+                    showInlineViewModeOptions: isParameterTrue(getDataAttribute(blockElement, 'show-inline-view-mode-options')),
+                    showFullscreenWithViewModes: isParameterTrue(getDataAttribute(blockElement, 'show-fullscreen-with-view-modes'))
+                }),
                 beforeMount() {
                     // Loads params if passed previously 
                     if (this.$route.hash && this.$route.hash.split('#/?') && this.$route.hash.split('#/?')[1]) {
@@ -105,90 +140,21 @@ export default (element) => {
                             this.$route.query[key] = existingQueries[key];
                     }
 
-                    // Collection or Term source settings
-                    if (blockElement.attributes['collection-id'] != undefined)
-                        this.collectionId = blockElement.attributes['collection-id'].value;
-                    if (blockElement.attributes['term-id'] != undefined)
-                        this.termId = blockElement.attributes['term-id'].value;
-                    if (blockElement.attributes['taxonomy'] != undefined)
-                        this.taxonomy = blockElement.attributes['taxonomy'].value;
-
-                    // Sorting options
-                    if (blockElement.attributes['default-order'] != undefined)
-                        this.defaultOrder = blockElement.attributes['default-order'].value;
-                    if (blockElement.attributes['default-orderby'] != undefined) {
-                        this.defaultOrderBy = this.maybeConvertFromJSON(blockElement.attributes['default-orderby'].value);
-                        this.defaultOrderBy === 'creation_date' ? 'date' : this.defaultOrderBy;
-                    }
-                    if (blockElement.attributes['default-orderby-meta'] != undefined)
-                        this.defaultOrderByMeta = blockElement.attributes['default-orderby-meta'].value;
-                    if (blockElement.attributes['default-orderby-type'] != undefined)
-                        this.defaultOrderByType = this.maybeConvertFromJSON(blockElement.attributes['default-orderby-type'].value);
-
-                    // View modes settings
-                    if (blockElement.attributes['is-forced-view-mode'] != undefined)
-                        this.isForcedViewMode = new Boolean(blockElement.attributes['is-forced-view-mode'].value);
-                    
-                    this.defaultViewMode = possibleDefaultViewMode;
-                    this.enabledViewModes = possibleViewModes;
-
-                    // Options related to hidding elements
-                    this.hideFilters = possibleHideFilters;
-                    if (blockElement.attributes['hide-hide-filters-button'] != undefined)
-                        this.hideHideFiltersButton = this.isParameterTrue('hide-hide-filters-button');
-                    if (blockElement.attributes['hide-search'] != undefined)
-                        this.hideSearch = this.isParameterTrue('hide-search');
-                    if (blockElement.attributes['hide-advanced-search'] != undefined)
-                        this.hideAdvancedSearch = this.isParameterTrue('hide-advanced-search');
-                    if (blockElement.attributes['hide-displayed-metadata-button'] != undefined)
-                        this.hideDisplayedMetadataButton = this.isParameterTrue('hide-displayed-metadata-button');
-                    if (blockElement.attributes['hide-sorting-area'] != undefined)
-                        this.hideSortingArea = this.isParameterTrue('hide-sorting-area');
-                    if (blockElement.attributes['hide-items-thumbnail'] != undefined)
-                        this.hideItemsThumbnail = this.isParameterTrue('hide-items-thumbnail');
-                    if (blockElement.attributes['hide-sort-by-button'] != undefined)
-                        this.hideSortByButton = this.isParameterTrue('hide-sort-by-button');
-                    if (blockElement.attributes['hide-exposers-button'] != undefined)
-                        this.hideExposersButton = this.isParameterTrue('hide-exposers-button');
-                    if (blockElement.attributes['hide-items-per-page-button'] != undefined)
-                        this.hideItemsPerPageButton = this.isParameterTrue('hide-items-per-page-button');
-                    if (blockElement.attributes['hide-go-to-page-button'] != undefined)
-                        this.hideGoToPageButton = this.isParameterTrue('hide-go-to-page-button');
-                    if (blockElement.attributes['hide-pagination-area'] != undefined)
-                        this.hidePaginationArea = this.isParameterTrue('hide-pagination-area');
-
-                    // Other Tweaks
-                    if (blockElement.attributes['default-items-per-page'] != undefined)
-                        this.defaultItemsPerPage = Number(blockElement.attributes['default-items-per-page'].value);
-                    if (blockElement.attributes['show-filters-button-inside-search-control'] != undefined)
-                        this.showFiltersButtonInsideSearchControl = this.isParameterTrue('show-filters-button-inside-search-control');
-                    if (blockElement.attributes['start-with-filters-hidden'] != undefined)
-                        this.startWithFiltersHidden = this.isParameterTrue('start-with-filters-hidden');
-                    if (blockElement.attributes['filters-as-modal'] != undefined)
-                        this.filtersAsModal = this.isParameterTrue('filters-as-modal');
-                    if (blockElement.attributes['show-inline-view-mode-options'] != undefined)
-                        this.showInlineViewModeOptions = this.isParameterTrue('show-inline-view-mode-options');
-                    if (blockElement.attributes['show-fullscreen-with-view-modes'] != undefined)
-                        this.showFullscreenWithViewModes = this.isParameterTrue('show-fullscreen-with-view-modes');
                 },
-                methods: {
-                    isParameterTrue(parameter) {
-                        const value = blockElement.attributes[parameter].value;
-                        return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
-                    },
-                    maybeConvertFromJSON(someString) {
-                        try {
-                            return JSON.parse(someString);
-                        } catch(error) {
-                            return someString;
-                        }
-                    }
+                created() {
+                    blockElement.setAttribute('aria-live', 'polite');
+                    blockElement.classList.add('theme-items-list'); // This used to be on the component, but as Vue now do not renders the component inside a div...
                 },
-                render: () => h(ThemeSearch)
+                mounted() {
+                    blockElement.classList.add('has-mounted');
+                }
             });
 
             VueItemsList.use(store);
             VueItemsList.use(routerTheme);
+
+            if ( !possibleHideFilters )
+                VueItemsList.component('filters-items-list', defineAsyncComponent(() => import('../../../admin/components/search/filters-items-list.vue')));
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
@@ -244,40 +210,6 @@ export default (element) => {
                 }
             }
 
-            // Filters logic
-            let possibleHideFilters = false;
-            if ( blockElement.attributes['hide-filters'] != undefined ) {
-                const hideFiltersValue = blockElement.attributes['hide-filters'].value;
-                possibleHideFilters = ( hideFiltersValue == true || hideFiltersValue == 'true' || hideFiltersValue == '1' || hideFiltersValue == 1 ) ? true : false;
-            }
-
-            if ( !possibleHideFilters ) {
-                VueItemsList.component('filters-items-list', defineAsyncComponent(() => import('../../../admin/components/search/filters-items-list.vue')));
-            }
-
-            /* Main page component */
-            VueItemsList.component('theme-items-page', ThemeItemsPage);
-            VueItemsList.component('theme-search', ThemeSearch);
-
-            // View Modes Logic
-            const registeredViewModes =
-                ( tainacan_plugin && tainacan_plugin.registered_view_modes && tainacan_plugin.registered_view_modes.length ) ?
-                tainacan_plugin.registered_view_modes :
-                [ 'table', 'cards', 'records', 'masonry', 'slideshow', 'list', 'map' ];
-
-            // At first, we consider that all registered view modes are included.
-            let possibleViewModes = registeredViewModes;
-            if ( blockElement.attributes['enabled-view-modes'] != undefined )
-                possibleViewModes = blockElement.attributes['enabled-view-modes'].value.split(',');
-
-            // View Mode settings
-            let possibleDefaultViewMode = 'masonry';
-            if ( blockElement.attributes['default-view-mode'] != undefined)
-                possibleDefaultViewMode = blockElement.attributes['default-view-mode'].value;
-        
-            if ( possibleViewModes.indexOf(possibleDefaultViewMode) < 0 )
-                possibleViewModes.push(possibleDefaultViewMode);
-
             // Logic for dynamic importing Tainacan oficial view modes only if they are necessary
             possibleViewModes.forEach(viewModeSlug => {
                 if ( registeredViewModes.indexOf(viewModeSlug) >= 0 )
@@ -289,7 +221,7 @@ export default (element) => {
             
             VueItemsList.use(eventBusSearch);
 
-            VueItemsList.mount('#tainacan-items-page');
+            VueItemsList.mount('#' + blockElement.id);
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

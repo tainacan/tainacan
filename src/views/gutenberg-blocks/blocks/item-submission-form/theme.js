@@ -95,6 +95,9 @@ export default (element) => {
                         }
                     })(),
                 }),
+                created() {
+                    blockElement.classList.add('tainacan-item-submission-form'); // This used to be on the component, but as Vue now do not renders the component inside a div...
+                },
                 mounted() {
                     blockElement.classList.add('has-mounted');
                 }
