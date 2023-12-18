@@ -24,8 +24,8 @@ module.exports = {
             }
         ],
         'vue/html-closing-bracket-newline': 'off',          
-        'vue/multiline-html-element-content-newline': 'off',
-        // This has impact on how some props are passed and we have mixed types, such as collectionID as a string or number... would require careful refactoring.
+        'vue/multiline-html-element-content-newline': 'off', // Should we? It's a stylistic decision.
+        // These have impact on how some props that are passed and we have mixed types, such as collectionId as a string or number... would require careful refactoring.
         'vue/require-prop-type-constructor': 'off',
         'vue/require-default-prop': 'off'
     },
