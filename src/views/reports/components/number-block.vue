@@ -21,9 +21,9 @@
                     v-for="(statusOption, index) of $statusHelper.getStatuses()"
                     :key="index">
                 <li 
+                        v-if="(statusOption.slug != 'draft' || entityType != 'collections') && totalByStatus[statusOption.slug]"
                         @mouseenter="currentHoveredStatus = statusOption.slug"
-                        @mouseleave="currentHoveredStatus = ''"
-                        v-if="(statusOption.slug != 'draft' || entityType != 'collections') && totalByStatus[statusOption.slug]">
+                        @mouseleave="currentHoveredStatus = ''">
                     <span class="value">
                         <i-count-up
                                 :delay="750"
@@ -49,8 +49,8 @@
             {{ $i18n.get('label_used') + ': ' + summary.totals[entityType].used + ' | ' + $i18n.get('label_not_used') + ': ' + summary.totals[entityType].not_used }}
         </p>
         <div 
-                class="visibility-charts"
-                v-if="entityType === 'items' && !isBuildingChart && isRepositoryLevel">
+                v-if="entityType === 'items' && !isBuildingChart && isRepositoryLevel"
+                class="visibility-charts">
             <div :style="'margin-right: 6px; background-color: ' + ((currentHoveredStatus != '' && currentHoveredStatus != 'publish') ? '#acacac' : ';' ) + '; width: ' + visibilityChartOpenWidth + '%'">
                 <span class="icon has-text-gray">
                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-see" />
@@ -72,9 +72,9 @@
                                     id="layer1"
                                     transform="translate(-71.664352,-160.89128)">
                                 <path
+                                        id="path5508"
                                         style="fill:var(--tainacan-block-gray4, #505253);fill-opacity:1;stroke:none;stroke-width:0.332731;"
-                                        d="m 74.839398,162.85685 c 0.09358,0 0.181945,0.0178 0.265146,0.052 0.08321,0.0356 0.153355,0.0831 0.213173,0.14544 0.06238,0.0624 0.110471,0.13511 0.145584,0.21852 0.03768,0.0806 0.05718,0.16896 0.05718,0.26522 0,0.0973 -0.0196,0.18714 -0.05718,0.2702 -0.03494,0.0806 -0.08321,0.14936 -0.145584,0.20783 -0.05978,0.0599 -0.129971,0.10801 -0.213173,0.14544 -0.08321,0.0356 -0.171572,0.052 -0.265146,0.052 -0.09358,0 -0.181945,-0.0179 -0.265146,-0.052 -0.08061,-0.0378 -0.150755,-0.0859 -0.213173,-0.14544 -0.06238,-0.0585 -0.11179,-0.12726 -0.145585,-0.20783 -0.03494,-0.083 -0.05198,-0.17289 -0.05198,-0.2702 0,-0.0962 0.01675,-0.18466 0.05198,-0.26522 0.03386,-0.0831 0.08321,-0.15578 0.145585,-0.21852 0.06238,-0.0624 0.132573,-0.11051 0.213173,-0.14544 0.08321,-0.0321 0.171571,-0.052 0.265146,-0.052 z"
-                                        id="path5508" />
+                                        d="m 74.839398,162.85685 c 0.09358,0 0.181945,0.0178 0.265146,0.052 0.08321,0.0356 0.153355,0.0831 0.213173,0.14544 0.06238,0.0624 0.110471,0.13511 0.145584,0.21852 0.03768,0.0806 0.05718,0.16896 0.05718,0.26522 0,0.0973 -0.0196,0.18714 -0.05718,0.2702 -0.03494,0.0806 -0.08321,0.14936 -0.145584,0.20783 -0.05978,0.0599 -0.129971,0.10801 -0.213173,0.14544 -0.08321,0.0356 -0.171572,0.052 -0.265146,0.052 -0.09358,0 -0.181945,-0.0179 -0.265146,-0.052 -0.08061,-0.0378 -0.150755,-0.0859 -0.213173,-0.14544 -0.06238,-0.0585 -0.11179,-0.12726 -0.145585,-0.20783 -0.03494,-0.083 -0.05198,-0.17289 -0.05198,-0.2702 0,-0.0962 0.01675,-0.18466 0.05198,-0.26522 0.03386,-0.0831 0.08321,-0.15578 0.145585,-0.21852 0.06238,-0.0624 0.132573,-0.11051 0.213173,-0.14544 0.08321,-0.0321 0.171571,-0.052 0.265146,-0.052 z" />
                                 <path
                                         id="path5461"
                                         style="fill:var(--tainacan-block-gray4, #505253);fill-opacity:1;stroke:none;stroke-width:0.332732;"

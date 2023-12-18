@@ -2,9 +2,9 @@
     <div class="numeric-filter-container">
          <b-dropdown
                 :mobile-modal="true"
-                @update:model-value="($event) => { resetPage(); onChangeComparator($event) }"
                 aria-role="list"
-                trap-focus>
+                trap-focus
+                @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
             <template #trigger>
                 <button
                         :aria-label="$i18n.get('label_comparator')"
@@ -62,13 +62,13 @@
         </b-dropdown>
 
         <b-numberinput
+                v-model="value"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
                 :step="Number(filterTypeOptions.step)"
-                @update:model-value="($event) => { resetPage($event); emit($event); }"
-                v-model="value"/>
+                @update:model-value="($event) => { resetPage($event); emit($event); }"/>
     </div>
 </template>
 

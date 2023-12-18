@@ -1,10 +1,10 @@
 <template>
     <form
+            id="termEditForm"
             autofocus
             role="dialog"
             tabindex="-1"
             aria-modal
-            id="termEditForm"
             class="tainacan-form tainacan-modal-content"
             @submit.prevent="saveEdition(form)">
         <header
@@ -24,8 +24,8 @@
     
         <div class="modal-card-body">
             <b-loading
-                    :is-full-page="false"
-                    v-model="isLoading" />
+                    v-model="isLoading"
+                    :is-full-page="false" />
 
             <!-- Name -------------- -->
             <b-field
@@ -41,8 +41,8 @@
                             extra-classes="tainacan-repository-tooltip" /> 
                 </label>
                 <b-input
-                        :placeholder="$i18n.get('label_term_without_name')"
                         v-model="form.name"
+                        :placeholder="$i18n.get('label_term_without_name')"
                         name="name"
                         @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
             </b-field>
@@ -74,8 +74,8 @@
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a
-                                        class="button is-rounded is-secondary"
                                         id="button-edit-header"
+                                        class="button is-rounded is-secondary"
                                         :aria-label="$i18n.get('label_button_edit_header_image')"
                                         @click="headerImageMediaFrame.openFrame($event)">
                                     <span 
@@ -90,8 +90,8 @@
                                     </span>
                                 </a>
                                 <a
-                                        class="button is-rounded is-secondary"
                                         id="button-delete-header"
+                                        class="button is-rounded is-secondary"
                                         :aria-label="$i18n.get('label_button_delete_thumb')"
                                         @click="deleteHeaderImage()">
                                     <span 
@@ -124,9 +124,9 @@
                                     extra-classes="tainacan-repository-tooltip"/>
                         </label>
                         <b-input
+                                v-model="form.description"
                                 type="textarea"
                                 name="description"
-                                v-model="form.description"
                                 @focus="clearErrors('description')"/>
                     </b-field>
                 </div>
@@ -141,10 +141,10 @@
             <label class="label is-inline">
                     {{ $i18n.get('label_parent_term') }}
                     <b-switch
-                            @update:model-value="onToggleSwitch()"
-                            id="tainacan-checkbox-has-parent" 
+                            id="tainacan-checkbox-has-parent"
+                            v-model="hasParent" 
                             size="is-small"
-                            v-model="hasParent" />
+                            @update:model-value="onToggleSwitch()" />
                     <help-button
                             :title="$i18n.get('label_parent_term')"
                             :message="$i18n.get('info_help_parent_term')"
@@ -152,18 +152,18 @@
                 </label>
                 <b-autocomplete
                         id="tainacan-add-parent-field"
+                        v-model="parentTermName"
                         :placeholder="$i18n.get('instruction_parent_term')"
                         :data="parentTerms"
                         field="name"
                         clearable
-                        v-model="parentTermName"
-                        @select="onSelectParentTerm($event)"
                         :loading="isFetchingParentTerms"
-                        @update:model-value="fetchParentTerms"
-                        @focus="clearErrors('parent');"
                         :disabled="!hasParent"
                         :append-to-body="true"
                         check-infinite-scroll
+                        @select="onSelectParentTerm($event)"
+                        @update:model-value="fetchParentTerms"
+                        @focus="clearErrors('parent');"
                         @infinite-scroll="fetchMoreParentTerms">
                     <template #default="props">
                         <div class="media">
@@ -183,8 +183,8 @@
                 </b-autocomplete>
                 <transition name="fade">
                     <p
-                            class="checkboxes-warning"
-                            v-show="isTermInsertionFlow != true && showCheckboxesWarning == true">
+                            v-show="isTermInsertionFlow != true && showCheckboxesWarning == true"
+                            class="checkboxes-warning">
                         {{ $i18n.get('info_warning_changing_parent_term') }}
                     </p>
                 </transition>

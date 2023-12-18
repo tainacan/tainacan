@@ -12,15 +12,15 @@
                     </label>
                     <span class="pagination-links">
                         <span
-                                @click="(!isBuildingChart && currentStart.getFullYear() > (minYear + 1)) ? decreaseYear() : null"
                                 :class="{'tablenav-pages-navspan disabled' : isBuildingChart || currentStart.getFullYear() <= (minYear + 1) }"
                                 class="prev-page button"
-                                aria-hidden="true">
+                                aria-hidden="true"
+                                @click="(!isBuildingChart && currentStart.getFullYear() > (minYear + 1)) ? decreaseYear() : null">
                             ‹
                         </span>
                         <select
-                                name="start_year"
                                 id="start_year"
+                                name="start_year"
                                 :placeholder="$i18n.get('label_select_a_year')"
                                 :disabled="isBuildingChart"
                                 :value="currentStart.getFullYear()"
@@ -33,10 +33,10 @@
                             </option>
                         </select>
                         <span 
-                                @click="(!isBuildingChart && currentStart.getFullYear() <= (maxYear - 1)) ? increaseYear() : null"
                                 :class="{ 'tablenav-pages-navspan disabled': isBuildingChart || currentStart.getFullYear() > (maxYear - 1) }"
                                 aria-hidden="true"
-                                class="next-page button">
+                                class="next-page button"
+                                @click="(!isBuildingChart && currentStart.getFullYear() <= (maxYear - 1)) ? increaseYear() : null">
                             ›
                         </span>
                     </span>
@@ -51,9 +51,9 @@
             <template v-if="!isFetchingData && chartData && !isBuildingChart">
                 <div class="users-charts columns is-multiline">
                     <div 
-                            class="users-charts__card column is-full"
                             v-for="(chartSeries, index) of chartSeriesByUser"
-                            :key="index">
+                            :key="index"
+                            class="users-charts__card column is-full">
                         <div 
                                 v-if="chartSeries[0].userId == 0"
                                 class="users-charts__card--header">

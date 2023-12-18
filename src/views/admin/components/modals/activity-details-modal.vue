@@ -1,11 +1,11 @@
 <template>
     <div 
+            ref="activityDetailsModal"
             autofocus
             role="dialog"
             class="tainacan-modal-content"
             tabindex="-1"
-            aria-modal
-            ref="activityDetailsModal">
+            aria-modal>
         <header 
                 v-if="!isLoadingActivity"
                 class="tainacan-modal-title">
@@ -14,8 +14,8 @@
             <p>{{ activityCreationDate + ', ' + $i18n.get('info_by_inner') }} <strong> {{ activity.user_name }}</strong></p>
         </header>
         <b-loading 
-                :is-full-page="false"
-                v-model="isLoadingActivity" 
+                v-model="isLoadingActivity"
+                :is-full-page="false" 
                 :can-cancel="false"/>
         <div 
                 v-if="!isLoadingActivity"
@@ -39,8 +39,8 @@
 
                         <!-- Thumbnail -->
                         <div
-                                class="content"
-                                v-if="attributeName == 'thumbnail'">
+                                v-if="attributeName == 'thumbnail'"
+                                class="content">
                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ attributeName }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
@@ -63,8 +63,8 @@
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <div
-                                    class="tainacan-attachments-in-modal"
-                                    v-if="diff.old.length">
+                                    v-if="diff.old.length"
+                                    class="tainacan-attachments-in-modal">
                                 <file-item
                                         v-for="(attachment, anotherIndex) in diff.old" 
                                         :key="anotherIndex"
@@ -83,8 +83,8 @@
                         </div>
 
                         <div
-                                class="content"
-                                v-if="!['thumbnail', 'attachments'].includes(attributeName)">
+                                v-if="!['thumbnail', 'attachments'].includes(attributeName)"
+                                class="content">
                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ attributeName.replace(/_/g, ' ') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
@@ -92,10 +92,10 @@
 
                             <!-- Is array with length 1 -->
                             <p
-                                    class="tainacan-p-break"
                                     v-if="(diff.old instanceof Array) &&
                                         (diff.old.length == 1) &&
-                                        !(diff.old[0] instanceof Object)">
+                                        !(diff.old[0] instanceof Object)"
+                                    class="tainacan-p-break">
                                 {{ diff.old.toString() }}
                             </p>
 
@@ -103,9 +103,9 @@
                                     v-else-if="attributeName == 'metadata_order'"
                                     class="content">
                                 <p
-                                        class="tainacan-p-break"
                                         v-for="(diffContent, diffTitle) in diff.old"
-                                        :key="diffTitle">
+                                        :key="diffTitle"
+                                        class="tainacan-p-break">
                                     {{ diff.old ? `ID: ${diffContent.id} | Enabled: ${diffContent.enabled}` : infoEmpty }}
                                 </p>
                             </div>
@@ -114,9 +114,9 @@
                                     v-else-if="attributeName == 'filters_order'"
                                     class="content">
                                 <p
-                                        class="tainacan-p-break"
                                         v-for="(diffContent, diffTitle) in diff.old"
-                                        :key="diffTitle">
+                                        :key="diffTitle"
+                                        class="tainacan-p-break">
                                     {{ diff.old ? `ID: ${diffContent.id} | Enabled: ${diffContent.enabled}` : infoEmpty }}
                                 </p>
                             </div>
@@ -134,8 +134,8 @@
 
                             <!--  -->
                             <p
-                                    class="tainacan-p-break"
-                                    v-else>
+                                    v-else
+                                    class="tainacan-p-break">
                                 {{ diff.old ? (diff.old instanceof Array && !diff.old.length) ? infoEmpty : diff.old.toString().replace(/,/g, ' ') : infoEmpty }}
                             </p>
 
@@ -147,8 +147,8 @@
 
                         <!-- Thumbnail -->
                         <div
-                                class="content"
-                                v-if="attributeName == 'thumbnail'">
+                                v-if="attributeName == 'thumbnail'"
+                                class="content">
                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ attributeName }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
@@ -171,8 +171,8 @@
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <div
-                                    class="tainacan-attachments-in-modal"
-                                    v-if="diff.new.length">
+                                    v-if="diff.new.length"
+                                    class="tainacan-attachments-in-modal">
                                 <file-item
                                         v-for="(attachment, attachmentIndex) in diff.new" 
                                         :key="attachmentIndex"
@@ -191,8 +191,8 @@
                         </div>
 
                         <div
-                                class="content"
-                                v-if="!['thumbnail', 'attachments'].includes(attributeName)">
+                                v-if="!['thumbnail', 'attachments'].includes(attributeName)"
+                                class="content">
                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ attributeName.replace(/_/g, ' ') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
@@ -200,10 +200,10 @@
 
                             <!-- Is array with length 1 -->
                             <p
-                                    class="tainacan-p-break"
                                     v-if="(diff.new instanceof Array) &&
                                         (diff.new.length == 1) &&
-                                        !(diff.new[0] instanceof Object)">
+                                        !(diff.new[0] instanceof Object)"
+                                    class="tainacan-p-break">
                                 {{ diff.new.toString() }}
                             </p>
 
@@ -212,9 +212,9 @@
                                     v-else-if="attributeName == 'metadata_order'"
                                     class="content">
                                 <p
-                                        class="tainacan-p-break"
                                         v-for="(diffContent, diffTitle) in diff.new"
-                                        :key="diffTitle">
+                                        :key="diffTitle"
+                                        class="tainacan-p-break">
                                     {{ `ID: ${diffContent.id} | Enabled: ${diffContent.enabled}` }}
                                 </p>
                             </div>
@@ -223,9 +223,9 @@
                                     v-else-if="attributeName == 'filters_order'"
                                     class="content">
                                 <p
-                                        class="tainacan-p-break"
                                         v-for="(diffContent, diffTitle) in diff.new"
-                                        :key="diffTitle">
+                                        :key="diffTitle"
+                                        class="tainacan-p-break">
                                     {{ `ID: ${diffContent.id} | Enabled: ${diffContent.enabled}` }}
                                 </p>
                             </div>
@@ -242,8 +242,8 @@
 
                             <!-- -->
                             <p
-                                    class="tainacan-p-break"
-                                    v-else>
+                                    v-else
+                                    class="tainacan-p-break">
                                 {{ diff.new ? (diff.new instanceof Array && !diff.new.length) ? infoEmpty : diff.new.toString().replace(/,/g, ' ') : infoEmpty }}
                             </p>
 
@@ -307,8 +307,8 @@
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <div
-                                    :key="index"
-                                    v-for="(attributeValue, attributeName, index) of activity.old_value">
+                                    v-for="(attributeValue, attributeName, index) of activity.old_value"
+                                    :key="index">
                                 <p 
                                         v-if="attributeName == 'thumb' && attributeValue[0]"
                                         class="tainacan-p-break">                                                          
@@ -319,17 +319,17 @@
                                 </p>
                                 <p 
                                         v-else
-                                        v-html="`<strong>` + attributeName + `: </strong>` + (attributeValue ? attributeValue : infoEmpty)"
-                                        class="tainacan-p-break" />
+                                        class="tainacan-p-break"
+                                        v-html="`<strong>` + attributeName + `: </strong>` + (attributeValue ? attributeValue : infoEmpty)" />
                             </div>
                         </div>
 
                         <div
-                                class="content"
-                                v-if="activity.action == 'update-metadata-order' || activity.action == 'update-filters-order'">
+                                v-if="activity.action == 'update-metadata-order' || activity.action == 'update-filters-order'"
+                                class="content">
                             <div 
-                                    :key="index"
-                                    v-for="(attributeValue, attributeName, index) in activity.old_value">
+                                    v-for="(attributeValue, attributeName, index) in activity.old_value"
+                                    :key="index">
                                 <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName }}
                                     <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
@@ -337,20 +337,20 @@
 
                                 <div class="content">
                                     <p
-                                            class="tainacan-p-break"
                                             v-for="(diffContent, diffTitle) in attributeValue"
                                             :key="diffTitle"
+                                            class="tainacan-p-break"
                                             v-html="attributeValue ? `ID: ${diffContent.id} <span class='is-italic'>(${diffContent.enabled ? $i18n.get('label_enabled') : $i18n.get('label_disabled')})</span>` : infoEmpty " />
                                 </div>
                             </div>
                         </div>
 
                         <div
-                                class="content"
-                                v-if="activity.action == 'update'">
+                                v-if="activity.action == 'update'"
+                                class="content">
                             <div 
-                                    :key="index"
-                                    v-for="(attributeValue, attributeName, index) in activity.old_value">
+                                    v-for="(attributeValue, attributeName, index) in activity.old_value"
+                                    :key="index">
                                 <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName }}
                                     <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
@@ -358,10 +358,10 @@
 
                                 <!-- Is array with length 1 -->
                                 <p
-                                        class="tainacan-p-break"
                                         v-if="(attributeValue instanceof Array) &&
                                             (attributeValue.length == 1) &&
-                                            !(attributeValue[0] instanceof Object)">
+                                            !(attributeValue[0] instanceof Object)"
+                                        class="tainacan-p-break">
                                     {{ attributeValue.toString() }}
                                 </p>
 
@@ -369,8 +369,8 @@
                                         v-else-if="attributeName == 'metadata_type_options'"
                                         class="content">
                                     <p 
-                                            :key="innerIndex"
                                             v-for="(innerValue, innerName, innerIndex) of attributeValue"
+                                            :key="innerIndex"
                                             class="tainacan-p-break">
                                         <strong>{{ innerName + ': ' }}</strong>{{ innerValue ? innerValue : infoEmpty }}
                                         <br>
@@ -378,15 +378,15 @@
                                 </div>
 
                                 <p
-                                        class="tainacan-p-break"
                                         v-else
+                                        class="tainacan-p-break"
                                         v-html="(!attributeValue || (attributeValue instanceof Array && !attributeValue.length)) ? infoEmpty : (attributeValue instanceof Array ? attributeValue.join(`<span class='multivalue-separator'>|</span>`) : attributeValue)" />
                             </div>
                         </div>
 
                         <div
-                                class="content"
-                                v-if="activity.action == 'update-metadata-value'">
+                                v-if="activity.action == 'update-metadata-value'"
+                                class="content">
                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ activity.metadata && activity.metadata.name ? activity.metadata.name : $i18n.get('metadatum') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
@@ -449,8 +449,8 @@
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <div
-                                    :key="index"
-                                    v-for="(attributeValue, attributeName, index) of activity.new_value">
+                                    v-for="(attributeValue, attributeName, index) of activity.new_value"
+                                    :key="index">
                                 <p 
                                         v-if="attributeName == 'thumb' && attributeValue[0]"
                                         class="tainacan-p-break">                                                          
@@ -461,17 +461,17 @@
                                 </p>
                                 <p 
                                         v-else
-                                        v-html="`<strong>` + attributeName + `: </strong>` + (attributeValue ? attributeValue : infoEmpty)"
-                                        class="tainacan-p-break" />
+                                        class="tainacan-p-break"
+                                        v-html="`<strong>` + attributeName + `: </strong>` + (attributeValue ? attributeValue : infoEmpty)" />
                             </div>
                         </div>
 
                         <div
-                                class="content"
-                                v-if="activity.action == 'update-metadata-order' || activity.action == 'update-filters-order'">
+                                v-if="activity.action == 'update-metadata-order' || activity.action == 'update-filters-order'"
+                                class="content">
                             <div 
-                                    :key="index"
-                                    v-for="(attributeValue, attributeName, index) in activity.new_value">
+                                    v-for="(attributeValue, attributeName, index) in activity.new_value"
+                                    :key="index">
                                 <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName }}
                                     <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
@@ -479,20 +479,20 @@
 
                                 <div class="content">
                                     <p
-                                            class="tainacan-p-break"
                                             v-for="(diffContent, diffTitle) in attributeValue"
                                             :key="diffTitle"
+                                            class="tainacan-p-break"
                                             v-html="attributeValue ? `ID: ${diffContent.id} <span class='is-italic'>(${diffContent.enabled ? $i18n.get('label_enabled') : $i18n.get('label_disabled')})</span>` : infoEmpty " />
                                 </div>
                             </div>
                         </div>
 
                         <div 
-                                :key="index"
-                                v-for="(attributeValue, attributeName, index) in activity.new_value">
+                                v-for="(attributeValue, attributeName, index) in activity.new_value"
+                                :key="index">
                             <div
-                                    class="content"
-                                    v-if="activity.action == 'update'">
+                                    v-if="activity.action == 'update'"
+                                    class="content">
                                 <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                     {{ attributeName }}
                                     <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
@@ -502,8 +502,8 @@
                                         v-if="attributeName == 'metadata_type_options'"
                                         class="content">
                                     <p 
-                                            :key="innerIndex"
                                             v-for="(innerValue, innerName, innerIndex) of attributeValue"
+                                            :key="innerIndex"
                                             class="tainacan-p-break">
                                         <strong>{{ innerName + ': ' }}</strong>{{ innerValue ? innerValue : infoEmpty }}
                                         <br>
@@ -517,23 +517,23 @@
                                         {{ attributeValue ? attributeValue : infoEmpty }}
                                         <br>
                                         <img 
-                                                style="margin: 12px 0; max-width: 160px;"
                                                 v-if="activity.terms && activity.terms.header_image"
+                                                style="margin: 12px 0; max-width: 160px;"
                                                 :alt="$i18n.get('label_header_image')"
                                                 :src="activity.terms.header_image" >
                                     </p>
                                 </div>
 
                                 <p
-                                        class="tainacan-p-break"
                                         v-else
+                                        class="tainacan-p-break"
                                         v-html="(!attributeValue || (attributeValue instanceof Array && !attributeValue.length)) ? infoEmpty : (attributeValue instanceof Array ? attributeValue.join(`<span class='multivalue-separator'>|</span>`) : attributeValue)" />
                             </div>
                         </div>
                         
                         <div
-                                class="content"
-                                v-if="activity.action == 'update-metadata-value'">
+                                v-if="activity.action == 'update-metadata-value'"
+                                class="content">
                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ activity.metadata && activity.metadata.name ? activity.metadata.name : $i18n.get('metadatum') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>

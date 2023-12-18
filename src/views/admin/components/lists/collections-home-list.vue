@@ -133,8 +133,8 @@
                 </router-link>
             </li>
             <li
-                    :key="index"
                     v-for="(collection, index) of collections"
+                    :key="index"
                     class="tainacan-card"
                     :class="{ 'always-visible-collections': $adminOptions.homeCollectionsPerPage }">       
                 <ul class="menu-list">
@@ -255,8 +255,8 @@
                         :to="$routerHelper.getCollectionPath(collection.id)"
                         class="card-body">
                     <img 
-                        :alt="$i18n.get('label_thumbnail')"
                         v-if="collection.thumbnail != undefined"
+                        :alt="$i18n.get('label_thumbnail')"
                         :src="$thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium')">  
                     
                     <!-- Name -->

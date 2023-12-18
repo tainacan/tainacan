@@ -28,10 +28,10 @@
                             <b-input
                                     id="tainacan-text-name"
                                     v-model="form.name"
-                                    @focus="clearErrors('name')"
-                                    @blur="updateSlug()"
                                     :disabled="isUpdatingSlug"
-                                    :loading="isUpdatingSlug"/>
+                                    :loading="isUpdatingSlug"
+                                    @focus="clearErrors('name')"
+                                    @blur="updateSlug()"/>
                         </b-field>
 
                         <!-- Hook for extra Form options -->
@@ -54,9 +54,9 @@
                                     extra-classes="tainacan-repository-tooltip"/>
                             <b-input
                                     id="tainacan-text-description"
+                                    v-model="form.description"
                                     type="textarea"
                                     rows="3"
-                                    v-model="form.description"
                                     @focus="clearErrors('description')"/>
                         </b-field>
 
@@ -66,8 +66,8 @@
                                     {{ $i18n.get('label_taxonomy_allow_new_terms') }}
                                     <b-switch
                                             id="tainacan-checkbox-allow-insert" 
-                                            size="is-small"
                                             v-model="form.allowInsert"
+                                            size="is-small"
                                             true-value="yes"
                                             false-value="no" />
                                     <help-button 
@@ -83,8 +83,8 @@
                                     {{ $i18n.getHelperTitle('taxonomies', 'hierarchical') }}
                                     <b-switch
                                             id="tainacan-checkbox-allow-insert" 
-                                            size="is-small"
                                             v-model="form.hierarchical"
+                                            size="is-small"
                                             true-value="yes"
                                             false-value="no" />
                                     <help-button 
@@ -105,11 +105,11 @@
                                     :message="$i18n.getHelperMessage('taxonomies', 'slug')"
                                     extra-classes="tainacan-repository-tooltip"/>
                             <b-input
-                                    @update:model-value="updateSlug()"
                                     id="tainacan-text-slug"
                                     v-model="form.slug"
-                                    @focus="clearErrors('slug')"
-                                    :disabled="isUpdatingSlug"/>
+                                    :disabled="isUpdatingSlug"
+                                    @update:model-value="updateSlug()"
+                                    @focus="clearErrors('slug')"/>
                         </b-field>
 
                         <!-- Activate for other post types -->
@@ -129,10 +129,10 @@
                                         :key="wpPostType.slug"
                                         class="field">
                                     <b-checkbox
+                                        v-model="form.enabledPostTypes"
                                         :native-value="wpPostType.slug"
                                         :true-value="wpPostType.slug"
                                         false-value=""
-                                        v-model="form.enabledPostTypes"
                                         name="enabled_post_types" >
                                         {{ wpPostType.label }}  
                                     </b-checkbox>
@@ -156,9 +156,9 @@
                                     extra-classes="tainacan-repository-tooltip"/>
                             <div class="status-radios">
                                 <b-radio
-                                        v-model="form.status"
                                         v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                                         :key="index"
+                                        v-model="form.status"
                                         :native-value="statusOption.slug">
                                     <span class="icon has-text-gray">
                                         <i 
@@ -179,8 +179,8 @@
                                 :message="$i18n.get('info_taxonomy_terms_list')"
                                 extra-classes="tainacan-repository-tooltip"/>
                             <terms-list
-                                    :is-hierarchical="form.hierarchical !== 'no'"
                                     :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'"
+                                    :is-hierarchical="form.hierarchical !== 'no'"
                                     :taxonomy-id="taxonomyId"
                                     :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false"/>
                         </b-field>
@@ -202,8 +202,8 @@
                             class="control">
                         <button
                                 id="button-another-taxonomy-creation"
-                                @click.prevent="goToCreateAnotherTaxonomy()"
-                                class="button is-secondary">{{ $i18n.get('label_create_another_taxonomy') }}</button>
+                                class="button is-secondary"
+                                @click.prevent="goToCreateAnotherTaxonomy()">{{ $i18n.get('label_create_another_taxonomy') }}</button>
                     </div>
                     <div    
                             v-if="!$route.query.recent"
@@ -236,10 +236,10 @@
                             <span>{{ $i18n.get('label_taxonomy_page_on_website') }}</span>
                         </a>
                         <button
-                                :class="{ 'is-loading': isLoadingTaxonomy, 'is-success': !isLoadingTaxonomy }"
                                 id="button-submit-taxonomy-creation"
-                                @click.prevent="onSubmit"
-                                class="button">{{ $i18n.get('save') }}</button>
+                                :class="{ 'is-loading': isLoadingTaxonomy, 'is-success': !isLoadingTaxonomy }"
+                                class="button"
+                                @click.prevent="onSubmit">{{ $i18n.get('save') }}</button>
                     </div>
                 </footer>
             </form>

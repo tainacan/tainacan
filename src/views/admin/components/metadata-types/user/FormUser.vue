@@ -9,9 +9,9 @@
             </label>
             <b-checkbox
                     v-model="defaultAuthor"
-                    @update:model-value="onUpdateDefaultAuthor"
                     true-value="yes"
-                    false-value="no">
+                    false-value="no"
+                    @update:model-value="onUpdateDefaultAuthor">
                 {{ $i18n.get('label_default_author_user') }}
             </b-checkbox>
         </b-field>

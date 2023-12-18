@@ -15,9 +15,9 @@
                             class="b-checkbox checkbox is-small">
                         <input 
                                 v-model="selected"
-                                @input="resetPage"
                                 :value="option.value"
-                                type="checkbox"> 
+                                type="checkbox"
+                                @input="resetPage"> 
                         <span class="check" /> 
                         <span class="control-label">
                             <span class="checkbox-label-text">{{ option.label }}</span> 
@@ -27,8 +27,8 @@
                         </span>
                     </label>
                     <button
-                            class="view-all-button link-style"
                             v-if="option.showViewAllButton"
+                            class="view-all-button link-style"
                             @click="openCheckboxModal(option.parent)"> 
                         {{ $i18n.get('label_view_all') }}
                     </button>
@@ -46,19 +46,19 @@
                     :filter="filter"
                     :taxonomy_id="taxonomyId"
                     :selected="selected"
+                    :metadatum-id="metadatumId"
+                    :taxonomy="taxonomy"
+                    :collection-id="collectionId"
+                    :is-taxonomy="true"
+                    :query="query"
+                    :current-collection-id="currentCollectionId"
                     @input="(newSelected) => {
                         const existingValue = selected.indexOf(newSelected); 
                         if (existingValue >= 0)
                             selected.splice(existingValue, 1);
                         else
                             selected.push(newSelected);
-                    }"
-                    :metadatum-id="metadatumId"
-                    :taxonomy="taxonomy"
-                    :collection-id="collectionId"
-                    :is-taxonomy="true"
-                    :query="query"
-                    :current-collection-id="currentCollectionId" />
+                    }" />
         </template>
     </div>
 </template>

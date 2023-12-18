@@ -2,8 +2,8 @@
     <div>
         <div class="table-container">
             <b-loading
-                    is-full-page="false" 
-                    v-model="displayLoading" />
+                    v-model="displayLoading" 
+                    is-full-page="false" />
             <div class="table-wrapper">
                 <div class="related-items-list">
                     <div 
@@ -62,13 +62,13 @@
                                         @click="openItemOnNewTab(relatedItem)">
                                     <span 
                                             v-if="$statusHelper.hasIcon(relatedItem.status)"
-                                            class="icon has-text-gray"
                                             v-tooltip="{
                                                 content: $i18n.get('status_' + relatedItem.status),
                                                 autoHide: true,
                                                 placement: 'top',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
-                                            }">
+                                            }"
+                                            class="icon has-text-gray">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-1em"
                                                 :class="$statusHelper.getIcon(relatedItem.status)"
@@ -88,8 +88,8 @@
                                     </span>
                                 </div>
                                 <div 
-                                        @click="openItemOnNewTab(relatedItem)"
-                                        style="width: 100%">
+                                        style="width: 100%"
+                                        @click="openItemOnNewTab(relatedItem)">
                                     <p
                                             v-tooltip="{
                                                 delay: {
@@ -112,8 +112,8 @@
                                         <a
                                                 v-if="!relatedItem.status != 'trash'"
                                                 id="button-edit"
-                                                @click.prevent.stop="setItemForEdit(relatedItem, relatedItemGroup)"
-                                                :aria-label="$i18n.getFrom('items','edit_item')">
+                                                :aria-label="$i18n.getFrom('items','edit_item')"
+                                                @click.prevent.stop="setItemForEdit(relatedItem, relatedItemGroup)">
                                             <span
                                                     v-tooltip="{
                                                          delay: {
@@ -136,11 +136,11 @@
                     </div>
                 </div>
                 <b-modal 
-                        :width="1200"
                         v-model="editItemModal"
-                        @after-leave="reloadRelatedItems"
+                        :width="1200"
                         custom-class="tainacan-modal"
-                        :close-button-aria-label="$i18n.get('close')">
+                        :close-button-aria-label="$i18n.get('close')"
+                        @after-leave="reloadRelatedItems">
                     <iframe 
                             width="100%"
                             :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"

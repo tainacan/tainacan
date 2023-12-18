@@ -15,8 +15,8 @@
                         <input 
                                 v-model="selected"
                                 :value="option.value"
-                                @input="resetPage()"
-                                type="checkbox"> 
+                                type="checkbox"
+                                @input="resetPage()"> 
                             <span class="check" /> 
                             <span class="control-label">
                                 <span class="checkbox-label-text">{{ option.label }}</span> 
@@ -26,8 +26,8 @@
                             </span>
                     </label>
                     <button
-                            class="view-all-button link-style"
                             v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
+                            class="view-all-button link-style"
                             @click="openCheckboxModal(option.parent)"> 
                         {{ $i18n.get('label_view_all') }}
                     </button>
@@ -44,19 +44,19 @@
                     :is-modal="false" 
                     :filter="filter"
                     :selected="selected"
+                    :metadatum-id="metadatumId"
+                    :collection-id="collectionId"
+                    :metadatum_type="metadatumType"
+                    :is-repository-level="isRepositoryLevel"
+                    :query="query"
+                    :current-collection-id="currentCollectionId"
                     @input="(newSelected) => {
                         const existingValue = selected.indexOf(newSelected); 
                         if (existingValue >= 0)
                             selected.splice(existingValue, 1);
                         else
                             selected.push(newSelected);
-                    }"
-                    :metadatum-id="metadatumId"
-                    :collection-id="collectionId"
-                    :metadatum_type="metadatumType"
-                    :is-repository-level="isRepositoryLevel"
-                    :query="query"
-                    :current-collection-id="currentCollectionId" />
+                    }" />
         </template>
     </div>
 </template>

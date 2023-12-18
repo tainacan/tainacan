@@ -41,17 +41,17 @@
 
       <div class="processes-list">
         <div
+            v-for="(bgProcess, index) of processes"
+            :key="index"
             :class="{
                         'opened-process': collapses[index],
                         'selected-row': selected[index],
                         'highlighted-process': highlightedProcess == bgProcess.ID
                     }"
-            class="processes-list-item"
-            :key="index"
-            v-for="(bgProcess, index) of processes">
+            class="processes-list-item">
           <div
-              @click="Object.assign( collapses, { [index]: !collapses[index] })"
-              class="process-handler">
+              class="process-handler"
+              @click="Object.assign( collapses, { [index]: !collapses[index] })">
             <!-- Collapse -->
             <span class="icon">
                         <i
@@ -133,6 +133,7 @@
                                 <div class="control has-icons-right is-loading is-clearfix" />
                             </span>
                             <span
+                                v-if=" bgProcess.status === 'running' "
                                 v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -143,12 +144,12 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                v-if=" bgProcess.status === 'running' "
                                 class="icon has-text-gray action-icon"
                                 @click.prevent.stop="pauseProcess(index)">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop"/>
                             </span>
                             <span
+                                v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
                                 v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -159,11 +160,11 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
                                 class="icon has-text-success">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
                             </span>
                             <span
+                                    v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
                                     v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -174,11 +175,11 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
-                                    v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
                                     class="icon has-text-success">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle has-text-yellow2"/>
                             </span>
                             <span
+                                    v-if=" bgProcess.status === 'cancelled' "
                                     v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -189,11 +190,11 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
-                                    v-if=" bgProcess.status === 'cancelled' "
                                     class="icon has-text-success">
                                 <i class="tainacan-icon has-text-danger tainacan-icon-1-25em tainacan-icon-repprovedcircle"/>
                             </span>
                             <span
+                                    v-if=" bgProcess.status === 'paused' "
                                     v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -204,11 +205,11 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
-                                    v-if=" bgProcess.status === 'paused' "
                                     class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause"/>
                             </span>
                             <span
+                                    v-if=" bgProcess.status === 'waiting' "
                                     v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -219,11 +220,11 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
-                                    v-if=" bgProcess.status === 'waiting' "
                                     class="icon has-text-gray">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting"/>
                             </span>
                             <span
+                                    v-if=" bgProcess.status === 'waiting' "
                                     v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -234,12 +235,12 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
-                                    v-if=" bgProcess.status === 'waiting' "
                                     class="icon has-text-gray"
                                     @click.prevent.stop="deleteOneProcess(index)">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                             </span>
                             <span
+                                    v-if="bgProcess.status === 'errored'"
                                     v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -250,7 +251,6 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
-                                    v-if="bgProcess.status === 'errored'"
                                     class="icon has-text-danger">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processerror" />
                             </span>

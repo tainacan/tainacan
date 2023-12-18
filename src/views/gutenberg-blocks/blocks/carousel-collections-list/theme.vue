@@ -1,19 +1,19 @@
 <template>
     <div  
+            v-if="collections.length > 0 || isLoading"
             :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
-            :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
-            v-if="collections.length > 0 || isLoading">
+            :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }">
         <div 
-                class="swiper"
-                :id="blockId + '-carousel'">
+                :id="blockId + '-carousel'"
+                class="swiper">
             <ul 
                     v-if="isLoading"
                     role="list"
                     class="swiper-wrapper">
                 <li 
-                        role="listitem"
-                        :key="index"
                         v-for="index in 18"
+                        :key="index"
+                        role="listitem"
                         class="swiper-slide collection-list-item skeleton">
                     <a>
                         <img>
@@ -26,9 +26,9 @@
                     role="list"
                     class="swiper-wrapper">
                 <li 
-                        role="listitem"
-                        :key="index"
                         v-for="(collection, index) of collections"
+                        :key="index"
+                        role="listitem"
                         :class="'swiper-slide collection-list-item ' + (!showCollectionThumbnail ? 'collection-list-item-grid' : '')">      
                     <a 
                             v-if="showCollectionThumbnail"
@@ -96,8 +96,8 @@
             </ul>
         </div>
         <button 
-                class="swiper-button-prev" 
                 :id="blockId + '-prev'" 
+                class="swiper-button-prev" 
                 :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
             <svg
                     :width="largeArrows ? 60 : 42"
@@ -115,8 +115,8 @@
             </svg>
         </button>
         <button 
-                class="swiper-button-next" 
                 :id="blockId + '-next'" 
+                class="swiper-button-next" 
                 :style="hideName ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
             <svg
                     :width="largeArrows ? 60 : 42"

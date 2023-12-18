@@ -6,18 +6,18 @@
             <!-- Search input -->
             <b-field class="is-clearfix terms-search">
                 <b-input
+                        v-model="searchString"
                         expanded
                         autocomplete="on"
                         :placeholder="$i18n.get('instruction_search')"
                         :aria-name="$i18n.get('instruction_search')"
-                        v-model="searchString"
                         icon-right="magnify"
                         type="search" />
             </b-field>
             
             <span
-                    class="selected-terms-info"
-                    v-if="selectedColumnIndex >= 0 && currentUserCanEditTaxonomy">
+                    v-if="selectedColumnIndex >= 0 && currentUserCanEditTaxonomy"
+                    class="selected-terms-info">
                 {{ selectedColumnIndex == 0 ? $i18n.get('label_all_root_terms_selected') : $i18n.getWithVariables('label_terms_child_of_%s_selected', [ selectedColumnObject.name ]) }}
                 <button
                         type="button"
@@ -32,8 +32,8 @@
                     v-if="selected.length && selectedColumnIndex < 0"
                     class="field selected-terms-info">
                 <b-dropdown
-                        :mobile-modal="true"
                         id="selected-terms-dropdown"
+                        :mobile-modal="true"
                         aria-role="list"
                         trap-focus
                         position="is-bottom-left">
@@ -48,16 +48,16 @@
                         </button>
                     </template>
                     <b-dropdown-item
-                            custom
                             v-for="term of selected"
                             :key="term.id"
+                            custom
                             aria-role="list-item">
                         <label class="b-checkbox checkbox">
                             <input
                                 type="checkbox"
-                                @input="updateSelectedTerms(term)"
                                 :checked="isTermSelected(term.id)"
-                                :value="getTermIdAsNumber(term.id)">
+                                :value="getTermIdAsNumber(term.id)"
+                                @input="updateSelectedTerms(term)">
                             <span class="check" /> 
                             <span class="control-label">
                                 <span 
@@ -73,10 +73,10 @@
                     v-if="currentUserCanEditTaxonomy"
                     class="field">
                 <b-dropdown
+                        id="bulk-actions-dropdown"
                         :mobile-modal="true"
                         position="is-bottom-left"
                         :disabled="amountOfTermsSelected <= 1"
-                        id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
                     <template #trigger>
@@ -90,16 +90,16 @@
                         </button>
                     </template>
                     <b-dropdown-item
-                            @click="$emit('deleteSelectedTerms')"
                             id="item-delete-selected-terms"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="$emit('deleteSelectedTerms')">
                         {{ $i18n.get('label_delete_permanently') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="isHierarchical"
-                            @click="$emit('updateSelectedTermsParent')"
                             id="item-update-selected-terms"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="$emit('updateSelectedTermsParent')">
                         {{ $i18n.get('label_update_parent') }}
                     </b-dropdown-item>
                 </b-dropdown>

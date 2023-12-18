@@ -8,11 +8,11 @@
                 autocomplete="on"
                 @focus="onMobileSpecialFocus">
         <b-tabs
+                v-model="activeTab"
                 size="is-small"
                 animated
-                @update:model-value="fetchSelectedLabels()"
-                v-model="activeTab"
-                :class="{ 'hidden-tabs-section': (shouldBeginWithListExpanded && !hasToDisplaySearchBar) }">
+                :class="{ 'hidden-tabs-section': (shouldBeginWithListExpanded && !hasToDisplaySearchBar) }"
+                @update:model-value="fetchSelectedLabels()">
             <b-tab-item :label="isTaxonomy ? $i18n.get('label_all_terms') : $i18n.get('label_all_metadatum_values')">
                 
                 <!-- Search input -->
@@ -35,15 +35,15 @@
                         </b-button>
                     </p>
                     <b-input
+                            v-model="optionName"
                             expanded
                             autocomplete="on"
                             :placeholder="metadatum.placeholder ? metadatum.placeholder : ( expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search') )"
                             :aria-label="expandResultsSection ? $i18n.get('instruction_search') : $i18n.get('instruction_click_to_see_or_search')"
-                            v-model="optionName"
-                            @update:model-value="autoComplete"
-                            @focus="!shouldBeginWithListExpanded && !expandResultsSection ? toggleResultsSection() : null"
                             icon-right="magnify"
-                            type="search" />
+                            type="search"
+                            @update:model-value="autoComplete"
+                            @focus="!shouldBeginWithListExpanded && !expandResultsSection ? toggleResultsSection() : null" />
                 </b-field>
 
                 <!-- Search Results -->
@@ -63,9 +63,9 @@
                     <ul class="tainacan-modal-checkbox-list-body">
                         <template v-if="searchResults.length">
                             <li
-                                    class="tainacan-li-checkbox-list"
                                     v-for="(option, key) in searchResults"
-                                    :key="key">
+                                    :key="key"
+                                    class="tainacan-li-checkbox-list">
                                 <label 
                                         :class="{ 
                                             'b-checkbox checkbox': isCheckbox,
@@ -74,10 +74,10 @@
                                         }">
                                     <input
                                             :disabled="!isOptionSelected(option.id ? option.id : option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
-                                            @input="updateLocalSelection($event.target.value)"
                                             :checked="isOptionSelected(option.id ? option.id : option.value)"
                                             :value="option.id ? getOptionValue(option.id) : getOptionValue(option.value)"
-                                            :type="isCheckbox ? 'checkbox' : 'radio'"> 
+                                            :type="isCheckbox ? 'checkbox' : 'radio'"
+                                            @input="updateLocalSelection($event.target.value)"> 
                                     <span class="check" /> 
                                     <span class="control-label">
                                         <span 
@@ -107,8 +107,8 @@
                             </li>
                         </template>
                         <b-loading
-                                :is-full-page="false"
-                                v-model="isLoadingSearch"/>
+                                v-model="isLoadingSearch"
+                                :is-full-page="false"/>
                     </ul>
                     <a
                             v-if="!noMoreSearchPage"
@@ -137,9 +137,9 @@
                     </a>
                     <ul class="tainacan-modal-checkbox-list-body">
                         <li
-                                class="tainacan-li-checkbox-list"
                                 v-for="(option, key) in options"
-                                :key="key">
+                                :key="key"
+                                class="tainacan-li-checkbox-list">
                             <label
                                 :class="{ 
                                     'b-checkbox checkbox': isCheckbox,
@@ -149,9 +149,9 @@
                                 <input 
                                         :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
                                         :checked="isOptionSelected(option.value)"
-                                        @input="updateLocalSelection($event.target.value)"
                                         :value="getOptionValue(option.value)"
-                                        :type="isCheckbox ? 'checkbox' : 'radio'"> 
+                                        :type="isCheckbox ? 'checkbox' : 'radio'"
+                                        @input="updateLocalSelection($event.target.value)"> 
                                 <span class="check" /> 
                                 <span class="control-label">
                                     <span 
@@ -167,8 +167,8 @@
                             </label>
                         </li>
                         <b-loading
-                                :is-full-page="false"
-                                v-model="isCheckboxListLoading"/>
+                                v-model="isCheckboxListLoading"
+                                :is-full-page="false"/>
                     </ul>
                     <a
                             v-if="!noMorePage"
@@ -184,16 +184,16 @@
                 <!-- Hierarchical lists -->
                 <transition-group
                         v-if="!isSearching && isTaxonomy"
+                        ref="tainacan-finder-scrolling-container"
                         class="modal-card-body tainacan-finder-columns-container"
                         :style="{ height: expandResultsSection ? 'auto' : '0px' }"
                         name="page-left"
-                        ref="tainacan-finder-scrolling-container"
                         tag="div">
                     <div 
                             v-for="(finderColumn, key) in finderColumns"
+                            :key="finderColumn.label + '-' + key"
                             class="tainacan-finder-column"
-                            :class="!hasToDisplaySearchBar ? 'has-only-one-column' : ''"
-                            :key="finderColumn.label + '-' + key">
+                            :class="!hasToDisplaySearchBar ? 'has-only-one-column' : ''">
                         <p 
                                 v-if="hasToDisplaySearchBar"
                                 class="column-label">
@@ -201,12 +201,12 @@
                         </p>
                         <ul v-if="finderColumn.children.length">
                             <b-field
-                                    :addons="false"
-                                    class="tainacan-li-checkbox-modal"
                                     v-for="(option, index) in finderColumn.children"
                                     :id="`${key}.${index}-tainacan-li-checkbox-model`"
                                     :ref="`${key}.${index}-tainacan-li-checkbox-model`"
-                                    :key="index">
+                                    :key="index"
+                                    :addons="false"
+                                    class="tainacan-li-checkbox-modal">
                                 <label 
                                         :class="{
                                             'b-checkbox checkbox': isCheckbox,
@@ -216,10 +216,10 @@
                                         @click="option.total_children > 0 && (!finderColumns[key + 1] || finderColumns[key + 1].label !== option.label) ? getOptionChildren(option, key, index) : null">
                                     <input 
                                             :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
-                                            @input="updateLocalSelection($event.target.value)"
                                             :checked="isOptionSelected(option.value)"
                                             :value="getOptionValue(option.value)"
-                                            :type="isCheckbox ? 'checkbox' : 'radio'"> 
+                                            :type="isCheckbox ? 'checkbox' : 'radio'"
+                                            @input="updateLocalSelection($event.target.value)"> 
                                     <span class="check" /> 
                                     <span class="control-label">
                                         <span 
@@ -237,17 +237,17 @@
                                         v-if="option.total_children > 0"
                                         @click="getOptionChildren(option, key, index)">
                                     <span 
-                                            class="is-hidden-mobile"
-                                            v-if="finderColumns.length <= 1 ">
+                                            v-if="finderColumns.length <= 1 "
+                                            class="is-hidden-mobile">
                                         {{ option.total_children + ' ' + $i18n.get('label_children_terms') }}
                                     </span>
                                     <span 
+                                            v-else 
                                             v-tooltip="{
                                                 content: option.total_children + ' ' + $i18n.get('label_children_terms'),
                                                 autoHide: false,
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
-                                            }" 
-                                            v-else>{{ option.total_children }}</span>
+                                            }">{{ option.total_children }}</span>
                                     <span class="icon is-pulled-right">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright"/>
                                     </span>
@@ -256,8 +256,8 @@
                             <li v-if="finderColumn.children.length">
                                 <div
                                         v-if="shouldShowMoreButton(key)"
-                                        @click="getMoreOptions(finderColumn, key)"
-                                        class="tainacan-show-more">
+                                        class="tainacan-show-more"
+                                        @click="getMoreOptions(finderColumn, key)">
                                     <span class="icon">
                                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
                                     </span>
@@ -282,8 +282,8 @@
                 </section>
 
                 <b-loading
-                        :is-full-page="false"
-                        v-model="isColumnLoading"/>
+                        v-model="isColumnLoading"
+                        :is-full-page="false"/>
                 
             </b-tab-item>
 
@@ -325,8 +325,8 @@
                         </div>
                     </section>
                     <b-loading
-                            :is-full-page="false"
-                            v-model="isSelectedTermsLoading"/>
+                            v-model="isSelectedTermsLoading"
+                            :is-full-page="false"/>
                 </div>
             </b-tab-item>
         </b-tabs>

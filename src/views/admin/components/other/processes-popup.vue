@@ -1,8 +1,8 @@
 <template>
 <div>
     <div 
-            @click="$emit('closeProcessesPopup')"
-            class="processes-popup-backdrop" />
+            class="processes-popup-backdrop"
+            @click="$emit('closeProcessesPopup')" />
     <div class="processes-popup">
         <div class="popup-header">
             <a 
@@ -18,8 +18,8 @@
                 </span>
             </a>
             <span 
-                    @click="bgProcesses.length > 0 ? showProcessesList = !showProcessesList : null"
-                    class="header-title">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
+                    class="header-title"
+                    @click="bgProcesses.length > 0 ? showProcessesList = !showProcessesList : null">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
             <a @click="$emit('closeProcessesPopup')">
                 <span class="icon has-text-blue5">
                     <i class="tainacan-icon tainacan-icon-close"/>
@@ -39,12 +39,12 @@
                     </router-link>
                 </li>
                 <li     
-                        :key="index"
-                        v-for="(bgProcess, index) of bgProcesses">
+                        v-for="(bgProcess, index) of bgProcesses"
+                        :key="index">
                     <div class="process-item">
                         <div 
-                                @click="toggleDetails(index)"
-                                class="process-title">
+                                class="process-title"
+                                @click="toggleDetails(index)">
                             <span class="icon has-text-gray">
                                 <i 
                                         class="tainacan-icon tainacan-icon-18px"
@@ -127,8 +127,8 @@
             </ul>
         </div>
         <div   
-                class="separator"
-                v-if="!showProcessesList" />
+                v-if="!showProcessesList"
+                class="separator" />
         <div class="popup-footer">
             <span 
                     v-if="hasAnyProcessExecuting"

@@ -48,9 +48,9 @@
             v-if="showSearchBar"
             class="dynamic-items-search-bar">
         <button
-                @click="localOrder = 'asc'; fetchItems()"
                 :class="localOrder == 'asc' ? 'sorting-button-selected' : ''"
-                :label="wpI18n('Sort ascending', 'tainacan')">
+                :label="wpI18n('Sort ascending', 'tainacan')"
+                @click="localOrder = 'asc'; fetchItems()">
             <span class="icon">
                 <i>
                     <svg
@@ -63,9 +63,9 @@
             </span>
         </button>  
         <button
-                @click="localOrder = 'desc'; fetchItems(); "
                 :class="localOrder == 'desc' ? 'sorting-button-selected' : ''"
-                :label="wpI18n('Sort descending', 'tainacan')">
+                :label="wpI18n('Sort descending', 'tainacan')"
+                @click="localOrder = 'desc'; fetchItems(); ">
             <span class="icon">
                 <i>
                     <svg
@@ -79,9 +79,9 @@
             </span>
         </button>  
         <button
-                @click="fetchItems()"
                 :label="wpI18n('Search', 'tainacan')"
-                class="search-button">
+                class="search-button"
+                @click="fetchItems()">
             <span class="icon">
                 <i>
                     <svg    
@@ -103,13 +103,13 @@
         </button>
         <input
                 :value="searchString"
-                @input="(value) => applySearchString(value)"
-                type="text">
+                type="text"
+                @input="(value) => applySearchString(value)">
         <button
-                class="previous-button"
                 v-if="paged > 1"
-                @click="paged--; fetchItems()"
-                :label="wpI18n('Previous page', 'tainacan')">
+                class="previous-button"
+                :label="wpI18n('Previous page', 'tainacan')"
+                @click="paged--; fetchItems()">
             <span class="icon">
                 <i>
                     <svg
@@ -125,11 +125,11 @@
             </span>
         </button> 
         <button
+                v-if="paged < totalItems/localMaxItemsNumber && items.length < totalItems"
                 :style="{ marginLeft: paged <= 1 ? 'auto' : '0' }"
                 class="next-button"
-                v-if="paged < totalItems/localMaxItemsNumber && items.length < totalItems"
-                @click="paged++; fetchItems()"
-                :label="wpI18n('Next page', 'tainacan')">
+                :label="wpI18n('Next page', 'tainacan')"
+                @click="paged++; fetchItems()">
             <span class="icon">
                 <i>
                     <svg
@@ -156,8 +156,8 @@
                 class="items-list"
                 :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
             <li
-                    :key="item"
                     v-for="item in Number(localMaxItemsNumber)"
+                    :key="item"
                     class="item-list-item skeleton"
                     :style="{ 
                         marginBottom: layout == 'grid' ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
@@ -174,14 +174,14 @@
                 class="items-list"
                 :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
             <div 
+                    v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items)"
+                    :key="mosaicIndex"
                     :style="{ 
                         width: 'calc((100% / ' + mosaicPartition(items).length + ') - ' + gridMargin + 'px)',
                         height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'px))',
                         margin: gridMargin + 'px'
                     }"
-                    class="mosaic-container skeleton"
-                    :key="mosaicIndex"
-                    v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items)" /> 
+                    class="mosaic-container skeleton" /> 
         </ul>
     </template>
     <div v-else>
@@ -194,8 +194,8 @@
                 class="items-list"
                 :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
             <li
-                    :key="index"
                     v-for="(item, index) of items"
+                    :key="index"
                     class="item-list-item">
                 <a 
                         :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
@@ -224,6 +224,8 @@
                 class="items-list"
                 :class="'items-layout-' + layout + (!showName ? ' items-list-without-margin' : '')">
             <div 
+                    v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items)"
+                    :key="mosaicIndex"
                     :style="{ 
                         width: 'calc((100% / ' + mosaicPartition(items).length + ') - ' + gridMargin + 'px)',
                         height: 'calc(((' + (mosaicGridRows - 1) + ' * ' + gridMargin + 'px) + ' + mosaicHeight + 'px))',
@@ -233,12 +235,10 @@
                         gap: gridMargin + 'px'
                     }"
                     class="mosaic-container"
-                    :class="'mosaic-container--' + mosaicGroup.length + '-' + mosaicGridRows + 'x' + mosaicGridColumns"
-                    :key="mosaicIndex"
-                    v-for="(mosaicGroup, mosaicIndex) of mosaicPartition(items)">
+                    :class="'mosaic-container--' + mosaicGroup.length + '-' + mosaicGridRows + 'x' + mosaicGridColumns">
                 <li
-                        :key="index"
                         v-for="(item, index) of mosaicGroup"
+                        :key="index"
                         class="item-list-item"
                         :style="{
                             backgroundImage: layout == 'mosaic' ? `url(${$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])})` : 'none',

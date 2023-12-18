@@ -33,8 +33,8 @@
                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                         class="image">
                     <span 
-                            class="image-placeholder"
-                            v-if="item.document_type == 'empty' && item.document_mimetype == 'empty'">
+                            v-if="item.document_type == 'empty' && item.document_mimetype == 'empty'"
+                            class="image-placeholder">
                         {{ $i18n.get('label_empty_thumbnail') }}
                     </span>
                     <img
@@ -57,8 +57,8 @@
                 </b-field>    
                 <div class="thumbnail-buttons-row">
                     <a
-                            class="button is-rounded is-secondary"
                             id="button-edit-thumbnail"
+                            class="button is-rounded is-secondary"
                             :aria-label="$i18n.get('label_button_edit_thumb')"
                             @click.prevent="($event) => $emit('openThumbnailMediaFrame', $event)">
                         <span

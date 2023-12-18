@@ -26,8 +26,8 @@
         </button>
         <input
                 :value="searchString"
-                @input="(value) => applySearchString(value)"
-                type="text">
+                type="text"
+                @input="(value) => applySearchString(value)">
     </div>
     <template v-if="isLoading">
         <ul
@@ -39,8 +39,8 @@
                 class="facets-list"
                 :class="'facets-layout-' + layout + 'facets-list-without-margin' + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
             <li
-                    :key="facet"
                     v-for="facet in Number(maxFacetsNumber)"
+                    :key="facet"
                     class="facet-list-item skeleton"
                     :style="{ 
                         marginBottom: layout == 'grid' && ((isMetadatumTypeRelationship || isMetadatumTypeTaxonomy) && showImage) ? gridMargin + 'px' : '',
@@ -55,9 +55,9 @@
                 class="facets-list"
                 :class="'facets-layout-' + layout + ' facets-list-without-margin' + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
             <div
-                    style="margin: 2px 6px" 
-                    v-for="column in Number(maxColumnsCount)"
-                    :key="column">
+                    v-for="column in Number(maxColumnsCount)" 
+                    :key="column"
+                    style="margin: 2px 6px">
                 <li
                         v-for="facet in Math.ceil(maxFacetsNumber/maxColumnsCount)"
                         :key="facet"
@@ -134,9 +134,9 @@
 
         <button
                 v-if="showLoadMore && facets.length > 0 && (facets.length < totalFacets || lastTerm != '')"
-                @click="loadMore()"
                 class="show-more-button"
-                :label="wpI18n('Show more', 'tainacan')">
+                :label="wpI18n('Show more', 'tainacan')"
+                @click="loadMore()">
             <span class="icon">
                 <i>
                     <svg

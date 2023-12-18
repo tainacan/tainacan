@@ -1,10 +1,10 @@
 <template>
     <form
+            id="termEditForm"
             autofocus
             role="dialog"
             tabindex="-1"
             aria-modal
-            id="termEditForm"
             class="tainacan-form term-creation-panel"
             @submit.prevent="saveEdition(form)">
 
@@ -12,8 +12,8 @@
     
         <div>
             <b-loading
-                    :is-full-page="false"
-                    v-model="isLoading" />
+                    v-model="isLoading"
+                    :is-full-page="false" />
 
             <!-- Name -------------- -->
             <b-field
@@ -28,8 +28,8 @@
                             :message="$i18n.get('info_help_term_name')"/> 
                 </label>
                 <b-input
-                        :placeholder="$i18n.get('label_term_without_name')"
                         v-model="form.name"
+                        :placeholder="$i18n.get('label_term_without_name')"
                         name="name"
                         @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
             </b-field>
@@ -43,27 +43,27 @@
             <label class="label is-inline">
                     {{ $i18n.get('label_parent_term') }}
                     <b-switch
-                            @update:model-value="onToggleSwitch()"
-                            id="tainacan-checkbox-has-parent" 
+                            id="tainacan-checkbox-has-parent"
+                            v-model="hasParent" 
                             size="is-small"
-                            v-model="hasParent" />
+                            @update:model-value="onToggleSwitch()" />
                     <help-button
                             :title="$i18n.get('label_parent_term')"
                             :message="$i18n.get('info_help_parent_term')"/>
                 </label>
                 <b-autocomplete
                         id="tainacan-add-parent-field"
+                        v-model="parentTermName"
                         :placeholder="$i18n.get('instruction_parent_term')"
                         :data="parentTerms"
                         field="name"
                         clearable
-                        v-model="parentTermName"
-                        @select="onSelectParentTerm($event)"
                         :loading="isFetchingParentTerms"
-                        @update:model-value="fetchParentTerms"
-                        @focus="clearErrors('parent');"
                         :disabled="!hasParent"
                         check-infinite-scroll
+                        @select="onSelectParentTerm($event)"
+                        @update:model-value="fetchParentTerms"
+                        @focus="clearErrors('parent');"
                         @infinite-scroll="fetchMoreParentTerms">
                     <template #default="props">
                         <div class="media">

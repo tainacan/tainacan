@@ -17,6 +17,7 @@
                 {{ totalItems + '.' }}
             </span>
             <span 
+                    v-if="isSortingByCustomMetadata"
                     v-tooltip="{
                         content: $i18n.get('info_items_hidden_due_sorting'),
                         autoHide: false,
@@ -24,14 +25,13 @@
                         popperClass: ['tainacan-tooltip', 'tooltip']
                     }"
                     style="margin-top: -3px"
-                    class="icon has-text-warning"
-                    v-if="isSortingByCustomMetadata">
+                    class="icon has-text-warning">
                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle" />
             </span>
         </div> 
         <div 
-                id="tainacanItemsPerPageButton"
                 v-if="!hideItemsPerPageButton"
+                id="tainacanItemsPerPageButton"
                 class="items-per-page">
             <b-field 
                     id="items-per-page-select"
@@ -55,18 +55,18 @@
             </b-field>
         </div>
         <div 
-                id="tainacanGoToPageButton"
                 v-if="!hideGoToPageButton"
+                id="tainacanGoToPageButton"
                 class="go-to-page items-per-page">
             <b-field 
-                    horizontal 
-                    id="go-to-page-dropdown"
+                    id="go-to-page-dropdown" 
+                    horizontal
                     :label="$i18n.get('label_go_to_page')"> 
                 <b-dropdown 
                         position="is-top-right"
-                        @change="onPageChange"
                         aria-role="list"
-                        trap-focus>
+                        trap-focus
+                        @change="onPageChange">
                     <template #trigger>
                         <button
                                 aria-labelledby="go-to-page-dropdown"
@@ -78,10 +78,10 @@
                         </button>
                     </template>
                     <b-dropdown-item
-                            aria-controls="items-list-results"
-                            role="button" 
-                            :key="pageNumber"
                             v-for="pageNumber in totalPages"
+                            :key="pageNumber" 
+                            aria-controls="items-list-results"
+                            role="button"
                             :value="Number(pageNumber)"
                             aria-role="listitem">
                         {{ pageNumber }}
@@ -92,17 +92,17 @@
         
         <div class="pagination"> 
             <b-pagination
-                    aria-controls="items-list-results"
-                    @change="onPageChange"
-                    :total="totalItems"
                     v-model="page"
+                    aria-controls="items-list-results"
+                    :total="totalItems"
                     order="is-centered"
                     size="is-small"
                     :per-page="itemsPerPage"
                     :aria-next-label="$i18n.get('label_next_page')"
                     :aria-previous-label="$i18n.get('label_previous_page')"
                     :aria-page-label="$i18n.get('label_page')"
-                    :aria-current-label="$i18n.get('label_current_page')" /> 
+                    :aria-current-label="$i18n.get('label_current_page')"
+                    @change="onPageChange" /> 
         </div>
     </div>
 </template>

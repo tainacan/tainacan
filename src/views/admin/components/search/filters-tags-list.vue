@@ -12,15 +12,15 @@
                     <span v-html="filterTags.length == 1 ? $i18n.getWithVariables('info_%s_applied_filter', [filterTags.length]) : $i18n.getWithVariables('info_%s_applied_filters', [filterTags.length])" />
                     &nbsp;
                     <a 
-                            @click="clearAllFilters()"
-                            id="button-clear-all">
+                            id="button-clear-all"
+                            @click="clearAllFilters()">
                         {{ $i18n.get('label_clear_filters') }}
                     </a>
                 </span>
             </p>
             <div 
-                    class="swiper"
-                    :id="'tainacanFilterTagsSwiper' + (isInsideModal ? 'InsideModal' : '')">
+                    :id="'tainacanFilterTagsSwiper' + (isInsideModal ? 'InsideModal' : '')"
+                    class="swiper">
                 <ul class="swiper-wrapper">
                     <li 
                             v-for="(filterTag, index) of filterTags"
@@ -44,8 +44,8 @@
                     </li>
                 </ul>
                 <button 
-                        class="swiper-button-prev" 
-                        id="tainacan-filter-tags-prev">
+                        id="tainacan-filter-tags-prev" 
+                        class="swiper-button-prev">
                     <svg
                             width="24"
                             height="24"
@@ -57,8 +57,8 @@
                     </svg>
                 </button>
                 <button 
-                        class="swiper-button-next" 
-                        id="tainacan-filter-tags-next">
+                        id="tainacan-filter-tags-next" 
+                        class="swiper-button-next">
                     <svg
                             width="24"
                             height="24"

@@ -2,8 +2,8 @@
     <div class="tainacan-hierarchical-list-container">
 
         <b-loading
-                :is-full-page="false"
-                v-model="isColumnLoading"/>
+                v-model="isColumnLoading"
+                :is-full-page="false"/>
 
         <transition name="appear-from-top">
             <button
@@ -17,14 +17,14 @@
 
         <!-- Hierarchical lists -->
         <transition-group
+                ref="tainacan-finder-scrolling-container"
                 tag="div"
                 class="tainacan-hierarchical-list-columns-container"
-                name="page-left"
-                ref="tainacan-finder-scrolling-container">
+                name="page-left">
             <div 
                     v-for="(column, columnIndex) in termColumns"
-                    class="tainacan-hierarchical-list-column"
-                    :key="column.name + '-' + columnIndex">
+                    :key="column.name + '-' + columnIndex"
+                    class="tainacan-hierarchical-list-column">
                 <div 
                         v-if="!searchString.length"
                         class="column-header">
@@ -37,9 +37,9 @@
                                 class="b-checkbox checkbox">
                             <input
                                     type="checkbox"
-                                    @input="selectColumn(columnIndex)"
                                     :checked="selectedColumnIndex == columnIndex"
-                                    :value="columnIndex"> 
+                                    :value="columnIndex"
+                                    @input="selectColumn(columnIndex)"> 
                             <span class="check" /> 
                             <span 
                                     v-if="column.id"
@@ -56,8 +56,8 @@
                         </label>
                         <a 
                                 :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : ''"
-                                @click="onAddNewChildTerm(column.id)"
-                                class="add-link">
+                                class="add-link"
+                                @click="onAddNewChildTerm(column.id)">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                             </span>
@@ -65,8 +65,8 @@
                         </a>
                          <a 
                                 :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : 'position: relative;'"
-                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
-                                class="add-link">
+                                class="add-link"
+                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })">
                             <span 
                                     style="position: absolute;margin-left: -5px;margin-top: 5px;"
                                     class="icon is-small">
@@ -83,20 +83,20 @@
                 </div>
                 <ul v-if="column.children.length">
                     <b-field
-                            :addons="false"
-                            class="tainacan-li-checkbox"
-                            :class="{ 'tainacan-li-checkbox--parent-active': termColumns[columnIndex + 1] && termColumns[columnIndex + 1].id == term.id }"
                             v-for="(term, index) in column.children"
                             :id="`${columnIndex}.${index}-tainacan-li-checkbox-model`"
                             :ref="`${columnIndex}.${index}-tainacan-li-checkbox-model`"
-                            :key="term.id">
+                            :key="term.id"
+                            :addons="false"
+                            class="tainacan-li-checkbox"
+                            :class="{ 'tainacan-li-checkbox--parent-active': termColumns[columnIndex + 1] && termColumns[columnIndex + 1].id == term.id }">
                         <label class="b-checkbox checkbox" >
                             <input 
-                                    @input="updateSelectedTerms(term)"
                                     :checked="selectedColumnIndex >= 0 ? selectedColumnIndex == columnIndex : isTermSelected(term.id)"
                                     :disabled="selectedColumnIndex >= 0"
                                     :value="term.id"
-                                    type="checkbox"> 
+                                    type="checkbox"
+                                    @input="updateSelectedTerms(term)"> 
                             <span class="check" /> 
                             <span class="control-label">
                                 <span
@@ -167,17 +167,17 @@
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel"/>
                             </span>
                             <span 
-                                    class="is-hidden-mobile"
-                                    v-if="termColumns.length <= 1">
+                                    v-if="termColumns.length <= 1"
+                                    class="is-hidden-mobile">
                                 {{ term.total_children + ' ' + $i18n.get('label_children_terms') }}
                             </span>
                             <span 
+                                    v-else 
                                     v-tooltip="{
                                         content: term.total_children + ' ' + $i18n.get('label_children_terms'),
                                         autoHide: false,
                                         popperClass: ['tainacan-tooltip', 'tooltip']
-                                    }" 
-                                    v-else>
+                                    }">
                                 {{ term.total_children }}
                             </span>
                         </button>
@@ -185,8 +185,8 @@
                     <li v-if="column.children.length">
                         <div
                                 v-if="shouldShowMoreButton(columnIndex)"
-                                @click="fetchMoreTerms(column, columnIndex)"
-                                class="tainacan-show-more">
+                                class="tainacan-show-more"
+                                @click="fetchMoreTerms(column, columnIndex)">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
                             </span>
@@ -204,8 +204,8 @@
                     <p>{{ column.name ? $i18n.getWithVariables('info_no_child_term_of_%s_found', [ column.name ]) : $i18n.get('info_no_terms_found') }}</p>
                     <p>
                         <a 
-                                @click="onAddNewChildTerm(column.id)"
-                                class="add-link">
+                                class="add-link"
+                                @click="onAddNewChildTerm(column.id)">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                             </span>
@@ -214,9 +214,9 @@
                     </p>
                     <p>
                         <a 
-                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })"
                                 class="add-link"
-                                style="position: relative;">
+                                style="position: relative;"
+                                @click="multipleInsertion({ parentId: column.id, parentName: column.name })">
                             <span 
                                     style="position: absolute;margin-left: -5px;margin-top: 5px;"
                                     class="icon is-small">
@@ -246,8 +246,8 @@
                 <p>{{ $i18n.get('info_no_terms_found') }}</p>
                 <p>
                     <a 
-                            @click="onAddNewChildTerm(0)"
-                            class="add-link">
+                            class="add-link"
+                            @click="onAddNewChildTerm(0)">
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                         </span>
@@ -270,8 +270,8 @@
                     :is-hierarchical="isHierarchical"
                     :taxonomy-id="taxonomyId"
                     :is-modal="true"
-                    @onEditionFinished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)"
-                    :original-form="editTerm" />
+                    :original-form="editTerm"
+                    @onEditionFinished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)" />
         </b-modal>
     </div>
 </template>

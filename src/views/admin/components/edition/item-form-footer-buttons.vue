@@ -4,9 +4,9 @@
         <!-- Item edition inside iframe -->
         <template v-if="isEditingItemMetadataInsideIframe">
             <button
-                    @click="$emit('onSubmit')"
                     type="button"
-                    class="button is-secondary">
+                    class="button is-secondary"
+                    @click="$emit('onSubmit')">
                 {{ $i18n.get('label_back_to_related_item') }}
             </button>
         </template>
@@ -17,9 +17,9 @@
             <!-- Sequence edition Previous -->
             <button
                     v-if="isOnSequenceEdit && hasPreviousItemOnSequenceEdit"
-                    @click="$emit('onPrevInSequence')"
                     type="button"
-                    class="button sequence-button">
+                    class="button sequence-button"
+                    @click="$emit('onPrevInSequence')">
                 <span class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous"/>
                 </span>
@@ -30,14 +30,14 @@
             <template v-if="(status == 'auto-draft' || status == undefined)">
                 <button
                         v-if="!$adminOptions.mobileAppMode"
-                        @click="$emit('onDiscard')"
                         type="button"
-                        class="button is-outlined">{{ $i18n.get('label_discard') }}</button>
+                        class="button is-outlined"
+                        @click="$emit('onDiscard')">{{ $i18n.get('label_discard') }}</button>
                 <button
-                        @click="openItemCreationStatusDialog"
                         type="button"
                         class="button is-secondary"
-                        :style="{ marginLeft: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }">{{ $i18n.get('label_create_item') }}</button>
+                        :style="{ marginLeft: $adminOptions.mobileAppMode ? 'auto' : '0.5em' }"
+                        @click="openItemCreationStatusDialog">{{ $i18n.get('label_create_item') }}</button>
             </template>
 
             <!-- Item is public, draft or private -->
@@ -46,9 +46,9 @@
                 <!-- Send items to Trash -->
                 <button 
                         v-if="!isOnSequenceEdit && currentUserCanDelete && !$adminOptions.mobileAppMode"
-                        @click="$emit('onSubmit', 'trash')"
                         type="button"
-                        class="button is-outlined">
+                        class="button is-outlined"
+                        @click="$emit('onSubmit', 'trash')">
                     <span v-if="!isMobileScreen">{{ $i18n.get('label_send_to_trash') }}</span>
                     <span v-else>{{ $i18n.get('status_trash') }}</span>
                 </button>
@@ -67,17 +67,17 @@
                     <template #trigger>
                         <button 
                                 :disabled="hasSomeError && (status == 'publish' || status == 'private')"
-                                @click="!$adminOptions.mobileAppMode && !isMobileScreen ? $emit(
-                                    'onSubmit',
-                                    ( currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
-                                    ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
-                                ) : ($refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null)"
                                 type="button"
                                 class="button"
                                 :class="{ 
                                     'is-success': status == 'publish' || status == 'private',
                                     'is-secondary': status == 'draft'
-                                }">
+                                }"
+                                @click="!$adminOptions.mobileAppMode && !isMobileScreen ? $emit(
+                                    'onSubmit',
+                                    ( currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
+                                    ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
+                                ) : ($refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null)">
                             {{ $i18n.get('label_update') }}
                             <span 
                                     v-if="isOnSequenceEdit && !isCurrentItemOnSequenceEdit"
@@ -87,21 +87,21 @@
                             </span>
                             <span 
                                     v-if="!$adminOptions.mobileAppMode"
-                                    @mouseenter="$refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null"
                                     style="margin-left: 0.5em;"
-                                    class="icon is-small">
+                                    class="icon is-small"
+                                    @mouseenter="$refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowup" />
                             </span>
                         </button>
                     </template>
                     <b-dropdown-item 
-                           @click="$emit(
+                           :class="{ 'is-forced-last-option': status == 'draft' }"
+                            aria-role="listitem"
+                            @click="$emit(
                                 'onSubmit',
                                 'draft',
                                 ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
-                            )"
-                            :class="{ 'is-forced-last-option': status == 'draft' }"
-                            aria-role="listitem">
+                            )">
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-draft"/>
                         </span>
@@ -109,13 +109,13 @@
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption"
+                            :class="{ 'is-forced-last-option': status == 'private' }"
+                            aria-role="listitem"
                             @click="$emit(
                                 'onSubmit',
                                 'private',
                                 ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
-                            )"
-                            :class="{ 'is-forced-last-option': status == 'private' }"
-                            aria-role="listitem">
+                            )">
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-private"/>
                         </span>
@@ -123,12 +123,12 @@
                     </b-dropdown-item>
                     <b-dropdown-item 
                             v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption"
+                            aria-role="listitem"
                             @click="$emit(
                                 'onSubmit',
                                 'publish',
                                 ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
-                            )"
-                            aria-role="listitem">
+                            )">
                         <span class="icon has-text-gray4">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-public"/>
                         </span>
@@ -140,13 +140,13 @@
                 <button 
                         v-else
                         :disabled="hasSomeError && (status == 'publish' || status == 'private')"
-                        @click="$emit('onSubmit', status)"
                         type="button"
                         class="button"
                         :class="{ 
                             'is-success': status == 'publish' || status == 'private',
                             'is-secondary': status == 'draft'
-                        }">
+                        }"
+                        @click="$emit('onSubmit', status)">
                     {{ $i18n.get('label_update') }}
                 </button>
 
@@ -156,9 +156,9 @@
             <button 
                     v-if="!currentUserCanPublish && isOnSequenceEdit && hasNextItemOnSequenceEdit"
                     :disabled="(status == 'publish' || status == 'private') && hasSomeError"
-                    @click="$emit('onNextInSequence')"
                     type="button"
-                    class="button is-success">
+                    class="button is-success"
+                    @click="$emit('onNextInSequence')">
                 <span>{{ $i18n.get('label_next') }}</span>
                 <span class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next"/>
@@ -168,9 +168,9 @@
             <!-- Sequence edition Finish -->
             <button 
                     v-if="isOnSequenceEdit && isCurrentItemOnSequenceEdit"
-                    @click="$router.push($routerHelper.getCollectionPath(collectionId))"
                     type="button"
-                    class="button sequence-button">
+                    class="button sequence-button"
+                    @click="$router.push($routerHelper.getCollectionPath(collectionId))">
                 <span class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approved"/>
                 </span>

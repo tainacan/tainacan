@@ -10,12 +10,12 @@
                 :max-zoom="maxZoom"
                 :center="[-14.4086569, -51.31668]"
                 :zoom-animation="true"
-                @click="onMapClick"
                 :options="{
                     name: 'map--' + itemMetadatumIdentifier,
                     trackResize: false, // We handle this manually in the component
                     worldCopyJump: true
-                }">
+                }"
+                @click="onMapClick">
             <l-tile-layer 
                     :url="mapProvider" 
                     :attribution="attribution" />
@@ -27,16 +27,16 @@
                             :placeholder="-14.408656999999"
                             type="text"
                             :step="0.000000000001"
-                            @update:model-value="onUpdateFromLatitudeInput"
-                            :model-value="latitude" />
+                            :model-value="latitude"
+                            @update:model-value="onUpdateFromLatitudeInput" />
                     <b-input 
                             v-if="editingMarkerIndex >= 0"
                             expanded
                             :placeholder="-51.316689999999"
                             type="text"
                             :step="0.000000000001"
-                            @update:model-value="onUpdateFromLongitudeInput"
-                            :model-value="longitude" />
+                            :model-value="longitude"
+                            @update:model-value="onUpdateFromLongitudeInput" />
                     <b-button
                             v-if="editingMarkerIndex >= 0"
                             outlined

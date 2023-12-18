@@ -1,11 +1,11 @@
 <template>
 <form
         id="metadataSectionEditForm"
-        @submit.prevent="saveEdition(form)"
         autofocus="true"
         tabindex="-1"
         role="dialog"
-        aria-modal>
+        aria-modal
+        @submit.prevent="saveEdition(form)">
     <div 
             v-if="form && Object.keys(form).length"
             class="tainacan-modal-content">
@@ -61,10 +61,10 @@
                                 :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                     </label>
                     <b-input
+                            v-model="form.description"
                             type="textarea"
                             name="description"
                             rows="3"
-                            v-model="form.description"
                             @focus="clearErrors('description')"/>
                 </b-field>
 
@@ -75,12 +75,12 @@
                         :message="formErrors['description_bellow_name'] != undefined ? formErrors['description_bellow_name'] : ''">
                         &nbsp;
                     <b-switch
-                            size="is-small"
-                            @update:model-value="clearErrors('description_bellow_name')"
                             v-model="form.description_bellow_name"
+                            size="is-small"
                             true-value="yes"
                             false-value="no"
-                            name="description_bellow_name">
+                            name="description_bellow_name"
+                            @update:model-value="clearErrors('description_bellow_name')">
                     <help-button
                             :title="$i18n.getHelperTitle('metadata-sections', 'description_bellow_name')"
                             :message="$i18n.getHelperMessage('metadata-sections', 'description_bellow_name')"
@@ -102,22 +102,22 @@
                     </label>
                     <div class="is-flex is-justify-content-space-between">
                         <b-radio
-                                @focus="clearErrors('label_status')"
                                 id="tainacan-select-status-publish"
-                                name="status"
                                 v-model="form.status"
-                                native-value="publish">
+                                name="status"
+                                native-value="publish"
+                                @focus="clearErrors('label_status')">
                             <span class="icon has-text-gray3">
                                 <i class="tainacan-icon tainacan-icon-public"/>
                             </span>
                             {{ $i18n.get('status_public') }}
                         </b-radio>
                         <b-radio
-                                @focus="clearErrors('label_status')"
                                 id="tainacan-select-status-private"
-                                name="status"
                                 v-model="form.status"
-                                native-value="private">
+                                name="status"
+                                native-value="private"
+                                @focus="clearErrors('label_status')">
                             <span class="icon has-text-gray3">
                                 <i class="tainacan-icon tainacan-icon-private"/>
                             </span>
@@ -130,8 +130,8 @@
 
             <div 
                     v-if="form.id !== 'default_section'"
-                    @click="hideConditionalSectionSettings = !hideConditionalSectionSettings;"
-                    class="metadata-form-section">
+                    class="metadata-form-section"
+                    @click="hideConditionalSectionSettings = !hideConditionalSectionSettings;">
                 <span class="icon">
                     <i 
                             class="tainacan-icon"
@@ -155,12 +155,12 @@
                             :message="formErrors['is_conditional_section'] != undefined ? formErrors['is_conditional_section'] : ''">
                             &nbsp;
                         <b-switch
-                                size="is-small"
-                                @update:model-value="clearErrors('is_conditional_section')"
                                 v-model="form.is_conditional_section"
+                                size="is-small"
                                 true-value="yes"
                                 false-value="no"
-                                name="is_conditional_section">
+                                name="is_conditional_section"
+                                @update:model-value="clearErrors('is_conditional_section')">
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
                                 :message="$i18n.getHelperMessage('metadata-sections', 'is_conditional_section')"
@@ -206,8 +206,8 @@
                                 {{ selectedConditionalMetadatum.name }}
                             </label>
                             <component
-                                    v-if="shouldUpdateConditionalValue"
                                     :is="selectedConditionalMetadatum.metadata_type_object.component"
+                                    v-if="shouldUpdateConditionalValue"
                                     :forced-component-type="selectedConditionalMetadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
                                     :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
                                     :value="Array.isArray(selectedConditionalValue) ? selectedConditionalValue[0] : selectedConditionalValue"

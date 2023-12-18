@@ -1,20 +1,18 @@
 <template>
     <b-field
-            class="filter-item-forms"
             :ref="isMobileScreen ? ('filter-field-id-' + filter.id) : null"
+            class="filter-item-forms"
+            :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}"
             @touchstart="setFilterFocus(filter.id)"
-            @mousedown="setFilterFocus(filter.id)"
-            :style="{ columnSpan: filtersAsModal && filter.filter_type_object && filter.filter_type_object.component && (filter.filter_type_object.component == 'tainacan-filter-taxonomy-checkbox' || filter.filter_type_object.component == 'tainacan-filter-checkbox') ? 'all' : 'unset'}">
+            @mousedown="setFilterFocus(filter.id)">
         <b-collapse
                 v-if="displayFilter"
-                class="show" 
-                v-model="singleCollapseOpen"
+                v-model="singleCollapseOpen" 
+                class="show"
                 animation="filter-item">
             <template #trigger="props">
                 <button
-                        :for="'filter-input-id-' + filter.id"
-                        :aria-controls="'filter-input-id-' + filter.id"
-                        :aria-expanded="singleCollapseOpen"
+                        :id="'filter-label-id-' + filter.id"
                         v-tooltip="{
                             delay: {
                                 shown: 500,
@@ -26,7 +24,9 @@
                             placement: 'top-start',
                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }"
-                        :id="'filter-label-id-' + filter.id"
+                        :for="'filter-input-id-' + filter.id"
+                        :aria-controls="'filter-input-id-' + filter.id"
+                        :aria-expanded="singleCollapseOpen"
                         :aria-label="filter.name"
                         class="label">
                     <span class="icon">
@@ -49,9 +49,9 @@
                         :is-repository-level="isRepositoryLevel"
                         :is-loading-items="isLoadingItems"
                         :current-collection-id="$eventBusSearch.collectionId"
-                        @input="onInput"
-                        @updateParentCollapse="onFilterUpdateParentCollapse" 
-                        :filters-as-modal="filtersAsModal" />
+                        :filters-as-modal="filtersAsModal"
+                        @input="onInput" 
+                        @updateParentCollapse="onFilterUpdateParentCollapse" />
             </div>
         </b-collapse>
         <div 
@@ -60,8 +60,6 @@
             <div class="collapse-trigger">
                 <button
                         
-                        :for="'filter-input-id-' + filter.id"
-                        :aria-controls="'filter-input-id-' + filter.id"
                         v-tooltip="{
                             delay: {
                                 shown: 500,
@@ -73,8 +71,10 @@
                             placement: 'top-start',
                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                         }"
-                        @click="displayFilter = true"
-                        class="label">
+                        :for="'filter-input-id-' + filter.id"
+                        :aria-controls="'filter-input-id-' + filter.id"
+                        class="label"
+                        @click="displayFilter = true">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em"/>
                     </span>

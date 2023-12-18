@@ -7,10 +7,10 @@
 
     <!-- SEARCH CONTROL ------------------------- -->
     <div
+            v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
+            ref="search-control"
             :aria-label="$i18n.get('label_sort_visualization')"
             role="region"
-            ref="search-control"
-            v-if="!(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
             class="search-control">
         
         <h3 
@@ -27,13 +27,8 @@
 
         <!-- Button for hiding filters -->
         <button 
-                aria-controls="filters-modal"
-                :aria-expanded="isFiltersModalActive"
-                :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
                 v-if="!showFiltersButtonInsideSearchControl && !hideFilters && !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)"
                 id="filter-menu-compress-button"
-                :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                @click="isFiltersModalActive = !isFiltersModalActive"
                 v-tooltip="{
                     delay: {
                         shown: 500,
@@ -43,7 +38,12 @@
                     autoHide: false,
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                }">
+                }"
+                aria-controls="filters-modal"
+                :aria-expanded="isFiltersModalActive"
+                :class="hideHideFiltersButton ? 'is-hidden-tablet' : ''"
+                :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
+                @click="isFiltersModalActive = !isFiltersModalActive">
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
@@ -73,16 +73,16 @@
                                 type="search"
                                 :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                                 :model-value="searchQuery"
-                                @update:model-value="typeFutureSearch"
-                                @keyup.enter="updateSearch()"
                                 icon-right="magnify"
                                 icon-right-clickable
-                                @icon-right-click="updateSearch()"
-                                :disabled="openAdvancedSearch" />
+                                :disabled="openAdvancedSearch"
+                                @update:model-value="typeFutureSearch"
+                                @keyup.enter="updateSearch()"
+                                @icon-right-click="updateSearch()" />
                     </template>
                     <b-dropdown-item 
-                            @click="updateSearch()"
-                            :focusable="false">
+                            :focusable="false"
+                            @click="updateSearch()">
                         <span v-html="$i18n.get('instruction_press_enter_to_search_for')"/>&nbsp;
                         <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
                     </b-dropdown-item>
@@ -104,17 +104,17 @@
                             @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                         {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
                         <a 
-                                @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
-                                class="has-text-secondary">
+                                class="has-text-secondary"
+                                @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                             {{ $i18n.get('advanced_search') }}
                         </a>
                     </b-dropdown-item>
                 </b-dropdown>
                 <a
                         v-if="!hideAdvancedSearch"
-                        @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
                         class="advanced-search-toggle has-text-secondary is-pulled-right"
-                        :class="openAdvancedSearch ? 'is-open' : 'is-closed'">
+                        :class="openAdvancedSearch ? 'is-open' : 'is-closed'"
+                        @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                     {{ $i18n.get('advanced_search') }}
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-search" />
@@ -126,8 +126,8 @@
         <!-- Another option of the Button for hiding filters -->
         <div 
                 v-if="showFiltersButtonInsideSearchControl && !hideHideFiltersButton && !hideFilters && !openAdvancedSearch"
-                :class="'search-control-item search-control-item--filters-button' + (isFiltersModalActive ? ' is-filters-modal-active' : '')"
-                id="tainacanFiltersButton">
+                id="tainacanFiltersButton"
+                :class="'search-control-item search-control-item--filters-button' + (isFiltersModalActive ? ' is-filters-modal-active' : '')">
             <button 
                     class="button is-white"
                     :aria-label="$i18n.get('filters')"
@@ -146,6 +146,7 @@
                 v-if="!hideDisplayedMetadataButton && (registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].dynamic_metadata)"
                 class="search-control-item search-control-item--displayed-metadata-dropdown">
             <b-dropdown
+                    ref="displayedMetadataDropdown" 
                     v-tooltip="{
                         delay: {
                             shown: 500,
@@ -155,8 +156,7 @@
                         autoHide: false,
                         placement: 'auto-start',
                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                    }" 
-                    ref="displayedMetadataDropdown"
+                    }"
                     :mobile-modal="true"
                     :disabled="totalItems <= 0"
                     class="show metadata-options-dropdown"
@@ -190,8 +190,8 @@
                 <div class="dropdown-item-apply">
                     <button 
                             aria-controls="items-list-results"
-                            @click="onChangeDisplayedMetadata()"
-                            class="button is-success">
+                            class="button is-success"
+                            @click="onChangeDisplayedMetadata()">
                         {{ $i18n.get('label_apply_changes') }}
                     </button>
                 </div>  
@@ -206,9 +206,9 @@
                 <label class="label">{{ $i18n.get('label_sort') }}</label>
                 <b-dropdown
                         :mobile-modal="true"
-                        @update:model-value="onChangeOrder"
                         aria-role="list"
-                        trap-focus>
+                        trap-focus
+                        @update:model-value="onChangeOrder">
                     <template #trigger>
                         <button
                                 :aria-label="$i18n.get('label_sorting_direction')"
@@ -255,9 +255,9 @@
                     <b-dropdown
                             id="tainacanSortByDropdown"
                             :mobile-modal="true"
-                            @update:model-value="onChangeOrderBy($event)"
                             aria-role="list"
-                            trap-focus>
+                            trap-focus
+                            @update:model-value="onChangeOrderBy($event)">
                         <template #trigger>
                             <button
                                     :aria-label="$i18n.get('label_sorting')"
@@ -272,10 +272,10 @@
                                 v-for="metadatum of sortingMetadata"
                                 :key="metadatum.slug">
                             <b-dropdown-item
+                                    v-if="metadatum != undefined"
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
-                                    v-if="metadatum != undefined"
                                     :value="metadatum"
                                     aria-role="listitem">
                                 {{ metadatum.name }}
@@ -289,8 +289,8 @@
         <!-- View Modes Dropdown -->
         <div 
                 v-if="enabledViewModes.length > 1"
-                class="search-control-item search-control-item--view-modes-dropdown"
-                id="tainacanViewModesSection">
+                id="tainacanViewModesSection"
+                class="search-control-item search-control-item--view-modes-dropdown">
             <b-field>
                 <label 
                         class="label is-hidden-touch is-hidden-desktop-only"
@@ -303,19 +303,19 @@
                     {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
                 </label>
                 <b-dropdown
-                        @change="onChangeViewMode($event)"
                         :inline="showInlineViewModeOptions"
                         :mobile-modal="true"
                         position="is-bottom-left"
                         aria-role="list"
-                        trap-focus>
+                        trap-focus
+                        @change="onChangeViewMode($event)">
                     <template #trigger>
                         <button 
                                 class="button is-white" 
                                 :aria-label="$i18n.get('label_view_mode') + (registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : '')">
                             <span 
-                                    class="gray-icon view-mode-icon"
                                     v-if="registeredViewModes[viewMode] != undefined"
+                                    class="gray-icon view-mode-icon"
                                     v-html="registeredViewModes[viewMode].icon"/>
                             <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
                             <span class="icon">
@@ -327,10 +327,10 @@
                             v-for="(viewModeOption, index) of enabledViewModes"
                             :key="index">
                         <b-dropdown-item 
+                                v-if="(registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false) || (showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined)"
                                 aria-controls="items-list-results"
                                 role="button"
                                 :class="{ 'is-active': viewModeOption == viewMode }"
-                                v-if="(registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == false) || (showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined)"
                                 :value="viewModeOption"
                                 aria-role="listitem">
                             <span 
@@ -366,11 +366,11 @@
                     v-for="(viewModeOption, index) of enabledViewModes"
                     :key="index">
                 <button 
+                        v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true"
                         class="button is-white"
                         :aria-label="$i18n.get('label_slides')"
-                        @click="onChangeViewMode(viewModeOption)"
-                        v-if="!showFullscreenWithViewModes && registeredViewModes[viewModeOption] != undefined && registeredViewModes[viewModeOption].full_screen == true"
-                        :value="viewModeOption">
+                        :value="viewModeOption"
+                        @click="onChangeViewMode(viewModeOption)">
                     <span 
                             class="gray-icon view-mode-icon"
                             v-html="registeredViewModes[viewModeOption].icon"/>
@@ -381,8 +381,8 @@
 
         <!-- Exposers or alternative links modal button -->
         <div 
-                id="tainacanExposersButton"
                 v-if="!hideExposersButton"
+                id="tainacanExposersButton"
                 class="search-control-item search-control-item--exposers-button">
             <button 
                     class="button is-white"
@@ -407,10 +407,10 @@
     <!-- SIDEBAR WITH FILTERS -->
     <template v-if="!hideFilters">
         <b-modal
+                id="filters-modal"
+                ref="filters-modal"     
+                v-model="isFiltersModalActive"       
                 role="region"
-                id="filters-modal"     
-                ref="filters-modal"       
-                v-model="isFiltersModalActive"
                 :width="736"
                 :auto-focus="filtersAsModal"
                 :trap-focus="filtersAsModal"
@@ -426,19 +426,19 @@
                     v-html="hooks['filters_before']" />
 
             <filters-items-list
+                    id="filters-items-list"
                     :is-loading-items="isLoadingItems"
-                    @updateIsLoadingItemsState="(state) => isLoadingItems = state"
                     :autofocus="filtersAsModal"
                     :tabindex="filtersAsModal ? -1 : 0"
                     :aria-modal="filtersAsModal"
                     :role="filtersAsModal ? 'dialog' : ''"
-                    id="filters-items-list"
                     :taxonomy="taxonomy"
                     :collection-id="collectionId + ''"
                     :is-repository-level="isRepositoryLevel"
                     :filters-as-modal="filtersAsModal"
                     :has-filtered="hasFiltered"
-                    :is-mobile-screen="isMobileScreen" />
+                    :is-mobile-screen="isMobileScreen"
+                    @updateIsLoadingItemsState="(state) => isLoadingItems = state" />
 
             <!-- JS-side hook for extra form content -->
             <div 
@@ -464,9 +464,9 @@
         <!-- ADVANCED SEARCH -->
         <transition name="filter-item">
             <div 
+                    v-if="openAdvancedSearch && !hideAdvancedSearch"
                     id="advanced-search-container"
-                    role="search"
-                    v-if="openAdvancedSearch && !hideAdvancedSearch">
+                    role="search">
 
                 <!-- JS-side hook for extra form content -->
                 <div 
@@ -542,8 +542,8 @@
                 <!--  Default loading, to be used view modes without any skeleton-->
                 <b-loading 
                         v-if="registeredViewModes[viewMode] != undefined && !registeredViewModes[viewMode].implements_skeleton && !registeredViewModes[viewMode].skeleton_template" 
-                        :is-full-page="false"
-                        v-model="showLoading"/>
+                        v-model="showLoading"
+                        :is-full-page="false"/>
 
                 <!-- Custom skeleton templates used by some view modes --> 
                 <div
@@ -566,13 +566,13 @@
                 </p> 
                 <div>
                     <button
-                            @click="openMetatadaSortingWarningDialog({ offerCheckbox: false })"
-                            class="button">
+                            class="button"
+                            @click="openMetatadaSortingWarningDialog({ offerCheckbox: false })">
                         {{ $i18n.get('label_view_more') }}
                     </button>
                     <button 
-                            @click="hasAnOpenAlert = false"
-                            class="button icon">
+                            class="button icon"
+                            @click="hasAnOpenAlert = false">
                         <i class="tainacan-icon tainacan-icon-close"/>
                     </button>
                 </div>
@@ -592,17 +592,17 @@
                     v-html="itemsListTemplate"/>
 
             <component
+                    :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"
                     v-if="registeredViewModes[viewMode] != undefined &&
                             registeredViewModes[viewMode].type == 'component'"
-                    :collection-id="collectionId"
-                    :displayed-metadata="displayedMetadata" 
+                    :collection-id="collectionId" 
+                    :displayed-metadata="displayedMetadata"
                     :items="items"
                     :is-filters-menu-compressed="!hideFilters && !isFiltersModalActive"
                     :total-items="totalItems"
                     :is-loading="showLoading"
                     :enabled-view-modes="enabledViewModes"
-                    :initial-item-position="initialItemPosition"
-                    :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''">
+                    :initial-item-position="initialItemPosition">
                 
                 
                 <!-- Empty Placeholder, rendered in a slot inside the view modes -->

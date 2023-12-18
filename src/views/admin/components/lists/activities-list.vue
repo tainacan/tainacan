@@ -24,14 +24,14 @@
                 </thead>
                 <tbody>
                     <tr
-                            :key="index"
-                            v-for="(activity, index) of activities">
+                            v-for="(activity, index) of activities"
+                            :key="index">
                         <!-- Name -->
                         <td
                                 class="column-default-width column-main-content"
-                                @click="openActivityDetailsModal(activity)"
                                 :label="$i18n.get('label_activity_title')"
-                                :aria-label="$i18n.get('label_activity_title') + ': ' + activity.title">
+                                :aria-label="$i18n.get('label_activity_title') + ': ' + activity.title"
+                                @click="openActivityDetailsModal(activity)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -49,9 +49,9 @@
                         <!-- User -->
                         <td
                                 class="table-creation column-small-width"
-                                @click="openActivityDetailsModal(activity)"
                                 :label="$i18n.get('label_created_by')"
-                                :aria-label="$i18n.get('label_created_by') + ': ' + activity.user_name">
+                                :aria-label="$i18n.get('label_created_by') + ': ' + activity.user_name"
+                                @click="openActivityDetailsModal(activity)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -68,9 +68,9 @@
                         <!-- Activity Date -->
                         <td
                                 class="table-creation column-small-width"
-                                @click="openActivityDetailsModal(activity)"
                                 :label="$i18n.get('label_activity_date')"
-                                :aria-label="$i18n.get('label_activity_date') + ': ' + activity.date">
+                                :aria-label="$i18n.get('label_activity_date') + ': ' + activity.date"
+                                @click="openActivityDetailsModal(activity)">
                             <p
                                     v-tooltip="{
                                         delay: {

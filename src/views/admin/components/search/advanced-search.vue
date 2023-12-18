@@ -1,8 +1,8 @@
 <template>
     <form 
             tabindex="0"
-            @submit.prevent.stop="performAdvancedSearch"
-            class="tnc-advanced-search-container">
+            class="tnc-advanced-search-container"
+            @submit.prevent.stop="performAdvancedSearch">
         <h3>{{ $i18n.get('advanced_search') }}</h3>
         <transition-group name="filter-item">
             <b-field
@@ -66,12 +66,12 @@
                 <!-- Comparators -->
                 <b-field class="column">
                     <b-select
-                            :loading="isLoadingMetadata"
                             v-if="searchCriterion.type == 'metaquery' && advancedSearchQuery.metaquery[searchCriterion.index]"
-                            @update:model-value="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
+                            :loading="isLoadingMetadata"
                             :model-value="advancedSearchQuery.metaquery[searchCriterion.index].compare"
                             :placeholder="$i18n.get('label_criterion_to_compare')"
-                            :aria-label="$i18n.get('label_criterion_to_compare')">
+                            :aria-label="$i18n.get('label_criterion_to_compare')"
+                            @update:model-value="addComparatorToAdvancedSearchQuery($event, searchCriterion)">
                         <option 
                                 v-for="(comparator, key) in getComparators(searchCriterion)"
                                 :key="key"
@@ -79,12 +79,12 @@
                         >{{ comparator }}</option>
                     </b-select>
                     <b-select
-                            :loading="isLoadingMetadata"
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
-                            @update:model-value="addComparatorToAdvancedSearchQuery($event, searchCriterion)"
+                            :loading="isLoadingMetadata"
                             :model-value="advancedSearchQuery.taxquery[searchCriterion.index].operator"
                             :placeholder="$i18n.get('label_criterion_to_compare')"
-                            :aria-label="$i18n.get('label_criterion_to_compare')">
+                            :aria-label="$i18n.get('label_criterion_to_compare')"
+                            @update:model-value="addComparatorToAdvancedSearchQuery($event, searchCriterion)">
                         <option 
                                 v-for="(comparator, key) in getComparators(searchCriterion)"
                                 :key="key"
@@ -105,36 +105,36 @@
                                 v-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'int' || getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'float'"
                                 type="number"
                                 step="any"
-                                @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
                                 :model-value="advancedSearchQuery.metaquery[searchCriterion.index].value"
                                 :placeholder="$i18n.get('label_number_to_search_for')"
                                 :aria-label="$i18n.get('label_number_to_search_for')"
+                                @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
                         />
                         <input
                                 v-else-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
+                                v-imask="dateMask"
                                 class="input"
                                 :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion.index].value)"
-                                v-imask="dateMask"
-                                @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)"
-                                :placeholder="dateFormat" 
-                                type="text"
-                                :aria-label="$i18n.get('label_date_to_search_for')" >
+                                :placeholder="dateFormat"
+                                type="text" 
+                                :aria-label="$i18n.get('label_date_to_search_for')"
+                                @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)" >
                         <b-input
                                 v-else
                                 type="text"
-                                @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
                                 :model-value="advancedSearchQuery.metaquery[searchCriterion.index].value"
                                 :placeholder="$i18n.get('label_string_to_search_for')"
                                 :aria-label="$i18n.get('label_string_to_search_for')"
+                                @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
                         />
                     </template>
                     <b-input
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
                             :model-value="advancedSearchQuery.taxquery[searchCriterion.index].terms"
-                            @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
                             type="text"
                             :placeholder="$i18n.get('label_string_to_search_for')"
-                            :aria-label="$i18n.get('label_string_to_search_for')" />
+                            :aria-label="$i18n.get('label_string_to_search_for')"
+                            @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)" />
                     <b-input
                             v-else
                             type="text"
@@ -144,10 +144,10 @@
 
                 <div class="field">
                     <button
-                            @click.prevent="removeCriterion(searchCriterion)"
                             class="button button-remove-criterion is-pulled-right has-text-secondary"
                             type="button"
-                            :aria-label="$i18n.get('remove_search_criterion')">
+                            :aria-label="$i18n.get('remove_search_criterion')"
+                            @click.prevent="removeCriterion(searchCriterion)">
                         <span 
                                 v-tooltip="{
                                     content: $i18n.get('remove_search_criterion'),
@@ -177,8 +177,8 @@
                 }}
             </a>
             <a
-                    role="button"
                     v-if="Object.keys(advancedSearchQuery.taxquery).length > 0 || Object.keys(advancedSearchQuery.metaquery).length > 0"
+                    role="button"
                     @click="clearSearch();">
                 <span class="icon">
                     <i class="has-text-secondary tainacan-icon tainacan-icon-remove"/>
@@ -194,8 +194,8 @@
             <p class="control">
                 <button
                         type="reset"
-                        @click="clearSearch(); $emit('close')"
-                        class="button is-outlined">
+                        class="button is-outlined"
+                        @click="clearSearch(); $emit('close')">
                     {{ $i18n.get('label_close_search') }}
                 </button>
             </p>
@@ -204,16 +204,16 @@
                         aria-controls="items-list-results"
                         type="submit"
                         :disabled="!hasUpdatedSearch"
-                        @click.prevent="performAdvancedSearch"
-                        class="button is-secondary">
+                        class="button is-secondary"
+                        @click.prevent="performAdvancedSearch">
                     {{ $i18n.get('apply') }}
                 </button>
             </p>
         </div>
 
         <b-loading 
-                :is-full-page="false" 
-                v-model="isLoadingMetadata" />
+                v-model="isLoadingMetadata" 
+                :is-full-page="false" />
         
         <section
                 v-if="!isLoadingMetadata && metadataAsArray && metadataAsArray.length <= 0"

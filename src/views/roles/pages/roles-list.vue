@@ -14,18 +14,18 @@
                         placement: 'top',
                         popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
                     }"
-                    @click="showDropdownMenu = !showDropdownMenu"
                     class="button button-secondary"
                     aria-haspopup="true"
                     aria-controls="dropdown-menu"
-                    :aria-expanded="showDropdownMenu">
+                    :aria-expanded="showDropdownMenu"
+                    @click="showDropdownMenu = !showDropdownMenu">
                 <span class="dashicons dashicons-arrow-down-alt2" />
             </button>
 
             <div 
+                    id="dropdown-menu"
                     :class="{ 'show': showDropdownMenu }"
                     class="dropdown-menu"
-                    id="dropdown-menu"
                     :aria-hidden="showDropdownMenu">
                 <!-- <p class="dropdown-menu-intro">{{ $i18n.get('Create a new role based on: ') }}</p> -->
                 <ul>
@@ -53,10 +53,10 @@
                 {{ $i18n.get('Type to search by Role Name') }}
             </label>
             <input
-                    type="search" 
                     id="roles-search-input" 
-                    :placeholder="$i18n.get('Type to search by Role Name')"
-                    v-model="searchString">
+                    v-model="searchString" 
+                    type="search"
+                    :placeholder="$i18n.get('Type to search by Role Name')">
 		</p>
 
         <div 
@@ -86,8 +86,8 @@
                                 type="checkbox">
                     </td> -->
                     <th
-                            scope="col"
                             id="name"
+                            scope="col"
                             class="manage-column column-name">
                         {{ $i18n.get('Role\'s Name') }}
                     </th>
@@ -98,8 +98,8 @@
                         {{ $i18n.get('Slug') }}
                     </th> -->
                     <th
-                            scope="col"
                             id="capabilities-number"
+                            scope="col"
                             class="manage-column column-capabilities num">
                         {{ $i18n.get('Number of Capabilities') }}
                     </th>
@@ -109,8 +109,8 @@
             <tbody data-wp-lists="list:roles">
                 <tr
                         v-for="role of roles"
-                        :key="role.slug"
-                        :id="role.slug">
+                        :id="role.slug"
+                        :key="role.slug">
                     <!-- <th
                             scope="row"
                             class="check-column">
@@ -147,8 +147,8 @@
                                     class="delete">
                                 &nbsp;|&nbsp;
                                 <a 
-                                        @click="removeRole(role.slug)"
-                                        class="submitdelete">
+                                        class="submitdelete"
+                                        @click="removeRole(role.slug)">
                                     {{ $i18n.get('Delete') }}
                                 </a>
                             </span>
@@ -180,8 +180,8 @@
                                 type="checkbox">
                     </td> -->
                     <th
-                            scope="col"
                             id="name"
+                            scope="col"
                             class="manage-column column-name column-primary">
                         {{ $i18n.get('Role\'s Name') }}
                     </th>
@@ -192,8 +192,8 @@
                         {{ $i18n.get('Slug') }}
                     </th> -->
                     <th
-                            scope="col"
                             id="capabilities-number"
+                            scope="col"
                             class="manage-column column-capabilities num">
                         {{ $i18n.get('Number of Capabilities') }}
                     </th>

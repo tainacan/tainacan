@@ -5,8 +5,8 @@
         <a 
                 :id="isNaN(facetId) ? facetId : 'facet-id-' + facetId"
                 :href="isCollapseInsteadOfLink(facet) ? null : ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy) ? facet.term_url : facet.url)"
-                @click="() => { isCollapseInsteadOfLink(facet) ? displayChildTerms(facetId) : null }"
-                :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}">
+                :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}"
+                @click="() => { isCollapseInsteadOfLink(facet) ? displayChildTerms(facetId) : null }">
             <img
                 :src=" 
                     facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
@@ -67,8 +67,8 @@
                     class="facets-list"
                     :class="'facets-layout-' + layout + ' facets-list-without-margin' + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
                 <li
-                        :key="childFacet"
                         v-for="childFacet in Number(facet.total_children)"
+                        :key="childFacet"
                         class="facet-list-item skeleton"
                         :style="{ 
                             minHeight: getSkeletonHeight(),

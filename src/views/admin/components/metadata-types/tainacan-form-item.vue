@@ -1,7 +1,7 @@
 <template>
     <b-field
-            :class="metadatumFormClasses"
             :ref="isHighlightedMetadatum ? 'highlighted-metadatum': 'null'"
+            :class="metadatumFormClasses"
             :addons="false"
             :message="errorMessage"
             :type="errorMessage ? 'is-danger' : ''">
@@ -53,21 +53,19 @@
                     v-show="hideCollapses || isCollapsed || !!errorMessage"
                     v-if="isTextInputComponent">
                 <p
-                        class="metadatum-description-help-info"
                         v-if="itemMetadatum.metadatum &&
                             itemMetadatum.metadatum.description &&
                             (
                                 (!hideHelpButtons && helpInfoBellowLabel) ||
                                 (itemMetadatum.metadatum.description_bellow_name === 'yes')
-                            )">
+                            )"
+                        class="metadatum-description-help-info">
                     {{ itemMetadatum.metadatum.description }}
                 </p>
                 <component 
                         :is="metadatumComponent"
                         v-model:value="values[0]" 
                         :item-metadatum="itemMetadatum"
-                        @input="changeValue"
-                        @blur="performValueChange"
                         :disabled="false"
                         :metadata-name-filter-string="metadataNameFilterString"
                         :hide-collapses="hideCollapses"
@@ -75,9 +73,11 @@
                         :hide-help-buttons="hideHelpButtons"
                         :help-info-bellow-label="helpInfoBellowLabel"
                         :is-mobile-screen="isMobileScreen"
-                        @mobileSpecialFocus="onMobileSpecialFocus"
                         :is-focused="isFocused"
-                        :is-metadata-navigation="isMetadataNavigation" />
+                        :is-metadata-navigation="isMetadataNavigation"
+                        @input="changeValue"
+                        @blur="performValueChange"
+                        @mobileSpecialFocus="onMobileSpecialFocus" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
                             tag="div"
@@ -87,12 +87,10 @@
                                 v-for="(value, index) of values"
                                 :key="index">
                             <component 
-                                    v-if="index > 0"
                                     :is="metadatumComponent"
+                                    v-if="index > 0"
                                     v-model:value="values[index]" 
                                     :item-metadatum="itemMetadatum"
-                                    @input="changeValue"
-                                    @blur="performValueChange"
                                     :disabled="false"
                                     :metadata-name-filter-string="metadataNameFilterString"
                                     :hide-collapses="hideCollapses"
@@ -100,14 +98,16 @@
                                     :hide-help-buttons="hideHelpButtons"
                                     :help-info-bellow-label="helpInfoBellowLabel"
                                     :is-mobile-screen="isMobileScreen"
-                                    @mobileSpecialFocus="onMobileSpecialFocus"
                                     :is-focused="isFocused"
-                                    :is-metadata-navigation="isMetadataNavigation" />
+                                    :is-metadata-navigation="isMetadataNavigation"
+                                    @input="changeValue"
+                                    @blur="performValueChange"
+                                    @mobileSpecialFocus="onMobileSpecialFocus" />
                             <a 
                                     v-if="index > 0" 
-                                    @click="removeValue(index)"
+                                    :key="index"
                                     class="add-link"
-                                    :key="index">
+                                    @click="removeValue(index)">
                                 <span class="icon is-small">
                                     <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
                                 </span>
@@ -118,8 +118,8 @@
                 </template>
                 <template v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > values.length))">
                     <a 
-                            @click="addValue"
-                            class="is-inline-block add-link">
+                            class="is-inline-block add-link"
+                            @click="addValue">
                         <span class="icon is-small">
                             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                         </span>
@@ -133,21 +133,19 @@
                     v-show="hideCollapses || isCollapsed"
                     v-else>
                 <p
-                        class="metadatum-description-help-info"
                         v-if="itemMetadatum.metadatum &&
                             itemMetadatum.metadatum.description &&
                             (
                                 (!hideHelpButtons && helpInfoBellowLabel) ||
                                 (itemMetadatum.metadatum.description_bellow_name === 'yes')
-                            )">
+                            )"
+                        class="metadatum-description-help-info">
                     {{ itemMetadatum.metadatum.description }}
                 </p>
                 <component
                         :is="metadatumComponent"
                         v-model:value="values"
                         :item-metadatum="itemMetadatum"
-                        @input="changeValue"
-                        @blur="performValueChange"
                         :disabled="false"
                         :is-last-metadatum="isLastMetadatum"
                         :hide-collapses="hideCollapses"
@@ -156,10 +154,12 @@
                         :help-info-bellow-label="helpInfoBellowLabel"
                         :is-mobile-screen="isMobileScreen"
                         :metadata-name-filter-string="metadataNameFilterString"
-                        @mobileSpecialFocus="onMobileSpecialFocus"
                         :is-focused="isFocused"
                         :is-metadata-navigation="isMetadataNavigation"
-                        :enumerate-metadatum="enumerateMetadatum" />
+                        :enumerate-metadatum="enumerateMetadatum"
+                        @input="changeValue"
+                        @blur="performValueChange"
+                        @mobileSpecialFocus="onMobileSpecialFocus" />
             </div>
         </transition>
     </b-field>

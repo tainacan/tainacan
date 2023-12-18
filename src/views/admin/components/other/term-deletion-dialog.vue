@@ -1,11 +1,11 @@
 <template>
     <div 
+            ref="termDeletionDialog"
             aria-labelledby="alert-dialog-title"
             aria-modal
             autofocus
             role="alertdialog"
-            class="tainacan-form tainacan-dialog dialog"
-            ref="termDeletionDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -32,13 +32,13 @@
                         v-if="showDescendantsDeleteButton"
                         class="type-of-deletion-options">
                     <b-radio 
-                            native-value="selected"
-                            v-model="typeOfDelete">
+                            v-model="typeOfDelete"
+                            native-value="selected">
                         {{ amountOfTerms > 1 ? $i18n.get('label_remove_selected_terms') : $i18n.get('label_remove_selected_term') }}
                     </b-radio>
                     <b-radio 
-                            native-value="descendants"
-                            v-model="typeOfDelete">
+                            v-model="typeOfDelete"
+                            native-value="descendants">
                         {{ amountOfTerms > 1 ? $i18n.get('label_remove_terms_and_descendants') : $i18n.get('label_remove_term_and_descendants') }}
                     </b-radio>
                 </div>

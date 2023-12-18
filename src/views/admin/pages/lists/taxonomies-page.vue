@@ -10,13 +10,13 @@
                         v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')"
                         class="header-item">
                     <router-link
+                            v-slot="{ navigate }"
                             :to="{ path: $routerHelper.getNewTaxonomyPath() }"
-                            custom
-                            v-slot="{ navigate }">
+                            custom>
                         <button 
+                                id="button-create-taxonomy"
                                 type="button"
-                                role="link"
-                                id="button-create-taxonomy" 
+                                role="link" 
                                 class="button is-secondary"
                                 @click="navigate()">
                             {{ $i18n.getFrom('taxonomies', 'new_item') }}
@@ -30,9 +30,9 @@
                     <b-dropdown
                             :mobile-modal="true"
                             :disabled="taxonomies.length <= 0 || isLoading"
-                            @update:model-value="onChangeOrder"
                             aria-role="list"
-                            trap-focus>
+                            trap-focus
+                            @update:model-value="onChangeOrder">
                         <template #trigger>
                             <button
                                     :aria-label="$i18n.get('label_sorting_direction')"
@@ -82,13 +82,13 @@
                     <b-select
                             class="sorting-select"
                             :disabled="taxonomies.length <= 0"
-                            @update:model-value="onChangeOrderBy($event)"
                             :model-value="orderBy"
-                            :label="$i18n.get('label_sorting')">
+                            :label="$i18n.get('label_sorting')"
+                            @update:model-value="onChangeOrderBy($event)">
                         <option
                                 v-for="(option, index) in sortingOptions"
-                                :value="option.value"
-                                :key="index">
+                                :key="index"
+                                :value="option.value">
                             {{ option.label }}
                         </option>
                     </b-select>
@@ -97,35 +97,35 @@
                 <!-- Textual Search -------------->
                 <b-field class="header-item">
                     <b-input 
+                            v-model="searchQuery"
                             :placeholder="$i18n.get('instruction_search')"
                             type="search"
                             size="is-small"
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
                             autocomplete="on"
-                            v-model="searchQuery"
-                            @keyup.enter="searchTaxonomies()"
                             icon-right="magnify"
                             icon-right-clickable
+                            @keyup.enter="searchTaxonomies()"
                             @icon-right-click="searchTaxonomies()" />
                 </b-field>
             </div>
 
             <div class="above-subheader">
                 <b-loading
-                        :is-full-page="true" 
                         v-model="isLoading" 
+                        :is-full-page="true" 
                         :can-cancel="false"/>
                 <div class="tabs">
                     <ul>
                         <li 
-                                @click="onChangeTab('')"
-                                :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,draft'}"
                                 v-tooltip="{
                                     content: $i18n.get('info_taxonomies_tab_all'),
                                     autoHide: true,
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                                }">
+                                }"
+                                :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,draft'}"
+                                @click="onChangeTab('')">
                             <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                                 {{ `${$i18n.get('label_all_taxonomies')}` }}
                                 <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
@@ -134,15 +134,15 @@
                         <li 
                                 v-for="(statusOption, index) of statusOptionsForTaxonomies"
                                 :key="index"
-                                @click="onChangeTab(statusOption.slug)"
-                                :class="{ 'is-active': status == statusOption.slug}"
-                                :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
                                 v-tooltip="{
                                     content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('taxonomies')]),
                                     autoHide: true,
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                                }">
+                                }"
+                                :class="{ 'is-active': status == statusOption.slug}"
+                                :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
+                                @click="onChangeTab(statusOption.slug)">
                             <a>
                                 <span 
                                         v-if="$statusHelper.hasIcon(statusOption.slug)"
@@ -182,12 +182,12 @@
                                 </p>
                                 <router-link
                                         v-if="status == undefined || status == ''"
+                                        v-slot="{ navigate }"
                                         :to="{ path: $routerHelper.getNewTaxonomyPath() }"
-                                        custom
-                                        v-slot="{ navigate }">
+                                        custom>
                                     <button
-                                            role="link"
                                             id="button-create-taxonomy"
+                                            role="link"
                                             type="button"
                                             class="button is-secondary"
                                             @click="navigate()">
@@ -199,8 +199,8 @@
                     </div>
                     <!-- Footer -->
                     <div 
-                            class="pagination-area" 
-                            v-if="taxonomies.length > 0">
+                            v-if="taxonomies.length > 0" 
+                            class="pagination-area">
                         <div class="shown-items">
                             {{
                                 $i18n.get('info_showing_taxonomies') + ' ' +
@@ -216,8 +216,8 @@
                                     :label="$i18n.get('label_taxonomies_per_page')">
                                 <b-select
                                         :model-value="taxonomiesPerPage"
-                                        @update:model-value="onChangePerPage"
-                                        :disabled="taxonomies.length <= 0">
+                                        :disabled="taxonomies.length <= 0"
+                                        @update:model-value="onChangePerPage">
                                     <option value="12">12</option>
                                     <option value="24">24</option>
                                     <option value="48">48</option>
@@ -227,16 +227,16 @@
                         </div>
                         <div class="pagination">
                             <b-pagination
-                                    @change="onPageChange"
-                                    :total="total"
                                     v-model="page"
+                                    :total="total"
                                     order="is-centered"
                                     size="is-small"
                                     :per-page="taxonomiesPerPage"
                                     :aria-next-label="$i18n.get('label_next_page')"
                                     :aria-previous-label="$i18n.get('label_previous_page')"
                                     :aria-page-label="$i18n.get('label_page')"
-                                    :aria-current-label="$i18n.get('label_current_page')"/>
+                                    :aria-current-label="$i18n.get('label_current_page')"
+                                    @change="onPageChange"/>
                        
                         </div>
                     </div>

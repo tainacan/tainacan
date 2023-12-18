@@ -3,10 +3,10 @@
         <div class="tainacan-reports-header">
             <h1 class="wp-heading-inline">{{ $route.meta.title }}</h1>
             <select 
-                    name="select_collections"
                     id="select_collections"
-                    @input="(inputEvent) => $router.push({ query: { collection: inputEvent.target.value } })"
-                    :value="selectedCollection">
+                    name="select_collections"
+                    :value="selectedCollection"
+                    @input="(inputEvent) => $router.push({ query: { collection: inputEvent.target.value } })">
                 <option value="default">
                     {{ $i18n.get('repository') }}
                 </option>
@@ -125,10 +125,10 @@
                     </div>
                 </div>
                 <collections-list-block
+                        v-if="isRepositoryLevel"
                         class="column is-full"
                         :chart-data="collectionsList"
-                        :is-fetching-data="isFetchingCollectionsList"
-                        v-if="isRepositoryLevel">
+                        :is-fetching-data="isFetchingCollectionsList">
                     <div 
                             v-if="collectionsLatestCachedOn"
                             class="box-last-cached-on">
@@ -146,10 +146,10 @@
                 </collections-list-block>
 
                 <metadata-types-block
+                        v-if="!isRepositoryLevel"
                         class="column is-full"
                         :chart-data="metadata"
-                        :is-fetching-data="isFetchingMetadata"
-                        v-if="!isRepositoryLevel">
+                        :is-fetching-data="isFetchingMetadata">
                     <div 
                             v-if="metadataLatestCachedOn"
                             class="box-last-cached-on">
@@ -167,10 +167,10 @@
                 </metadata-types-block>
 
                 <terms-per-taxonomy-block
+                        v-if="isRepositoryLevel"
                         class="column is-full"
                         :chart-data="taxonomyList"
-                        :is-fetching-data="isFetchingTaxonomiesList"
-                        v-if="isRepositoryLevel">
+                        :is-fetching-data="isFetchingTaxonomiesList">
                     <div 
                             v-if="taxonomiesLatestCachedOn"
                             class="box-last-cached-on">
@@ -188,10 +188,10 @@
                 </terms-per-taxonomy-block>
             </div>
             <metadata-distribution-block
+                    v-if="!isRepositoryLevel"
                     class="column is-full is-two-fifths-desktop"
                     :chart-data="metadata"
-                    :is-fetching-data="isFetchingMetadata"
-                    v-if="!isRepositoryLevel">
+                    :is-fetching-data="isFetchingMetadata">
                 <div 
                         v-if="metadataLatestCachedOn"
                         class="box-last-cached-on">

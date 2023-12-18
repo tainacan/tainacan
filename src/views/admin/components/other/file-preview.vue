@@ -13,8 +13,8 @@
                 class="is-flex rendered-content"
                 v-html="file.description ? file.description : `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + file.url + `'/>`" />
         <iframe
-                style="width: 100%; min-height: 50vh;"    
-                v-if="file.url != undefined && file.url != undefined && file.mime_type != undefined && file.mime_type == 'application/pdf'"
+                v-if="file.url != undefined && file.url != undefined && file.mime_type != undefined && file.mime_type == 'application/pdf'"    
+                style="width: 100%; min-height: 50vh;"
                 :src="file.url" />
         <div class="field is-grouped form-submit">
             <div class="control">

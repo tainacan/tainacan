@@ -13,10 +13,10 @@
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :class="{'has-selected': selected != undefined && selected != []}"
-                @typing="search"
-                @update:model-value="($event) => { resetPage(); onSelect($event) }"
                 :placeholder="$i18n.get('info_type_to_add_terms')"
                 check-infinite-scroll
+                @typing="search"
+                @update:model-value="($event) => { resetPage(); onSelect($event) }"
                 @infinite-scroll="searchMore">
             <template #default="props">
                 <div class="media">

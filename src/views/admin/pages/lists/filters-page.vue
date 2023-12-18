@@ -12,9 +12,9 @@
             
             <div
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
+                    ref="filterEditionPageColumns"
                     :style="{ height: activeFiltersList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
-                    class="columns"
-                    ref="filterEditionPageColumns">
+                    class="columns">
                 <div class="column">
 
                     <div class="tainacan-form sub-header">
@@ -24,8 +24,8 @@
                                 
                             <b-field class="header-item">
                                 <b-input 
-                                        :placeholder="$i18n.get('instruction_type_search_filter_filter')"
                                         v-model="filterNameFilterString"
+                                        :placeholder="$i18n.get('instruction_type_search_filter_filter')"
                                         icon="magnify"
                                         size="is-small"
                                         icon-right="close-circle"
@@ -52,11 +52,8 @@
                     <sortable
                             :list="activeFiltersList"
                             item-key="id"
-                            @update="handleChangeOnFilter"
-                            @add="handleChangeOnFilter"
-                            @remove="handleChangeOnFilter"
                             class="active-filters-area"
-                            :class="{ 'filters-area-receive': isDraggingFromAvailable }" 
+                            :class="{ 'filters-area-receive': isDraggingFromAvailable }"
                             :options="{
                                 group: { name:'filters', pull: false, put: true },
                                 sort: (openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel,
@@ -65,17 +62,20 @@
                                 filter: '.not-sortable-item',
                                 preventOnFilter: false,
                                 animation: 250
-                            }">
+                            }"
+                            @update="handleChangeOnFilter"
+                            @add="handleChangeOnFilter" 
+                            @remove="handleChangeOnFilter">
                         <template #item="{ element: filter, index }">
                             <div
+                                    v-show="filterNameFilterString == '' || filter.name.toString().toLowerCase().indexOf(filterNameFilterString.toString().toLowerCase()) >= 0" 
                                     class="active-filter-item" 
                                     :class="{
                                         'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || filterNameFilterString != ''),
                                         'not-focusable-item': openedFilterId == filter.id, 
                                         'disabled-filter': filter.enabled == false,
                                         'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
-                                    }" 
-                                    v-show="filterNameFilterString == '' || filter.name.toString().toLowerCase().indexOf(filterNameFilterString.toString().toLowerCase()) >= 0">
+                                    }">
                                 <div class="handle">
                                     <span
                                             v-if="!isRepositoryLevel"
@@ -83,8 +83,8 @@
                                         <button 
                                                 :disabled="index == 0"
                                                 class="link-button"
-                                                @click="moveFilterUpViaButton(index)"
-                                                :aria-label="$i18n.get('label_move_up')">
+                                                :aria-label="$i18n.get('label_move_up')"
+                                                @click="moveFilterUpViaButton(index)">
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
                                             </span>
@@ -92,21 +92,21 @@
                                         <button 
                                                 :disabled="index == activeFiltersList.length - 1"
                                                 class="link-button"
-                                                @click="moveFilterDownViaButton(index)"
-                                                :aria-label="$i18n.get('label_move_down')">
+                                                :aria-label="$i18n.get('label_move_down')"
+                                                @click="moveFilterDownViaButton(index)">
                                             <span class="icon">
                                                 <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
                                             </span>
                                         </button>
                                     </span>
                                     <span 
-                                            :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel || filterNameFilterString != '') ? '1.0' : '0.0' }"
                                             v-tooltip="{
                                                 content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
                                                 autoHide: true,
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                 placement: 'auto-start'
                                             }"
+                                            :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel || filterNameFilterString != '') ? '1.0' : '0.0' }"
                                             class="icon grip-icon">
                                         <svg 
                                                 xmlns="http://www.w3.org/2000/svg" 
@@ -131,19 +131,19 @@
                                         ({{ filter.filter_type_object.name }}) 
                                         <!-- <em v-if="filter.inherited">{{ $i18n.get('label_inherited') }}</em>  -->
                                         <span 
-                                                class="not-saved" 
-                                                v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
+                                                v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'" 
+                                                class="not-saved"> 
                                             {{ $i18n.get('info_not_saved') }}
                                         </span>
                                         <span 
                                                 v-if="filter.status == 'private'"
-                                                class="icon"
                                                 v-tooltip="{
                                                     content: $i18n.get('status_private'),
                                                     autoHide: true,
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'auto-start'
-                                                }">
+                                                }"
+                                                class="icon">
                                             <i class="tainacan-icon tainacan-icon-private"/>
                                         </span>
                                         <span 
@@ -166,11 +166,11 @@
                                         </span> 
                                     </span>
                                     <span 
-                                            class="loading-spinner" 
-                                            v-if="filter.id == undefined"/>
+                                            v-if="filter.id == undefined" 
+                                            class="loading-spinner"/>
                                     <span 
-                                            class="controls" 
-                                            v-if="filter.filter_type != undefined">
+                                            v-if="filter.filter_type != undefined" 
+                                            class="controls">
                                         <b-switch
                                                 v-if="!isRepositoryLevel"
                                                 :disabled="isUpdatingFiltersOrder" 
@@ -212,13 +212,13 @@
                                 <transition name="form-collapse">
                                     <b-field v-if="openedFilterId == filter.id">
                                         <filter-edition-form
+                                                :index="index"
+                                                :original-filter="filter"
+                                                :edited-filter="editForms[openedFilterId]"
                                                 @onEditionFinished="onEditionFinished()"
                                                 @onEditionCanceled="onEditionCanceled()"
                                                 @onErrorFound="formWithErrors = filter.id"
-                                                @onUpdateSavedState="(state) => editForms[filter.id].saved = state"
-                                                :index="index"
-                                                :original-filter="filter"
-                                                :edited-filter="editForms[openedFilterId]"/>
+                                                @onUpdateSavedState="(state) => editForms[filter.id].saved = state"/>
                                     </b-field>
                                 </transition>
                             </div>
@@ -235,8 +235,8 @@
                                 
                             <b-field class="header-item">
                                 <b-input 
-                                        :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                         v-model="metadatumNameFilterString"
+                                        :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                         icon="magnify"
                                         size="is-small"
                                         icon-right="close-circle"
@@ -251,7 +251,6 @@
                                 v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
                                 :list="availableMetadata"
                                 item-key="id"
-                                @change="handleChangeOnMetadata"
                                 :options="{
                                     group: {
                                         name:'filters',
@@ -262,16 +261,17 @@
                                     filter: '.not-sortable-item',
                                     preventOnFilter: false,
                                     dragClass: 'sortable-drag'
-                                }">
+                                }"
+                                @change="handleChangeOnMetadata">
                             <template #item="{ element: metadatum, index }">
                                 <div 
+                                        v-if="metadatum.enabled"
+                                        v-show="metadatumNameFilterString == '' || metadatum.name.toString().toLowerCase().indexOf(metadatumNameFilterString.toString().toLowerCase()) >= 0"
                                         class="available-metadatum-item"
                                         :class="{
                                             'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
                                             'disabled-metadatum': isSelectingFilterType
                                         }"
-                                        v-if="metadatum.enabled"
-                                        v-show="metadatumNameFilterString == '' || metadatum.name.toString().toLowerCase().indexOf(metadatumNameFilterString.toString().toLowerCase()) >= 0"
                                         @click.prevent="addMetadatumViaButton(metadatum, index)">
                                     <span 
                                             v-tooltip="{
@@ -340,15 +340,15 @@
                                 </p>
                                 <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
                                 <router-link
+                                        v-slot="{ navigate }"
                                         :to="isRepositoryLevel ? $routerHelper.getNewMetadatumPath() : $routerHelper.getNewCollectionMetadatumPath(collectionId)"
-                                        custom
-                                        v-slot="{ navigate }">
+                                        custom>
                                     <button
-                                            role="link" 
-                                            ttype="button"
-                                            @click="navigate()" 
-                                            id="button-create-metadatum"
-                                            class="button is-secondary is-centered">
+                                            id="button-create-metadatum" 
+                                            role="link"
+                                            ttype="button" 
+                                            class="button is-secondary is-centered"
+                                            @click="navigate()">
                                         {{ $i18n.getFrom('metadata', 'new_item') }}
                                     </button>
                                 </router-link>
@@ -373,8 +373,8 @@
 
             <b-modal 
                     ref="filterTypeModal"
-                    :width="680"
                     v-model="isSelectingFilterType"
+                    :width="680"
                     trap-focus
                     aria-modal
                     aria-role="dialog"
@@ -401,10 +401,10 @@
                                         <p>{{ $i18n.get('instruction_click_to_select_a_filter_type') }}</p>
                                         <br>
                                         <div
-                                                role="listitem"
-                                                class="filter-type"
                                                 v-for="(filterType, index) in allowedFilterTypes"
                                                 :key="index"
+                                                role="listitem"
+                                                class="filter-type"
                                                 @click="onFilterTypeSelected(filterType)"
                                                 @mouseover="currentFilterTypePreview = { name: filterType.name, template: filterType.preview_template }"
                                                 @mouseleave="currentFilterTypePreview = { name: filterType.name, template: filterType.preview_template }">

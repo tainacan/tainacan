@@ -42,9 +42,9 @@
                     v-if="!$adminOptions.hideTainacanHeaderSearchInput"
                     class="is-hidden-tablet">
                 <button
-                        @click="$router.push($routerHelper.getItemsPath())"
                         class="button is-small is-white level-item"
-                        :aria-label="$i18n.get('search')">
+                        :aria-label="$i18n.get('search')"
+                        @click="$router.push($routerHelper.getItemsPath())">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
                     </span>
@@ -60,10 +60,10 @@
                         class="search-header"
                         size="is-small"
                         :model-value="searchQuery"
-                        @update:model-value="futureSearchQuery = $event.target.value"
-                        @keyup.enter="updateSearch()"
                         icon-right="magnify"
                         icon-right-clickable
+                        @update:model-value="futureSearchQuery = $event.target.value"
+                        @keyup.enter="updateSearch()"
                         @icon-right-click="updateSearch()" />
                 <router-link
                         v-if="!$adminOptions.hideTainacanHeaderAdvancedSearch"
@@ -75,9 +75,9 @@
             </div>
             <button
                     v-if="!$adminOptions.hideTainacanHeaderProcessesPopup"
-                    @click="showProcesses = !showProcesses"
                     class="button is-small is-white level-item"
-                    :aria-label="$i18n.get('processes')">
+                    :aria-label="$i18n.get('processes')"
+                    @click="showProcesses = !showProcesses">
                 <span
                         v-tooltip="{
                             content: $i18n.get('processes'),

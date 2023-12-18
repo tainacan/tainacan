@@ -1,7 +1,7 @@
 <template>
     <span 
-            @mouseenter="loadMetadataElements"
-            class="tainacan-help-tooltip-trigger">
+            class="tainacan-help-tooltip-trigger"
+            @mouseenter="loadMetadataElements">
         <v-tooltip 
                 :popper-class="['tainacan-tooltip', 'tooltip', 'tainacan-helper-tooltip', 'is-danger']"
                 delay="{

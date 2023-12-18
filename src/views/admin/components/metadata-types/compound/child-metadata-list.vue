@@ -20,7 +20,6 @@
                 :style="{ minHeight: childrenMetadata.length > 0 ? '40px' : '70px' }"
                 class="active-metadata-area child-metadata-area"
                 item-key="id"
-                @change="handleChange"
                 :options="{
                     group: {
                         name: 'metadata',
@@ -34,17 +33,18 @@
                     filter: '.not-sortable-item',
                     preventOnFilter: false,
                     animation: 250
-                }"> 
+                }"
+                @change="handleChange"> 
             <template #item="{ element: metadatum, index }">
                 <div 
-                        class="active-metadatum-item"
+                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(metadatum)) && filterByMetadatumType(metadatum)"
+                        class="active-metadatum-item" 
                         :class="{
                             'not-sortable-item': metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied,
                             'not-focusable-item': openedMetadatumId == metadatum.id,
                             'disabled-metadatum': parent.enabled == false,
                             'inherited-metadatum': (metadatum.collection_id != collectionId && metadatum.parent == 0) || isRepositoryLevel
-                        }" 
-                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(metadatum)) && filterByMetadatumType(metadatum)">
+                        }">
                     <div 
                             :ref="'metadatum-handler-' + metadatum.id"
                             class="handle">
@@ -52,8 +52,8 @@
                             <button 
                                     :disabled="index == 0"
                                     class="link-button"
-                                    @click="moveMetadatumUpViaButton(index)"
-                                    :aria-label="$i18n.get('label_move_up')">
+                                    :aria-label="$i18n.get('label_move_up')"
+                                    @click="moveMetadatumUpViaButton(index)">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
                                 </span>
@@ -61,21 +61,21 @@
                             <button 
                                     :disabled="index == childrenMetadata.length - 1"
                                     class="link-button"
-                                    @click="moveMetadatumDownViaButton(index)"
-                                    :aria-label="$i18n.get('label_move_down')">
+                                    :aria-label="$i18n.get('label_move_down')"
+                                    @click="moveMetadatumDownViaButton(index)">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
                                 </span>
                             </button>
                         </span>
                         <span 
-                                :style="{ opacity: !(metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
                                 v-tooltip="{
                                     content: metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder ? $i18n.get('info_not_allowed_change_order_metadata') : $i18n.get('instruction_drag_and_drop_metadatum_sort'),
                                     autoHide: true,
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"
+                                :style="{ opacity: !(metadatum.id == undefined || openedMetadatumId != '' || isUpdatingMetadataOrder || metadatum.parent == 0 || metadatum.collection_id != collectionId || metadataNameFilterString != '' || hasSomeMetadataTypeFilterApplied) ? '1.0' : '0.0' }"
                                 class="icon grip-icon">
                             <!-- <i class="tainacan-icon tainacan-icon-18px tainacan-icon-drag"/> -->
                             <svg 
@@ -97,9 +97,9 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
                                 }"
-                                @click="Object.assign( collapses, { [metadatum.id]: !isCollapseOpen(metadatum.id) })"
                                 class="gray-icon icon"
-                                :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }">
+                                :style="{ cursor: 'pointer', opacity: openedMetadatumId != metadatum.id ? '1.0' : '0.0' }"
+                                @click="Object.assign( collapses, { [metadatum.id]: !isCollapseOpen(metadatum.id) })">
                             <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
                         </span>
                         <span class="metadatum-name">
@@ -132,13 +132,13 @@
                             </em>
                             <span 
                                     v-if="metadatum.status == 'private'"
-                                    class="icon"
                                     v-tooltip="{
                                         content: $i18n.get('status_private'),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
-                                    }">
+                                    }"
+                                    class="icon">
                                 <i class="tainacan-icon tainacan-icon-private"/>
                             </span>
                             <span 
@@ -161,11 +161,11 @@
                             </span>
                         </span>
                         <span 
-                                class="loading-spinner" 
-                                v-if="metadatum.id == undefined"/>
+                                v-if="metadatum.id == undefined" 
+                                class="loading-spinner"/>
                         <span 
-                                class="controls" 
-                                v-if="metadatum.id !== undefined">
+                                v-if="metadatum.id !== undefined" 
+                                class="controls">
                             <a 
                                     v-if="metadatum.current_user_can_edit"
                                     :style="{ visibility: 
@@ -212,21 +212,21 @@
                                 :metadatum="metadatum" />
                     </transition>
                     <b-modal 
-                            @close="onEditionCanceled()"
                             :model-value="openedMetadatumId == metadatum.id"
                             trap-focus
                             aria-modal
                             aria-role="dialog"
                             custom-class="tainacan-modal"
-                            :close-button-aria-label="$i18n.get('close')">
+                            :close-button-aria-label="$i18n.get('close')"
+                            @close="onEditionCanceled()">
                         <metadatum-edition-form
                                 :collection-id="collectionId"
                                 :original-metadatum="metadatum"
                                 :is-parent-multiple="isParentMultiple"
                                 :is-repository-level="isRepositoryLevel"
+                                :index="index"
                                 @onEditionFinished="onEditionFinished()"
-                                @onEditionCanceled="onEditionCanceled()"
-                                :index="index" />
+                                @onEditionCanceled="onEditionCanceled()" />
                     </b-modal>
                 </div>
             </template>

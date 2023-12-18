@@ -1,17 +1,15 @@
 <template>
     <b-taginput
+            :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+            v-model="selected"
             expanded
             :disabled="disabled"
-            :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             size="is-small"
             icon="magnify"
-            @add="emitAdd"
-            @remove="emitRemove"
-            v-model="selected"
             :data="options"
-            :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"            
+            :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
             field="label"
-            :remove-on-keys="[]"
+            :remove-on-keys="[]"            
             :dropdown-position="isLastMetadatum ? 'top' :'auto'"
             attached
             ellipsis
@@ -20,12 +18,14 @@
             :loading="isFetching"
             :class="{ 'has-selected': selected != undefined && selected != [] }"
             autocomplete
-            @typing="search"
             check-infinite-scroll
-            @infinite-scroll="searchMore"
             :has-counter="false"
             :append-to-body="!itemMetadatum.item"
-            :open-on-focus="false">
+            :open-on-focus="false"
+            @add="emitAdd"
+            @remove="emitRemove"
+            @typing="search"
+            @infinite-scroll="searchMore">
         <template #default="props">
             <div class="media">
                 <div class="media-content">

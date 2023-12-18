@@ -24,8 +24,6 @@
 
             <b-taginput
                     v-model="options"
-                    @update:model-value="emitValues()"
-                    @focus="clear()"
                     attached
                     :confirm-keys="optionsSeparator"
                     :on-paste-separators="optionsSeparator"
@@ -33,17 +31,19 @@
                     :aria-close-label="$i18n.get('remove_value')"
                     class="tainacan-selectbox-metadata-type--taginput"
                     :class="{'has-selected': options != undefined && options != []}"
-                    :placeholder="$i18n.get('new') + ', ...'" />
+                    :placeholder="$i18n.get('new') + ', ...'"
+                    @update:model-value="emitValues()"
+                    @focus="clear()" />
             <div class="separator-options">
                 <label class="label is-inline">{{ $i18n.getHelperTitle('tainacan-selectbox', 'options_separator') }}</label>
                 <b-checkbox
                         v-for="separator of ['Enter', 'Tab', ',', ';', '|']"
                         :key="separator"
-                        name="metadata_type_selectbox[options_separator]"
-                        @update:model-value="emitValues()"
                         v-model="optionsSeparator"
+                        name="metadata_type_selectbox[options_separator]"
                         :native-value="separator"
-                        :disabled="separator == 'Enter'">
+                        :disabled="separator == 'Enter'"
+                        @update:model-value="emitValues()">
                     <kbd>{{ separator }}</kbd>
                 </b-checkbox>
             </div>

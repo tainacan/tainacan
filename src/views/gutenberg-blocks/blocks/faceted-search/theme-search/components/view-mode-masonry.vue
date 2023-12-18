@@ -13,8 +13,8 @@
                     }"
                     class="tainacan-masonry-container--skeleton">
                 <div 
-                        :key="item"
                         v-for="item in 12"
+                        :key="item"
                         :style="{'min-height': randomHeightForMasonryItem() + 'px' }"
                         class="skeleton" />
             </div>
@@ -27,11 +27,11 @@
                     }"
                     class="tainacan-masonry-container">
                 <li
+                        v-for="(item, index) of items"
+                        :key="index"
                         :data-tainacan-item-id="item.id"
                         :aria-setsize="totalItems"
                         :aria-posinset="getPosInSet(index)"
-                        :key="index"
-                        v-for="(item, index) of items"
                         :class="{ 'tainacan-masonry-grid-sizer': index == 0 }">
                     <a 
                             
@@ -58,8 +58,8 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"          
-                                    @click.prevent="starSlideshowFromHere(index)"
-                                    class="icon slideshow-icon">
+                                    class="icon slideshow-icon"
+                                    @click.prevent="starSlideshowFromHere(index)">
                                 <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
                             </span>
                         </div>

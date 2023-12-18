@@ -24,8 +24,8 @@
                     v-for="(childItemMetadatum, childIndex) of childItemMetadata"
                     :key="groupIndex + '-' + childIndex">
                 <div 
-                        class="field"
-                        v-if="isRemovingGroup">
+                        v-if="isRemovingGroup"
+                        class="field">
                     <span class="collapse-handle">
                         <span class="icon">
                             <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -68,7 +68,6 @@
                         :help-info-bellow-label="helpInfoBellowLabel"
                         :is-collapsed="childItemMetadatum.collapse"
                         :is-mobile-screen="isMobileScreen"
-                        @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
                         :class="{ 
                             'is-last-input': childIndex == childItemMetadata.length - 1,
                             'is-metadata-navigation-active': isMetadataNavigation
@@ -76,6 +75,7 @@
                         :is-focused="(focusedGroupMetadatum === groupIndex) && (focusedChildMetadatum === childIndex)"
                         :is-metadata-navigation="isMetadataNavigation"
                         :enumerate-metadatum="enumerateMetadatum ? ( enumerateMetadatum + ( childItemMetadataGroups.length > 1 ? ( '.' + (Number(groupIndex) + 1) ) : '' ) + '.' + (Number(childIndex) + 1) ) : false"
+                        @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
                         @touchstart="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
                         @mousedown="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
                         @mobileSpecialFocus="setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: true })"
@@ -84,8 +84,8 @@
             </template>
             <a 
                     v-if="isMultiple" 
-                    @click="removeGroup(groupIndex)"
-                    class="add-link">
+                    class="add-link"
+                    @click="removeGroup(groupIndex)">
                 <span class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
                 </span>
@@ -109,8 +109,8 @@
     <a
             v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > childItemMetadataGroups.length))"
             :disabled="itemMetadatum.item.id && (childItemMetadataGroups.length > 0 && !someValueOnLastInput)"
-            @click="addGroup"
-            class="is-inline-block add-link">
+            class="is-inline-block add-link"
+            @click="addGroup">
         <span class="icon is-small">
             <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
         </span>

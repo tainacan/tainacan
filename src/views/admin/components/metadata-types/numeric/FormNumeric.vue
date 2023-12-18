@@ -11,8 +11,8 @@
                     v-if="!showEditStepOptions"
                     class="is-flex">
                 <b-select
-                        name="step_options"
                         v-model="step"
+                        name="step_options"
                         @update:model-value="onUpdateStep">
                     <option value="0.001">0.001</option>
                     <option value="0.01">0.01</option>
@@ -48,14 +48,14 @@
                     v-if="showEditStepOptions"
                     class="is-flex">
                 <b-input
-                        name="max_options"
                         v-model="step"
-                        @update:model-value="onUpdateStep"
+                        name="max_options"
                         type="number"
-                        step="1" />
+                        step="1"
+                        @update:model-value="onUpdateStep" />
                 <button
-                        @click.prevent="showEditStepOptions = false"
-                        class="button is-white is-pulled-right">
+                        class="button is-white is-pulled-right"
+                        @click.prevent="showEditStepOptions = false">
                     <span 
                             v-tooltip="{
                                 content: $i18n.get('close'),

@@ -7,10 +7,10 @@
                     { path: '', label: importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }
                 ]"/>
         <form   
-                @click="formErrorMessage = ''"
+                v-if="importer != undefined && importer != null"
                 class="tainacan-form" 
                 label-width="120px"
-                v-if="importer != undefined && importer != null">
+                @click="formErrorMessage = ''">
             <div 
                         v-if="importer.manual_collection || importer.accepts.file || importer.accepts.url"
                         class="columns">
@@ -44,8 +44,8 @@
                             </section>
                         </b-upload>
                         <div 
-                                class="control selected-source-file"
-                                v-if="importerFile != undefined">
+                                v-if="importerFile != undefined"
+                                class="control selected-source-file">
                             <span>{{ (importerFile.length != undefined && importerFile.length > 0 ) ? importerFile[0].name : importerFile.name }}</span>
                             <a 
                                     target="_blank"
@@ -63,8 +63,8 @@
                             </a>
                         </div>
                         <div 
-                                class="control selected-source-file"
-                                v-if="importerFile == undefined && importer.tmp_file">
+                                v-if="importerFile == undefined && importer.tmp_file"
+                                class="control selected-source-file">
                             <p>{{ $i18n.get('label_select_file') + ': ' + importer.tmp_file }}</p>
                         </div>
                     </b-field>
@@ -107,12 +107,12 @@
                         <br>
                         <div class="is-inline">
                             <b-select
-                                    expanded
                                     id="tainacan-select-target-collection"
+                                    expanded
                                     :model-value="collectionId"
-                                    @update:model-value="onSelectCollection($event)"
                                     :loading="isFetchingCollections"
-                                    :placeholder="$i18n.get('instruction_select_a_target_collection')">
+                                    :placeholder="$i18n.get('instruction_select_a_target_collection')"
+                                    @update:model-value="onSelectCollection($event)">
                                 <option
                                         v-for="collection of collections"
                                         :key="collection.id"
@@ -158,6 +158,7 @@
                         v-if="!importer.manual_mapping"
                         class="control">
                     <button
+                            id="button-submit-importer-creation"
                             :disabled="
                                     (formErrorMessage != undefined && formErrorMessage != '') ||
                                     sessionId == undefined || 
@@ -166,15 +167,15 @@
                                     (importer.accepts.file && !importer.accepts.url && !importerFile) || 
                                     (!importer.accepts.file && importer.accepts.url && !url) ||
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
-                            id="button-submit-importer-creation"
-                            @click.prevent="onFinishImporter()"
                             :class="{ 'is-loading': isLoadingRun, 'is-success': !isLoadingRun }"
-                            class="button">{{ $i18n.get('run') }}</button>
+                            class="button"
+                            @click.prevent="onFinishImporter()">{{ $i18n.get('run') }}</button>
                 </div>
                 <div 
                         v-if="importer.manual_mapping"
                         class="control">
                     <button
+                            id="button-submit-collection-creation"
                             :disabled="
                                     (formErrorMessage != undefined && formErrorMessage != '') ||
                                     sessionId == undefined || 
@@ -183,10 +184,9 @@
                                     (importer.accepts.file && !importer.accepts.url && !importerFile) || 
                                     (!importer.accepts.file && importer.accepts.url && !url) ||
                                     (importer.accepts.file && importer.accepts.url && !importerFile && !url)"
-                            id="button-submit-collection-creation"
-                            @click.prevent="onFinishImporter()"
                             :class="{ 'is-loading': isLoadingUpload, 'is-success': !isLoadingUpload }"
-                            class="button">{{ $i18n.get('next') }}</button>
+                            class="button"
+                            @click.prevent="onFinishImporter()">{{ $i18n.get('next') }}</button>
                 </div>
             </div>
         </form>

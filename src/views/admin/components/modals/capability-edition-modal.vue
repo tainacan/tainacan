@@ -22,8 +22,8 @@
                             <b-checkbox
                                     v-if="!capability.roles_inherited[role.slug]"
                                     :model-value="capability.roles[role.slug] || capability.roles_inherited[role.slug] ? true : false"
-                                    @update:model-value="($event) => updateRole(role.slug, $event)"
-                                    name="roles">
+                                    name="roles"
+                                    @update:model-value="($event) => updateRole(role.slug, $event)">
                                 {{ role.name }}
                             </b-checkbox>
                         </template>
@@ -74,8 +74,8 @@
     </div>
     <div v-else>
         <b-loading
-                is-full-page="false" 
-                v-model="isLoading" />
+                v-model="isLoading" 
+                is-full-page="false" />
     </div>
     <div class="field is-grouped form-submit">
         <div class="control">

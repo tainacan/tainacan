@@ -25,8 +25,8 @@
                                 :message="$i18n.getHelperMessage('collections', 'name')"/>
                         <b-input
                                 id="tainacan-text-name"
-                                :placeholder="$i18n.get('instruction_collection_name')"
                                 v-model="form.name"
+                                :placeholder="$i18n.get('instruction_collection_name')"
                                 @blur="updateSlug"
                                 @focus="clearErrors('name')"/>
                     </b-field>
@@ -34,8 +34,8 @@
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginLeftForm">  
                         <form
-                            class="form-hook-region" 
-                            id="form-collection-begin-left"
+                            id="form-collection-begin-left" 
+                            class="form-hook-region"
                             v-html="getBeginLeftForm"/>
                     </template>
 
@@ -50,10 +50,10 @@
                                 :message="$i18n.getHelperMessage('collections', 'description')"/>
                         <b-input
                                 id="tainacan-text-description"
+                                v-model="form.description"
                                 type="textarea"
                                 rows="4"
                                 :placeholder="$i18n.get('instruction_collection_description')"
-                                v-model="form.description"
                                 @focus="clearErrors('description')"/>
                     </b-field>
 
@@ -68,17 +68,17 @@
                                 :message="$i18n.getHelperMessage('collections', 'slug')"/>
                         <b-input
                                 id="tainacan-text-slug"
-                                @update:model-value="updateSlug"
                                 v-model="form.slug"
-                                @focus="clearErrors('slug')"
                                 :disabled="isUpdatingSlug"
-                                :loading="isUpdatingSlug"/>
+                                :loading="isUpdatingSlug"
+                                @update:model-value="updateSlug"
+                                @focus="clearErrors('slug')"/>
                     </b-field>
 
                     <!-- Items list options ------------------------ -->
                      <div 
-                             @click="showItemsListOptions = !showItemsListOptions;"
-                            class="collection-form-section">
+                             class="collection-form-section"
+                            @click="showItemsListOptions = !showItemsListOptions;">
                         <span class="icon">
                             <i 
                                     class="tainacan-icon"
@@ -126,14 +126,14 @@
                                         {{ $i18n.get('info_by_inner') }}
                                     </span>
                                     <b-select
-                                            expanded
-                                            :loading="isLoadingMetadata"
+                                            id="tainacan-select-default_orderby"
                                             v-model="localDefaultOrderBy"
-                                            id="tainacan-select-default_orderby">
+                                            expanded
+                                            :loading="isLoadingMetadata">
                                         <option
                                                 v-for="metadatum of sortingMetadata"
-                                                :value="metadatum.id"
-                                                :key="metadatum.id">
+                                                :key="metadatum.id"
+                                                :value="metadatum.id">
                                             {{ metadatum.name }}
                                         </option>
                                     </b-select>
@@ -152,8 +152,8 @@
                                                 :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
                                     <div class="control">
                                         <b-dropdown
-                                                class="enabled-view-modes-dropdown"
                                                 ref="enabledViewModesDropdown"
+                                                class="enabled-view-modes-dropdown"
                                                 :mobile-modal="true"
                                                 :disabled="Object.keys(registeredViewModes).length < 0"
                                                 aria-role="list"
@@ -177,9 +177,9 @@
                                                     aria-role="listitem">
                                                 <b-checkbox
                                                         v-if="registeredViewModes[viewMode] != undefined"
-                                                        @input="updateViewModeslist(viewMode)"
                                                         :value="checkIfViewModeEnabled(viewMode)"
-                                                        :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1">
+                                                        :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1"
+                                                        @input="updateViewModeslist(viewMode)">
                                                     <p>
                                                         <strong>
                                                             <span 
@@ -210,9 +210,9 @@
                                             :title="$i18n.getHelperTitle('collections', 'default_view_mode')" 
                                             :message="$i18n.getHelperMessage('collections', 'default_view_mode')"/>
                                     <b-select
-                                            expanded
                                             id="tainacan-select-default_view_mode"
                                             v-model="form.default_view_mode"
+                                            expanded
                                             @focus="clearErrors('default_view_mode')">
                                         <option
                                                 v-for="(viewMode, index) of validDefaultViewModes"
@@ -231,10 +231,10 @@
                                 &nbsp;
                                 <b-switch
                                         id="tainacan-checkbox-hide-items-thumbnail-on-lists"
-                                        size="is-small"
-                                        true-value="yes" 
-                                        false-value="no"
-                                        v-model="form.hide_items_thumbnail_on_lists" />
+                                        v-model="form.hide_items_thumbnail_on_lists"
+                                        size="is-small" 
+                                        true-value="yes"
+                                        false-value="no" />
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'hide_items_thumbnail_on_lists')" 
                                         :message="$i18n.getHelperMessage('collections', 'hide_items_thumbnail_on_lists')"/>
@@ -245,8 +245,8 @@
 
                     <!-- Item edition form options ------------------------ -->
                     <div 
-                             @click="showItemEditionFormOptions = !showItemEditionFormOptions;"
-                            class="collection-form-section">
+                             class="collection-form-section"
+                            @click="showItemEditionFormOptions = !showItemEditionFormOptions;">
                         <span class="icon">
                             <i 
                                     class="tainacan-icon"
@@ -305,10 +305,10 @@
                                     &nbsp;
                                     <b-switch
                                             id="tainacan-checkbox-item-enable-thumbnail" 
-                                            size="is-small"
-                                            true-value="yes" 
-                                            false-value="no"
-                                            v-model="form.item_enable_thumbnail" />
+                                            v-model="form.item_enable_thumbnail"
+                                            size="is-small" 
+                                            true-value="yes"
+                                            false-value="no" />
                                     <help-button 
                                             :title="$i18n.getHelperTitle('collections', 'item_enable_thumbnail')" 
                                             :message="$i18n.getHelperMessage('collections', 'item_enable_thumbnail')"/>
@@ -336,10 +336,10 @@
                                     &nbsp;
                                     <b-switch
                                             id="tainacan-checkbox-item-enable-attachments" 
-                                            size="is-small"
-                                            true-value="yes" 
-                                            false-value="no"
-                                            v-model="form.item_enable_attachments" />
+                                            v-model="form.item_enable_attachments"
+                                            size="is-small" 
+                                            true-value="yes"
+                                            false-value="no" />
                                     <help-button 
                                             :title="$i18n.getHelperTitle('collections', 'item_enable_attachments')" 
                                             :message="$i18n.getHelperMessage('collections', 'item_enable_attachments')"/>
@@ -404,10 +404,10 @@
                                 &nbsp;
                                 <b-switch
                                         id="tainacan-checkbox-comment-status" 
-                                        size="is-small"
-                                        true-value="open" 
-                                        false-value="closed"
-                                        v-model="form.allow_comments" />
+                                        v-model="form.allow_comments"
+                                        size="is-small" 
+                                        true-value="open"
+                                        false-value="closed" />
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'allow_comments')" 
                                         :message="$i18n.getHelperMessage('collections', 'allow_comments')"/>
@@ -418,8 +418,8 @@
 
                     <!-- Item submission options ------------------------ -->
                     <div 
-                             @click="showItemSubmissionOptions = !showItemSubmissionOptions;"
-                            class="collection-form-section">
+                             class="collection-form-section"
+                            @click="showItemSubmissionOptions = !showItemSubmissionOptions;">
                         <span class="icon">
                             <i 
                                     class="tainacan-icon"
@@ -443,10 +443,10 @@
                                 &nbsp;
                                 <b-switch
                                         id="tainacan-checkbox-allow-submission" 
-                                        size="is-small"
-                                        true-value="yes" 
-                                        false-value="no"
-                                        v-model="form.allows_submission" />
+                                        v-model="form.allows_submission"
+                                        size="is-small" 
+                                        true-value="yes"
+                                        false-value="no" />
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'allows_submission')" 
                                         :message="$i18n.getHelperMessage('collections', 'allows_submission')"/>
@@ -466,10 +466,10 @@
                                         &nbsp;
                                         <b-switch
                                                 id="tainacan-checkbox-allow-submission" 
-                                                size="is-small"
-                                                true-value="yes" 
-                                                false-value="no"
-                                                v-model="form.submission_anonymous_user" />
+                                                v-model="form.submission_anonymous_user"
+                                                size="is-small" 
+                                                true-value="yes"
+                                                false-value="no" />
                                         <help-button 
                                                 :title="$i18n.getHelperTitle('collections', 'submission_anonymous_user')" 
                                                 :message="$i18n.getHelperMessage('collections', 'submission_anonymous_user')"/>
@@ -486,9 +486,9 @@
                                                 :message="$i18n.getHelperMessage('collections', 'submission_default_status')"/>
                                         <div class="options-checkboxes">
                                             <b-radio
-                                                    v-model="form.submission_default_status"
                                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash')"
                                                     :key="index"
+                                                    v-model="form.submission_default_status"
                                                     :native-value="statusOption.slug">
                                                 <span class="icon has-text-gray">
                                                     <i 
@@ -500,8 +500,8 @@
                                         </div>
                                         <transition name="filter-item">
                                             <p 
-                                                    class="help"
-                                                    v-if="form.submission_default_status == 'draft'">
+                                                    v-if="form.submission_default_status == 'draft'"
+                                                    class="help">
                                                 {{ $i18n.get('info_item_submission_draft_status') }}
                                             </p>
                                         </transition>
@@ -516,10 +516,10 @@
                                         &nbsp;
                                         <b-switch
                                                 id="tainacan-checkbox-submission-use-recaptcha" 
-                                                size="is-small"
-                                                true-value="yes" 
-                                                false-value="no"
-                                                v-model="form.submission_use_recaptcha" />
+                                                v-model="form.submission_use_recaptcha"
+                                                size="is-small" 
+                                                true-value="yes"
+                                                false-value="no" />
                                         <help-button 
                                                 :title="$i18n.getHelperTitle('collections', 'submission_use_recaptcha')" 
                                                 :message="$i18n.getHelperMessage('collections', 'submission_use_recaptcha')"/>
@@ -538,8 +538,8 @@
                     <!-- Hook for extra Form options -->
                     <template v-if="hasEndLeftForm">  
                         <form
-                            ref="form-collection-end-left" 
-                            id="form-collection-end-left"
+                            id="form-collection-end-left" 
+                            ref="form-collection-end-left"
                             class="form-hook-region"
                             v-html="getEndLeftForm"/>
                     </template>
@@ -558,9 +558,9 @@
                                 :message="$i18n.getHelperMessage('collections', 'status')"/>
                         <div class="status-radios">
                             <b-radio
-                                    v-model="form.status"
                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
                                     :key="index"
+                                    v-model="form.status"
                                     :native-value="statusOption.slug">
                                 <span class="icon has-text-gray">
                                     <i 
@@ -601,8 +601,8 @@
                             </figure>
                             <div class="header-buttons-row">
                                 <a 
-                                        class="button is-rounded is-secondary"
-                                        id="button-edit-header-image" 
+                                        id="button-edit-header-image"
+                                        class="button is-rounded is-secondary" 
                                         :aria-label="$i18n.get('label_button_edit_header_image')"
                                         @click="headerImageMediaFrame.openFrame($event)">
                                     <span 
@@ -617,8 +617,8 @@
                                     </span>
                                 </a>
                                 <a 
-                                        class="button is-rounded is-secondary"
-                                        id="button-delete-header-image" 
+                                        id="button-delete-header-image"
+                                        class="button is-rounded is-secondary" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteHeaderImage()">
                                     <span 
@@ -658,8 +658,8 @@
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a 
-                                        class="button is-rounded is-secondary"
-                                        id="button-edit-thumbnail" 
+                                        id="button-edit-thumbnail"
+                                        class="button is-rounded is-secondary" 
                                         :aria-label="$i18n.get('label_button_edit_thumb')"
                                         @click.prevent="thumbnailMediaFrame.openFrame($event)">
                                     <span 
@@ -674,8 +674,8 @@
                                     </span>
                                 </a>
                                 <a 
-                                        class="button is-rounded is-secondary"
-                                        id="button-delete-header-image" 
+                                        id="button-delete-header-image"
+                                        class="button is-rounded is-secondary" 
                                         :aria-label="$i18n.get('label_button_delete_thumb')" 
                                         @click="deleteThumbnail()">
                                     <span 
@@ -702,25 +702,25 @@
                         &nbsp;
                         <b-switch
                                 id="tainacan-checkbox-cover-page" 
-                                size="is-small"
-                                true-value="yes" 
-                                false-value="no"
-                                v-model="form.enable_cover_page" />
+                                v-model="form.enable_cover_page"
+                                size="is-small" 
+                                true-value="yes"
+                                false-value="no" />
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'cover_page_id')" 
                                 :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
                         <template v-if="form.enable_cover_page == 'yes'">
                             <b-autocomplete
+                                    v-if="coverPage == undefined || coverPage.title == undefined"
                                     id="tainacan-text-cover-page"
+                                    v-model="coverPageTitle"
                                     :placeholder="$i18n.get('instruction_cover_page')"
                                     :data="coverPages"
-                                    v-model="coverPageTitle"
-                                    @select="onSelectCoverPage($event)"
                                     :loading="isFetchingPages"
+                                    check-infinite-scroll
+                                    @select="onSelectCoverPage($event)"
                                     @input="fecthCoverPages"
                                     @focus="clearErrors('cover_page_id')"
-                                    v-if="coverPage == undefined || coverPage.title == undefined"
-                                    check-infinite-scroll
                                     @infinite-scroll="fetchMoreCoverPages">
                                 <template slot-scope="props">
                                     {{ props.option.title.rendered }}
@@ -852,21 +852,21 @@
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-metadata"
-                            @click.prevent="onSubmit('metadata')"
-                            class="button is-secondary">{{ $i18n.get('label_save_goto_metadata') }}</button>
+                            class="button is-secondary"
+                            @click.prevent="onSubmit('metadata')">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
                  <div class="control">
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-filter"
-                            @click.prevent="onSubmit('filters')"
-                            class="button is-secondary">{{ $i18n.get('label_save_goto_filter') }}</button>
+                            class="button is-secondary"
+                            @click.prevent="onSubmit('filters')">{{ $i18n.get('label_save_goto_filter') }}</button>
                 </div>
                 <div class="control">
                     <button
                             id="button-submit-collection-creation"
-                            @click.prevent="onSubmit('items')"
-                            class="button is-success">{{ $i18n.get('finish') }}</button>
+                            class="button is-success"
+                            @click.prevent="onSubmit('items')">{{ $i18n.get('finish') }}</button>
                 </div>
             </footer>
         </form>

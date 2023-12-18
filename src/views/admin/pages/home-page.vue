@@ -114,12 +114,12 @@
             <div class="home-section-header collections-section-header">
                 <div class="home-section-icon">
                     <router-link
+                            v-slot="{ navigate }"
                             to="/collections"
-                            custom
-                            v-slot="{ navigate }">
+                            custom>
                         <span 
-                                @click="navigate()"
-                                class="icon">
+                                class="icon"
+                                @click="navigate()">
                             <i class="tainacan-icon tainacan-icon-collections"/>
                         </span>
                     </router-link>

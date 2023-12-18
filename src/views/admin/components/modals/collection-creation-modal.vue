@@ -1,33 +1,33 @@
 <template>
     <div 
+            ref="collectionCreationModal"
             aria-labelledby="collection-creation-title"
             autofocus
             role="dialog"
             tabindex="-1"
-            aria-modal
-            class="tainacan-modal-content" 
-            style="width: auto"
-            ref="collectionCreationModal">
+            aria-modal 
+            class="tainacan-modal-content"
+            style="width: auto">
         <header class="tainacan-modal-title">
             <h2 
-                    id="collection-creation-title"
-                    v-if="selectedEstrategy == 'mappers'">
+                    v-if="selectedEstrategy == 'mappers'"
+                    id="collection-creation-title">
                 {{ $i18n.get('label_create_collection_from_mapper') }}
             </h2>
             <h2 
-                    id="collection-creation-title"
-                    v-else-if="selectedEstrategy == 'presets'">
+                    v-else-if="selectedEstrategy == 'presets'"
+                    id="collection-creation-title">
                 {{ $i18n.get('label_create_collection_from_preset') }}
             </h2>
             <h2 
-                    id="collection-creation-title"
-                    v-else>
+                    v-else
+                    id="collection-creation-title">
                 {{ $i18n.get('label_create_collection') }}
             </h2>
             <a 
-                    @click="selectedEstrategy = hasPresetsHook ? undefined : 'mappers'"
                     v-if="(hasPresetsHook && selectedEstrategy != undefined) || (!hasPresetsHook && selectedEstrategy == 'mappers')"
-                    class="back-link">
+                    class="back-link"
+                    @click="selectedEstrategy = hasPresetsHook ? undefined : 'mappers'">
                 {{ $i18n.get('back') }}
             </a>
             <hr>
@@ -63,10 +63,10 @@
                         v-for="metadatumMapper in metadatumMappers"
                         :key="metadatumMapper.slug">
                     <button
-                            class="collection-creation-option"
-                            @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $emit('close');"
                             v-if="metadatumMapper.metadata != false"
-                            aria-role="listitem">
+                            class="collection-creation-option"
+                            aria-role="listitem"
+                            @click="$router.push($routerHelper.getNewMappedCollectionPath(metadatumMapper.slug)); $emit('close');">
                         <h3>{{ metadatumMapper.name }}</h3>
                         <p>{{ metadatumMapper.description }}</p>
                     </button>
@@ -78,24 +78,24 @@
                     class="collection-creation-options-container"
                     role="list">
                 <button
-                         class="collection-creation-option"
-                        @click="onNewCollectionPreset(collectionPreset)"
+                         v-for="collectionPreset in getPresetsHook"
                         :key="collectionPreset.slug"
-                        v-for="collectionPreset in getPresetsHook"
-                        aria-role="listitem">
+                        class="collection-creation-option"
+                        aria-role="listitem"
+                        @click="onNewCollectionPreset(collectionPreset)">
                     <h3>{{ collectionPreset.name }}</h3>
                     <p>{{ collectionPreset.description }}</p>
                 </button>
             </div>
 
             <b-loading 
-                    :is-full-page="false"
-                    v-model="isLoadingMetadatumMappers" 
+                    v-model="isLoadingMetadatumMappers"
+                    :is-full-page="false" 
                     :can-cancel="false"/>
 
             <b-loading 
-                    :is-full-page="false"
-                    v-model="isCreatingCollectionPreset" 
+                    v-model="isCreatingCollectionPreset"
+                    :is-full-page="false" 
                     :can-cancel="false"/>
 
             <footer class="field is-grouped form-submit">

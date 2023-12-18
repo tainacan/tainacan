@@ -6,6 +6,7 @@
 
         <!-- HELP BUTTON -->
         <button
+                id="slides-help-button"  
                 v-tooltip="{
                     delay: {
                         shown: 500,
@@ -15,8 +16,7 @@
                     autoHide: false,
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
-                }"  
-                id="slides-help-button"
+                }"
                 class="is-hidden-mobile"
                 @click="openSlidesHelpModal">
             <span class="icon">
@@ -26,6 +26,7 @@
 
         <!-- METADATA BUTTON -->
         <button
+                id="metedata-panel-button"  
                 v-tooltip="{
                     delay: {
                         shown: 500,
@@ -35,8 +36,7 @@
                     autoHide: false,
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
-                }"  
-                id="metedata-panel-button"
+                }"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="isMetadataCompressed = !isMetadataCompressed">
             <span class="icon">
@@ -46,6 +46,8 @@
 
         <!-- ITEM PAGE BUTTON -->
         <a
+                v-if="slideItems && swiper && swiper.activeIndex != undefined && slideItems[swiper.activeIndex]"  
+                id="item-page-button"
                 v-tooltip="{
                     delay: {
                         shown: 500,
@@ -55,9 +57,7 @@
                     autoHide: false,
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
-                }"  
-                id="item-page-button"
-                v-if="slideItems && swiper && swiper.activeIndex != undefined && slideItems[swiper.activeIndex]"
+                }"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 :href="getItemLink(slideItems[swiper.activeIndex].url, swiper.activeIndex)">
             <span class="icon">
@@ -67,6 +67,7 @@
 
         <!-- CLOSE BUTTON -->
         <button
+                id="close-fullscren-button"  
                 v-tooltip="{
                     delay: {
                         shown: 500,
@@ -76,8 +77,7 @@
                     autoHide: false,
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
-                }"  
-                id="close-fullscren-button"
+                }"
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="closeSlideViewMode()">
             <span class="icon">
@@ -87,6 +87,7 @@
 
         <!-- METADATA LIST -->
         <button
+                id="metadata-compress-button"  
                 v-tooltip="{
                     delay: {
                         shown: 500,
@@ -96,8 +97,7 @@
                     autoHide: false,
                     placement: 'auto-start',
                     popperClass: ['tainacan-tooltip', 'tooltip']
-                }"  
-                id="metadata-compress-button"
+                }"
                 @click="isMetadataCompressed = !isMetadataCompressed">
             <span class="icon">
                 <i 
@@ -114,13 +114,13 @@
 
                 <!-- SLIDE MAIN VIEW-->
                 <section 
-                        @click.prevent.stop="onHideControls()"
-                        class="tainacan-slide-main-view">
+                        class="tainacan-slide-main-view"
+                        @click.prevent.stop="onHideControls()">
                     <button 
-                            @click.stop.prevent="prevSlide()"
                             :style="{ visibility: (page > 1 && swiper.activeIndex <= 0) || swiper.activeIndex > 0 ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-left"
-                            :aria-label="$i18n.get('previous')">
+                            :aria-label="$i18n.get('previous')"
+                            @click.stop.prevent="prevSlide()">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('previous'),
@@ -200,10 +200,10 @@
                     </div>
                     
                     <button 
-                            @click.stop.prevent="nextSlide()"
                             :style="{ visibility: (swiper.activeIndex < slideItems.length - 1) || page < totalPages ? 'visible' : 'hidden' }"
                             class="slide-control-arrow arrow-right"
-                            :aria-label="$i18n.get('next')">
+                            :aria-label="$i18n.get('next')"
+                            @click.stop.prevent="nextSlide()">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('next'),
@@ -221,8 +221,8 @@
                 <div class="tainacan-slides-list">
                     <section 
                             v-if="slideItems[swiper.activeIndex]"
-                            @click.prevent="onHideControls()"
-                            class="slide-title-area">
+                            class="slide-title-area"
+                            @click.prevent="onHideControls()">
                         <h1 v-html="slideItems[swiper.activeIndex].title" />
                         <button 
                                 :disabled="(swiper.activeIndex == slideItems.length - 1 && page == totalPages)"

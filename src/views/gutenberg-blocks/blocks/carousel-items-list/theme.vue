@@ -45,12 +45,12 @@
         </a>   
     </div>
     <div  
+            v-if="items.length > 0 || isLoading"
             :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
-            :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
-            v-if="items.length > 0 || isLoading">
+            :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }">
         <div 
-                class="swiper"
-                :id="blockId + '-carousel'">
+                :id="blockId + '-carousel'"
+                class="swiper">
             <ul 
                     v-if="isLoading"
                     role="list"
@@ -59,9 +59,9 @@
                         marginTop: showCollectionHeader ? '1.35em' : '0px'
                     }">
                 <li 
-                        role="listitem"
-                        :key="index"
                         v-for="index in 18"
+                        :key="index"
+                        role="listitem"
                         class="swiper-slide collection-list-item skeleton">
                     <a>
                         <img>
@@ -77,9 +77,9 @@
                         marginTop: showCollectionHeader ? '1.35em' : '0px'
                     }">
                 <li
-                        role="listitem"
-                        :key="index"
                         v-for="(item, index) of items"
+                        :key="index"
+                        role="listitem"
                         class="swiper-slide item-list-item"
                         :class="{ 'is-forced-square': ['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 }">
                     <a 
@@ -99,8 +99,8 @@
             </ul>
         </div>
         <button 
-                class="swiper-button-prev" 
                 :id="blockId + '-prev'" 
+                class="swiper-button-prev" 
                 :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
             <svg
                     :width="largeArrows ? 60 : 42"
@@ -118,8 +118,8 @@
             </svg>
         </button>
         <button 
-                class="swiper-button-next" 
-                :id="blockId + '-next'"
+                :id="blockId + '-next'" 
+                class="swiper-button-next"
                 :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
             <svg
                     :width="largeArrows ? 60 : 42"

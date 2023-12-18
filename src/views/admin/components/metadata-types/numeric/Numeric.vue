@@ -1,17 +1,17 @@
 <template>
     <b-numberinput
-            :disabled="disabled"
-            :ref="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
             :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+            :ref="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+            :disabled="disabled"
             :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
             :model-value="Number(value)"
-            @update:model-value="$event =>onInput($event)"
-            @blur="onBlur"
-            @focus="onMobileSpecialFocus"
             lang="en"
             :min="getMin"
             :max="getMax"
-            :step="getStep" />
+            :step="getStep"
+            @update:model-value="$event =>onInput($event)"
+            @blur="onBlur"
+            @focus="onMobileSpecialFocus" />
 </template>
 
 <script>

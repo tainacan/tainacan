@@ -1,11 +1,11 @@
 <template>
     <div 
+            ref="customDialog"
             aria-labelledby="alert-dialog-title"
             aria-modal
             autofocus
             role="alertdialog"
-            class="tainacan-form tainacan-dialog dialog"
-            ref="customDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -33,8 +33,8 @@
                 <span v-html="message" />
                 <div v-if="showNeverShowAgainOption">
                     <b-checkbox
-                            @update:model-value="changeNeverShowMessageAgain($event)"
-                            :native-value="neverShowAgain">
+                            :native-value="neverShowAgain"
+                            @update:model-value="changeNeverShowMessageAgain($event)">
                         {{ $i18n.get('instruction_never_show_message_again') }}
                     </b-checkbox>
                 </div>

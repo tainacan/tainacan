@@ -2,23 +2,22 @@
     <div>
         <tainacan-taxonomy-tag-input
                 v-if="getComponent == 'tainacan-taxonomy-tag-input'"
+                v-model:value="valueComponent"
                 :disabled="disabled || isFetchingTerms"
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
-                v-model:value="valueComponent"
                 :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNewFromOptions"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_term')"
                 :taxonomy-id="taxonomyId"
                 :item-metadatum="itemMetadatum"
-                @showAddNewTerm="openTermCreationModal"
-                :has-counter="false" />
+                :has-counter="false"
+                @showAddNewTerm="openTermCreationModal" />
         <checkbox-radio-metadata-input
                 v-else
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :is-modal="false"
                 :parent="0"
                 :allow-new="allowNewFromOptions"
-                @showAddNewTerm="openTermCreationModal"
                 :taxonomy_id="taxonomyId"
                 :selected="!valueComponent ? [] : valueComponent"
                 :metadatum-id="itemMetadatum.metadatum.id"
@@ -29,17 +28,18 @@
                 :metadatum="itemMetadatum.metadatum"
                 :amount-selected="Array.isArray(valueComponent) ? valueComponent.length : (valueComponent ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
-                @input="(selected) => valueComponent = selected"
                 :is-mobile-screen="isMobileScreen"
+                @showAddNewTerm="openTermCreationModal"
+                @input="(selected) => valueComponent = selected"
                 @mobileSpecialFocus="onMobileSpecialFocus"
             />
         <div
                 v-if="displayCreateNewTerm && !isTermCreationPanelOpen && (maxMultipleValues !== undefined ? (maxMultipleValues > valueComponent.length) : true)"
                 class="add-new-term">
             <a
-                    @click="openTermCreationModal"
                     class="add-link"
-                    :class="{ 'is-loading': isAddingNewTermVaue }">
+                    :class="{ 'is-loading': isAddingNewTermVaue }"
+                    @click="openTermCreationModal">
                 <span class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                 </span>
@@ -73,10 +73,10 @@
             <transition name="filter-item">
                 <component
                         :is="'term-creation-panel'"
+                        v-if="isTermCreationPanelOpen"
                         :metadatum-id="itemMetadatum.metadatum.id"
                         :item-id="itemMetadatum.item.id"
                         :is-hierarchical="isHierarchical"
-                        v-if="isTermCreationPanelOpen"
                         :taxonomy-id="taxonomyId"
                         :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                         @onEditionFinished="($event) => addTermToBeCreated($event)"

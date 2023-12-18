@@ -1,12 +1,12 @@
 <template>
     <div 
+            ref="bulkEditionModal"
             aria-labelledby="alert-dialog-title"
             autofocus
             role="alertdialog"
             tabindex="-1"
             aria-modal
-            class="tainacan-modal-content this-tainacan-modal-content"
-            ref="bulkEditionModal">
+            class="tainacan-modal-content this-tainacan-modal-content">
         <header class="tainacan-modal-title">
             <h2>{{ modalTitle }}
                 <small class="tainacan-total-objects-info">
@@ -74,8 +74,8 @@
                             <template v-if="bulkEditionProcedures[criterion].metadatum">
                                 <option
                                         v-for="(edtAct, key) in getValidEditionActions(bulkEditionProcedures[criterion].metadatum)"
-                                        :value="edtAct"
-                                        :key="key">
+                                        :key="key"
+                                        :value="edtAct">
                                     {{ edtAct }}
                                 </option>
                             </template>
@@ -87,8 +87,8 @@
                                 
                                 <!-- This has do be a 'div' as the transition animation only renders one child -->
                                 <div 
-                                        style="margin-left: 12px; display: flex;"
-                                        v-if="bulkEditionProcedures[criterion].action == editionActions.replace">
+                                        v-if="bulkEditionProcedures[criterion].action == editionActions.replace"
+                                        style="margin-left: 12px; display: flex;">
                                     
                                     <component
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
@@ -217,8 +217,8 @@
 
                             <button
                                     v-if="!bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting"
-                                    @click="removeThis(criterion)"
-                                    class="button is-white is-pulled-right">
+                                    class="button is-white is-pulled-right"
+                                    @click="removeThis(criterion)">
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('remove_bulk_edit'),
@@ -233,8 +233,8 @@
 
                             <div
                                     v-if="bulkEditionProcedures[criterion].isDone"
-                                    @mouseover="Object.assign( bulkEditionProcedures[criterion], { 'tooltipShow': !bulkEditionProcedures[criterion].tooltipShow })"
-                                    class="is-pulled-right">
+                                    class="is-pulled-right"
+                                    @mouseover="Object.assign( bulkEditionProcedures[criterion], { 'tooltipShow': !bulkEditionProcedures[criterion].tooltipShow })">
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('info_bulk_edit_process_added'),
@@ -250,14 +250,14 @@
                             </div>
 
                             <button
-                                    :disabled="!groupId"
                                     v-if="!bulkEditionProcedures[criterion].isDone &&
                                         !bulkEditionProcedures[criterion].isExecuting &&
                                         bulkEditionProcedures[criterion].metadatum &&
                                         bulkEditionProcedures[criterion].action && 
                                         (bulkEditionProcedures[criterion].action != editionActions.copy || (bulkEditionProcedures[criterion].action == editionActions.copy && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom))"
-                                    @click="executeBulkEditionProcedure(criterion)"
-                                    class="button is-white is-pulled-right">
+                                    :disabled="!groupId"
+                                    class="button is-white is-pulled-right"
+                                    @click="executeBulkEditionProcedure(criterion)">
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('label_apply_changes'),
@@ -278,8 +278,8 @@
                 </transition-group>
                 <a 
                         :disabled="dones.every((item) => item === true) === false"
-                        @click="addEditionCriterion()"
-                        class="has-text-right is-inline-block add-link">
+                        class="has-text-right is-inline-block add-link"
+                        @click="addEditionCriterion()">
                     <span class="icon is-small">
                         <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                     </span>
@@ -290,11 +290,11 @@
             <footer class="field is-grouped form-submit">
                 <p class="control">
                     <button
-                            @click="$eventBusSearch.loadItems(); $emit('close')"
                             :disabled="(Object.keys(bulkEditionProcedures).length &&
                                 bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) || false"
                             type="button"
-                            class="button is-outlined">
+                            class="button is-outlined"
+                            @click="$eventBusSearch.loadItems(); $emit('close')">
                         {{ $i18n.get('close') }}
                     </button>
                 </p>

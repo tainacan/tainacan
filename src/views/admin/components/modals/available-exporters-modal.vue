@@ -1,12 +1,12 @@
 <template>
     <form 
+            ref="availableExportersModal"
             action=""
             autofocus
             role="dialog"
             class="tainacan-modal-content"
             tabindex="-1"
-            aria-modal
-            ref="availableExportersModal">
+            aria-modal>
         <div style="width: auto">
             <header class="tainacan-modal-title">
                 <h2>{{ $i18n.get('exporters') }}</h2>
@@ -22,9 +22,9 @@
                             v-for="exporterType in availableExporters"
                             :key="exporterType.slug">
                         <div
+                                v-if="!(hideWhenManualCollection && !exporterType.manual_collection)"
                                 role="listitem"
                                 class="exporter-type"
-                                v-if="!(hideWhenManualCollection && !exporterType.manual_collection)"
                                 @click="onSelectExporter(exporterType)">
                             <h4>{{ exporterType.name }}</h4>
                             <p>{{ exporterType.description }}</p>

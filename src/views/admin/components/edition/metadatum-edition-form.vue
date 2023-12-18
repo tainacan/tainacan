@@ -1,11 +1,11 @@
 <template>
 <form
         id="metadatumEditForm"
-        @submit.prevent="saveEdition(form)"
         autofocus="true"
         tabindex="-1"
         role="dialog"
-        aria-modal>
+        aria-modal
+        @submit.prevent="saveEdition(form)">
     <div 
             v-if="form && Object.keys(form).length"
             class="tainacan-modal-content">
@@ -69,10 +69,10 @@
                                     :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </label>
                         <b-input
+                                v-model="form.description"
                                 type="textarea"
                                 name="description"
                                 rows="3"
-                                v-model="form.description"
                                 @focus="clearErrors('description')"/>
                     </b-field>
 
@@ -83,12 +83,12 @@
                             :message="formErrors['description_bellow_name'] != undefined ? formErrors['description_bellow_name'] : ''">
                             &nbsp;
                         <b-switch
-                                size="is-small"
-                                @update:model-value="clearErrors('description_bellow_name')"
                                 v-model="form.description_bellow_name"
+                                size="is-small"
                                 true-value="yes"
                                 false-value="no"
-                                name="description_bellow_name">
+                                name="description_bellow_name"
+                                @update:model-value="clearErrors('description_bellow_name')">
                         <help-button
                                 :title="$i18n.getHelperTitle('metadata', 'description_bellow_name')"
                                 :message="$i18n.getHelperMessage('metadata', 'description_bellow_name')"
@@ -128,22 +128,22 @@
                         </label>
                         <div class="is-flex is-justify-content-space-between">
                             <b-radio
-                                    @focus="clearErrors('label_status')"
                                     id="tainacan-select-status-publish"
-                                    name="status"
                                     v-model="form.status"
-                                    native-value="publish">
+                                    name="status"
+                                    native-value="publish"
+                                    @focus="clearErrors('label_status')">
                                 <span class="icon has-text-gray3">
                                     <i class="tainacan-icon tainacan-icon-public"/>
                                 </span>
                                 {{ $i18n.get('status_public') }}
                             </b-radio>
                             <b-radio
-                                    @focus="clearErrors('label_status')"
                                     id="tainacan-select-status-private"
-                                    name="status"
                                     v-model="form.status"
-                                    native-value="private">
+                                    name="status"
+                                    native-value="private"
+                                    @focus="clearErrors('label_status')">
                                 <span class="icon has-text-gray3">
                                     <i class="tainacan-icon tainacan-icon-private"/>
                                 </span>
@@ -166,8 +166,8 @@
                                     :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </label>
                         <b-select 
-                                expanded
                                 v-model="form.display"
+                                expanded
                                 @update:model-value="clearErrors('display')">
                             <option value="yes">
                                 {{ $i18n.get('label_display_default') }}
@@ -190,12 +190,12 @@
                                 :type="formErrors['required'] != undefined ? 'is-danger' : ''"
                                 :message="formErrors['required'] != undefined ? formErrors['required'] : ''">
                             <b-checkbox
-                                    @update:model-value="clearErrors('required')"
                                     v-model="form.required"
                                     true-value="yes"
                                     false-value="no"
                                     class="is-inline-block"
-                                    name="required">
+                                    name="required"
+                                    @update:model-value="clearErrors('required')">
                                 {{ $i18n.get('label_required') }}
                                 <help-button
                                         :title="$i18n.getHelperTitle('metadata', 'required')"
@@ -209,12 +209,12 @@
                                 :type="formErrors['collection_key'] != undefined ? 'is-danger' : ''"
                                 :message="formErrors['collection_key'] != undefined ? formErrors['collection_key'] : ''">
                             <b-checkbox
-                                    @update:model-value="clearErrors('collection_key')"
                                     v-model="form.collection_key"
                                     true-value="yes"
                                     false-value="no"
                                     class="is-inline-block"
-                                    name="collection_key">
+                                    name="collection_key"
+                                    @update:model-value="clearErrors('collection_key')">
                                 {{ $i18n.get('label_unique_value') }}
                                 <help-button
                                         :title="$i18n.getHelperTitle('metadata', 'collection_key')"
@@ -228,12 +228,12 @@
                                 :type="formErrors['multiple'] != undefined ? 'is-danger' : ''"
                                 :message="formErrors['multiple'] != undefined ? formErrors['multiple'] : ''">
                             <b-checkbox
-                                    @update:model-value="clearErrors('multiple')"
                                     v-model="form.multiple"
                                     true-value="yes"
                                     false-value="no"
                                     class="is-inline-block"
-                                    name="multiple">
+                                    name="multiple"
+                                    @update:model-value="clearErrors('multiple')">
                                 {{ $i18n.get('label_allow_multiple') }}
                                 <help-button
                                         :title="$i18n.getHelperTitle('metadata', 'multiple')"
@@ -250,9 +250,9 @@
                             :label="$i18n.get('label_limit_max_values')">
                             &nbsp;
                         <b-switch
+                                v-model="showCardinalityOptions"
                                 size="is-small"
-                                :disabled="form.multiple != 'yes'"
-                                v-model="showCardinalityOptions" />
+                                :disabled="form.multiple != 'yes'" />
                     </b-field>
 
                     <b-field
@@ -268,21 +268,21 @@
                                     :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </label>
                         <b-numberinput
+                                v-model="form.cardinality"
                                 :disabled="!showCardinalityOptions || form.multiple != 'yes'"
                                 name="cardinality"
                                 step="1"
-                                min="2"
-                                v-model="form.cardinality"/>
+                                min="2"/>
                     </b-field>
 
                     <b-field v-if="!isRepositoryLevel && isInsideImporterFlow">
                         <b-checkbox
-                                class="is-inline-block"
                                 v-model="form.repository_level"
-                                @update:model-value="clearErrors('repository_level')"
+                                class="is-inline-block"
                                 name="repository_level"
                                 true-value="yes"
-                                false-value="no">
+                                false-value="no"
+                                @update:model-value="clearErrors('repository_level')">
                             {{ $i18n.get('label_repository_metadata') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata', 'repository_level')"
@@ -313,14 +313,14 @@
                         v-show="!hideMetadataTypeOptions"
                         class="options-columns">
                     <component
-                            :errors="formErrors['metadata_type_options']"
-                            v-if="(form.metadata_type_object && form.metadata_type_object.form_component) || form.edit_form != ''"
                             :is="form.metadata_type_object.form_component"
-                            :metadatum="form"
-                            v-model:value="form.metadata_type_options"/>
+                            v-if="(form.metadata_type_object && form.metadata_type_object.form_component) || form.edit_form != ''"
+                            v-model:value="form.metadata_type_options"
+                            :errors="formErrors['metadata_type_options']"
+                            :metadatum="form"/>
                     <div
-                            v-html="form.edit_form"
-                            v-else/>
+                            v-else
+                            v-html="form.edit_form"/>
 
                     <!-- Hook for extra Form options -->
                     <template v-if="hasEndLeftForm" >  
@@ -333,8 +333,8 @@
             </transition>
 
              <div 
-                    @click="showAdvancedOptions = !showAdvancedOptions;"
-                    class="metadata-form-section">
+                    class="metadata-form-section"
+                    @click="showAdvancedOptions = !showAdvancedOptions;">
                 <span class="icon">
                     <i 
                             class="tainacan-icon"

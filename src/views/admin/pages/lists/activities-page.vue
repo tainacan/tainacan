@@ -23,17 +23,17 @@
                         class="tabs">
                     <ul>
                         <li
-                                @click="onChangeTab('')"
-                                :class="{ 'is-active': tab == undefined || tab == ''}"><a>{{ $i18n.get('activities') }}</a></li>
+                                :class="{ 'is-active': tab == undefined || tab == ''}"
+                                @click="onChangeTab('')"><a>{{ $i18n.get('activities') }}</a></li>
                         <li
-                                @click="onChangeTab('processes')"
-                                :class="{ 'is-active': tab == 'processes'}"><a>{{ $i18n.get('processes') }}</a></li>
+                                :class="{ 'is-active': tab == 'processes'}"
+                                @click="onChangeTab('processes')"><a>{{ $i18n.get('processes') }}</a></li>
                     </ul>
                 </div>
 
                 <b-loading
-                        :is-full-page="false"
-                        v-model="isLoading" 
+                        v-model="isLoading"
+                        :is-full-page="false" 
                         :can-cancel="false"/>
 
                 <div 
@@ -43,11 +43,10 @@
                     <b-field class="header-item">
                         <b-datepicker
                                 ref="datepicker"
-                                :placeholder="$i18n.get('instruction_filter_activities_date')"
                                 v-model="searchDates"
+                                :placeholder="$i18n.get('instruction_filter_activities_date')"
                                 range
                                 :trap-focus="false"
-                                @update:model-value="searchActivities()"
                                 :date-formatter="(date) => dateFormatter(date)"
                                 :date-parser="(date) => dateParser(date)"
                                 icon="calendar-today"
@@ -74,10 +73,11 @@
                                     $i18n.get('datepicker_month_october'),
                                     $i18n.get('datepicker_month_november'),
                                     $i18n.get('datepicker_month_december')
-                                ]"/>
+                                ]"
+                                @update:model-value="searchActivities()"/>
                         <p
-                                class="control"
-                                v-if="searchDates && searchDates.length != 0">
+                                v-if="searchDates && searchDates.length != 0"
+                                class="control">
                             <button 
                                     class="button"
                                     @click="clearSearchDates()">
@@ -95,13 +95,13 @@
                                 :placeholder="$i18n.get('instruction_type_search_users_filter')"
                                 keep-first
                                 open-on-focus
-                                @update:model-value="fetchUsersForFiltering"
-                                @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
-                                @select="filterActivitiesByUser"
                                 :loading="isFetchingUsers"
                                 field="name"
                                 icon="account"
                                 check-infinite-scroll
+                                @update:model-value="fetchUsersForFiltering"
+                                @focus.once="($event) => fetchUsersForFiltering($event.target.value)"
+                                @select="filterActivitiesByUser"
                                 @infinite-scroll="fetchMoreUsersForFiltering">
                             <template #default="props">
                                 <div class="media">
@@ -127,15 +127,15 @@
 
                     <b-field class="header-item">
                         <b-input 
+                                v-model="searchQuery"
                                 :placeholder="$i18n.get('instruction_search')"
                                 type="search"
                                 size="is-small"
                                 :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
                                 autocomplete="on"
-                                v-model="searchQuery"
-                                @keyup.enter="searchActivities()"
                                 icon-right="magnify"
                                 icon-right-clickable
+                                @keyup.enter="searchActivities()"
                                 @icon-right-click="searchActivities()" />
                     </b-field>
                 </div>
@@ -146,11 +146,10 @@
                     <b-field class="header-item">
                         <b-datepicker
                             ref="datepicker"
+                            v-model="searchDates"
                             :placeholder="$i18n.get('instruction_filter_activities_date')"
                             range
                             icon="calendar-today"
-                            v-model="searchDates"
-                            @update:model-value="searchProcesses()"
                             :date-formatter="(date) => dateFormatter(date)"
                             :date-parser="(date) => dateParser(date)"
                             :years-range="[-50, 3]"
@@ -177,10 +176,11 @@
                                 $i18n.get('datepicker_month_november'),
                                 $i18n.get('datepicker_month_december'),
                             ]"
+                            @update:model-value="searchProcesses()"
                         />
                         <p
-                            class="control"
-                            v-if="searchDates && searchDates.length != 0">
+                            v-if="searchDates && searchDates.length != 0"
+                            class="control">
                             <button
                                 class="button"
                                 @click="clearSearchDates()">
@@ -191,15 +191,15 @@
 
                     <b-field class="header-item">
                         <b-input
+                            v-model="searchQuery"
                             :placeholder="$i18n.get('instruction_search')"
                             type="search"
                             size="is-small"
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
                             autocomplete="on"
-                            v-model="searchQuery"
-                            @keyup.enter="searchProcesses()"
                             icon-right="magnify"
                             icon-right-clickable
+                            @keyup.enter="searchProcesses()"
                             @icon-right-click="searchProcesses" />
                     </b-field>
                 </div>
@@ -249,8 +249,8 @@
 
                 <!-- Footer -->
                 <div
-                        class="pagination-area"
-                        v-if="tab != 'processes' && totalActivities > 0">
+                        v-if="tab != 'processes' && totalActivities > 0"
+                        class="pagination-area">
                     <div class="shown-items">
                         {{
                             $i18n.get('info_showing_activities') + ' ' +
@@ -266,8 +266,8 @@
                                 :label="$i18n.get('label_activities_per_page')">
                             <b-select
                                     :model-value="activitiesPerPage"
-                                    @update:model-value="onChangeActivitiesPerPage"
-                                    :disabled="activities.length <= 0">
+                                    :disabled="activities.length <= 0"
+                                    @update:model-value="onChangeActivitiesPerPage">
                                 <option value="12">12</option>
                                 <option value="24">24</option>
                                 <option value="48">48</option>
@@ -277,21 +277,21 @@
                     </div>
                     <div class="pagination">
                         <b-pagination
-                                @change="onPageChange"
-                                :total="totalActivities"
                                 v-model="activitiesPage"
+                                :total="totalActivities"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="activitiesPerPage"
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
-                                :aria-current-label="$i18n.get('label_current_page')"/>
+                                :aria-current-label="$i18n.get('label_current_page')"
+                                @change="onPageChange"/>
                     </div>
                 </div>
                 <div 
-                        class="pagination-area" 
-                        v-if="tab == 'processes' && processes.length > 0">
+                        v-if="tab == 'processes' && processes.length > 0" 
+                        class="pagination-area">
                     <div class="shown-items">
                         {{
                             $i18n.get('info_showing_processes') + ' ' +
@@ -307,8 +307,8 @@
                                 :label="$i18n.get('label_processes_per_page')">
                             <b-select
                                     :model-value="processesPerPage"
-                                    @update:model-value="onChangeProcessesPerPage"
-                                    :disabled="processes.length <= 0">
+                                    :disabled="processes.length <= 0"
+                                    @update:model-value="onChangeProcessesPerPage">
                                 <option value="12">12</option>
                                 <option value="24">24</option>
                                 <option value="48">48</option>
@@ -318,16 +318,16 @@
                     </div>
                     <div class="pagination">
                         <b-pagination
-                                @change="onPageChange"
-                                :total="totalProcesses"
                                 v-model="processesPage"
+                                :total="totalProcesses"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="processesPerPage"
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
-                                :aria-current-label="$i18n.get('label_current_page')"/>
+                                :aria-current-label="$i18n.get('label_current_page')"
+                                @change="onPageChange"/>
                     </div>
                 </div>
             </div>

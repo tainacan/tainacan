@@ -1,28 +1,28 @@
 <template>
     <div 
+            ref="exposersModal"
             aria-labelledby="exposers-modal-title"
             autofocus
             role="dialog"
             tabindex="-1"
-            aria-modal
-            class="tainacan-modal-content" 
-            style="width: auto"
-            ref="exposersModal">
+            aria-modal 
+            class="tainacan-modal-content"
+            style="width: auto">
         <header class="tainacan-modal-title">
             <h2 
-                    id="exposers-modal-title"
-                    v-if="selectedExposer == undefined">
+                    v-if="selectedExposer == undefined"
+                    id="exposers-modal-title">
                 {{ itemId ? $i18n.get('label_urls_for_item_page') : ($i18n.get('label_urls_for_items_list') + (selectedItems && selectedItems.length ? (' (' + selectedItems.length + ' ' + $i18n.get('items') + ')') : '')) }}
             </h2>
             <h2 
-                    id="exposers-modal-title"
-                    v-if="selectedExposer != undefined">
+                    v-if="selectedExposer != undefined"
+                    id="exposers-modal-title">
                 {{ (itemId ? $i18n.get('label_urls_for_item_page') : $i18n.get('label_urls_for_items_list')) + " - " + selectedExposer.name }}
             </h2>
             <a 
-                    @click="selectedExposerMappers = []; selectedExposer = undefined;"
                     v-if="selectedExposer != undefined"
-                    class="back-link">
+                    class="back-link"
+                    @click="selectedExposerMappers = []; selectedExposer = undefined;">
                 {{ $i18n.get('back') }}
             </a>
             <hr>
@@ -96,10 +96,10 @@
                         role="list"
                         class="exposer-types-list">
                     <div
-                            class="exposer-type"
-                            role="listitem"
                             v-for="(exposerType, index ) in availableExposers"
                             :key="index"
+                            class="exposer-type"
+                            role="listitem"
                             @click="siteLinkCopied = false; selectExposer(exposerType)">
                         <h4>{{ exposerType.name }}</h4>
                         <p>{{ exposerType.description }}</p>            
@@ -115,23 +115,23 @@
                         v-if="itemId == undefined || itemId == null"
                         class="exposed-metadata-control">
                     <b-checkbox
+                            v-model="shouldRespectFetchOnly" 
                             v-tooltip="{
                                 content: $i18n.get('info_expose_only_displayed_metadata'),
                                 autoHide: true,
                                 placement: 'bottom',
                                 popperClass: ['tainacan-tooltip', 'tooltip']
-                            }" 
-                            v-model="shouldRespectFetchOnly">{{ $i18n.get('label_expose_only_displayed_metadata') }}</b-checkbox>
+                            }">{{ $i18n.get('label_expose_only_displayed_metadata') }}</b-checkbox>
                 </div>
                 <b-field 
+                        v-for="(exposerMapper, index) in selectedExposerMappers"
+                        :key="index"
                         :addons="false"
                         class="exposer-item"
-                        role="listitem"
-                        v-for="(exposerMapper, index) in selectedExposerMappers"
-                        :key="index">
+                        role="listitem">
                     <span 
-                            @click="collapse(index)"
-                            class="collapse-handle">
+                            class="collapse-handle"
+                            @click="collapse(index)">
                         <span class="icon">
                             <i 
                                     :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright' : exposerMapper.collapsed }"
@@ -154,13 +154,13 @@
                     </span>
                     <transition name="filter-item">
                         <div 
+                                v-show="!exposerMapper.collapsed"
                                 role="list"
-                                class="exposer-item-links-list"
-                                v-show="!exposerMapper.collapsed">    
+                                class="exposer-item-links-list">    
                             <div
-                                    role="listitem"
-                                    :key="pagedLink"
                                     v-for="pagedLink in totalPages"
+                                    :key="pagedLink"
+                                    role="listitem"
                                     class="exposer-item-link">
                                 <span>
                                     <p>
@@ -227,8 +227,8 @@
             </div>
 
             <b-loading 
-                    :is-full-page="false"
-                    v-model="isLoading" 
+                    v-model="isLoading"
+                    :is-full-page="false" 
                     :can-cancel="false"/>
 
             <footer class="field is-grouped form-submit">

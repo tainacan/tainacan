@@ -1,14 +1,12 @@
 <template>
     <div :class="{ 'is-flex': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
+                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 expanded
                 :disabled="disabled"
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 size="is-small"
                 icon="account"
                 :model-value="selected"
-                @update:model-value="onInput"
-                @blur="onBlur"
                 :data="options"
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 autocomplete
@@ -22,11 +20,13 @@
                 :aria-close-label="$i18n.get('remove_value')"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 field="name"
+                check-infinite-scroll
+                :has-counter="false"
+                @update:model-value="onInput"
+                @blur="onBlur"
                 @typing="search"
                 @focus="onMobileSpecialFocus"
-                check-infinite-scroll
-                @infinite-scroll="searchMore"
-                :has-counter="false">
+                @infinite-scroll="searchMore">
             <template #default="props">
                 <div class="media">
                     <div

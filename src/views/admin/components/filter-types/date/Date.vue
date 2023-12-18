@@ -2,9 +2,9 @@
     <div class="date-filter-container">
          <b-dropdown
                 :mobile-modal="true"
-                @update:model-value="($event) => { resetPage(); onChangeComparator($event) }"
                 aria-role="list"
-                trap-focus>
+                trap-focus
+                @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
             <template #trigger>
                 <button
                         :aria-label="$i18n.get('label_comparator')"
@@ -71,11 +71,10 @@
                 @update:model-value="emitOnlyYear($event)"
                 v-model="yearsOnlyValue"/> -->
         <b-datepicker
+                v-model="value"
                 position="is-bottom-right"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
-                v-model="value"
-                @update:model-value="($event) => { resetPage(); emit($event); }"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -104,7 +103,8 @@
                     $i18n.get('datepicker_month_october'),
                     $i18n.get('datepicker_month_november'),
                     $i18n.get('datepicker_month_december')
-                ]" />
+                ]"
+                @update:model-value="($event) => { resetPage(); emit($event); }" />
                 <!-- filterTypeOptions FOR TYPE 
                     v-else
                     :type="filterTypeOptions.type == 'month' ? 'month' : null" 

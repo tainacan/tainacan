@@ -4,31 +4,31 @@
                 v-if="!getDisplayAutocomplete"
                 class="control is-clearfix">
             <input  
+                    :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                    v-imask="getMask"
                     class="input"
                     :disabled="disabled"
-                    :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                     :model-value="value"
                     :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                     @focus="onMobileSpecialFocus"
-                    v-imask="getMask"
                     @complete="($event) => getMask ? onInput($event.detail.value) : null"
                     @input="($event) => getMask ? null : onInput($event.target.value)"
                     @blur="onBlur" >
         </div>
         <b-autocomplete
                 v-else
-                :disabled="disabled"
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                :disabled="disabled"
                 :model-value="value"
-                @blur="onBlur"
                 :data="options"
                 :loading="isLoadingOptions"
-                @update:model-value="($event) => { search($event); }"
                 field="label"
-                @select="onSelect"
                 clearable
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                 check-infinite-scroll
+                @blur="onBlur"
+                @update:model-value="($event) => { search($event); }"
+                @select="onSelect"
                 @infinite-scroll="searchMore"
                 @focus="onMobileSpecialFocus">
             <template #header>

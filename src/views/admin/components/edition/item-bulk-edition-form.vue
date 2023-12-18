@@ -1,16 +1,16 @@
 <template>
     <div>
         <b-loading
-                :is-full-page="false"
                 v-model="isLoading"
+                :is-full-page="false"
                 :can-cancel="false"/>
         <div 
                 v-if="!$adminOptions.hideBulkEditionPageTitle"
                 class="tainacan-page-title">
             <h1>{{ $i18n.get('add_items_bulk') }}</h1>
             <a 
-                    @click="$router.go(-1)"
-                    class="back-link has-text-secondary">
+                    class="back-link has-text-secondary"
+                    @click="$router.go(-1)">
                 {{ $i18n.get('back') }}
             </a>
             <hr>
@@ -25,12 +25,12 @@
                 <label class="label">{{ $i18n.get('label_documents_upload') }}</label>
                 <br>
                 <b-upload
-                        native
                         v-model="submitedFileList"
+                        native
                         drag-drop
                         multiple
-                        @update:model-value="uploadFiles()"
-                        class="source-file-upload">
+                        class="source-file-upload"
+                        @update:model-value="uploadFiles()">
                     <section class="drop-inner">
                         <div class="content has-text-centered">
                             <p>
@@ -84,9 +84,9 @@
                 <!-- Uploaded Items -->
                 <transition-group name="item-appear">
                     <div 
-                            class="document-item"
                             v-for="(item, index) of uploadedItems"
-                            :key="item.id">
+                            :key="item.id"
+                            class="document-item">
                         <img 
                                 v-if="item.document != undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
@@ -108,7 +108,6 @@
                             </span>  
                             <span 
                                     v-if="item.document != '' && item.document_type != 'empty'"
-                                    class="icon has-text-success"
                                     v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -118,7 +117,8 @@
                                         autoHide: false,
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
-                                    }">
+                                    }"
+                                    class="icon has-text-success">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   
@@ -161,8 +161,8 @@
                                 :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished)"
                                 class="button is-secondary" 
                                 :class="{'is-loading': isCreatingSequenceEditGroup }"
-                                @click.prevent="sequenceEditGroup()"
-                                type="submit">
+                                type="submit"
+                                @click.prevent="sequenceEditGroup()">
                             {{ $i18n.get('label_sequence_edit_items') }}
                         </button>
                     </div>
@@ -170,8 +170,8 @@
                         <button 
                                 :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished)"
                                 class="button is-secondary" 
-                                @click.prevent="openBulkEditionModal()"
-                                type="submit">{{ $i18n.get('label_bulk_edit_items') }}</button>
+                                type="submit"
+                                @click.prevent="openBulkEditionModal()">{{ $i18n.get('label_bulk_edit_items') }}</button>
                     </div>
                 </div>
             </footer>

@@ -5,17 +5,17 @@
             <hr>
         </div>
         <b-input 
-                aria-labelledby="item-document-url-modal-title"
                 ref="item-document-url-input"
-                v-model="localUrlLink" />
+                v-model="localUrlLink"
+                aria-labelledby="item-document-url-modal-title" />
         <br>
         <b-field
                 :addons="false"
                 :label="$i18n.get('label_document_option_forced_iframe')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="localUrlForcedIframe" />
+                    v-model="localUrlForcedIframe" 
+                    size="is-small" />
             <help-button
                     :title="$i18n.get('label_document_option_forced_iframe')"
                     :message="$i18n.get('info_document_option_forced_iframe')" />
@@ -26,18 +26,18 @@
                 group-multiline>
             <b-field :label="$i18n.get('label_document_option_iframe_width')">
                 <b-numberinput
-                        :aria-minus-label="$i18n.get('label_decrease')"
-                        :aria-plus-label="$i18n.get('label_increase')"
-                        min="1" 
                         v-model="localUrlIframeWidth"
+                        :aria-minus-label="$i18n.get('label_decrease')"
+                        :aria-plus-label="$i18n.get('label_increase')" 
+                        min="1"
                         step="1" />
             </b-field>
             <b-field :label="$i18n.get('label_document_option_iframe_height')">
                 <b-numberinput
-                        :aria-minus-label="$i18n.get('label_decrease')"
-                        :aria-plus-label="$i18n.get('label_increase')"
-                        min="1" 
                         v-model="localUrlIframeHeight"
+                        :aria-minus-label="$i18n.get('label_decrease')"
+                        :aria-plus-label="$i18n.get('label_increase')" 
+                        min="1"
                         step="1" />
             </b-field>
         </b-field>
@@ -54,8 +54,8 @@
                 :label="$i18n.get('label_document_option_is_image')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="localUrlIsImage" />
+                    v-model="localUrlIsImage" 
+                    size="is-small" />
             <help-button
                     :title="$i18n.get('label_document_option_is_image')"
                     :message="$i18n.get('info_document_option_is_image')" />
@@ -73,8 +73,8 @@
             <div class="control">
                 <button
                         id="button-submit-url-link-selection"
-                        @click.prevent="confirmURLSelection();$emit('close');"
-                        class="button is-success">
+                        class="button is-success"
+                        @click.prevent="confirmURLSelection();$emit('close');">
                     {{ $i18n.get('save') }}</button>
             </div>
         </div>

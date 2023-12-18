@@ -9,9 +9,9 @@
                 class="back-button is-hidden-mobile">
             <router-link
                     v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
-                    :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
-                    custom
-                    v-slot="{ navigate }">
+                    v-slot="{ navigate }" 
+                    :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }"
+                    custom>
                 <button
                         role="link"
                         class="button is-turquoise4"
@@ -41,13 +41,13 @@
                 {{ collection.name ? collection.name : '' }}
                 <span 
                         v-if="collection.status && $statusHelper.hasIcon(collection.status)"
-                        class="icon has-text-white"
                         v-tooltip="{
                             content: $i18n.get('status_' + collection.status),
                             autoHide: true,
                             popperClass: ['tainacan-tooltip', 'tooltip'],
                             placement: 'auto-start'
-                        }">
+                        }"
+                        class="icon has-text-white">
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(collection.status)"
@@ -59,11 +59,11 @@
         <ul class="repository-subheader-icons">
             <li>
                 <a
-                        @click="openAvailableExportersModal"
-                        class="button"
-                        id="exporter-collection-button"
                         v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton"
-                        :aria-label="$i18n.get('exporters')">
+                        id="exporter-collection-button"
+                        class="button"
+                        :aria-label="$i18n.get('exporters')"
+                        @click="openAvailableExportersModal">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
                     </span>
@@ -72,11 +72,11 @@
             </li>
             <li>
                 <a
+                        v-if="!isRepositoryLevel && collection && collection.url && !$adminOptions.hideRepositorySubheaderViewCollectionButton"
+                        id="view-collection-button"
                         :href="collection && collection.url ? collection.url : ''"
                         target="_blank"
-                        v-if="!isRepositoryLevel && collection && collection.url && !$adminOptions.hideRepositorySubheaderViewCollectionButton"
-                        class="button"
-                        id="view-collection-button">
+                        class="button">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                     </span>
@@ -85,11 +85,11 @@
             </li>
             <li>
                 <a
+                        v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewTaxonomiesButton"
+                        id="view-repository-button--taxonomies"
                         :href="repositoryTaxonomiesURL"
                         target="_blank"
-                        v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewTaxonomiesButton"
-                        class="button"
-                        id="view-repository-button--taxonomies">
+                        class="button">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                     </span>
@@ -98,11 +98,11 @@
             </li>
             <li>
                 <a
+                        v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewCollectionsButton"
+                        id="view-repository-button"
                         :href="repositoryURL"
                         target="_blank"
-                        v-if="isRepositoryLevel && !$adminOptions.hideRepositorySubheaderViewCollectionsButton"
-                        class="button"
-                        id="view-repository-button">
+                        class="button">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
                     </span>

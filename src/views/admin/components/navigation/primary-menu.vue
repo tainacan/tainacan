@@ -84,8 +84,8 @@
                     </router-link>
                 </li>
                 <li 
-                        class="is-hidden-mobile"
-                        v-if="$userCaps.hasCapability('tnc_rep_edit_users') && !$adminOptions.hidePrimaryMenuCapabilitiesButton">
+                        v-if="$userCaps.hasCapability('tnc_rep_edit_users') && !$adminOptions.hidePrimaryMenuCapabilitiesButton"
+                        class="is-hidden-mobile">
                     <router-link
                             :to="$routerHelper.getCapabilitiesPath()"
                             :class="activeRoute == 'CapabilitiesPage' ? 'is-active':''">

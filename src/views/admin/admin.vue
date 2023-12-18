@@ -16,11 +16,11 @@
                     :is-menu-compressed="isMenuCompressed"/>
             <button 
                     v-if="!$adminOptions.hidePrimaryMenu && !$adminOptions.hidePrimaryMenuCompressButton" 
-                    class="is-hidden-mobile"
                     id="menu-compress-button"
+                    class="is-hidden-mobile"
                     :style="{ top: menuCompressButtonTop }"
-                    @click="isMenuCompressed = !isMenuCompressed"      
-                    :aria-label="$i18n.get('label_shrink_menu')">    
+                    :aria-label="$i18n.get('label_shrink_menu')"      
+                    @click="isMenuCompressed = !isMenuCompressed">    
                 <span
                         v-tooltip="{
                             content: $i18n.get('label_shrink_menu'),

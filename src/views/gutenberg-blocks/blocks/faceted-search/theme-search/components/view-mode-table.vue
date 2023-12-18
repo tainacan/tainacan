@@ -34,8 +34,8 @@
                 </thead>
                 <tbody>
                     <tr   
-                            :key="item"
-                            v-for="item in 12">
+                            v-for="item in 12"
+                            :key="item">
                         <template 
                                 v-for="(column, metadatumIndex) in displayedMetadata"
                                 :key="metadatumIndex">
@@ -90,12 +90,12 @@
                 </thead>
                 <tbody role="list">
                     <tr     
+                            v-for="(item, index) of items"
+                            :key="index"
                             :data-tainacan-item-id="item.id"
                             :aria-setsize="totalItems"
                             :aria-posinset="getPosInSet(index)"
-                            role="listitem"
-                            :key="index"
-                            v-for="(item, index) of items">
+                            role="listitem">
                         
                         <!-- JS-side hook for extra content -->
                         <td 
@@ -127,6 +127,9 @@
                                     }">
                                 <a :href="getItemLink(item.url, index)">
                                     <p
+                                            v-if="!collectionId &&
+                                                column.metadata_type_object != undefined && 
+                                                column.metadata_type_object.related_mapped_prop == 'title'"
                                             v-tooltip="{
                                                 delay: {
                                                     shown: 500,
@@ -139,11 +142,11 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             :aria-label="column.name + ': ' + (item.title != undefined && item.title != '' ? item.title : $i18n.get('label_value_not_provided'))"
-                                            v-if="!collectionId &&
-                                                column.metadata_type_object != undefined && 
-                                                column.metadata_type_object.related_mapped_prop == 'title'"
                                             v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
                                     <p
+                                            v-if="!collectionId &&
+                                                column.metadata_type_object != undefined && 
+                                                column.metadata_type_object.related_mapped_prop == 'description'"
                                             v-tooltip="{
                                                 delay: {
                                                     shown: 500,
@@ -155,11 +158,15 @@
                                                 placement: 'auto-start',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            v-if="!collectionId &&
-                                                column.metadata_type_object != undefined && 
-                                                column.metadata_type_object.related_mapped_prop == 'description'"
                                             v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
                                     <p
+                                            v-if="item.metadata != undefined &&
+                                                column.metadatum !== 'row_thumbnail' &&
+                                                column.metadatum !== 'row_actions' &&
+                                                column.metadatum !== 'row_creation' &&
+                                                column.metadatum !== 'row_author' &&
+                                                column.metadatum !== 'row_title' &&
+                                                column.metadatum !== 'row_description'"
                                             v-tooltip="{
                                                 delay: {
                                                     shown: 500,
@@ -171,13 +178,6 @@
                                                 autoHide: false,
                                                 placement: 'auto-start'
                                             }"
-                                            v-if="item.metadata != undefined &&
-                                                column.metadatum !== 'row_thumbnail' &&
-                                                column.metadatum !== 'row_actions' &&
-                                                column.metadatum !== 'row_creation' &&
-                                                column.metadatum !== 'row_author' &&
-                                                column.metadatum !== 'row_title' &&
-                                                column.metadatum !== 'row_description'"
                                             v-html="renderMetadataWithLabel(item.metadata, column) != '' ? renderMetadataWithLabel(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
 
                                     <span v-if="column.metadatum == 'row_thumbnail'">
@@ -207,8 +207,8 @@
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"          
-                                        @click.prevent="starSlideshowFromHere(index)"
-                                        class="icon slideshow-icon">
+                                        class="icon slideshow-icon"
+                                        @click.prevent="starSlideshowFromHere(index)">
                                     <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
                                 </span> 
                             </div>

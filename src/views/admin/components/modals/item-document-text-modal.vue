@@ -5,11 +5,11 @@
             <hr>
         </div>
         <b-input
-                aria-labelledby="item-document-text-modal-title"
                 ref="item-document-text-input"
+                v-model="localTextContent"
+                aria-labelledby="item-document-text-modal-title"
                 type="textarea"
-                :autofocus="true"
-                v-model="localTextContent"/>
+                :autofocus="true"/>
 
         <div class="field is-grouped form-submit">
             <div class="control">
@@ -24,8 +24,8 @@
                 <button
                         id="button-submit-text-content-writing"
                         type="submit"
-                        @click.prevent="confirmTextWriting();$emit('close');"
-                        class="button is-success">
+                        class="button is-success"
+                        @click.prevent="confirmTextWriting();$emit('close');">
                     {{ $i18n.get('save') }}</button>
             </div>
         </div>

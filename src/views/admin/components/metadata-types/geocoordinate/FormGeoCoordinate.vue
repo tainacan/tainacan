@@ -9,10 +9,10 @@
                             :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'map_provider')" />
                 </label>
                 <b-input
-                        name="mapProvider"
                         v-model="mapProvider"
-                        @update:model-value="emitValues()"
-                        placeholder="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                        name="mapProvider"
+                        placeholder="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        @update:model-value="emitValues()" />
         </b-field>
 
         <b-field
@@ -25,10 +25,10 @@
                                 :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'attribution')" />
                 </label>
                 <b-input
-                        name="attribution"
                         v-model="attribution"
-                        @update:model-value="emitValues()"
-                        placeholder="© OpenStreetMap contributors" />
+                        name="attribution"
+                        placeholder="© OpenStreetMap contributors"
+                        @update:model-value="emitValues()" />
 
         </b-field>
 
@@ -42,12 +42,12 @@
                             :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'initial_zoom')" />
                 </label>
                 <b-numberinput
-                        name="initialZoom"
                         v-model="initialZoom"
-                        @update:model-value="emitValues()"
+                        name="initialZoom"
                         :step="1"
                         :max="19"
-                        :min="1" />
+                        :min="1"
+                        @update:model-value="emitValues()" />
         </b-field>
 
         <b-field
@@ -60,12 +60,12 @@
                         :message="$i18n.getHelperMessage('tainacan-geocoordinate', 'maximum_zoom')" />
                 </label>
                 <b-numberinput
-                        name="maximumZoom"
                         v-model="maximumZoom"
-                        @update:model-value="emitValues()"
+                        name="maximumZoom"
                         :step="1"
                         :max="19"
-                        :min="1" />
+                        :min="1"
+                        @update:model-value="emitValues()" />
         </b-field>
 
     </section>

@@ -26,38 +26,38 @@
             </label>
             <transition-group name="filter-item">
                 <div
-                        class="options-input"
                         v-for="(interval, index) of intervals"
-                        :key="0 + index">
+                        :key="0 + index"
+                        class="options-input">
                     <b-field>
                         <b-input
+                                v-model="interval.label"
                                 expanded
                                 :placeholder="$i18n.get('label')"
-                                @update:model-value="onUpdate(interval)"
-                                v-model="interval.label" />
+                                @update:model-value="onUpdate(interval)" />
                     </b-field>
                     <b-field>
                         <b-input
+                                v-model="interval.from"
                                 expanded
                                 type="number"
                                 step="0.01"
                                 :placeholder="$i18n.get('info_initial_value')"
-                                @update:model-value="onUpdate(interval, true)"
-                                v-model="interval.from" />
+                                @update:model-value="onUpdate(interval, true)" />
                         <b-input
+                                v-model="interval.to"
                                 expanded
                                 type="number"
                                 step="0.01"
                                 :placeholder="$i18n.get('info_final_value')"
-                                @update:model-value="onUpdate(interval, true)"
-                                v-model="interval.to" />
+                                @update:model-value="onUpdate(interval, true)" />
                     </b-field>
                     <p class="control">
                         <a
                                 role="button"
-                                @click="addInterval(index)"
                                 class="add-link"
-                                :title="$i18n.get('add_value')">
+                                :title="$i18n.get('add_value')"
+                                @click="addInterval(index)">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                             </span>
@@ -69,9 +69,9 @@
                         class="control">
                         <a
                                 role="button"
-                                @click="removeInterval(index)"
                                 class="add-link"
-                                :title="$i18n.get('remove_value')">
+                                :title="$i18n.get('remove_value')"
+                                @click="removeInterval(index)">
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-repprovedcircle"/>
                             </span>

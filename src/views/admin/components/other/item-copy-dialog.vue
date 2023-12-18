@@ -1,12 +1,12 @@
 <template>
     <div 
+            ref="itemCopyDialog"
             aria-labelledby="alert-dialog-title"
             autofocus
             role="alertdialog"
             tabindex="-1"
             aria-modal
-            class="tainacan-form tainacan-dialog dialog"
-            ref="itemCopyDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -68,24 +68,24 @@
                 <button 
                         v-if="copyCount == 1 && hasCopied && newItems.length == 1"
                         class="button is-secondary" 
-                        @click.prevent="$router.push($routerHelper.getItemEditPath(collectionId, newItems[0].id)); $emit('close');"
-                        type="submit">
+                        type="submit"
+                        @click.prevent="$router.push($routerHelper.getItemEditPath(collectionId, newItems[0].id)); $emit('close');">
                     {{ $i18n.getFrom('items','edit_item') }}
                 </button>
                 <button 
-                        style="margin-left: 24px;"
                         v-if="copyCount > 1 && hasCopied && newItems.length > 1"
+                        style="margin-left: 24px;"
                         class="button is-secondary" 
                         :class="{'is-loading': isCreatingSequenceEditGroup }"
-                        @click.prevent="sequenceEditGroup()"
-                        type="submit">
+                        type="submit"
+                        @click.prevent="sequenceEditGroup()">
                     {{ $i18n.get('label_sequence_edit_items') }}
                 </button>
                 <button 
                         v-if="copyCount > 1 && hasCopied && newItems.length > 1"
                         class="button is-secondary"
-                        @click.prevent="openBulkEditionModal()"
-                        type="submit">
+                        type="submit"
+                        @click.prevent="openBulkEditionModal()">
                     {{ $i18n.get('label_bulk_edit_items') }}
                 </button>
             </footer>

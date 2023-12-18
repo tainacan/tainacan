@@ -19,10 +19,10 @@
                             </label>
                             <select
                                     v-if="!isFetchingData"
-                                    name="select_metadata_for_terms"
                                     id="select_metadata_for_terms"
-                                    :placeholder="$i18n.get('label_select_a_taxonomy_metadatum')"
-                                    v-model="selectedMetadatum">
+                                    v-model="selectedMetadatum"
+                                    name="select_metadata_for_terms"
+                                    :placeholder="$i18n.get('label_select_a_taxonomy_metadatum')">
                                 <option 
                                         v-for="(metadatum, index) of metadataListArray"
                                         :key="index"
@@ -32,8 +32,8 @@
                             </select>
                             <div class="graph-mode-switch">
                                 <button 
-                                        @click="itemsPerTermChartMode = 'bar'"
-                                        :class="{ 'current': itemsPerTermChartMode == 'bar' }">
+                                        :class="{ 'current': itemsPerTermChartMode == 'bar' }"
+                                        @click="itemsPerTermChartMode = 'bar'">
                                     <span class="screen-reader-text">
                                         {{ $i18n.get('label_bar_chart') }}
                                     </span>
@@ -42,8 +42,8 @@
                                     </span>
                                 </button>
                                 <button 
-                                        @click="itemsPerTermChartMode = 'treemap'"
-                                        :class="{ 'current': itemsPerTermChartMode == 'treemap' }">
+                                        :class="{ 'current': itemsPerTermChartMode == 'treemap' }"
+                                        @click="itemsPerTermChartMode = 'treemap'">
                                     <span class="screen-reader-text">
                                         {{ $i18n.get('label_tree_map') }}
                                     </span>
@@ -73,16 +73,16 @@
                                 class="box-header__item">
                             <label for="max_terms">{{ $i18n.get('label_terms_per_page') }}</label>
                             <input
+                                    id="max_terms"
+                                    v-model.number="maxTermsToDisplay"
                                     type="number"
                                     step="1"
                                     min="1"
                                     max="999"
                                     class="screen-per-page"
                                     name="max_terms"
-                                    id="max_terms"
                                     maxlength="3"
-                                    :disabled="isBuildingChart"
-                                    v-model.number="maxTermsToDisplay">
+                                    :disabled="isBuildingChart">
                         </div>
                         <div 
                                 v-if="selectedMetadatum && selectedMetadatum.id && currentTotalTerms >= 56"
@@ -90,17 +90,17 @@
                             <span class="displaying-num">{{ currentTotalTerms + ' ' + $i18n.get('terms') }}</span>
                             <span class="pagination-links">
                                 <span
-                                        @click="!isBuildingChart ? termsDisplayedPage = 1 : null"
                                         :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
                                         class="first-page button"
-                                        aria-hidden="true">
+                                        aria-hidden="true"
+                                        @click="!isBuildingChart ? termsDisplayedPage = 1 : null">
                                     «
                                 </span>
                                 <span
-                                        @click="(termsDisplayedPage > 1 && !isBuildingChart) ? termsDisplayedPage-- : null"
                                         :class="{'tablenav-pages-navspan disabled' : termsDisplayedPage <= 1 || isBuildingChart}"
                                         class="prev-page button"
-                                        aria-hidden="true">
+                                        aria-hidden="true"
+                                        @click="(termsDisplayedPage > 1 && !isBuildingChart) ? termsDisplayedPage-- : null">
                                     ‹
                                 </span>
                                 <span class="paging-input">
@@ -110,31 +110,31 @@
                                         {{ $i18n.get('label_current_page') }}
                                     </label>
                                     <input
-                                            class="current-page"
                                             id="current-page-selector"
+                                            v-model.number="termsDisplayedPage"
+                                            class="current-page"
                                             type="number"
                                             step="1"
                                             min="1"
                                             :disabled="isBuildingChart || maxTermsToDisplay >= currentTotalTerms"
                                             :max="Math.ceil(currentTotalTerms/maxTermsToDisplay)"
                                             name="paged"
-                                            v-model.number="termsDisplayedPage"
                                             size="1"
                                             aria-describedby="table-paging">
                                     <span class="tablenav-paging-text"> {{ $i18n.get('info_of') }} <span class="total-pages">{{ Math.ceil(currentTotalTerms/maxTermsToDisplay) }}</span></span>
                                 </span>
                                 <span 
-                                        @click="(!isBuildingChart && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null"
                                         :class="{'tablenav-pages-navspan disabled' : isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
                                         aria-hidden="true"
-                                        class="next-page button">
+                                        class="next-page button"
+                                        @click="(!isBuildingChart && termsDisplayedPage < Math.ceil(currentTotalTerms/maxTermsToDisplay)) ? termsDisplayedPage++ : null">
                                     ›
                                 </span>
                                 <span
-                                        @click="!isBuildingChart ? termsDisplayedPage = Math.ceil(currentTotalTerms/maxTermsToDisplay) : null"
                                         :class="{'tablenav-pages-navspan disabled': isBuildingChart || termsDisplayedPage >= Math.ceil(currentTotalTerms/maxTermsToDisplay) }"
                                         class="last-page button"
-                                        aria-hidden="true">
+                                        aria-hidden="true"
+                                        @click="!isBuildingChart ? termsDisplayedPage = Math.ceil(currentTotalTerms/maxTermsToDisplay) : null">
                                     »
                                 </span>
                             </span>
@@ -147,8 +147,8 @@
                             :options="chartOptions" />
                     <button 
                             v-if=" !isFetchingData && !isFetchingMetadatumTerms && selectedMetadatum"
-                            @click="isChildColumnCollapsed = !isChildColumnCollapsed"
-                            class="button-secondary hide-column-button">
+                            class="button-secondary hide-column-button"
+                            @click="isChildColumnCollapsed = !isChildColumnCollapsed">
                         <span class="icon">
                             <i 
                                     :class="isChildColumnCollapsed ? 'tainacan-icon-arrowleft' : 'tainacan-icon-arrowright'"
@@ -172,16 +172,16 @@
                                     class="box-header__item">
                                 <label for="max_terms">{{ $i18n.get('label_terms_per_page') }}</label>
                                 <input
+                                        id="max_terms"
+                                        v-model.number="maxChildTermsToDisplay"
                                         type="number"
                                         step="1"
                                         min="1"
                                         max="999"
                                         class="screen-per-page"
                                         name="max_terms"
-                                        id="max_terms"
                                         maxlength="3"
-                                        :disabled="isBuildingChildrenChart"
-                                        v-model.number="maxChildTermsToDisplay">
+                                        :disabled="isBuildingChildrenChart">
                             </div>
                             <div 
                                     v-if="currentTotalChildTerms >= 56"
@@ -189,17 +189,17 @@
                                 <span class="displaying-num">{{ currentTotalChildTerms + ' ' + $i18n.get('terms') }}</span>
                                 <span class="pagination-links">
                                     <span
-                                            @click="!isBuildingChildrenChart ? childTermsDisplayedPage = 1 : null"
                                             :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isBuildingChildrenChart}"
                                             class="first-page button"
-                                            aria-hidden="true">
+                                            aria-hidden="true"
+                                            @click="!isBuildingChildrenChart ? childTermsDisplayedPage = 1 : null">
                                         «
                                     </span>
                                     <span
-                                            @click="(childTermsDisplayedPage > 1 && !isBuildingChildrenChart) ? childTermsDisplayedPage-- : null"
                                             :class="{'tablenav-pages-navspan disabled' : childTermsDisplayedPage <= 1 || isBuildingChildrenChart}"
                                             class="prev-page button"
-                                            aria-hidden="true">
+                                            aria-hidden="true"
+                                            @click="(childTermsDisplayedPage > 1 && !isBuildingChildrenChart) ? childTermsDisplayedPage-- : null">
                                         ‹
                                     </span>
                                     <span class="paging-input">
@@ -209,31 +209,31 @@
                                             {{ $i18n.get('label_current_page') }}
                                         </label>
                                         <input
-                                                class="current-page"
                                                 id="current-page-selector"
+                                                v-model.number="childTermsDisplayedPage"
+                                                class="current-page"
                                                 type="number"
                                                 step="1"
                                                 min="1"
                                                 :disabled="isBuildingChildrenChart || maxChildTermsToDisplay >= currentTotalChildTerms"
                                                 :max="Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)"
                                                 name="paged"
-                                                v-model.number="childTermsDisplayedPage"
                                                 size="1"
                                                 aria-describedby="table-paging">
                                         <span class="tablenav-paging-text"> {{ $i18n.get('info_of') }} <span class="total-pages">{{ Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }}</span></span>
                                     </span>
                                     <span 
-                                            @click="(!isBuildingChildrenChart && childTermsDisplayedPage < Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)) ? childTermsDisplayedPage++ : null"
                                             :class="{'tablenav-pages-navspan disabled' : isBuildingChildrenChart || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
                                             aria-hidden="true"
-                                            class="next-page button">
+                                            class="next-page button"
+                                            @click="(!isBuildingChildrenChart && childTermsDisplayedPage < Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay)) ? childTermsDisplayedPage++ : null">
                                         ›
                                     </span>
                                     <span
-                                            @click="!isBuildingChildrenChart ? childTermsDisplayedPage = Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) : null"
                                             :class="{'tablenav-pages-navspan disabled': isBuildingChildrenChart || childTermsDisplayedPage >= Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) }"
                                             class="last-page button"
-                                            aria-hidden="true">
+                                            aria-hidden="true"
+                                            @click="!isBuildingChildrenChart ? childTermsDisplayedPage = Math.ceil(currentTotalChildTerms/maxChildTermsToDisplay) : null">
                                         »
                                     </span>
                                 </span>

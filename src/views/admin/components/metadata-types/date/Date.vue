@@ -14,14 +14,14 @@
         <!-- TODO: FIX IMASK -->    
         <b-input
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                v-model="dateValue"
                 :disabled="disabled"
                 :custom-class="isInvalidDate && dateValue ? 'is-danger' : ''"
                 type="text"
-                v-model="dateValue"
+                :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : dateFormat.toLowerCase()"
                 @update:model-value="onInput"
                 @blur="onBlur"
-                @focus="onMobileSpecialFocus"
-                :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : dateFormat.toLowerCase()" />
+                @focus="onMobileSpecialFocus" />
         <p
                 v-if="isInvalidDate && dateValue"
                 style="font-size: 0.75em;"

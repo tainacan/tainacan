@@ -1,12 +1,12 @@
 <template>
     <form 
+            ref="collectionsModal"
             action=""
             autofocus
             role="dialog"
             class="tainacan-modal-content"
             tabindex="-1"
-            aria-modal
-            ref="collectionsModal">
+            aria-modal>
         <div 
                 class="tainacan-modal-content" 
                 style="width: auto">
@@ -23,8 +23,8 @@
                             v-for="(collection, index) in collections"
                             :key="index">
                         <div
-                                class="collection-type"
                                 v-if="collection && collection.current_user_can_edit_items"
+                                class="collection-type"
                                 @click="onSelectCollection(collection)">
                             <h4>{{ collection.name }}</h4>
                             <p>{{ collection.description.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            
@@ -39,8 +39,8 @@
                     </div>
                 </div>
                 <b-loading 
-                        :is-full-page="false"
-                        v-model="isLoading" 
+                        v-model="isLoading"
+                        :is-full-page="false" 
                         :can-cancel="false"/>
                 
                  <footer class="field is-grouped form-submit">

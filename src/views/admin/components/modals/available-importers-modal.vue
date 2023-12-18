@@ -1,12 +1,12 @@
 <template>
     <form 
+            ref="availableImportersModal"
             action=""
             autofocus
             role="dialog"
             class="tainacan-modal-content"
             tabindex="-1"
-            aria-modal
-            ref="availableImportersModal">
+            aria-modal>
         <div style="width: auto">
             <header class="tainacan-modal-title">
                 <h2>{{ $i18n.get('importers') }}</h2>
@@ -21,9 +21,9 @@
                             v-for="importerType in availableImporters"
                             :key="importerType.slug">
                         <div
+                                v-if="!(hideWhenManualCollection && !importerType.manual_collection)"
                                 role="listitem"
                                 class="importer-type"
-                                v-if="!(hideWhenManualCollection && !importerType.manual_collection)"
                                 @click="onSelectImporter(importerType)">
                             <h4>{{ importerType.name }}</h4>
                             <p>{{ importerType.description }}</p>            
@@ -31,8 +31,8 @@
                     </template>
 
                     <b-loading 
-                        :is-full-page="false"
-                        v-model="isLoading" 
+                        v-model="isLoading"
+                        :is-full-page="false" 
                         :can-cancel="false"/>
                 </div>
                 

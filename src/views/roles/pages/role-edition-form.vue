@@ -32,20 +32,20 @@
             <div class="name-edition-box">
                 <label for="role-name-input">{{ $i18n.get('Role name') + ':' }}</label>
                 <input
-                    type="text" 
                     id="role-name-input" 
-                    name="name"
-                    @input="showNotice = false" 
                     v-model="form.name" 
-                    :placeholder="$i18n.get('Insert the role name...')">
+                    type="text"
+                    name="name" 
+                    :placeholder="$i18n.get('Insert the role name...')" 
+                    @input="showNotice = false">
             </div>
             <br>
             <!-- Hook for extra Form options -->
             <template v-if="hasBeginLeftForm">  
                 <form
-                    @click="showNotice = false" 
-                    id="form-role-begin-left"
+                    id="form-role-begin-left" 
                     class="form-hook-region"
+                    @click="showNotice = false"
                     v-html="getBeginLeftForm"/>
                 <br>
             </template>
@@ -82,31 +82,31 @@
                     </a>
                 </h2>
                 <div 
-                        class="tabs-content"
                         v-if="capabilitiesTab === 'repository'"
-                        id="tab-repository">
+                        id="tab-repository"
+                        class="tabs-content">
                     <!-- <h3>{{ $i18n.get('Role\'s Repository Related Capabilities List') }}</h3> -->
                     <div 
                             v-if="!isLoadingCapabilities"
                             class="capabilities-list">
                         <div
-                                class="capability-group"
                                 v-for="(group, groupIndex) of groupedRepositoryCapabilities"
-                                :key="groupIndex">
+                                :key="groupIndex"
+                                class="capability-group">
                             <h3>{{ groupIndex }}</h3>
                             <ul>
                                 <template 
                                         v-for="(capability, index) of group"
                                         :key="index">
                                     <li
+                                            :id="'capability-' + capability"
                                             v-tooltip="{
                                                 content: repositoryCapabilities[capability].description,
                                                 autoHide: true,
                                                 delay: 0,
                                                 placement: 'bottom',
                                                 popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                                            }"
-                                            :id="'capability-' + capability">
+                                            }">
                                         <span class="check-column">
                                             <label
                                                     class="screen-reader-text"
@@ -114,9 +114,9 @@
                                                 {{ $i18n.get('Selecionar') + ' ' + repositoryCapabilities[capability].display_name }}
                                             </label>
                                             <input
+                                                :id="'capability_'+ capability"
                                                 type="checkbox"
                                                 name="capabilities[]"
-                                                :id="'capability_'+ capability"
                                                 :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0"
                                                 :checked="form.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0)"
                                                 @input="onUpdateCapability($event.target.checked, capability)">
@@ -136,9 +136,9 @@
                 </div> <!-- End of Repository Tab -->
 
                 <div 
-                        class="tabs-content"
                         v-else-if="capabilitiesTab === 'collections'"
-                        id="tab-collections">
+                        id="tab-collections"
+                        class="tabs-content">
                     <span 
                             v-if="isLoadingCollections"
                             class="spinner is-active"
@@ -153,14 +153,14 @@
                                     {{ $i18n.get('Select the collection to change capabilities') }}
                                 </label>
                                 <select 
-                                        name="collection" 
-                                        id="collection-select"
+                                        id="collection-select" 
+                                        name="collection"
                                         :value="selectedCollection"
                                         @input="selectedCollection = $event.target.value">
                                     <option value="all">{{ $i18n.get('All Collections') }}</option>
                                     <option 
-                                            :key="index"
                                             v-for="(collection, index) of collections"
+                                            :key="index"
                                             :value="collection.id">
                                         {{ collection.name }}
                                     </option>
@@ -173,23 +173,23 @@
                                 v-if="!isLoadingCapabilities"
                                 class="capabilities-list">
                             <div
-                                    class="capability-group"
                                     v-for="(group, groupIndex) of groupedCollectionCapabilities"
-                                    :key="groupIndex">
+                                    :key="groupIndex"
+                                    class="capability-group">
                                 <h3>{{ groupIndex }}</h3>
                                 <ul>
                                     <template 
                                             v-for="(capability, index) of group"
                                             :key="index">
                                         <li
+                                                :id="'capability-' + capability.replace('%d', selectedCollection)"
                                                 v-tooltip="{
                                                     content: collectionCapabilities[capability].description,
                                                     autoHide: true,
                                                     delay: 0,
                                                     placement: 'bottom',
                                                     popperClass: ['tainacan-tooltip', 'tainacan-roles-tooltip']     
-                                                }"
-                                                :id="'capability-' + capability.replace('%d', selectedCollection)">
+                                                }">
                                             <span class="check-column">
                                                 <label
                                                         class="screen-reader-text"
@@ -197,9 +197,9 @@
                                                     {{ $i18n.get('Selecionar') + ' ' + collectionCapabilities[capability].display_name }}
                                                 </label>
                                                 <input
+                                                    :id="'capability_'+ capability.replace('%d', selectedCollection)"
                                                     type="checkbox"
                                                     name="roles[]"
-                                                    :id="'capability_'+ capability.replace('%d', selectedCollection)"
                                                     :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
                                                     :checked="form.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
                                                     @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
@@ -221,18 +221,18 @@
                 </div> <!-- End of Collections Tab -->
 
                 <div
-                        class="tabs-content"
                         v-show="capabilitiesTab === 'extra'"
-                        id="tab-extra">
+                        id="tab-extra"
+                        class="tabs-content">
                     <br>
                     
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginRightForm">  
                         
                         <form 
-                            @click="showNotice = false"
                             id="form-role-begin-right"
                             class="form-hook-region"
+                            @click="showNotice = false"
                             v-html="getBeginRightForm"/>
                     </template>
                     
@@ -241,9 +241,9 @@
                     <!-- Hook for extra Form options -->
                     <template v-if="hasEndRightForm"> 
                         <form 
-                            @click="showNotice = false"
                             id="form-role-end-right"
                             class="form-hook-region"
+                            @click="showNotice = false"
                             v-html="getEndRightForm"/>
                     </template>
                     
@@ -258,21 +258,21 @@
         <template v-if="hasEndLeftForm && !isLoadingRole">  
             <br>
             <form 
-                @click="showNotice = false"
                 id="form-role-end-left"
                 class="form-hook-region"
+                @click="showNotice = false"
                 v-html="getEndLeftForm"/>
         </template>
 
         <div class="form-submit">
             <p class="cancel">
                 <input 
+                        id="cancel"
                         type="button"
                         name="cancel"
-                        @click="$router.go(-1)"
-                        id="cancel" 
-                        class="button"
-                        :value="$i18n.get('Cancel')">
+                        class="button" 
+                        :value="$i18n.get('Cancel')"
+                        @click="$router.go(-1)">
             </p>
             <p class="submit">
                 <span 
@@ -280,9 +280,9 @@
                         class="spinner is-active"
                         style="float: none;" />
                 <input 
+                        id="submit"
                         type="submit"
                         name="submit"
-                        id="submit"
                         :disabled="!form.name || showNotice" 
                         class="button button-primary"
                         :value="roleSlug === 'new' ? $i18n.get('Create Role') : $i18n.get('Save Changes')">

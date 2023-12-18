@@ -10,15 +10,15 @@
                     class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox
-                            @click.prevent="selectAllItemsOnPage()"
-                            :model-value="allItemsOnPageSelected">
+                            :model-value="allItemsOnPageSelected"
+                            @click.prevent="selectAllItemsOnPage()">
                         {{ $i18n.get('label_select_all_items_page') }}
                     </b-checkbox>
                 </span>
                 
                 <span
-                        style="margin-left: 10px"
-                        v-if="totalPages > 1 && allItemsOnPageSelected && Array.isArray(items) && items.length > 1">
+                        v-if="totalPages > 1 && allItemsOnPageSelected && Array.isArray(items) && items.length > 1"
+                        style="margin-left: 10px">
                     <b-checkbox
                             v-model="isAllItemsSelected">
                         {{ $i18n.getWithVariables('label_select_all_%s_items', [totalItems]) }}
@@ -26,8 +26,8 @@
                 </span>
             </div>
             <span
-                    class="selected-items-info"
-                    v-if="selectedItems.length && items.length > 1 && !isAllItemsSelected">
+                    v-if="selectedItems.length && items.length > 1 && !isAllItemsSelected"
+                    class="selected-items-info">
                 {{ selectedItems.length != 1 ? $i18n.getWithVariables('label_%s_selected_items', [selectedItems.length]) : $i18n.get('label_one_selected_item') }}<span v-if="selectedItems.length != amountOfSelectedItemsOnThisPage && amountOfSelectedItemsOnThisPage > 0">&nbsp;({{ $i18n.getWithVariables('label_%s_on_this_page', [ amountOfSelectedItemsOnThisPage ]) }})</span>
                 <button
                         class="link-style"
@@ -38,8 +38,8 @@
                 </button>
             </span>
             <span
-                    class="selected-items-info"
-                    v-if="isAllItemsSelected">
+                    v-if="isAllItemsSelected"
+                    class="selected-items-info">
                 {{ $i18n.get('label_all_items_selected') }}
                 <button
                         class="link-style"
@@ -54,11 +54,11 @@
                     style="margin-left: auto;"
                     class="field">
                 <b-dropdown
+                        v-if="Array.isArray(items) && items.length > 0"
+                        id="bulk-actions-dropdown"
                         :mobile-modal="true"
                         position="is-bottom-left"
-                        v-if="Array.isArray(items) && items.length > 0"
                         :disabled="selectedItems.length <= 1"
-                        id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
                     <template #trigger>
@@ -71,39 +71,39 @@
                     </template>
                     <b-dropdown-item
                             v-if="!isAllItemsSelected && selectedItems.length"
-                            @click="filterBySelectedItems()"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="filterBySelectedItems()">
                         {{ $i18n.get('label_view_only_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && !isOnTrash"
-                            @click="openBulkEditionModal()"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="openBulkEditionModal()">
                         {{ $i18n.get('label_bulk_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="$route.params.collectionId && !isOnTrash"
-                            @click="sequenceEditSelectedItems()"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="sequenceEditSelectedItems()">
                         {{ $i18n.get('label_sequence_edit_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && collection && collection.current_user_can_delete_items"
-                            @click="deleteSelectedItems()"
                             id="item-delete-selected-items"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="deleteSelectedItems()">
                         {{ isOnTrash ? $i18n.get('label_delete_permanently') : $i18n.get('label_send_to_trash') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="collectionId && isOnTrash"
-                            @click="untrashSelectedItems();"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="untrashSelectedItems();">
                         {{ $i18n.get('label_untrash_selected_items') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             :disabled="isAllItemsSelected"
-                            @click="$parent.openExposersModal(selectedItems)"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="$parent.openExposersModal(selectedItems)">
                         {{ $i18n.get('label_view_selected_items_as') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -119,42 +119,42 @@
 
                 <!-- Backdrop for escaping context menu -->
                 <div
+                    class="context-menu-backdrop"
                     @click.left="clearContextMenu()"
-                    @click.right="clearContextMenu()"
-                    class="context-menu-backdrop" />
+                    @click.right="clearContextMenu()" />
 
                 <b-dropdown
                         inline
                         :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
                         trap-focus>
                     <b-dropdown-item
-                            @click="openItem()"
-                            v-if="!isOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOption">
+                            v-if="!isOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOption"
+                            @click="openItem()">
                         {{ $i18n.getFrom('items','view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            @click="openItemOnNewTab()"
-                            v-if="!isOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOnNewTabOption">
+                            v-if="!isOnTrash && !$adminOptions.hideItemsListContextMenuOpenItemOnNewTabOption"
+                            @click="openItemOnNewTab()">
                         {{ $i18n.get('label_open_item_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            @click="selectItem()"
-                            v-if="contextMenuItem != null">
+                            v-if="contextMenuItem != null"
+                            @click="selectItem()">
                         {{ getSelectedItemChecked(contextMenuItem.id) == true ? $i18n.get('label_unselect_item') : $i18n.get('label_select_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            @click="goToItemEditPage(contextMenuItem)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuEditItemOption">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuEditItemOption"
+                            @click="goToItemEditPage(contextMenuItem)">
                         {{ $i18n.getFrom('items','edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            @click="makeCopiesOfOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuCopyItemOption">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuCopyItemOption"
+                            @click="makeCopiesOfOneItem(contextMenuItem.id)">
                         {{ $i18n.get('label_make_copies_of_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            @click="deleteOneItem(contextMenuItem.id)"
-                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuDeleteItemOption">
+                            v-if="contextMenuItem != null && contextMenuItem.current_user_can_edit && !$adminOptions.hideItemsListContextMenuDeleteItemOption"
+                            @click="deleteOneItem(contextMenuItem.id)">
                         {{ $i18n.get('label_delete_item') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -162,15 +162,15 @@
             
             <!-- GRID (THUMBNAILS) VIEW MODE -->
             <div
+                    v-if="viewMode == 'grid'"
                     role="list"
                     class="tainacan-grid-container"
-                    :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
-                    v-if="viewMode == 'grid'">
+                    :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }">
                 <div
-                        role="listitem"
-                        :key="index"
-                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
+                        :key="index"
+                        role="listitem"
+                        :data-tainacan-item-id="item.id"
                         :class="{ 'selected-grid-item': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-grid-item">
 
@@ -188,9 +188,9 @@
                         </b-checkbox>
                         <b-radio
                                 v-else
+                                v-model="singleItemSelection"
                                 name="item-single-selection"
                                 :native-value="item.id"
-                                v-model="singleItemSelection"
                                 :aria-label="$i18n.get('label_select_item')">
                             <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </b-radio>
@@ -216,13 +216,13 @@
                                 @click.right="onRightClickItem($event, item)">
                             <span 
                                     v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
-                                    class="icon has-text-gray"
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
-                                    }">
+                                    }"
+                                    class="icon has-text-gray">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
@@ -235,9 +235,9 @@
                     <!-- Thumbnail -->
                     <a
                             v-if="item.thumbnail != undefined"
+                            class="grid-item-thumbnail"
                             @click.left="onClickItem($event, item)"
-                            @click.right="onRightClickItem($event, item)"
-                            class="grid-item-thumbnail">
+                            @click.right="onRightClickItem($event, item)">
                         <blur-hash-image
                                 :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
                                 :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
@@ -270,9 +270,9 @@
                             </span>
                         </a>
                         <a
+                                v-if="isOnTrash"
                                 :aria-lavel="$i18n.get('label_button_untrash')"
-                                @click.prevent.stop="untrashOneItem(item.id)"
-                                v-if="isOnTrash">
+                                @click.prevent.stop="untrashOneItem(item.id)">
                             <span
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
@@ -306,9 +306,9 @@
                                 v-if="!isOnTrash"
                                 id="button-open-external" 
                                 :aria-label="$i18n.getFrom('items','view_item')"
-                                @click.stop="" 
-                                target="_blank"
-                                :href="item.url">                      
+                                target="_blank" 
+                                :href="item.url"
+                                @click.stop="">                      
                             <span 
                                     v-tooltip="{
                                         content: $i18n.get('label_item_page_on_website'),
@@ -335,9 +335,9 @@
                     }"
                     class="tainacan-masonry-container">
                 <li
+                        v-for="(item, index) of items"
                         :key="index"
                         :data-tainacan-item-id="item.id"
-                        v-for="(item, index) of items"
                         :class="{
                             'tainacan-masonry-grid-sizer': index == 0
                         }">
@@ -364,10 +364,10 @@
                                         @input="setSelectedItemChecked(item.id)">
                                 <input
                                         v-else
+                                        v-model="singleItemSelection"
                                         type="radio"
                                         name="item-single-selection"
-                                        :value="item.id"
-                                        v-model="singleItemSelection">
+                                        :value="item.id">
                                 <span class="check" />
                                 <span class="control-label" />
                                 <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
@@ -383,13 +383,13 @@
                             <p>
                                 <span 
                                         v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
-                                        class="icon has-text-gray"
                                         v-tooltip="{
                                             content: $i18n.get('status_' + item.status),
                                             autoHide: true,
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
-                                        }">
+                                        }"
+                                        class="icon has-text-gray">
                                     <i 
                                             class="tainacan-icon tainacan-icon-1em"
                                             :class="$statusHelper.getIcon(item.status)"
@@ -434,9 +434,9 @@
                                 </span>
                             </a>
                             <a
+                                    v-if="isOnTrash"
                                     :aria-lavel="$i18n.get('label_button_untrash')"
-                                    @click.prevent.stop="untrashOneItem(item.id)"
-                                    v-if="isOnTrash">
+                                    @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
                                         v-tooltip="{
                                             content: $i18n.get('label_recover_from_trash'),
@@ -470,9 +470,9 @@
                                     v-if="!isOnTrash"
                                     id="button-open-external" 
                                     :aria-label="$i18n.getFrom('items','view_item')"
-                                    @click.stop="" 
-                                    target="_blank"
-                                    :href="item.url">                      
+                                    target="_blank" 
+                                    :href="item.url"
+                                    @click.stop="">                      
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('label_item_page_on_website'),
@@ -492,15 +492,15 @@
 
             <!-- CARDS VIEW MODE -->
             <div
+                    v-if="viewMode == 'cards'"
                     role="list"
                     :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
-                    class="tainacan-cards-container"
-                    v-if="viewMode == 'cards'">
+                    class="tainacan-cards-container">
                 <div
-                        role="listitem"
-                        :key="index"
-                        :data-tainacan-item-id="item.id"
                         v-for="(item, index) of items"
+                        :key="index"
+                        role="listitem"
+                        :data-tainacan-item-id="item.id"
                         :class="{ 'selected-card': getSelectedItemChecked(item.id) == true }"
                         class="tainacan-card">
 
@@ -518,9 +518,9 @@
                         </b-checkbox>
                         <b-radio
                                 v-else
+                                v-model="singleItemSelection"
                                 name="item-single-selection"
-                                :native-value="item.id"
-                                v-model="singleItemSelection">
+                                :native-value="item.id">
                             <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                         </b-radio>
                     </div>
@@ -547,13 +547,13 @@
                                 @click.right="onRightClickItem($event, item)">
                             <span 
                                     v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
-                                    class="icon has-text-gray"
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
-                                    }">
+                                    }"
+                                    class="icon has-text-gray">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
@@ -584,9 +584,9 @@
                             </span>
                         </a>
                         <a
+                                v-if="isOnTrash"
                                 :aria-lavel="$i18n.get('label_button_untrash')"
-                                @click.prevent.stop="untrashOneItem(item.id)"
-                                v-if="isOnTrash">
+                                @click.prevent.stop="untrashOneItem(item.id)">
                             <span
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
@@ -620,9 +620,9 @@
                                 v-if="!isOnTrash"
                                 id="button-open-external" 
                                 :aria-label="$i18n.getFrom('items','view_item')"
-                                @click.stop="" 
-                                target="_blank"
-                                :href="item.url">                      
+                                target="_blank" 
+                                :href="item.url"
+                                @click.stop="">                      
                             <span 
                                     v-tooltip="{
                                         content: $i18n.get('label_item_page_on_website'),
@@ -714,13 +714,13 @@
 
             <!-- RECORDS VIEW MODE -->
             <ul
+                    v-if="viewMode == 'records'"
                     :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
-                    class="tainacan-records-container"
-                    v-if="viewMode == 'records'">
+                    class="tainacan-records-container">
                 <li
+                        v-for="(item, index) of items"
                         :key="index"
                         :data-tainacan-item-id="item.id"
-                        v-for="(item, index) of items"
                         :class="{ 'tainacan-records-grid-sizer': index == 0 }">
                     <div 
                             :class="{ 'selected-record': getSelectedItemChecked(item.id) == true }"
@@ -741,10 +741,10 @@
                                         @input="setSelectedItemChecked(item.id)">
                                 <input
                                         v-else
+                                        v-model="singleItemSelection"
                                         type="radio"
                                         name="item-single-selection"
-                                        :value="item.id"
-                                        v-model="singleItemSelection">
+                                        :value="item.id">
                                 <span class="check" />
                                 <span class="control-label" />
                                 <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
@@ -759,19 +759,20 @@
                                 }">
                             <span 
                                     v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
-                                    class="icon has-text-gray"
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
-                                    }">
+                                    }"
+                                    class="icon has-text-gray">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
                                         />
                             </span>
                             <p 
+                                    v-if="collectionId != undefined && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -783,11 +784,11 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    v-if="collectionId != undefined && titleItemMetadatum"
                                     @click.left="onClickItem($event, item)"
                                     @click.right="onRightClickItem($event, item)"
                                     v-html="item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : ''" />
                             <p
+                                    v-if="collectionId == undefined && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -799,7 +800,6 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
-                                    v-if="collectionId == undefined && titleItemMetadatum"
                                     @click.left="onClickItem($event, item)"
                                     @click.right="onRightClickItem($event, item)"
                                     v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
@@ -826,9 +826,9 @@
                                 </span>
                             </a>
                             <a
+                                    v-if="isOnTrash"
                                     :aria-lavel="$i18n.get('label_button_untrash')"
-                                    @click.prevent.stop="untrashOneItem(item.id)"
-                                    v-if="isOnTrash">
+                                    @click.prevent.stop="untrashOneItem(item.id)">
                                 <span
                                         v-tooltip="{
                                             content: $i18n.get('label_recover_from_trash'),
@@ -862,9 +862,9 @@
                                     v-if="!isOnTrash"
                                     id="button-open-external" 
                                     :aria-label="$i18n.getFrom('items','view_item')"
-                                    @click.stop="" 
-                                    target="_blank"
-                                    :href="item.url">                      
+                                    target="_blank" 
+                                    :href="item.url"
+                                    @click.stop="">                      
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('label_item_page_on_website'),
@@ -887,8 +887,6 @@
                             <div class="list-metadata media-body">
                                 <div class="tainacan-record-thumbnail">
                                     <blur-hash-image
-                                            @click.left="onClickItem($event, item)"
-                                            @click.right="onRightClickItem($event, item)"
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-record-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -898,15 +896,17 @@
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                             :transition-duration="500"
+                                            @click.left="onClickItem($event, item)"
+                                            @click.right="onRightClickItem($event, item)"
                                         />
                                 </div>
                                 <span
-                                        class="metadata-type-textarea"
-                                        v-if="collectionId == undefined && descriptionItemMetadatum && item.description">
+                                        v-if="collectionId == undefined && descriptionItemMetadatum && item.description"
+                                        class="metadata-type-textarea">
                                     <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                     <p
-                                            v-html="item.description"
-                                            class="metadata-value"/>
+                                            class="metadata-value"
+                                            v-html="item.description"/>
                                 </span>
                                 <template 
                                         v-for="(column, metadatumIndex) in displayedMetadata"
@@ -916,15 +916,15 @@
                                             :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <p
-                                                v-html="renderMetadata(item.metadata, column)"
-                                                class="metadata-value"/>
+                                                class="metadata-value"
+                                                v-html="renderMetadata(item.metadata, column)"/>
                                     </span>
                                     <span
                                             v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined && column.display">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <p
-                                                v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
-                                                class="metadata-value"/>
+                                                class="metadata-value"
+                                                v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"/>
                                     </span>
                                 </template>
                             </div>
@@ -985,14 +985,14 @@
                 </thead>
                 <tbody role="list">
                     <tr
+                            v-for="(item, index) of items"
+                            :key="index"
                             :class="{
                                 'selected-row': getSelectedItemChecked(item.id) == true,
                                 'highlighted-item': highlightedItem == item.id
                             }"
                             role="listitem"
-                            :key="index"
-                            :data-tainacan-item-id="item.id"
-                            v-for="(item, index) of items">
+                            :data-tainacan-item-id="item.id">
                         <!-- Checking list -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <td
@@ -1007,9 +1007,9 @@
                             </b-checkbox>
                             <b-radio
                                     v-else
+                                    v-model="singleItemSelection"
                                     name="item-single-selection"
-                                    :native-value="item.id"
-                                    v-model="singleItemSelection">
+                                    :native-value="item.id">
                                 <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
                             </b-radio>
                         </td>
@@ -1018,13 +1018,13 @@
                                 class="status-cell">
                             <span 
                                     v-if="$statusHelper.hasIcon(item.status)"
-                                    class="icon has-text-gray"
                                     v-tooltip="{
                                         content: $i18n.get('status_' + item.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                         placement: 'auto-start'
-                                    }">
+                                    }"
+                                    class="icon has-text-gray">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
@@ -1056,6 +1056,9 @@
                                     @click.right="onRightClickItem($event, item)">
 
                                 <p
+                                        v-if="collectionId == undefined &&
+                                            column.metadata_type_object != undefined &&
+                                            column.metadata_type_object.related_mapped_prop == 'title'"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -1067,11 +1070,11 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
-                                        v-if="collectionId == undefined &&
-                                            column.metadata_type_object != undefined &&
-                                            column.metadata_type_object.related_mapped_prop == 'title'"
                                         v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
                                 <p
+                                        v-if="collectionId == undefined &&
+                                            column.metadata_type_object != undefined &&
+                                            column.metadata_type_object.related_mapped_prop == 'description'"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -1083,11 +1086,16 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="collectionId == undefined &&
-                                            column.metadata_type_object != undefined &&
-                                            column.metadata_type_object.related_mapped_prop == 'description'"
                                         v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
                                 <p
+                                        v-if="item.metadata != undefined &&
+                                            column.metadatum !== 'row_thumbnail' &&
+                                            column.metadatum !== 'row_actions' &&
+                                            column.metadatum !== 'row_creation' &&
+                                            column.metadatum !== 'row_modification' &&
+                                            column.metadatum !== 'row_author' &&
+                                            column.metadatum !== 'row_title' &&
+                                            column.metadatum !== 'row_description'"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -1099,19 +1107,11 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-if="item.metadata != undefined &&
-                                            column.metadatum !== 'row_thumbnail' &&
-                                            column.metadatum !== 'row_actions' &&
-                                            column.metadatum !== 'row_creation' &&
-                                            column.metadatum !== 'row_modification' &&
-                                            column.metadatum !== 'row_author' &&
-                                            column.metadatum !== 'row_title' &&
-                                            column.metadatum !== 'row_description'"
                                         v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
 
                                 <span 
-                                        class="table-thumb"
-                                        v-if="column.metadatum == 'row_thumbnail'">
+                                        v-if="column.metadatum == 'row_thumbnail'"
+                                        class="table-thumb">
                                     <blur-hash-image
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-small', 40)"
                                             :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-small', 40)"
@@ -1122,6 +1122,7 @@
                                     />
                                 </span>
                                 <p
+                                        v-if="column.metadatum == 'row_author'"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -1132,11 +1133,11 @@
                                             autoHide: false,
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                                        }"
-                                        v-if="column.metadatum == 'row_author'">
+                                        }">
                                         {{ item[column.slug] }}
                                 </p>
                                 <p
+                                        v-if="column.metadatum == 'row_modification'"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -1147,11 +1148,11 @@
                                             autoHide: false,
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
-                                        }"
-                                        v-if="column.metadatum == 'row_modification'">
+                                        }">
                                         {{ parseDateToNavigatorLanguage(item[column.slug]) }}
                                 </p>
                                 <p
+                                        v-if="column.metadatum == 'row_creation'"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -1162,8 +1163,7 @@
                                             autoHide: false,
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
-                                        }"
-                                        v-if="column.metadatum == 'row_creation'">
+                                        }">
                                         {{ parseDateToNavigatorLanguage(item[column.slug]) }}
                                 </p>
 
@@ -1193,9 +1193,9 @@
                                     </span>
                                 </a>
                                 <a
+                                        v-if="isOnTrash"
                                         :aria-lavel="$i18n.get('label_button_untrash')"
-                                        @click.prevent.stop="untrashOneItem(item.id)"
-                                        v-if="isOnTrash">
+                                        @click.prevent.stop="untrashOneItem(item.id)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('label_recover_from_trash'),
@@ -1229,9 +1229,9 @@
                                         v-if="!isOnTrash"
                                         id="button-open-external" 
                                         :aria-label="$i18n.getFrom('items','view_item')"
-                                        @click.stop="" 
-                                        target="_blank"
-                                        :href="item.url">                      
+                                        target="_blank" 
+                                        :href="item.url"
+                                        @click.stop="">                      
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('label_item_page_on_website'),
@@ -1252,16 +1252,16 @@
 
             <!-- LIST VIEW MODE -->
             <div
-                    role="list"
                     v-if="viewMode == 'list'"
+                    role="list"
                     :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
                     class="tainacan-list-container">
                 <div 
+                        v-for="(item, index) of items"
+                        :key="index"
                         role="listitem"
                         :href="item.url"
-                        :key="index"
                         :data-tainacan-item-id="item.id"
-                        v-for="(item, index) of items"
                         class="tainacan-list"
                         :class="{ 'selected-list-item': getSelectedItemChecked(item.id) == true }">
 
@@ -1276,14 +1276,14 @@
                                     v-if="!$adminOptions.itemsSingleSelectionMode"
                                     type="checkbox"
                                     :checked="getSelectedItemChecked(item.id)"
-                                    @input="setSelectedItemChecked(item.id)"
-                                    :aria-label="$i18n.get('label_select_item')">
+                                    :aria-label="$i18n.get('label_select_item')"
+                                    @input="setSelectedItemChecked(item.id)">
                             <input
                                     v-else
+                                    v-model="singleItemSelection"
                                     type="radio"
                                     name="item-single-selection"
                                     :value="item.id"
-                                    v-model="singleItemSelection"
                                    :aria-label="$i18n.get('label_select_item')">
                             <span class="check" />
                             <span class="control-label" />
@@ -1299,19 +1299,20 @@
                             class="metadata-title">
                         <span 
                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
-                                class="icon has-text-gray"
                                 v-tooltip="{
                                     content: $i18n.get('status_' + item.status),
                                     autoHide: true,
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
-                                }">
+                                }"
+                                class="icon has-text-gray">
                             <i 
                                     class="tainacan-icon tainacan-icon-1em"
                                     :class="$statusHelper.getIcon(item.status)"
                                     />
                         </span>
                         <p 
+                                v-if="collectionId != undefined && titleItemMetadatum"
                                 v-tooltip="{
                                     delay: {
                                         shown: 500,
@@ -1325,9 +1326,9 @@
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)"
-                                v-if="collectionId != undefined && titleItemMetadatum"
                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : ''" />                
                         <p 
+                                v-if="collectionId == undefined && titleItemMetadatum"
                                 v-tooltip="{
                                     delay: {
                                         shown: 500,
@@ -1341,7 +1342,6 @@
                                 }"
                                 @click.left="onClickItem($event, item)"
                                 @click.right="onRightClickItem($event, item)"
-                                v-if="collectionId == undefined && titleItemMetadatum"
                                 v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                 
                     </div>
 
@@ -1367,9 +1367,9 @@
                             </span>
                         </a>
                         <a
+                                v-if="isOnTrash"
                                 :aria-lavel="$i18n.get('label_button_untrash')"
-                                @click.prevent.stop="untrashOneItem(item.id)"
-                                v-if="isOnTrash">
+                                @click.prevent.stop="untrashOneItem(item.id)">
                             <span
                                     v-tooltip="{
                                         content: $i18n.get('label_recover_from_trash'),
@@ -1403,9 +1403,9 @@
                                 v-if="!isOnTrash"
                                 id="button-open-external" 
                                 :aria-label="$i18n.getFrom('items','view_item')"
-                                @click.stop="" 
-                                target="_blank"
-                                :href="item.url">                      
+                                target="_blank" 
+                                :href="item.url"
+                                @click.stop="">                      
                             <span 
                                     v-tooltip="{
                                         content: $i18n.get('label_item_page_on_website'),
@@ -1422,15 +1422,13 @@
 
                     <!-- Remaining metadata -->  
                     <div 
+                            class="media"
                             @click.left="onClickItem($event, item)"
-                            @click.right="onRightClickItem($event, item)"
-                            class="media">
+                            @click.right="onRightClickItem($event, item)">
                          <div 
-                                class="tainacan-list-thumbnail"
-                                v-if="item.thumbnail != undefined">
+                                v-if="item.thumbnail != undefined"
+                                class="tainacan-list-thumbnail">
                                 <blur-hash-image
-                                    @click.left="onClickItem($event, item)"
-                                    @click.right="onRightClickItem($event, item)"
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-list-item-thumbnail"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -1440,16 +1438,18 @@
                                     :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                     :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                     :transition-duration="500"
+                                    @click.left="onClickItem($event, item)"
+                                    @click.right="onRightClickItem($event, item)"
                                 />
                         </div>
                         <div class="list-metadata media-body">
                            <span
-                                    class="metadata-type-textarea"
-                                    v-if="collectionId == undefined && descriptionItemMetadatum && item.description">
+                                    v-if="collectionId == undefined && descriptionItemMetadatum && item.description"
+                                    class="metadata-type-textarea">
                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                 <p
-                                        v-html="item.description"
-                                        class="metadata-value"/>
+                                        class="metadata-value"
+                                        v-html="item.description"/>
                             </span>
                             <template 
                                     v-for="(column, metadatumIndex) in displayedMetadata"
@@ -1459,14 +1459,14 @@
                                         :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <p      
-                                            v-html="renderMetadata(item.metadata, column)"
-                                            class="metadata-value"/> 
+                                            class="metadata-value"
+                                            v-html="renderMetadata(item.metadata, column)"/> 
                                 </span>
                                 <span v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined && column.display">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <p
-                                            v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
-                                            class="metadata-value"/>
+                                            class="metadata-value"
+                                            v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"/>
                                 </span>
                             </template>
                         </div>
@@ -1476,15 +1476,15 @@
 
             <!-- MAP VIEW MODE -->
             <div 
-                    class="tainacan-leaflet-map-container"
-                    v-if="viewMode == 'map'">
+                    v-if="viewMode == 'map'"
+                    class="tainacan-leaflet-map-container">
                 <ul
                         :class="{ 'hide-items-selection': $adminOptions.hideItemsListSelection }"
                         class="tainacan-map-cards-container">
                     <li
+                            v-for="item of items"
                             :key="item.id"
                             :data-tainacan-item-id="item.id"
-                            v-for="item of items"
                             @mouseenter="hoveredMapCardItemId = item.id"
                             @mouseleave="hoveredMapCardItemId = false">
                         <div 
@@ -1510,10 +1510,10 @@
                                             @input="setSelectedItemChecked(item.id)">
                                     <input
                                             v-else
+                                            v-model="singleItemSelection"
                                             type="radio"
                                             name="item-single-selection"
-                                            :value="item.id"
-                                            v-model="singleItemSelection">
+                                            :value="item.id">
                                     <span class="check" />
                                     <span class="control-label" />
                                     <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
@@ -1531,19 +1531,20 @@
                                     @click.right="onRightClickItem($event, item)">
                                 <span 
                                         v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
-                                        class="icon has-text-gray"
                                         v-tooltip="{
                                             content: $i18n.get('status_' + item.status),
                                             autoHide: true,
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
-                                        }">
+                                        }"
+                                        class="icon has-text-gray">
                                     <i 
                                             class="tainacan-icon tainacan-icon-1em"
                                             :class="$statusHelper.getIcon(item.status)"
                                             />
                                 </span>
                                 <p 
+                                        v-if="collectionId != undefined && titleItemMetadatum"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -1555,9 +1556,9 @@
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        v-if="collectionId != undefined && titleItemMetadatum"
                                         v-html="item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <p
+                                        v-if="collectionId == undefined && titleItemMetadatum"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -1569,7 +1570,6 @@
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
-                                        v-if="collectionId == undefined && titleItemMetadatum"
                                         v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <div class="tainacan-map-card-thumbnail">
                                     <blur-hash-image
@@ -1607,9 +1607,9 @@
                                     </span>
                                 </a>
                                 <a
+                                        v-if="isOnTrash && item.current_user_can_edit"
                                         :aria-lavel="$i18n.get('label_button_untrash')"
-                                        @click.prevent.stop="untrashOneItem(item.id)"
-                                        v-if="isOnTrash && item.current_user_can_edit">
+                                        @click.prevent.stop="untrashOneItem(item.id)">
                                     <span
                                             v-tooltip="{
                                                 content: $i18n.get('label_recover_from_trash'),
@@ -1650,12 +1650,12 @@
                         :zoom="5"
                         :center="[-14.4086569, -51.31668]"
                         :zoom-animation="true"
-                        @ready="onMapReady()"
-                        @click="clearSelectedMarkers()"
                         :options="{
                             name: 'tainacan-admin-view-mode-map',
                             zoomControl: false
-                        }">
+                        }"
+                        @ready="onMapReady()"
+                        @click="clearSelectedMarkers()">
                     <l-tile-layer 
                             :url="mapTileUrl" 
                             :attribution="mapTileAttribution" />
@@ -1699,9 +1699,9 @@
                                     class="geocoordinate-panel--input">
                                 <label>{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
                                 <b-select
-                                        :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model="selectedGeocoordinateMetadatumId">
+                                        v-model="selectedGeocoordinateMetadatumId"
+                                        :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')">
                                     <option
                                             v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
                                             :key="geocoordinateMetadatum.id"
@@ -1737,21 +1737,21 @@
                         </div>
                     </l-control>
                     <l-control
+                            v-if="selectedMarkerIndexes.length || mapSelectedItemId"
                             :disable-scroll-propagation="true"
                             :disable-click-propagation="true"
-                            v-if="selectedMarkerIndexes.length || mapSelectedItemId"
                             position="topleft"
                             class="tainacan-records-container tainacan-records-container--map">
                         <button 
-                                :aria-label="$i18n.get('label_clean')"
-                                class="tainacan-records-close-button"
-                                @click="clearSelectedMarkers()"
                                 v-tooltip="{
                                     content: $i18n.get('label_clean'),
                                     autoHide: true,
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
-                                }">
+                                }"
+                                :aria-label="$i18n.get('label_clean')"
+                                class="tainacan-records-close-button"
+                                @click="clearSelectedMarkers()">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-close" />
                             </span>
@@ -1760,28 +1760,29 @@
                                 tag="ul"
                                 name="appear">
                             <li 
+                                    v-for="item of items.filter(anItem => mapSelectedItemId == anItem.id)"
                                     :key="item.id"
-                                    :data-tainacan-item-id="item.id"
-                                    v-for="item of items.filter(anItem => mapSelectedItemId == anItem.id)">
+                                    :data-tainacan-item-id="item.id">
                                 <div class="tainacan-record">
 
                                     <!-- Title -->
                                     <div class="metadata-title">
                                         <span 
                                                 v-if="isOnAllItemsTabs && $statusHelper.hasIcon(item.status)"
-                                                class="icon has-text-gray"
                                                 v-tooltip="{
                                                     content: $i18n.get('status_' + item.status),
                                                     autoHide: true,
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                                     placement: 'auto-start'
-                                                }">
+                                                }"
+                                                class="icon has-text-gray">
                                             <i 
                                                     class="tainacan-icon tainacan-icon-1em"
                                                     :class="$statusHelper.getIcon(item.status)"
                                                     />
                                         </span>
                                         <p 
+                                                v-if="collectionId != undefined && titleItemMetadatum"
                                                 v-tooltip="{
                                                     delay: {
                                                         shown: 500,
@@ -1793,11 +1794,11 @@
                                                     placement: 'auto-start',
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                                 }"
-                                                v-if="collectionId != undefined && titleItemMetadatum"
                                                 @click.left="onClickItem($event, item)"
                                                 @click.right="onRightClickItem($event, item)"
                                                 v-html="item.metadata != undefined ? renderMetadata(item.metadata, titleItemMetadatum) : ''" />
                                         <p
+                                                v-if="collectionId == undefined && titleItemMetadatum"
                                                 v-tooltip="{
                                                     delay: {
                                                         shown: 500,
@@ -1809,7 +1810,6 @@
                                                     placement: 'auto-start',
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                                 }"
-                                                v-if="collectionId == undefined && titleItemMetadatum"
                                                 @click.left="onClickItem($event, item)"
                                                 @click.right="onRightClickItem($event, item)"
                                                 v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
@@ -1821,8 +1821,8 @@
                                             class="actions-area"
                                             :label="$i18n.get('label_actions')">
                                         <a
-                                                id="button-show-location"
                                                 v-if="itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)"
+                                                id="button-show-location"
                                                 :aria-label="$i18n.get('label_show_item_location_on_map')"
                                                 @click.prevent.stop="showLocationsByItem(item)">
                                             <span
@@ -1860,9 +1860,9 @@
                                             </span>
                                         </a>
                                         <a
+                                                v-if="isOnTrash && item.current_user_can_edit"
                                                 :aria-lavel="$i18n.get('label_button_untrash')"
-                                                @click.prevent.stop="untrashOneItem(item.id)"
-                                                v-if="isOnTrash && item.current_user_can_edit">
+                                                @click.prevent.stop="untrashOneItem(item.id)">
                                             <span
                                                     v-tooltip="{
                                                         content: $i18n.get('label_recover_from_trash'),
@@ -1896,9 +1896,9 @@
                                                 v-if="!isOnTrash"
                                                 id="button-open-external" 
                                                 :aria-label="$i18n.getFrom('items','view_item')"
-                                                @click.stop="" 
-                                                target="_blank"
-                                                :href="item.url">                      
+                                                target="_blank" 
+                                                :href="item.url"
+                                                @click.stop="">                      
                                             <span 
                                                     v-tooltip="{
                                                         content: $i18n.get('label_item_page_on_website'),
@@ -1921,8 +1921,6 @@
                                         <div class="list-metadata media-body">
                                             <div class="tainacan-record-thumbnail">
                                                 <blur-hash-image
-                                                        @click.left="onClickItem($event, item)"
-                                                        @click.right="onRightClickItem($event, item)"
                                                         v-if="item.thumbnail != undefined"
                                                         class="tainacan-record-item-thumbnail"
                                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -1932,36 +1930,38 @@
                                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                                         :transition-duration="500"
+                                                        @click.left="onClickItem($event, item)"
+                                                        @click.right="onRightClickItem($event, item)"
                                                     />
                                             </div>
                                             <span
-                                                    class="metadata-type-textarea"
-                                                    v-if="collectionId == undefined">
+                                                    v-if="collectionId == undefined"
+                                                    class="metadata-type-textarea">
                                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                                 <p
-                                                        v-html="item.description != undefined ? item.description : ''"
-                                                        class="metadata-value"/>
+                                                        class="metadata-value"
+                                                        v-html="item.description != undefined ? item.description : ''"/>
                                             </span>
                                             <template 
                                                     v-for="(column, metadatumIndex) in displayedMetadata"
                                                     :key="metadatumIndex">
                                                 <span
-                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }"
                                                         v-if="renderMetadata(item.metadata, column) != '' &&
                                                             column.display && column.slug != 'thumbnail' &&
                                                             column.metadata_type_object != undefined && 
                                                             (column.metadata_type_object.related_mapped_prop != 'title') &&
-                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate')">
+                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate')"
+                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea' }">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <p
-                                                            v-html="renderMetadata(item.metadata, column)"
-                                                            class="metadata-value"/>
+                                                            class="metadata-value"
+                                                            v-html="renderMetadata(item.metadata, column)"/>
                                                 </span>
                                                 <span v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <p
-                                                            v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"
-                                                            class="metadata-value"/>
+                                                            class="metadata-value"
+                                                            v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"/>
                                                 </span>
                                             </template>
                                         </div>

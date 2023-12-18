@@ -12,17 +12,17 @@
                         :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')"/>
             </label>
             <b-select
+                    v-model="collection"
                     name="metadata_type_relationship[collection_id]"
                     :placeholder="$i18n.get('instruction_select_collection_fetch_items' )"
-                    v-model="collection"
-                    @change="emitValues()"
-                    @focus="clear()"
                     :loading="loading"
-                    expanded>
+                    expanded
+                    @change="emitValues()"
+                    @focus="clear()">
                 <option
                         v-for="option in collections"
-                        :value="option.id"
-                        :key="option.id">
+                        :key="option.id"
+                        :value="option.id">
                     {{ option.name }}
                 </option>
             </b-select>
@@ -44,8 +44,8 @@
                             :message="$i18n.getHelperMessage('tainacan-relationship', 'search')"/>
                 </label>
                 <b-select
-                        name="metadata_type_relationship[search]"
                         v-model="modelSearch"
+                        name="metadata_type_relationship[search]"
                         expanded>
                     <option
                             v-for="(option, index) in metadata.filter(metadatum => metadatum.metadata_type_object.component !== 'tainacan-compound')"
@@ -69,20 +69,20 @@
                 </label>
                 <div :class="'displayed-metadata-options' + (metadata.length > 5 ? ' has-more-than-5-metadata' : '')">
                     <b-checkbox
+                            v-model="displayRelatedItemMetadata"
                             native-value="thumbnail"
                             name="metadata_type_relationship[display_related_item_metadata]"
-                            @update:model-value="emitValues()"
-                            v-model="displayRelatedItemMetadata">
+                            @update:model-value="emitValues()">
                         {{ $i18n.get('label_thumbnail') }}
                     </b-checkbox>
                     <b-checkbox
                             v-for="(metadatumOption, index) in metadata"
                             :key="index"
+                            v-model="displayRelatedItemMetadata"
                             :native-value="metadatumOption.id"
                             name="metadata_type_relationship[display_related_item_metadata]"
-                            @update:model-value="emitValues()"
-                            v-model="displayRelatedItemMetadata"
-                            :disabled="metadatumOption.id == modelSearch">
+                            :disabled="metadatumOption.id == modelSearch"
+                            @update:model-value="emitValues()">
                         {{ metadatumOption.name }}
                     </b-checkbox>
                 </div>
@@ -94,11 +94,11 @@
                 :label="$i18n.getHelperTitle('tainacan-relationship', 'display_in_related_items')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="modelDisplayInRelatedItems"
-                    @update:model-value="emitValues()"
+                    v-model="modelDisplayInRelatedItems" 
+                    size="is-small"
                     true-value="yes"
-                    false-value="no" />
+                    false-value="no"
+                    @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-relationship', 'display_in_related_items')"
                     :message="$i18n.getHelperMessage('tainacan-relationship', 'display_in_related_items')"/>
@@ -109,11 +109,11 @@
                 :label="$i18n.getHelperTitle('tainacan-relationship', 'accept_draft_items')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="modelAcceptDraftItems"
-                    @update:model-value="emitValues()"
+                    v-model="modelAcceptDraftItems" 
+                    size="is-small"
                     true-value="yes"
-                    false-value="no" />
+                    false-value="no"
+                    @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-relationship', 'accept_draft_items')"
                     :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_draft_items')"/>
@@ -124,11 +124,11 @@
                 :label="$i18n.getHelperTitle('tainacan-relationship', 'accept_only_items_authored_by_current_user')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="modelAcceptOnlyItemsAuthoredByCurrentUser"
-                    @input="emitValues()"
+                    v-model="modelAcceptOnlyItemsAuthoredByCurrentUser" 
+                    size="is-small"
                     true-value="yes"
-                    false-value="no" />
+                    false-value="no"
+                    @input="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-relationship', 'accept_only_items_authored_by_current_user')"
                     :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_only_items_authored_by_current_user')"/>

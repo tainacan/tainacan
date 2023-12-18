@@ -1,8 +1,8 @@
 <template>
     <div :class="isCreatingNewItem ? 'item-creation-container' : 'item-edition-container'"><!-- Do NOT remove this classes, they may be used by third party plugins -->
         <b-loading
-                :is-full-page="false"
                 v-model="isLoading"
+                :is-full-page="false"
                 :can-cancel="false"/>
 
         <tainacan-title 
@@ -112,8 +112,8 @@
         <transition name="item-appear">
             <div 
                     v-if="isMobileSubheaderOpen"
-                    @click="isMobileSubheaderOpen = false;"
-                    class="tainacan-mobile-app-header_panel-backdrop" />
+                    class="tainacan-mobile-app-header_panel-backdrop"
+                    @click="isMobileSubheaderOpen = false;" />
         </transition>
         <transition name="panel-from-top">
             <div 
@@ -196,11 +196,11 @@
                                 <ul class="swiper-wrapper">
                                     <li 
                                             v-for="(tab, tabIndex) of tabs"
+                                            :id="tab.slug + '-tab-label'"
                                             :key="tabIndex"
                                             :class="{ 'is-active': activeTab === tab.slug }"
-                                            @click="activeTab = tab.slug"
                                             class="swiper-slide"
-                                            :id="tab.slug + '-tab-label'">
+                                            @click="activeTab = tab.slug">
                                         <a>
                                             <span class="icon has-text-gray4">
                                                 <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
@@ -215,8 +215,8 @@
                                     </li>
                                 </ul>
                                 <button 
-                                        class="swiper-button-prev" 
-                                        id="tainacan-tabs-prev">
+                                        id="tainacan-tabs-prev" 
+                                        class="swiper-button-prev">
                                     <svg
                                             width="24"
                                             height="24"
@@ -228,9 +228,9 @@
                                     </svg>
                                 </button>
                                 <button 
-                                        class="swiper-button-next" 
                                         id="tainacan-tabs-next" 
-                                        slot="button-next">
+                                        slot="button-next" 
+                                        class="swiper-button-next">
                                     <svg
                                             width="24"
                                             height="24"
@@ -287,9 +287,9 @@
                                                 :style="$adminOptions.hideItemEditionCollapses ? 'padding-left: 0.35em !important;' : ''">
                                             <b-button
                                                     v-if="!$adminOptions.hideItemEditionFocusMode && (collection && collection.item_enable_metadata_focus_mode === 'yes') && !isMetadataNavigation && !showOnlyRequiredMetadata && !metadataNameFilterString" 
-                                                    @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });"
                                                     class="collapse-all has-text-secondary"
-                                                    size="is-small">
+                                                    size="is-small"
+                                                    @click="isMetadataNavigation = true; setMetadatumFocus({ index: 0, scrollIntoView: true });">
                                                 <span
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-play" />
@@ -299,8 +299,8 @@
                                             <b-button 
                                                     v-if="isMetadataNavigation"
                                                     :disabled="focusedMetadatum === 0"
-                                                    @click="focusPreviousMetadatum" 
-                                                    outlined>
+                                                    outlined 
+                                                    @click="focusPreviousMetadatum">
                                                 <span
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore tainacan-icon-rotate-180" />
@@ -310,8 +310,8 @@
                                             <b-button 
                                                     v-if="isMetadataNavigation"
                                                     :disabled="(focusedMetadatum === itemMetadata.length - 1) && (!isCurrentlyFocusedOnCompoundMetadatum || isOnLastMetadatumOfCompoundNavigation)"
-                                                    @click="focusNextMetadatum"
-                                                    outlined>
+                                                    outlined
+                                                    @click="focusNextMetadatum">
                                                 <span
                                                         class="icon">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
@@ -320,8 +320,8 @@
                                             </b-button>
                                             <b-button
                                                     v-if="isMetadataNavigation" 
-                                                    @click="setMetadatumFocus({ index: 0, scrollIntoView: true }); isMetadataNavigation = false;"
-                                                    outlined>
+                                                    outlined
+                                                    @click="setMetadatumFocus({ index: 0, scrollIntoView: true }); isMetadataNavigation = false;">
                                                 <span
                                                         class="icon has-success-color">
                                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-finish" />
@@ -341,9 +341,9 @@
                                         <b-switch
                                                 v-if="!isMetadataNavigation && !$adminOptions.hideItemEditionRequiredOnlySwitch && (collection && collection.item_enable_metadata_required_filter === 'yes')"
                                                 id="tainacan-switch-required-metadata"
+                                                v-model="showOnlyRequiredMetadata"
                                                 :style="'font-size: 0.625em;' + (isMobileScreen ? 'margin-right: 2rem;' : '')"
-                                                size="is-small"
-                                                v-model="showOnlyRequiredMetadata">
+                                                size="is-small">
                                             {{ isMobileScreen ? $i18n.get('label_required') : $i18n.get('label_only_required') }} *
                                         </b-switch>
 
@@ -352,17 +352,17 @@
                                                 class="header-item metadata-name-search">
                                             <b-input
                                                     v-if="!isMobileScreen || openMetadataNameFilter"
-                                                    :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                                     v-model="metadataNameFilterString"
+                                                    :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                                     icon="magnify"
                                                     size="is-small"
                                                     icon-right="close-circle"
                                                     icon-right-clickable
                                                     @icon-right-click="openMetadataNameFilterClose" />
                                             <span
-                                                    @click="openMetadataNameFilter = true"
-                                                    v-else 
-                                                    class="icon is-small metadata-name-search-icon">
+                                                    v-else
+                                                    class="icon is-small metadata-name-search-icon" 
+                                                    @click="openMetadataNameFilter = true">
                                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
                                             </span>
                                         </b-field>
@@ -370,15 +370,15 @@
 
                                     <div 
                                             v-for="(metadataSection, sectionIndex) of metadataSections"
-                                            :key="sectionIndex"
-                                            :class="'metadata-section-slug-' + metadataSection.slug + (isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')"
                                             :id="'metadata-section-id-' + metadataSection.id"
+                                            :key="sectionIndex"
                                             v-tooltip="{
                                                 content: isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
                                                 autoHide: true,
                                                 placement: 'auto',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
-                                            }">
+                                            }"
+                                            :class="'metadata-section-slug-' + metadataSection.slug + (isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')">
                                         <div class="metadata-section-header section-label">
                                             <span   
                                                     class="collapse-handle"
@@ -419,11 +419,11 @@
                                         </div>
                                         <transition name="filter-item">
                                             <div 
-                                                    class="metadata-section-metadata-list"
-                                                    v-show="(metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !isSectionHidden(metadataSection.id)">
+                                                    v-show="(metadataSectionCollapses[sectionIndex] || isMetadataNavigation) && !isSectionHidden(metadataSection.id)"
+                                                    class="metadata-section-metadata-list">
                                                 <p
-                                                        class="metadatum-description-help-info"
-                                                        v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'">
+                                                        v-if="metadataSection.description && metadataSection.description_bellow_name == 'yes'"
+                                                        class="metadatum-description-help-info">
                                                     {{ metadataSection.description }}
                                                 </p>
 
@@ -432,10 +432,10 @@
                                                         :key="index">
                                                     <tainacan-form-item
                                                             v-if="itemMetadatum.metadatum.metadata_section_id == metadataSection.id"
-                                                            :id="'metadatum-index--' + index"
-                                                            v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"      
-                                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
+                                                            v-show="(!showOnlyRequiredMetadata || itemMetadatum.metadatum.required === 'yes') && (metadataNameFilterString == '' || filterByMetadatumName(itemMetadatum))"
+                                                            :id="'metadatum-index--' + index"      
                                                             :ref="'tainacan-form-item--' + index"
+                                                            :class="{ 'is-metadata-navigation-active': isMetadataNavigation }"
                                                             :item-metadatum="itemMetadatum"
                                                             :metadata-name-filter-string="metadataNameFilterString"
                                                             :is-collapsed="metadataCollapses[index]"
@@ -485,11 +485,11 @@
                                     </div>
 
                                     <related-items-list
+                                            v-model:is-loading="isLoading"
                                             :item-id="itemId"
                                             :collection-id="collectionId"
                                             :related-items="item.related_items"
-                                            :is-editable="!$adminOptions.itemEditionMode"
-                                            v-model:is-loading="isLoading" />
+                                            :is-editable="!$adminOptions.itemEditionMode" />
                                     
                                 </div>
 
@@ -656,8 +656,8 @@
                     v-if="!$adminOptions.mobileAppMode"
                     class="update-info-section">
                 <p
-                        class="footer-message"
-                        v-if="isOnSequenceEdit">
+                        v-if="isOnSequenceEdit"
+                        class="footer-message">
                     {{ $i18n.get('label_sequence_editing_item') + " " + itemPosition + " " + $i18n.get('info_of') + " " + ((group != null && group.items_count != undefined) ? group.items_count : '') + "." }}&nbsp;
                 </p>
                 <p class="footer-message">
@@ -681,16 +681,16 @@
 
                 <!-- Comment Status ------------------------ -->
                 <div 
+                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle"
                         style="margin-left: 2em;"
-                        class="section-status"
-                        v-if="collection && collection.allow_comments && collection.allow_comments == 'open' && !$adminOptions.hideItemEditionCommentsToggle">
+                        class="section-status">
                     <div class="field has-addons">
                         <b-switch
                                 id="tainacan-checkbox-comment-status"
+                                v-model="form.comment_status"
                                 size="is-small"
                                 true-value="open"
-                                false-value="closed"
-                                v-model="form.comment_status">
+                                false-value="closed">
                             <span class="icon has-text-gray4">
                                 <i class="tainacan-icon tainacan-icon-comment"/>
                             </span>

@@ -1,11 +1,11 @@
 <template>
     <div 
+            ref="items-page-container"
             :class="{ 
                 'repository-level-page': isRepositoryLevel,
                 'is-filters-menu-open': isFiltersModalActive && !openAdvancedSearch
             }"
-            aria-live="polite"
-            ref="items-page-container">
+            aria-live="polite">
 
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
@@ -14,9 +14,9 @@
 
         <!-- SEARCH CONTROL ------------------------- -->
         <div
+                ref="search-control"
                 aria-labelledby="search-control-landmark"
                 role="region"
-                ref="search-control"
                 class="search-control"  
                 :style="( $adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || $adminOptions.itemsSearchSelectionMode ) ? '--tainacan-container-padding: 6px;' : ''">
             <h3 
@@ -29,12 +29,8 @@
                     v-model="isLoadingMetadata"/> -->
                         <!-- Button for hiding filters -->
             <button 
-                    aria-controls="filters-modal"
-                    :aria-expanded="isFiltersModalActive"
                     v-if="!openAdvancedSearch"
                     id="filter-menu-compress-button"
-                    :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
-                    @click="isFiltersModalActive = !isFiltersModalActive"
                     v-tooltip="{
                         delay: {
                             shown: 500,
@@ -44,7 +40,11 @@
                         autoHide: false,
                         placement: 'auto-start',
                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                    }">
+                    }"
+                    aria-controls="filters-modal"
+                    :aria-expanded="isFiltersModalActive"
+                    :aria-label="!isFiltersModalActive ? $i18n.get('label_show_filters') : $i18n.get('label_hide_filters')"
+                    @click="isFiltersModalActive = !isFiltersModalActive">
                 <span class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
@@ -72,16 +72,16 @@
                                     type="search"
                                     :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('items')"
                                     :model-value="searchQuery"
-                                    @update:model-value="typeFutureSearch"
-                                    @keyup.enter="updateSearch()"
                                     icon-right="magnify"
                                     icon-right-clickable
-                                    @icon-right-click="updateSearch()"
-                                    :disabled="openAdvancedSearch" />
+                                    :disabled="openAdvancedSearch"
+                                    @update:model-value="typeFutureSearch"
+                                    @keyup.enter="updateSearch()"
+                                    @icon-right-click="updateSearch()" />
                         </template>
                         <b-dropdown-item 
-                                @click="updateSearch()"
-                                :focusable="false">
+                                :focusable="false"
+                                @click="updateSearch()">
                             <span v-html="$i18n.get('instruction_press_enter_to_search_for')"/>&nbsp;
                             <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
                         </b-dropdown-item>
@@ -103,17 +103,17 @@
                                 @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                             {{ $i18n.get('info_for_more_metadata_search_options_use') }}&nbsp; 
                             <a 
-                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
-                                    class="has-text-secondary">
+                                    class="has-text-secondary"
+                                    @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                                 {{ $i18n.get('advanced_search') }}
                             </a>
                         </b-dropdown-item>
                     </b-dropdown>
                     <a
                             v-if="!$adminOptions.hideItemsListAdvancedSearch"
-                            @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();"
                             class="advanced-search-toggle has-text-secondary"
-                            :class="openAdvancedSearch ? 'is-open' : 'is-closed'">
+                            :class="openAdvancedSearch ? 'is-open' : 'is-closed'"
+                            @click="openAdvancedSearch = !openAdvancedSearch; $eventBusSearch.clearAllFilters();">
                         {{ $i18n.get('advanced_search') }}
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-search" />
@@ -129,16 +129,16 @@
                             collection.current_user_can_edit_items"
                     class="search-control-item">
                 <router-link
-                        :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
                         v-if="$adminOptions.hideItemsListCreationDropdownBulkAdd && $adminOptions.hideItemsListCreationDropdownImport"
-                        custom
-                        v-slot="{ navigate }">
+                        v-slot="{ navigate }"
+                        :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
+                        custom>
                     <button
+                            id="item-creation-options-dropdown"
                             type="button"
                             role="link"
-                            @click="navigate()"
                             class="button is-secondary"
-                            id="item-creation-options-dropdown">
+                            @click="navigate()">
                         <span class="is-hidden-touch">{{ $i18n.getFrom('items','add_new') }}</span>
                         <span class="is-hidden-desktop">{{ $i18n.get('add') }}</span>
                         <span class="icon">
@@ -148,8 +148,8 @@
                 </router-link>
                 <b-dropdown
                         v-else
-                        :mobile-modal="true"
                         id="item-creation-options-dropdown"
+                        :mobile-modal="true"
                         aria-role="list"
                         trap-focus>
                     <template #trigger>
@@ -165,12 +165,12 @@
                             v-if="!isRepositoryLevel"
                             aria-role="listitem">
                         <router-link
+                                v-slot="{ navigate }"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
-                                custom
-                                v-slot="{ navigate }">
+                                custom>
                             <div
-                                    role="link"
                                     id="a-create-item"
+                                    role="link"
                                     @click="navigate()" >
                                 {{ $i18n.get('add_one_item') }}
                             </div>
@@ -190,13 +190,13 @@
                             v-if="!isRepositoryLevel && !$adminOptions.hideItemsListCreationDropdownBulkAdd"
                             aria-role="listitem">
                         <router-link
+                                v-slot="{ navigate }"
                                 :to="{ path: $routerHelper.getNewItemBulkAddPath(collectionId) }"
-                                custom
-                                v-slot="{ navigate }">
+                                custom>
                             <button
+                                    id="a-item-add-bulk"
                                     role="link"
-                                    @click="navigate()"
-                                    id="a-item-add-bulk">
+                                    @click="navigate()">
                                 {{ $i18n.get('add_items_bulk') }}
                                 <br> 
                                 <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
@@ -221,6 +221,7 @@
             <!-- Displayed Metadata Dropdown -->
             <div class="search-control-item">
                 <b-dropdown
+                        ref="displayedMetadataDropdown" 
                         v-tooltip="{
                             delay: {
                                 shown: 500,
@@ -230,8 +231,7 @@
                             autoHide: false,
                             placement: 'auto-start',
                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                        }" 
-                        ref="displayedMetadataDropdown"
+                        }"
                         :mobile-modal="true"
                         :disabled="totalItems <= 0 || adminViewMode == 'grid'|| adminViewMode == 'cards' || adminViewMode == 'masonry'"
                         class="show metadata-options-dropdown"
@@ -265,8 +265,8 @@
                     <div class="dropdown-item-apply">
                         <button 
                                 aria-controls="items-list-results"
-                                @click="onChangeDisplayedMetadata()"
-                                class="button is-success">
+                                class="button is-success"
+                                @click="onChangeDisplayedMetadata()">
                             {{ $i18n.get('label_apply_changes') }}
                         </button>
                     </div>  
@@ -280,9 +280,9 @@
                     <b-dropdown
                             :mobile-modal="true"
                             :model-value="order"
-                            @update:model-value="onChangeOrder"
                             aria-role="list"
-                            trap-focus>
+                            trap-focus
+                            @update:model-value="onChangeOrder">
                         <template #trigger>
                             <button
                                     :aria-label="$i18n.get('label_sorting_direction')"
@@ -328,9 +328,9 @@
                     </span>
                     <b-dropdown
                             :mobile-modal="true"
-                            @update:model-value="onChangeOrderBy($event)"
                             aria-role="list"
-                            trap-focus>
+                            trap-focus
+                            @update:model-value="onChangeOrderBy($event)">
                         <template #trigger>
                             <button
                                     :aria-label="$i18n.get('label_sorting')"
@@ -345,10 +345,10 @@
                                 v-for="metadatum of sortingMetadata"
                                 :key="metadatum.slug">
                             <b-dropdown-item
+                                    v-if="metadatum != undefined"
                                     aria-controls="items-list-results"
                                     role="button"
                                     :class="{ 'is-active': (orderBy != 'meta_value' && orderBy != 'meta_value_num' && orderBy == metadatum.slug) || ((orderBy == 'meta_value' || orderBy == 'meta_value_num') && metaKey == metadatum.id) }"
-                                    v-if="metadatum != undefined"
                                     :value="metadatum"
                                     aria-role="listitem">
                                 {{ metadatum.name }}
@@ -371,12 +371,12 @@
                         {{ $i18n.get('label_view_on') + ':&nbsp; ' }}
                     </label>
                     <b-dropdown
-                            @change="onChangeAdminViewMode($event)"
                             :mobile-modal="true"
                             position="is-bottom-left"
                             :aria-label="$i18n.get('label_view_mode')"
                             aria-role="list"
-                            trap-focus>
+                            trap-focus
+                            @change="onChangeAdminViewMode($event)">
                         <template #trigger>
                             <button
                                     :aria-label="$i18n.get('label_view_mode')"
@@ -515,10 +515,10 @@
 
          <!-- SIDEBAR WITH FILTERS -->
         <b-modal
+                id="filters-modal"
+                ref="filters-modal"     
+                v-model="isFiltersModalActive"       
                 role="region"
-                id="filters-modal"     
-                ref="filters-modal"       
-                v-model="isFiltersModalActive"
                 :width="736"
                 animation="slide-menu"
                 trap-focus
@@ -527,15 +527,15 @@
                 custom-class="tainacan-modal tainacan-form filters-menu"
                 :close-button-aria-label="$i18n.get('close')">
             <filters-items-list
+                    id="filters-items-list"
                     :is-loading-items="isLoadingItems"
-                    @updateIsLoadingItemsState="(state) => isLoadingItems = state"
                     autofocus="true"
                     tabindex="-1"
                     aria-modal
                     role="dialog"
-                    id="filters-items-list"
                     :collection-id="collectionId + ''"
-                    :is-repository-level="isRepositoryLevel"/>
+                    :is-repository-level="isRepositoryLevel"
+                    @updateIsLoadingItemsState="(state) => isLoadingItems = state"/>
         </b-modal>
 
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
@@ -547,9 +547,9 @@
             <!-- ADVANCED SEARCH -->
             <transition name="filter-item">
                 <div
+                        v-if="openAdvancedSearch"
                         id="advanced-search-container"
-                        role="search"
-                        v-if="openAdvancedSearch">
+                        role="search">
                     
                     <advanced-search
                             :collection-id="collectionId"
@@ -565,8 +565,8 @@
 
             <!-- FILTERS TAG LIST-->
             <filters-tags-list 
-                    class="filter-tags-list"
-                    v-if="hasFiltered && !openAdvancedSearch" />
+                    v-if="hasFiltered && !openAdvancedSearch"
+                    class="filter-tags-list" />
             
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div 
@@ -608,13 +608,13 @@
                     </p> 
                     <div>
                         <button
-                                @click="openMetatadaSortingWarningDialog({ offerCheckbox: false })"
-                                class="button">
+                                class="button"
+                                @click="openMetatadaSortingWarningDialog({ offerCheckbox: false })">
                             {{ $i18n.get('label_view_more') }}
                         </button>
                         <button 
-                                @click="hasAnOpenAlert = false"
-                                class="button icon">
+                                class="button icon"
+                                @click="hasAnOpenAlert = false">
                             <i class="tainacan-icon tainacan-icon-close"/>
                         </button>
                     </div>
@@ -652,15 +652,15 @@
 
                         <router-link
                                 v-if="!isRepositoryLevel && !isSortingByCustomMetadata && !hasFiltered && (status == undefined || status == '') && !$adminOptions.hideItemsListCreationDropdown"
+                                v-slot="{ navigate }"
                                 :to="{ path: $routerHelper.getNewItemPath(collectionId) }"
-                                custom
-                                v-slot="{ navigate }">
+                                custom>
                             <button
                                     id="button-create-item"
                                     type="button"
-                                    @click="navigate()"
                                     role="link"
-                                    class="button is-secondary">
+                                    class="button is-secondary"
+                                    @click="navigate()">
                                 {{ $i18n.getFrom('items', 'add_new') }}
                             </button>
                         </router-link> 
@@ -696,8 +696,8 @@
                 <!-- Pagination -->
                 <div ref="items-pagination">
                     <pagination
-                            :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
-                            v-if="totalItems > 0"/>
+                            v-if="totalItems > 0"
+                            :is-sorting-by-custom-metadata="isSortingByCustomMetadata"/>
                 </div>
             </div>
         </div>

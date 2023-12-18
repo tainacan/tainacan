@@ -1,25 +1,25 @@
 <template>
     <div class="block">
         <b-autocomplete
+                v-model="selected"
                 icon="magnify"
                 size="is-small"
                 :aria-labelledby="'filter-label-id-' + filter.id"
-                v-model="selected"
                 :data="options"
                 expanded
                 :loading="isLoadingOptions"
-                @update:model-value="($event) => { resetPage(); search($event); }"
                 field="label"
-                @select="onSelect"
                 clearable
                 :placeholder="(metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? $i18n.get('info_type_to_search_items') : $i18n.get('info_type_to_search_metadata')"
                 check-infinite-scroll
+                @update:model-value="($event) => { resetPage(); search($event); }"
+                @select="onSelect"
                 @infinite-scroll="searchMore">
             <template #default="props">
                 <div class="media">
                     <div
-                            class="media-left"
-                            v-if="props.option.img">
+                            v-if="props.option.img"
+                            class="media-left">
                         <img
                                 :alt="$i18n.get('label_thumbnail')"
                                 width="24"

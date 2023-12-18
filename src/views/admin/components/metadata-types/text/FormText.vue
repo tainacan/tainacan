@@ -7,9 +7,9 @@
             <b-switch
                     size="is-small" 
                     :model-value="displaySuggestions"
-                    @update:model-value="onUpdateDisplaySuggestions"
                     :true-value="'yes'"
-                    :false-value="'no'" />
+                    :false-value="'no'"
+                    @update:model-value="onUpdateDisplaySuggestions" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-text', 'display_suggestions')"
                     :message="$i18n.getHelperMessage('tainacan-text', 'display_suggestions')"/>

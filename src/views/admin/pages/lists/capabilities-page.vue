@@ -13,8 +13,8 @@
                     class="header-item">
                 <div class="control has-icons-right  is-small is-clearfix">
                     <b-autocomplete
-                            clearable
                             v-model="filteredRole"
+                            clearable
                             :data="filteredRoles"
                             :placeholder="$i18n.get('instruction_type_search_roles_filter')"
                             keep-first
@@ -27,8 +27,8 @@
         </div>
         <div>
             <b-loading
-                    :is-full-page="true" 
                     v-model="isLoading" 
+                    :is-full-page="true" 
                     :can-cancel="false"/>
 
             <capabilities-list
@@ -66,8 +66,8 @@
             </div>
             <!-- Footer -->
             <div 
-                    class="pagination-area" 
-                    v-if="capabilities.length > 0">
+                    v-if="capabilities.length > 0" 
+                    class="pagination-area">
                 <div class="shown-items">
                     {{
                         $i18n.get('info_showing_capabilities') +

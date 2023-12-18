@@ -1,11 +1,11 @@
 <template>
     <div 
+            ref="termParentSelectionDialog"
             aria-labelledby="alert-dialog-title"
             aria-modal
             autofocus
             role="alertdialog"
-            class="tainacan-form tainacan-dialog dialog"
-            ref="termParentSelectionDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -32,28 +32,28 @@
                 <!-- Parent -------------- -->
                 <div class="parent-term-options">
                     <b-radio 
-                            :native-value="false"
-                            v-model="hasParent">
+                            v-model="hasParent"
+                            :native-value="false">
                         {{ $i18n.get('label_no_parent_root_term') }}
                     </b-radio>
                     <b-radio 
-                            :native-value="true"
-                            v-model="hasParent">
+                            v-model="hasParent"
+                            :native-value="true">
                         {{ $i18n.get('instruction_select_a_parent_term') }}
                     </b-radio>
                     <b-autocomplete
                             id="tainacan-add-parent-field"
+                            v-model="parentTermName"
                             :placeholder="$i18n.get('instruction_parent_term')"
                             :data="parentTerms"
                             field="name"
                             clearable
-                            v-model="parentTermName"
-                            @select="onSelectParentTerm($event)"
                             :loading="isFetchingParentTerms"
-                            @update:model-value="fetchParentTerms"
                             :disabled="!hasParent"
                             check-infinite-scroll
                             :append-to-body="true"
+                            @select="onSelectParentTerm($event)"
+                            @update:model-value="fetchParentTerms"
                             @infinite-scroll="fetchMoreParentTerms">
                         <template #default="props">
                             <div class="media">

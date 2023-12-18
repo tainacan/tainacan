@@ -23,9 +23,9 @@
                 <template #item="{ element: metadatum }">
                     <div 
                             :id="metadatum.component"
-                            @click.prevent.once="addMetadatumViaButton(metadatum)"
                             class="available-metadatum-item"
-                            :class="{ 'highlighted-metadatum' : highlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }">
+                            :class="{ 'highlighted-metadatum' : highlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
+                            @click.prevent.once="addMetadatumViaButton(metadatum)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),
@@ -65,8 +65,8 @@
                             </span>
                         </span>
                         <span 
-                                class="loading-spinner" 
-                                v-if="highlightedMetadatum == metadatum.name"/>
+                                v-if="highlightedMetadatum == metadatum.name" 
+                                class="loading-spinner"/>
                     </div>
                 </template>
             </sortable>
@@ -88,8 +88,8 @@
                 <template #item="{ element: metadataSection }">
                     <div 
                             :id="metadataSection.id"
-                            @click.prevent="addMetadataSectionViaButton()"
-                            class="available-metadata-section-item">
+                            class="available-metadata-section-item"
+                            @click.prevent="addMetadataSectionViaButton()">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),

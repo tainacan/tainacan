@@ -1,7 +1,7 @@
 <template>
     <b-loading
-            :is-full-page="false"
             v-model="isLoading"
+            :is-full-page="false"
             :can-cancel="false"/>
 
     <template v-if="collectionId && couldLoadCollection && collecionAllowsItemSubmission">
@@ -36,20 +36,20 @@
                             :title="$i18n.getHelperTitle('items', 'document')"
                             :message="$i18n.getHelperMessage('items', 'document')"/>
                     <p
-                            class="metadatum-description-help-info"
-                            v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')">
+                            v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')"
+                            class="metadatum-description-help-info">
                         {{ $i18n.getHelperMessage('items', 'document') }}
                     </p>
                 </div>
                 <div
-                        class="section-box document-field"
-                        id="tainacan-item-metadatum_id-document">
+                        id="tainacan-item-metadatum_id-document"
+                        class="section-box document-field">
                     <div v-if="form.document_type != '' && form.document_type != undefined && form.document_type != null && form.document_type != 'empty'">
                         <div v-if="form.document_type == 'attachment'">
                             <b-upload
-                                    expanded
                                     v-if="!form.document"
                                     v-model="form.document"
+                                    expanded
                                     drag-drop>
                                 <section class="section">
                                     <div class="content has-text-centered">
@@ -70,8 +70,8 @@
                                         closable
                                         attached
                                         :aria-close-label="$i18n.get('delete')"
-                                        @close="form.document = ''"
-                                        :class="documentErrorMessage ? 'is-danger' : ''">
+                                        :class="documentErrorMessage ? 'is-danger' : ''"
+                                        @close="form.document = ''">
                                     {{ form.document.name }}
                                 </b-tag>
                             </div>
@@ -83,22 +83,22 @@
                         </div>
                         <div v-if="form.document_type == 'text'">
                             <b-input
-                                    type="textarea"
-                                    v-model="form.document" />
+                                    v-model="form.document"
+                                    type="textarea" />
                             <br v-if="hasMoreThanOneDocumentTypeOption">
                         </div>
                         <div v-if="form.document_type == 'url'">
                             <b-input
+                                    v-model="form.document"
                                     :placeholder="$i18n.get('instruction_insert_url')"
-                                    type="url"
-                                    v-model="form.document" />
+                                    type="url" />
                             <b-field
                                     :addons="false"
                                     :label="$i18n.get('label_document_option_forced_iframe')">
                                     &nbsp;
                                 <b-switch
-                                        size="is-small"
-                                        v-model="form.document_options.forced_iframe" />
+                                        v-model="form.document_options.forced_iframe"
+                                        size="is-small" />
                                 <help-button
                                         :title="$i18n.get('label_document_option_forced_iframe')"
                                         :message="$i18n.get('info_document_option_forced_iframe')" />
@@ -110,26 +110,26 @@
                                         style="padding: 0"
                                         :label="$i18n.get('label_document_option_iframe_width')">
                                     <b-numberinput
+                                            v-model="form.document_options.forced_iframe_width"
                                             :aria-minus-label="$i18n.get('label_decrease')"
                                             :aria-plus-label="$i18n.get('label_increase')"
                                             min="1"
-                                            v-model="form.document_options.forced_iframe_width"
                                             step="1" />
                                 </b-field>
                                 <b-field
                                         style="padding: 0; margin-left: 12px;"
                                         :label="$i18n.get('label_document_option_iframe_height')">
                                     <b-numberinput
+                                            v-model="form.document_options.forced_iframe_height"
                                             :aria-minus-label="$i18n.get('label_decrease')"
                                             :aria-plus-label="$i18n.get('label_increase')"
                                             min="1"
-                                            v-model="form.document_options.forced_iframe_height"
                                             step="1" />
                                 </b-field>
                             </b-field>
                             <p
-                                    class="metadatum-description-help-info"
                                     v-if="form.document_options.forced_iframe"
+                                    class="metadatum-description-help-info"
                                     style="padding: 0px 0px 0px 34px">
                                 {{ $i18n.get('info_iframe_dimensions') }}
                             </p>
@@ -139,8 +139,8 @@
                                     :label="$i18n.get('label_document_option_is_image')">
                                     &nbsp;
                                 <b-switch
-                                        size="is-small"
-                                        v-model="form.document_options.is_image" />
+                                        v-model="form.document_options.is_image"
+                                        size="is-small" />
                                 <help-button
                                         :title="$i18n.get('label_document_option_is_image')"
                                         :message="$i18n.get('info_document_option_is_image')" />
@@ -214,8 +214,8 @@
                             :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
                             :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
                     <p
-                            class="metadatum-description-help-info"
-                            v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')">
+                            v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')"
+                            class="metadatum-description-help-info">
                         {{ $i18n.getHelperMessage('items', '_thumbnail_id') }}
                     </p>
                 </div>
@@ -226,20 +226,20 @@
                     <div class="field has-addons">
                         <b-switch
                                 id="tainacan-checkbox-show-thumbnail-input"
-                                size="is-small"
-                                v-model="showThumbnailInput">
+                                v-model="showThumbnailInput"
+                                size="is-small">
                             {{ $i18n.get('label_upload_custom_thumbnail') }}
                         </b-switch>
                     </div>
                 </div>
                 <div
                         v-if="!isLoading && showThumbnailInput || (hideFileModalButton && hideTextModalButton && hideLinkModalButton)"
-                        class="section-box section-thumbnail"
-                        id="tainacan-item-metadatum_id-thumbnail">
+                        id="tainacan-item-metadatum_id-thumbnail"
+                        class="section-box section-thumbnail">
                     <b-upload
-                            expanded
                             v-if="!form.thumbnail"
                             v-model="form.thumbnail"
+                            expanded
                             drag-drop>
                         <section class="section">
                             <div class="content has-text-centered">
@@ -260,8 +260,8 @@
                                 closable
                                 attached
                                 :aria-close-label="$i18n.get('delete')"
-                                @close="form.thumbnail = null"
-                                :class="thumbnailErrorMessage ? 'is-danger' : ''">
+                                :class="thumbnailErrorMessage ? 'is-danger' : ''"
+                                @close="form.thumbnail = null">
                             {{ form.thumbnail.name }}
                         </b-tag>
                     </div>
@@ -308,11 +308,11 @@
 
                 <div
                         v-if="itemSubmission != undefined"
-                        class="section-box"
-                        id="tainacan-item-metadatum_id-attachments">
+                        id="tainacan-item-metadatum_id-attachments"
+                        class="section-box">
                     <b-upload
-                            expanded
                             v-model="form.attachments"
+                            expanded
                             multiple
                             drag-drop>
                         <section class="section">
@@ -336,8 +336,8 @@
                                 closable
                                 attached
                                 :aria-close-label="$i18n.get('delete')"
-                                @close="form.attachments.splice(index, 1)"
-                                :class="attachmentsErrorMessage.includes(attachment.name) ? 'is-danger' : ''">
+                                :class="attachmentsErrorMessage.includes(attachment.name) ? 'is-danger' : ''"
+                                @close="form.attachments.splice(index, 1)">
                             {{ attachment.name }}
                         </b-tag>
                     </div>
@@ -372,8 +372,8 @@
                             :title="$i18n.getHelperTitle('items', 'comment_status')"
                             :message="$i18n.getHelperMessage('items', 'comment_status')"/>
                     <p
-                            class="metadatum-description-help-info"
-                            v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'comment_status')">
+                            v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'comment_status')"
+                            class="metadatum-description-help-info">
                         {{ $i18n.getHelperMessage('items', 'comment_status') }}
                     </p>
                 </div>
@@ -381,10 +381,10 @@
                     <div class="field has-addons">
                         <b-switch
                                 id="tainacan-checkbox-comment-status"
+                                v-model="form.comment_status"
                                 size="is-small"
                                 true-value="open"
-                                false-value="closed"
-                                v-model="form.comment_status">
+                                false-value="closed">
                             {{ $i18n.get('label_allow_comments') }}
                         </b-switch>
                     </div>
@@ -419,30 +419,30 @@
                     class="item-submission-hook item-submission-hook-metadata-before"
                     v-html="getBeforeHook('metadata')" />
             <component
-                    v-if="metadataSections.length"
-                    :is="showSteppedLayout ? 'b-steps' : 'div'" 
+                    :is="showSteppedLayout ? 'b-steps' : 'div'"
+                    v-if="metadataSections.length" 
+                    ref="item-submission-steps-layout"
                     v-model="activeSectionStep"
                     :has-navigation="false"
                     type="is-secondary"
                     mobile-mode="compact"
-                    size="is-small"
-                    ref="item-submission-steps-layout">
+                    size="is-small">
                 <component
                         :is="showSteppedLayout ? 'b-step-item' : 'div'"
                         v-for="(metadataSection, sectionIndex) of metadataSections"
-                        :key="sectionIndex"
-                        :step="sectionIndex + 1"
-                        :label="metadataSection.name"
-                        :label-position="'right'"
-                        :clickable="true"
-                        :class="'metadata-section-slug-' + metadataSection.slug + (!showSteppedLayout && isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')"
                         :id="'metadata-section-id-' + metadataSection.id"
+                        :key="sectionIndex"
                         v-tooltip="{
                             content: !showSteppedLayout && isSectionHidden(metadataSection.id) ? $i18n.get('info_metadata_section_hidden_conditional') : false,
                             autoHide: true,
                             placement: 'auto',
                             popperClass: ['tainacan-tooltip', 'tooltip']
-                        }">
+                        }"
+                        :step="sectionIndex + 1"
+                        :label="metadataSection.name"
+                        :label-position="'right'"
+                        :clickable="true"
+                        :class="'metadata-section-slug-' + metadataSection.slug + (!showSteppedLayout && isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')">
                     <div 
                                 v-if="!showSteppedLayout"
                                 class="metadata-section-header section-label">
@@ -479,8 +479,8 @@
                     </div>
                     <transition name="filter-item">
                         <div 
-                                class="metadata-section-metadata-list"
-                                v-show="metadataSectionCollapses[sectionIndex] && (showSteppedLayout || !isSectionHidden(metadataSection.id))">
+                                v-show="metadataSectionCollapses[sectionIndex] && (showSteppedLayout || !isSectionHidden(metadataSection.id))"
+                                class="metadata-section-metadata-list">
 
                             <!-- JS-side hook for extra content -->
                             <div 
@@ -489,8 +489,8 @@
                                     v-html="getBeforeHook('metadata_section', { metadataSection: metadataSection, sectionIndex: sectionIndex })" />
 
                             <p
-                                    class="metadatum-description-help-info"
-                                    v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)">
+                                    v-if="metadataSection.description && (!hideHelpButtons && helpInfoBellowLabel)"
+                                    class="metadatum-description-help-info">
                                 {{ metadataSection.description }}
                             </p>
                             <template v-if="itemMetadata && Array.isArray(itemMetadata)">
@@ -512,8 +512,8 @@
                                             :hide-help-buttons="hideHelpButtons"
                                             :help-info-bellow-label="helpInfoBellowLabel"
                                             :is-collapsed="metadataCollapses[index]"
-                                            @update:model-value="updateItemMetadataValue"
                                             :enumerate-metadatum="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
+                                            @update:model-value="updateItemMetadataValue"
                                             @changeCollapse="onChangeCollapse($event, index)"/>
 
                                     <!-- JS-side hook for extra content -->
@@ -588,8 +588,8 @@
             <!-- Google reCAPTCHA -->
             <template v-if="useCaptcha == 'yes'">
                 <div
-                        class="g-recaptcha"
                         id="tainacan-g-recaptcha"
+                        class="g-recaptcha"
                         :data-sitekey="captchaSiteKey" />
                 <br>
             </template>
@@ -621,10 +621,10 @@
                             class="wp-block-button is-style-outline"
                             style="margin-right: auto;">
                         <button 
-                                @click="onDiscard()"
                                 id="tainacan-item-submission-block-button--cancel"
                                 type="button"
-                                class="wp-block-button__link wp-element-button">
+                                class="wp-block-button__link wp-element-button"
+                                @click="onDiscard()">
                             {{ $i18n.get('cancel') }}
                         </button>
                     </div>
@@ -632,10 +632,10 @@
                             v-if="showSteppedLayout && activeSectionStep > 0"
                             class="wp-block-button">
                         <button 
-                                @click="onPreviousStep()"
                                 id="tainacan-item-submission-block-button--previous"
                                 type="button"
-                                class="wp-block-button__link wp-element-button">
+                                class="wp-block-button__link wp-element-button"
+                                @click="onPreviousStep()">
                             {{ $i18n.get('previous') }}
                         </button>
                     </div>
@@ -643,10 +643,10 @@
                             v-if="showSteppedLayout && activeSectionStep < metadataSections.length - 1"
                             class="wp-block-button">
                         <button 
-                                @click="onNextStep()"
                                 id="tainacan-item-submission-block-button--next"
                                 type="button"
-                                class="wp-block-button__link wp-element-button">
+                                class="wp-block-button__link wp-element-button"
+                                @click="onNextStep()">
                             {{ $i18n.get('next') }}
                         </button>
                     </div>
@@ -654,11 +654,11 @@
                             v-if="!showSteppedLayout || activeSectionStep == metadataSections.length - 1"
                             class="wp-block-button">
                         <button 
-                                :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
                                 id="tainacan-item-submission-block-button--submit"
-                                @click="onSubmit()"
+                                :disabled="showTermsAgreementCheckbox && !userHasAgreedToTerms"
                                 type="button"
-                                class="wp-block-button__link wp-element-button">
+                                class="wp-block-button__link wp-element-button"
+                                @click="onSubmit()">
                             {{ $i18n.get('label_submit') }}
                         </button>
                     </div>
@@ -676,8 +676,8 @@
         <!-- Message displayed when the form is being submitted -->
         <section
                 v-if="isSubmitting || isUploading"
-                class="section"
-                id="submission-form-processing">
+                id="submission-form-processing"
+                class="section">
             <div class="content has-text-grey has-text-centered">
                 <br>
                 <p>
@@ -687,13 +687,13 @@
                 </p>
                 <h2 id="submission-form-is-processing-label">{{ $i18n.get('label_sending_form') }}</h2>
                 <p
-                        id="submission-form-is-processing-info"
-                        v-if="isSubmitting">
+                        v-if="isSubmitting"
+                        id="submission-form-is-processing-info">
                     {{ $i18n.get('info_submission_processing') }}
                 </p>
                 <p
-                        id="submission-form-is-uploading-info"
-                        v-if="isUploading">
+                        v-if="isUploading"
+                        id="submission-form-is-uploading-info">
                     {{ $i18n.get('info_submission_uploading') }}
                 </p>
                 <br>
@@ -703,8 +703,8 @@
         <!-- Message displayed once the form is submitted -->
         <section
                 v-if="hasSentForm"
-                class="section"
-                id="submission-form-sent">
+                id="submission-form-sent"
+                class="section">
             <div class="content has-text-grey has-text-centered">
                 <br>
                 <p>
@@ -714,18 +714,18 @@
                 </p>
                 <div>
                     <h2 
-                            id="submission-form-sent-label" 
-                            v-if="sentFormHeading">
+                            v-if="sentFormHeading" 
+                            id="submission-form-sent-label">
                         {{ sentFormHeading }}
                     </h2>
                     <p 
-                            id="submission-form-sent-info"
-                            v-if="sentFormMessage">
+                            v-if="sentFormMessage"
+                            id="submission-form-sent-info">
                         {{ sentFormMessage }}
                     </p>
                     <p 
-                            id="submission-form-sent-link"
-                            v-if="showItemLinkButton && linkToCreatedItem">
+                            v-if="showItemLinkButton && linkToCreatedItem"
+                            id="submission-form-sent-link">
                         <a
                                 style="text-decoration: none"
                                 :href="linkToCreatedItem"

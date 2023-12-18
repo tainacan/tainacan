@@ -1,12 +1,12 @@
 <template>
     <div 
+            ref="itemCreationStatusDialog"
             aria-labelledby="alert-dialog-title"
             autofocus
             role="alertdialog"
             tabindex="-1"
             aria-modal
-            class="tainacan-form tainacan-dialog dialog"
-            ref="itemCreationStatusDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -35,9 +35,9 @@
                 <!-- Status -------------------------------- --> 
                 <div class="status-radios">
                     <b-radio
-                            v-model="selectedStatus"
                             v-for="(statusOption, index) of availableStatus"
                             :key="index"
+                            v-model="selectedStatus"
                             :native-value="statusOption.slug">
                         <span class="icon has-text-gray">
                             <i 

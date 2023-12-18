@@ -1,19 +1,17 @@
 <template>
     <div :class="{ 'is-flex is-flex-wrap-wrap': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-tabs
+                v-model="activeTab"
                 size="is-small"
-                animated
-                v-model="activeTab">
+                animated>
             <b-tab-item :label="$i18n.get('label_insert_items')">
                 <b-taginput
+                        :id="relationshipInputId"
                         expanded
                         :disabled="disabled"
-                        :id="relationshipInputId"
                         size="is-small"
                         icon="magnify"
                         :model-value="selected"
-                        @update:model-value="onInput"
-                        @blur="onBlur"
                         :data="options"
                         :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                         autocomplete
@@ -25,10 +23,12 @@
                         :aria-close-label="$i18n.get('remove_value')"
                         :class="{ 'has-selected': selected != undefined && selected != [] }"
                         field="label"
-                        @typing="search"
                         check-infinite-scroll
-                        @infinite-scroll="searchMore"
                         :has-counter="false"
+                        @update:model-value="onInput"
+                        @blur="onBlur"
+                        @typing="search"
+                        @infinite-scroll="searchMore"
                         @focus="onMobileSpecialFocus">
                     <template #default="props">
                         <div 
@@ -80,15 +80,15 @@
                             <div v-html="itemValue.valuesAsHtml" />
                             <a 
                                     v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)"
-                                    @click="editSelected(itemValue.value)"
-                                    class="relationship-value-button--edit">
+                                    class="relationship-value-button--edit"
+                                    @click="editSelected(itemValue.value)">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-edit" />
                                 </span>
                             </a>
                             <a 
-                                    @click="removeFromSelected(itemValue.value)"
-                                    class="relationship-value-button--remove">
+                                    class="relationship-value-button--remove"
+                                    @click="removeFromSelected(itemValue.value)">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-close" />
                                 </span>
@@ -116,16 +116,16 @@
                     v-if="(maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
                             (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
                     :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
-                    @click="editItemModalOpen = !editItemModalOpen"
-                    class="add-link">
+                    class="add-link"
+                    @click="editItemModalOpen = !editItemModalOpen">
                 <span class="icon is-small">
                     <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
                 </span>
                 &nbsp;{{ $i18n.get('label_create_new_item') }}
             </a>
             <b-modal 
-                    :width="1200"
                     v-model="editItemModalOpen"
+                    :width="1200"
                     :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
                     :close-button-aria-label="$i18n.get('close')">
                 <iframe 

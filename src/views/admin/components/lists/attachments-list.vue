@@ -4,8 +4,8 @@
                 style="position: relative;"
                 class="table-container">
             <b-loading
-                    :is-full-page="false" 
-                    v-model="isLoading" />
+                    v-model="isLoading" 
+                    :is-full-page="false" />
             <div
                     v-if="attachments.length > 0"
                     class="table-wrapper">
@@ -28,14 +28,14 @@
                                 v-if="isEditable && form.document != attachment.id"
                                 class="file-item-control">
                             <a 
-                                    @click="onDeleteAttachment(attachment)"
                                     v-tooltip="{
                                         content: $i18n.get('delete'),
                                         autoHide: true,
                                         placement: 'bottom',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    class="icon">
+                                    class="icon"
+                                    @click="onDeleteAttachment(attachment)">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
                             </a>
                         </span>
@@ -59,8 +59,8 @@
         </div>
 
         <div 
-                class="pagination-area" 
-                v-if="attachments.length > 0">
+                v-if="attachments.length > 0" 
+                class="pagination-area">
             <div class="shown-items">
                 {{
                     $i18n.getWithVariables('info_showing_%s', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) + ' ' +
@@ -72,16 +72,16 @@
             </div>
             <div class="pagination">
                 <b-pagination
-                        @change="onPageChange"
-                        :total="totalAttachments"
                         v-model="attachmentsPage"
+                        :total="totalAttachments"
                         order="is-centered"
                         size="is-small"
                         :per-page="attachmentsPerPage"
                         :aria-next-label="$i18n.get('label_next_page')"
                         :aria-previous-label="$i18n.get('label_previous_page')"
                         :aria-page-label="$i18n.get('label_page')"
-                        :aria-current-label="$i18n.get('label_current_page')"/>
+                        :aria-current-label="$i18n.get('label_current_page')"
+                        @change="onPageChange"/>
             </div>
         </div>
     </div>

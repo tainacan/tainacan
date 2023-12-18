@@ -21,9 +21,9 @@
                 <div v-html="item.document_as_html" />
                 <div class="document-buttons-row">
                     <a
+                            id="button-edit-document"
                             class="button is-rounded is-secondary"
                             size="is-small"
-                            id="button-edit-document"
                             :aria-label="$i18n.get('label_button_edit_document')"
                             @click.prevent="($event) => $emit('onSetDocument', $event, form.document_type)">
                         <span
@@ -38,9 +38,9 @@
                         </span>
                     </a>
                     <a
+                            id="button-delete-document"
                             class="button is-rounded is-secondary"
                             size="is-small"
-                            id="button-delete-document"
                             :aria-label="$i18n.get('label_button_delete_document')"
                             @click.prevent="$emit('onRemoveDocument')">
                         <span

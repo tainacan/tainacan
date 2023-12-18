@@ -5,8 +5,8 @@
             {{ pageTitle }} <span class="is-italic has-text-weight-semibold">{{ !isRepositoryLevel && collection && collection.name ? collection.name : '' }}</span>
         </h1>
         <a 
-                @click="$router.go(-1)"
-                class="back-link has-text-secondary">
+                class="back-link has-text-secondary"
+                @click="$router.go(-1)">
             {{ $i18n.get('back') }}
         </a>
         <hr>

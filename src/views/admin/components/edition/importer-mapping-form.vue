@@ -4,8 +4,8 @@
          <div class="tainacan-page-title">
             <h1>{{ $i18n.get('label_metadata_mapping') }} </h1>
             <a 
-                    @click="$router.go(-1)"
-                    class="back-link has-text-secondary">
+                    class="back-link has-text-secondary"
+                    @click="$router.go(-1)">
                 {{ $i18n.get('back') }}
             </a>
             <hr>
@@ -27,15 +27,15 @@
                 :can-cancel="false"/>
 
         <form 
-                class="tainacan-form" 
-                label-width="120px"
-                v-if="importer != undefined && importer != null">
+                v-if="importer != undefined && importer != null" 
+                class="tainacan-form"
+                label-width="120px">
             <p>{{ $i18n.get('info_metadata_mapping_helper') }}</p>
             <br>
 
             <b-loading 
-                    :is-full-page="false"
-                    v-model="isLoadingSourceInfo" 
+                    v-model="isLoadingSourceInfo"
+                    :is-full-page="false" 
                     :can-cancel="false"/>
             
             <!-- Metadata Mapping -->
@@ -66,8 +66,8 @@
                     </a>
                 </div>
                 <div 
-                        class="mapping-header"
-                        v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)">
+                        v-if="importerSourceInfo.source_metadata.length > 0 || (importerSourceInfo.source_special_fields && importerSourceInfo.source_special_fields.length > 0)"
+                        class="mapping-header">
                     <p>{{ $i18n.get('label_from_source_collection') }}</p>
                     <hr>
                     <span class="icon">
@@ -78,10 +78,10 @@
                 </div>
 
                 <div
-                        class="source-metadatum"
-                        :class="{ 'has-children': typeof sourceMetadatum == 'object' && Object.entries(sourceMetadatum)[0] }"
                         v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
-                        :key="index">
+                        :key="index"
+                        class="source-metadatum"
+                        :class="{ 'has-children': typeof sourceMetadatum == 'object' && Object.entries(sourceMetadatum)[0] }">
                     <template v-if="typeof sourceMetadatum == 'string'">
                         <p>{{ sourceMetadatum }}</p>
                         <b-select
@@ -89,8 +89,8 @@
                                     collectionMetadata.length > 0 &&
                                     !isFetchingCollectionMetadata"
                                 :model-value="checkCurrentSelectedCollectionMetadatum(sourceMetadatum)"
-                                @update:model-value="onSelectCollectionMetadata($event, sourceMetadatum)"
-                                :placeholder="$i18n.get('label_select_metadatum')">
+                                :placeholder="$i18n.get('label_select_metadatum')"
+                                @update:model-value="onSelectCollectionMetadata($event, sourceMetadatum)">
                             <option :value="null">
                                 {{ $i18n.get('label_select_metadatum') }}
                             </option>
@@ -125,8 +125,8 @@
                                     collectionMetadata.length > 0 &&
                                     !isFetchingCollectionMetadata"
                                 :model-value="checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true)"
-                                @update:model-value="onSelectCollectionMetadata($event, Object.entries(sourceMetadatum)[0][0], true, Object.entries(sourceMetadatum)[0][1])"
-                                :placeholder="$i18n.get('label_select_metadatum')">
+                                :placeholder="$i18n.get('label_select_metadatum')"
+                                @update:model-value="onSelectCollectionMetadata($event, Object.entries(sourceMetadatum)[0][0], true, Object.entries(sourceMetadatum)[0][1])">
                             <option :value="null">
                                 {{ $i18n.get('label_select_metadatum') }}
                             </option>
@@ -152,9 +152,9 @@
                                 :class="{ 'disabled-child-source-metadatum': [undefined, null, false, 'create_metadata' + index].includes(checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true)) }"
                                 class="child-source-metadatum">
                             <div
-                                    class="source-metadatum"
                                     v-for="(childSourceMetadatum, childIndex) of Object.entries(sourceMetadatum)[0][1]"
-                                    :key="childIndex">
+                                    :key="childIndex"
+                                    class="source-metadatum">
                                 <p>{{ childSourceMetadatum }}</p>
                                 <b-select
                                         v-if="collectionMetadata != undefined &&
@@ -162,8 +162,8 @@
                                             !isFetchingCollectionMetadata"
                                         :disabled="[undefined, null, false, 'create_metadata' + index].includes(checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
                                         :model-value="checkCurrentSelectedCollectionChildMetadatum(childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true))"
-                                        @update:model-value="onSelectCollectionChildMetadata($event, childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true), Object.entries(sourceMetadatum)[0][0])"
-                                        :placeholder="$i18n.get('label_select_metadatum')">
+                                        :placeholder="$i18n.get('label_select_metadatum')"
+                                        @update:model-value="onSelectCollectionChildMetadata($event, childSourceMetadatum, checkCurrentSelectedCollectionMetadatum(Object.entries(sourceMetadatum)[0][0], true), Object.entries(sourceMetadatum)[0][0])">
                                     <option :value="null">
                                         {{ $i18n.get('label_select_metadatum') }}
                                     </option>
@@ -199,22 +199,22 @@
                 <p v-if="(!importerSourceInfo.source_special_fields || importerSourceInfo.source_special_fields.length <= 0)">{{ $i18n.get('info_no_special_fields_available') }}<br></p>
                 
                 <b-modal 
-                        @close="onMetadatumEditionCanceled()"
                         v-model="isNewMetadatumModalActive"
                         trap-focus
                         aria-modal
                         aria-role="dialog"
                         :close-button-aria-label="$i18n.get('close')"
-                        custom-class="tainacan-modal">
+                        custom-class="tainacan-modal"
+                        @close="onMetadatumEditionCanceled()">
                     <div 
+                            v-if="selectedMetadatumType == undefined && !isEditingMetadatum"
                             autofocus="true"
                             tabindex="-1"
                             role="dialog"
-                            aria-modal
-                            v-if="selectedMetadatumType == undefined && !isEditingMetadatum">
+                            aria-modal>
                         <b-loading 
-                                :is-full-page="isFullPage" 
-                                v-model="isLoadingMetadatumTypes"/>
+                                v-model="isLoadingMetadatumTypes" 
+                                :is-full-page="isFullPage"/>
                         <div 
                                 
                                 class="tainacan-modal-content">
@@ -225,9 +225,9 @@
                             <section class="tainacan-form">
                                 <div class="metadata-types-container">
                                     <div
-                                            class="metadata-type"
                                             v-for="(metadatumType, index) of metadatumTypes"
                                             :key="index"
+                                            class="metadata-type"
                                             @click="onSelectMetadatumType(metadatumType)">
                                         <h4>{{ metadatumType.name }}</h4>
                                     </div>
@@ -250,11 +250,11 @@
                             v-if="selectedMetadatumType && isEditingMetadatum"
                             :collection-id="collectionId"
                             :is-repository-level="false"
-                            @onEditionFinished="onMetadatumEditionFinished()"
-                            @onEditionCanceled="onMetadatumEditionCanceled()"
                             :index="0"
                             :original-metadatum="metadatum"
-                            :is-inside-importer-flow="true" />
+                            :is-inside-importer-flow="true"
+                            @onEditionFinished="onMetadatumEditionFinished()"
+                            @onEditionCanceled="onMetadatumEditionCanceled()" />
                 </b-modal>
             </div>
             <div 
@@ -275,11 +275,11 @@
                 <p class="help is-danger">{{ formErrorMessage }}</p>
                 <div class="control">
                     <button
-                            :disabled="sessionId == undefined || importer == undefined"
                             id="button-submit-importer-mapping"
-                            @click.prevent="onRunImporter"
+                            :disabled="sessionId == undefined || importer == undefined"
                             :class="{ 'is-loading': isLoadingRun, 'is-success': !isLoadingRun }"
-                            class="button">{{ $i18n.get('run') }}</button>
+                            class="button"
+                            @click.prevent="onRunImporter">{{ $i18n.get('run') }}</button>
                 </div>
             </div>
         </form>
@@ -308,8 +308,8 @@
                         <p style="margin: 12px 0px 24px 0px">{{ $i18n.get('info_title_mapping') }}</p>
                         <b-field>
                             <b-select
-                                    expanded
                                     v-model="selectedTitle"
+                                    expanded
                                     :placeholder="$i18n.get('label_select_metadatum')">
                                 <option
                                         v-for="(sourceMetadatum, index) of importerSourceInfo.source_metadata"
@@ -359,8 +359,8 @@
                         <button 
                                 type="submit"
                                 class="button is-success"
-                                @click="onConfirmTitleSelection"
-                                :disabled="selectedTitle === '' || selectedTitle == undefined">
+                                :disabled="selectedTitle === '' || selectedTitle == undefined"
+                                @click="onConfirmTitleSelection">
                             {{ $i18n.get('apply') }}
                         </button>
                     </div>

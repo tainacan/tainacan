@@ -42,10 +42,10 @@
                             :message="$i18n.getHelperMessage('filters', 'description')"/>    
                 </label>
                 <b-input
-                        type="textarea" 
-                        name="description" 
-                        :rows="3"
                         v-model="form.description" 
+                        type="textarea" 
+                        name="description"
+                        :rows="3" 
                         @focus="clearErrors('description')" />
             </b-field>
 
@@ -61,11 +61,11 @@
                 </label>
                 <div class="inline-block">
                     <b-radio 
-                            @focus="clearErrors('label_status')"
                             id="tainacan-select-status-publish"
-                            name="status" 
                             v-model="form.status"
-                            native-value="publish">
+                            name="status" 
+                            native-value="publish"
+                            @focus="clearErrors('label_status')">
                         <span class="icon has-text-gray3">
                             <i class="tainacan-icon tainacan-icon-public"/>
                         </span>
@@ -73,11 +73,11 @@
                     </b-radio>
                     <br>
                     <b-radio
-                            @focus="clearErrors('label_status')"
                             id="tainacan-select-status-private"
-                            name="status" 
                             v-model="form.status"
-                            native-value="private">
+                            name="status" 
+                            native-value="private"
+                            @focus="clearErrors('label_status')">
                         <span class="icon has-text-gray3">
                             <i class="tainacan-icon tainacan-icon-private"/>
                         </span>
@@ -87,8 +87,8 @@
             </b-field>
 
             <b-field
-                    :addons="false"
-                    v-if="form.filter_type_object && form.filter_type_object.use_max_options">
+                    v-if="form.filter_type_object && form.filter_type_object.use_max_options"
+                    :addons="false">
                 <label class="label is-inline">
                     {{ $i18n.get('label_max_options_to_show') }}
                     <help-button
@@ -100,8 +100,8 @@
                         v-if="!showEditMaxOptions"
                         class="is-flex">
                     <b-select
-                            name="max_options"
                             v-model="form.max_options"
+                            name="max_options"
                             :placeholder="$i18n.get('instruction_select_max_options_to_show')">
                         <option value="4">4</option>
                         <option value="8">8</option>
@@ -131,13 +131,13 @@
                         v-if="showEditMaxOptions"
                         class="is-flex">
                     <b-input
-                            name="max_options"
                             v-model="form.max_options"
+                            name="max_options"
                             type="number"
                             step="1" />
                     <button
-                            @click.prevent="showEditMaxOptions = false"
-                            class="button is-white is-pulled-right">
+                            class="button is-white is-pulled-right"
+                            @click.prevent="showEditMaxOptions = false">
                         <span 
                                 v-tooltip="{
                                     content: $i18n.get('close'),
@@ -159,13 +159,13 @@
                     :message="formErrors['begin_with_filter_collapsed'] != undefined ? formErrors['begin_with_filter_collapsed'] : ''">
                     &nbsp;
                 <b-switch
-                        size="is-small"
-                        @update:model-value="clearErrors('begin_with_filter_collapsed')"
                         v-model="form.begin_with_filter_collapsed"
+                        size="is-small"
                         :true-value="'yes'"
                         :false-value="'no'"
                         :native-value="form.begin_with_filter_collapsed == 'yes' ? 'yes' : 'no'"
-                        name="begin_with_filter_collapsed">
+                        name="begin_with_filter_collapsed"
+                        @update:model-value="clearErrors('begin_with_filter_collapsed')">
                 <help-button
                         :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
                         :message="$i18n.getHelperMessage('filters', 'begin_with_filter_collapsed')"
@@ -181,13 +181,13 @@
                     :message="formErrors['display_in_repository_level_lists'] != undefined ? formErrors['display_in_repository_level_lists'] : ''">
                     &nbsp;
                 <b-switch
-                        size="is-small"
-                        @input="clearErrors('display_in_repository_level_lists')"
                         v-model="form.display_in_repository_level_lists"
+                        size="is-small"
                         :true-value="'yes'"
                         :false-value="'no'"
                         :native-value="form.display_in_repository_level_lists == 'yes' ? 'yes' : 'no'"
-                        name="display_in_repository_level_lists">
+                        name="display_in_repository_level_lists"
+                        @input="clearErrors('display_in_repository_level_lists')">
                 <help-button
                         :title="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
                         :message="$i18n.getHelperMessage('filters', 'display_in_repository_level_lists')"
@@ -196,14 +196,14 @@
             </b-field>
 
             <component
-                    :errors="formErrors['filter_type_options']"
-                    v-if="(form.filter_type_object && form.filter_type_object.form_component) || form.edit_form == ''"
                     :is="form.filter_type_object.form_component"
-                    :filter="form"
-                    v-model:value="form.filter_type_options"/>
+                    v-if="(form.filter_type_object && form.filter_type_object.form_component) || form.edit_form == ''"
+                    v-model:value="form.filter_type_options"
+                    :errors="formErrors['filter_type_options']"
+                    :filter="form"/>
             <div 
-                    v-html="form.edit_form" 
-                    v-else/>
+                    v-else 
+                    v-html="form.edit_form"/>
         
             <!-- Hook for extra Form options -->
             <template v-if="hasEndLeftForm">  

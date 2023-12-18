@@ -6,15 +6,15 @@
         <div class="back-button is-hidden-mobile">
             <router-link
                     v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
+                    v-slot="{ navigate }" 
                     :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
-                    custom 
-                    v-slot="{ navigate }">
+                    custom>
                 <button 
-                        @click="navigate()"
                         role="link"
                         :aria-label="$i18n.get('back')"
                         type="button"
-                        class="button is-turquoise4">
+                        class="button is-turquoise4"
+                        @click="navigate()">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-previous"/>
                     </span>
@@ -26,15 +26,15 @@
                 <div class="back-button is-hidden-tablet level-item">
                     <router-link
                             v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
-                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
-                            custom
-                            v-slot="{ navigate }">
+                            v-slot="{ navigate }" 
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }"
+                            custom>
                         <button 
-                                @click="navigate()"
                                 role="link"
                                 :aria-label="$i18n.get('back')"
                                 type="button"
-                                class="button is-turquoise4">
+                                class="button is-turquoise4"
+                                @click="navigate()">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-previous"/>
                             </span>

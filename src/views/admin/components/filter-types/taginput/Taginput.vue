@@ -10,18 +10,18 @@
                 :remove-on-keys="[]"
                 field="label"
                 attached
-                @update:model-value="($event) => { resetPage(); onSelect($event) }"
-                @typing="search"
                 :aria-close-label="$i18n.get('remove_value')"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="getInputPlaceholder"
                 check-infinite-scroll
+                @update:model-value="($event) => { resetPage(); onSelect($event) }"
+                @typing="search"
                 @infinite-scroll="searchMore">
             <template #default="props">
                 <div class="media">
                     <div
-                            class="media-left"
-                            v-if="props.option.img">
+                            v-if="props.option.img"
+                            class="media-left">
                         <img
                                 :alt="$i18n.get('label_thumbnail')"
                                 width="24"
