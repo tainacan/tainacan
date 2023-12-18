@@ -157,7 +157,9 @@
                                         name="collection"
                                         :value="selectedCollection"
                                         @input="selectedCollection = $event.target.value">
-                                    <option value="all">{{ $i18n.get('All Collections') }}</option>
+                                    <option value="all">
+                                        {{ $i18n.get('All Collections') }}
+                                    </option>
                                     <option 
                                             v-for="(collection, index) of collections"
                                             :key="index"

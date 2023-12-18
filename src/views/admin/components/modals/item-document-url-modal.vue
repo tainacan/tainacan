@@ -1,7 +1,9 @@
 <template>
     <form class="tainacan-modal-content tainacan-form">
         <div class="tainacan-modal-title">
-            <h2 id="item-document-url-modal-title">{{ $i18n.get('instruction_insert_url') }}</h2>
+            <h2 id="item-document-url-modal-title">
+                {{ $i18n.get('instruction_insert_url') }}
+            </h2>
             <hr>
         </div>
         <b-input 

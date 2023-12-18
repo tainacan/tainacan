@@ -14,7 +14,9 @@
         <nav 
                 v-if="isRepositoryLevel"
                 class="breadcrumbs">
-            <router-link :to="$routerHelper.getCollectionsPath()">{{ $i18n.get('repository') }}</router-link>
+            <router-link :to="$routerHelper.getCollectionsPath()">
+                {{ $i18n.get('repository') }}
+            </router-link>
             <template 
                     v-for="(breadCrumbItem, index) of breadCrumbItems"
                     :key="index">

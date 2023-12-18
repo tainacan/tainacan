@@ -9,7 +9,9 @@
                 :placeholder="$i18n.get('label_selectbox_init')"
                 expanded
                 @update:model-value="($event) => { resetPage(); onSelect($event) }">
-            <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
+            <option value="">
+                {{ $i18n.get('label_selectbox_init') }}...
+            </option>
             <option
                     v-for="(option, index) in options"
                     :key="index"

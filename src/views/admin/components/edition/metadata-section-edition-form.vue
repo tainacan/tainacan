@@ -168,7 +168,9 @@
                             </b-switch>
                         </b-field>
                         <div v-if="isConditionalSection && !availableConditionalMetadata.length">
-                            <p style="break-inside: avoid;">{{ $i18n.get('info_create_select_metadatum_for_conditional_section') }}</p>
+                            <p style="break-inside: avoid;">
+                                {{ $i18n.get('info_create_select_metadatum_for_conditional_section') }}
+                            </p>
                         </div>
                         <transition name="filter-item">
                             <b-field
@@ -239,7 +241,9 @@
                     {{ $i18n.get('cancel') }}
                 </button>
             </div>
-            <p class="help is-danger">{{ formErrorMessage }}</p>
+            <p class="help is-danger">
+                {{ formErrorMessage }}
+            </p>
             <div class="control">
                 <b-button
                         :loading="isUpdating"

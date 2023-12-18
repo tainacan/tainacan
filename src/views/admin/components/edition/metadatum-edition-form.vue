@@ -378,7 +378,9 @@
                     {{ $i18n.get('cancel') }}
                 </button>
             </div>
-            <p class="help is-danger">{{ formErrorMessage }}</p>
+            <p class="help is-danger">
+                {{ formErrorMessage }}
+            </p>
             <div class="control">
                 <b-button
                         :loading="isUpdating"

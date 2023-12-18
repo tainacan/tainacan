@@ -1,7 +1,9 @@
 <template>
     <div class="tainacan-form tainacan-modal-content">
         <header class="tainacan-modal-title">
-            <h2 v-if="capability.display_name != undefined">{{ $i18n.get('label_editing_capability') + ' ' }} <span class="has-text-bold">{{ capability.display_name }}</span></h2>
+            <h2 v-if="capability.display_name != undefined">
+                {{ $i18n.get('label_editing_capability') + ' ' }} <span class="has-text-bold">{{ capability.display_name }}</span>
+            </h2>
             <hr>
         </header>
         <div 

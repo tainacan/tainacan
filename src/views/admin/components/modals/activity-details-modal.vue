@@ -21,7 +21,9 @@
                 v-if="!isLoadingActivity"
                 class="modal-card-body">
             <div class="content">
-                <p v-if="activity.description"><strong>{{ $i18n.get('label_activity_description') }}:</strong> {{ activity.description }}</p>
+                <p v-if="activity.description">
+                    <strong>{{ $i18n.get('label_activity_description') }}:</strong> {{ activity.description }}
+                </p>
                 <p v-if="activity.object">
                     <strong>{{ $i18n.get('label_related_to') }}: </strong>
                     <span v-html="relatedToLink" />
@@ -273,7 +275,9 @@
                                         :alt="$i18n.get('label_thumbnail')"
                                         :src="activity.old_value.thumb[0]">
                             </p>
-                            <p v-else>{{ infoEmpty }}</p>
+                            <p v-else>
+                                {{ infoEmpty }}
+                            </p>
                         </div>
 
                         <div
@@ -415,7 +419,9 @@
                                         :alt="$i18n.get('label_thumbnail')"
                                         :src="activity.new_value.thumb[0]">
                             </p>
-                            <p v-else>{{ infoEmpty }}</p>
+                            <p v-else>
+                                {{ infoEmpty }}
+                            </p>
                         </div>
 
                         <div

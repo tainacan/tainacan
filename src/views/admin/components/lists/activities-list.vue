@@ -6,15 +6,21 @@
                     <tr>
                         <!-- Title -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_activity_title') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_activity_title') }}
+                            </div>
                         </th>
                         <!-- Created by -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_created_by') }}
+                            </div>
                         </th>
                         <!-- Activity date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_activity_date') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_activity_date') }}
+                            </div>
                         </th>
                         <!--&lt;!&ndash; Approbation &ndash;&gt;-->
                         <!--<th>-->

@@ -100,31 +100,45 @@
                         </th>
                         <!-- Thumbnail -->
                         <th class="thumbnail-cell">
-                            <div class="th-wrap">{{ $i18n.get('label_thumbnail') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_thumbnail') }}
+                            </div>
                         </th>
                         <!-- Name -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_name') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_name') }}
+                            </div>
                         </th>
                         <!-- Description -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_description') }}
+                            </div>
                         </th>
                         <!-- Modification Date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_modification_date') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_modification_date') }}
+                            </div>
                         </th>
                         <!-- Creation Date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_creation_date') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_creation_date') }}
+                            </div>
                         </th>
                         <!-- Created By -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_created_by') }}
+                            </div>
                         </th>
                         <!-- Total Items -->
                         <th v-if="!isOnTrash">
-                            <div class="th-wrap total-items-header">{{ $i18n.get('label_total_items') }}</div>
+                            <div class="th-wrap total-items-header">
+                                {{ $i18n.get('label_total_items') }}
+                            </div>
                         </th>
                         <th 
                                 v-if="collections.findIndex((collection) => collection.current_user_can_edit || collection.current_user_can_delete) >= 0"

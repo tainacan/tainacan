@@ -972,7 +972,9 @@
                                             column.metadata_type_object.primitive_type == 'compound' ||
                                             column.metadata_type_object.related_mapped_prop == 'description') : false,
                                     }">
-                                <div class="th-wrap">{{ column.name }}</div>
+                                <div class="th-wrap">
+                                    {{ column.name }}
+                                </div>
                             </th>
                         </template>
                         <th

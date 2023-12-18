@@ -1,7 +1,9 @@
 <template>
     <div>
         <div class="tainacan-reports-header">
-            <h1 class="wp-heading-inline">{{ $route.meta.title }}</h1>
+            <h1 class="wp-heading-inline">
+                {{ $route.meta.title }}
+            </h1>
             <select 
                     id="select_collections"
                     name="select_collections"

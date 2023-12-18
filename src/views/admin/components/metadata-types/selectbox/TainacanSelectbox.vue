@@ -13,7 +13,9 @@
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('label_selectbox_init')"
                 :model-value="value"
                 @update:model-value="onSelected($event)">
-            <option value="">{{ itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ($i18n.get('label_selectbox_init') + '...') }}</option>
+            <option value="">
+                {{ itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ($i18n.get('label_selectbox_init') + '...') }}
+            </option>
             <option
                     v-for="(option, index) in getOptions"
                     :key="index"

@@ -14,15 +14,33 @@
                         v-model="step"
                         name="step_options"
                         @update:model-value="onUpdateStep">
-                    <option value="0.001">0.001</option>
-                    <option value="0.01">0.01</option>
-                    <option value="0.1">0.1</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="100">100</option>
-                    <option value="1000">1000</option>
+                    <option value="0.001">
+                        0.001
+                    </option>
+                    <option value="0.01">
+                        0.01
+                    </option>
+                    <option value="0.1">
+                        0.1
+                    </option>
+                    <option value="1">
+                        1
+                    </option>
+                    <option value="2">
+                        2
+                    </option>
+                    <option value="5">
+                        5
+                    </option>
+                    <option value="10">
+                        10
+                    </option>
+                    <option value="100">
+                        100
+                    </option>
+                    <option value="1000">
+                        1000
+                    </option>
                     <option
                             v-if="step && ![0.001,0.01,0.1,1,2,5,10,100,1000].find( (element) => element == step )"
                             :value="step">

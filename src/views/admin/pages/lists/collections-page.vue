@@ -277,10 +277,18 @@
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collections" />
                                 </span>
                             </p>
-                            <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
-                            <p v-else>{{ $i18n.get('info_no_collections_' + status) }}</p>
-                            <p v-if="searchQuery">{{ $i18n.get('info_try_empting_the_textual_search') }}</p>
-                            <p v-if="authorFilter !== '' && !searchQuery">{{ $i18n.get('info_try_selecting_all_collections_in_filter') }}</p>
+                            <p v-if="status == undefined || status == ''">
+                                {{ $i18n.get('info_no_collection_created') }}
+                            </p>
+                            <p v-else>
+                                {{ $i18n.get('info_no_collections_' + status) }}
+                            </p>
+                            <p v-if="searchQuery">
+                                {{ $i18n.get('info_try_empting_the_textual_search') }}
+                            </p>
+                            <p v-if="authorFilter !== '' && !searchQuery">
+                                {{ $i18n.get('info_try_selecting_all_collections_in_filter') }}
+                            </p>
                             <div v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         id="collection-creation-options-dropdown"
@@ -356,10 +364,18 @@
                                     :model-value="collectionsPerPage"
                                     :disabled="collections.length <= 0" 
                                     @update:model-value="onChangeCollectionsPerPage">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="48">48</option>
-                                <option :value="maxCollectionsPerPage">{{ maxCollectionsPerPage }}</option>
+                                <option value="12">
+                                    12
+                                </option>
+                                <option value="24">
+                                    24
+                                </option>
+                                <option value="48">
+                                    48
+                                </option>
+                                <option :value="maxCollectionsPerPage">
+                                    {{ maxCollectionsPerPage }}
+                                </option>
                             </b-select>
                         </b-field>
                     </div>

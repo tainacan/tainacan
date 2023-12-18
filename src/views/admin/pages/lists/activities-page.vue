@@ -242,7 +242,9 @@
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
                                 </span>
                             </p>
-                            <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_process') }}</p>
+                            <p v-if="status == undefined || status == ''">
+                                {{ $i18n.get('info_no_process') }}
+                            </p>
                         </div>
                     </section>
                 </div>
@@ -268,10 +270,18 @@
                                     :model-value="activitiesPerPage"
                                     :disabled="activities.length <= 0"
                                     @update:model-value="onChangeActivitiesPerPage">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="48">48</option>
-                                <option :value="maxActivitiesPerPage">{{ maxActivitiesPerPage }}</option>
+                                <option value="12">
+                                    12
+                                </option>
+                                <option value="24">
+                                    24
+                                </option>
+                                <option value="48">
+                                    48
+                                </option>
+                                <option :value="maxActivitiesPerPage">
+                                    {{ maxActivitiesPerPage }}
+                                </option>
                             </b-select>
                         </b-field>
                     </div>
@@ -309,10 +319,18 @@
                                     :model-value="processesPerPage"
                                     :disabled="processes.length <= 0"
                                     @update:model-value="onChangeProcessesPerPage">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="48">48</option>
-                                <option :value="maxActivitiesPerPage">{{ maxActivitiesPerPage }}</option>
+                                <option value="12">
+                                    12
+                                </option>
+                                <option value="24">
+                                    24
+                                </option>
+                                <option value="48">
+                                    48
+                                </option>
+                                <option :value="maxActivitiesPerPage">
+                                    {{ maxActivitiesPerPage }}
+                                </option>
                             </b-select>
                         </b-field>
                     </div>

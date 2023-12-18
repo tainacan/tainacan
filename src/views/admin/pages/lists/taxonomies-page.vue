@@ -176,7 +176,9 @@
                                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                                     </span>
                                 </p>
-                                <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
+                                <p v-if="status == undefined || status == ''">
+                                    {{ $i18n.get('info_no_taxonomy_created') }}
+                                </p>
                                 <p v-else>
                                     {{ $i18n.get('info_no_taxonomies_' + status) }}
                                 </p>
@@ -218,10 +220,18 @@
                                         :model-value="taxonomiesPerPage"
                                         :disabled="taxonomies.length <= 0"
                                         @update:model-value="onChangePerPage">
-                                    <option value="12">12</option>
-                                    <option value="24">24</option>
-                                    <option value="48">48</option>
-                                    <option :value="maxTaxonomiesPerPage">{{ maxTaxonomiesPerPage }}</option>
+                                    <option value="12">
+                                        12
+                                    </option>
+                                    <option value="24">
+                                        24
+                                    </option>
+                                    <option value="48">
+                                        48
+                                    </option>
+                                    <option :value="maxTaxonomiesPerPage">
+                                        {{ maxTaxonomiesPerPage }}
+                                    </option>
                                 </b-select>
                             </b-field>
                         </div>

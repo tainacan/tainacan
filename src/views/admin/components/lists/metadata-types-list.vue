@@ -6,7 +6,9 @@
         <b-loading v-model="isLoadingMetadataTypes" />
 
         <div class="field">
-            <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
+            <h3 class="label">
+                {{ $i18n.get('label_available_metadata_types') }}
+            </h3>
             <sortable 
                     :list="availableMetadatumList"
                     item-key="id"

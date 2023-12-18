@@ -59,19 +59,27 @@
                         </th>
                         <!-- Name -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_name') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_name') }}
+                            </div>
                         </th>
                         <!-- Description -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_description') }}
+                            </div>
                         </th>
                         <!-- Collections -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_collections_using') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_collections_using') }}
+                            </div>
                         </th>
                         <!-- Total Items -->
                         <th v-if="!isOnTrash">
-                            <div class="th-wrap total-terms-header">{{ $i18n.get('label_total_terms') }}</div>
+                            <div class="th-wrap total-terms-header">
+                                {{ $i18n.get('label_total_terms') }}
+                            </div>
                         </th>
                         <!-- Actions -->
                         <th 

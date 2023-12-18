@@ -9,7 +9,9 @@
             @submit.prevent="saveEdition(form)">
         <header
                 class="tainacan-page-title tainacan-modal-title">
-            <h2 style="width: 60%">{{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h2>
+            <h2 style="width: 60%">
+                {{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}
+            </h2>
             <a
                     v-if="form && form.url != undefined && form.url!= ''"
                     target="_blank"
@@ -179,7 +181,9 @@
                             </div>
                         </div>
                     </template>
-                    <template #empty>{{ $i18n.get('info_no_parent_term_found') }}</template>
+                    <template #empty>
+                        {{ $i18n.get('info_no_parent_term_found') }}
+                    </template>
                 </b-autocomplete>
                 <transition name="fade">
                     <p

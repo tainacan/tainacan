@@ -1,7 +1,9 @@
 <template>
     <form class="tainacan-modal-content tainacan-form">
         <div class="tainacan-modal-title">
-            <h2 id="item-document-text-modal-title">{{ $i18n.get('instruction_write_text') }}</h2>
+            <h2 id="item-document-text-modal-title">
+                {{ $i18n.get('instruction_write_text') }}
+            </h2>
             <hr>
         </div>
         <b-input

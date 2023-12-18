@@ -192,7 +192,9 @@
                                                             &nbsp;{{ registeredViewModes[viewMode].label }}
                                                         </strong>
                                                     </p>
-                                                    <p v-if="registeredViewModes[viewMode].description">{{ registeredViewModes[viewMode].description }}</p>
+                                                    <p v-if="registeredViewModes[viewMode].description">
+                                                        {{ registeredViewModes[viewMode].description }}
+                                                    </p>
                                                 </b-checkbox>
                                             </b-dropdown-item>   
                                         </b-dropdown>
@@ -847,7 +849,9 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                <p class="help is-danger">{{ formErrorMessage }}</p>
+                <p class="help is-danger">
+                    {{ formErrorMessage }}
+                </p>
                 <div 
                         style="margin-left: auto;"
                         class="control">

@@ -103,9 +103,15 @@
                             v-model="form.max_options"
                             name="max_options"
                             :placeholder="$i18n.get('instruction_select_max_options_to_show')">
-                        <option value="4">4</option>
-                        <option value="8">8</option>
-                        <option value="12">12</option>
+                        <option value="4">
+                            4
+                        </option>
+                        <option value="8">
+                            8
+                        </option>
+                        <option value="12">
+                            12
+                        </option>
                         <option
                                 v-if="form.max_options && ![4,8,12].find( (element) => element == form.max_options )"
                                 :value="form.max_options">
@@ -232,7 +238,9 @@
                 </b-button>
             </div>
         </div>
-        <p class="help is-danger">{{ formErrorMessage }}</p>
+        <p class="help is-danger">
+            {{ formErrorMessage }}
+        </p>
     </form>
 </template>
 

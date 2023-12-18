@@ -10,7 +10,9 @@
                 :is-full-page="false" />
 
         <b-field>
-            <p style="line-height: 2em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
+            <p style="line-height: 2em;">
+                {{ $i18n.get('info_metadata_mapper_helper') }}
+            </p>
             <b-select
                     id="mappers-options-dropdown"
                     size="is-small"

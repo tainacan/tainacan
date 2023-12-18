@@ -10,7 +10,9 @@
         <header 
                 v-if="isModal"
                 class="tainacan-modal-title">
-            <h2 :id="'checkbox-radio-filter--title-' + filter.id">{{ $i18n.get('filter') }} <em>{{ filter.name }}</em></h2>
+            <h2 :id="'checkbox-radio-filter--title-' + filter.id">
+                {{ $i18n.get('filter') }} <em>{{ filter.name }}</em>
+            </h2>
             <hr>
         </header>
 

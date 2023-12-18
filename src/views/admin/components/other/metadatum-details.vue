@@ -3,27 +3,45 @@
         <div 
                 v-if="metadatum.description"
                 class="field">
-            <div class="label">{{ $i18n.getHelperTitle('metadata', 'description') }}</div>
-            <div class="value">{{ metadatum.description }}</div>
+            <div class="label">
+                {{ $i18n.getHelperTitle('metadata', 'description') }}
+            </div>
+            <div class="value">
+                {{ metadatum.description }}
+            </div>
         </div>
         <div 
                 v-if="metadatum.semantic_uri"
                 class="field">
-            <div class="label">{{ $i18n.getHelperTitle('metadata', 'semantic_uri') }}</div>
-            <div class="value">{{ metadatum.semantic_uri }}</div>
+            <div class="label">
+                {{ $i18n.getHelperTitle('metadata', 'semantic_uri') }}
+            </div>
+            <div class="value">
+                {{ metadatum.semantic_uri }}
+            </div>
         </div>
         <div class="field">
-            <div class="label">{{ $i18n.get('label_display') }}</div>
+            <div class="label">
+                {{ $i18n.get('label_display') }}
+            </div>
             <div class="value">
-                <template v-if="metadatum.display === 'yes'">{{ $i18n.get('label_display_default') }}</template>
-                <template v-if="metadatum.display === 'no'">{{ $i18n.get('label_not_display') }}</template>
-                <template v-if="metadatum.display === 'never'">{{ $i18n.get('label_display_never') }}</template>
+                <template v-if="metadatum.display === 'yes'">
+                    {{ $i18n.get('label_display_default') }}
+                </template>
+                <template v-if="metadatum.display === 'no'">
+                    {{ $i18n.get('label_not_display') }}
+                </template>
+                <template v-if="metadatum.display === 'never'">
+                    {{ $i18n.get('label_display_never') }}
+                </template>
             </div>
         </div>
         <div 
                 v-if="insertOptions != ''"
                 class="field">
-            <div class="label">{{ $i18n.get('label_insert_options') }}</div>
+            <div class="label">
+                {{ $i18n.get('label_insert_options') }}
+            </div>
             <div class="value">
                 {{ insertOptions }}
                 <span 

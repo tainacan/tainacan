@@ -577,7 +577,9 @@
                                             @click="goToErrorMetadatum(error)">
                                         {{ getErrorMessage(error.errors) }}
                                     </a>                           
-                                    <p v-else>{{ getErrorMessage(error.errors) }}</p>
+                                    <p v-else>
+                                        {{ getErrorMessage(error.errors) }}
+                                    </p>
                                 </li>
                             </template>
                         </ol>
@@ -685,7 +687,9 @@
                         <i class="tainacan-icon tainacan-icon-30px tainacan-icon-updating tainacan-icon-spin" />
                     </span>
                 </p>
-                <h2 id="submission-form-is-processing-label">{{ $i18n.get('label_sending_form') }}</h2>
+                <h2 id="submission-form-is-processing-label">
+                    {{ $i18n.get('label_sending_form') }}
+                </h2>
                 <p
                         v-if="isSubmitting"
                         id="submission-form-is-processing-info">

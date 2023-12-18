@@ -28,7 +28,9 @@
                                         column.metadata_type_object.primitive_type == 'compound') : false,
                                     'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }">
-                            <div class="th-wrap">{{ column.name }}</div>
+                            <div class="th-wrap">
+                                {{ column.name }}
+                            </div>
                         </th>
                     </template>
                 </thead>
@@ -74,7 +76,9 @@
                                             column.metadata_type_object.related_mapped_prop == 'description' || 
                                             column.metadata_type_object.primitive_type == 'compound') : false,
                                     }">
-                                <div class="th-wrap">{{ column.name }}</div>
+                                <div class="th-wrap">
+                                    {{ column.name }}
+                                </div>
                             </th>
                         </template>
                         <th 

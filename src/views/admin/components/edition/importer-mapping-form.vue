@@ -183,20 +183,28 @@
                             </div>
                         </div>
                     </template>
-                    <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">{{ $i18n.get('info_select_collection_to_list_metadata') }}</p>
+                    <p v-if="collectionMetadata == undefined || collectionMetadata.length <= 0">
+                        {{ $i18n.get('info_select_collection_to_list_metadata') }}
+                    </p>
                 </div>
                 <template v-if="importerSourceInfo.source_special_fields">
                     <div
                             v-for="(specialField, specialFieldIndex) of importerSourceInfo.source_special_fields"
                             :key="specialFieldIndex"
                             class="source-metadatum">
-                        <p style="font-style: italic">{{ specialField }}</p>
+                        <p style="font-style: italic">
+                            {{ specialField }}
+                        </p>
                         <p>{{ $i18n.get('info_special_fields_mapped_default') }}</p>
                     </div>
                 </template>                
-                <p v-if="importerSourceInfo.source_metadata.length <= 0">{{ $i18n.get('info_no_metadata_source_file') }}<br></p>
+                <p v-if="importerSourceInfo.source_metadata.length <= 0">
+                    {{ $i18n.get('info_no_metadata_source_file') }}<br>
+                </p>
                 
-                <p v-if="(!importerSourceInfo.source_special_fields || importerSourceInfo.source_special_fields.length <= 0)">{{ $i18n.get('info_no_special_fields_available') }}<br></p>
+                <p v-if="(!importerSourceInfo.source_special_fields || importerSourceInfo.source_special_fields.length <= 0)">
+                    {{ $i18n.get('info_no_special_fields_available') }}<br>
+                </p>
                 
                 <b-modal 
                         v-model="isNewMetadatumModalActive"
@@ -272,7 +280,9 @@
                             type="button"
                             @click="cancelBack">{{ $i18n.get('cancel') }}</button>
                 </div>
-                <p class="help is-danger">{{ formErrorMessage }}</p>
+                <p class="help is-danger">
+                    {{ formErrorMessage }}
+                </p>
                 <div class="control">
                     <button
                             id="button-submit-importer-mapping"
@@ -305,7 +315,9 @@
                 </div>
                 <div class="columns">
                     <div class="column">
-                        <p style="margin: 12px 0px 24px 0px">{{ $i18n.get('info_title_mapping') }}</p>
+                        <p style="margin: 12px 0px 24px 0px">
+                            {{ $i18n.get('info_title_mapping') }}
+                        </p>
                         <b-field>
                             <b-select
                                     v-model="selectedTitle"

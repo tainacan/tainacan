@@ -20,7 +20,9 @@
                     expanded
                     @update:model-value="emitValues()"
                     @focus="clear">
-                <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
+                <option value="">
+                    {{ $i18n.get('label_selectbox_init') }}...
+                </option>
                 <option
                         v-for="option in taxonomies"
                         :key="option.id"

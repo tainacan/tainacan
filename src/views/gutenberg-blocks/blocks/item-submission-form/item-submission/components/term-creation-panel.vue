@@ -79,7 +79,9 @@
                             </div>
                         </div>
                     </template>
-                    <template #empty>{{ $i18n.get('info_no_parent_term_found') }}</template>
+                    <template #empty>
+                        {{ $i18n.get('info_no_parent_term_found') }}
+                    </template>
                 </b-autocomplete>
             </b-field>
 

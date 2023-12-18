@@ -254,7 +254,9 @@
                     </span>
                 </p>
                 <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
-                <p v-if="isRepositoryLevel && $route.name != null">{{ $i18n.get('info_collection_filter_on_repository_level') }}</p>
+                <p v-if="isRepositoryLevel && $route.name != null">
+                    {{ $i18n.get('info_collection_filter_on_repository_level') }}
+                </p>
                 <router-link
                         v-if="!$adminOptions.hideItemsListFilterCreationButton && $route.name != null && ((isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters')) || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
                         v-slot="{ navigate }"

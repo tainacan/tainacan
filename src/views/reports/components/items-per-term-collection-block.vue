@@ -255,7 +255,9 @@
                             &nbsp;{{ $i18n.get('label_children_terms') }}
                         </p>
                         <br>
-                        <p class="subtitle is-6">{{ $i18n.get('info_child_terms_chart') }}</p>
+                        <p class="subtitle is-6">
+                            {{ $i18n.get('info_child_terms_chart') }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -300,7 +302,9 @@
                     &nbsp;{{ $i18n.get('label_items_per_term_from_taxonomy_metadatum') }}
                 </p>
                 <br>
-                <p class="subtitle is-6">{{ $i18n.get('info_no_taxonomy_metadata_created') }}</p>
+                <p class="subtitle is-6">
+                    {{ $i18n.get('info_no_taxonomy_metadata_created') }}
+                </p>
             </div>
         </div>
     </div>

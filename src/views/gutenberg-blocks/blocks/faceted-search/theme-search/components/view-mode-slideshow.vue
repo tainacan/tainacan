@@ -282,7 +282,9 @@
                 <hr>
             </div>
 
-            <h3 class="has-text-white has-text-weight-semibold">{{ $i18n.get('metadata') }}</h3>
+            <h3 class="has-text-white has-text-weight-semibold">
+                {{ $i18n.get('metadata') }}
+            </h3>
             
             <a
                     v-if="!isLoadingItem && Object.keys(item.metadata).length > 0"

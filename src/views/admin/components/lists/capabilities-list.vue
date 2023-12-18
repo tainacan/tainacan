@@ -6,15 +6,21 @@
                     <tr>
                         <!-- Name -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_name') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_name') }}
+                            </div>
                         </th>
                         <!-- Description -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_description') }}
+                            </div>
                         </th>
                         <!-- Capability date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_user_roles') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_user_roles') }}
+                            </div>
                         </th>
                         <!-- Actions -->
                         <th class="actions-header">

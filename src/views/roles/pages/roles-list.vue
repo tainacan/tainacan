@@ -1,6 +1,8 @@
 <template>
     <div>
-        <h1 class="wp-heading-inline">{{ $route.meta.title }}</h1>
+        <h1 class="wp-heading-inline">
+            {{ $route.meta.title }}
+        </h1>
         <div class="dropdown-new-role">
             <router-link
                     to="/roles/new"
@@ -38,13 +40,17 @@
                             </router-link>
                         </li>
                     </template>
-                    <li><router-link to="/roles/new"><em>{{ $i18n.get('Blank') }}</em></router-link></li>
+                    <li><router-link to="/roles/new">
+                        <em>{{ $i18n.get('Blank') }}</em>
+                    </router-link></li>
                 </ul>
             </div>
         </div>
         <hr class="wp-header-end">
 
-        <h2 class="screen-reader-text">{{ $i18n.get('Roles list') }}</h2>
+        <h2 class="screen-reader-text">
+            {{ $i18n.get('Roles list') }}
+        </h2>
 
         <p class="search-box">
             <label
