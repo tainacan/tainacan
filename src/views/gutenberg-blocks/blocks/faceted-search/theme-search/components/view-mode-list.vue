@@ -80,7 +80,7 @@
                                     }"          
                                     class="icon slideshow-icon"
                                     @click.prevent="starSlideshowFromHere(index)">
-                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
                             </span> 
                         </div>
 
@@ -115,7 +115,7 @@
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <p      
                                                 class="metadata-value"
-                                                v-html="renderMetadata(item, column)"/>
+                                                v-html="renderMetadata(item, column)" />
                                     </span>
                                 </template>
                             </div>

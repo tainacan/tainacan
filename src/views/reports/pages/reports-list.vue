@@ -61,7 +61,7 @@
                             class="postbox"
                             :summary="summary"
                             entity-type="items"
-                            :is-repository-level="isRepositoryLevel"/>
+                            :is-repository-level="isRepositoryLevel" />
                     <div 
                             v-if="summaryLatestCachedOn"
                             class="box-last-cached-on">

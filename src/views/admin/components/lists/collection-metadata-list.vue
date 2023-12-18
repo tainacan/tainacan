@@ -1,7 +1,7 @@
 <template>
     <div class="column">
                            
-        <b-loading v-model="isLoadingMetadataSections"/>
+        <b-loading v-model="isLoadingMetadataSections" />
 
         <div class="tainacan-form sub-header">
             <template v-if="activeMetadataSectionsList">
@@ -14,7 +14,7 @@
                     <span class="icon">
                         <i 
                                 :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
+                                class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
                     </span>
                     <span class="collapse-all__text">
                         {{ collapseAll ? $i18n.get('label_show_less_details') : $i18n.get('label_show_more_details') }}
@@ -33,7 +33,7 @@
                                     class="button is-white">
                                 <span>{{ $i18n.get('label_filter_by_metadata_type') }}</span>
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                 </span>
                             </button>
                         </template>
@@ -72,7 +72,7 @@
             <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>
                 <p>{{ $i18n.get('info_there_is_no_metadata_section') }}</p>
@@ -159,8 +159,8 @@
                                         fill="currentColor">
                                     <path
                                             d="M0 0h24v24H0V0z"
-                                            fill="transparent"/>
-                                    <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                            fill="transparent" />
+                                    <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                                 </svg>
                             </span>
                             <span class="metadatum-name">
@@ -189,12 +189,12 @@
                                             placement: 'auto-start'
                                         }"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-private"/>
+                                    <i class="tainacan-icon tainacan-icon-private" />
                                 </span>
                             </span>
                             <span 
                                     v-if="metadataSection.id == undefined" 
-                                    class="loading-spinner"/>
+                                    class="loading-spinner" />
                             <span 
                                     v-if="metadataSection.id !== undefined" 
                                     class="controls">
@@ -202,7 +202,7 @@
                                         :disabled="isUpdatingMetadataSectionsOrder"
                                         size="is-small" 
                                         :model-value="metadataSection.enabled"
-                                        @update:model-value="onChangeEnableSection($event, sectionIndex)"/>
+                                        @update:model-value="onChangeEnableSection($event, sectionIndex)" />
                                 <a 
                                         v-if="metadataSection.current_user_can_edit"
                                         :style="{ visibility: 
@@ -218,7 +218,7 @@
                                                 placement: 'auto-start'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a 
@@ -234,7 +234,7 @@
                                                 placement: 'auto-start'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                                     </span>
                                 </a>
                             </span>
@@ -247,7 +247,7 @@
                         <div class="content has-text-gray has-text-centered">
                             <p>
                                 <span class="icon is-large">
-                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                                 </span>
                             </p>
                             <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
@@ -255,7 +255,7 @@
                         </div>
                     </section>
 
-                    <b-loading v-model="isUpdatingMetadatum"/>
+                    <b-loading v-model="isUpdatingMetadatum" />
 
                     <!-- The Metadata list, inside each metadata section -->
                     <template v-if="metadataSection.metadata_object_list && Array.isArray(metadataSection.metadata_object_list)">
@@ -334,8 +334,8 @@
                                                     fill="currentColor">
                                                 <path
                                                         d="M0 0h24v24H0V0z"
-                                                        fill="transparent"/>
-                                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                                        fill="transparent" />
+                                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                                             </svg>
                                         </span>
                                         <span 
@@ -378,7 +378,7 @@
                                                         placement: 'auto-start'
                                                     }"
                                                     class="icon">
-                                                <i class="tainacan-icon tainacan-icon-private"/>
+                                                <i class="tainacan-icon tainacan-icon-private" />
                                             </span>
                                             <span 
                                                     v-tooltip="{
@@ -406,7 +406,7 @@
                                         </span>
                                         <span 
                                                 v-if="metadatum.id == undefined || isUpdatingMetadatum" 
-                                                class="loading-spinner"/>
+                                                class="loading-spinner" />
                                         <span 
                                                 v-if="metadatum.id !== undefined" 
                                                 class="controls">
@@ -415,7 +415,7 @@
                                                     :disabled="isUpdatingMetadataOrder || !metadataSection.enabled"
                                                     size="is-small" 
                                                     :model-value="metadatum.enabled"
-                                                    @update:model-value="onChangeEnable($event, index, sectionIndex)"/>
+                                                    @update:model-value="onChangeEnable($event, index, sectionIndex)" />
                                             <a 
                                                     v-if="metadatum.current_user_can_edit"
                                                     :style="{ visibility: 
@@ -431,7 +431,7 @@
                                                             placement: 'auto-start'
                                                         }"
                                                         class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                                 </span>
                                             </a>
                                             <a 
@@ -446,7 +446,7 @@
                                                             placement: 'auto-start'
                                                         }"
                                                         class="icon">
-                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                                                 </span>
                                             </a>
                                         </span>

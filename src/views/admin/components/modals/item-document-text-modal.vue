@@ -9,7 +9,7 @@
                 v-model="localTextContent"
                 aria-labelledby="item-document-text-modal-title"
                 type="textarea"
-                :autofocus="true"/>
+                :autofocus="true" />
 
         <div class="field is-grouped form-submit">
             <div class="control">

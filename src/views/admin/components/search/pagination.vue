@@ -73,7 +73,7 @@
                                 class="button is-white">
                             <span>{{ page }}</span>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
                     </template>

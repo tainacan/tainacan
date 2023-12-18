@@ -47,7 +47,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
-                        class="tainacan-icon tainacan-icon-1-25em"/>
+                        class="tainacan-icon tainacan-icon-1-25em" />
             </span>
             <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
         </button>
@@ -83,7 +83,7 @@
                     <b-dropdown-item 
                             :focusable="false"
                             @click="updateSearch()">
-                        <span v-html="$i18n.get('instruction_press_enter_to_search_for')"/>&nbsp;
+                        <span v-html="$i18n.get('instruction_press_enter_to_search_for')" />&nbsp;
                         <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
                     </b-dropdown-item>
                     <b-dropdown-item
@@ -135,7 +135,7 @@
                 <span 
                         :class="{ 'has-text-secondary': hasFiltered }"
                         class="gray-icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
                 </span>
                 <span class="is-hidden-touch">{{ $i18n.get('filters') }}</span>
             </button>
@@ -169,7 +169,7 @@
                         <span class="is-hidden-touch is-hidden-desktop-only">{{ $i18n.get('label_displayed_metadata') }}</span>
                         <span class="is-hidden-widescreen">{{ $i18n.get('metadata') }}</span>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                         </span>
                     </button>
                 </template>
@@ -216,7 +216,7 @@
                             <span class="icon is-small gray-icon">
                                 <i 
                                         :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                        class="tainacan-icon"/>
+                                        class="tainacan-icon" />
                             </span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -230,7 +230,7 @@
                             :value="'DESC'"
                             aria-role="listitem">
                         <span class="icon gray-icon">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
                         </span>
                         <span>{{ $i18n.get('label_descending') }}</span>
                     </b-dropdown-item>
@@ -241,7 +241,7 @@
                             :value="'ASC'"
                             aria-role="listitem">
                         <span class="icon gray-icon">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
                         </span>
                         <span>{{ $i18n.get('label_ascending') }}</span>
                     </b-dropdown-item>
@@ -316,7 +316,7 @@
                             <span 
                                     v-if="registeredViewModes[viewMode] != undefined"
                                     class="gray-icon view-mode-icon"
-                                    v-html="registeredViewModes[viewMode].icon"/>
+                                    v-html="registeredViewModes[viewMode].icon" />
                             <span class="is-hidden-touch">&nbsp;&nbsp;&nbsp;{{ registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].label : $i18n.get('label_visualization') }}</span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -336,7 +336,7 @@
                             <span 
                                     v-if="!showInlineViewModeOptions"
                                     class="gray-icon"
-                                    v-html="registeredViewModes[viewModeOption].icon"/>
+                                    v-html="registeredViewModes[viewModeOption].icon" />
                             <span 
                                     v-else 
                                     v-tooltip="{
@@ -350,7 +350,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="gray-icon"
-                                    v-html="registeredViewModes[viewModeOption].icon"/>
+                                    v-html="registeredViewModes[viewModeOption].icon" />
                             <span v-if="!showInlineViewModeOptions">{{ registeredViewModes[viewModeOption].label }}</span>
                         </b-dropdown-item>
                     </template>
@@ -373,7 +373,7 @@
                         @click="onChangeViewMode(viewModeOption)">
                     <span 
                             class="gray-icon view-mode-icon"
-                            v-html="registeredViewModes[viewModeOption].icon"/>
+                            v-html="registeredViewModes[viewModeOption].icon" />
                     <span class="is-hidden-tablet-only">{{ registeredViewModes[viewModeOption].label }}</span>
                 </button>
             </template>
@@ -390,7 +390,7 @@
                     :disabled="totalItems == undefined || totalItems <= 0"
                     @click="openExposersModal()">
                 <span class="gray-icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                 </span>
                 <span class="is-hidden-tablet-only is-hidden-desktop-only ">{{ $i18n.get('label_view_as') }}</span>
             </button>
@@ -532,7 +532,7 @@
             <div 
                     id="items-list-results-top"
                     ref="items-list-results-top"
-                    class="sr-only"/>
+                    class="sr-only" />
 
             <div 
                     v-show="(showLoading && 
@@ -543,12 +543,12 @@
                 <b-loading 
                         v-if="registeredViewModes[viewMode] != undefined && !registeredViewModes[viewMode].implements_skeleton && !registeredViewModes[viewMode].skeleton_template" 
                         v-model="showLoading"
-                        :is-full-page="false"/>
+                        :is-full-page="false" />
 
                 <!-- Custom skeleton templates used by some view modes --> 
                 <div
                         v-if="registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].implements_skeleton && registeredViewModes[viewMode].skeleton_template"
-                        v-html="registeredViewModes[viewMode].skeleton_template"/>
+                        v-html="registeredViewModes[viewMode].skeleton_template" />
             </div>  
             
             <!-- Alert if custom metadata is being used for sorting -->
@@ -573,7 +573,7 @@
                     <button 
                             class="button icon"
                             @click="hasAnOpenAlert = false">
-                        <i class="tainacan-icon tainacan-icon-close"/>
+                        <i class="tainacan-icon tainacan-icon-close" />
                     </button>
                 </div>
             </div>
@@ -589,7 +589,7 @@
                     v-if="!showLoading &&
                             registeredViewModes[viewMode] != undefined &&
                             registeredViewModes[viewMode].type == 'template'"
-                    v-html="itemsListTemplate"/>
+                    v-html="itemsListTemplate" />
 
             <component
                     :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"
@@ -663,7 +663,7 @@
                         v-show="!hidePaginationArea"
                         :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
                         :hide-items-per-page-button="hideItemsPerPageButton"
-                        :hide-go-to-page-button="hideGoToPageButton"/>
+                        :hide-go-to-page-button="hideGoToPageButton" />
 
                 <!-- JS-side hook for extra form content -->
                 <div 
@@ -1635,7 +1635,7 @@
     }
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 
     // TAINACAN Variables
     @import "../../../admin/scss/_variables.scss";

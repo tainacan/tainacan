@@ -16,10 +16,10 @@
                 :type="optionType"
                 :message="optionMessage">
             <label class="label is-inline">
-                {{ $i18n.getHelperTitle('tainacan-selectbox', 'options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
+                {{ $i18n.getHelperTitle('tainacan-selectbox', 'options') }}<span :class="optionType">&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-selectbox', 'options')"
-                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')"/>
+                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')" />
             </label>
 
             <b-taginput

@@ -43,7 +43,7 @@
                                 class="button is-white">
                             <span>{{ selected.length == 1 ? $i18n.get('label_one_selected_term') : $i18n.getWithVariables('label_%s_selected_terms', [ selected.length ]) }}</span>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
                     </template>
@@ -85,7 +85,7 @@
                                 class="button is-white">
                             <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
                     </template>

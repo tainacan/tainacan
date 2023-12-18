@@ -3,7 +3,7 @@
             class="page-container"
             :class="{'repository-level-page' : isNewCollection }">
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('collection') }]" />
         
         <form 
                 v-if="collection != null && collection != undefined && ((isNewCollection && $userCaps.hasCapability('tnc_rep_edit_collections')) || (!isNewCollection && collection.current_user_can_edit))" 
@@ -22,13 +22,13 @@
                         <span class="required-metadatum-asterisk">*</span>
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'name')" 
-                                :message="$i18n.getHelperMessage('collections', 'name')"/>
+                                :message="$i18n.getHelperMessage('collections', 'name')" />
                         <b-input
                                 id="tainacan-text-name"
                                 v-model="form.name"
                                 :placeholder="$i18n.get('instruction_collection_name')"
                                 @blur="updateSlug"
-                                @focus="clearErrors('name')"/>
+                                @focus="clearErrors('name')" />
                     </b-field>
 
                     <!-- Hook for extra Form options -->
@@ -36,7 +36,7 @@
                         <form
                             id="form-collection-begin-left" 
                             class="form-hook-region"
-                            v-html="getBeginLeftForm"/>
+                            v-html="getBeginLeftForm" />
                     </template>
 
                     <!-- Description -------------------------------- --> 
@@ -47,14 +47,14 @@
                             :message="editFormErrors['description'] != undefined ? editFormErrors['description'] : ''">
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'description')" 
-                                :message="$i18n.getHelperMessage('collections', 'description')"/>
+                                :message="$i18n.getHelperMessage('collections', 'description')" />
                         <b-input
                                 id="tainacan-text-description"
                                 v-model="form.description"
                                 type="textarea"
                                 rows="4"
                                 :placeholder="$i18n.get('instruction_collection_description')"
-                                @focus="clearErrors('description')"/>
+                                @focus="clearErrors('description')" />
                     </b-field>
 
                     <!-- Slug -------------------------------- --> 
@@ -65,14 +65,14 @@
                             :message="isUpdatingSlug ? $i18n.get('info_validating_slug') : (editFormErrors['slug'] != undefined ? editFormErrors['slug'] : '')">
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'slug')" 
-                                :message="$i18n.getHelperMessage('collections', 'slug')"/>
+                                :message="$i18n.getHelperMessage('collections', 'slug')" />
                         <b-input
                                 id="tainacan-text-slug"
                                 v-model="form.slug"
                                 :disabled="isUpdatingSlug"
                                 :loading="isUpdatingSlug"
                                 @update:model-value="updateSlug"
-                                @focus="clearErrors('slug')"/>
+                                @focus="clearErrors('slug')" />
                     </b-field>
 
                     <!-- Items list options ------------------------ -->
@@ -101,7 +101,7 @@
                                     :message="editFormErrors['default_orderby'] != undefined ? editFormErrors['default_orderby'] : $i18n.get('info_default_orderby')">
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'default_orderby')" 
-                                        :message="$i18n.getHelperMessage('collections', 'default_orderby')"/>
+                                        :message="$i18n.getHelperMessage('collections', 'default_orderby')" />
                                 <div class="control sorting-options">
                                     <label class="label">{{ $i18n.get('label_sort') }}&nbsp;</label>
                                     <b-select
@@ -149,7 +149,7 @@
                                     <label class="label">{{ $i18n.get('label_view_modes_available') }}</label>
                                     <help-button 
                                                 :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
-                                                :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')"/>
+                                                :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')" />
                                     <div class="control">
                                         <b-dropdown
                                                 ref="enabledViewModesDropdown"
@@ -166,7 +166,7 @@
                                                         type="button">
                                                     <span>{{ $i18n.get('label_enabled_view_modes') }}</span>
                                                     <span class="icon">
-                                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                                     </span>
                                                 </button>
                                             </template>
@@ -188,7 +188,7 @@
                                                                         'has-text-secondary' : checkIfViewModeEnabled(viewMode),
                                                                         'has-text-gray4' : !checkIfViewModeEnabled(viewMode)  
                                                                     }"
-                                                                    v-html="registeredViewModes[viewMode].icon"/>
+                                                                    v-html="registeredViewModes[viewMode].icon" />
                                                             &nbsp;{{ registeredViewModes[viewMode].label }}
                                                         </strong>
                                                     </p>
@@ -208,7 +208,7 @@
                                         :message="editFormErrors['default_view_mode'] != undefined ? editFormErrors['default_view_mode'] : ''">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('collections', 'default_view_mode')" 
-                                            :message="$i18n.getHelperMessage('collections', 'default_view_mode')"/>
+                                            :message="$i18n.getHelperMessage('collections', 'default_view_mode')" />
                                     <b-select
                                             id="tainacan-select-default_view_mode"
                                             v-model="form.default_view_mode"
@@ -237,7 +237,7 @@
                                         false-value="no" />
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'hide_items_thumbnail_on_lists')" 
-                                        :message="$i18n.getHelperMessage('collections', 'hide_items_thumbnail_on_lists')"/>
+                                        :message="$i18n.getHelperMessage('collections', 'hide_items_thumbnail_on_lists')" />
                             </b-field>
 
                         </div>
@@ -268,7 +268,7 @@
                                         :label="$i18n.getHelperTitle('collections', 'item_enabled_document_types')">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('collections', 'item_enabled_document_types')" 
-                                            :message="$i18n.getHelperMessage('collections', 'item_enabled_document_types')"/>
+                                            :message="$i18n.getHelperMessage('collections', 'item_enabled_document_types')" />
                                     <div class="status-radios">
                                         <b-checkbox
                                                 v-for="(documentType, slug) in form.item_enabled_document_types"
@@ -289,7 +289,7 @@
                                         :label="$i18n.getHelperTitle('collections', 'item_document_label')">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('collections', 'item_document_label')" 
-                                            :message="$i18n.getHelperMessage('collections', 'item_document_label')"/>
+                                            :message="$i18n.getHelperMessage('collections', 'item_document_label')" />
                                     <b-input
                                             id="tainacan-text-item-document-label"
                                             v-model="form.item_document_label" />
@@ -311,7 +311,7 @@
                                             false-value="no" />
                                     <help-button 
                                             :title="$i18n.getHelperTitle('collections', 'item_enable_thumbnail')" 
-                                            :message="$i18n.getHelperMessage('collections', 'item_enable_thumbnail')"/>
+                                            :message="$i18n.getHelperMessage('collections', 'item_enable_thumbnail')" />
                                 </b-field>
 
                                 <b-field
@@ -320,7 +320,7 @@
                                         :label="$i18n.getHelperTitle('collections', 'item_thumbnail_label')">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('collections', 'item_thumbnail_label')" 
-                                            :message="$i18n.getHelperMessage('collections', 'item_thumbnail_label')"/>
+                                            :message="$i18n.getHelperMessage('collections', 'item_thumbnail_label')" />
                                     <b-input
                                             id="tainacan-text-item-thumbnail-label"
                                             v-model="form.item_thumbnail_label" />
@@ -342,7 +342,7 @@
                                             false-value="no" />
                                     <help-button 
                                             :title="$i18n.getHelperTitle('collections', 'item_enable_attachments')" 
-                                            :message="$i18n.getHelperMessage('collections', 'item_enable_attachments')"/>
+                                            :message="$i18n.getHelperMessage('collections', 'item_enable_attachments')" />
                                 </b-field>
 
                                 <!-- Attachments Label -------------------------------- -->
@@ -352,7 +352,7 @@
                                         :label="$i18n.getHelperTitle('collections', 'item_attachment_label')">
                                     <help-button 
                                             :title="$i18n.getHelperTitle('collections', 'item_attachment_label')" 
-                                            :message="$i18n.getHelperMessage('collections', 'item_attachment_label')"/>
+                                            :message="$i18n.getHelperMessage('collections', 'item_attachment_label')" />
                                     <b-input
                                             id="tainacan-text-item-attachment-label-singular"
                                             v-model="form.item_attachment_label" />
@@ -410,7 +410,7 @@
                                         false-value="closed" />
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'allow_comments')" 
-                                        :message="$i18n.getHelperMessage('collections', 'allow_comments')"/>
+                                        :message="$i18n.getHelperMessage('collections', 'allow_comments')" />
                             </b-field>
 
                         </div>
@@ -449,7 +449,7 @@
                                         false-value="no" />
                                 <help-button 
                                         :title="$i18n.getHelperTitle('collections', 'allows_submission')" 
-                                        :message="$i18n.getHelperMessage('collections', 'allows_submission')"/>
+                                        :message="$i18n.getHelperMessage('collections', 'allows_submission')" />
                             </b-field>
                             
                             <transition name="filter-item">
@@ -472,7 +472,7 @@
                                                 false-value="no" />
                                         <help-button 
                                                 :title="$i18n.getHelperTitle('collections', 'submission_anonymous_user')" 
-                                                :message="$i18n.getHelperMessage('collections', 'submission_anonymous_user')"/>
+                                                :message="$i18n.getHelperMessage('collections', 'submission_anonymous_user')" />
                                     </b-field>
 
                                     <!-- Item submission default Status -------------------------------- --> 
@@ -483,7 +483,7 @@
                                             :message="editFormErrors['submission_default_status'] != undefined ? editFormErrors['submission_default_status'] : ''">
                                         <help-button 
                                                 :title="$i18n.getHelperTitle('collections', 'submission_default_status')" 
-                                                :message="$i18n.getHelperMessage('collections', 'submission_default_status')"/>
+                                                :message="$i18n.getHelperMessage('collections', 'submission_default_status')" />
                                         <div class="options-checkboxes">
                                             <b-radio
                                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'trash')"
@@ -493,7 +493,7 @@
                                                 <span class="icon has-text-gray">
                                                     <i 
                                                         class="tainacan-icon tainacan-icon-18px"
-                                                        :class="$statusHelper.getIcon(statusOption.slug)"/>
+                                                        :class="$statusHelper.getIcon(statusOption.slug)" />
                                                 </span>
                                                 {{ statusOption.name }}
                                             </b-radio>
@@ -522,7 +522,7 @@
                                                 false-value="no" />
                                         <help-button 
                                                 :title="$i18n.getHelperTitle('collections', 'submission_use_recaptcha')" 
-                                                :message="$i18n.getHelperMessage('collections', 'submission_use_recaptcha')"/>
+                                                :message="$i18n.getHelperMessage('collections', 'submission_use_recaptcha')" />
                                         <p 
                                                 v-if="form.submission_use_recaptcha == 'yes'" 
                                                 v-html="$i18n.getWithVariables('info_recaptcha_link_%s', [ reCAPTCHASettingsPagePath ])" />        
@@ -541,7 +541,7 @@
                             id="form-collection-end-left" 
                             ref="form-collection-end-left"
                             class="form-hook-region"
-                            v-html="getEndLeftForm"/>
+                            v-html="getEndLeftForm" />
                     </template>
 
                 </div>
@@ -555,7 +555,7 @@
                             :message="editFormErrors['status'] != undefined ? editFormErrors['status'] : ''">
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'status')" 
-                                :message="$i18n.getHelperMessage('collections', 'status')"/>
+                                :message="$i18n.getHelperMessage('collections', 'status')" />
                         <div class="status-radios">
                             <b-radio
                                     v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
@@ -565,7 +565,7 @@
                                 <span class="icon has-text-gray">
                                     <i 
                                         class="tainacan-icon tainacan-icon-18px"
-                                        :class="$statusHelper.getIcon(statusOption.slug)"/>
+                                        :class="$statusHelper.getIcon(statusOption.slug)" />
                                 </span>
                                 {{ statusOption.name }}
                             </b-radio>
@@ -577,7 +577,7 @@
                         <form 
                             id="form-collection-begin-right"
                             class="form-hook-region"
-                            v-html="getBeginRightForm"/>
+                            v-html="getBeginRightForm" />
                     </template>
 
                     <!-- Image thumbnail & Header Image -------------------------------- --> 
@@ -586,7 +586,7 @@
                             {{ $i18n.get('label_thumbnail') }} & {{ $i18n.get('label_header_image') }}
                             <help-button 
                                     :title="$i18n.get('label_thumbnail') + ' & ' + $i18n.get('label_header_image')" 
-                                    :message="$i18n.get('info_collection_thumbnail_and_header')"/>
+                                    :message="$i18n.get('info_collection_thumbnail_and_header')" />
                         </label>
 
                         <!-- Header Image -------------------------------- --> 
@@ -613,7 +613,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a 
@@ -629,7 +629,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-delete" />
                                     </span>
                                 </a>
                             </div>     
@@ -647,7 +647,7 @@
                                         thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium') ] },
                                         title: $i18n.get('label_thumbnail'),
                                         description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(collection['thumbnail'], 'full') + `'/>` 
-                                    }"/>
+                                    }" />
                         <figure 
                                     v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
                                     class="image">
@@ -670,7 +670,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip']  
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a 
@@ -686,7 +686,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip']  
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-delete" />
                                     </span>
                                 </a>
                             </div>
@@ -708,7 +708,7 @@
                                 false-value="no" />
                         <help-button 
                                 :title="$i18n.getHelperTitle('collections', 'cover_page_id')" 
-                                :message="$i18n.getHelperMessage('collections', 'cover_page_id')"/>
+                                :message="$i18n.getHelperMessage('collections', 'cover_page_id')" />
                         <template v-if="form.enable_cover_page == 'yes'">
                             <b-autocomplete
                                     v-if="coverPage == undefined || coverPage.title == undefined"
@@ -744,7 +744,7 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip']  
                                                 }"
                                                 class="icon is-small">
-                                            <i class="tainacan-icon tainacan-icon-close"/>
+                                            <i class="tainacan-icon tainacan-icon-close" />
                                         </span>
                                     </a>
                                 </span>
@@ -763,7 +763,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                                     </span>
                                 </a>
                                 &nbsp;&nbsp;
@@ -778,7 +778,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-edit" />
                                     </span>
                                 </a>
                             </span>
@@ -790,7 +790,7 @@
                                     target="_blank"  
                                     :href="newPagePath">
                                 <span class="icon is-small">
-                                    <i class="tainacan-icon tainacan-icon-add"/>
+                                    <i class="tainacan-icon tainacan-icon-add" />
                                 </span>
                                 {{ $i18n.get('label_create_new_page') }}
                             </a>            
@@ -830,7 +830,7 @@
                         <form 
                             id="form-collection-end-right"
                             class="form-hook-region"
-                            v-html="getEndRightForm"/>
+                            v-html="getEndRightForm" />
                     </template>
                 </div>
 
@@ -876,7 +876,7 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_can_not_edit_collection') }}</p>
@@ -886,7 +886,7 @@
 
         <b-loading 
                 v-model="isLoading" 
-                :can-cancel="false"/>
+                :can-cancel="false" />
     </div>
 </template>
 

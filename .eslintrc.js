@@ -15,7 +15,6 @@ module.exports = {
         'no-undef': 'warn',
         'vue/no-v-html': 'off',
         'vue/html-indent': 'off',
-        'vue/html-closing-bracket-spacing': 'off',
         'vue/html-closing-bracket-newline': 'off',
         'vue/require-prop-type-constructor': 'off',
         'vue/singleline-html-element-content-newline': 'off',

@@ -42,7 +42,7 @@
                             <td 
                                     v-if="column.display"
                                     :class="{ 'thumbnail-cell': metadatumIndex == 0 }"
-                                    class="column-default-width skeleton"/>
+                                    class="column-default-width skeleton" />
                         </template>
                     </tr>
                 </tbody>
@@ -142,7 +142,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
                                             :aria-label="column.name + ': ' + (item.title != undefined && item.title != '' ? item.title : $i18n.get('label_value_not_provided'))"
-                                            v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
+                                            v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.title != undefined && item.title != '' ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                     <p
                                             v-if="!collectionId &&
                                                 column.metadata_type_object != undefined && 
@@ -158,7 +158,7 @@
                                                 placement: 'auto-start',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
+                                            v-html="`<span class='sr-only'>` + column.name + ': </span>' + (item.description != undefined && item.description != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                     <p
                                             v-if="item.metadata != undefined &&
                                                 column.metadatum !== 'row_thumbnail' &&
@@ -178,14 +178,14 @@
                                                 autoHide: false,
                                                 placement: 'auto-start'
                                             }"
-                                            v-html="renderMetadataWithLabel(item.metadata, column) != '' ? renderMetadataWithLabel(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
+                                            v-html="renderMetadataWithLabel(item.metadata, column) != '' ? renderMetadataWithLabel(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
 
                                     <span v-if="column.metadatum == 'row_thumbnail'">
                                         <img 
                                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                                 class="table-thumb" 
                                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)">
-                                        <div class="skeleton"/>
+                                        <div class="skeleton" />
                                     </span> 
                                 </a>
                             </td>
@@ -209,7 +209,7 @@
                                         }"          
                                         class="icon slideshow-icon"
                                         @click.prevent="starSlideshowFromHere(index)">
-                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
                                 </span> 
                             </div>
                         </td>

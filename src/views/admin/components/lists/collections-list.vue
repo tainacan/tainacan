@@ -25,7 +25,7 @@
                         <button class="button is-white">
                             <span>{{ $i18n.get('label_bulk_actions') }}</span>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button> 
                     </template>
@@ -144,7 +144,7 @@
                                 v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
                                 :class="{ 'is-selecting': isSelectingCollections }"
                                 class="checkbox-cell">
-                            <b-checkbox v-model="selectedCollections[index]"/> 
+                            <b-checkbox v-model="selectedCollections[index]" /> 
                         </td>
                         <!-- Status icon -->
                         <td 
@@ -220,7 +220,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
-                                    v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"/>
+                                    v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                         </td>
                         <!-- Modification Date -->
                         <td
@@ -329,7 +329,7 @@
                                                 html: true
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings" />
                                     </span>
                                 </a>
                                 <a 
@@ -347,7 +347,7 @@
                                             class="icon">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                                class="tainacan-icon tainacan-icon-1-25em"/>
+                                                class="tainacan-icon tainacan-icon-1-25em" />
                                     </span>
                                 </a>
                                 <a 
@@ -365,7 +365,7 @@
                                                 html: true
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
                             </div>

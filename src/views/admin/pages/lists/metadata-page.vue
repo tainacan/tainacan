@@ -3,7 +3,7 @@
             :class="{ 'repository-level-page page-container': isRepositoryLevel }"
             style="padding-bottom: 0;">
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('metadata') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('metadata') }]" />
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_metadata_inheritance') }}</p>
@@ -31,7 +31,7 @@
                         <metadata-types-list 
                                 :highlighted-metadatum="highlightedMetadatum"
                                 :is-repository-level="isRepositoryLevel"
-                                @onFinishedLoadingMetadataTypes="createMetadataTypeFilterOptions"/>
+                                @onFinishedLoadingMetadataTypes="createMetadataTypeFilterOptions" />
                     </div>
                 </b-tab-item>
 
@@ -39,7 +39,7 @@
                 <b-tab-item :label="$i18n.get('mapping')">
                     <metadata-mapping-list
                             v-if="activeTab == 1"
-                            :is-repository-level="isRepositoryLevel"/>
+                            :is-repository-level="isRepositoryLevel" />
                 </b-tab-item>
             </b-tabs>
             
@@ -49,7 +49,7 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-metadata" />
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_can_not_edit_metadata') }}</p>

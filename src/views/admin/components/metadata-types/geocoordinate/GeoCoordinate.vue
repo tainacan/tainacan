@@ -42,7 +42,7 @@
                             outlined
                             @click="onMarkerRemove(editingMarkerIndex)">
                         <span class="icon is-small">
-                            <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
+                            <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
                         </span>
                         &nbsp;{{ $i18n.get('remove_point') }}
                     </b-button>
@@ -51,7 +51,7 @@
                             outlined
                             @click="addLocation(latitude + ',' + longitude)">
                         <span class="icon is-small">
-                            <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                            <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                         </span>
                         &nbsp;{{ $i18n.get('add') }}
                     </b-button>
@@ -76,7 +76,7 @@
                 </l-tooltip>
                 <l-icon class-name="tainacan-location-marker-add">
                     <span class="icon">
-                        <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                     </span>
                 </l-icon>
             </l-marker>

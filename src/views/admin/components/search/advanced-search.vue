@@ -118,7 +118,7 @@
                                 :placeholder="dateFormat"
                                 type="text" 
                                 :aria-label="$i18n.get('label_date_to_search_for')"
-                                @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)" >
+                                @input="addValueToAdvancedSearchQuery($event.target.value, searchCriterion)">
                         <b-input
                                 v-else
                                 type="text"
@@ -155,7 +155,7 @@
                                     placement: 'auto-end'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel" />
                         </span>
                     </button>
                 </div>
@@ -169,7 +169,7 @@
                     role="button"
                     @click="addSearchCriteria">
                 <span class="icon">
-                    <i class="has-text-secondary tainacan-icon tainacan-icon-add"/>
+                    <i class="has-text-secondary tainacan-icon tainacan-icon-add" />
                 </span>
                 {{ searchCriteria.length &lt;= 0 ?
                     $i18n.get('add_one_search_criterion') :
@@ -181,7 +181,7 @@
                     role="button"
                     @click="clearSearch();">
                 <span class="icon">
-                    <i class="has-text-secondary tainacan-icon tainacan-icon-remove"/>
+                    <i class="has-text-secondary tainacan-icon tainacan-icon-remove" />
                 </span>
                 {{ $i18n.get('label_remove_all_criteria') }}
             </a>
@@ -221,7 +221,7 @@
             <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>
                 <p>

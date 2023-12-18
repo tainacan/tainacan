@@ -15,7 +15,7 @@
                     target="_blank"
                     :href="form.url">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                 </span>
                 <span class="menu-text">{{ $i18n.get('label_term_page_on_website') }}</span>
             </a>
@@ -44,7 +44,7 @@
                         v-model="form.name"
                         :placeholder="$i18n.get('label_term_without_name')"
                         name="name"
-                        @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
+                        @focus="clearErrors({ name: 'name', repeated: 'repeated' })" />
             </b-field>
 
             <!-- Hook for extra Form options -->
@@ -53,7 +53,7 @@
                 <form 
                     id="form-term-begin-left"
                     class="form-hook-region"
-                    v-html="getBeginLeftForm"/>
+                    v-html="getBeginLeftForm" />
             </template>
 
             <div class="columns is-gapless image-and-description-area">
@@ -86,7 +86,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a
@@ -102,7 +102,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-delete" />
                                     </span>
                                 </a>
                             </div>
@@ -121,13 +121,13 @@
                             <help-button
                                     :title="$i18n.get('label_description')"
                                     :message="$i18n.get('info_help_term_description')"
-                                    extra-classes="tainacan-repository-tooltip"/>
+                                    extra-classes="tainacan-repository-tooltip" />
                         </label>
                         <b-input
                                 v-model="form.description"
                                 type="textarea"
                                 name="description"
-                                @focus="clearErrors('description')"/>
+                                @focus="clearErrors('description')" />
                     </b-field>
                 </div>
             </div>
@@ -148,7 +148,7 @@
                     <help-button
                             :title="$i18n.get('label_parent_term')"
                             :message="$i18n.get('info_help_parent_term')"
-                            extra-classes="tainacan-repository-tooltip"/>
+                            extra-classes="tainacan-repository-tooltip" />
                 </label>
                 <b-autocomplete
                         id="tainacan-add-parent-field"
@@ -195,7 +195,7 @@
                 <form 
                     id="form-term-end-left"
                     class="form-hook-region"
-                    v-html="getEndLeftForm"/>
+                    v-html="getEndLeftForm" />
             </template>
 
             <!-- Submit buttons -------------- -->

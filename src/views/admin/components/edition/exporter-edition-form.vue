@@ -4,10 +4,10 @@
                 :bread-crumb-items="[
                     { path: $routerHelper.getAvailableExportersPath(), label: $i18n.get('exporters') },
                     { path: '', label: exporterType != undefined ? (exporterName != undefined ? exporterName : exporterType) : $i18n.get('title_exporter_page') }
-                ]"/>
+                ]" />
         <b-loading
                 v-model="isLoading"
-                :can-cancel="false"/>
+                :can-cancel="false" />
         <form
                 v-if="exporterSession"
                 label-width="120px"
@@ -22,7 +22,7 @@
                 </div>
                 <div
                         style="max-width: var(--tainacan-one-column);"
-                        class="column is-gapless"/>
+                        class="column is-gapless" />
                 <div class="column is-gapless">
                     <b-field
                             v-if="exporterSession.manual_collection"
@@ -31,7 +31,7 @@
                         <help-button
                                 :title="$i18n.get('label_source_collection')"
                                 :message="$i18n.get('info_source_collection_helper')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <br>
                         <b-select
                                 v-model="selectedCollection"
@@ -77,7 +77,7 @@
                         <help-button
                                 :title="$i18n.get('label_send_email')"
                                 :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + adminFullURL + $routerHelper.getProcessesPage() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <b-checkbox
                                 v-model="sendEmail"
                                 true-value="1"

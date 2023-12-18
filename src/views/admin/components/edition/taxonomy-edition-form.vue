@@ -5,7 +5,7 @@
                     :bread-crumb-items="[
                         { path: $routerHelper.getTaxonomiesPath(), label: $i18n.get('taxonomies') },
                         { path: '', label: (taxonomy != null && taxonomy.name != undefined) ? taxonomy.name : $i18n.get('taxonomy') }
-                    ]"/>
+                    ]" />
 
             <form 
                     v-if="taxonomy != null && taxonomy != undefined && (($route.name == 'TaxonomyCreationForm' && $userCaps.hasCapability('tnc_rep_edit_taxonomies')) || ($route.name == 'TaxonomyEditionForm' && taxonomy.current_user_can_edit))"
@@ -24,14 +24,14 @@
                             <help-button 
                                     :title="$i18n.getHelperTitle('taxonomies', 'name')" 
                                     :message="$i18n.getHelperMessage('taxonomies', 'name')"
-                                    extra-classes="tainacan-repository-tooltip"/>
+                                    extra-classes="tainacan-repository-tooltip" />
                             <b-input
                                     id="tainacan-text-name"
                                     v-model="form.name"
                                     :disabled="isUpdatingSlug"
                                     :loading="isUpdatingSlug"
                                     @focus="clearErrors('name')"
-                                    @blur="updateSlug()"/>
+                                    @blur="updateSlug()" />
                         </b-field>
 
                         <!-- Hook for extra Form options -->
@@ -39,7 +39,7 @@
                             <form 
                                 id="form-taxonomy-begin-left"
                                 class="form-hook-region"
-                                v-html="getBeginLeftForm"/>
+                                v-html="getBeginLeftForm" />
                         </template>
 
                         <!-- Description -------------------------------- -->
@@ -51,13 +51,13 @@
                             <help-button 
                                     :title="$i18n.getHelperTitle('taxonomies', 'description')" 
                                     :message="$i18n.getHelperMessage('taxonomies', 'description')"
-                                    extra-classes="tainacan-repository-tooltip"/>
+                                    extra-classes="tainacan-repository-tooltip" />
                             <b-input
                                     id="tainacan-text-description"
                                     v-model="form.description"
                                     type="textarea"
                                     rows="3"
-                                    @focus="clearErrors('description')"/>
+                                    @focus="clearErrors('description')" />
                         </b-field>
 
                         <!-- Allow Insert -->
@@ -73,7 +73,7 @@
                                     <help-button 
                                         :title="$i18n.getHelperTitle('taxonomies', 'allow_insert')" 
                                         :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"
-                                        extra-classes="tainacan-repository-tooltip"/>
+                                        extra-classes="tainacan-repository-tooltip" />
                                 </label>
                         </b-field>
 
@@ -90,7 +90,7 @@
                                     <help-button 
                                         :title="$i18n.getHelperTitle('taxonomies', 'hierarchical')" 
                                         :message="$i18n.getHelperMessage('taxonomies', 'hierarchical')"
-                                        extra-classes="tainacan-repository-tooltip"/>
+                                        extra-classes="tainacan-repository-tooltip" />
                                 </label>
                         </b-field>
                         
@@ -103,13 +103,13 @@
                             <help-button 
                                     :title="$i18n.getHelperTitle('taxonomies', 'slug')" 
                                     :message="$i18n.getHelperMessage('taxonomies', 'slug')"
-                                    extra-classes="tainacan-repository-tooltip"/>
+                                    extra-classes="tainacan-repository-tooltip" />
                             <b-input
                                     id="tainacan-text-slug"
                                     v-model="form.slug"
                                     :disabled="isUpdatingSlug"
                                     @update:model-value="updateSlug()"
-                                    @focus="clearErrors('slug')"/>
+                                    @focus="clearErrors('slug')" />
                         </b-field>
 
                         <!-- Activate for other post types -->
@@ -121,7 +121,7 @@
                             <help-button 
                                 :title="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')" 
                                 :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
 
                             <div class="two-columns-fields">
                                 <div 
@@ -133,7 +133,7 @@
                                         :native-value="wpPostType.slug"
                                         :true-value="wpPostType.slug"
                                         false-value=""
-                                        name="enabled_post_types" >
+                                        name="enabled_post_types">
                                         {{ wpPostType.label }}  
                                     </b-checkbox>
                                 </div>    
@@ -153,7 +153,7 @@
                             <help-button 
                                     :title="$i18n.getHelperTitle('taxonomies', 'status')" 
                                     :message="$i18n.getHelperMessage('taxonomies', 'status')"
-                                    extra-classes="tainacan-repository-tooltip"/>
+                                    extra-classes="tainacan-repository-tooltip" />
                             <div class="status-radios">
                                 <b-radio
                                         v-for="(statusOption, index) of $statusHelper.getStatuses().filter((status) => status.slug != 'draft')"
@@ -163,7 +163,7 @@
                                     <span class="icon has-text-gray">
                                         <i 
                                             class="tainacan-icon tainacan-icon-18px"
-                                            :class="$statusHelper.getIcon(statusOption.slug)"/>
+                                            :class="$statusHelper.getIcon(statusOption.slug)" />
                                     </span>
                                     {{ statusOption.name }}
                                 </b-radio>
@@ -177,12 +177,12 @@
                             <help-button 
                                 :title="$i18n.get('terms')" 
                                 :message="$i18n.get('info_taxonomy_terms_list')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                             <terms-list
                                     :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'"
                                     :is-hierarchical="form.hierarchical !== 'no'"
                                     :taxonomy-id="taxonomyId"
-                                    :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false"/>
+                                    :current-user-can-edit-taxonomy="taxonomy ? taxonomy.current_user_can_edit : false" />
                         </b-field>
 
                         <!-- Hook for extra Form options -->
@@ -190,7 +190,7 @@
                             <form 
                                 id="form-taxonomy-end-left"
                                 class="form-hook-region"
-                                v-html="getEndLeftForm"/>
+                                v-html="getEndLeftForm" />
                         </template>
                     </div>
                 </div>
@@ -231,7 +231,7 @@
                                 class="button link-button"
                                 :href="themeTaxonomiesURL + taxonomy.slug">
                             <span class="icon is-large">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                             </span>
                             <span>{{ $i18n.get('label_taxonomy_page_on_website') }}</span>
                         </a>
@@ -249,7 +249,7 @@
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-taxonomies" />
                             </span>
                         </p>
                         <p>{{ $i18n.get('info_can_not_edit_taxonomy') }}</p>
@@ -259,7 +259,7 @@
 
             <b-loading 
                     v-model="isLoadingTaxonomy" 
-                    :can-cancel="false"/>
+                    :can-cancel="false" />
 
         </div>
     </div>

@@ -46,7 +46,7 @@
                     id="form-role-begin-left" 
                     class="form-hook-region"
                     @click="showNotice = false"
-                    v-html="getBeginLeftForm"/>
+                    v-html="getBeginLeftForm" />
                 <br>
             </template>
         </template>
@@ -233,7 +233,7 @@
                             id="form-role-begin-right"
                             class="form-hook-region"
                             @click="showNotice = false"
-                            v-html="getBeginRightForm"/>
+                            v-html="getBeginRightForm" />
                     </template>
                     
                     <hr v-if="hasBeginRightForm && hasEndRightForm">
@@ -244,7 +244,7 @@
                             id="form-role-end-right"
                             class="form-hook-region"
                             @click="showNotice = false"
-                            v-html="getEndRightForm"/>
+                            v-html="getEndRightForm" />
                     </template>
                     
                     <br>
@@ -261,7 +261,7 @@
                 id="form-role-end-left"
                 class="form-hook-region"
                 @click="showNotice = false"
-                v-html="getEndLeftForm"/>
+                v-html="getEndLeftForm" />
         </template>
 
         <div class="form-submit">

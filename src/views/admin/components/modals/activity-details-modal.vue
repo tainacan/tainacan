@@ -16,7 +16,7 @@
         <b-loading 
                 v-model="isLoadingActivity"
                 :is-full-page="false" 
-                :can-cancel="false"/>
+                :can-cancel="false" />
         <div 
                 v-if="!isLoadingActivity"
                 class="modal-card-body">
@@ -75,7 +75,7 @@
                                             thumbnails: { 'tainacan-medium': [ attachment.url ] },
                                             mime_type: attachment.mime_type,
                                             media_type: attachment.mime_type.includes('image') ? 'image' : 'other'
-                                        }"/>
+                                        }" />
                             </div>
                             <div v-else>
                                 <p>{{ infoEmpty }}</p>
@@ -183,7 +183,7 @@
                                             thumbnails: { 'tainacan-medium': [ attachment.url ] },
                                             mime_type: attachment.mime_type,
                                             media_type: attachment.mime_type.includes('image') ? 'image' : 'other'
-                                        }"/>
+                                        }" />
                             </div>
                             <div v-else>
                                 <p>{{ infoEmpty }}</p>
@@ -271,7 +271,7 @@
                                 <img 
                                         style="margin: 12px 0; max-width: 150px;"
                                         :alt="$i18n.get('label_thumbnail')"
-                                        :src="activity.old_value.thumb[0]" >
+                                        :src="activity.old_value.thumb[0]">
                             </p>
                             <p v-else>{{ infoEmpty }}</p>
                         </div>
@@ -292,7 +292,7 @@
                                             thumbnails: { 'tainacan-medium': [ activity.old_value.url ] },
                                             mime_type: activity.old_value.mime_type,
                                             media_type: activity.old_value.mime_type.includes('image') ? 'image' : 'other'
-                                        }"/>
+                                        }" />
                             </div>
                             <div v-else>
                                 <p>{{ infoEmpty }}</p>
@@ -315,7 +315,7 @@
                                     <img 
                                             style="margin: 12px 0; max-width: 150px;"
                                             :alt="$i18n.get('label_document')"
-                                            :src="attributeValue[0]" >
+                                            :src="attributeValue[0]">
                                 </p>
                                 <p 
                                         v-else
@@ -413,7 +413,7 @@
                                 <img 
                                         style="margin: 12px 0; max-width: 150px;"
                                         :alt="$i18n.get('label_thumbnail')"
-                                        :src="activity.new_value.thumb[0]" >
+                                        :src="activity.new_value.thumb[0]">
                             </p>
                             <p v-else>{{ infoEmpty }}</p>
                         </div>
@@ -434,7 +434,7 @@
                                             thumbnails: { 'tainacan-medium': [ activity.new_value.url ] },
                                             mime_type: activity.new_value.mime_type,
                                             media_type: activity.new_value.mime_type.includes('image') ? 'image' : 'other'
-                                        }"/>
+                                        }" />
                             </div>
                             <div v-else>
                                 <p>{{ infoEmpty }}</p>
@@ -457,7 +457,7 @@
                                     <img 
                                             style="margin: 12px 0; max-width: 150px;"
                                             :alt="$i18n.get('label_document')"
-                                            :src="attributeValue[0]" >
+                                            :src="attributeValue[0]">
                                 </p>
                                 <p 
                                         v-else
@@ -520,7 +520,7 @@
                                                 v-if="activity.terms && activity.terms.header_image"
                                                 style="margin: 12px 0; max-width: 160px;"
                                                 :alt="$i18n.get('label_header_image')"
-                                                :src="activity.terms.header_image" >
+                                                :src="activity.terms.header_image">
                                     </p>
                                 </div>
 

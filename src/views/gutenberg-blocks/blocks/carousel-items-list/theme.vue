@@ -3,7 +3,7 @@
         <div
                 v-if="isLoadingCollection"
                 class="carousel-items-collection-header skeleton" 
-                :style="{ height: '165px' }"/>
+                :style="{ height: '165px' }" />
         <a
                 v-else
                 :href="collection.url ? collection.url : ''"
@@ -34,14 +34,14 @@
                 class="collection-thumbnail"
                 :style="{ 
                     backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
-                }"/>
+                }" />
             <div
                     class="collection-header-image"
                     :style="{
                         backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
                         minHeight: collection && collection.header_image ? '' : '80px',
                         display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
-                    }"/>
+                    }" />
         </a>   
     </div>
     <div  
@@ -108,13 +108,13 @@
                     viewBox="0 0 24 24">
                 <path
                         v-if="arrowsStyle === 'type-2'"
-                        d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
+                        d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z" />
                 <path 
                         v-else
-                        d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                 <path
                         d="M0 0h24v24H0z"
-                        fill="none"/>
+                        fill="none" />
             </svg>
         </button>
         <button 
@@ -127,13 +127,13 @@
                     viewBox="0 0 24 24">
                 <path
                         v-if="arrowsStyle === 'type-2'"
-                        d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
+                        d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z" />
                 <path 
                         v-else
-                        d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                 <path
                         d="M0 0h24v24H0z"
-                        fill="none"/>
+                        fill="none" />
             </svg>
         </button>
     </div>

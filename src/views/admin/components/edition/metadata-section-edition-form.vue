@@ -37,7 +37,7 @@
                     <b-input
                             v-model="form.name"
                             name="name"
-                            @focus="clearErrors('name')"/>
+                            @focus="clearErrors('name')" />
                 </b-field>
 
                 <!-- Hook for extra Form options -->
@@ -46,7 +46,7 @@
                     <form 
                         id="form-metadataSection-begin-left"
                         class="form-hook-region"
-                        v-html="getBeginLeftForm"/>
+                        v-html="getBeginLeftForm" />
                 </template>
 
                 <b-field
@@ -65,7 +65,7 @@
                             type="textarea"
                             name="description"
                             rows="3"
-                            @focus="clearErrors('description')"/>
+                            @focus="clearErrors('description')" />
                 </b-field>
 
                 <b-field 
@@ -108,7 +108,7 @@
                                 native-value="publish"
                                 @focus="clearErrors('label_status')">
                             <span class="icon has-text-gray3">
-                                <i class="tainacan-icon tainacan-icon-public"/>
+                                <i class="tainacan-icon tainacan-icon-public" />
                             </span>
                             {{ $i18n.get('status_public') }}
                         </b-radio>
@@ -119,7 +119,7 @@
                                 native-value="private"
                                 @focus="clearErrors('label_status')">
                             <span class="icon has-text-gray3">
-                                <i class="tainacan-icon tainacan-icon-private"/>
+                                <i class="tainacan-icon tainacan-icon-private" />
                             </span>
                             {{ $i18n.get('status_private') }}
                         </b-radio>
@@ -221,11 +221,11 @@
             </transition>
             
             <!-- Hook for extra Form options -->
-            <template v-if="hasEndLeftForm" >  
+            <template v-if="hasEndLeftForm">  
                 <form 
                     id="form-metadataSection-end-left"
                     class="form-hook-region"
-                    v-html="getEndLeftForm"/>
+                    v-html="getEndLeftForm" />
             </template>
                 
         </div>

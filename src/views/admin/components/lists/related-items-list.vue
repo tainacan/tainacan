@@ -16,7 +16,7 @@
                                     <div class="field has-addons">
                                         <span>
                                             <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-collection"/>
+                                                <i class="tainacan-icon tainacan-icon-collection" />
                                             </span>
                                             {{ relatedItemGroup.collection_name ? relatedItemGroup.collection_name : '' }}
                                         </span>
@@ -28,7 +28,7 @@
                                     <div class="field has-addons">
                                         <span>
                                             <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-metadata"/>
+                                                <i class="tainacan-icon tainacan-icon-metadata" />
                                             </span>
                                             {{ relatedItemGroup.metadata_name ? relatedItemGroup.metadata_name : '' }}
                                         </span>
@@ -102,7 +102,7 @@
                                                 placement: 'top',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
+                                            v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
                                 </div>
                                 <div 
                                         v-if="isEditable && relatedItem.current_user_can_edit"

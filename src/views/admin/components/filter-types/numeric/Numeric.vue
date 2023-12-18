@@ -68,7 +68,7 @@
                 :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
                 :step="Number(filterTypeOptions.step)"
-                @update:model-value="($event) => { resetPage($event); emit($event); }"/>
+                @update:model-value="($event) => { resetPage($event); emit($event); }" />
     </div>
 </template>
 

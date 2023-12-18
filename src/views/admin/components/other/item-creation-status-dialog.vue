@@ -16,7 +16,7 @@
                 <span class="icon is-large">
                     <i 
                             :class="'tainacan-icon-' + icon"
-                            class="tainacan-icon"/>
+                            class="tainacan-icon" />
                 </span>
             </div>
             <section 
@@ -42,7 +42,7 @@
                         <span class="icon has-text-gray">
                             <i 
                                 class="tainacan-icon tainacan-icon-18px"
-                                :class="$statusHelper.getIcon(statusOption.slug)"/>
+                                :class="$statusHelper.getIcon(statusOption.slug)" />
                         </span>
                         {{ statusOption.name }}
                     </b-radio>

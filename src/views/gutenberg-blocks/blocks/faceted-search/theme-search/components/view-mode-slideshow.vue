@@ -20,7 +20,7 @@
                 class="is-hidden-mobile"
                 @click="openSlidesHelpModal">
             <span class="icon">
-                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-help"/>
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-help" />
             </span>
         </button>
 
@@ -40,7 +40,7 @@
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="isMetadataCompressed = !isMetadataCompressed">
             <span class="icon">
-                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
             </span>
         </button>
 
@@ -61,7 +61,7 @@
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 :href="getItemLink(slideItems[swiper.activeIndex].url, swiper.activeIndex)">
             <span class="icon">
-                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see"/>
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-see" />
             </span>
         </a>
 
@@ -81,7 +81,7 @@
                 :class="{ 'is-hidden-mobile': !isMetadataCompressed }"
                 @click="closeSlideViewMode()">
             <span class="icon">
-                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close" />
             </span>
         </button>
 
@@ -102,7 +102,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowleft' : isMetadataCompressed, 'tainacan-icon-arrowright' : !isMetadataCompressed }"
-                        class="tainacan-icon tainacan-icon-1-25em"/>
+                        class="tainacan-icon tainacan-icon-1-25em" />
             </span>
         </button>
 
@@ -129,7 +129,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous"/>
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-previous" />
                         </span> 
                     </button>
                     <div     
@@ -143,7 +143,7 @@
 
                         <transition 
                                 mode="out-in"
-                                :name="goingRight ? 'slide-right' : 'slide-left'" >
+                                :name="goingRight ? 'slide-right' : 'slide-left'">
                             
                             <!-- Empty result placeholder -->
                             <section
@@ -163,7 +163,7 @@
 
                         <transition 
                                 mode="out-in"
-                                :name="goingRight ? 'slide-right' : 'slide-left'" >
+                                :name="goingRight ? 'slide-right' : 'slide-left'">
 
                             <!-- JS-side hook for extra content -->
                             <div 
@@ -174,7 +174,7 @@
 
                         <transition 
                                 mode="out-in"
-                                :name="goingRight ? 'slide-right' : 'slide-left'" >
+                                :name="goingRight ? 'slide-right' : 'slide-left'">
                             <div 
                                     v-if="!isLoadingItem && slideItems.length > 0 && (item.document != undefined && item.document != undefined && item.document != '')"
                                     v-html="item.document_as_html" />  
@@ -190,7 +190,7 @@
 
                         <transition 
                                 mode="out-in"
-                                :name="goingRight ? 'slide-right' : 'slide-left'" >
+                                :name="goingRight ? 'slide-right' : 'slide-left'">
                             <!-- JS-side hook for extra content -->
                             <div 
                                     v-if="hasAfterHook()"
@@ -212,7 +212,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon is-large has-text-turoquoise5">
-                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next"/>
+                            <i class="tainacan-icon tainacan-icon-48px tainacan-icon-next" />
                         </span>
                     </button>
                 </section>
@@ -238,7 +238,7 @@
                                     class="icon">
                                 <i 
                                         :class="{ 'tainacan-icon-pausefill' : isPlaying, 'tainacan-icon-playfill' : !isPlaying }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-30px"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-30px" />
                             </span>
                             <circular-counter 
                                     v-if="isPlaying"
@@ -276,7 +276,7 @@
                         id="close-metadata-button"
                         @click="isMetadataCompressed = true">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-close" />
                     </span>
                 </button>
                 <hr>
@@ -293,7 +293,7 @@
                 <span class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll}"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
+                            class="tainacan-icon tainacan-icon-1-25em" />
                 </span>
             </a>
 
@@ -318,7 +318,7 @@
                                 <span class="icon">
                                     <i 
                                             :class="{ 'tainacan-icon-arrowdown' : props.open, 'tainacan-icon-arrowright' : !props.open}"
-                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                 </span>
                                 <span 
                                         v-tooltip="{
@@ -339,7 +339,7 @@
                         <div class="content">
                             <p  
                                 class="has-text-white"
-                                v-html="metadatum.value_as_html"/>
+                                v-html="metadatum.value_as_html" />
                         </div>
                     </b-collapse>
 

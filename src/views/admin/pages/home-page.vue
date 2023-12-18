@@ -1,17 +1,17 @@
 <template>
     <div class="home-page page-container">
-        <b-loading v-model="isLoadingCollections"/>
+        <b-loading v-model="isLoadingCollections" />
         <section 
                 v-if="!$adminOptions.hideHomeRepositorySection"
                 class="home-section home-section-repository">
             <div 
                     v-if="!$adminOptions.hideHomeCollectionsSection"
                     class="section-connector" 
-                    aria-hidden/>
+                    aria-hidden />
             <div class="home-section-header repository-section-header">
                 <div class="home-section-icon">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-repository"/>
+                        <i class="tainacan-icon tainacan-icon-repository" />
                     </span>
                 </div>
                 
@@ -21,7 +21,7 @@
                         target="_blank"
                         :href="themeItemsListURL">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_items_on_theme') }}</span>
                 </a>
@@ -50,7 +50,7 @@
                         <router-link
                                 to="/metadata">
                             <span class="icon is-medium">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                             </span>
                             <span class="menu-text">{{ $i18n.get('title_repository_metadata_page' ) }}</span>
                         </router-link>
@@ -59,7 +59,7 @@
                         <router-link
                                 to="/filters">
                             <span class="icon is-medium">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
                             </span>
                             <span class="menu-text">{{ $i18n.get('title_repository_filters_page') }}</span>
                         </router-link>
@@ -68,7 +68,7 @@
                         <router-link
                                 to="/taxonomies">
                             <span class="icon is-medium">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-taxonomies"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-taxonomies" />
                             </span>
                             <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                         </router-link>
@@ -77,7 +77,7 @@
                         <router-link
                                 to="/activities">
                             <span class="icon is-medium">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-activities"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-activities" />
                             </span>
                             <span class="menu-text">{{ $i18n.get('title_repository_activities_page') }}</span>
                         </router-link>
@@ -86,7 +86,7 @@
                         <router-link
                                 to="/importers">
                             <span class="icon is-medium">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-importers"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-importers" />
                             </span>
                             <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                         </router-link>
@@ -95,7 +95,7 @@
                         <router-link
                                 to="/exporters">
                             <span class="icon is-medium">
-                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-export"/>
+                                <i class="tainacan-icon tainacan-icon-36px tainacan-icon-export" />
                             </span>
                             <span class="menu-text">{{ $i18n.get('exporters') }}</span>
                         </router-link>
@@ -110,7 +110,7 @@
             <div 
                     v-if="!$adminOptions.hideHomeRepositorySection"
                     class="collection-section-connector" 
-                    aria-hidden/>
+                    aria-hidden />
             <div class="home-section-header collections-section-header">
                 <div class="home-section-icon">
                     <router-link
@@ -120,7 +120,7 @@
                         <span 
                                 class="icon"
                                 @click="navigate()">
-                            <i class="tainacan-icon tainacan-icon-collections"/>
+                            <i class="tainacan-icon tainacan-icon-collections" />
                         </span>
                     </router-link>
                 </div>
@@ -131,7 +131,7 @@
                         :href="themeCollectionListURL"
                         style="position: relative">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                     </span>
                     <span class="menu-text">{{ $i18n.get('label_view_collections_on_theme') }}</span>
                 </a>
@@ -139,13 +139,13 @@
             <collections-home-list
                     :is-loading="isLoadingCollections"
                     :collections="collections"
-                    :collections-total="collectionsTotal"/> 
+                    :collections-total="collectionsTotal" /> 
             <router-link
                     v-if="!$adminOptions.hideHomeCollectionsButton"
                     class="collections-see-more"
                     to="/collections">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewtable"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewtable" />
                 </span>
                 <span
                         v-if="collectionsTotal > 1"

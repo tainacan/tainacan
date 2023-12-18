@@ -62,7 +62,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-html="capability.description"/>
+                                    v-html="capability.description" />
                         </td>
                         <!-- Associated Roles -->
                         <complete-roles-list 
@@ -84,7 +84,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                             placement: 'auto-start'
                                         }"
-                                        v-html="props['complete-roles-list']"/>
+                                        v-html="props['complete-roles-list']" />
                                 </td>
                             </template>
                         </complete-roles-list>
@@ -105,7 +105,7 @@
                                                 placement: 'auto'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </a>
                             </div>

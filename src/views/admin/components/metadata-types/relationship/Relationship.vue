@@ -119,7 +119,7 @@
                     class="add-link"
                     @click="editItemModalOpen = !editItemModalOpen">
                 <span class="icon is-small">
-                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                 </span>
                 &nbsp;{{ $i18n.get('label_create_new_item') }}
             </a>

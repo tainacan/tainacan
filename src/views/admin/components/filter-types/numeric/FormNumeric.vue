@@ -5,7 +5,7 @@
                 {{ $i18n.getHelperTitle('tainacan-filter-numeric', 'step') }}<span>&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-filter-numeric', 'step')"
-                        :message="$i18n.getHelperMessage('tainacan-filter-numeric', 'step')"/>
+                        :message="$i18n.getHelperMessage('tainacan-filter-numeric', 'step')" />
             </label>
             <div
                     v-if="!showEditStepOptions"
@@ -40,7 +40,7 @@
                                 popperClass: ['tainacan-tooltip', 'tooltip']
                             }"
                             class="icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary"/>
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary" />
                     </span>
                 </button>
             </div>
@@ -64,7 +64,7 @@
                                 popperClass: ['tainacan-tooltip', 'tooltip']
                             }"
                             class="icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary"/>
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary" />
                     </span>
                 </button>
             </div>

@@ -15,12 +15,12 @@
                             :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span> 
                     <help-button 
                             :title="$i18n.getHelperTitle('filters', 'name')" 
-                            :message="$i18n.getHelperMessage('filters', 'name')"/>
+                            :message="$i18n.getHelperMessage('filters', 'name')" />
                 </label>
                 <b-input
                         v-model="form.name" 
                         name="name" 
-                        @focus="clearErrors('name')"/>
+                        @focus="clearErrors('name')" />
             </b-field>
 
             <!-- Hook for extra Form options -->
@@ -28,7 +28,7 @@
                 <form 
                     id="form-filter-begin-left"
                     class="form-hook-region"
-                    v-html="getBeginLeftForm"/>
+                    v-html="getBeginLeftForm" />
             </template>
 
             <b-field
@@ -39,7 +39,7 @@
                     {{ $i18n.get('label_description') }} 
                     <help-button 
                             :title="$i18n.getHelperTitle('filters', 'description')" 
-                            :message="$i18n.getHelperMessage('filters', 'description')"/>    
+                            :message="$i18n.getHelperMessage('filters', 'description')" />    
                 </label>
                 <b-input
                         v-model="form.description" 
@@ -57,7 +57,7 @@
                     {{ $i18n.get('label_status') }} 
                     <help-button 
                             :title="$i18n.getHelperTitle('filters', 'status')" 
-                            :message="$i18n.getHelperMessage('filters', 'status')"/>
+                            :message="$i18n.getHelperMessage('filters', 'status')" />
                 </label>
                 <div class="inline-block">
                     <b-radio 
@@ -67,7 +67,7 @@
                             native-value="publish"
                             @focus="clearErrors('label_status')">
                         <span class="icon has-text-gray3">
-                            <i class="tainacan-icon tainacan-icon-public"/>
+                            <i class="tainacan-icon tainacan-icon-public" />
                         </span>
                         {{ $i18n.get('status_public') }}
                     </b-radio>
@@ -79,7 +79,7 @@
                             native-value="private"
                             @focus="clearErrors('label_status')">
                         <span class="icon has-text-gray3">
-                            <i class="tainacan-icon tainacan-icon-private"/>
+                            <i class="tainacan-icon tainacan-icon-private" />
                         </span>
                         {{ $i18n.get('status_private') }}
                     </b-radio>
@@ -93,7 +93,7 @@
                     {{ $i18n.get('label_max_options_to_show') }}
                     <help-button
                             :title="$i18n.getHelperTitle('filters', 'max_options')"
-                            :message="$i18n.getHelperMessage('filters', 'max_options')"/>
+                            :message="$i18n.getHelperMessage('filters', 'max_options')" />
                 </label>
 
                 <div
@@ -123,7 +123,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary" />
                         </span>
                     </button>
                 </div>
@@ -146,7 +146,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary" />
                         </span>
                     </button>
                 </div>
@@ -200,17 +200,17 @@
                     v-if="(form.filter_type_object && form.filter_type_object.form_component) || form.edit_form == ''"
                     v-model:value="form.filter_type_options"
                     :errors="formErrors['filter_type_options']"
-                    :filter="form"/>
+                    :filter="form" />
             <div 
                     v-else 
-                    v-html="form.edit_form"/>
+                    v-html="form.edit_form" />
         
             <!-- Hook for extra Form options -->
             <template v-if="hasEndLeftForm">  
                 <form 
                     id="form-filter-end-left"
                     class="form-hook-region"
-                    v-html="getEndLeftForm"/>
+                    v-html="getEndLeftForm" />
             </template>
         </div>
         

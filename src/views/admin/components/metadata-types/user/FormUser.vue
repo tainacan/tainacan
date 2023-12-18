@@ -5,7 +5,7 @@
                 {{ $i18n.getHelperTitle('tainacan-user', 'default_author') }}<span>&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-user', 'default_author')"
-                        :message="$i18n.getHelperMessage('tainacan-user', 'default_author')"/>
+                        :message="$i18n.getHelperMessage('tainacan-user', 'default_author')" />
             </label>
             <b-checkbox
                     v-model="defaultAuthor"

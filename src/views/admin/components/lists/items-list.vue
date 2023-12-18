@@ -65,7 +65,7 @@
                         <button class="button is-white">
                             <span>{{ $i18n.get('label_actions_for_the_selection') }}</span>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button>
                     </template>
@@ -266,7 +266,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                             </span>
                         </a>
                         <a
@@ -281,7 +281,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                             </span>
                         </a>
                         <a
@@ -299,7 +299,7 @@
                                     class="icon">
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                             </span>
                         </a>
                         <a 
@@ -318,7 +318,7 @@
                                         html: true
                                     }"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                             </span>
                         </a>
                     </div>
@@ -430,7 +430,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
                                         class="icon">
-                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                 </span>
                             </a>
                             <a
@@ -445,7 +445,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
                                         class="icon">
-                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                 </span>
                             </a>
                             <a
@@ -463,7 +463,7 @@
                                         class="icon">
                                     <i
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                 </span>
                             </a>
                             <a 
@@ -482,7 +482,7 @@
                                             html: true
                                         }"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                 </span>
                             </a>
                         </div>
@@ -580,7 +580,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                             </span>
                         </a>
                         <a
@@ -595,7 +595,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                             </span>
                         </a>
                         <a
@@ -613,7 +613,7 @@
                                     class="icon">
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                             </span>
                         </a>
                         <a 
@@ -632,7 +632,7 @@
                                         html: true
                                     }"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                             </span>
                         </a>
                     </div>
@@ -822,7 +822,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
                                         class="icon">
-                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                 </span>
                             </a>
                             <a
@@ -837,7 +837,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }"
                                         class="icon">
-                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                 </span>
                             </a>
                             <a
@@ -855,7 +855,7 @@
                                         class="icon">
                                     <i
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                 </span>
                             </a>
                             <a 
@@ -874,7 +874,7 @@
                                             html: true
                                         }"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                 </span>
                             </a>
                         </div>
@@ -906,7 +906,7 @@
                                     <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                     <p
                                             class="metadata-value"
-                                            v-html="item.description"/>
+                                            v-html="item.description" />
                                 </span>
                                 <template 
                                         v-for="(column, metadatumIndex) in displayedMetadata"
@@ -917,14 +917,14 @@
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <p
                                                 class="metadata-value"
-                                                v-html="renderMetadata(item.metadata, column)"/>
+                                                v-html="renderMetadata(item.metadata, column)" />
                                     </span>
                                     <span
                                             v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined && column.display">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <p
                                                 class="metadata-value"
-                                                v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"/>
+                                                v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]" />
                                     </span>
                                 </template>
                             </div>
@@ -1070,7 +1070,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }"
-                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
+                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.title != undefined && item.title != '') ? item.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <p
                                         v-if="collectionId == undefined &&
                                             column.metadata_type_object != undefined &&
@@ -1086,7 +1086,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)"/>
+                                        v-html="`<span class='sr-only'>` + column.name + ': </span>' + ((item.description != undefined && item.description) != '' ? item.description : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                                 <p
                                         v-if="item.metadata != undefined &&
                                             column.metadatum !== 'row_thumbnail' &&
@@ -1107,7 +1107,7 @@
                                             autoHide: false,
                                             placement: 'auto-start'
                                         }"
-                                        v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
+                                        v-html="renderMetadata(item.metadata, column) != '' ? renderMetadata(item.metadata, column) : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
 
                                 <span 
                                         v-if="column.metadatum == 'row_thumbnail'"
@@ -1189,7 +1189,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
-                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a
@@ -1204,7 +1204,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
-                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                     </span>
                                 </a>
                                 <a
@@ -1222,7 +1222,7 @@
                                             class="icon">
                                     <i
                                             :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                     </span>
                                 </a>
                                 <a 
@@ -1241,7 +1241,7 @@
                                                 html: true
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
                             </div>
@@ -1363,7 +1363,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                             </span>
                         </a>
                         <a
@@ -1378,7 +1378,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                     }"
                                     class="icon">
-                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                             </span>
                         </a>
                         <a
@@ -1396,7 +1396,7 @@
                                     class="icon">
                                 <i
                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                             </span>
                         </a>
                         <a 
@@ -1415,7 +1415,7 @@
                                         html: true
                                     }"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                             </span>
                         </a>
                     </div>
@@ -1449,7 +1449,7 @@
                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                 <p
                                         class="metadata-value"
-                                        v-html="item.description"/>
+                                        v-html="item.description" />
                             </span>
                             <template 
                                     v-for="(column, metadatumIndex) in displayedMetadata"
@@ -1460,13 +1460,13 @@
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <p      
                                             class="metadata-value"
-                                            v-html="renderMetadata(item.metadata, column)"/> 
+                                            v-html="renderMetadata(item.metadata, column)" /> 
                                 </span>
                                 <span v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined && column.display">
                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                     <p
                                             class="metadata-value"
-                                            v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"/>
+                                            v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]" />
                                 </span>
                             </template>
                         </div>
@@ -1603,7 +1603,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
-                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a
@@ -1618,7 +1618,7 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
-                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                     </span>
                                 </a>
                                 <a
@@ -1636,7 +1636,7 @@
                                             class="icon">
                                         <i
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                                class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                                class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                     </span>
                                 </a>
                             </div>
@@ -1856,7 +1856,7 @@
                                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                                     }"
                                                     class="icon">
-                                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                             </span>
                                         </a>
                                         <a
@@ -1871,7 +1871,7 @@
                                                         popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                                     }"
                                                     class="icon">
-                                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo"/>
+                                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-undo" />
                                             </span>
                                         </a>
                                         <a
@@ -1889,7 +1889,7 @@
                                                     class="icon">
                                                 <i
                                                         :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                             </span>
                                         </a>
                                         <a 
@@ -1908,7 +1908,7 @@
                                                         html: true
                                                     }"
                                                     class="icon">
-                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                             </span>
                                         </a>
                                     </div>
@@ -1940,7 +1940,7 @@
                                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
                                                 <p
                                                         class="metadata-value"
-                                                        v-html="item.description != undefined ? item.description : ''"/>
+                                                        v-html="item.description != undefined ? item.description : ''" />
                                             </span>
                                             <template 
                                                     v-for="(column, metadatumIndex) in displayedMetadata"
@@ -1955,13 +1955,13 @@
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <p
                                                             class="metadata-value"
-                                                            v-html="renderMetadata(item.metadata, column)"/>
+                                                            v-html="renderMetadata(item.metadata, column)" />
                                                 </span>
                                                 <span v-if="(column.metadatum == 'row_modification' || column.metadatum == 'row_creation' || column.metadatum == 'row_author') && item[column.slug] != undefined">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <p
                                                             class="metadata-value"
-                                                            v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]"/>
+                                                            v-html="(column.metadatum == 'row_creation' || column.metadatum == 'row_modification') ? parseDateToNavigatorLanguage(item[column.slug]) : item[column.slug]" />
                                                 </span>
                                             </template>
                                         </div>

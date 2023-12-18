@@ -24,7 +24,7 @@
 
         <b-loading 
                 v-model="isLoading" 
-                :can-cancel="false"/>
+                :can-cancel="false" />
 
         <form 
                 v-if="importer != undefined && importer != null" 
@@ -36,7 +36,7 @@
             <b-loading 
                     v-model="isLoadingSourceInfo"
                     :is-full-page="false" 
-                    :can-cancel="false"/>
+                    :can-cancel="false" />
             
             <!-- Metadata Mapping -->
             <div 
@@ -50,7 +50,7 @@
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createAllMetadata()">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-approvedcircle"/>
+                            <i class="tainacan-icon tainacan-icon-approvedcircle" />
                         </span>
                         {{ $i18n.get('label_set_all_create_metadata') }}
                     </a>
@@ -60,7 +60,7 @@
                             class="is-inline is-pulled-right add-link has-text-secondary"
                             @click="createNewMetadatum()">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-add"/>
+                            <i class="tainacan-icon tainacan-icon-add" />
                         </span>
                         {{ $i18n.get('label_add_more_metadata') }}
                     </a>
@@ -214,7 +214,7 @@
                             aria-modal>
                         <b-loading 
                                 v-model="isLoadingMetadatumTypes" 
-                                :is-full-page="isFullPage"/>
+                                :is-full-page="isFullPage" />
                         <div 
                                 
                                 class="tainacan-modal-content">

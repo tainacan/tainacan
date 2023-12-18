@@ -40,13 +40,13 @@
             <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
                 <b-field :addons="false">
                     <label class="label is-inline">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle" />
                         {{ $i18n.get('label_inherited_roles') }}
                         <help-button
                                 :title="$i18n.get('label_inherited_roles')"
                                 :message="$i18n.get('info_inherited_roles')"
                                 extra-classes="is-warning"
-                                forced-icon-color="yellow2"/>
+                                forced-icon-color="yellow2" />
                     </label>
                     <br>
                     <div class="roles-list">

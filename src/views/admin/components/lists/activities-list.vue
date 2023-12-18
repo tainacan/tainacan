@@ -63,7 +63,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-html="activity.user_name"/>
+                                    v-html="activity.user_name" />
                         </td>
                         <!-- Activity Date -->
                         <td
@@ -82,7 +82,7 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
-                                    v-html="activity.date"/>
+                                    v-html="activity.date" />
                         </td>
                     </tr>
                 </tbody>
@@ -95,7 +95,7 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_no_activities') }}</p>

@@ -2,7 +2,7 @@
     <div>
         <div class="repository-level-page page-container">
             <tainacan-title 
-                    :bread-crumb-items="[{ path: '', label: $i18n.get('taxonomies') }]"/>
+                    :bread-crumb-items="[{ path: '', label: $i18n.get('taxonomies') }]" />
             <div class="sub-header">
 
                 <!-- New Taxonomy Button ----  -->
@@ -42,7 +42,7 @@
                                         class="icon is-small gray-icon">
                                     <i 
                                             :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                            class="tainacan-icon tainacan-icon-1-125em"/>
+                                            class="tainacan-icon tainacan-icon-1-125em" />
                                 </span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -57,7 +57,7 @@
                                 aria-role="listitem"
                                 style="padding-bottom: 0.45em">
                             <span class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending" />
                             </span>
                             {{ $i18n.get('label_descending') }}
                         </b-dropdown-item>
@@ -69,7 +69,7 @@
                                 aria-role="listitem"
                                 style="padding-bottom: 0.45em">
                             <span class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending" />
                             </span>
                             {{ $i18n.get('label_ascending') }}
                         </b-dropdown-item>
@@ -114,7 +114,7 @@
                 <b-loading
                         v-model="isLoading" 
                         :is-full-page="true" 
-                        :can-cancel="false"/>
+                        :can-cancel="false" />
                 <div class="tabs">
                     <ul>
                         <li 
@@ -165,7 +165,7 @@
                             :status="status"
                             :page="page"
                             :taxonomies-per-page="taxonomiesPerPage"
-                            :taxonomies="taxonomies"/>
+                            :taxonomies="taxonomies" />
                     
                     <!-- Empty state image -->
                     <div v-if="taxonomies.length <= 0 && !isLoading">
@@ -173,7 +173,7 @@
                             <div class="content has-text-grey has-text-centered">
                                 <p>
                                     <span class="icon is-medium">
-                                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
+                                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                                     </span>
                                 </p>
                                 <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
@@ -236,7 +236,7 @@
                                     :aria-previous-label="$i18n.get('label_previous_page')"
                                     :aria-page-label="$i18n.get('label_page')"
                                     :aria-current-label="$i18n.get('label_current_page')"
-                                    @change="onPageChange"/>
+                                    @change="onPageChange" />
                        
                         </div>
                     </div>

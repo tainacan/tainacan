@@ -1,7 +1,7 @@
 <template>
     <div class="child-metadata-list-container">    
         <span class="icon children-icon not-sortable-item">
-            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel"/>
+            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel" />
         </span> 
         <section 
                 v-if="childrenMetadata.length <= 0"
@@ -9,7 +9,7 @@
             <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata" />
                     </span>
                 </p>
                 <p>{{ $i18n.get('info_create_child_metadata') }}</p>
@@ -86,8 +86,8 @@
                                     fill="currentColor">
                                 <path
                                         d="M0 0h24v24H0V0z"
-                                        fill="transparent"/>
-                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                        fill="transparent" />
+                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                             </svg>
                         </span>
                         <span 
@@ -139,7 +139,7 @@
                                         placement: 'auto-start'
                                     }"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-private"/>
+                                <i class="tainacan-icon tainacan-icon-private" />
                             </span>
                             <span 
                                     v-tooltip="{
@@ -162,7 +162,7 @@
                         </span>
                         <span 
                                 v-if="metadatum.id == undefined" 
-                                class="loading-spinner"/>
+                                class="loading-spinner" />
                         <span 
                                 v-if="metadatum.id !== undefined" 
                                 class="controls">
@@ -181,7 +181,7 @@
                                             placement: 'auto-start'
                                         }"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                 </span>
                             </a>
                             <a 
@@ -201,7 +201,7 @@
                                             placement: 'auto-start'
                                         }"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                                 </span>
                             </a>
                         </span>

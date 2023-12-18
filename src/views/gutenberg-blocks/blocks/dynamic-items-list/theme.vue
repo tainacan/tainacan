@@ -3,7 +3,7 @@
         <div
                 v-if="isLoadingCollection"
                 class="dynamic-items-collection-header skeleton" 
-                :style="{ height: '165px' }"/>
+                :style="{ height: '165px' }" />
         <a
                 v-else
                 :href="collection.url ? collection.url : ''"
@@ -34,14 +34,14 @@
                 class="collection-thumbnail"
                 :style="{ 
                     backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
-                }"/>
+                }" />
             <div
                     class="collection-header-image"
                     :style="{
                         backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
                         minHeight: collection && collection.header_image ? '' : '80px',
                         display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
-                    }"/>
+                    }" />
         </a>   
     </div>
     <div
@@ -57,7 +57,7 @@
                             width="24"
                             height="24"
                             viewBox="-2 -2 20 20">
-                        <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z"/>       
+                        <path d="M6.7,10.8l-3.3,3.3L0,10.8h2.5V0h1.7v10.8H6.7z M11.7,0.8H8.3v1.7h3.3V0.8z M14.2,5.8H8.3v1.7h5.8V5.8z M16.7,10.8H8.3v1.7	h8.3V10.8z" />       
                     </svg>
                 </i>
             </span>
@@ -73,7 +73,7 @@
                             height="24"
                             viewBox="-2 -2 20 20">
                         <path
-                                d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z"/>
+                                d="M6.7,3.3H4.2v10.8H2.5V3.3H0L3.3,0L6.7,3.3z M11.6,2.5H8.3v1.7h3.3V2.5z M14.1,7.5H8.3v1.7h5.8V7.5z M16.6,12.5H8.3v1.7 h8.3V12.5z" />
                     </svg>
                 </i>
             </span>
@@ -96,7 +96,7 @@
                                 c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
                                 C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
                                 c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
-                                c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z"/>       
+                                c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z" />       
                     </svg>
                 </i>
             </span>
@@ -116,10 +116,10 @@
                             width="30"
                             height="30"
                             viewBox="0 2 20 20">
-                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                        
+                                fill="none" />                        
                     </svg>
                 </i>
             </span>
@@ -136,10 +136,10 @@
                             width="30"
                             height="30"
                             viewBox="0 2 20 20">
-                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                         <path
                                 d="M0 0h24v24H0z"
-                                fill="none"/>                        
+                                fill="none" />                        
                     </svg>
                 </i>
             </span>

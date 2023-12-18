@@ -1,8 +1,8 @@
 <template>
     <div class="repository-level-page page-container">
-        <b-loading v-model="isLoading"/>
+        <b-loading v-model="isLoading" />
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]" />
         <div class="sub-header">
             
             <!-- New Collection button -->
@@ -144,7 +144,7 @@
                                     class="icon is-small gray-icon">
                                 <i 
                                         :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                        class="tainacan-icon tainacan-icon-1-125em"/>
+                                        class="tainacan-icon tainacan-icon-1-125em" />
                             </span>
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -159,7 +159,7 @@
                             aria-role="listitem"
                             style="padding-bottom: 0.45em">
                         <span class="icon is-small gray-icon">
-                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending"/>
+                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending" />
                         </span>
                         {{ $i18n.get('label_descending') }}
                     </b-dropdown-item>
@@ -171,7 +171,7 @@
                             aria-role="listitem"
                             style="padding-bottom: 0.45em">
                         <span class="icon is-small gray-icon">
-                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending"/>
+                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending" />
                         </span>
                         {{ $i18n.get('label_ascending') }}
                     </b-dropdown-item>
@@ -374,7 +374,7 @@
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
                                 :aria-current-label="$i18n.get('label_current_page')"
-                                @change="onPageChange"/> 
+                                @change="onPageChange" /> 
                     </div>
                 </div>    
             </div> 

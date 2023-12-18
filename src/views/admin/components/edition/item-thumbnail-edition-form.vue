@@ -5,13 +5,13 @@
                 class="section-label">
             <label>
                 <span class="icon has-text-gray4">
-                    <i class="tainacan-icon tainacan-icon-image"/>
+                    <i class="tainacan-icon tainacan-icon-image" />
                 </span>
                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
             </label>
             <help-button
                     :title="collection && collection.item_thumbnail_label ? collection.item_thumbnail_label: $i18n.getHelperTitle('items', '_thumbnail_id')"
-                    :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
+                    :message="$i18n.getHelperMessage('items', '_thumbnail_id')" />
 
         </div>
         <div 
@@ -28,7 +28,7 @@
                             thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
                             title: $i18n.get('label_thumbnail'),
                             description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
-                        }"/>
+                        }" />
                 <figure
                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                         class="image">
@@ -47,7 +47,7 @@
                         :label="$i18n.get('label_thumbnail_alt')">
                     <help-button 
                             :title="$i18n.get('label_thumbnail_alt')" 
-                            :message="$i18n.get('info_thumbnail_alt')"/>
+                            :message="$i18n.get('info_thumbnail_alt')" />
                     <textarea
                             id="tainacan-text-description"
                             class="textarea"
@@ -69,7 +69,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-edit"/>
+                            <i class="tainacan-icon tainacan-icon-edit" />
                         </span>
                     </a>
                     <a
@@ -86,7 +86,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-delete"/>
+                            <i class="tainacan-icon tainacan-icon-delete" />
                         </span>
                     </a>
                 </div>

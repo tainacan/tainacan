@@ -18,7 +18,7 @@
                         <span 
                                 v-else
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-repository"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-repository" />
                         </span>
                     </router-link>
                 </li>
@@ -27,7 +27,7 @@
                             :to="$routerHelper.getCollectionsPath()"
                             :class="activeRoute == 'CollectionsPage' || $route.params.collectionId != undefined ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-collections"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-collections" />
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('collections', 'name') }}</span>
                     </router-link>
@@ -37,18 +37,18 @@
                             :to="{name: 'RepositoryItemsPage' }"
                             :class="activeRoute == 'RepositoryItemsPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items" />
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('items', 'name') }}</span>
                     </router-link>
                 </li>
-                <li class="separator"/>
+                <li class="separator" />
                 <li v-if="$userCaps.hasCapability('tnc_rep_edit_metadata') && !$adminOptions.hidePrimaryMenuMetadataButton">
                     <router-link
                             to="/metadata"
                             :class="activeRoute == 'MetadataPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
                         </span>
                         <span class="menu-text">{{ $i18n.get('metadata') }}</span>
                     </router-link>
@@ -58,7 +58,7 @@
                             to="/filters"
                             :class="activeRoute == 'FiltersPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
@@ -68,7 +68,7 @@
                             to="/taxonomies"
                             :class="activeRoute == 'Page' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-taxonomies"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-taxonomies" />
                         </span>
                         <span class="menu-text">{{ $i18n.getFrom('taxonomies', 'name') }}</span>
                     </router-link>
@@ -78,7 +78,7 @@
                             to="/activities"
                             :class="activeRoute == 'ActivitiesPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
                         </span>
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>
@@ -90,7 +90,7 @@
                             :to="$routerHelper.getCapabilitiesPath()"
                             :class="activeRoute == 'CapabilitiesPage' ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-capability"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-capability" />
                         </span>
                         <span class="menu-text">{{ $i18n.get('capabilities') }}</span>
                     </router-link>
@@ -104,7 +104,7 @@
                                 activeRoute == 'ImporterCreationForm' ||
                                 activeRoute == 'ImporterMappingForm' ) ? 'is-active':''">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-importers"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-importers" />
                             </span>
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
@@ -116,7 +116,7 @@
                                 activeRoute == 'ExportersPage' ||
                                 activeRoute == 'ExporterEditionForm') ? 'is-active':''">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export" />
                         </span>
                         <span class="menu-text">{{ $i18n.get('exporters') }}</span>
                     </router-link>

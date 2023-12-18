@@ -52,7 +52,7 @@
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousSearchPage">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-previous"/>
+                                <i class="tainacan-icon tainacan-icon-previous" />
                             </span>
                         </a>
                         <ul class="tainacan-modal-checkbox-list-body">
@@ -88,7 +88,7 @@
                             </template>
                             <b-loading
                                     v-model="isLoadingSearch"
-                                    :is-full-page="false"/>
+                                    :is-full-page="false" />
                         </ul>
                         <a
                                 v-if="!noMoreSearchPage"
@@ -96,7 +96,7 @@
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextSearchPage">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-next"/>
+                                <i class="tainacan-icon tainacan-icon-next" />
                             </span>
                         </a>
                     </div>
@@ -111,7 +111,7 @@
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="previousPage">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-previous"/>
+                                <i class="tainacan-icon tainacan-icon-previous" />
                             </span>
                         </a>
                         <ul 
@@ -151,7 +151,7 @@
                             </template>
                             <b-loading
                                     v-model="isCheckboxListLoading"
-                                    :is-full-page="false"/>
+                                    :is-full-page="false" />
                         </ul>
                         <a
                                 v-if="!noMorePage"
@@ -159,7 +159,7 @@
                                 class="tainacan-checkbox-list-page-changer"
                                 @click="nextPage">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-next"/>
+                                <i class="tainacan-icon tainacan-icon-next" />
                             </span>
                         </a>
                     </div>
@@ -228,7 +228,7 @@
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }">{{ option.total_children }}</span>
                                         <span class="icon is-pulled-right">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowright" />
                                         </span>
                                     </a>
                                 </b-field>
@@ -238,7 +238,7 @@
                                             class="tainacan-show-more"
                                             @click="getMoreOptions(finderColumn, key)">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                                         </span>
                                     </div>
                                     <div 
@@ -253,7 +253,7 @@
 
                     <b-loading
                             v-model="isColumnLoading"
-                            :is-full-page="false"/>
+                            :is-full-page="false" />
                     
                 </b-tab-item>
 
@@ -285,7 +285,7 @@
                                     <span class="icon is-medium">
                                         <i  
                                                 class="tainacan-icon tainacan-icon-30px"
-                                                :class="{ 'tainacan-icon-terms': isTaxonomy, 'tainacan-icon-metadata': !isTaxonomy }"/>
+                                                :class="{ 'tainacan-icon-terms': isTaxonomy, 'tainacan-icon-metadata': !isTaxonomy }" />
                                     </span>
                                 </p>
                                 <p>{{ isTaxonomy ? $i18n.get('label_no_terms_selected') : $i18n.get('label_nothing_selected') }}</p>
@@ -293,7 +293,7 @@
                         </section>
                         <b-loading
                                 v-model="isSelectedTermsLoading"
-                                :is-full-page="false"/>
+                                :is-full-page="false" />
                     </div>
                 </b-tab-item>
             </b-tabs>

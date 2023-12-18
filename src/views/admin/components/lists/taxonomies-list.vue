@@ -26,7 +26,7 @@
                         <button class="button is-white">
                             <span>{{ $i18n.get('label_bulk_actions') }}</span>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                             </span>
                         </button> 
                     </template>
@@ -93,7 +93,7 @@
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
-                                    v-model="selected[index]"/> 
+                                    v-model="selected[index]" /> 
                         </td>
                         <!-- Status icon -->
                         <td 
@@ -215,7 +215,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a 
@@ -233,7 +233,7 @@
                                             class="icon">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                                class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                                class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                     </span>
                                 </a>
                                 <a 
@@ -252,7 +252,7 @@
                                                 html: true
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
                             </div>

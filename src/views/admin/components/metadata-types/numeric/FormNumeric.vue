@@ -5,7 +5,7 @@
                 {{ $i18n.getHelperTitle('tainacan-numeric', 'step') }}<span>&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-numeric', 'step')"
-                        :message="$i18n.getHelperMessage('tainacan-numeric', 'step')"/>
+                        :message="$i18n.getHelperMessage('tainacan-numeric', 'step')" />
             </label>
             <div
                     v-if="!showEditStepOptions"
@@ -40,7 +40,7 @@
                                 popperClass: ['tainacan-tooltip', 'tooltip']
                             }"
                             class="icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary"/>
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-edit has-text-secondary" />
                     </span>
                 </button>
             </div>
@@ -64,7 +64,7 @@
                                 popperClass: ['tainacan-tooltip', 'tooltip']
                             }"
                             class="icon">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary"/>
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close has-text-secondary" />
                     </span>
                 </button>
             </div>
@@ -80,7 +80,7 @@
                     v-model="min"
                     name="min"
                     step="1"
-                    @input="onUpdateMin"/>
+                    @input="onUpdateMin" />
         </b-field>
         <b-field :addons="false">
             <label class="label is-inline">
@@ -93,7 +93,7 @@
                     v-model="max"
                     name="max"
                     step="1"
-                    @input="onUpdateMax"/>
+                    @input="onUpdateMax" />
         </b-field>
     </section>
 </template>

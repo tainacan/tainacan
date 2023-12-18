@@ -23,7 +23,7 @@
                         <file-item
                                 :show-name="true"
                                 :modal-on-click="true"
-                                :file="attachment"/>
+                                :file="attachment" />
                         <span
                                 v-if="isEditable && form.document != attachment.id"
                                 class="file-item-control">
@@ -36,7 +36,7 @@
                                     }"
                                     class="icon"
                                     @click="onDeleteAttachment(attachment)">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                             </a>
                         </span>
                     </div>
@@ -49,7 +49,7 @@
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-attachments"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-attachments" />
                             </span>
                         </p>
                         <p>{{ $i18n.getWithVariables('info_no_%s_on_item_yet', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) }}</p>
@@ -81,7 +81,7 @@
                         :aria-previous-label="$i18n.get('label_previous_page')"
                         :aria-page-label="$i18n.get('label_page')"
                         :aria-current-label="$i18n.get('label_current_page')"
-                        @change="onPageChange"/>
+                        @change="onPageChange" />
             </div>
         </div>
     </div>

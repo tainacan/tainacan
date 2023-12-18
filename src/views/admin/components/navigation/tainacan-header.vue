@@ -17,7 +17,7 @@
                                 popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
                             }"
                             class="icon">
-                        <i class="tainacan-icon tainacan-icon-home has-text-blue5"/>
+                        <i class="tainacan-icon tainacan-icon-home has-text-blue5" />
                     </span>
                 </router-link>
             </div>
@@ -46,7 +46,7 @@
                         :aria-label="$i18n.get('search')"
                         @click="$router.push($routerHelper.getItemsPath())">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-search" />
                     </span>
                 </button>
             </div>
@@ -86,12 +86,12 @@
                             popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
                         }"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-processes" />
                 </span>
             </button>
             <processes-popup
                     v-if="showProcesses"
-                    @closeProcessesPopup="showProcesses = false"/>
+                    @closeProcessesPopup="showProcesses = false" />
             <a
                     class="level-item"
                     :href="wordpressAdmin"
@@ -104,7 +104,7 @@
                             popperClass: ['tainacan-tooltip', 'tainacan-repository-header-tooltip', 'tooltip']
                         }"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-wordpress"/>
+                    <i class="tainacan-icon tainacan-icon-wordpress" />
                 </span>
             </a>
         </div>

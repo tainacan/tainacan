@@ -4,13 +4,13 @@
             :aria-busy="isLoadingFilters">
         <b-loading
                 v-model="isLoadingFilters"
-                :is-full-page="false"/>
+                :is-full-page="false" />
 
         <h3 
                 id="filters-label-landmark"
                 class="has-text-weight-semibold">
             <span class="gray-icon is-hidden">
-                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
             </span>
             <span>{{ $i18n.get('filters') }}</span>
         </h3>
@@ -26,7 +26,7 @@
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright' : collapseAll }"
-                        class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
+                        class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
             </span>
             <span class="collapse-all__text">
                 {{ !collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -86,7 +86,7 @@
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen"/>
+                                    :is-mobile-screen="isMobileScreen" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>

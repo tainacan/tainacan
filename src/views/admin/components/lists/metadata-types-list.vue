@@ -1,9 +1,9 @@
 <template>
     <div 
             v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_metadata')) || !isRepositoryLevel"
-            class="column available-metadata-types-area" >
+            class="column available-metadata-types-area">
 
-        <b-loading v-model="isLoadingMetadataTypes"/>
+        <b-loading v-model="isLoadingMetadataTypes" />
 
         <div class="field">
             <h3 class="label">{{ $i18n.get('label_available_metadata_types') }}</h3>
@@ -43,8 +43,8 @@
                                     fill="currentColor">
                                 <path
                                         d="M0 0h24v24H0V0z"
-                                        fill="transparent"/>
-                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                        fill="transparent" />
+                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                             </svg>
                         </span>
                         <span class="metadatum-name">
@@ -61,12 +61,12 @@
                                         placement: 'top',
                                     }"
                                     class="icon preview-help-icon has-text-secondary">
-                                <i class="tainacan-icon tainacan-icon-help"/>
+                                <i class="tainacan-icon tainacan-icon-help" />
                             </span>
                         </span>
                         <span 
                                 v-if="highlightedMetadatum == metadatum.name" 
-                                class="loading-spinner"/>
+                                class="loading-spinner" />
                     </div>
                 </template>
             </sortable>
@@ -107,8 +107,8 @@
                                     fill="currentColor">
                                 <path
                                         d="M0 0h24v24H0V0z"
-                                        fill="transparent"/>
-                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                        fill="transparent" />
+                                <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                             </svg>
                         </span>
                         <span class="metadatum-name">
@@ -125,7 +125,7 @@
                                         placement: 'top',
                                     }"
                                     class="icon preview-help-icon has-text-secondary">
-                                <i class="tainacan-icon tainacan-icon-help"/>
+                                <i class="tainacan-icon tainacan-icon-help" />
                             </span>
                         </span>
                     </div>

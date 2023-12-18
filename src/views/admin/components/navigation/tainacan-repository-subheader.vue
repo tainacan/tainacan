@@ -19,7 +19,7 @@
                         :aria-label="$i18n.get('back')"
                         @click="navigate()">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-previous"/>
+                        <i class="tainacan-icon tainacan-icon-previous" />
                     </span>
                 </button>
             </router-link>
@@ -65,7 +65,7 @@
                         :aria-label="$i18n.get('exporters')"
                         @click="openAvailableExportersModal">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export" />
                     </span>
                     <span class="is-hidden-mobile">{{ $i18n.get('exporters') }}</span>
                 </a>
@@ -78,7 +78,7 @@
                         target="_blank"
                         class="button">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                     </span>
                     <span class="is-hidden-mobile">{{ $i18n.get('label_view_collection_on_website') }}</span>
                 </a>
@@ -91,7 +91,7 @@
                         target="_blank"
                         class="button">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                     </span>
                     <span class="is-hidden-mobile">{{ $i18n.get('label_view_taxonomies_on_website') }}</span>
                 </a>
@@ -104,7 +104,7 @@
                         target="_blank"
                         class="button">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                     </span>
                     <span class="is-hidden-mobile">{{ $i18n.get('label_view_collections_on_website') }}</span>
                 </a>

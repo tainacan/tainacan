@@ -14,7 +14,7 @@
                 <span class="icon is-large">
                     <i 
                             style="color: var(--tainacan-blue5);"
-                            class="tainacan-icon tainacan-icon-taxonomies"/>
+                            class="tainacan-icon tainacan-icon-taxonomies" />
                 </span>
             </div>
             <section 

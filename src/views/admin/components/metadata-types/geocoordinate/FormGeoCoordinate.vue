@@ -1,6 +1,6 @@
 <template>
     <section> 
-        <b-field :addons="false" >
+        <b-field :addons="false">
                 <label class="label is-inline">
                     {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'map_provider') }}
                     <span>&nbsp;*&nbsp;</span>
@@ -16,7 +16,7 @@
         </b-field>
 
         <b-field
-                :addons="false" >
+                :addons="false">
                 <label class="label is-inline">
                     {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'attribution') }}
                     <span>&nbsp;*&nbsp;</span>
@@ -33,7 +33,7 @@
         </b-field>
 
         <b-field
-                :addons="false" >
+                :addons="false">
                 <label class="label is-inline">
                     {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'initial_zoom') }}
                     <span>&nbsp;*&nbsp;</span>
@@ -51,7 +51,7 @@
         </b-field>
 
         <b-field
-                :addons="false" >
+                :addons="false">
                 <label class="label is-inline">
                     {{ $i18n.getHelperTitle('tainacan-geocoordinate', 'maximum_zoom') }}
                     <span>&nbsp;*&nbsp;</span>

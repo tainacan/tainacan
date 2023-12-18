@@ -3,7 +3,7 @@
         <b-loading
                 v-model="isLoading"
                 :is-full-page="false"
-                :can-cancel="false"/>
+                :can-cancel="false" />
 
         <tainacan-title 
                 v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)"
@@ -60,8 +60,8 @@
                                 width="24">
                             <path
                                     d="M0 0h24v24H0z"
-                                    fill="none"/>
-                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                                    fill="none" />
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
                         </svg>
                     </i>
                 </span>
@@ -85,7 +85,7 @@
                 <span 
                         v-if="isUpdatingValues"
                         class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-spin"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating tainacan-icon-spin" />
                 </span>
                 <span 
                         v-else
@@ -98,8 +98,8 @@
                                 width="24">
                             <path
                                     d="M0 0h24v24H0z"
-                                    fill="none"/>
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                                    fill="none" />
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                         </svg>
                     </i>
                 </span>
@@ -185,7 +185,7 @@
                             <form
                                 id="form-item-begin-right"
                                 class="form-hook-region"
-                                v-html="getBeginRightForm"/>
+                                v-html="getBeginRightForm" />
                         </template>
 
                         <div class="b-tabs">
@@ -221,10 +221,10 @@
                                             width="24"
                                             height="24"
                                             viewBox="0 0 32 32">
-                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                                         <path
                                                 d="M0 0h24v24H0z"
-                                                fill="none"/>
+                                                fill="none" />
                                     </svg>
                                 </button>
                                 <button 
@@ -235,10 +235,10 @@
                                             width="24"
                                             height="24"
                                             viewBox="0 0 24 24">
-                                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                                         <path
                                                 d="M0 0h24v24H0z"
-                                                fill="none"/>
+                                                fill="none" />
                                     </svg>
                                 </button>
                             </nav>
@@ -275,7 +275,7 @@
                                             <span class="icon">
                                                 <i
                                                         :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                                                        class="tainacan-icon tainacan-icon-1-25em"/>
+                                                        class="tainacan-icon tainacan-icon-1-25em" />
                                             </span>
                                             <template v-if="isMobileScreen">{{ collapseAll ? $i18n.get('label_collapse') : $i18n.get('label_expand') }}</template>
                                             <template v-else>{{ collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}</template>
@@ -334,7 +334,7 @@
                                                 v-if="isUpdatingValues && isMetadataNavigation && !$adminOptions.mobileAppMode"
                                                 class="update-warning">
                                             <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating"/>
+                                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-updating" />
                                             </span>
                                         </span>
 
@@ -391,11 +391,11 @@
                                                                 'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || formErrorMessage) && !isSectionHidden(metadataSection.id),
                                                                 'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage) || isSectionHidden(metadataSection.id)
                                                             }"
-                                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                                 </span>
                                                 <label>
                                                     <span class="icon has-text-gray4">
-                                                        <i class="tainacan-icon tainacan-icon-metadata"/>
+                                                        <i class="tainacan-icon tainacan-icon-metadata" />
                                                     </span>
                                                     <span
                                                             v-if="metadataSections.length > 1 && collection.item_enable_metadata_enumeration === 'yes'"
@@ -466,7 +466,7 @@
                                         <form
                                             id="form-item-end-right"
                                             class="form-hook-region"
-                                            v-html="formHooks['item']['end-right'].join('')"/>
+                                            v-html="formHooks['item']['end-right'].join('')" />
                                     </template>
                                 </div>
 
@@ -556,7 +556,7 @@
                                 <form
                                         id="form-item-begin-left"
                                         class="form-hook-region"
-                                        v-html="getBeginLeftForm"/>
+                                        v-html="getBeginLeftForm" />
                             </template>
 
                             <!-- Document -------------------------------- -->
@@ -605,7 +605,7 @@
                                 <form
                                     id="form-item-end-left"
                                     class="form-hook-region"
-                                    v-html="getEndLeftForm"/>
+                                    v-html="getEndLeftForm" />
                             </template>
 
                         </div>
@@ -628,7 +628,7 @@
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-items" />
                             </span>
                         </p>
                         <p>{{ $i18n.get('info_can_not_edit_item') }}</p>
@@ -645,11 +645,11 @@
             <!-- Sequence Progress -->
             <div
                     v-if="isOnSequenceEdit"
-                    class="sequence-progress-background"/>
+                    class="sequence-progress-background" />
             <div
                     v-if="isOnSequenceEdit && itemPosition != undefined && group != null && group.items_count != undefined"
                     :style="{ width: (itemPosition/group.items_count)*100 + '%' }"
-                    class="sequence-progress"/>
+                    class="sequence-progress" />
 
             <!-- Last Updated Info -->
             <div 
@@ -665,7 +665,7 @@
                             v-if="isUpdatingValues"
                             class="update-warning">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-updating" />
                         </span>
                         <span>{{ $i18n.get('info_updating_metadata_values') }}</span>
                     </span>
@@ -692,12 +692,12 @@
                                 true-value="open"
                                 false-value="closed">
                             <span class="icon has-text-gray4">
-                                <i class="tainacan-icon tainacan-icon-comment"/>
+                                <i class="tainacan-icon tainacan-icon-comment" />
                             </span>
                             {{ $i18n.get('label_allow_comments') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('items', 'comment_status')"
-                                    :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                                    :message="$i18n.getHelperMessage('items', 'comment_status')" />
                         </b-switch>
                     </div>
                 </div>

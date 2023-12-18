@@ -6,10 +6,10 @@
                 :type="collectionType"
                 :message="collectionMessage">
             <label class="label is-inline">
-                {{ $i18n.get('label_collection_related') }}<span :class="collectionType" >&nbsp;*&nbsp;</span>
+                {{ $i18n.get('label_collection_related') }}<span :class="collectionType">&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-relationship', 'collection_id')"
-                        :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')"/>
+                        :message="$i18n.getHelperMessage('tainacan-relationship', 'collection_id')" />
             </label>
             <b-select
                     v-model="collection"
@@ -31,7 +31,7 @@
         <transition name="fade">
             <div
                 v-if="loadingMetadata"
-                class="loading-spinner"/>
+                class="loading-spinner" />
         </transition>
         <transition name="filter-item">
             <b-field
@@ -41,7 +41,7 @@
                     {{ $i18n.get('label_metadata_for_search') }}
                     <help-button
                             :title="$i18n.getHelperTitle('tainacan-relationship', 'search')"
-                            :message="$i18n.getHelperMessage('tainacan-relationship', 'search')"/>
+                            :message="$i18n.getHelperMessage('tainacan-relationship', 'search')" />
                 </label>
                 <b-select
                         v-model="modelSearch"
@@ -65,7 +65,7 @@
                     {{ $i18n.getHelperTitle('tainacan-relationship', 'display_related_item_metadata') }}
                     <help-button
                             :title="$i18n.getHelperTitle('tainacan-relationship', 'display_related_item_metadata')"
-                            :message="$i18n.getHelperMessage('tainacan-relationship', 'display_related_item_metadata')"/>
+                            :message="$i18n.getHelperMessage('tainacan-relationship', 'display_related_item_metadata')" />
                 </label>
                 <div :class="'displayed-metadata-options' + (metadata.length > 5 ? ' has-more-than-5-metadata' : '')">
                     <b-checkbox
@@ -101,7 +101,7 @@
                     @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-relationship', 'display_in_related_items')"
-                    :message="$i18n.getHelperMessage('tainacan-relationship', 'display_in_related_items')"/>
+                    :message="$i18n.getHelperMessage('tainacan-relationship', 'display_in_related_items')" />
         </b-field>
 
         <b-field
@@ -116,7 +116,7 @@
                     @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-relationship', 'accept_draft_items')"
-                    :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_draft_items')"/>
+                    :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_draft_items')" />
         </b-field>
 
         <b-field
@@ -131,7 +131,7 @@
                     @input="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-relationship', 'accept_only_items_authored_by_current_user')"
-                    :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_only_items_authored_by_current_user')"/>
+                    :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_only_items_authored_by_current_user')" />
         </b-field>
 
     </section>

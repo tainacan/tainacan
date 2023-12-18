@@ -3,13 +3,13 @@
         <div class="section-label">
             <label>
                 <span class="icon has-text-gray4">
-                    <i :class="'tainacan-icon tainacan-icon-' + ( (!form.document_type || form.document_type == 'empty' ) ? 'item' : (form.document_type == 'attachment' ? 'attachments' : form.document_type))"/>
+                    <i :class="'tainacan-icon tainacan-icon-' + ( (!form.document_type || form.document_type == 'empty' ) ? 'item' : (form.document_type == 'attachment' ? 'attachments' : form.document_type))" />
                 </span>
                 {{ collection && collection.item_document_label ? collection.item_document_label : ( (form.document != undefined && form.document != null && form.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
             </label>
             <help-button
                     :title="collection && collection.item_document_label ? collection.item_document_label : $i18n.getHelperTitle('items', 'document')"
-                    :message="$i18n.getHelperMessage('items', 'document')"/>
+                    :message="$i18n.getHelperMessage('items', 'document')" />
         </div>
         <div class="section-box document-field">
             <div
@@ -34,7 +34,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-edit"/>
+                            <i class="tainacan-icon tainacan-icon-edit" />
                         </span>
                     </a>
                     <a
@@ -51,7 +51,7 @@
                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-delete"/>
+                            <i class="tainacan-icon tainacan-icon-delete" />
                         </span>
                     </a>
                 </div>
@@ -64,7 +64,7 @@
                             type="button"
                             @click.prevent="($event) => $emit('onSetFileDocument', $event)">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
                         </span>
                     </button>
                     <p>{{ $i18n.get('label_file') }}</p>
@@ -74,7 +74,7 @@
                             type="button"
                             @click.prevent="$emit('onSetTextDocument')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text" />
                         </span>
                     </button>
                     <p>{{ $i18n.get('label_text') }}</p>
@@ -84,7 +84,7 @@
                             type="button"
                             @click.prevent="$emit('onSetURLDocument')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
                         </span>
                     </button>
                     <p>{{ $i18n.get('label_url') }}</p>

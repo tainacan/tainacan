@@ -16,7 +16,7 @@
                     <i 
                             :style="{ color: icon == 'alert' ? 'var(--tainacan-red2)' : ( icon == 'approved' ? '#1a745c' : 'inherit' ) }"
                             :class="'tainacan-icon-' + icon"
-                            class="tainacan-icon"/>
+                            class="tainacan-icon" />
                 </span>
             </div>
             <section 

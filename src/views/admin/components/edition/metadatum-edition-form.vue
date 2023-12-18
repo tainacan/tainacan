@@ -45,7 +45,7 @@
                         <b-input
                                 v-model="form.name"
                                 name="name"
-                                @focus="clearErrors('name')"/>
+                                @focus="clearErrors('name')" />
                     </b-field>
 
                     <!-- Hook for extra Form options -->
@@ -54,7 +54,7 @@
                         <form 
                             id="form-metadatum-begin-left"
                             class="form-hook-region"
-                            v-html="getBeginLeftForm"/>
+                            v-html="getBeginLeftForm" />
                     </template>
 
                     <b-field
@@ -73,7 +73,7 @@
                                 type="textarea"
                                 name="description"
                                 rows="3"
-                                @focus="clearErrors('description')"/>
+                                @focus="clearErrors('description')" />
                     </b-field>
 
                     <b-field 
@@ -111,7 +111,7 @@
                         <b-input
                                 v-model="form.placeholder"
                                 name="placeholder"
-                                @focus="clearErrors('placeholder')"/>
+                                @focus="clearErrors('placeholder')" />
                     </b-field>
 
                     <b-field
@@ -134,7 +134,7 @@
                                     native-value="publish"
                                     @focus="clearErrors('label_status')">
                                 <span class="icon has-text-gray3">
-                                    <i class="tainacan-icon tainacan-icon-public"/>
+                                    <i class="tainacan-icon tainacan-icon-public" />
                                 </span>
                                 {{ $i18n.get('status_public') }}
                             </b-radio>
@@ -145,7 +145,7 @@
                                     native-value="private"
                                     @focus="clearErrors('label_status')">
                                 <span class="icon has-text-gray3">
-                                    <i class="tainacan-icon tainacan-icon-private"/>
+                                    <i class="tainacan-icon tainacan-icon-private" />
                                 </span>
                                 {{ $i18n.get('status_private') }}
                             </b-radio>
@@ -272,7 +272,7 @@
                                 :disabled="!showCardinalityOptions || form.multiple != 'yes'"
                                 name="cardinality"
                                 step="1"
-                                min="2"/>
+                                min="2" />
                     </b-field>
 
                     <b-field v-if="!isRepositoryLevel && isInsideImporterFlow">
@@ -317,17 +317,17 @@
                             v-if="(form.metadata_type_object && form.metadata_type_object.form_component) || form.edit_form != ''"
                             v-model:value="form.metadata_type_options"
                             :errors="formErrors['metadata_type_options']"
-                            :metadatum="form"/>
+                            :metadatum="form" />
                     <div
                             v-else
-                            v-html="form.edit_form"/>
+                            v-html="form.edit_form" />
 
                     <!-- Hook for extra Form options -->
-                    <template v-if="hasEndLeftForm" >  
+                    <template v-if="hasEndLeftForm">  
                         <form 
                             id="form-metadatum-end-left"
                             class="form-hook-region"
-                            v-html="getEndLeftForm"/>
+                            v-html="getEndLeftForm" />
                     </template>
                 </div>
             </transition>
@@ -362,7 +362,7 @@
                                     v-model="form.semantic_uri"
                                     name="semantic_uri"
                                     type="url"
-                                    @focus="clearErrors('semantic_uri')"/>
+                                    @focus="clearErrors('semantic_uri')" />
                         </b-field>
                     </section>
                 </div>

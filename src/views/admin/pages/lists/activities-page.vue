@@ -8,7 +8,7 @@
                }">
             <tainacan-title
                     v-if="!isItemLevel"
-                    :bread-crumb-items="[{ path: '', label: $i18n.get('activities') }]"/>
+                    :bread-crumb-items="[{ path: '', label: $i18n.get('activities') }]" />
             <header 
                     v-else
                     class="tainacan-modal-title">
@@ -34,7 +34,7 @@
                 <b-loading
                         v-model="isLoading"
                         :is-full-page="false" 
-                        :can-cancel="false"/>
+                        :can-cancel="false" />
 
                 <div 
                         v-if="tab != 'processes'"
@@ -74,14 +74,14 @@
                                     $i18n.get('datepicker_month_november'),
                                     $i18n.get('datepicker_month_december')
                                 ]"
-                                @update:model-value="searchActivities()"/>
+                                @update:model-value="searchActivities()" />
                         <p
                                 v-if="searchDates && searchDates.length != 0"
                                 class="control">
                             <button 
                                     class="button"
                                     @click="clearSearchDates()">
-                                <span class="icon"><i class="tainacan-icon tainacan-icon-close"/></span>
+                                <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
                             </button>
                         </p>
                     </b-field>
@@ -184,7 +184,7 @@
                             <button
                                 class="button"
                                 @click="clearSearchDates()">
-                                <span class="icon"><i class="tainacan-icon tainacan-icon-close"/></span>
+                                <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
                             </button>
                         </p>
                     </b-field>
@@ -210,13 +210,13 @@
                         :total-activities="totalActivities"
                         :page="activitiesPage"
                         :activities-per-page="activitiesPerPage"
-                        :activities="activities"/>
+                        :activities="activities" />
                 <template v-if="tab != 'processes' && !$userCaps.hasCapability('tnc_rep_read_logs')">
                     <section class="section">
                         <div class="content has-text-grey has-text-centered">
                             <p>
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
                                 </span>
                             </p>
                             <p>{{ $i18n.get('info_can_not_read_activities') }}</p>
@@ -239,7 +239,7 @@
                         <div class="content has-text-grey has-text-centered">
                             <p>
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities"/>
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
                                 </span>
                             </p>
                             <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_process') }}</p>
@@ -286,7 +286,7 @@
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
                                 :aria-current-label="$i18n.get('label_current_page')"
-                                @change="onPageChange"/>
+                                @change="onPageChange" />
                     </div>
                 </div>
                 <div 
@@ -327,7 +327,7 @@
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
                                 :aria-current-label="$i18n.get('label_current_page')"
-                                @change="onPageChange"/>
+                                @change="onPageChange" />
                     </div>
                 </div>
             </div>

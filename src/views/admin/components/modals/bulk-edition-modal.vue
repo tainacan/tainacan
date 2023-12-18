@@ -227,7 +227,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon">
-                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel"/>
+                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel" />
                                 </span>
                             </button>
 
@@ -245,7 +245,7 @@
                                             shown: bulkEditionProcedures[criterion].tooltipShow
                                         }"
                                         class="icon">
-                                    <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
+                                    <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                                 </span>
                             </div>
 
@@ -266,7 +266,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon">
-                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-play"/>
+                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-play" />
                                 </span>
                             </button>
 
@@ -281,7 +281,7 @@
                         class="has-text-right is-inline-block add-link"
                         @click="addEditionCriterion()">
                     <span class="icon is-small">
-                        <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                     </span>
                     &nbsp;{{ $i18n.get('new_bulk_edit_criterion') }}
                 </a>

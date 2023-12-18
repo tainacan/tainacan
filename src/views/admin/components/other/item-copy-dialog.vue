@@ -16,7 +16,7 @@
                 <span class="icon is-large">
                     <i 
                             :class="'tainacan-icon-' + icon"
-                            class="tainacan-icon"/>
+                            class="tainacan-icon" />
                 </span>
             </div>
             <section 
@@ -44,7 +44,7 @@
                                 min="1" 
                                 :model-value="copyCount"
                                 step="1"
-                                @update:model-value="copyCount = $event"/>
+                                @update:model-value="copyCount = $event" />
                     </b-field>
                 </div>
             </section>

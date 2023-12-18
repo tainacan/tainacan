@@ -5,7 +5,7 @@
                 {{ $i18n.getHelperTitle('tainacan-filter-numeric-list-interval', 'showIntervalOnTag') }}<span>&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-filter-numeric-list-interval', 'showIntervalOnTag')"
-                        :message="$i18n.getHelperMessage('tainacan-filter-numeric-list-interval', 'showIntervalOnTag')"/>
+                        :message="$i18n.getHelperMessage('tainacan-filter-numeric-list-interval', 'showIntervalOnTag')" />
             </label>
             <div>
                 <b-field>
@@ -22,7 +22,7 @@
                 {{ $i18n.getHelperTitle('tainacan-filter-numeric-list-interval', 'intervals') }}<span>&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-filter-numeric-list-interval', 'intervals')"
-                        :message="$i18n.getHelperMessage('tainacan-filter-numeric-list-interval', 'intervals')"/>
+                        :message="$i18n.getHelperMessage('tainacan-filter-numeric-list-interval', 'intervals')" />
             </label>
             <transition-group name="filter-item">
                 <div
@@ -59,7 +59,7 @@
                                 :title="$i18n.get('add_value')"
                                 @click="addInterval(index)">
                             <span class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                                 &nbsp;{{ $i18n.get('add_value') }}
                         </a>
@@ -73,7 +73,7 @@
                                 :title="$i18n.get('remove_value')"
                                 @click="removeInterval(index)">
                             <span class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-repprovedcircle"/>
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-repprovedcircle" />
                             </span>
                             &nbsp;{{ $i18n.get('remove_value') }}
                         </a>

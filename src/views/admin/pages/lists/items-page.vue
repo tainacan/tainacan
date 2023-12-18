@@ -10,7 +10,7 @@
         <!-- PAGE TITLE --------------------- -->
         <tainacan-title
                 v-if="!$adminOptions.hideItemsListPageTitle" 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('items') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('items') }]" />
 
         <!-- SEARCH CONTROL ------------------------- -->
         <div
@@ -48,7 +48,7 @@
                 <span class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowleft' : isFiltersModalActive, 'tainacan-icon-arrowright' : !isFiltersModalActive }"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
+                            class="tainacan-icon tainacan-icon-1-25em" />
                 </span>
                 <span class="text is-hidden-tablet">{{ $i18n.get('filters') }}</span>
             </button>
@@ -82,7 +82,7 @@
                         <b-dropdown-item 
                                 :focusable="false"
                                 @click="updateSearch()">
-                            <span v-html="$i18n.get('instruction_press_enter_to_search_for')"/>&nbsp;
+                            <span v-html="$i18n.get('instruction_press_enter_to_search_for')" />&nbsp;
                             <em>{{ sentenceMode == true ? futureSearchQuery : ('"' + futureSearchQuery + '"') }}.</em>
                         </b-dropdown-item>
                         <b-dropdown-item
@@ -171,7 +171,7 @@
                             <div
                                     id="a-create-item"
                                     role="link"
-                                    @click="navigate()" >
+                                    @click="navigate()">
                                 {{ $i18n.get('add_one_item') }}
                             </div>
                         </router-link>
@@ -291,7 +291,7 @@
                                 <span class="icon is-small gray-icon">
                                     <i 
                                             :class="order == 'DESC' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                            class="tainacan-icon"/>
+                                            class="tainacan-icon" />
                                 </span>
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
@@ -305,7 +305,7 @@
                                 :value="'DESC'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending"/>
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortdescending" />
                             </span>
                             <span>{{ $i18n.get('label_descending') }}</span>
                         </b-dropdown-item>
@@ -316,7 +316,7 @@
                                 :value="'ASC'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending"/>
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-sortascending" />
                             </span>
                             <span>{{ $i18n.get('label_ascending') }}</span>
                         </b-dropdown-item>
@@ -390,7 +390,7 @@
                                                     'tainacan-icon-viewrecords' : adminViewMode == 'records',
                                                     'tainacan-icon-viewlist' : adminViewMode == 'list',
                                                     'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
-                                            class="tainacan-icon tainacan-icon-1-25em"/>
+                                            class="tainacan-icon tainacan-icon-1-25em" />
                                     <svg
                                             v-else
                                             xmlns="http://www.w3.org/2000/svg"
@@ -412,7 +412,7 @@
                                 :value="'table'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewtable"/>
+                                <i class="tainacan-icon tainacan-icon-viewtable" />
                             </span>
                             <span>{{ $i18n.get('label_table') }}</span>
                         </b-dropdown-item>
@@ -423,7 +423,7 @@
                                 :value="'cards'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewcards"/>
+                                <i class="tainacan-icon tainacan-icon-viewcards" />
                             </span>
                             <span>{{ $i18n.get('label_cards') }}</span>
                         </b-dropdown-item>
@@ -435,7 +435,7 @@
                                 :value="'grid'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewminiature"/>
+                                <i class="tainacan-icon tainacan-icon-viewminiature" />
                             </span>
                             <span>{{ $i18n.get('label_thumbnails') }}</span>
                         </b-dropdown-item>
@@ -446,7 +446,7 @@
                                 :value="'records'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewrecords"/>
+                                <i class="tainacan-icon tainacan-icon-viewrecords" />
                             </span>
                             <span>{{ $i18n.get('label_records') }}</span>
                         </b-dropdown-item>
@@ -458,7 +458,7 @@
                                 :value="'masonry'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewmasonry"/>
+                                <i class="tainacan-icon tainacan-icon-viewmasonry" />
                             </span>
                             <span>{{ $i18n.get('label_masonry') }}</span>
                         </b-dropdown-item>
@@ -469,7 +469,7 @@
                                 :value="'list'"
                                 aria-role="listitem">
                             <span class="icon gray-icon">
-                                <i class="tainacan-icon tainacan-icon-viewlist"/>
+                                <i class="tainacan-icon tainacan-icon-viewlist" />
                             </span>
                             <span>{{ $i18n.get('label_list') }}</span>
                         </b-dropdown-item>
@@ -505,7 +505,7 @@
                         :disabled="totalItems == undefined || totalItems <= 0"
                         @click="openExposersModal()">
                     <span class="gray-icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas"/>
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                     </span>
                     <span class="is-hidden-tablet-only is-hidden-desktop-only">{{ $i18n.get('label_view_as') }}</span>
                 </button>
@@ -535,7 +535,7 @@
                     role="dialog"
                     :collection-id="collectionId + ''"
                     :is-repository-level="isRepositoryLevel"
-                    @updateIsLoadingItemsState="(state) => isLoadingItems = state"/>
+                    @updateIsLoadingItemsState="(state) => isLoadingItems = state" />
         </b-modal>
 
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
@@ -561,7 +561,7 @@
             <!-- STATUS TABS, only on Admin -------- -->
             <items-status-tabs 
                     v-if="!$adminOptions.hideItemsListStatusTabs"
-                    :is-repository-level="isRepositoryLevel"/>
+                    :is-repository-level="isRepositoryLevel" />
 
             <!-- FILTERS TAG LIST-->
             <filters-tags-list 
@@ -589,7 +589,7 @@
                     <!--  Default loading, to be used view modes without any skeleton-->
                     <b-loading 
                             :is-full-page="false"
-                            :model-value="showLoading"/>
+                            :model-value="showLoading" />
 
                 </div>  
 
@@ -615,7 +615,7 @@
                         <button 
                                 class="button icon"
                                 @click="hasAnOpenAlert = false">
-                            <i class="tainacan-icon tainacan-icon-close"/>
+                            <i class="tainacan-icon tainacan-icon-close" />
                         </button>
                     </div>
                 </div>
@@ -631,7 +631,7 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"
                         :is-repository-level="isRepositoryLevel"
-                        @updateIsLoading="(newIsLoadingState) => isLoadingItems = newIsLoadingState"/>
+                        @updateIsLoading="(newIsLoadingState) => isLoadingItems = newIsLoadingState" />
 
                 <!-- Empty Placeholder -->
                 <section
@@ -697,7 +697,7 @@
                 <div ref="items-pagination">
                     <pagination
                             v-if="totalItems > 0"
-                            :is-sorting-by-custom-metadata="isSortingByCustomMetadata"/>
+                            :is-sorting-by-custom-metadata="isSortingByCustomMetadata" />
                 </div>
             </div>
         </div>

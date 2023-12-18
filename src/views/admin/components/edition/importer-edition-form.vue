@@ -5,7 +5,7 @@
                 :bread-crumb-items="[
                     { path: $routerHelper.getAvailableImportersPath(), label: $i18n.get('importers') },
                     { path: '', label: importerType != undefined ? (importerName != undefined ? importerName :importerType) : $i18n.get('title_importer_page') }
-                ]"/>
+                ]" />
         <form   
                 v-if="importer != undefined && importer != null"
                 class="tainacan-form" 
@@ -25,7 +25,7 @@
                         <help-button 
                                 :title="$i18n.get('label_source_file')" 
                                 :message="$i18n.get('info_source_file_upload')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <br>
                         <b-upload
                                 v-if="importer.tmp_file == undefined && (importerFile == undefined || importerFile == null || importerFile == '')" 
@@ -36,7 +36,7 @@
                                 <div class="content has-text-centered">
                                     <p>
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload"/>
+                                            <i class="tainacan-icon tainacan-icon-36px tainacan-icon-upload" />
                                         </span>
                                     </p>
                                     <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
@@ -58,7 +58,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         }"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close"/>
+                                    <i class="tainacan-icon tainacan-icon-18px tainacan-icon-close" />
                                 </span>
                             </a>
                         </div>
@@ -77,10 +77,10 @@
                         <help-button 
                                 :title="$i18n.get('label_url_source_link')" 
                                 :message="$i18n.get('info_url_source_link_helper')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <b-input
                                 id="tainacan-url-link-source"
-                                v-model="url"/>  
+                                v-model="url" />  
                     </b-field>
                 </div>
 
@@ -103,7 +103,7 @@
                         <help-button 
                                 :title="$i18n.get('label_target_collection')" 
                                 :message="$i18n.get('info_target_collection_helper')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <br>
                         <div class="is-inline">
                             <b-select
@@ -125,7 +125,7 @@
                                     class="add-link"     
                                     :to="{ path: $routerHelper.getNewCollectionPath(), query: { fromImporter: true }}">
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-add"/>
+                                    <i class="tainacan-icon tainacan-icon-add" />
                                 </span>
                                 {{ $i18n.get('new_blank_collection') }}
                             </router-link>
@@ -140,7 +140,7 @@
             <div v-if="importer.options_form != undefined && importer.options_form != null && importer.options_form != ''">
                 <!-- Importer custom options -->
                 <form id="importerOptionsForm">
-                    <div v-html="importer.options_form"/>
+                    <div v-html="importer.options_form" />
                 </form>
             </div>
 
@@ -193,7 +193,7 @@
         
         <b-loading 
                 v-model="isLoading" 
-                :can-cancel="false"/>
+                :can-cancel="false" />
     </div>
 </template>
 

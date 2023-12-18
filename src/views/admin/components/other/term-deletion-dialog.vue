@@ -13,7 +13,7 @@
                 <span class="icon is-large">
                     <i 
                             style="color: var(--tainacan-red2);"
-                            class="tainacan-icon tainacan-icon-alert"/>
+                            class="tainacan-icon tainacan-icon-alert" />
                 </span>
             </div>
             <section 

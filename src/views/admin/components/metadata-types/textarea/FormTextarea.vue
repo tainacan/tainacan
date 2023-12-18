@@ -12,7 +12,7 @@
                     name="maxlength"
                     step="1"
                     min="0"
-                    @input="onUpdateMaxlength"/>
+                    @input="onUpdateMaxlength" />
         </b-field>
     </section>
 </template>

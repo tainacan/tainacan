@@ -146,7 +146,7 @@
                                     }"
                                 class="icon has-text-gray action-icon"
                                 @click.prevent.stop="pauseProcess(index)">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-stop" />
                             </span>
                             <span
                                 v-if=" ( bgProcess.status === 'finished' && !bgProcess.error_log ) || bgProcess.status === null"
@@ -161,7 +161,7 @@
                                         placement: 'auto-start'
                                     }"
                                 class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'finished-errors' || ( bgProcess.done > 0 && bgProcess.error_log && bgProcess.status === 'finished' ) "
@@ -176,7 +176,7 @@
                                             placement: 'auto-start'
                                         }"
                                     class="icon has-text-success">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle has-text-yellow2"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle has-text-yellow2" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'cancelled' "
@@ -191,7 +191,7 @@
                                             placement: 'auto-start'
                                         }"
                                     class="icon has-text-success">
-                                <i class="tainacan-icon has-text-danger tainacan-icon-1-25em tainacan-icon-repprovedcircle"/>
+                                <i class="tainacan-icon has-text-danger tainacan-icon-1-25em tainacan-icon-repprovedcircle" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'paused' "
@@ -206,7 +206,7 @@
                                             placement: 'auto-start'
                                         }"
                                     class="icon has-text-gray">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-pause" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'waiting' "
@@ -221,7 +221,7 @@
                                             placement: 'auto-start'
                                         }"
                                     class="icon has-text-gray">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-waiting" />
                             </span>
                             <span
                                     v-if=" bgProcess.status === 'waiting' "
@@ -237,7 +237,7 @@
                                         }"
                                     class="icon has-text-gray"
                                     @click.prevent.stop="deleteOneProcess(index)">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                             </span>
                             <span
                                     v-if="bgProcess.status === 'errored'"
@@ -268,7 +268,7 @@
                   class="process-output"
                   :label="$i18n.get('label_output')"
                   :aria-label="$i18n.get('label_output') + ': ' + (bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info'))">
-                            <p v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info')"/>
+                            <p v-html="bgProcess.output ? bgProcess.output : $i18n.get('label_no_output_info')" />
                         </span>
 
               <!-- Logs -->
@@ -281,7 +281,7 @@
                                     v-if="bgProcess.log"
                                     :href="bgProcess.log">
                                     <span class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                                     </span>
                                     {{ $i18n.get('label_log_file') }}
                                 </a>
@@ -291,7 +291,7 @@
                                     class="has-text-danger"
                                     :href="bgProcess.error_log">
                                     <span class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
+                                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                                     </span>
                                     {{ $i18n.get('label_error_log_file') }}
                                 </a>

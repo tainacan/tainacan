@@ -3,7 +3,7 @@
 
         <b-loading
                 v-model="isColumnLoading"
-                :is-full-page="false"/>
+                :is-full-page="false" />
 
         <transition name="appear-from-top">
             <button
@@ -59,7 +59,7 @@
                                 class="add-link"
                                 @click="onAddNewChildTerm(column.id)">
                             <span class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             &nbsp;{{ $i18n.get('label_new_term') }}
                         </a>
@@ -70,12 +70,12 @@
                             <span 
                                     style="position: absolute;margin-left: -5px;margin-top: 5px;"
                                     class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             <span 
                                     style="margin-top: -5px;"
                                     class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             &nbsp;{{ termColumns.length <= 1 ? $i18n.get('label_multiple_terms') : $i18n.get('label_multiple') }}
                         </a>
@@ -90,7 +90,7 @@
                             :addons="false"
                             class="tainacan-li-checkbox"
                             :class="{ 'tainacan-li-checkbox--parent-active': termColumns[columnIndex + 1] && termColumns[columnIndex + 1].id == term.id }">
-                        <label class="b-checkbox checkbox" >
+                        <label class="b-checkbox checkbox">
                             <input 
                                     :checked="selectedColumnIndex >= 0 ? selectedColumnIndex == columnIndex : isTermSelected(term.id)"
                                     :disabled="selectedColumnIndex >= 0"
@@ -122,7 +122,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </button>
                                 <button 
@@ -137,7 +137,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-delete" />
                                     </span>
                                 </button>
                                 <a 
@@ -151,7 +151,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
                             </div>
@@ -164,7 +164,7 @@
                             <span 
                                     style="margin-right: 0.25rem; opacity: 1.0;"
                                     class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-nextlevel" />
                             </span>
                             <span 
                                     v-if="termColumns.length <= 1"
@@ -188,7 +188,7 @@
                                 class="tainacan-show-more"
                                 @click="fetchMoreTerms(column, columnIndex)">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-showmore" />
                             </span>
                         </div>
                     </li>
@@ -198,7 +198,7 @@
                         class="warning-no-more-terms">
                     <p>
                         <span class="icon is-medium">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                         </span>
                     </p>
                     <p>{{ column.name ? $i18n.getWithVariables('info_no_child_term_of_%s_found', [ column.name ]) : $i18n.get('info_no_terms_found') }}</p>
@@ -207,7 +207,7 @@
                                 class="add-link"
                                 @click="onAddNewChildTerm(column.id)">
                             <span class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             &nbsp;{{ $i18n.get('label_new_term') }}
                         </a>
@@ -220,12 +220,12 @@
                             <span 
                                     style="position: absolute;margin-left: -5px;margin-top: 5px;"
                                     class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             <span 
                                     style="margin-top: -5px;"
                                     class="icon is-small">
-                                <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                                <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
                             &nbsp;{{ $i18n.get('label_multiple_terms_insertion') }}
                         </a>
@@ -249,7 +249,7 @@
                             class="add-link"
                             @click="onAddNewChildTerm(0)">
                         <span class="icon is-small">
-                            <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                            <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                         </span>
                         &nbsp;{{ $i18n.get('label_new_term') }}
                     </a>

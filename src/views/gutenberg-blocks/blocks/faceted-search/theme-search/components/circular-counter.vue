@@ -14,7 +14,7 @@
                     cx="28" 
                     stroke-width="3" 
                     stroke="white" 
-                    fill="none"/>
+                    fill="none" />
         </g>
     </svg>
 </div>

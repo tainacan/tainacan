@@ -66,7 +66,7 @@
                                     }"          
                                     class="icon slideshow-icon"
                                     @click.prevent="starSlideshowFromHere(index)">
-                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
                             </span>
                         </div>
 

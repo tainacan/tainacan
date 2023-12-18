@@ -13,7 +13,7 @@
                     @focus="onMobileSpecialFocus"
                     @complete="($event) => getMask ? onInput($event.detail.value) : null"
                     @input="($event) => getMask ? null : onInput($event.target.value)"
-                    @blur="onBlur" >
+                    @blur="onBlur">
         </div>
         <b-autocomplete
                 v-else

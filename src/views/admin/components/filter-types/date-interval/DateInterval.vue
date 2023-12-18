@@ -20,7 +20,7 @@
                     $i18n.get('datepicker_short_saturday'),
                 ]"
                 @focus="isTouched = true"
-                @update:model-value="($event) => { resetPage(); validadeValues($event) }"/>
+                @update:model-value="($event) => { resetPage(); validadeValues($event) }" />
         <p 
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">
@@ -46,7 +46,7 @@
                     $i18n.get('datepicker_short_saturday'),
                 ]"
                 @update:model-value="validadeValues()"
-                @focus="isTouched = true"/>
+                @focus="isTouched = true" />
     </div>
 </template>
 

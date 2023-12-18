@@ -35,7 +35,7 @@
                                     'tainacan-icon-arrowdown' : props && props.open,
                                     'tainacan-icon-arrowright' : props && !props.open
                                 }"
-                                class="tainacan-icon tainacan-icon-1-25em"/>
+                                class="tainacan-icon tainacan-icon-1-25em" />
                     </span>
                     <span class="collapse-label">{{ filter.name }}</span>
                 </button>
@@ -76,7 +76,7 @@
                         class="label"
                         @click="displayFilter = true">
                     <span class="icon">
-                        <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em"/>
+                        <i class="tainacan-icon tainacan-icon-arrowright tainacan-icon-1-25em" />
                     </span>
                     <span class="collapse-label">{{ filter.name }}</span>
                 </button>

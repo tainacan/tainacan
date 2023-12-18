@@ -16,7 +16,7 @@
                     :class="{
                         'page-container-small': !$adminOptions.hideRepositorySubheader && !$adminOptions.hideCollectionSubheader,
                         'is-loading-collection-basics': isLoadingCollectionBasics
-                    }"/>
+                    }" />
         </section>
     </div>
 </template>

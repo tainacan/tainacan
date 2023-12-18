@@ -2,7 +2,7 @@
     <b-loading
             v-model="isLoading"
             :is-full-page="false"
-            :can-cancel="false"/>
+            :can-cancel="false" />
 
     <template v-if="collectionId && couldLoadCollection && collecionAllowsItemSubmission">
         <form
@@ -16,7 +16,7 @@
                 <form
                         id="form-item-begin-left"
                         class="form-hook-region"
-                        v-html="getBeginLeftForm"/>
+                        v-html="getBeginLeftForm" />
             </template>
 
             <!-- JS-side hook for extra content -->
@@ -34,7 +34,7 @@
                     <help-button
                             v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')"
                             :title="$i18n.getHelperTitle('items', 'document')"
-                            :message="$i18n.getHelperMessage('items', 'document')"/>
+                            :message="$i18n.getHelperMessage('items', 'document')" />
                     <p
                             v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'document')"
                             class="metadatum-description-help-info">
@@ -161,7 +161,7 @@
                                     type="button"
                                     @click.prevent="form.document_type = 'attachment'">
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload"/>
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
                                 </span>
                             </button>
                             <p>{{ $i18n.get('label_file') }}</p>
@@ -171,7 +171,7 @@
                                     type="button"
                                     @click.prevent="form.document_type = 'text'">
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text"/>
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text" />
                                 </span>
                             </button>
                             <p>{{ $i18n.get('label_text') }}</p>
@@ -181,7 +181,7 @@
                                     type="button"
                                     @click.prevent="form.document_type = 'url'">
                                 <span class="icon">
-                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
                                 </span>
                             </button>
                             <p>{{ $i18n.get('label_url') }}</p>
@@ -212,7 +212,7 @@
                     <help-button
                             v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')"
                             :title="$i18n.getHelperTitle('items', '_thumbnail_id')"
-                            :message="$i18n.getHelperMessage('items', '_thumbnail_id')"/>
+                            :message="$i18n.getHelperMessage('items', '_thumbnail_id')" />
                     <p
                             v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', '_thumbnail_id')"
                             class="metadatum-description-help-info">
@@ -284,7 +284,7 @@
                 <form
                     id="form-item-end-left"
                     class="form-hook-region"
-                    v-html="getEndLeftForm"/>
+                    v-html="getEndLeftForm" />
             </template>
 
 
@@ -301,7 +301,7 @@
                     <label v-if="attachmentsSectionLabel">
                         <span>{{ attachmentsSectionLabel }}</span>
                         <span class="icon has-text-gray4">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-attachments" />
                         </span>
                     </label>
                 </div>
@@ -360,7 +360,7 @@
                 <form
                     id="form-item-begin-right"
                     class="form-hook-region"
-                    v-html="getBeginRightForm"/>
+                    v-html="getBeginRightForm" />
             </template>
 
             <!-- Comment Status ------------------------ -->
@@ -370,7 +370,7 @@
                     <help-button
                             v-if="!hideHelpButtons && !helpInfoBellowLabel && $i18n.getHelperMessage('items', 'comment_status')"
                             :title="$i18n.getHelperTitle('items', 'comment_status')"
-                            :message="$i18n.getHelperMessage('items', 'comment_status')"/>
+                            :message="$i18n.getHelperMessage('items', 'comment_status')" />
                     <p
                             v-if="!hideHelpButtons && helpInfoBellowLabel && $i18n.getHelperMessage('items', 'comment_status')"
                             class="metadatum-description-help-info">
@@ -396,7 +396,7 @@
                 <label v-if="metadataSectionLabel">
                     <span>{{ metadataSectionLabel }}</span>
                     <span class="icon has-text-gray4">
-                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata"/>
+                        <i class="tainacan-icon tainacan-icon-18px tainacan-icon-metadata" />
                     </span>
                 </label>
             </div>
@@ -409,7 +409,7 @@
                 <span class="icon">
                     <i
                             :class="{ 'tainacan-icon-arrowdown' : collapseAll, 'tainacan-icon-arrowright' : !collapseAll }"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
+                            class="tainacan-icon tainacan-icon-1-25em" />
                 </span>
             </a>
 
@@ -458,7 +458,7 @@
                                             'tainacan-icon-arrowdown' : (metadataSectionCollapses[sectionIndex] || formErrorMessage) && !isSectionHidden(metadataSection.id),
                                             'tainacan-icon-arrowright' : !(metadataSectionCollapses[sectionIndex] || formErrorMessage) || isSectionHidden(metadataSection.id)
                                         }"
-                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                             </span>
                             <label>
                                 <span
@@ -514,7 +514,7 @@
                                             :is-collapsed="metadataCollapses[index]"
                                             :enumerate-metadatum="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
                                             @update:model-value="updateItemMetadataValue"
-                                            @changeCollapse="onChangeCollapse($event, index)"/>
+                                            @changeCollapse="onChangeCollapse($event, index)" />
 
                                     <!-- JS-side hook for extra content -->
                                     <div 
@@ -547,7 +547,7 @@
                 <form
                     id="form-item-end-right"
                     class="form-hook-region"
-                    v-html="getEndRightForm"/>
+                    v-html="getEndRightForm" />
             </template>
 
 
@@ -682,7 +682,7 @@
                 <br>
                 <p>
                     <span class="icon is-medium">
-                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-updating tainacan-icon-spin"/>
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-updating tainacan-icon-spin" />
                     </span>
                 </p>
                 <h2 id="submission-form-is-processing-label">{{ $i18n.get('label_sending_form') }}</h2>
@@ -709,7 +709,7 @@
                 <br>
                 <p>
                     <span class="icon is-medium">
-                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle"/>
+                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-approvedcircle" />
                     </span>
                 </p>
                 <div>

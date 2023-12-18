@@ -2,7 +2,7 @@
     <div>
         <b-loading
                 v-model="isLoading"
-                :can-cancel="false"/>
+                :can-cancel="false" />
 
         <tainacan-title 
                  v-if="!$adminOptions.hideItemSinglePageTitle"
@@ -43,7 +43,7 @@
                         <div
                                 id="view-item-begin-right"
                                 class="form-hook-region"
-                                v-html="getBeginRightForm"/>
+                                v-html="getBeginRightForm" />
                     </template>
 
                     <div class="b-tabs">
@@ -91,7 +91,7 @@
                                         <div class="metadata-section-header section-label">
                                             <label>
                                                 <span class="icon has-text-gray4">
-                                                    <i class="tainacan-icon tainacan-icon-metadata"/>
+                                                    <i class="tainacan-icon tainacan-icon-metadata" />
                                                 </span>
                                                 {{ metadataSection.name }}&nbsp;
                                                 <span 
@@ -135,7 +135,7 @@
                                                                 itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
                                                                 itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
                                                                 ) ? 'div' : 'p'" 
-                                                            v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
+                                                            v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`" />
                                                 </div>
                                             </div>
                                             <br>
@@ -148,7 +148,7 @@
                                     <div
                                             id="view-item-end-right"
                                             class="form-hook-region"
-                                            v-html="getEndRightForm"/>
+                                            v-html="getEndRightForm" />
                                 </template>
                             </div>
 
@@ -188,7 +188,7 @@
                             <div
                                     id="view-item-begin-left"
                                     class="form-hook-region"
-                                    v-html="getBeginLeftForm"/>
+                                    v-html="getBeginLeftForm" />
                         </template>
 
                         <!-- Document -------------------------------- -->
@@ -197,7 +197,7 @@
                                 class="section-label">
                             <label>
                                 <span class="icon has-text-gray4 tainacan-icon-1-125em">
-                                    <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))"/>
+                                    <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))" />
                                 </span>
                                 {{ collection && collection.item_document_label ? collection.item_document_label : ( (item.document != undefined && item.document != null && item.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
                             </label>
@@ -211,7 +211,7 @@
                                           item.document !== '' && item.document_type !== 'empty'"
                                     class="document-field-content"
                                     :class="'document-field-content--' + item.document_type">
-                                <div v-html="item.document_as_html"/>
+                                <div v-html="item.document_as_html" />
                             </div>
                             <div v-else>
                                 <p>{{ $i18n.get('info_no_document_to_item') }}</p>
@@ -223,7 +223,7 @@
                                 class="section-label">
                             <label>
                                 <span class="icon has-text-gray4">
-                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-image"/>
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-image" />
                                 </span>
                                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
                             </label>
@@ -242,7 +242,7 @@
                                     thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
                                     title: $i18n.get('label_thumbnail'),
                                     description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
-                                }"/>
+                                }" />
                                 <figure
                                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                         class="image">
@@ -263,7 +263,7 @@
                                 <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
                                 <help-button
                                         :title="$i18n.get('label_thumbnail_alt')"
-                                        :message="$i18n.get('info_thumbnail_alt')"/>
+                                        :message="$i18n.get('info_thumbnail_alt')" />
                                 <p> {{ item.thumbnail_alt }}</p>
                             </div>
                         </div>  
@@ -274,7 +274,7 @@
                                 class="section-label">
                             <label>
                                 <span class="icon has-text-gray4">
-                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments"/>
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments" />
                                 </span>
                                 <span>
                                     {{ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') }}&nbsp;
@@ -300,7 +300,7 @@
                             <div
                                     id="view-item-end-left"
                                     class="form-hook-region"
-                                    v-html="getEndLeftForm"/>
+                                    v-html="getEndLeftForm" />
                         </template>
 
                     </div>
@@ -322,7 +322,7 @@
                                 <span class="icon has-text-gray4">
                                     <i 
                                             v-if="itemVisibility == 'open_access'"
-                                            class="tainacan-icon tainacan-icon-see"/>
+                                            class="tainacan-icon tainacan-icon-see" />
                                     <i
                                             v-else
                                             class="tainacan-icon tainacan-icon-svg"
@@ -364,7 +364,7 @@
                         class="column is-narrow">
                     <div class="section-label">
                         <span class="icon has-text-gray4">
-                            <i class="tainacan-icon tainacan-icon-comment"/>
+                            <i class="tainacan-icon tainacan-icon-comment" />
                         </span>
                         <label>{{ $i18n.get('label_comments') }}</label>
                     </div>
@@ -374,12 +374,12 @@
                                 <span
                                         v-if="item.comment_status != 'open'"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-close"/>
+                                    <i class="tainacan-icon tainacan-icon-close" />
                                 </span>
                                 <span
                                         v-if="item.comment_status == 'open'"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-approved"/>
+                                    <i class="tainacan-icon tainacan-icon-approved" />
                                 </span>
                                 {{ item.comment_status == 'open' ? $i18n.get('label_allowed') : $i18n.get('label_not_allowed') }}
                             </span>
@@ -405,7 +405,7 @@
                             :disabled="isLoading"
                             @click="openActivitiesModal()">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_activity_logs') }}</span>
                     </button>
@@ -416,7 +416,7 @@
                             :disabled="isLoading"
                             @click="openExposersModal()">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
                     </button>
@@ -425,7 +425,7 @@
                             class="button sequence-button is-pulled-right"
                             :href="item.url">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                         </span>
                         <span>{{ $i18n.get('label_item_page_on_website') }}</span>
                     </a>
@@ -434,7 +434,7 @@
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                         </span>
                         <span>{{ $i18n.getFrom('items','edit_item') }}</span>
                     </router-link>

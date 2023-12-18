@@ -19,7 +19,7 @@
 
         <b-loading
                 v-model="isLoading"
-                :can-cancel="false"/>
+                :can-cancel="false" />
     </div>
 </template>
 

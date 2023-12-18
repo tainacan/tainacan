@@ -3,7 +3,7 @@
         <b-loading
                 v-model="isLoading"
                 :is-full-page="false"
-                :can-cancel="false"/>
+                :can-cancel="false" />
         <div 
                 v-if="!$adminOptions.hideBulkEditionPageTitle"
                 class="tainacan-page-title">
@@ -36,7 +36,7 @@
                             <p>
                                 <b-icon
                                         icon="upload"
-                                        size="is-large"/>
+                                        size="is-large" />
                             </p>
                             <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
                         </div>
@@ -50,13 +50,13 @@
                 <div class="sequence-progress-info">
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length != amountFinished">
                         <span class="icon is-small has-text-secondary">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating" />
                         </span>
                         {{ $i18n.get('label_upload_file_prepare_items') }}
                     </p>
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length == amountFinished">
                         <span class="icon is-small has-text-success">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle" />
                         </span>
                         {{ $i18n.get('label_process_completed') }}
                     </p>
@@ -76,10 +76,10 @@
                 <div 
                         v-if="uploadedItems.length > 0"
                         :style="{ width: (amountFinished/uploadedItems.length)*100 + '%' }"
-                        class="sequence-progress"/>
+                        class="sequence-progress" />
                 <div    
                         v-if="uploadedItems.length > 0"
-                        class="sequence-progress-background"/>
+                        class="sequence-progress-background" />
                 
                 <!-- Uploaded Items -->
                 <transition-group name="item-appear">
@@ -91,7 +91,7 @@
                                 v-if="item.document != undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
                                 :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)" > 
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"> 
                         <span 
                             class="document-name"
                             v-html="item.title" />                            
@@ -138,7 +138,7 @@
                                     }"
                                     class="icon has-text-secondary action-icon"
                                     @click="deleteOneItem(item.id, index)">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-delete"/>
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-delete" />
                             </span>
                         </div>                 
                     </div>
@@ -181,7 +181,7 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection" />
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_can_not_bulk_edit_items_collection') }}</p>

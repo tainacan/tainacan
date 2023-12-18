@@ -7,10 +7,10 @@
                 :type="taxonomyType"
                 :message="taxonomyMessage">
             <label class="label is-inline">
-                {{ $i18n.get('label_select_taxonomy') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
+                {{ $i18n.get('label_select_taxonomy') }}<span :class="taxonomyType">&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-taxonomy', 'taxonomy_id')"
-                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'taxonomy_id')"/>
+                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'taxonomy_id')" />
             </label>
             <b-select
                     v-model="taxonomy_id"
@@ -35,7 +35,7 @@
                 {{ $i18n.get('label_select_taxonomy_input_type') }}
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-taxonomy', 'input_type')"
-                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'input_type')"/>
+                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'input_type')" />
             </label>
             <b-select
                     v-if="listInputType"
@@ -79,7 +79,7 @@
                     @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')"/>
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')" />
         </b-field>
         <b-field
                 v-if="taxonomy_id && taxonomies.length && isTermCreationAllowedOnCurrentTaxonomy" 
@@ -94,7 +94,7 @@
                     @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'allow_new_terms')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')"/>
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')" />
         </b-field>
         <b-field
                 v-if="taxonomy_id && taxonomies.length" 
@@ -109,14 +109,14 @@
                     @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'do_not_dispaly_term_as_link')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'do_not_dispaly_term_as_link')"/>
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'do_not_dispaly_term_as_link')" />
         </b-field>
         <b-field :addons="false">
             <label class="label">
                 {{ $i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections') }}
                 <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')"/>
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')" />
             </label>
             <b-taginput
                     :model-value="getSelectedTaxonomyCollections()"
@@ -142,7 +142,7 @@
                             <img 
                                     width="24"
                                     :alt="$i18n.get('label_thumbnail')"
-                                    :src="$thumbHelper.getSrc(props.option['thumbnail'], 'tainacan-small')" >
+                                    :src="$thumbHelper.getSrc(props.option['thumbnail'], 'tainacan-small')">
                         </div>
                         <div class="media-content">
                             {{ props.option.name }}
@@ -166,7 +166,7 @@
                     @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'hide_hierarchy_path')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'hide_hierarchy_path')"/>
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'hide_hierarchy_path')" />
         </b-field>
 
     </section>

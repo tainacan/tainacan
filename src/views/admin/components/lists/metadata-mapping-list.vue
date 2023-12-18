@@ -3,11 +3,11 @@
         <b-loading
                 v-model="isLoadingMetadatumMappers"
                 :can-cancel="false"
-                :is-full-page="false"/>
+                :is-full-page="false" />
         <b-loading
                 v-model="isLoadingMetadata"
                 :can-cancel="false"
-                :is-full-page="false"/>
+                :is-full-page="false" />
 
         <b-field>
             <p style="line-height: 2em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
@@ -33,7 +33,7 @@
             <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>
                 <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>
@@ -54,7 +54,7 @@
                             class="is-inline is-pulled-right add-link"
                             @click="onNewMetadataMapperMetadata()">
                         <span class="icon is-small">
-                            <i class="tainacan-icon tainacan-icon-add"/>
+                            <i class="tainacan-icon tainacan-icon-add" />
                         </span>
                         {{ $i18n.get('label_add_more_mapper_metadata') }}
                     </a>
@@ -110,7 +110,7 @@
                                     placement: 'auto-start'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                         </span>
                     </a>
                     <a 
@@ -127,7 +127,7 @@
                                     placement: 'auto-start'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                         </span>
                     </a>
                 </p>
@@ -174,14 +174,14 @@
                     <b-input
                             v-model="newMetadataLabel"
                             required
-                            :placeholder="$i18n.get('label_name')"/>
+                            :placeholder="$i18n.get('label_name')" />
                 </b-field>
                 <b-field>
                     <b-input
                             v-model="newMetadataUri"
                             placeholder="URI"
                             type="url"
-                            required/>
+                            required />
                 </b-field>
                 <div class="field is-grouped form-submit">
                     <div class="control">

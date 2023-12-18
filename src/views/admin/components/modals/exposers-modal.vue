@@ -52,7 +52,7 @@
                                 target="_blank"
                                 @click="siteLinkCopied = true; copyTextToClipboard(itemURL ? itemURL : collectionURL)">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
                             </span>
                         </a>
                         <div 
@@ -86,7 +86,7 @@
                                 target="_blank"
                                 :href="itemURL ? itemURL : collectionURL">
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                             </span>
                         </a>
                     </span>
@@ -135,7 +135,7 @@
                         <span class="icon">
                             <i 
                                     :class="{ 'tainacan-icon-arrowdown' : !exposerMapper.collapsed, 'tainacan-icon-arrowright' : exposerMapper.collapsed }"
-                                    class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                    class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                         </span>
                         <label 
                                 v-tooltip="{
@@ -181,7 +181,7 @@
                                             }"
                                             @click="exposerMapper.linkCopied = pagedLink; copyTextToClipboard(getExposerFullURL(pagedLink, exposerMapper))">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url"/>
+                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
                                         </span>
                                     </a>
                                     <div 
@@ -216,7 +216,7 @@
                                             target="_blank" 
                                             :href="getExposerFullURL(pagedLink, exposerMapper)">
                                         <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl"/>
+                                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-openurl" />
                                         </span>
                                     </a>
                                 </span>  
@@ -229,7 +229,7 @@
             <b-loading 
                     v-model="isLoading"
                     :is-full-page="false" 
-                    :can-cancel="false"/>
+                    :can-cancel="false" />
 
             <footer class="field is-grouped form-submit">
                 <div class="control">

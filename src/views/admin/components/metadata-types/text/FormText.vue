@@ -12,7 +12,7 @@
                     @update:model-value="onUpdateDisplaySuggestions" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-text', 'display_suggestions')"
-                    :message="$i18n.getHelperMessage('tainacan-text', 'display_suggestions')"/>
+                    :message="$i18n.getHelperMessage('tainacan-text', 'display_suggestions')" />
         </b-field>
         <b-field :addons="false">
             <label class="label is-inline">

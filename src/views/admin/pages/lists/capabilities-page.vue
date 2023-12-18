@@ -5,7 +5,7 @@
                 'page-container': isRepositoryLevel
             }">
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('capabilities') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('capabilities') }]" />
 
         <div class="sub-header">
             <b-field 
@@ -29,19 +29,19 @@
             <b-loading
                     v-model="isLoading" 
                     :is-full-page="true" 
-                    :can-cancel="false"/>
+                    :can-cancel="false" />
 
             <capabilities-list
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_users')) || (!isRepositoryLevel && collection && collection.current_user_can_edit_users)"
                     :is-loading="isLoading || isFetchingRoles"
-                    :capabilities="capabilities"/>
+                    :capabilities="capabilities" />
                         
             <template v-else-if="(isRepositoryLevel && !$userCaps.hasCapability('tnc_rep_edit_users')) || (!isRepositoryLevel && collection && !collection.current_user_can_edit_users)">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user" />
                             </span>
                         </p>
                         <p>{{ $i18n.get('info_can_not_edit_capabilities') }}</p>
@@ -55,7 +55,7 @@
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon is-medium">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user" />
                             </span>
                         </p>
                         <p>

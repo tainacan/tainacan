@@ -7,7 +7,7 @@
         <span class="icon">
             <i
                     :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright' : !collapseAllChildren }"
-                    class="tainacan-icon tainacan-icon-1-25em"/>
+                    class="tainacan-icon tainacan-icon-1-25em" />
         </span>
         {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
     </a>
@@ -49,7 +49,7 @@
                         </span>
                         <help-button 
                                 :title="childItemMetadatum.metadatum.name"
-                                :message="childItemMetadatum.metadatum.description"/>
+                                :message="childItemMetadatum.metadatum.description" />
                     </span> 
                     <div 
                             class="skeleton"
@@ -87,7 +87,7 @@
                     class="add-link"
                     @click="removeGroup(groupIndex)">
                 <span class="icon is-small">
-                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
                 </span>
                 &nbsp;{{ $i18n.get('label_remove_value') }}
             </a>
@@ -112,7 +112,7 @@
             class="is-inline-block add-link"
             @click="addGroup">
         <span class="icon is-small">
-            <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+            <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
         </span>
         &nbsp;{{ $i18n.get('label_add_value') }}
     </a>

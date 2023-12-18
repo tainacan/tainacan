@@ -13,7 +13,7 @@
             <primary-menu
                     v-if="!$adminOptions.hidePrimaryMenu" 
                     :active-route="activeRoute"
-                    :is-menu-compressed="isMenuCompressed"/>
+                    :is-menu-compressed="isMenuCompressed" />
             <button 
                     v-if="!$adminOptions.hidePrimaryMenu && !$adminOptions.hidePrimaryMenuCompressButton" 
                     id="menu-compress-button"
@@ -31,14 +31,14 @@
                         class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
+                            class="tainacan-icon tainacan-icon-1-25em" />
                 </span>
             </button>
             <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
             <tainacan-repository-subheader
                     v-if="!$adminOptions.hideRepositorySubheader" 
                     :is-repository-level="isRepositoryLevel"
-                    :is-menu-compressed="isMenuCompressed"/>
+                    :is-menu-compressed="isMenuCompressed" />
             <div 
                     id="repository-container"
                     class="column is-main-content"

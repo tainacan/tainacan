@@ -1,6 +1,6 @@
 <template>
     <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
-        <tainacan-title :bread-crumb-items="[{ path: '', label: $i18n.get('filters') }]"/>
+        <tainacan-title :bread-crumb-items="[{ path: '', label: $i18n.get('filters') }]" />
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_filters_inheritance') }}</p>
@@ -8,7 +8,7 @@
         </template>
                         
         <div class="filters-list-page">
-            <b-loading v-model="isLoadingMetadatumTypes"/>
+            <b-loading v-model="isLoadingMetadatumTypes" />
             
             <div
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
@@ -41,7 +41,7 @@
                         <div class="content has-text-gray has-text-centered">
                             <p>
                                 <span class="icon is-large">
-                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
+                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
                                 </span>
                             </p>
                             <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
@@ -116,8 +116,8 @@
                                                 fill="currentColor">
                                             <path
                                                     d="M0 0h24v24H0V0z"
-                                                    fill="transparent"/>
-                                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                                    fill="transparent" />
+                                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                                         </svg>
                                     </span>
                                     <span 
@@ -144,7 +144,7 @@
                                                     placement: 'auto-start'
                                                 }"
                                                 class="icon">
-                                            <i class="tainacan-icon tainacan-icon-private"/>
+                                            <i class="tainacan-icon tainacan-icon-private" />
                                         </span>
                                         <span 
                                                 v-tooltip="{
@@ -167,7 +167,7 @@
                                     </span>
                                     <span 
                                             v-if="filter.id == undefined" 
-                                            class="loading-spinner"/>
+                                            class="loading-spinner" />
                                     <span 
                                             v-if="filter.filter_type != undefined" 
                                             class="controls">
@@ -176,7 +176,7 @@
                                                 :disabled="isUpdatingFiltersOrder" 
                                                 size="is-small" 
                                                 :model-value="filter.enabled" 
-                                                @update:model-value="onChangeEnable($event, index)"/>
+                                                @update:model-value="onChangeEnable($event, index)" />
                                         <a 
                                                 v-if="filter.current_user_can_delete"
                                                 :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
@@ -189,7 +189,7 @@
                                                         placement: 'bottom'
                                                     }"
                                                     class="icon">
-                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                             </span>
                                         </a>
                                         <a 
@@ -204,7 +204,7 @@
                                                         placement: 'bottom'
                                                     }"
                                                     class="icon">
-                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                                             </span>
                                         </a>
                                     </span>
@@ -218,7 +218,7 @@
                                                 @onEditionFinished="onEditionFinished()"
                                                 @onEditionCanceled="onEditionCanceled()"
                                                 @onErrorFound="formWithErrors = filter.id"
-                                                @onUpdateSavedState="(state) => editForms[filter.id].saved = state"/>
+                                                @onUpdateSavedState="(state) => editForms[filter.id].saved = state" />
                                     </b-field>
                                 </transition>
                             </div>
@@ -245,7 +245,7 @@
                             </b-field>
                         </template>
                     </div>
-                    <div class="field" >
+                    <div class="field">
                         
                         <sortable
                                 v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
@@ -290,8 +290,8 @@
                                                 fill="currentColor">
                                             <path
                                                     d="M0 0h24v24H0V0z"
-                                                    fill="transparent"/>
-                                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                                    fill="transparent" />
+                                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                                         </svg>
                                     </span> 
                                     <span 
@@ -335,7 +335,7 @@
                             <div class="content has-text-gray has-text-centered">
                                 <p>
                                     <span class="icon is-large">
-                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                                     </span>
                                 </p>
                                 <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
@@ -364,7 +364,7 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters" />
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_can_not_edit_filters') }}</p>
@@ -422,13 +422,13 @@
                                                 class="field">
                                             <span class="collapse-handle">
                                                 <span class="icon">
-                                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                                 </span> 
                                                 <label class="label has-tooltip">
                                                     {{ currentFilterTypePreview.name }}
                                                 </label>
                                             </span>
-                                            <div v-html="currentFilterTypePreview.template"/>
+                                            <div v-html="currentFilterTypePreview.template" />
                                         </div>
                                         <span 
                                                 v-else
