@@ -54,10 +54,10 @@
                             aria-role="list-item">
                         <label class="b-checkbox checkbox">
                             <input
-                                type="checkbox"
-                                :checked="isTermSelected(term.id)"
-                                :value="getTermIdAsNumber(term.id)"
-                                @input="updateSelectedTerms(term)">
+                                    type="checkbox"
+                                    :checked="isTermSelected(term.id)"
+                                    :value="getTermIdAsNumber(term.id)"
+                                    @input="updateSelectedTerms(term)">
                             <span class="check" /> 
                             <span class="control-label">
                                 <span 
@@ -114,9 +114,9 @@
                 :current-user-can-edit-taxonomy="currentUserCanEditTaxonomy"
                 :selected="selected"
                 :selected-column-index="selectedColumnIndex"
-                @onUpdateSelectedTerms="(newSelected) => selected = newSelected"
-                @onUpdateSelectedColumnIndex="(newColumnSelected) => { selectedColumnIndex = newColumnSelected.index; selectedColumnObject = newColumnSelected.object; }"
-         />
+                @on-update-selected-terms="(newSelected) => selected = newSelected"
+                @on-update-selected-column-index="(newColumnSelected) => { selectedColumnIndex = newColumnSelected.index; selectedColumnObject = newColumnSelected.object; }"
+            />
     </div>
 </template>
 

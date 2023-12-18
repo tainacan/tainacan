@@ -76,7 +76,7 @@
                                 v-for="(comparator, key) in getComparators(searchCriterion)"
                                 :key="key"
                                 :value="key"
-                        >{{ comparator }}</option>
+                            >{{ comparator }}</option>
                     </b-select>
                     <b-select
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
@@ -89,7 +89,7 @@
                                 v-for="(comparator, key) in getComparators(searchCriterion)"
                                 :key="key"
                                 :value="key"
-                        >{{ comparator }}</option>
+                            >{{ comparator }}</option>
                     </b-select>
                     <b-input
                             v-else
@@ -109,7 +109,7 @@
                                 :placeholder="$i18n.get('label_number_to_search_for')"
                                 :aria-label="$i18n.get('label_number_to_search_for')"
                                 @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                        />
+                            />
                         <input
                                 v-else-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
                                 v-imask="dateMask"
@@ -126,7 +126,7 @@
                                 :placeholder="$i18n.get('label_string_to_search_for')"
                                 :aria-label="$i18n.get('label_string_to_search_for')"
                                 @update:model-value="addValueToAdvancedSearchQuery($event, searchCriterion)"
-                        />
+                            />
                     </template>
                     <b-input
                             v-else-if="searchCriterion.type == 'taxquery' && advancedSearchQuery.taxquery[searchCriterion.index]"
@@ -173,7 +173,7 @@
                 </span>
                 {{ searchCriteria.length &lt;= 0 ?
                     $i18n.get('add_one_search_criterion') :
-                        $i18n.get('add_another_search_criterion')
+                    $i18n.get('add_another_search_criterion')
                 }}
             </a>
             <a

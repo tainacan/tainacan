@@ -37,7 +37,7 @@
                     v-if="selectedEstrategy == undefined"
                     class="collection-creation-options-container">
                 
-                 <button
+                <button
                         class="collection-creation-option"
                         aria-role="listitem"
                         @click="selectedEstrategy = 'mappers'">
@@ -45,11 +45,11 @@
                     <p>{{ $i18n.get('info_create_collection_from_mapper') }}</p>
                 </button>
 
-                 <button
+                <button
                         class="collection-creation-option"
                         aria-role="listitem"
                         @click="selectedEstrategy = 'presets'">
-                     <h3>{{ $i18n.get('label_using_a_preset') }}</h3>
+                    <h3>{{ $i18n.get('label_using_a_preset') }}</h3>
                     <p>{{ $i18n.get('info_create_collection_from_preset') }}</p>
                 </button>
 
@@ -78,7 +78,7 @@
                     class="collection-creation-options-container"
                     role="list">
                 <button
-                         v-for="collectionPreset in getPresetsHook"
+                        v-for="collectionPreset in getPresetsHook"
                         :key="collectionPreset.slug"
                         class="collection-creation-option"
                         aria-role="listitem"
@@ -117,6 +117,9 @@ import { tainacanErrorHandler } from '../../js/axios';
 
 export default {
     name: 'CollectionCreationModal',
+    emits: [
+        'close'
+    ],
     data(){
         return {
             selectedEstrategy: 'mappers',

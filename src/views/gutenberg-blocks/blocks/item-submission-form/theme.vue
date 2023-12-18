@@ -282,9 +282,9 @@
             <!-- Hook for extra options -->
             <template v-if="hasEndLeftForm">
                 <form
-                    id="form-item-end-left"
-                    class="form-hook-region"
-                    v-html="getEndLeftForm" />
+                        id="form-item-end-left"
+                        class="form-hook-region"
+                        v-html="getEndLeftForm" />
             </template>
 
 
@@ -358,9 +358,9 @@
             <!-- Hook for extra options -->
             <template v-if="hasBeginRightForm">
                 <form
-                    id="form-item-begin-right"
-                    class="form-hook-region"
-                    v-html="getBeginRightForm" />
+                        id="form-item-begin-right"
+                        class="form-hook-region"
+                        v-html="getBeginRightForm" />
             </template>
 
             <!-- Comment Status ------------------------ -->
@@ -444,8 +444,8 @@
                         :clickable="true"
                         :class="'metadata-section-slug-' + metadataSection.slug + (!showSteppedLayout && isSectionHidden(metadataSection.id) ? ' metadata-section-hidden' : '')">
                     <div 
-                                v-if="!showSteppedLayout"
-                                class="metadata-section-header section-label">
+                            v-if="!showSteppedLayout"
+                            class="metadata-section-header section-label">
                         <span   
                                 class="collapse-handle"
                                 @click="!hideCollapses && !isSectionHidden(metadataSection.id) ? toggleMetadataSectionCollapse(sectionIndex) : ''">
@@ -471,8 +471,8 @@
                             </label>
                             <help-button
                                     v-if="!hideHelpButtons &&
-                                            !helpInfoBellowLabel &&
-                                            metadataSection.description" 
+                                        !helpInfoBellowLabel &&
+                                        metadataSection.description" 
                                     :title="metadataSection.name"
                                     :message="metadataSection.description" />
                         </span>
@@ -514,7 +514,7 @@
                                             :is-collapsed="metadataCollapses[index]"
                                             :enumerate-metadatum="metadataSections.length > 1 && collectionItemMetadataEnumeration === 'yes' ? ( (Number(sectionIndex) + 1) + '.' + (Number(getMetadatumOrderInSection(sectionIndex, itemMetadatum.metadatum)) + 1) ) : false"
                                             @update:model-value="updateItemMetadataValue"
-                                            @changeCollapse="onChangeCollapse($event, index)" />
+                                            @change-collapse="onChangeCollapse($event, index)" />
 
                                     <!-- JS-side hook for extra content -->
                                     <div 
@@ -545,9 +545,9 @@
             <!-- Hook for extra options -->
             <template v-if="hasEndRightForm">
                 <form
-                    id="form-item-end-right"
-                    class="form-hook-region"
-                    v-html="getEndRightForm" />
+                        id="form-item-end-right"
+                        class="form-hook-region"
+                        v-html="getEndRightForm" />
             </template>
 
 

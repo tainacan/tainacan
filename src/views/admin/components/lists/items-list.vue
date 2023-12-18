@@ -119,9 +119,9 @@
 
                 <!-- Backdrop for escaping context menu -->
                 <div
-                    class="context-menu-backdrop"
-                    @click.left="clearContextMenu()"
-                    @click.right="clearContextMenu()" />
+                        class="context-menu-backdrop"
+                        @click.left="clearContextMenu()"
+                        @click.right="clearContextMenu()" />
 
                 <b-dropdown
                         inline
@@ -226,7 +226,7 @@
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
-                                        />
+                                    />
                             </span>
                             {{ item.title != undefined ? item.title : '' }}
                         </p>
@@ -245,7 +245,7 @@
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                 :transition-duration="500"
-                        />
+                            />
                     </a>
 
                     <!-- Actions -->
@@ -342,12 +342,12 @@
                             'tainacan-masonry-grid-sizer': index == 0
                         }">
                     <div
-                        :class="{
-                            'selected-masonry-item': getSelectedItemChecked(item.id) == true
-                        }"
-                        class="tainacan-masonry-item"
-                        @click.left="onClickItem($event, item)"
-                        @click.right="onRightClickItem($event, item)">
+                            :class="{
+                                'selected-masonry-item': getSelectedItemChecked(item.id) == true
+                            }"
+                            class="tainacan-masonry-item"
+                            @click.left="onClickItem($event, item)"
+                            @click.right="onRightClickItem($event, item)">
                         <!-- Checkbox -->
                         <!-- TODO: Remove v-if="collectionId" from this element when the bulk edit in repository is done -->
                         <div
@@ -393,7 +393,7 @@
                                     <i 
                                             class="tainacan-icon tainacan-icon-1em"
                                             :class="$statusHelper.getIcon(item.status)"
-                                            />
+                                        />
                                 </span>
                                 {{ item.title != undefined ? item.title : '' }}
                             </p>
@@ -557,7 +557,7 @@
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
-                                        />
+                                    />
                             </span>
                             {{ item.title != undefined ? item.title : '' }}
                         </p>
@@ -769,7 +769,7 @@
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
-                                        />
+                                    />
                             </span>
                             <p 
                                     v-if="collectionId != undefined && titleItemMetadatum"
@@ -944,7 +944,7 @@
                         <th
                                 v-if="collectionId && !$adminOptions.hideItemsListSelection && ($adminOptions.itemsSingleSelectionMode || $adminOptions.itemsMultipleSelectionMode || (collection && collection.current_user_can_bulk_edit))">
                             &nbsp;
-                            <!-- nothing to show on header for checkboxes -->
+                        <!-- nothing to show on header for checkboxes -->
                         </th>
 
                         <!-- Status -->
@@ -960,17 +960,17 @@
                                     v-if="column.display"
                                     class="column-default-width"
                                     :class="{
-                                            'thumbnail-cell': column.metadatum == 'row_thumbnail',
-                                            'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' ||
-                                                                                                                                column.metadata_type_object.primitive_type == 'int' ) : false,
-                                            'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'float' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'int') : false,
-                                            'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'term' ||
-                                                                                                                column.metadata_type_object.primitive_type == 'item') : false,
-                                            'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'compound' ||
-                                                                                                            column.metadata_type_object.related_mapped_prop == 'description') : false,
+                                        'thumbnail-cell': column.metadatum == 'row_thumbnail',
+                                        'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' ||
+                                            column.metadata_type_object.primitive_type == 'int' ) : false,
+                                        'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' ||
+                                            column.metadata_type_object.primitive_type == 'float' ||
+                                            column.metadata_type_object.primitive_type == 'int') : false,
+                                        'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'term' ||
+                                            column.metadata_type_object.primitive_type == 'item') : false,
+                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
+                                            column.metadata_type_object.primitive_type == 'compound' ||
+                                            column.metadata_type_object.related_mapped_prop == 'description') : false,
                                     }">
                                 <div class="th-wrap">{{ column.name }}</div>
                             </th>
@@ -979,7 +979,7 @@
                                 v-if="items.findIndex((item) => item.current_user_can_edit || item.current_user_can_delete) >= 0"
                                 class="actions-header">
                             &nbsp;
-                            <!-- nothing to show on header for actions cell-->
+                        <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
@@ -1028,7 +1028,7 @@
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(item.status)"
-                                        />
+                                    />
                             </span>
                         </td>
                         <!-- Item Displayed Metadata -->
@@ -1039,18 +1039,18 @@
                                     v-if="column.display"
                                     class="column-default-width"
                                     :class="{ 'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
-                                            'thumbnail-cell': column.metadatum == 'row_thumbnail',
-                                            'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
-                                            'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' ||
-                                                                                                                                column.metadata_type_object.primitive_type == 'int' ) : false,
-                                            'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'int' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'float') : false,
-                                            'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'item' ||
-                                                                                                                column.metadata_type_object.primitive_type == 'term') : false,
-                                            'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'compound' ||
-                                                                                                            column.metadata_type_object.related_mapped_prop == 'description') : false,
+                                              'thumbnail-cell': column.metadatum == 'row_thumbnail',
+                                              'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
+                                              'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' ||
+                                                  column.metadata_type_object.primitive_type == 'int' ) : false,
+                                              'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' ||
+                                                  column.metadata_type_object.primitive_type == 'int' ||
+                                                  column.metadata_type_object.primitive_type == 'float') : false,
+                                              'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'item' ||
+                                                  column.metadata_type_object.primitive_type == 'term') : false,
+                                              'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
+                                                  column.metadata_type_object.primitive_type == 'compound' ||
+                                                  column.metadata_type_object.related_mapped_prop == 'description') : false,
                                     }"
                                     @click.left="onClickItem($event, item)"
                                     @click.right="onRightClickItem($event, item)">
@@ -1119,7 +1119,7 @@
                                             :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                             :transition-duration="500"
-                                    />
+                                        />
                                 </span>
                                 <p
                                         v-if="column.metadatum == 'row_author'"
@@ -1134,7 +1134,7 @@
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                         }">
-                                        {{ item[column.slug] }}
+                                    {{ item[column.slug] }}
                                 </p>
                                 <p
                                         v-if="column.metadatum == 'row_modification'"
@@ -1149,7 +1149,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }">
-                                        {{ parseDateToNavigatorLanguage(item[column.slug]) }}
+                                    {{ parseDateToNavigatorLanguage(item[column.slug]) }}
                                 </p>
                                 <p
                                         v-if="column.metadatum == 'row_creation'"
@@ -1164,7 +1164,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                             placement: 'auto-start'
                                         }">
-                                        {{ parseDateToNavigatorLanguage(item[column.slug]) }}
+                                    {{ parseDateToNavigatorLanguage(item[column.slug]) }}
                                 </p>
 
                             </td>
@@ -1220,9 +1220,9 @@
                                                 popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
                                             }"
                                             class="icon">
-                                    <i
-                                            :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                            class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
+                                        <i
+                                                :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
+                                                class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                     </span>
                                 </a>
                                 <a 
@@ -1284,7 +1284,7 @@
                                     type="radio"
                                     name="item-single-selection"
                                     :value="item.id"
-                                   :aria-label="$i18n.get('label_select_item')">
+                                    :aria-label="$i18n.get('label_select_item')">
                             <span class="check" />
                             <span class="control-label" />
                             <span class="sr-only">{{ $i18n.get('label_select_item') }}</span>
@@ -1309,7 +1309,7 @@
                             <i 
                                     class="tainacan-icon tainacan-icon-1em"
                                     :class="$statusHelper.getIcon(item.status)"
-                                    />
+                                />
                         </span>
                         <p 
                                 v-if="collectionId != undefined && titleItemMetadatum"
@@ -1425,10 +1425,10 @@
                             class="media"
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
-                         <div 
+                        <div 
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-list-thumbnail">
-                                <blur-hash-image
+                            <blur-hash-image
                                     v-if="item.thumbnail != undefined"
                                     class="tainacan-list-item-thumbnail"
                                     :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -1443,7 +1443,7 @@
                                 />
                         </div>
                         <div class="list-metadata media-body">
-                           <span
+                            <span
                                     v-if="collectionId == undefined && descriptionItemMetadatum && item.description"
                                     class="metadata-type-textarea">
                                 <h3 class="metadata-label">{{ $i18n.get('label_description') }}</h3>
@@ -1541,7 +1541,7 @@
                                     <i 
                                             class="tainacan-icon tainacan-icon-1em"
                                             :class="$statusHelper.getIcon(item.status)"
-                                            />
+                                        />
                                 </span>
                                 <p 
                                         v-if="collectionId != undefined && titleItemMetadatum"
@@ -1779,7 +1779,7 @@
                                             <i 
                                                     class="tainacan-icon tainacan-icon-1em"
                                                     :class="$statusHelper.getIcon(item.status)"
-                                                    />
+                                                />
                                         </span>
                                         <p 
                                                 v-if="collectionId != undefined && titleItemMetadatum"
@@ -2018,7 +2018,7 @@ export default {
         isRepositoryLevel: false
     },
     emits: [
-        'updateIsLoading',
+        'update-is-loading',
         'openProcessesPopup'
     ],
     data(){
@@ -2392,7 +2392,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_remove_item_from_trash'),
                     onConfirm: () => {
-                        this.$emit('updateIsLoading', true);
+                        this.$emit('update-is-loading', true);
 
                         this.createEditGroup({
                             collectionId: this.collectionId,
@@ -2421,7 +2421,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_item_delete') : this.$i18n.get('info_warning_item_trash'),
                     onConfirm: () => {
-                        this.$emit('updateIsLoading', true);
+                        this.$emit('update-is-loading', true);
 
                         this.deleteItem({
                             itemId: itemId,
@@ -2444,7 +2444,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.$i18n.get('info_warning_selected_items_remove_from_trash'),
                     onConfirm: () => {
-                        this.$emit('updateIsLoading', true);
+                        this.$emit('update-is-loading', true);
 
                         this.createEditGroup({
                             collectionId: this.collectionId,
@@ -2476,7 +2476,7 @@ export default {
                     title: this.$i18n.get('label_warning'),
                     message: this.isOnTrash ? this.$i18n.get('info_warning_selected_items_delete') : this.$i18n.get('info_warning_selected_items_trash'),
                     onConfirm: () => {
-                        this.$emit('updateIsLoading', true);
+                        this.$emit('update-is-loading', true);
 
                         this.createEditGroup({
                             collectionId: this.collectionId,

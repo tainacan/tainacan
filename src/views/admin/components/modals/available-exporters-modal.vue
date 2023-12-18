@@ -59,6 +59,9 @@
             sourceCollection: String,
             hideWhenManualCollection: false
         },
+        emits: [
+            'close'
+        ],   
         data(){
             return {
                 availableExporters: [],

@@ -18,7 +18,7 @@
         <button
                 v-if="!isLoadingFilters &&
                     ((filters.length >= 0 &&
-                    isRepositoryLevel) || filters.length > 0)"
+                        isRepositoryLevel) || filters.length > 0)"
                 aria-controls="filters-items-list"
                 :aria-expanded="!collapseAll"
                 class="link-style collapse-all"
@@ -294,7 +294,7 @@
             isMobileScreen: false
         },
         emits: [
-            'updateIsLoadingItemsState'
+            'update-is-loading-items-state'
         ],
         data() {
             return {
@@ -475,7 +475,7 @@
 
             },
             updateIsLoadingItems(isLoadingItems) {
-                this.$emit('updateIsLoadingItemsState', isLoadingItems); 
+                this.$emit('update-is-loading-items-state', isLoadingItems); 
             }
         }
     }

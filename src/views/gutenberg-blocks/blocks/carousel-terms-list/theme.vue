@@ -35,29 +35,29 @@
                             :id="isNaN(term.id) ? term.id : 'term-id-' + term.id"
                             :href="term.url">
                         <img
-                            :src=" 
-                                term.thumbnail && term.thumbnail[imageSize] && term.thumbnail[imageSize][0] 
-                                    ?
-                                term.thumbnail[imageSize][0] 
-                                    :
-                                (term.thumbnail && term.thumbnail['thumbnail'] && term.thumbnail['thumbnail'][0]
-                                    ?    
-                                term.thumbnail['thumbnail'][0] 
-                                    : 
-                                $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
-                            "
-                            :data-src=" 
-                                term.thumbnail && term.thumbnail[imageSize] && term.thumbnail[imageSize][0] 
-                                    ?
-                                term.thumbnail[imageSize][0] 
-                                    :
-                                (term.thumbnail && term.thumbnail['thumbnail'] && term.thumbnail['thumbnail'][0]
-                                    ?    
-                                term.thumbnail['thumbnail'][0] 
-                                    : 
-                                $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
-                            "
-                            :alt="term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : wpI18n('Thumbnail', 'tainacan'))">
+                                :src=" 
+                                    term.thumbnail && term.thumbnail[imageSize] && term.thumbnail[imageSize][0] 
+                                        ?
+                                            term.thumbnail[imageSize][0] 
+                                        :
+                                            (term.thumbnail && term.thumbnail['thumbnail'] && term.thumbnail['thumbnail'][0]
+                                                ?    
+                                                    term.thumbnail['thumbnail'][0] 
+                                                : 
+                                                    $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
+                                "
+                                :data-src=" 
+                                    term.thumbnail && term.thumbnail[imageSize] && term.thumbnail[imageSize][0] 
+                                        ?
+                                            term.thumbnail[imageSize][0] 
+                                        :
+                                            (term.thumbnail && term.thumbnail['thumbnail'] && term.thumbnail['thumbnail'][0]
+                                                ?    
+                                                    term.thumbnail['thumbnail'][0] 
+                                                : 
+                                                    $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
+                                "
+                                :alt="term.thumbnail_alt ? term.thumbnail_alt : (term.name ? term.name : wpI18n('Thumbnail', 'tainacan'))">
                         <span v-if="!hideName">{{ term.name ? term.name : '' }}</span>
                     </a>
                     <a 

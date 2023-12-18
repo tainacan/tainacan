@@ -111,6 +111,9 @@
             taxonomyId: '',
             excludeTree: ''
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 hasParent: false,

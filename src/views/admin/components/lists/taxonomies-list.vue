@@ -10,7 +10,7 @@
                 <span>
                     <b-checkbox 
                             :model-value="allOnPageSelected" 
-                            @click.native="selectAllOnPage()">
+                            @input="selectAllOnPage()">
                         {{ $i18n.get('label_select_all_taxonomies_page') }}
                     </b-checkbox>
                 </span>
@@ -51,7 +51,7 @@
                         <!-- Checking list -->
                         <th v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')">
                             &nbsp;
-                            <!-- nothing to show on header -->
+                        <!-- nothing to show on header -->
                         </th>
                         <!-- Status icon -->
                         <th v-if="isOnAllTaxonomiesTab">
@@ -78,7 +78,7 @@
                                 v-if="taxonomies.findIndex((taxonomy) => taxonomy.current_user_can_edit || taxonomy.current_user_can_delete) >= 0"
                                 class="actions-header">
                             &nbsp;
-                            <!-- nothing to show on header for actions cell-->
+                        <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
@@ -111,7 +111,7 @@
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(taxonomy.status)"
-                                        />
+                                    />
                             </span>
                         </td>
                         <!-- Name -->
@@ -269,7 +269,7 @@
     import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
-        name: 'List',
+        name: 'TaxonomiesList',
         props: {
             isLoading: false,
             total: 0,

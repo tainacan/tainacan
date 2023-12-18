@@ -35,29 +35,29 @@
                             :id="isNaN(collection.id) ? collection.id : 'collection-id-' + collection.id"
                             :href="collection.url">
                         <img
-                            :src=" 
-                                collection.thumbnail && collection.thumbnail[imageSize] && collection.thumbnail[imageSize][0] 
-                                    ?
-                                collection.thumbnail[imageSize][0] 
-                                    :
-                                (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
-                                    ?    
-                                collection.thumbnail['thumbnail'][0] 
-                                    : 
-                                $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
-                            "
-                            :data-src=" 
-                                collection.thumbnail && collection.thumbnail[imageSize] && collection.thumbnail[imageSize][0] 
-                                    ?
-                                collection.thumbnail[imageSize][0] 
-                                    :
-                                (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
-                                    ?    
-                                collection.thumbnail['thumbnail'][0] 
-                                    : 
-                                $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
-                            "
-                            :alt="collection.name ? collection.name : wpI18n('Thumbnail', 'tainacan')">
+                                :src=" 
+                                    collection.thumbnail && collection.thumbnail[imageSize] && collection.thumbnail[imageSize][0] 
+                                        ?
+                                            collection.thumbnail[imageSize][0] 
+                                        :
+                                            (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
+                                                ?    
+                                                    collection.thumbnail['thumbnail'][0] 
+                                                : 
+                                                    $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
+                                "
+                                :data-src=" 
+                                    collection.thumbnail && collection.thumbnail[imageSize] && collection.thumbnail[imageSize][0] 
+                                        ?
+                                            collection.thumbnail[imageSize][0] 
+                                        :
+                                            (collection.thumbnail && collection.thumbnail['thumbnail'] && collection.thumbnail['thumbnail'][0]
+                                                ?    
+                                                    collection.thumbnail['thumbnail'][0] 
+                                                : 
+                                                    $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
+                                "
+                                :alt="collection.name ? collection.name : wpI18n('Thumbnail', 'tainacan')">
                         <span v-if="!hideName">{{ collection.name ? collection.name : '' }}</span>
                     </a>
                     <a 

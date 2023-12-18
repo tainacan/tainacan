@@ -114,7 +114,7 @@
                     itemMetadatum.item.id">
             <a
                     v-if="(maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
-                            (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
+                        (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
                     :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
                     class="add-link"
                     @click="editItemModalOpen = !editItemModalOpen">
@@ -155,7 +155,7 @@
         emits: [
             'input',
             'blur',
-            'mobileSpecialFocus'    
+            'mobile-special-focus'    
         ],
         data() {
             return {
@@ -508,7 +508,7 @@
                 }
             },
             onMobileSpecialFocus() {
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             }
         }
     }

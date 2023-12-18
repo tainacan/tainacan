@@ -338,8 +338,8 @@
                         </template>
                         <div class="content">
                             <p  
-                                class="has-text-white"
-                                v-html="metadatum.value_as_html" />
+                                    class="has-text-white"
+                                    v-html="metadatum.value_as_html" />
                         </div>
                     </b-collapse>
 

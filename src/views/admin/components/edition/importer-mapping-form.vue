@@ -1,7 +1,7 @@
 <template>
     <div 
             class="repository-level-page page-container">
-         <div class="tainacan-page-title">
+        <div class="tainacan-page-title">
             <h1>{{ $i18n.get('label_metadata_mapping') }} </h1>
             <a 
                     class="back-link has-text-secondary"
@@ -41,8 +41,8 @@
             <!-- Metadata Mapping -->
             <div 
                     v-if="importerSourceInfo != undefined && 
-                            importerSourceInfo != null &&
-                            !isLoading">
+                        importerSourceInfo != null &&
+                        !isLoading">
                 <div class="mapping-control">
                     <a
                             v-if="importerSourceInfo.source_metadata && importerSourceInfo.source_metadata.length > 0"
@@ -100,9 +100,9 @@
                                 {{ $i18n.get('label_create_metadatum') }}
                             </option>
                             <option
-                                v-if="collection && collection.current_user_can_edit_metadata"
-                                :value="'create_repository_metadata' + index">
-                              {{ $i18n.get('label_create_repository_metadata') }}
+                                    v-if="collection && collection.current_user_can_edit_metadata"
+                                    :value="'create_repository_metadata' + index">
+                                {{ $i18n.get('label_create_repository_metadata') }}
                             </option>
                             <option
                                     v-for="(collectionMetadatum, metadatumIndex) of collectionNonChildMetadata"
@@ -253,8 +253,8 @@
                             :index="0"
                             :original-metadatum="metadatum"
                             :is-inside-importer-flow="true"
-                            @onEditionFinished="onMetadatumEditionFinished()"
-                            @onEditionCanceled="onMetadatumEditionCanceled()" />
+                            @on-edition-finished="onMetadatumEditionFinished()"
+                            @on-edition-canceled="onMetadatumEditionCanceled()" />
                 </b-modal>
             </div>
             <div 

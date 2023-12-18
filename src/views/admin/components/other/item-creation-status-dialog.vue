@@ -41,8 +41,8 @@
                             :native-value="statusOption.slug">
                         <span class="icon has-text-gray">
                             <i 
-                                class="tainacan-icon tainacan-icon-18px"
-                                :class="$statusHelper.getIcon(statusOption.slug)" />
+                                    class="tainacan-icon tainacan-icon-18px"
+                                    :class="$statusHelper.getIcon(statusOption.slug)" />
                         </span>
                         {{ statusOption.name }}
                     </b-radio>
@@ -78,6 +78,9 @@
                 default: () => {}
             }
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 selectedStatus: !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private'

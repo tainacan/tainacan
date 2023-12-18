@@ -40,7 +40,7 @@
                     :addons="false"
                     :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
                     :message="formErrors.parent ? formErrors : formErrors.repeated">
-            <label class="label is-inline">
+                <label class="label is-inline">
                     {{ $i18n.get('label_parent_term') }}
                     <b-switch
                             id="tainacan-checkbox-has-parent"
@@ -122,8 +122,8 @@
             isHierarchical: Boolean
         },
         emits: [
-            'onEditionFinished',
-            'onEditionCanceled'
+            'on-edition-finished',
+            'on-edition-canceled'
         ],
         data() {
             return {
@@ -173,14 +173,14 @@
             saveEdition(term) {
 
                 if (term.id === 'new') {
-                    this.$emit('onEditionFinished', { name: this.form.name, parent: this.form.parent });
+                    this.$emit('on-edition-finished', { name: this.form.name, parent: this.form.parent });
                     this.form = {};
                     this.formErrors = {};
                     this.isLoading = false;
                 }
             },
             cancelEdition() {
-                this.$emit('onEditionCanceled', this.form);
+                this.$emit('on-edition-canceled', this.form);
             },
             clearErrors(attributes) {
                 if (attributes instanceof Object) {

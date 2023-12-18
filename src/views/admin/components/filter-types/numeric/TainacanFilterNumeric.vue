@@ -1,6 +1,6 @@
 <template>
     <div class="numeric-filter-container">
-         <b-dropdown
+        <b-dropdown
                 :mobile-modal="true"
                 aria-role="list"
                 trap-focus

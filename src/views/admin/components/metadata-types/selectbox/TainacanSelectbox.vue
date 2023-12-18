@@ -34,7 +34,7 @@
         },
         emits: [
             'input',
-            'mobileSpecialFocus'
+            'mobile-special-focus'
         ],
         computed: {
             getOptions() {
@@ -51,7 +51,7 @@
             },
             onMobileSpecialFocus($event) {
                 $event.target.blur();
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             }
         }
     }

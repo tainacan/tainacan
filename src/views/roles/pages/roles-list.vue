@@ -57,8 +57,7 @@
                     v-model="searchString" 
                     type="search"
                     :placeholder="$i18n.get('Type to search by Role Name')">
-		</p>
-
+        </p>
         <div 
                 v-if="roles"         
                 class="tablenav top">

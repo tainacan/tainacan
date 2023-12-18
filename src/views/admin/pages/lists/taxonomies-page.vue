@@ -150,7 +150,7 @@
                                     <i 
                                             class="tainacan-icon tainacan-icon-1-125em"
                                             :class="$statusHelper.getIcon(statusOption.slug)"
-                                            />
+                                        />
                                 </span>
                                 {{ statusOption.name }}
                                 <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies[statusOption.slug]})` : '' }}</span>
@@ -204,10 +204,10 @@
                         <div class="shown-items">
                             {{
                                 $i18n.get('info_showing_taxonomies') + ' ' +
-                                (taxonomiesPerPage * (page - 1) + 1) +
-                                $i18n.get('info_to') +
-                                getLastTaxonomyNumber() +
-                                $i18n.get('info_of') + total + '.'
+                                    (taxonomiesPerPage * (page - 1) + 1) +
+                                    $i18n.get('info_to') +
+                                    getLastTaxonomyNumber() +
+                                    $i18n.get('info_of') + total + '.'
                             }}
                         </div>
                         <div class="items-per-page">

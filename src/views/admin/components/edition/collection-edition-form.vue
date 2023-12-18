@@ -34,9 +34,9 @@
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginLeftForm">  
                         <form
-                            id="form-collection-begin-left" 
-                            class="form-hook-region"
-                            v-html="getBeginLeftForm" />
+                                id="form-collection-begin-left" 
+                                class="form-hook-region"
+                                v-html="getBeginLeftForm" />
                     </template>
 
                     <!-- Description -------------------------------- --> 
@@ -76,8 +76,8 @@
                     </b-field>
 
                     <!-- Items list options ------------------------ -->
-                     <div 
-                             class="collection-form-section"
+                    <div 
+                            class="collection-form-section"
                             @click="showItemsListOptions = !showItemsListOptions;">
                         <span class="icon">
                             <i 
@@ -148,8 +148,8 @@
                                 <div class="field">
                                     <label class="label">{{ $i18n.get('label_view_modes_available') }}</label>
                                     <help-button 
-                                                :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
-                                                :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')" />
+                                            :title="$i18n.getHelperTitle('collections', 'enabled_view_modes')" 
+                                            :message="$i18n.getHelperMessage('collections', 'enabled_view_modes')" />
                                     <div class="control">
                                         <b-dropdown
                                                 ref="enabledViewModesDropdown"
@@ -245,7 +245,7 @@
 
                     <!-- Item edition form options ------------------------ -->
                     <div 
-                             class="collection-form-section"
+                            class="collection-form-section"
                             @click="showItemEditionFormOptions = !showItemEditionFormOptions;">
                         <span class="icon">
                             <i 
@@ -418,7 +418,7 @@
 
                     <!-- Item submission options ------------------------ -->
                     <div 
-                             class="collection-form-section"
+                            class="collection-form-section"
                             @click="showItemSubmissionOptions = !showItemSubmissionOptions;">
                         <span class="icon">
                             <i 
@@ -492,8 +492,8 @@
                                                     :native-value="statusOption.slug">
                                                 <span class="icon has-text-gray">
                                                     <i 
-                                                        class="tainacan-icon tainacan-icon-18px"
-                                                        :class="$statusHelper.getIcon(statusOption.slug)" />
+                                                            class="tainacan-icon tainacan-icon-18px"
+                                                            :class="$statusHelper.getIcon(statusOption.slug)" />
                                                 </span>
                                                 {{ statusOption.name }}
                                             </b-radio>
@@ -538,10 +538,10 @@
                     <!-- Hook for extra Form options -->
                     <template v-if="hasEndLeftForm">  
                         <form
-                            id="form-collection-end-left" 
-                            ref="form-collection-end-left"
-                            class="form-hook-region"
-                            v-html="getEndLeftForm" />
+                                id="form-collection-end-left" 
+                                ref="form-collection-end-left"
+                                class="form-hook-region"
+                                v-html="getEndLeftForm" />
                     </template>
 
                 </div>
@@ -564,8 +564,8 @@
                                     :native-value="statusOption.slug">
                                 <span class="icon has-text-gray">
                                     <i 
-                                        class="tainacan-icon tainacan-icon-18px"
-                                        :class="$statusHelper.getIcon(statusOption.slug)" />
+                                            class="tainacan-icon tainacan-icon-18px"
+                                            :class="$statusHelper.getIcon(statusOption.slug)" />
                                 </span>
                                 {{ statusOption.name }}
                             </b-radio>
@@ -575,9 +575,9 @@
                     <!-- Hook for extra Form options -->
                     <template v-if="hasBeginRightForm">  
                         <form 
-                            id="form-collection-begin-right"
-                            class="form-hook-region"
-                            v-html="getBeginRightForm" />
+                                id="form-collection-begin-right"
+                                class="form-hook-region"
+                                v-html="getBeginRightForm" />
                     </template>
 
                     <!-- Image thumbnail & Header Image -------------------------------- --> 
@@ -648,7 +648,7 @@
                                         title: $i18n.get('label_thumbnail'),
                                         description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(collection['thumbnail'], 'full') + `'/>` 
                                     }" />
-                        <figure 
+                            <figure 
                                     v-if="collection.thumbnail == undefined || ((collection.thumbnail.medium == undefined || collection.thumbnail.medium == false) && (collection.thumbnail['tainacan-medium'] == undefined || collection.thumbnail['tainacan-medium'] == false))"
                                     class="image">
                                 <span class="image-placeholder">{{ $i18n.get('label_empty_thumbnail') }}</span>
@@ -722,10 +722,12 @@
                                     @input="fecthCoverPages"
                                     @focus="clearErrors('cover_page_id')"
                                     @infinite-scroll="fetchMoreCoverPages">
-                                <template slot-scope="props">
+                                <template #default="props">
                                     {{ props.option.title.rendered }}
                                 </template>
-                                <template slot="empty">{{ $i18n.get('info_no_page_found') }}</template>
+                                <template #empty>
+                                    {{ $i18n.get('info_no_page_found') }}
+                                </template>
                             </b-autocomplete>
     
                             <div 
@@ -828,9 +830,9 @@
                     <!-- Hook for extra Form options -->
                     <template v-if="hasEndRightForm">  
                         <form 
-                            id="form-collection-end-right"
-                            class="form-hook-region"
-                            v-html="getEndRightForm" />
+                                id="form-collection-end-right"
+                                class="form-hook-region"
+                                v-html="getEndRightForm" />
                     </template>
                 </div>
 
@@ -855,7 +857,7 @@
                             class="button is-secondary"
                             @click.prevent="onSubmit('metadata')">{{ $i18n.get('label_save_goto_metadata') }}</button>
                 </div>
-                 <div class="control">
+                <div class="control">
                     <button
                             v-if="isNewCollection && $userCaps.hasCapability('tnc_rep_edit_metadata') && !fromImporter"
                             id="button-submit-goto-filter"

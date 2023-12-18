@@ -115,8 +115,8 @@
             <label class="label">
                 {{ $i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections') }}
                 <help-button
-                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')" />
+                        :title="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections')"
+                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')" />
             </label>
             <b-taginput
                     :model-value="getSelectedTaxonomyCollections()"

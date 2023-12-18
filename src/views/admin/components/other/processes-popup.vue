@@ -1,147 +1,147 @@
 <template>
-<div>
-    <div 
-            class="processes-popup-backdrop"
-            @click="$emit('closeProcessesPopup')" />
-    <div class="processes-popup">
-        <div class="popup-header">
-            <a 
-                    v-if="bgProcesses.length > 0"
-                    @click="showProcessesList = !showProcessesList">
-                <span 
-                        style="margin-left: -0.5rem"
-                        class="icon has-text-blue5">
-                    <i 
-                            :class="{ 'tainacan-icon-arrowdown': showProcessesList,  
-                                      'tainacan-icon-arrowright': !showProcessesList }"
-                            class="tainacan-icon tainacan-icon-18px" />
-                </span>
-            </a>
-            <span 
-                    class="header-title"
-                    @click="bgProcesses.length > 0 ? showProcessesList = !showProcessesList : null">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
-            <a @click="$emit('closeProcessesPopup')">
-                <span class="icon has-text-blue5">
-                    <i class="tainacan-icon tainacan-icon-close" />
-                </span>
-            </a>       
-        </div>
+    <div>
         <div 
-                v-if="showProcessesList"
-                class="popup-list">
-            <ul>
-                <li class="popup-list-subheader">
-                    {{ $i18n.get('label_last_processed_on') + ' ' + getDate(bgProcesses[0].processed_last) }}
-                    <router-link 
-                            :to="$routerHelper.getProcessesPage()"
-                            class="is-secondary">
-                        {{ $i18n.get('label_view_more') }}
-                    </router-link>
-                </li>
-                <li     
-                        v-for="(bgProcess, index) of bgProcesses"
-                        :key="index">
-                    <div class="process-item">
-                        <div 
-                                class="process-title"
-                                @click="toggleDetails(index)">
-                            <span class="icon has-text-gray">
-                                <i 
-                                        class="tainacan-icon tainacan-icon-18px"
-                                        :class="{ 'tainacan-icon-arrowdown': processesCollapses[index], 'tainacan-icon-arrowright': !processesCollapses[index] }" />
-                            </span>  
-                            <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process') }}</p>
-                        </div>
-                        <!-- <span 
+                class="processes-popup-backdrop"
+                @click="$emit('close-processes-popup')" />
+        <div class="processes-popup">
+            <div class="popup-header">
+                <a 
+                        v-if="bgProcesses.length > 0"
+                        @click="showProcessesList = !showProcessesList">
+                    <span 
+                            style="margin-left: -0.5rem"
+                            class="icon has-text-blue5">
+                        <i 
+                                :class="{ 'tainacan-icon-arrowdown': showProcessesList,  
+                                          'tainacan-icon-arrowright': !showProcessesList }"
+                                class="tainacan-icon tainacan-icon-18px" />
+                    </span>
+                </a>
+                <span 
+                        class="header-title"
+                        @click="bgProcesses.length > 0 ? showProcessesList = !showProcessesList : null">{{ getUnfinishedProcesses() + ' ' + $i18n.get('info_unfinished_processes') }}</span>
+                <a @click="$emit('close-processes-popup')">
+                    <span class="icon has-text-blue5">
+                        <i class="tainacan-icon tainacan-icon-close" />
+                    </span>
+                </a>       
+            </div>
+            <div 
+                    v-if="showProcessesList"
+                    class="popup-list">
+                <ul>
+                    <li class="popup-list-subheader">
+                        {{ $i18n.get('label_last_processed_on') + ' ' + getDate(bgProcesses[0].processed_last) }}
+                        <router-link 
+                                :to="$routerHelper.getProcessesPage()"
+                                class="is-secondary">
+                            {{ $i18n.get('label_view_more') }}
+                        </router-link>
+                    </li>
+                    <li     
+                            v-for="(bgProcess, index) of bgProcesses"
+                            :key="index">
+                        <div class="process-item">
+                            <div 
+                                    class="process-title"
+                                    @click="toggleDetails(index)">
+                                <span class="icon has-text-gray">
+                                    <i 
+                                            class="tainacan-icon tainacan-icon-18px"
+                                            :class="{ 'tainacan-icon-arrowdown': processesCollapses[index], 'tainacan-icon-arrowright': !processesCollapses[index] }" />
+                                </span>  
+                                <p>{{ bgProcess.name ? bgProcess.name : $i18n.get('label_unnamed_process') }}</p>
+                            </div>
+                            <!-- <span 
                                 v-if="bgProcess.done <= 0 && bgProcess.status == 'closed'"
                                 class="icon has-text-gray action-icon"
                                 @click="resumeProcess(index)">
                             <i class="tainacan-icon tainacan-icon-18px tainacan-icon-play-circle"/>
                         </span> -->
-                        <span 
-                                v-if="bgProcess.status === 'running'"
-                                class="icon has-text-gray action-icon"
-                                @click="pauseProcess(index)">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-stop" />
-                        </span>
-                        <span 
-                                v-if="bgProcess.status === 'finished-errors'"
-                                class="icon has-text-success">
-                            <i
-                                style="margin-right: -5px;"
-                                class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alert has-text-yellow2" />
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle" />
-                        </span>
-                        <span 
-                                v-if="bgProcess.status === 'finished' || bgProcess.status === null"
-                                class="icon has-text-success">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle" />
-                        </span>
-                        <span 
-                                v-if="bgProcess.status === 'errored'"
-                                class="icon has-text-danger">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-processerror" />
-                        </span>
-                        <span 
-                                v-if="bgProcess.status === 'cancelled'"
-                                class="icon has-text-danger">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-repprovedcircle" />
-                        </span>
-                        <span 
-                                v-if="bgProcess.status === 'paused'"
-                                class="icon has-text-gray">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-pause" />
-                        </span>
-                        <span 
-                                v-if="bgProcess.status === 'waiting'"
-                                class="icon has-text-gray">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-waiting" />
-                        </span>
-                        <span 
-                                v-if="bgProcess.status === 'running'"
-                                class="icon has-text-success loading-icon">
+                            <span 
+                                    v-if="bgProcess.status === 'running'"
+                                    class="icon has-text-gray action-icon"
+                                    @click="pauseProcess(index)">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-stop" />
+                            </span>
+                            <span 
+                                    v-if="bgProcess.status === 'finished-errors'"
+                                    class="icon has-text-success">
+                                <i
+                                        style="margin-right: -5px;"
+                                        class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alert has-text-yellow2" />
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle" />
+                            </span>
+                            <span 
+                                    v-if="bgProcess.status === 'finished' || bgProcess.status === null"
+                                    class="icon has-text-success">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle" />
+                            </span>
+                            <span 
+                                    v-if="bgProcess.status === 'errored'"
+                                    class="icon has-text-danger">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-processerror" />
+                            </span>
+                            <span 
+                                    v-if="bgProcess.status === 'cancelled'"
+                                    class="icon has-text-danger">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-repprovedcircle" />
+                            </span>
+                            <span 
+                                    v-if="bgProcess.status === 'paused'"
+                                    class="icon has-text-gray">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-pause" />
+                            </span>
+                            <span 
+                                    v-if="bgProcess.status === 'waiting'"
+                                    class="icon has-text-gray">
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-waiting" />
+                            </span>
+                            <span 
+                                    v-if="bgProcess.status === 'running'"
+                                    class="icon has-text-success loading-icon">
 
-                            <div class="control has-icons-right is-loading is-clearfix" />
-                        </span>
-                    </div>
-                    <div 
-                            v-if="processesCollapses[index]"
-                            class="process-label">
-                        {{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}
-                        <span class="process-label-value">{{ (bgProcess.progress_value && bgProcess.progress_value >= 0) ? '(' + bgProcess.progress_value + '%)' : '' }}</span>
-                        <br>
-                        {{ $i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on) }}
-                        <br>
-                        {{ $i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last) }}
-                        <br>
-                        <a 
-                                v-if="bgProcess.log"
-                                :href="bgProcess.log">{{ $i18n.get('label_log_file') }}</a>
-                        <span v-if="bgProcess.error_log"> | </span>
-                        <a 
-                                v-if="bgProcess.error_log"
-                                class="has-text-danger"
-                                :href="bgProcess.error_log">{{ $i18n.get('label_error_log_file') }}</a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div   
-                v-if="!showProcessesList"
-                class="separator" />
-        <div class="popup-footer">
-            <span 
-                    v-if="hasAnyProcessExecuting"
-                    class="icon has-text-blue5"><i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating" /></span>
-            <p class="footer-title">    
-                {{ hasAnyProcessExecuting ? 
-                    (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? ' - ' + bgProcesses[0].progress_value + '%' : '') : $i18n.get('label_no_details_of_process')):
-                    $i18n.get('info_no_process') 
-                }}
-            </p>
+                                <div class="control has-icons-right is-loading is-clearfix" />
+                            </span>
+                        </div>
+                        <div 
+                                v-if="processesCollapses[index]"
+                                class="process-label">
+                            {{ bgProcess.progress_label ? bgProcess.progress_label : $i18n.get('label_no_details_of_process') }}
+                            <span class="process-label-value">{{ (bgProcess.progress_value && bgProcess.progress_value >= 0) ? '(' + bgProcess.progress_value + '%)' : '' }}</span>
+                            <br>
+                            {{ $i18n.get('label_queued_on') + ' ' + getDate(bgProcess.queued_on) }}
+                            <br>
+                            {{ $i18n.get('label_last_processed_on') + ' ' + getDate(bgProcess.processed_last) }}
+                            <br>
+                            <a 
+                                    v-if="bgProcess.log"
+                                    :href="bgProcess.log">{{ $i18n.get('label_log_file') }}</a>
+                            <span v-if="bgProcess.error_log"> | </span>
+                            <a 
+                                    v-if="bgProcess.error_log"
+                                    class="has-text-danger"
+                                    :href="bgProcess.error_log">{{ $i18n.get('label_error_log_file') }}</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div   
+                    v-if="!showProcessesList"
+                    class="separator" />
+            <div class="popup-footer">
+                <span 
+                        v-if="hasAnyProcessExecuting"
+                        class="icon has-text-blue5"><i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating" /></span>
+                <p class="footer-title">    
+                    {{ hasAnyProcessExecuting ? 
+                        (bgProcesses[0].progress_label ? bgProcesses[0].progress_label + ((bgProcesses[0].progress_value && bgProcesses[0].progress_value >= 0) ? ' - ' + bgProcesses[0].progress_value + '%' : '') : $i18n.get('label_no_details_of_process')):
+                        $i18n.get('info_no_process') 
+                    }}
+                </p>
+            </div>
         </div>
     </div>
-</div>
 </template>
 
 <script>
@@ -151,7 +151,7 @@ import moment from 'moment';
 export default {
     name: 'ProcessesPopup',
     emits: [
-        'closeProcessesPopup'
+        'close-processes-popup'
     ],
     data() {
         return {

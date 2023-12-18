@@ -30,11 +30,11 @@
                 </header>
 
                 <b-field :addons="false">
-                        <label
-                                class="label"
-                                style="font-size: 1em;">
-                            {{ $i18n.get('instruction_multiple_terms_insertion') }}
-                        </label>
+                    <label
+                            class="label"
+                            style="font-size: 1em;">
+                        {{ $i18n.get('instruction_multiple_terms_insertion') }}
+                    </label>
 
                     <b-taginput
                             v-model="termNames"
@@ -143,6 +143,9 @@
             initialTermParent: String,
             initialTermParentName: String
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 hasParent: false,

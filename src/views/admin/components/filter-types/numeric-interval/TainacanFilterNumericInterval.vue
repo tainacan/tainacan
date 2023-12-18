@@ -8,7 +8,7 @@
                 size="is-small"
                 :step="filterTypeOptions.step"
                 @update:model-value="($event) => { resetPage(); validadeValues($event) }"
-                />
+            />
         <p 
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">

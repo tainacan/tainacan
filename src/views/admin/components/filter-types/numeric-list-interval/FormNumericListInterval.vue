@@ -61,12 +61,12 @@
                             <span class="icon is-small">
                                 <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                             </span>
-                                &nbsp;{{ $i18n.get('add_value') }}
+                            &nbsp;{{ $i18n.get('add_value') }}
                         </a>
                     </p>
                     <p 
-                        v-if="intervals.length > 1"
-                        class="control">
+                            v-if="intervals.length > 1"
+                            class="control">
                         <a
                                 role="button"
                                 class="add-link"

@@ -71,10 +71,10 @@
                 <div class="shown-items">
                     {{
                         $i18n.get('info_showing_capabilities') +
-                        (capabilitiesPerPage * (page - 1) + 1) +
-                        $i18n.get('info_to') +
-                        capabilities.length + 
-                        $i18n.get('info_of') + total + '.'
+                            (capabilitiesPerPage * (page - 1) + 1) +
+                            $i18n.get('info_to') +
+                            capabilities.length + 
+                            $i18n.get('info_of') + total + '.'
                     }}
                 </div>
             </div>

@@ -90,7 +90,10 @@ export default {
         urlIframeHeight: 450,
         urlIsImage: false,
     },
-    emits: ['confirmURLSelection'],
+    emits: [
+        'confirmURLSelection',
+        'close'
+    ],
     data(){
         return {
             localUrlLink: '',

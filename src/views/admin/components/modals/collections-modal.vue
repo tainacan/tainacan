@@ -15,7 +15,7 @@
                 <hr>
             </header>
             <section class="tainacan-form">
-                 <p>{{ $i18n.get('instruction_select_a_target_collection') }}</p>
+                <p>{{ $i18n.get('instruction_select_a_target_collection') }}</p>
                 <div 
                         v-if="!isLoading" 
                         class="collection-types-container">
@@ -43,7 +43,7 @@
                         :is-full-page="false" 
                         :can-cancel="false" />
                 
-                 <footer class="field is-grouped form-submit">
+                <footer class="field is-grouped form-submit">
                     <div class="control">
                         <button 
                                 class="button is-outlined" 
@@ -61,6 +61,9 @@ import { mapActions } from 'vuex';
 
 export default {
     name: 'CollectionsModal',
+    emits: [
+        'close'
+    ],
     data() {
         return {
             collections: [],

@@ -80,6 +80,9 @@
             },
             messageKeyForUserPrefs: ''
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 neverShowAgain: false

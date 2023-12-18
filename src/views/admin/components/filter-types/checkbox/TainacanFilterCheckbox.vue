@@ -17,13 +17,13 @@
                                 :value="option.value"
                                 type="checkbox"
                                 @input="resetPage()"> 
-                            <span class="check" /> 
-                            <span class="control-label">
-                                <span class="checkbox-label-text">{{ option.label }}</span> 
-                                <span 
-                                        v-if="option.total_items != undefined"
-                                        class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
-                            </span>
+                        <span class="check" /> 
+                        <span class="control-label">
+                            <span class="checkbox-label-text">{{ option.label }}</span> 
+                            <span 
+                                    v-if="option.total_items != undefined"
+                                    class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                        </span>
                     </label>
                     <button
                             v-if="option.showViewAllButton && index == options.slice(0, filter.max_options).length - 1"
@@ -46,7 +46,7 @@
                     :selected="selected"
                     :metadatum-id="metadatumId"
                     :collection-id="collectionId"
-                    :metadatum_type="metadatumType"
+                    :metadatum-type="metadatumType"
                     :is-repository-level="isRepositoryLevel"
                     :query="query"
                     :current-collection-id="currentCollectionId"
@@ -74,7 +74,7 @@
         },
         emits: [
             'input',
-            'updateParentCollapse'
+            'update-parent-collapse'
         ],
         data(){
             return {
@@ -151,7 +151,7 @@
                         this.updateSelectedValues();
                         
                         if (res && res.data && res.data.values)
-                            this.$emit('updateParentCollapse', res.data.values.length > 0 );
+                            this.$emit('update-parent-collapse', res.data.values.length > 0 );
                     })
                     .catch( (error) => {
                         if (isCancel(error)) {
@@ -188,12 +188,12 @@
                     props: {
                         //parent: parent,
                         filter: this.filter,
-                        //taxonomy_id: this.taxonomy_id,
+                        //taxonomyId: this.taxonomyId,
                         selected: this.selected,
                         metadatumId: this.metadatumId,
                         //taxonomy: this.taxonomy,
                         collectionId: this.collectionId,
-                        metadatum_type: this.metadatumType,
+                        metadatumType: this.metadatumType,
                         isRepositoryLevel: this.isRepositoryLevel,
                         query: this.query
                     },

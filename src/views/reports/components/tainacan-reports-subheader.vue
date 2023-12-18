@@ -9,11 +9,11 @@
                         v-for="(statusOption, index) of $statusHelper.getStatuses()"
                         :key="index">
                     <span 
-                        v-if="$statusHelper.hasIcon(statusOption.slug)"
-                        class="icon has-text-gray">
-                    <i 
-                            class="tainacan-icon tainacan-icon-1-125em"
-                            :class="$statusHelper.getIcon(statusOption.slug)"
+                            v-if="$statusHelper.hasIcon(statusOption.slug)"
+                            class="icon has-text-gray">
+                        <i 
+                                class="tainacan-icon tainacan-icon-1-125em"
+                                :class="$statusHelper.getIcon(statusOption.slug)"
                             />
                     </span>
                     <span>

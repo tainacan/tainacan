@@ -60,7 +60,7 @@
                             id="button-edit-thumbnail"
                             class="button is-rounded is-secondary"
                             :aria-label="$i18n.get('label_button_edit_thumb')"
-                            @click.prevent="($event) => $emit('openThumbnailMediaFrame', $event)">
+                            @click.prevent="($event) => $emit('open-thumbnail-media-frame', $event)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
@@ -77,7 +77,7 @@
                             id="button-delete-thumbnail"
                             class="button is-rounded is-secondary"
                             :aria-label="$i18n.get('label_button_delete_thumb')"
-                            @click="$emit('onDeleteThumbnail')">
+                            @click="$emit('on-delete-thumbnail')">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('delete'),
@@ -108,13 +108,13 @@ export default {
         form: Object
     },
     emits: [
-        'openThumbnailMediaFrame',
-        'onDeleteThumbnail',
-        'onUpdateThumbnailAlt'
+        'open-thumbnail-media-frame',
+        'on-delete-thumbnail',
+        'on-update-thumbnail-alt'
     ],
     methods: {
         updateThumbnailAlt: _.debounce(function($event) {
-            this.$emit('onUpdateThumbnailAlt', $event.target.value);
+            this.$emit('on-update-thumbnail-alt', $event.target.value);
         }, 750)
     }
 }

@@ -27,7 +27,7 @@
             <!-- <b-loading
                     :is-full-page="false"
                     v-model="isLoadingMetadata"/> -->
-                        <!-- Button for hiding filters -->
+            <!-- Button for hiding filters -->
             <button 
                     v-if="!openAdvancedSearch"
                     id="filter-menu-compress-button"
@@ -125,8 +125,8 @@
             <!-- Item Creation Dropdown (or button, if few options are available) -->
             <div 
                     v-if="!$adminOptions.hideItemsListCreationDropdown &&
-                            collection && 
-                            collection.current_user_can_edit_items"
+                        collection && 
+                        collection.current_user_can_edit_items"
                     class="search-control-item">
                 <router-link
                         v-if="$adminOptions.hideItemsListCreationDropdownBulkAdd && $adminOptions.hideItemsListCreationDropdownImport"
@@ -385,11 +385,11 @@
                                     <i 
                                             v-if="adminViewMode !== 'map'"
                                             :class="{'tainacan-icon-viewtable' : ( adminViewMode == 'table' || adminViewMode == undefined),
-                                                    'tainacan-icon-viewcards' : adminViewMode == 'cards',
-                                                    'tainacan-icon-viewminiature' : adminViewMode == 'grid',
-                                                    'tainacan-icon-viewrecords' : adminViewMode == 'records',
-                                                    'tainacan-icon-viewlist' : adminViewMode == 'list',
-                                                    'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
+                                                     'tainacan-icon-viewcards' : adminViewMode == 'cards',
+                                                     'tainacan-icon-viewminiature' : adminViewMode == 'grid',
+                                                     'tainacan-icon-viewrecords' : adminViewMode == 'records',
+                                                     'tainacan-icon-viewlist' : adminViewMode == 'list',
+                                                     'tainacan-icon-viewmasonry' : adminViewMode == 'masonry' }"
                                             class="tainacan-icon tainacan-icon-1-25em" />
                                     <svg
                                             v-else
@@ -513,7 +513,7 @@
 
         </div>
 
-         <!-- SIDEBAR WITH FILTERS -->
+        <!-- SIDEBAR WITH FILTERS -->
         <b-modal
                 id="filters-modal"
                 ref="filters-modal"     
@@ -535,7 +535,7 @@
                     role="dialog"
                     :collection-id="collectionId + ''"
                     :is-repository-level="isRepositoryLevel"
-                    @updateIsLoadingItemsState="(state) => isLoadingItems = state" />
+                    @update-is-loading-items-state="(state) => isLoadingItems = state" />
         </b-modal>
 
         <!-- ITEMS LIST AREA (ASIDE THE ASIDE) ------------------------- -->
@@ -593,7 +593,7 @@
 
                 </div>  
 
-               <!-- Alert if custom metada is being used for sorting -->
+                <!-- Alert if custom metada is being used for sorting -->
                 <div 
                         v-if="hasAnOpenAlert &&
                             isSortingByCustomMetadata &&
@@ -631,7 +631,7 @@
                         :is-on-trash="status == 'trash'"
                         :view-mode="adminViewMode"
                         :is-repository-level="isRepositoryLevel"
-                        @updateIsLoading="(newIsLoadingState) => isLoadingItems = newIsLoadingState" />
+                        @update-is-loading="(newIsLoadingState) => isLoadingItems = newIsLoadingState" />
 
                 <!-- Empty Placeholder -->
                 <section
@@ -695,7 +695,7 @@
 
                 <!-- Pagination -->
                 <div ref="items-pagination">
-                    <pagination
+                    <items-pagination
                             v-if="totalItems > 0"
                             :is-sorting-by-custom-metadata="isSortingByCustomMetadata" />
                 </div>
@@ -710,7 +710,7 @@
     import FiltersTagsList from '../../components/search/filters-tags-list.vue';
     import FiltersItemsList from '../../components/search/filters-items-list.vue';
     import ItemsStatusTabs from '../../components/other/items-status-tabs.vue';
-    import Pagination from '../../components/search/pagination.vue'
+    import ItemsPagination from '../../components/search/items-pagination.vue'
     import AdvancedSearch from '../../components/search/advanced-search.vue';
     import AvailableImportersModal from '../../components/modals/available-importers-modal.vue';
     import ExposersModal from '../../components/modals/exposers-modal.vue';
@@ -725,7 +725,7 @@
             FiltersTagsList,
             FiltersItemsList,
             ItemsStatusTabs,
-            Pagination,
+            ItemsPagination,
             AdvancedSearch
         },
         props: {
@@ -921,7 +921,7 @@
                         } else {
                             this.$store.dispatch('search/set_postquery', this.$route.query);
                         }
-                        console.log(to, from)
+                        
                         // Finally, loads items even berfore facets so they won't stuck them 
                         if (to.fullPath != from.fullPath)
                             this.$eventBusSearch.loadItems();

@@ -26,9 +26,9 @@
             <!-- Hook for extra Form options -->
             <template v-if="hasBeginLeftForm">  
                 <form 
-                    id="form-filter-begin-left"
-                    class="form-hook-region"
-                    v-html="getBeginLeftForm" />
+                        id="form-filter-begin-left"
+                        class="form-hook-region"
+                        v-html="getBeginLeftForm" />
             </template>
 
             <b-field
@@ -166,10 +166,10 @@
                         :native-value="form.begin_with_filter_collapsed == 'yes' ? 'yes' : 'no'"
                         name="begin_with_filter_collapsed"
                         @update:model-value="clearErrors('begin_with_filter_collapsed')">
-                <help-button
-                        :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
-                        :message="$i18n.getHelperMessage('filters', 'begin_with_filter_collapsed')"
-                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                    <help-button
+                            :title="$i18n.getHelperTitle('filters', 'begin_with_filter_collapsed')"
+                            :message="$i18n.getHelperMessage('filters', 'begin_with_filter_collapsed')"
+                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                 </b-switch>
             </b-field>
 
@@ -188,10 +188,10 @@
                         :native-value="form.display_in_repository_level_lists == 'yes' ? 'yes' : 'no'"
                         name="display_in_repository_level_lists"
                         @input="clearErrors('display_in_repository_level_lists')">
-                <help-button
-                        :title="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
-                        :message="$i18n.getHelperMessage('filters', 'display_in_repository_level_lists')"
-                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                    <help-button
+                            :title="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
+                            :message="$i18n.getHelperMessage('filters', 'display_in_repository_level_lists')"
+                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                 </b-switch>
             </b-field>
 
@@ -208,9 +208,9 @@
             <!-- Hook for extra Form options -->
             <template v-if="hasEndLeftForm">  
                 <form 
-                    id="form-filter-end-left"
-                    class="form-hook-region"
-                    v-html="getEndLeftForm" />
+                        id="form-filter-end-left"
+                        class="form-hook-region"
+                        v-html="getEndLeftForm" />
             </template>
         </div>
         
@@ -250,10 +250,10 @@ export default {
         originalFilter: Object,
     }, 
     emits: [
-        'onUpdateSavedState',
-        'onEditionFinished',
-        'onEditionCanceled',
-        'onErrorFound'
+        'on-update-saved-state',
+        'on-edition-finished',
+        'on-edition-canceled',
+        'on-error-found'
     ],
     data(){
         return {
@@ -284,13 +284,13 @@ export default {
     },
     beforeUnmount() {
         if (this.closedByForm) {
-            this.$emit('onUpdateSavedState', true);
+            this.$emit('on-update-saved-state', true);
         } else {
             this.oldForm.saved = this.form.saved;
             if (JSON.stringify(this.form) != JSON.stringify(this.oldForm)) 
-                this.$emit('onUpdateSavedState', false);
+                this.$emit('on-update-saved-state', false);
             else    
-                this.$emit('onUpdateSavedState', true);
+                this.$emit('on-update-saved-state', true);
         }
     },
     methods: {
@@ -317,7 +317,7 @@ export default {
                         this.formErrorMessage = '';
                         this.isLoading = false;
                         this.closedByForm = true;
-                        this.$emit('onEditionFinished');
+                        this.$emit('on-edition-finished');
                     })
                     .catch((errors) => {
                         this.isLoading = false;
@@ -326,7 +326,7 @@ export default {
                                 this.formErrors[attribute] = error[attribute];
                         }
                         this.formErrorMessage = errors.error_message;
-                        this.$emit('onErrorFound');
+                        this.$emit('on-error-found');
 
                         this.form.formErrors = this.formErrors;
                         this.form.formErrorMessage = this.formErrorMessage;
@@ -356,7 +356,7 @@ export default {
                         this.formErrorMessage = '';
                         this.isLoading = false;
                         this.closedByForm = true;
-                        this.$emit('onEditionFinished');
+                        this.$emit('on-edition-finished');
                     })
                     .catch((errors) => {
                         this.isLoading = false;
@@ -365,7 +365,7 @@ export default {
                                 this.formErrors[attribute] = error[attribute];
                         }
                         this.formErrorMessage = errors.error_message;
-                        this.$emit('onErrorFound');
+                        this.$emit('on-error-found');
 
                         this.form.formErrors = this.formErrors;
                         this.form.formErrorMessage = this.formErrorMessage;
@@ -377,7 +377,7 @@ export default {
         },
         cancelEdition() {
             this.closedByForm = true;
-            this.$emit('onEditionCanceled');
+            this.$emit('on-edition-canceled');
         },
     }
 }

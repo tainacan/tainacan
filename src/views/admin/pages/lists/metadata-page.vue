@@ -21,17 +21,17 @@
                         <repository-metadata-list
                                 v-if="isRepositoryLevel"
                                 :metadata-type-filter-options="metadataTypeFilterOptions"
-                                @onUpdatehighlightedMetadatum="(newValue) => highlightedMetadatum = newValue" />
+                                @on-update-highlighted-metadatum="(newValue) => highlightedMetadatum = newValue" />
                         <collection-metadata-list
                                 v-else
                                 :metadata-type-filter-options="metadataTypeFilterOptions"
-                                @onUpdatehighlightedMetadatum="(newValue) => highlightedMetadatum = newValue" />
+                                @on-update-highlighted-metadatum="(newValue) => highlightedMetadatum = newValue" />
 
                         <!-- Available Metadata Area -->
                         <metadata-types-list 
                                 :highlighted-metadatum="highlightedMetadatum"
                                 :is-repository-level="isRepositoryLevel"
-                                @onFinishedLoadingMetadataTypes="createMetadataTypeFilterOptions" />
+                                @on-finished-loading-metadata-types="createMetadataTypeFilterOptions" />
                     </div>
                 </b-tab-item>
 

@@ -1,11 +1,11 @@
 <template>
     <div>
         <div
-            :class="{
-                   'repository-level-page': isRepositoryLevel,
-                   'page-container': isRepositoryLevel,
-                   'tainacan-modal-content': isItemLevel
-               }">
+                :class="{
+                    'repository-level-page': isRepositoryLevel,
+                    'page-container': isRepositoryLevel,
+                    'tainacan-modal-content': isItemLevel
+                }">
             <tainacan-title
                     v-if="!isItemLevel"
                     :bread-crumb-items="[{ path: '', label: $i18n.get('activities') }]" />
@@ -145,45 +145,45 @@
                         class="sub-header">
                     <b-field class="header-item">
                         <b-datepicker
-                            ref="datepicker"
-                            v-model="searchDates"
-                            :placeholder="$i18n.get('instruction_filter_activities_date')"
-                            range
-                            icon="calendar-today"
-                            :date-formatter="(date) => dateFormatter(date)"
-                            :date-parser="(date) => dateParser(date)"
-                            :years-range="[-50, 3]"
-                            :day-names="[
-                                $i18n.get('datepicker_short_sunday'),
-                                $i18n.get('datepicker_short_monday'),
-                                $i18n.get('datepicker_short_tuesday'),
-                                $i18n.get('datepicker_short_wednesday'),
-                                $i18n.get('datepicker_short_thursday'),
-                                $i18n.get('datepicker_short_friday'),
-                                $i18n.get('datepicker_short_saturday'),
-                            ]"
-                            :month-names="[
-                                $i18n.get('datepicker_month_january'),
-                                $i18n.get('datepicker_month_february'),
-                                $i18n.get('datepicker_month_march'),
-                                $i18n.get('datepicker_month_april'),
-                                $i18n.get('datepicker_month_may'),
-                                $i18n.get('datepicker_month_june'),
-                                $i18n.get('datepicker_month_july'),
-                                $i18n.get('datepicker_month_august'),
-                                $i18n.get('datepicker_month_september'),
-                                $i18n.get('datepicker_month_october'),
-                                $i18n.get('datepicker_month_november'),
-                                $i18n.get('datepicker_month_december'),
-                            ]"
-                            @update:model-value="searchProcesses()"
-                        />
+                                ref="datepicker"
+                                v-model="searchDates"
+                                :placeholder="$i18n.get('instruction_filter_activities_date')"
+                                range
+                                icon="calendar-today"
+                                :date-formatter="(date) => dateFormatter(date)"
+                                :date-parser="(date) => dateParser(date)"
+                                :years-range="[-50, 3]"
+                                :day-names="[
+                                    $i18n.get('datepicker_short_sunday'),
+                                    $i18n.get('datepicker_short_monday'),
+                                    $i18n.get('datepicker_short_tuesday'),
+                                    $i18n.get('datepicker_short_wednesday'),
+                                    $i18n.get('datepicker_short_thursday'),
+                                    $i18n.get('datepicker_short_friday'),
+                                    $i18n.get('datepicker_short_saturday'),
+                                ]"
+                                :month-names="[
+                                    $i18n.get('datepicker_month_january'),
+                                    $i18n.get('datepicker_month_february'),
+                                    $i18n.get('datepicker_month_march'),
+                                    $i18n.get('datepicker_month_april'),
+                                    $i18n.get('datepicker_month_may'),
+                                    $i18n.get('datepicker_month_june'),
+                                    $i18n.get('datepicker_month_july'),
+                                    $i18n.get('datepicker_month_august'),
+                                    $i18n.get('datepicker_month_september'),
+                                    $i18n.get('datepicker_month_october'),
+                                    $i18n.get('datepicker_month_november'),
+                                    $i18n.get('datepicker_month_december'),
+                                ]"
+                                @update:model-value="searchProcesses()"
+                            />
                         <p
-                            v-if="searchDates && searchDates.length != 0"
-                            class="control">
+                                v-if="searchDates && searchDates.length != 0"
+                                class="control">
                             <button
-                                class="button"
-                                @click="clearSearchDates()">
+                                    class="button"
+                                    @click="clearSearchDates()">
                                 <span class="icon"><i class="tainacan-icon tainacan-icon-close" /></span>
                             </button>
                         </p>
@@ -191,16 +191,16 @@
 
                     <b-field class="header-item">
                         <b-input
-                            v-model="searchQuery"
-                            :placeholder="$i18n.get('instruction_search')"
-                            type="search"
-                            size="is-small"
-                            :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
-                            autocomplete="on"
-                            icon-right="magnify"
-                            icon-right-clickable
-                            @keyup.enter="searchProcesses()"
-                            @icon-right-click="searchProcesses" />
+                                v-model="searchQuery"
+                                :placeholder="$i18n.get('instruction_search')"
+                                type="search"
+                                size="is-small"
+                                :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('activities')"
+                                autocomplete="on"
+                                icon-right="magnify"
+                                icon-right-clickable
+                                @keyup.enter="searchProcesses()"
+                                @icon-right-click="searchProcesses" />
                     </b-field>
                 </div>
 
@@ -231,7 +231,7 @@
                         :page="processesPage"
                         :processes-per-page="processesPerPage"
                         :processes="processes"
-                        @updateTotalProcesses="(total) => { totalProcesses = total; $console.log(totalProcesses);}" />
+                        @update-total-processes="(total) => { totalProcesses = total; $console.log(totalProcesses);}" />
 
                 <!-- Empty state processes image -->
                 <div v-if="tab == 'processes' && processes.length <= 0 && !isLoading">
@@ -254,10 +254,10 @@
                     <div class="shown-items">
                         {{
                             $i18n.get('info_showing_activities') + ' ' +
-                            (activitiesPerPage * (activitiesPage - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastActivityNumber() +
-                            $i18n.get('info_of') + totalActivities + '.'
+                                (activitiesPerPage * (activitiesPage - 1) + 1) +
+                                $i18n.get('info_to') +
+                                getLastActivityNumber() +
+                                $i18n.get('info_of') + totalActivities + '.'
                         }}
                     </div>
                     <div class="items-per-page">
@@ -295,10 +295,10 @@
                     <div class="shown-items">
                         {{
                             $i18n.get('info_showing_processes') + ' ' +
-                            (processesPerPage * (processesPage - 1) + 1) +
-                            $i18n.get('info_to') +
-                            getLastProcessesNumber() +
-                            $i18n.get('info_of') + totalProcesses + '.'
+                                (processesPerPage * (processesPage - 1) + 1) +
+                                $i18n.get('info_to') +
+                                getLastProcessesNumber() +
+                                $i18n.get('info_of') + totalProcesses + '.'
                         }}
                     </div>
                     <div class="items-per-page">

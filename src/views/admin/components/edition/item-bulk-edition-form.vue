@@ -93,8 +93,8 @@
                                 :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"> 
                         <span 
-                            class="document-name"
-                            v-html="item.title" />                            
+                                class="document-name"
+                                v-html="item.title" />                            
                         <span 
                                 v-if="item.errorMessage != undefined" 
                                 class="help is-danger">

@@ -6,7 +6,7 @@
             <button
                     type="button"
                     class="button is-secondary"
-                    @click="$emit('onSubmit')">
+                    @click="$emit('on-submit')">
                 {{ $i18n.get('label_back_to_related_item') }}
             </button>
         </template>
@@ -19,7 +19,7 @@
                     v-if="isOnSequenceEdit && hasPreviousItemOnSequenceEdit"
                     type="button"
                     class="button sequence-button"
-                    @click="$emit('onPrevInSequence')">
+                    @click="$emit('on-prev-in-sequence')">
                 <span class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-previous" />
                 </span>
@@ -32,7 +32,7 @@
                         v-if="!$adminOptions.mobileAppMode"
                         type="button"
                         class="button is-outlined"
-                        @click="$emit('onDiscard')">{{ $i18n.get('label_discard') }}</button>
+                        @click="$emit('on-discard')">{{ $i18n.get('label_discard') }}</button>
                 <button
                         type="button"
                         class="button is-secondary"
@@ -48,7 +48,7 @@
                         v-if="!isOnSequenceEdit && currentUserCanDelete && !$adminOptions.mobileAppMode"
                         type="button"
                         class="button is-outlined"
-                        @click="$emit('onSubmit', 'trash')">
+                        @click="$emit('on-submit', 'trash')">
                     <span v-if="!isMobileScreen">{{ $i18n.get('label_send_to_trash') }}</span>
                     <span v-else>{{ $i18n.get('status_trash') }}</span>
                 </button>
@@ -74,7 +74,7 @@
                                     'is-secondary': status == 'draft'
                                 }"
                                 @click="!$adminOptions.mobileAppMode && !isMobileScreen ? $emit(
-                                    'onSubmit',
+                                    'on-submit',
                                     ( currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption ) ? status : 'draft',
                                     ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
                                 ) : ($refs && $refs['item-edition-footer-dropdown'] && !$refs['item-edition-footer-dropdown'].isActive ? $refs['item-edition-footer-dropdown'].toggle() : null)">
@@ -95,10 +95,10 @@
                         </button>
                     </template>
                     <b-dropdown-item 
-                           :class="{ 'is-forced-last-option': status == 'draft' }"
+                            :class="{ 'is-forced-last-option': status == 'draft' }"
                             aria-role="listitem"
                             @click="$emit(
-                                'onSubmit',
+                                'on-submit',
                                 'draft',
                                 ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
                             )">
@@ -112,7 +112,7 @@
                             :class="{ 'is-forced-last-option': status == 'private' }"
                             aria-role="listitem"
                             @click="$emit(
-                                'onSubmit',
+                                'on-submit',
                                 'private',
                                 ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
                             )">
@@ -125,7 +125,7 @@
                             v-if="currentUserCanPublish && !$adminOptions.hideItemEditionStatusPublishOption"
                             aria-role="listitem"
                             @click="$emit(
-                                'onSubmit',
+                                'on-submit',
                                 'publish',
                                 ( (isOnSequenceEdit && !isCurrentItemOnSequenceEdit) ? 'next' : null)
                             )">
@@ -146,7 +146,7 @@
                             'is-success': status == 'publish' || status == 'private',
                             'is-secondary': status == 'draft'
                         }"
-                        @click="$emit('onSubmit', status)">
+                        @click="$emit('on-submit', status)">
                     {{ $i18n.get('label_update') }}
                 </button>
 
@@ -158,7 +158,7 @@
                     :disabled="(status == 'publish' || status == 'private') && hasSomeError"
                     type="button"
                     class="button is-success"
-                    @click="$emit('onNextInSequence')">
+                    @click="$emit('on-next-in-sequence')">
                 <span>{{ $i18n.get('label_next') }}</span>
                 <span class="icon is-large">
                     <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-next" />
@@ -200,10 +200,10 @@ export default {
         isEditingItemMetadataInsideIframe: Boolean
     },
     emits: [
-        'onSubmit',
-        'onNextInSequence',
-        'onPrevInSequence',
-        'onDiscard',
+        'on-submit',
+        'on-next-in-sequence',
+        'on-prev-in-sequence',
+        'on-discard',
     ],
     mounted() {
         this.$emitter.on('toggleItemEditionFooterDropdown', () => {
@@ -225,7 +225,7 @@ export default {
                     icon: 'item',
                     currentUserCanPublish: this.currentUserCanPublish,
                     onConfirm: (selectedStatus) => {
-                        this.$emit('onSubmit', selectedStatus);
+                        this.$emit('on-submit', selectedStatus);
                     }
                 },
                 trapFocus: true,

@@ -32,9 +32,9 @@
                     :options="chartOptions" />
         </div>
         <div 
-            v-else
-            style="min-height: 390px"
-            class="skeleton postbox" />
+                v-else
+                style="min-height: 390px"
+                class="skeleton postbox" />
         <slot />
     </div>
 </template>

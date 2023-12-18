@@ -22,6 +22,10 @@
         props: {
             value: [ String, Object, Array ]
         },
+        emits: [
+            'input',
+            'close'
+        ],
         data() {
             return {
                 maxlength: [Number, null]

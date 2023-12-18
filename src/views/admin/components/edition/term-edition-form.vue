@@ -51,9 +51,9 @@
             <template 
                     v-if="hasBeginLeftForm">  
                 <form 
-                    id="form-term-begin-left"
-                    class="form-hook-region"
-                    v-html="getBeginLeftForm" />
+                        id="form-term-begin-left"
+                        class="form-hook-region"
+                        v-html="getBeginLeftForm" />
             </template>
 
             <div class="columns is-gapless image-and-description-area">
@@ -138,7 +138,7 @@
                     :addons="false"
                     :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
                     :message="formErrors.parent ? formErrors : formErrors.repeated">
-            <label class="label is-inline">
+                <label class="label is-inline">
                     {{ $i18n.get('label_parent_term') }}
                     <b-switch
                             id="tainacan-checkbox-has-parent"
@@ -193,9 +193,9 @@
             <!-- Hook for extra Form options -->
             <template v-if="hasEndLeftForm">  
                 <form 
-                    id="form-term-end-left"
-                    class="form-hook-region"
-                    v-html="getEndLeftForm" />
+                        id="form-term-end-left"
+                        class="form-hook-region"
+                        v-html="getEndLeftForm" />
             </template>
 
             <!-- Submit buttons -------------- -->
@@ -238,7 +238,8 @@
             itemId: [String, Number]
         },
         emits: [
-            'onEditionFinished'
+            'on-edition-finished',
+            'close'
         ],
         data() {
             return {
@@ -318,7 +319,7 @@
                         itemId: this.itemId
                     })
                         .then((term) => {
-                            this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
+                            this.$emit('on-edition-finished', {term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
                             this.form = {};
                             this.formErrors = {};
                             this.isLoading = false;
@@ -355,7 +356,7 @@
                     })
                         .then((term) => {
                             this.formErrors = {};
-                            this.$emit('onEditionFinished', { term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
+                            this.$emit('on-edition-finished', { term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
                             this.$emit('close');
                         })
                         .catch((errors) => {

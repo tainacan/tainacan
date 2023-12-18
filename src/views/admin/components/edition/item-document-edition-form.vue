@@ -14,8 +14,8 @@
         <div class="section-box document-field">
             <div
                     v-if="form.document != undefined && form.document != null &&
-                            form.document_type != undefined && form.document_type != null &&
-                            form.document != '' && form.document_type != 'empty'"
+                        form.document_type != undefined && form.document_type != null &&
+                        form.document != '' && form.document_type != 'empty'"
                     class="document-field-content"
                     :class="'document-field-content--' + form.document_type">
                 <div v-html="item.document_as_html" />
@@ -25,7 +25,7 @@
                             class="button is-rounded is-secondary"
                             size="is-small"
                             :aria-label="$i18n.get('label_button_edit_document')"
-                            @click.prevent="($event) => $emit('onSetDocument', $event, form.document_type)">
+                            @click.prevent="($event) => $emit('on-set-document', $event, form.document_type)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('edit'),
@@ -42,7 +42,7 @@
                             class="button is-rounded is-secondary"
                             size="is-small"
                             :aria-label="$i18n.get('label_button_delete_document')"
-                            @click.prevent="$emit('onRemoveDocument')">
+                            @click.prevent="$emit('on-remove-document')">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('delete'),
@@ -62,7 +62,7 @@
                 <li v-if="!$adminOptions.hideItemEditionDocumentFileInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['attachment'] && collection.item_enabled_document_types['attachment']['enabled'] === 'yes')">
                     <button
                             type="button"
-                            @click.prevent="($event) => $emit('onSetFileDocument', $event)">
+                            @click.prevent="($event) => $emit('on-set-file-document', $event)">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-upload" />
                         </span>
@@ -72,7 +72,7 @@
                 <li v-if="!$adminOptions.hideItemEditionDocumentTextInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['text'] && collection.item_enabled_document_types['text']['enabled'] === 'yes')">
                     <button
                             type="button"
-                            @click.prevent="$emit('onSetTextDocument')">
+                            @click.prevent="$emit('on-set-text-document')">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-text" />
                         </span>
@@ -82,7 +82,7 @@
                 <li v-if="!$adminOptions.hideItemEditionDocumentUrlInput && (collection && collection.item_enabled_document_types && collection.item_enabled_document_types['url'] && collection.item_enabled_document_types['url']['enabled'] === 'yes')">
                     <button
                             type="button"
-                            @click.prevent="$emit('onSetURLDocument')">
+                            @click.prevent="$emit('on-set-url-document')">
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-url" />
                         </span>
@@ -102,11 +102,11 @@ export default {
         collection: Object
     },
     emits: [
-        'onSetFileDocument',
-        'onSetTextDocument',
-        'onSetURLDocument',
-        'onSetDocument',
-        'onRemoveDocument'
+        'on-set-file-document',
+        'on-set-text-document',
+        'on-set-url-document',
+        'on-set-document',
+        'on-remove-document'
     ]
 }
 </script>

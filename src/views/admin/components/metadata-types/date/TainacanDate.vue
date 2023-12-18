@@ -47,7 +47,7 @@
         emits: [
             'input',
             'blur',
-            'mobileSpecialFocus'
+            'mobile-special-focus'
         ],
         data() {
             return {
@@ -97,7 +97,7 @@
                 this.$emit('blur');
             },
             onMobileSpecialFocus() {
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             }
         }
     }

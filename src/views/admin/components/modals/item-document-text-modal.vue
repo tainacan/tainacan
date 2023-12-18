@@ -39,7 +39,8 @@ export default {
     },
     emits: [
         'confirmTextWriting',
-        'cancelTextWriting'
+        'cancelTextWriting',
+        'close'
     ],
     data(){
         return {

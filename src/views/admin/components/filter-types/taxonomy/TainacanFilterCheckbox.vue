@@ -44,7 +44,7 @@
             <checkbox-radio-filter-input
                     :is-modal="false" 
                     :filter="filter"
-                    :taxonomy_id="taxonomyId"
+                    :taxonomy-id="taxonomyId"
                     :selected="selected"
                     :metadatum-id="metadatumId"
                     :taxonomy="taxonomy"
@@ -79,7 +79,7 @@
         },
         emits: [
             'input',
-            'updateParentCollapse'
+            'update-parent-collapse'
         ],
         data(){
             return {
@@ -198,7 +198,7 @@
                             this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
 
                             if (res && res.data && res.data.values)
-                                this.$emit('updateParentCollapse', res.data.values.length > 0 );
+                                this.$emit('update-parent-collapse', res.data.values.length > 0 );
                         })
                         .catch( error => {
                             if (isCancel(error)) {
@@ -217,10 +217,10 @@
                         if (facet == this.filter.id) {
                             if (Array.isArray(this.facetsFromItemSearch[facet])) {
                                 this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
-                                this.$emit('updateParentCollapse', this.facetsFromItemSearch[facet].length > 0 );
+                                this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
                             } else {
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
-                                this.$emit('updateParentCollapse', Object.values(this.facetsFromItemSearch[facet]).length > 0 );
+                                this.$emit('update-parent-collapse', Object.values(this.facetsFromItemSearch[facet]).length > 0 );
                             }
                         }    
                     }

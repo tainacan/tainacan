@@ -41,7 +41,7 @@
         <template
                 v-if="allowNew && !isFetching && searchName.length > 0"
                 #footer>
-                <a @click="$emit('showAddNewTerm', { name: searchName })">
+            <a @click="$emit('show-add-new-term', { name: searchName })">
                 {{ $i18n.get('label_create_new_term') + ' "' + searchName + '"' }}
             </a>
         </template>
@@ -63,7 +63,7 @@
         },
         emits: [
             'input',
-            'showAddNewTerm'
+            'show-add-new-term'
         ],
         data() {
             return {

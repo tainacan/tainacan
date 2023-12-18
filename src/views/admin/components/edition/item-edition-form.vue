@@ -8,7 +8,7 @@
         <tainacan-title 
                 v-if="!$adminOptions.hideItemEditionPageTitle || ($adminOptions.hideItemEditionPageTitle && isEditingItemMetadataInsideIframe)"
                 :bread-crumb-items="[{ path: '', label: $i18n.get('item') }]">
-           <h1 v-if="isCreatingNewItem">
+            <h1 v-if="isCreatingNewItem">
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && !isLoading)"
                         class="status-tag"
@@ -37,7 +37,7 @@
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(item.status)"
-                            />
+                        />
                     <help-button
                             :title="$i18n.get('status_' + item.status)"
                             :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
@@ -178,14 +178,14 @@
                             class="column main-column"
                             :class="
                                 (( (shouldDisplayItemEditionDocument || shouldDisplayItemEditionThumbnail) && !$adminOptions.itemEditionDocumentInsideTabs) ||
-                                (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
+                                    (shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs)) ? 'is-7' : 'is-12'">
 
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginRightForm">
                             <form
-                                id="form-item-begin-right"
-                                class="form-hook-region"
-                                v-html="getBeginRightForm" />
+                                    id="form-item-begin-right"
+                                    class="form-hook-region"
+                                    v-html="getBeginRightForm" />
                         </template>
 
                         <div class="b-tabs">
@@ -228,8 +228,7 @@
                                     </svg>
                                 </button>
                                 <button 
-                                        id="tainacan-tabs-next" 
-                                        slot="button-next" 
+                                        id="tainacan-tabs-next"
                                         class="swiper-button-next">
                                     <svg
                                             width="24"
@@ -449,10 +448,10 @@
                                                             :is-focused="focusedMetadatum === index"
                                                             :is-metadata-navigation="isMetadataNavigation"
                                                             @input="updateItemMetadataValue"
-                                                            @changeCollapse="onChangeCollapse($event, index)"
+                                                            @change-collapse="onChangeCollapse($event, index)"
                                                             @touchstart="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }): ''"
                                                             @mousedown="isMetadataNavigation ? setMetadatumFocus({ index: index, scrollIntoView: false }) : ''"
-                                                            @mobileSpecialFocus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
+                                                            @mobile-special-focus="setMetadatumFocus({ index: index, scrollIntoView: true })" />
                                                 </template>
                                             </div>
                                         </transition>
@@ -464,9 +463,9 @@
                                                 formHooks['item'] != undefined &&
                                                 formHooks['item']['end-right'] != undefined">
                                         <form
-                                            id="form-item-end-right"
-                                            class="form-hook-region"
-                                            v-html="formHooks['item']['end-right'].join('')" />
+                                                id="form-item-end-right"
+                                                class="form-hook-region"
+                                                v-html="formHooks['item']['end-right'].join('')" />
                                     </template>
                                 </div>
 
@@ -504,19 +503,19 @@
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
-                                            @onSetDocument="setDocument"
-                                            @onRemoveDocument="removeDocument"
-                                            @onSetFileDocument="setFileDocument"
-                                            @onSetTextDocument="setTextDocument"
-                                            @onSetURLDocument="setURLDocument" />
+                                            @on-set-document="setDocument"
+                                            @on-remove-document="removeDocument"
+                                            @on-set-file-document="setFileDocument"
+                                            @on-set-text-document="setTextDocument"
+                                            @on-set-url-document="setURLDocument" />
                                     <item-thumbnail-edition-form 
                                             :item="item"
                                             :form="form"
                                             :collection="collection"
                                             :is-loading="isLoading"
-                                            @onDeleteThumbnail="deleteThumbnail"
-                                            @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
-                                            @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
+                                            @on-delete-thumbnail="deleteThumbnail"
+                                            @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
+                                            @open-thumbnail-media-frame="thumbnailMediaFrame.openFrame($event)" />
                                 </div>
 
                                 <!-- Attachments on mobile modal -->
@@ -533,8 +532,8 @@
                                             :is-loading="isLoading"
                                             :total-attachments="totalAttachments"
                                             :should-load-attachments="shouldLoadAttachments"
-                                            @openAttachmentsMediaFrame="($event) => attachmentsMediaFrame.openFrame($event)"
-                                            @onDeleteAttachment="deleteAttachment($event)" />
+                                            @open-attachments-media-frame="($event) => attachmentsMediaFrame.openFrame($event)"
+                                            @on-delete-attachment="deleteAttachment($event)" />
                                 </div>
 
                             </section>
@@ -565,11 +564,11 @@
                                     :item="item"
                                     :form="form"
                                     :collection="collection"
-                                    @onSetDocument="setDocument"
-                                    @onRemoveDocument="removeDocument"
-                                    @onSetFileDocument="setFileDocument"
-                                    @onSetTextDocument="setTextDocument"
-                                    @onSetURLDocument="setURLDocument" />
+                                    @on-set-document="setDocument"
+                                    @on-remove-document="removeDocument"
+                                    @on-set-file-document="setFileDocument"
+                                    @on-set-text-document="setTextDocument"
+                                    @on-set-url-document="setURLDocument" />
 
                             <hr v-if="shouldDisplayItemEditionDocument && shouldDisplayItemEditionThumbnail">
 
@@ -580,9 +579,9 @@
                                     :form="form"
                                     :collection="collection"
                                     :is-loading="isLoading"
-                                    @onDeleteThumbnail="deleteThumbnail"
-                                    @onUpdateThumbnailAlt="($event) => onUpdateThumbnailAlt($event)"
-                                    @openThumbnailMediaFrame="thumbnailMediaFrame.openFrame($event)" />
+                                    @on-delete-thumbnail="deleteThumbnail"
+                                    @on-update-thumbnail-alt="($event) => onUpdateThumbnailAlt($event)"
+                                    @open-thumbnail-media-frame="thumbnailMediaFrame.openFrame($event)" />
 
                             <hr v-if="(shouldDisplayItemEditionAttachments && !$adminOptions.itemEditionAttachmentsInsideTabs) || hasEndLeftForm">
 
@@ -595,17 +594,17 @@
                                     :is-loading="isLoading"
                                     :total-attachments="totalAttachments"
                                     :should-load-attachments="shouldLoadAttachments"
-                                    @openAttachmentsMediaFrame="($event) => attachmentsMediaFrame.openFrame($event)"
-                                    @onDeleteAttachment="deleteAttachment($event)" />
+                                    @open-attachments-media-frame="($event) => attachmentsMediaFrame.openFrame($event)"
+                                    @on-delete-attachment="deleteAttachment($event)" />
 
                             <hr v-if="hasEndLeftForm">
 
                             <!-- Hook for extra Form options -->
                             <template v-if="hasEndLeftForm">
                                 <form
-                                    id="form-item-end-left"
-                                    class="form-hook-region"
-                                    v-html="getEndLeftForm" />
+                                        id="form-item-end-left"
+                                        class="form-hook-region"
+                                        v-html="getEndLeftForm" />
                             </template>
 
                         </div>
@@ -715,10 +714,10 @@
                     :current-user-can-delete="item && item.current_user_can_delete"
                     :current-user-can-publish="collection && collection.current_user_can_publish_items"
                     :is-editing-item-metadata-inside-iframe="isEditingItemMetadataInsideIframe"
-                    @onSubmit="onSubmit"
-                    @onDiscard="onDiscard"
-                    @onPrevInSequence="onPrevInSequence"
-                    @onNextInSequence="onNextInSequence" />
+                    @on-submit="onSubmit"
+                    @on-discard="onDiscard"
+                    @on-prev-in-sequence="onPrevInSequence"
+                    @on-next-in-sequence="onNextInSequence" />
 
         </footer>
     </div>

@@ -32,21 +32,21 @@
             <div class="name-edition-box">
                 <label for="role-name-input">{{ $i18n.get('Role name') + ':' }}</label>
                 <input
-                    id="role-name-input" 
-                    v-model="form.name" 
-                    type="text"
-                    name="name" 
-                    :placeholder="$i18n.get('Insert the role name...')" 
-                    @input="showNotice = false">
+                        id="role-name-input" 
+                        v-model="form.name" 
+                        type="text"
+                        name="name" 
+                        :placeholder="$i18n.get('Insert the role name...')" 
+                        @input="showNotice = false">
             </div>
             <br>
             <!-- Hook for extra Form options -->
             <template v-if="hasBeginLeftForm">  
                 <form
-                    id="form-role-begin-left" 
-                    class="form-hook-region"
-                    @click="showNotice = false"
-                    v-html="getBeginLeftForm" />
+                        id="form-role-begin-left" 
+                        class="form-hook-region"
+                        @click="showNotice = false"
+                        v-html="getBeginLeftForm" />
                 <br>
             </template>
         </template>
@@ -114,12 +114,12 @@
                                                 {{ $i18n.get('Selecionar') + ' ' + repositoryCapabilities[capability].display_name }}
                                             </label>
                                             <input
-                                                :id="'capability_'+ capability"
-                                                type="checkbox"
-                                                name="capabilities[]"
-                                                :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0"
-                                                :checked="form.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0)"
-                                                @input="onUpdateCapability($event.target.checked, capability)">
+                                                    :id="'capability_'+ capability"
+                                                    type="checkbox"
+                                                    name="capabilities[]"
+                                                    :disabled="repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0"
+                                                    :checked="form.capabilities[capability] || (repositoryCapabilities[capability].supercaps.length > 0 && repositoryCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap] == true) >= 0)"
+                                                    @input="onUpdateCapability($event.target.checked, capability)">
                                         </span>
                                         <span 
                                                 class="name column-name"
@@ -197,12 +197,12 @@
                                                     {{ $i18n.get('Selecionar') + ' ' + collectionCapabilities[capability].display_name }}
                                                 </label>
                                                 <input
-                                                    :id="'capability_'+ capability.replace('%d', selectedCollection)"
-                                                    type="checkbox"
-                                                    name="roles[]"
-                                                    :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
-                                                    :checked="form.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
-                                                    @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
+                                                        :id="'capability_'+ capability.replace('%d', selectedCollection)"
+                                                        type="checkbox"
+                                                        name="roles[]"
+                                                        :disabled="collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.filter((supercap) => supercap.replace('%d', selectedCollection) != capability.replace('%d', selectedCollection)).findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0"
+                                                        :checked="form.capabilities[capability.replace('%d', selectedCollection)] || (collectionCapabilities[capability].supercaps.length > 0 && collectionCapabilities[capability].supercaps.findIndex((supercap) => form.capabilities[supercap.replace('%d', selectedCollection)] == true) >= 0)"
+                                                        @input="onUpdateCapability($event.target.checked, capability.replace('%d', selectedCollection))">
                                             </span>
                                             <span 
                                                     class="name column-name"
@@ -230,10 +230,10 @@
                     <template v-if="hasBeginRightForm">  
                         
                         <form 
-                            id="form-role-begin-right"
-                            class="form-hook-region"
-                            @click="showNotice = false"
-                            v-html="getBeginRightForm" />
+                                id="form-role-begin-right"
+                                class="form-hook-region"
+                                @click="showNotice = false"
+                                v-html="getBeginRightForm" />
                     </template>
                     
                     <hr v-if="hasBeginRightForm && hasEndRightForm">
@@ -241,10 +241,10 @@
                     <!-- Hook for extra Form options -->
                     <template v-if="hasEndRightForm"> 
                         <form 
-                            id="form-role-end-right"
-                            class="form-hook-region"
-                            @click="showNotice = false"
-                            v-html="getEndRightForm" />
+                                id="form-role-end-right"
+                                class="form-hook-region"
+                                @click="showNotice = false"
+                                v-html="getEndRightForm" />
                     </template>
                     
                     <br>
@@ -258,10 +258,10 @@
         <template v-if="hasEndLeftForm && !isLoadingRole">  
             <br>
             <form 
-                id="form-role-end-left"
-                class="form-hook-region"
-                @click="showNotice = false"
-                v-html="getEndLeftForm" />
+                    id="form-role-end-left"
+                    class="form-hook-region"
+                    @click="showNotice = false"
+                    v-html="getEndLeftForm" />
         </template>
 
         <div class="form-submit">

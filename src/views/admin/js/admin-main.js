@@ -34,16 +34,16 @@ import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';
 
 // Metadata Types
-import Text from '../components/metadata-types/text/Text.vue';
-import Textarea from '../components/metadata-types/textarea/Textarea.vue';
-import Selectbox from '../components/metadata-types/selectbox/Selectbox.vue';
-import Numeric from '../components/metadata-types/numeric/Numeric.vue';
-import Date from '../components/metadata-types/date/Date.vue';
-import Relationship from '../components/metadata-types/relationship/Relationship.vue';
-import Taxonomy from '../components/metadata-types/taxonomy/Taxonomy.vue';
-import Compound from '../components/metadata-types/compound/Compound.vue';
-import User from '../components/metadata-types/user/User.vue';
-import GeoCoordinate from '../components/metadata-types/geocoordinate/GeoCoordinate.vue'
+import TainacanText from '../components/metadata-types/text/TainacanText.vue';
+import TainacanTextarea from '../components/metadata-types/textarea/TainacanTextarea.vue';
+import TainacanSelectbox from '../components/metadata-types/selectbox/TainacanSelectbox.vue';
+import TainacanNumeric from '../components/metadata-types/numeric/TainacanNumeric.vue';
+import TainacanDate from '../components/metadata-types/date/TainacanDate.vue';
+import TainacanRelationship from '../components/metadata-types/relationship/TainacanRelationship.vue';
+import TainacanTaxonomy from '../components/metadata-types/taxonomy/TainacanTaxonomy.vue';
+import TainacanCompound from '../components/metadata-types/compound/TainacanCompound.vue';
+import TainacanUser from '../components/metadata-types/user/TainacanUser.vue';
+import TainacanGeoCoordinate from '../components/metadata-types/geocoordinate/TainacanGeoCoordinate.vue'
 
 import FormText from '../components/metadata-types/text/FormText.vue';
 import FormTextarea from '../components/metadata-types/textarea/FormTextarea.vue';
@@ -204,16 +204,16 @@ export default (element) => {
             }
 
             /* Metadata */
-            app.component('tainacan-text', Text);
-            app.component('tainacan-textarea', Textarea);
-            app.component('tainacan-selectbox', Selectbox);
-            app.component('tainacan-numeric', Numeric);
-            app.component('tainacan-date', Date);
-            app.component('tainacan-relationship', Relationship);
-            app.component('tainacan-taxonomy', Taxonomy);
-            app.component('tainacan-compound', Compound);
-            app.component('tainacan-user', User);
-            app.component('tainacan-geocoordinate', GeoCoordinate);
+            app.component('tainacan-text', TainacanText);
+            app.component('tainacan-textarea', TainacanTextarea);
+            app.component('tainacan-selectbox', TainacanSelectbox);
+            app.component('tainacan-numeric', TainacanNumeric);
+            app.component('tainacan-date', TainacanDate);
+            app.component('tainacan-relationship', TainacanRelationship);
+            app.component('tainacan-taxonomy', TainacanTaxonomy);
+            app.component('tainacan-compound', TainacanCompound);
+            app.component('tainacan-user', TainacanUser);
+            app.component('tainacan-geocoordinate', TainacanGeoCoordinate);
             
 
             /* Metadata Option forms */

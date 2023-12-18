@@ -266,6 +266,9 @@ export default {
         itemURL: String,
         selectedItems: Array
     },
+    emits: [
+        'close'
+    ],
     data(){
         return {
             isLoading: false,

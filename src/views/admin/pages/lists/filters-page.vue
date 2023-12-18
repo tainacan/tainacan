@@ -123,7 +123,7 @@
                                     <span 
                                             class="filter-name"
                                             :class="{'is-danger': formWithErrors == filter.id }">
-                                            {{ filter.name }}
+                                        {{ filter.name }}
                                     </span>
                                     <span   
                                             v-if="filter.filter_type_object != undefined"
@@ -155,14 +155,14 @@
                                                 }"
                                                 class="icon icon-level-identifier">
                                             <i 
-                                                :class="{ 
-                                                    'tainacan-icon-collection': filter.collection_id == collectionId, 
-                                                    'tainacan-icon-repository': filter.collection_id != collectionId,
-                                                    'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
-                                                    'has-text-blue5': filter.enabled && filter.collection_id == 'default',
-                                                    'has-text-gray3': !filter.enabled  
-                                                }"
-                                                class="tainacan-icon" />
+                                                    :class="{ 
+                                                        'tainacan-icon-collection': filter.collection_id == collectionId, 
+                                                        'tainacan-icon-repository': filter.collection_id != collectionId,
+                                                        'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
+                                                        'has-text-blue5': filter.enabled && filter.collection_id == 'default',
+                                                        'has-text-gray3': !filter.enabled  
+                                                    }"
+                                                    class="tainacan-icon" />
                                         </span> 
                                     </span>
                                     <span 
@@ -215,10 +215,10 @@
                                                 :index="index"
                                                 :original-filter="filter"
                                                 :edited-filter="editForms[openedFilterId]"
-                                                @onEditionFinished="onEditionFinished()"
-                                                @onEditionCanceled="onEditionCanceled()"
-                                                @onErrorFound="formWithErrors = filter.id"
-                                                @onUpdateSavedState="(state) => editForms[filter.id].saved = state" />
+                                                @on-edition-finished="onEditionFinished()"
+                                                @on-edition-canceled="onEditionCanceled()"
+                                                @on-error-found="formWithErrors = filter.id"
+                                                @on-update-saved-state="(state) => editForms[filter.id].saved = state" />
                                     </b-field>
                                 </transition>
                             </div>
@@ -304,9 +304,9 @@
                                             class="metadatum-name">
                                         {{ metadatum.name }}
                                         <span   
-                                            v-if="metadatum.parent_name"
-                                            class="label-details"
-                                            style="font-size: 0.875em;"> 
+                                                v-if="metadatum.parent_name"
+                                                class="label-details"
+                                                style="font-size: 0.875em;"> 
                                             <em>{{ '(' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')' }}</em>
                                         </span>
                                     </span>
@@ -319,11 +319,11 @@
                                             }"
                                             class="icon icon-level-identifier">
                                         <i 
-                                            :class="{   
-                                                'tainacan-icon-collection has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
-                                                'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
-                                            }"
-                                            class="tainacan-icon" />
+                                                :class="{   
+                                                    'tainacan-icon-collection has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
+                                                    'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
+                                                }"
+                                                class="tainacan-icon" />
                                     </span> 
                                 </div>
                             </template>
@@ -440,7 +440,7 @@
                             </div>
                         </form>
 
-                    <footer class="field is-grouped form-submit">
+                        <footer class="field is-grouped form-submit">
                             <div class="control">
                                 <button 
                                         class="button is-outlined" 

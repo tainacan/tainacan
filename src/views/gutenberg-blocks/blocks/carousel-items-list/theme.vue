@@ -17,7 +17,7 @@
                     }"
                     :class="
                         'collection-name ' + 
-                        ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
+                            ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
                     ">
                 <h3 :style="{ color: collectionTextColor ? collectionTextColor : '' }">
                     <span
@@ -30,11 +30,11 @@
                 </h3>
             </div>
             <div
-                v-if="collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])"   
-                class="collection-thumbnail"
-                :style="{ 
-                    backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
-                }" />
+                    v-if="collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])"   
+                    class="collection-thumbnail"
+                    :style="{ 
+                        backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
+                    }" />
             <div
                     class="collection-header-image"
                     :style="{

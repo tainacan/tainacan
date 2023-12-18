@@ -64,10 +64,10 @@
             <div class="shown-items">
                 {{
                     $i18n.getWithVariables('info_showing_%s', [ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') ]) + ' ' +
-                    (attachmentsPerPage * (attachmentsPage - 1) + 1) +
-                    $i18n.get('info_to') +
-                    getLastAttachmentsNumber() +
-                    $i18n.get('info_of') + totalAttachments + '.'
+                        (attachmentsPerPage * (attachmentsPage - 1) + 1) +
+                        $i18n.get('info_to') +
+                        getLastAttachmentsNumber() +
+                        $i18n.get('info_of') + totalAttachments + '.'
                 }}
             </div>
             <div class="pagination">
@@ -104,7 +104,7 @@
             isEditable: Boolean,
         },
         emits: [
-            'onDeleteAttachment',
+            'on-delete-attachment',
         ],
         data() {
             return {
@@ -179,7 +179,7 @@
                     }) 
             },
             onDeleteAttachment(attachment) {
-                this.$emit('onDeleteAttachment', attachment);
+                this.$emit('on-delete-attachment', attachment);
             }
         }
     }

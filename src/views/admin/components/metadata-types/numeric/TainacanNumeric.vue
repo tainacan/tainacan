@@ -24,7 +24,7 @@
         emits: [
             'input',
             'blur',
-            'mobileSpecialFocus'
+            'mobile-special-focus'
         ],
         computed: {
             getStep() {
@@ -58,7 +58,7 @@
                 this.$emit('blur');
             },
             onMobileSpecialFocus() {
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             }
         }
     }

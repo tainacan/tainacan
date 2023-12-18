@@ -206,9 +206,9 @@
                                 <a 
                                         v-if="metadataSection.current_user_can_edit"
                                         :style="{ visibility: 
-                                                metadataSection.collection_id != collectionId
+                                            metadataSection.collection_id != collectionId
                                                 ? 'hidden' : 'visible'
-                                            }" 
+                                        }" 
                                         @click.prevent="toggleMetadataSectionEdition(metadataSection)">
                                     <span 
                                             v-tooltip="{
@@ -352,7 +352,7 @@
                                         </span>
 
                                         <span class="metadatum-name">
-                                                {{ metadatum.name }}
+                                            {{ metadatum.name }}
                                         </span>
                                         <span   
                                                 v-if="metadatum.id != undefined && metadatum.metadata_type_object"
@@ -389,19 +389,19 @@
                                                     }"
                                                     class="icon icon-level-identifier">
                                                 <i 
-                                                    v-if="metadatum.collection_id == 'default'"
-                                                    :class="{
-                                                        'has-text-blue5': metadatum.enabled,
-                                                        'has-text-gray3': !metadatum.enabled
-                                                    }"
-                                                    class="tainacan-icon tainacan-icon-repository" />
+                                                        v-if="metadatum.collection_id == 'default'"
+                                                        :class="{
+                                                            'has-text-blue5': metadatum.enabled,
+                                                            'has-text-gray3': !metadatum.enabled
+                                                        }"
+                                                        class="tainacan-icon tainacan-icon-repository" />
                                                 <i 
-                                                    v-else
-                                                    :class="{ 
-                                                        'has-text-turquoise5': metadatum.enabled, 
-                                                        'has-text-gray3': !metadatum.enabled
-                                                    }"
-                                                    class="tainacan-icon tainacan-icon-collection" />
+                                                        v-else
+                                                        :class="{ 
+                                                            'has-text-turquoise5': metadatum.enabled, 
+                                                            'has-text-gray3': !metadatum.enabled
+                                                        }"
+                                                        class="tainacan-icon tainacan-icon-collection" />
                                             </span>
                                         </span>
                                         <span 
@@ -419,9 +419,9 @@
                                             <a 
                                                     v-if="metadatum.current_user_can_edit"
                                                     :style="{ visibility: 
-                                                            metadatum.collection_id != collectionId
+                                                        metadatum.collection_id != collectionId
                                                             ? 'hidden' : 'visible'
-                                                        }" 
+                                                    }" 
                                                     @click.prevent="toggleMetadatumEdition(metadatum)">
                                                 <span 
                                                         v-tooltip="{
@@ -484,8 +484,8 @@
                                             :original-metadatum="metadatum"
                                             :is-repository-level="false"
                                             :index="index"
-                                            @onEditionFinished="onEditionFinished()"
-                                            @onEditionCanceled="onEditionCanceled()" />
+                                            @on-edition-finished="onEditionFinished()"
+                                            @on-edition-canceled="onEditionCanceled()" />
                                 </b-modal>
 
                             </template>
@@ -505,8 +505,8 @@
                                 :collection-id="collectionId"
                                 :original-metadata-section="metadataSection"
                                 :index="sectionIndex"
-                                @onEditionFinished="onSectionEditionFinished()"
-                                @onEditionCanceled="onSectionEditionCanceled()" />
+                                @on-edition-finished="onSectionEditionFinished()"
+                                @on-edition-canceled="onSectionEditionCanceled()" />
                     </b-modal>
 
                 </div>
@@ -538,7 +538,7 @@ export default {
         metadataTypeFilterOptions: Array
     },
     emits: [
-        'onUpdatehighlightedMetadatum',
+        'on-update-highlighted-metadatum',
     ],
     data() {
         return {
@@ -774,7 +774,7 @@ export default {
             
             // Higlights the clicked metadatum
             this.highlightedMetadatum = metadatumType.name;
-            this.$emit('onUpdatehighlightedMetadatum', this.highlightedMetadatum);
+            this.$emit('on-update-highlighted-metadatum', this.highlightedMetadatum);
         },
         addMetadataSectionViaButton() {
             let lastIndex = this.activeMetadataSectionsList.length;
@@ -797,7 +797,7 @@ export default {
                 this.toggleMetadatumEdition(metadatum)
                 this.highlightedMetadatum = '';
                 this.isUpdatingMetadatum = false;
-                this.$emit('onUpdatehighlightedMetadatum', this.highlightedMetadatum);
+                this.$emit('on-update-highlighted-metadatum', this.highlightedMetadatum);
             })
             .catch((error) => {
                 this.isUpdatingMetadatum = false;

@@ -113,14 +113,14 @@
                     class="header-item">
                 <label class="label">{{ $i18n.get('label_show_only_created_by_me') }}&nbsp;</label>
                 <b-switch
+                        v-model="authorFilter"
                         size="is-small"
                         class="author-filter-switch"
                         :disabled="collections.length <= 0 && isLoading"
-                        :value="authorFilter"
                         :true-value="'current-author'"
                         :false-value="''"
                         :label="$i18n.get('label_show_only_created_by_me')"
-                        @input="onChangeAuthorFilter($event)" />
+                        @update:model-value="onChangeAuthorFilter" />
                 
             </b-field>
 
@@ -250,7 +250,7 @@
                                 <i 
                                         class="tainacan-icon tainacan-icon-1-125em"
                                         :class="$statusHelper.getIcon(statusOption.slug)"
-                                        />
+                                    />
                             </span>
                             {{ statusOption.name }}
                             <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${repositoryTotalCollections[statusOption.slug]})` : '' }`}` }}</span>
@@ -342,10 +342,10 @@
                     <div class="shown-items"> 
                         {{ 
                             $i18n.get('info_showing_collections') + 
-                            (collectionsPerPage*(page - 1) + 1) + 
-                            $i18n.get('info_to') + 
-                            getLastCollectionNumber() + 
-                            $i18n.get('info_of') + totalCollections + '.'
+                                (collectionsPerPage*(page - 1) + 1) + 
+                                $i18n.get('info_to') + 
+                                getLastCollectionNumber() + 
+                                $i18n.get('info_of') + totalCollections + '.'
                         }} 
                     </div> 
                     <div class="items-per-page">
@@ -525,7 +525,7 @@ export default {
             this.loadCollections();
         },
         onChangeAuthorFilter(newAuthorFilter) {
-            if (newAuthorFilter != this.authorFilter) { 
+            if ( newAuthorFilter != this.authorFilter ) { 
                 this.$userPrefs.set('collections_author_filter', newAuthorFilter)
                     .then((newAuthorFilter) => {
                         this.authorFilter = newAuthorFilter;

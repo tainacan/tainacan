@@ -86,6 +86,9 @@
                 default: 1
             },
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 typeOfDelete: 'selected'

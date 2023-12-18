@@ -51,7 +51,7 @@
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(collection.status)"
-                            />
+                        />
                 </span>
             </router-link>
         </h1>

@@ -43,7 +43,7 @@ export const dynamicFilterTypeMixin = {
             facetSearchPage: 1
         }
     },
-    emits: ['updateParentCollapse'],
+    emits: ['update-parent-collapse'],
     computed: {
         facetsFromItemSearch() {
             return this.getFacets();
@@ -138,7 +138,7 @@ export const dynamicFilterTypeMixin = {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             this.prepareOptionsForPlainText(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
-                            this.$emit('updateParentCollapse', this.facetsFromItemSearch[facet].length > 0 );
+                            this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
                         }
                     }   
                     resolve();
@@ -219,7 +219,7 @@ export const dynamicFilterTypeMixin = {
                     for (const facet in this.facetsFromItemSearch) {
                         if (facet == this.filter.id) {
                             this.prepareOptionsForRelationship(this.facetsFromItemSearch[facet], search, valuesToIgnore, isInCheckboxModal);
-                            this.$emit('updateParentCollapse', this.facetsFromItemSearch[facet].length > 0 );
+                            this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
                         }    
                     }
                     resolve();

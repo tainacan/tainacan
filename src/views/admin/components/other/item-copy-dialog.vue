@@ -108,6 +108,9 @@
             collectionId: [String, Number],
             itemId: String
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 isLoading: Boolean,

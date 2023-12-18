@@ -209,16 +209,16 @@
             </metadata-distribution-block>
 
             <items-per-term-block
-                        v-if="isRepositoryLevel"
-                        class="column is-full"
-                        :chart-data="taxonomyTerms"
-                        :is-fetching-data="isFetchingTaxonomiesList" />
+                    v-if="isRepositoryLevel"
+                    class="column is-full"
+                    :chart-data="taxonomyTerms"
+                    :is-fetching-data="isFetchingTaxonomiesList" />
             <items-per-term-collection-block
-                        v-else
-                        class="column is-full"
-                        :chart-data="taxonomyTerms"
-                        :is-fetching-data="isFetchingMetadataList"
-                        :collection-id="selectedCollection" />
+                    v-else
+                    class="column is-full"
+                    :chart-data="taxonomyTerms"
+                    :is-fetching-data="isFetchingMetadataList"
+                    :collection-id="selectedCollection" />
 
             <activities-per-user-block
                     class="column is-full is-two-fifths-tablet"

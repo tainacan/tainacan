@@ -100,7 +100,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field"
                                             @input="addToBulkEditionProcedures($event, 'oldValue', criterion)"
-                                    />
+                                        />
 
                                     <div class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last tainacan-by-text">
                                         <small>
@@ -118,7 +118,7 @@
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                             :disabled="bulkEditionProcedures[criterion].isDone"  
                                             @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
-                                    />
+                                        />
                                 </div>
 
                                 <template
@@ -203,7 +203,7 @@
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
                                             @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
-                                    />
+                                        />
                                 </template>
                             </template>
                         </transition> 
@@ -324,6 +324,9 @@
             selectedForBulk: Object,
             collectionId: [String, Number]
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 editionCriteria: [1],

@@ -8,18 +8,18 @@
                 :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}"
                 @click="() => { isCollapseInsteadOfLink(facet) ? displayChildTerms(facetId) : null }">
             <img
-                :src=" 
-                    facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
-                        ?
-                    facet.entity.thumbnail[imageSize][0] 
-                        :
-                    (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
-                        ?    
-                    facet.entity.thumbnail['thumbnail'][0] 
-                        : 
-                    $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
-                "
-                :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : wpI18n('Thumbnail', 'tainacan'))">
+                    :src=" 
+                        facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
+                            ?
+                                facet.entity.thumbnail[imageSize][0] 
+                            :
+                                (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
+                                    ?    
+                                        facet.entity.thumbnail['thumbnail'][0] 
+                                    : 
+                                        $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
+                    "
+                    :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : wpI18n('Thumbnail', 'tainacan'))">
             <div :class=" 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '')">
                 <span>{{ facet.label ? facet.label : '' }}</span>
                 <span 

@@ -51,7 +51,7 @@
                         :current-collection-id="$eventBusSearch.collectionId"
                         :filters-as-modal="filtersAsModal"
                         @input="onInput" 
-                        @updateParentCollapse="onFilterUpdateParentCollapse" />
+                        @update-parent-collapse="onFilterUpdateParentCollapse" />
             </div>
         </b-collapse>
         <div 
@@ -86,17 +86,17 @@
 </template>
 
 <script>
-    import TainacanFilterNumeric from './numeric/Numeric.vue';
-    import TainacanFilterDate from './date/Date.vue';
-    import TainacanFilterSelectbox from './selectbox/Selectbox.vue';
-    import TainacanFilterAutocomplete from './autocomplete/Autocomplete.vue';
-    import TainacanFilterCheckbox from './checkbox/Checkbox.vue';
-    import TainacanFilterTaginput from './taginput/Taginput.vue';
-    import TainacanFilterTaxonomyCheckbox from './taxonomy/Checkbox.vue';
-    import TainacanFilterTaxonomyTaginput from './taxonomy/Taginput.vue';
-    import TainacanFilterDateInterval from './date-interval/DateInterval.vue';
-    import TainacanFilterNumericInterval from './numeric-interval/NumericInterval.vue';
-    import TainacanFilterNumericListInterval from './numeric-list-interval/NumericListInterval.vue';
+    import TainacanFilterNumeric from './numeric/TainacanFilterNumeric.vue';
+    import TainacanFilterDate from './date/TainacanFilterDate.vue';
+    import TainacanFilterSelectbox from './selectbox/TainacanFilterSelectbox.vue';
+    import TainacanFilterAutocomplete from './autocomplete/TainacanFilterAutocomplete.vue';
+    import TainacanFilterCheckbox from './checkbox/TainacanFilterCheckbox.vue';
+    import TainacanFilterTaginput from './taginput/TainacanFilterTaginput.vue';
+    import TainacanFilterTaxonomyCheckbox from './taxonomy/TainacanFilterCheckbox.vue';
+    import TainacanFilterTaxonomyTaginput from './taxonomy/TainacanFilterTaginput.vue';
+    import TainacanFilterDateInterval from './date-interval/TainacanFilterDateInterval.vue';
+    import TainacanFilterNumericInterval from './numeric-interval/TainacanFilterNumericInterval.vue';
+    import TainacanFilterNumericListInterval from './numeric-list-interval/TainacanFilterNumericListInterval.vue';
 
     export default {
         name: 'TainacanFilterItem',

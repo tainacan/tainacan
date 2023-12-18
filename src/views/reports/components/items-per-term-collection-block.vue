@@ -1,5 +1,5 @@
 <template>
-     <div v-if="metadataList != undefined">
+    <div v-if="metadataList != undefined">
         <div 
                 v-if="metadataListArray.length"
                 :class="{ 'skeleton': isFetchingData || isBuildingChart || isFetchingMetadatumTerms || !selectedMetadatum || !selectedMetadatum.id }"

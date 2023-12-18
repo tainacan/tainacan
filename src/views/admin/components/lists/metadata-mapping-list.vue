@@ -86,10 +86,10 @@
                         {{ $i18n.get('instruction_select_a_metadatum') }}
                     </option>
                     <option
-                        v-for="(metadatum, metadatumIndex) in activeMetadatumList"
-                        :key="metadatumIndex"
-                        :value="metadatum.id"
-                        :disabled="isMetadatumSelected(metadatum.id)">
+                            v-for="(metadatum, metadatumIndex) in activeMetadatumList"
+                            :key="metadatumIndex"
+                            :value="metadatum.id"
+                            :disabled="isMetadatumSelected(metadatum.id)">
                         {{ metadatum.name }}
                     </option>
                 </b-select>
@@ -98,9 +98,9 @@
                     {{ mapperMetadatum.label }}
                     <a 
                             :style="{ visibility: 
-                                    mapperMetadatum.isCustom
+                                mapperMetadatum.isCustom
                                     ? 'visible' : 'hidden'
-                                }" 
+                            }" 
                             @click.prevent="editMetadatumCustomMapper(mapperMetadatum)">
                         <span
                                 v-tooltip="{
@@ -115,9 +115,9 @@
                     </a>
                     <a 
                             :style="{ visibility: 
-                                    mapperMetadatum.isCustom
+                                mapperMetadatum.isCustom
                                     ? 'visible' : 'hidden'
-                                }" 
+                            }" 
                             @click.prevent="removeMetadatumCustomMapper(mapperMetadatum)">
                         <span
                                 v-tooltip="{
@@ -133,7 +133,7 @@
                 </p>
             </div>
 
-             <div 
+            <div 
                     v-if="mapper != '' && !isLoadingMetadatumMappers"
                     class="field is-grouped form-submit fixed-form-submit">
                 <div class="control">

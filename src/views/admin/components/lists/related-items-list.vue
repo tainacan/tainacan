@@ -72,7 +72,7 @@
                                         <i 
                                                 class="tainacan-icon tainacan-icon-1em"
                                                 :class="$statusHelper.getIcon(relatedItem.status)"
-                                                />
+                                            />
                                     </span>
                                 </div>
                                 <div @click="openItemOnNewTab(relatedItem)">
@@ -84,7 +84,7 @@
                                                 :src="$thumbHelper.getSrc(relatedItem['thumbnail'], 'tainacan-small', relatedItem.document_mimetype)"
                                                 :alt="relatedItem.thumbnail_alt ? relatedItem.thumbnail_alt : $i18n.get('label_thumbnail')"
                                                 :transition-duration="500"
-                                        />
+                                            />
                                     </span>
                                 </div>
                                 <div 
@@ -116,7 +116,7 @@
                                                 @click.prevent.stop="setItemForEdit(relatedItem, relatedItemGroup)">
                                             <span
                                                     v-tooltip="{
-                                                         delay: {
+                                                        delay: {
                                                             shown: 500,
                                                             hide: 100,
                                                         },

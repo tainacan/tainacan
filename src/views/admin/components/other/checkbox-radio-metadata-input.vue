@@ -99,9 +99,9 @@
                                 {{ $i18n.get('info_no_terms_found') }}
                             </li>
                         </template>
-                       <template v-if="!isLoadingSearch && allowNew && !searchResults.length">
+                        <template v-if="!isLoadingSearch && allowNew && !searchResults.length">
                             <li class="tainacan-li-checkbox-list result-info">
-                                <a @click="$emit('showAddNewTerm', { name: optionName })">
+                                <a @click="$emit('show-add-new-term', { name: optionName })">
                                     {{ $i18n.get('label_create_new_term') + ' "' + optionName + '"' }}
                                 </a>
                             </li>
@@ -141,11 +141,11 @@
                                 :key="key"
                                 class="tainacan-li-checkbox-list">
                             <label
-                                :class="{ 
-                                    'b-checkbox checkbox': isCheckbox,
-                                    'b-radio radio': !isCheckbox,
-                                    'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
-                                }">
+                                    :class="{ 
+                                        'b-checkbox checkbox': isCheckbox,
+                                        'b-radio radio': !isCheckbox,
+                                        'is-disabled': !isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length) 
+                                    }">
                                 <input 
                                         :disabled="!isOptionSelected(option.value) && maxMultipleValues !== undefined && (maxMultipleValues - 1 < selected.length)"
                                         :checked="isOptionSelected(option.value)"
@@ -306,7 +306,7 @@
                                     closable
                                     class="is-small"
                                     @close="updateLocalSelection(term)">
-                                 <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
+                                <span v-html="(isTaxonomy || metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                             </b-tag>
                         </div>
                     </b-field>
@@ -351,7 +351,7 @@
         mixins: [ dynamicFilterTypeMixin ],
         props: {
             parent: Number,
-            taxonomy_id: Number,
+            taxonomyId: Number,
             taxonomy: String,
             collectionId: [Number, String],
             metadatumId: Number,
@@ -362,7 +362,7 @@
                 type: Boolean,
                 default: false,
             },
-            metadatum_type: String,
+            metadatumType: String,
             isRepositoryLevel: Boolean,
             isCheckbox: {
                 type: Boolean,
@@ -374,8 +374,8 @@
         },
         emits: [
             'input',
-            'mobileSpecialFocus',
-            'showAddNewTerm'
+            'mobile-special-focus',
+            'show-add-new-term'
         ],
         data() {
             return {
@@ -434,7 +434,7 @@
             this.expandResultsSection = this.shouldBeginWithListExpanded;
             
             this.$emitter.on('updateTaxonomyInputs', ($event) => { 
-                if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
+                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
                     this.optionName = '';
                     this.hierarchicalPath = [];
@@ -471,11 +471,11 @@
                 let selected = allSelected.filter((aValue) => !isNaN(aValue));
                 let selectedFromItemSubmission = allSelected.filter((aValue) => isNaN(aValue));
 
-                if (this.taxonomy_id) {
+                if (this.taxonomyId) {
 
                     if (selected.length) {
                         this.isSelectedTermsLoading = true;
-                        axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
+                        axios.get(`/taxonomy/${this.taxonomyId}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
                             .then((res) => {
                                 for (const term of res.data)
                                     this.saveSelectedTagName(
@@ -497,7 +497,7 @@
                             this.saveSelectedTagName(term, term.split('>')[term.split('>').length - 1], '');
                     }
                     
-                } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
+                } else if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
                     
                     this.isSelectedTermsLoading = true;
 
@@ -577,7 +577,7 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' )
+                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
                     promise = this.getValuesRelationship({
                         search: this.optionName, 
                         isRepositoryLevel: this.isRepositoryLevel,
@@ -846,7 +846,7 @@
             },
             onMobileSpecialFocus($event) {
                 $event.target.blur();
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             },
             isOptionSelected(optionValue) {
                 if ( Array.isArray(this.selected) )

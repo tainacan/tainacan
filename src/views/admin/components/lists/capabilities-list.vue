@@ -19,7 +19,7 @@
                         <!-- Actions -->
                         <th class="actions-header">
                             &nbsp;
-                            <!-- nothing to show on header for actions cell-->
+                        <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
@@ -70,21 +70,21 @@
                                 :complete-roles-list="getCompleteRolesList(capability.roles, capability.roles_inherited)">
                             <template #props>
                                 <td
-                                    class="table-creation column-small-width"
-                                    :label="$i18n.get('label_associated_roles')"
-                                    :aria-label="$i18n.get('label_associated_roles') + ': ' + props['complete-roles-list']">
-                                <p
-                                        v-tooltip="{
-                                            delay: {
-                                                shown: 500,
-                                                hide: 120,
-                                            },
-                                            content: props['complete-roles-list'],
-                                            autoHide: false,
-                                            popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
-                                            placement: 'auto-start'
-                                        }"
-                                        v-html="props['complete-roles-list']" />
+                                        class="table-creation column-small-width"
+                                        :label="$i18n.get('label_associated_roles')"
+                                        :aria-label="$i18n.get('label_associated_roles') + ': ' + props['complete-roles-list']">
+                                    <p
+                                            v-tooltip="{
+                                                delay: {
+                                                    shown: 500,
+                                                    hide: 120,
+                                                },
+                                                content: props['complete-roles-list'],
+                                                autoHide: false,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
+                                                placement: 'auto-start'
+                                            }"
+                                            v-html="props['complete-roles-list']" />
                                 </td>
                             </template>
                         </complete-roles-list>

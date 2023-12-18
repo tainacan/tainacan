@@ -12,8 +12,8 @@
                 label-width="120px"
                 @click="formErrorMessage = ''">
             <div 
-                        v-if="importer.manual_collection || importer.accepts.file || importer.accepts.url"
-                        class="columns">
+                    v-if="importer.manual_collection || importer.accepts.file || importer.accepts.url"
+                    class="columns">
 
                 <div class="column">
 
@@ -160,7 +160,7 @@
                     <button
                             id="button-submit-importer-creation"
                             :disabled="
-                                    (formErrorMessage != undefined && formErrorMessage != '') ||
+                                (formErrorMessage != undefined && formErrorMessage != '') ||
                                     sessionId == undefined || 
                                     importer == undefined || 
                                     (importer.manual_collection && collectionId == undefined) ||
@@ -177,7 +177,7 @@
                     <button
                             id="button-submit-collection-creation"
                             :disabled="
-                                    (formErrorMessage != undefined && formErrorMessage != '') ||
+                                (formErrorMessage != undefined && formErrorMessage != '') ||
                                     sessionId == undefined || 
                                     importer == undefined || 
                                     (importer.manual_collection && collectionId == undefined) ||

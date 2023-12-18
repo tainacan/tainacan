@@ -5,7 +5,7 @@
                 :can-cancel="false" />
 
         <tainacan-title 
-                 v-if="!$adminOptions.hideItemSinglePageTitle"
+                v-if="!$adminOptions.hideItemSinglePageTitle"
                 :bread-crumb-items="[{ path: '', label: $i18n.get('item') }]">
             <h1>
                 <span
@@ -13,8 +13,8 @@
                         class="status-tag">
                     {{ $i18n.get('status_' + item.status) }}
                 </span>
-                    {{ $i18n.get('title_item_page') + ' ' }}
-                    <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}    
+                {{ $i18n.get('title_item_page') + ' ' }}
+                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}    
                 </span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
@@ -23,7 +23,7 @@
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(item.status)"
-                            />
+                        />
                     <help-button
                             :title="$i18n.get('status_' + item.status)"
                             :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
@@ -117,7 +117,7 @@
                                                         <i 
                                                                 class="tainacan-icon tainacan-icon-1em"
                                                                 :class="$statusHelper.getIcon(itemMetadatum.metadatum.status)"
-                                                        />
+                                                            />
                                                     </span>
                                                 </label>
                                                 <div
@@ -130,11 +130,11 @@
                                                     <component 
                                                             :is="
                                                                 itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
-                                                                (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
-                                                                itemMetadatum.metadatum.metadata_type_object.options &&
-                                                                itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
-                                                                itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
-                                                                ) ? 'div' : 'p'" 
+                                                                    (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
+                                                                        itemMetadatum.metadatum.metadata_type_object.options &&
+                                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
+                                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
+                                                                    ) ? 'div' : 'p'" 
                                                             v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`" />
                                                 </div>
                                             </div>
@@ -207,8 +207,8 @@
                                 class="section-box document-field">
                             <div
                                     v-if="item.document !== undefined && item.document !== null &&
-                                          item.document_type !== undefined && item.document_type !== null &&
-                                          item.document !== '' && item.document_type !== 'empty'"
+                                        item.document_type !== undefined && item.document_type !== null &&
+                                        item.document !== '' && item.document_type !== 'empty'"
                                     class="document-field-content"
                                     :class="'document-field-content--' + item.document_type">
                                 <div v-html="item.document_as_html" />
@@ -238,11 +238,11 @@
                                         :modal-on-click="false"
                                         :size="125"
                                         :file="{
-                                    media_type: 'image',
-                                    thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
-                                    title: $i18n.get('label_thumbnail'),
-                                    description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
-                                }" />
+                                            media_type: 'image',
+                                            thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
+                                            title: $i18n.get('label_thumbnail'),
+                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
+                                        }" />
                                 <figure
                                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                         class="image">

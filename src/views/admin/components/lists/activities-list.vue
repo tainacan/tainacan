@@ -18,7 +18,7 @@
                         </th>
                         <!--&lt;!&ndash; Approbation &ndash;&gt;-->
                         <!--<th>-->
-                            <!--<div class="th-wrap">{{ $i18n.get('label_approbation') }}</div>-->
+                        <!--<div class="th-wrap">{{ $i18n.get('label_approbation') }}</div>-->
                         <!--</th>-->
                     </tr>
                 </thead>

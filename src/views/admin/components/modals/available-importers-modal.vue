@@ -13,7 +13,7 @@
                 <hr>
             </header>
             <section class="tainacan-form">
-                 <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
+                <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
                 <div 
                         role="list"
                         class="importer-types-container">
@@ -31,12 +31,12 @@
                     </template>
 
                     <b-loading 
-                        v-model="isLoading"
-                        :is-full-page="false" 
-                        :can-cancel="false" />
+                            v-model="isLoading"
+                            :is-full-page="false" 
+                            :can-cancel="false" />
                 </div>
                 
-               <footer class="field is-grouped form-submit">
+                <footer class="field is-grouped form-submit">
                     <div class="control">
                         <button 
                                 class="button is-outlined" 
@@ -61,6 +61,9 @@ export default {
         targetCollection: Number,
         hideWhenManualCollection: false
     },
+    emits: [
+        'close'
+    ],
     data(){
         return {
             availableImporters: [],

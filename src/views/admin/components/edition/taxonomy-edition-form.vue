@@ -37,9 +37,9 @@
                         <!-- Hook for extra Form options -->
                         <template v-if="hasBeginLeftForm">  
                             <form 
-                                id="form-taxonomy-begin-left"
-                                class="form-hook-region"
-                                v-html="getBeginLeftForm" />
+                                    id="form-taxonomy-begin-left"
+                                    class="form-hook-region"
+                                    v-html="getBeginLeftForm" />
                         </template>
 
                         <!-- Description -------------------------------- -->
@@ -63,35 +63,35 @@
                         <!-- Allow Insert -->
                         <b-field :addons="false">
                             <label class="label is-inline">
-                                    {{ $i18n.get('label_taxonomy_allow_new_terms') }}
-                                    <b-switch
-                                            id="tainacan-checkbox-allow-insert" 
-                                            v-model="form.allowInsert"
-                                            size="is-small"
-                                            true-value="yes"
-                                            false-value="no" />
-                                    <help-button 
+                                {{ $i18n.get('label_taxonomy_allow_new_terms') }}
+                                <b-switch
+                                        id="tainacan-checkbox-allow-insert" 
+                                        v-model="form.allowInsert"
+                                        size="is-small"
+                                        true-value="yes"
+                                        false-value="no" />
+                                <help-button 
                                         :title="$i18n.getHelperTitle('taxonomies', 'allow_insert')" 
                                         :message="$i18n.getHelperMessage('taxonomies', 'allow_insert')"
                                         extra-classes="tainacan-repository-tooltip" />
-                                </label>
+                            </label>
                         </b-field>
 
                         <!-- Allow Insert -->
                         <b-field :addons="false">
                             <label class="label is-inline">
-                                    {{ $i18n.getHelperTitle('taxonomies', 'hierarchical') }}
-                                    <b-switch
-                                            id="tainacan-checkbox-allow-insert" 
-                                            v-model="form.hierarchical"
-                                            size="is-small"
-                                            true-value="yes"
-                                            false-value="no" />
-                                    <help-button 
+                                {{ $i18n.getHelperTitle('taxonomies', 'hierarchical') }}
+                                <b-switch
+                                        id="tainacan-checkbox-allow-insert" 
+                                        v-model="form.hierarchical"
+                                        size="is-small"
+                                        true-value="yes"
+                                        false-value="no" />
+                                <help-button 
                                         :title="$i18n.getHelperTitle('taxonomies', 'hierarchical')" 
                                         :message="$i18n.getHelperMessage('taxonomies', 'hierarchical')"
                                         extra-classes="tainacan-repository-tooltip" />
-                                </label>
+                            </label>
                         </b-field>
                         
                         <!-- Slug -------------------------------- -->
@@ -119,9 +119,9 @@
                                 :type="editFormErrors['enabled_post_types'] != undefined ? 'is-danger' : ''"
                                 :message="editFormErrors['enabled_post_types'] != undefined ? editFormErrors['enabled_post_types'] : ''">
                             <help-button 
-                                :title="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')" 
-                                :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"
-                                extra-classes="tainacan-repository-tooltip" />
+                                    :title="$i18n.getHelperTitle('taxonomies', 'enabled_post_types')" 
+                                    :message="$i18n.getHelperMessage('taxonomies', 'enabled_post_types')"
+                                    extra-classes="tainacan-repository-tooltip" />
 
                             <div class="two-columns-fields">
                                 <div 
@@ -129,11 +129,11 @@
                                         :key="wpPostType.slug"
                                         class="field">
                                     <b-checkbox
-                                        v-model="form.enabledPostTypes"
-                                        :native-value="wpPostType.slug"
-                                        :true-value="wpPostType.slug"
-                                        false-value=""
-                                        name="enabled_post_types">
+                                            v-model="form.enabledPostTypes"
+                                            :native-value="wpPostType.slug"
+                                            :true-value="wpPostType.slug"
+                                            false-value=""
+                                            name="enabled_post_types">
                                         {{ wpPostType.label }}  
                                     </b-checkbox>
                                 </div>    
@@ -162,8 +162,8 @@
                                         :native-value="statusOption.slug">
                                     <span class="icon has-text-gray">
                                         <i 
-                                            class="tainacan-icon tainacan-icon-18px"
-                                            :class="$statusHelper.getIcon(statusOption.slug)" />
+                                                class="tainacan-icon tainacan-icon-18px"
+                                                :class="$statusHelper.getIcon(statusOption.slug)" />
                                     </span>
                                     {{ statusOption.name }}
                                 </b-radio>
@@ -175,9 +175,9 @@
                                 :addons="false"
                                 :label="$i18n.get('terms')">
                             <help-button 
-                                :title="$i18n.get('terms')" 
-                                :message="$i18n.get('info_taxonomy_terms_list')"
-                                extra-classes="tainacan-repository-tooltip" />
+                                    :title="$i18n.get('terms')" 
+                                    :message="$i18n.get('info_taxonomy_terms_list')"
+                                    extra-classes="tainacan-repository-tooltip" />
                             <terms-list
                                     :key="shouldReloadTermsList ? 'termslistreloaded' : 'termslist'"
                                     :is-hierarchical="form.hierarchical !== 'no'"
@@ -188,9 +188,9 @@
                         <!-- Hook for extra Form options -->
                         <template v-if="hasEndLeftForm">  
                             <form 
-                                id="form-taxonomy-end-left"
-                                class="form-hook-region"
-                                v-html="getEndLeftForm" />
+                                    id="form-taxonomy-end-left"
+                                    class="form-hook-region"
+                                    v-html="getEndLeftForm" />
                         </template>
                     </div>
                 </div>

@@ -174,18 +174,18 @@
                     </button>
                 </template>
                 <div class="metadata-options-container">
-                <b-dropdown-item
-                        v-for="(column, index) in localDisplayedMetadata"
-                        :key="index"
-                        class="control"
-                        custom
-                        aria-role="listitem">
-                    <b-checkbox
-                            v-model="column.display"
-                            :native-value="column.display">
-                        {{ column.name }}
-                    </b-checkbox>
-                </b-dropdown-item>   
+                    <b-dropdown-item
+                            v-for="(column, index) in localDisplayedMetadata"
+                            :key="index"
+                            class="control"
+                            custom
+                            aria-role="listitem">
+                        <b-checkbox
+                                v-model="column.display"
+                                :native-value="column.display">
+                            {{ column.name }}
+                        </b-checkbox>
+                    </b-dropdown-item>   
                 </div>
                 <div class="dropdown-item-apply">
                     <button 
@@ -390,7 +390,7 @@
                     :disabled="totalItems == undefined || totalItems <= 0"
                     @click="openExposersModal()">
                 <span class="gray-icon">
-                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                 </span>
                 <span class="is-hidden-tablet-only is-hidden-desktop-only ">{{ $i18n.get('label_view_as') }}</span>
             </button>
@@ -438,7 +438,7 @@
                     :filters-as-modal="filtersAsModal"
                     :has-filtered="hasFiltered"
                     :is-mobile-screen="isMobileScreen"
-                    @updateIsLoadingItemsState="(state) => isLoadingItems = state" />
+                    @update-is-loading-items-state="(state) => isLoadingItems = state" />
 
             <!-- JS-side hook for extra form content -->
             <div 
@@ -489,11 +489,11 @@
 
         <!-- FILTERS TAG LIST-->
         <template
-            v-if="!filtersAsModal &&
-                !hideFilters &&
-                hasFiltered && 
-                !openAdvancedSearch &&
-                !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)">
+                v-if="!filtersAsModal &&
+                    !hideFilters &&
+                    hasFiltered && 
+                    !openAdvancedSearch &&
+                    !(registeredViewModes[viewMode] != undefined && registeredViewModes[viewMode].full_screen)">
 
             <!-- JS-side hook for extra form content -->
             <div 
@@ -504,7 +504,7 @@
             <filters-tags-list
                     class="filter-tags-list"
                     :is-inside-modal="filtersAsModal"
-                    />
+                />
 
             <!-- JS-side hook for extra form content -->
             <div 
@@ -536,7 +536,7 @@
 
             <div 
                     v-show="(showLoading && 
-                            !(registeredViewModes[viewMode] != undefined && (registeredViewModes[viewMode].full_screen == true || registeredViewModes[viewMode].implements_skeleton == true)))"
+                        !(registeredViewModes[viewMode] != undefined && (registeredViewModes[viewMode].full_screen == true || registeredViewModes[viewMode].implements_skeleton == true)))"
                     class="loading-container">
 
                 <!--  Default loading, to be used view modes without any skeleton-->
@@ -587,14 +587,14 @@
             <!-- Theme View Modes -->
             <div 
                     v-if="!showLoading &&
-                            registeredViewModes[viewMode] != undefined &&
-                            registeredViewModes[viewMode].type == 'template'"
+                        registeredViewModes[viewMode] != undefined &&
+                        registeredViewModes[viewMode].type == 'template'"
                     v-html="itemsListTemplate" />
 
             <component
                     :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"
                     v-if="registeredViewModes[viewMode] != undefined &&
-                            registeredViewModes[viewMode].type == 'component'"
+                        registeredViewModes[viewMode].type == 'component'"
                     :collection-id="collectionId" 
                     :displayed-metadata="displayedMetadata"
                     :items="items"
@@ -659,7 +659,7 @@
                         v-html="hooks['pagination_before']" /> 
         
                 <!-- Pagination -->
-                <pagination
+                <items-pagination
                         v-show="!hidePaginationArea"
                         :is-sorting-by-custom-metadata="isSortingByCustomMetadata"
                         :hide-items-per-page-button="hideItemsPerPageButton"
@@ -691,18 +691,18 @@
 
 <script>
     import { nextTick } from 'vue';
+    import { mapActions, mapGetters } from 'vuex';
     import FiltersTagsList from '../../../admin/components/search/filters-tags-list.vue';
-    import Pagination from '../../../admin/components/search/pagination.vue'
+    import ItemsPagination from '../../../admin/components/search/items-pagination.vue'
     import AdvancedSearch from '../../../admin/components/search/advanced-search.vue';
     import ExposersModal from '../../../admin/components/modals/exposers-modal.vue';
     import CustomDialog from '../../../admin/components/other/custom-dialog.vue';
-    import { mapActions, mapGetters } from 'vuex';
 
     export default {
         name: 'ThemeSearch',
         components: {
             FiltersTagsList,
-            Pagination,
+            ItemsPagination,
             AdvancedSearch,
             ExposersModal
         },

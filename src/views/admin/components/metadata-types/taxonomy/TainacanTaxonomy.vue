@@ -11,14 +11,14 @@
                 :taxonomy-id="taxonomyId"
                 :item-metadatum="itemMetadatum"
                 :has-counter="false"
-                @showAddNewTerm="openTermCreationModal" />
+                @show-add-new-term="openTermCreationModal" />
         <checkbox-radio-metadata-input
                 v-else
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 :is-modal="false"
                 :parent="0"
                 :allow-new="allowNewFromOptions"
-                :taxonomy_id="taxonomyId"
+                :taxonomy-id="taxonomyId"
                 :selected="!valueComponent ? [] : valueComponent"
                 :metadatum-id="itemMetadatum.metadatum.id"
                 :taxonomy="taxonomy"
@@ -29,9 +29,9 @@
                 :amount-selected="Array.isArray(valueComponent) ? valueComponent.length : (valueComponent ? '1' : '0')"
                 :is-checkbox="getComponent == 'tainacan-taxonomy-checkbox'"
                 :is-mobile-screen="isMobileScreen"
-                @showAddNewTerm="openTermCreationModal"
+                @show-add-new-term="openTermCreationModal"
                 @input="(selected) => valueComponent = selected"
-                @mobileSpecialFocus="onMobileSpecialFocus"
+                @mobile-special-focus="onMobileSpecialFocus"
             />
         <div
                 v-if="displayCreateNewTerm && !isTermCreationPanelOpen && (maxMultipleValues !== undefined ? (maxMultipleValues > valueComponent.length) : true)"
@@ -49,7 +49,7 @@
         <template v-if="allowNewFromOptions && itemMetadatum.item">
             <!-- Term creation modal, used on admin for a complete term creation -->
             <b-modal
-                    :active.sync="isTermCreationModalOpen"
+                    v-model:active="isTermCreationModalOpen"
                     :width="768"
                     trap-focus
                     aria-role="dialog"
@@ -64,9 +64,9 @@
                         :taxonomy-id="taxonomyId"
                         :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                         :is-term-insertion-flow="true"
-                        @onEditionFinished="($event) => addRecentlyCreatedTerm($event.term)"
-                        @onEditionCanceled="() => $console.log('Editing canceled')"
-                        @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+                        @on-edition-finished="($event) => addRecentlyCreatedTerm($event.term)"
+                        @on-edition-canceled="() => $console.log('Editing canceled')"
+                        @on-error-found="($event) => $console.log('Form with errors: ' + $event)" />
             </b-modal>
 
             <!-- Term creation panel, used on item submission block for a simpler term creation -->
@@ -79,16 +79,16 @@
                         :is-hierarchical="isHierarchical"
                         :taxonomy-id="taxonomyId"
                         :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
-                        @onEditionFinished="($event) => addTermToBeCreated($event)"
-                        @onEditionCanceled="() => isTermCreationPanelOpen = false"
-                        @onErrorFound="($event) => $console.log('Form with errors: ' + $event)" />
+                        @on-edition-finished="($event) => addTermToBeCreated($event)"
+                        @on-edition-canceled="() => isTermCreationPanelOpen = false"
+                        @on-error-found="($event) => $console.log('Form with errors: ' + $event)" />
             </transition>
         </template>
     </div>
 </template>
 
 <script>
-    import TainacanTaxonomyTagInput from './TaxonomyTaginput.vue';
+    import TainacanTaxonomyTagInput from './TainacanTaxonomyTaginput.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
     import { tainacan as axios } from '../../../js/axios.js';
     import { mapActions } from 'vuex';
@@ -110,7 +110,7 @@
         emits: [
             'input',
             'updateTaxonomyInputs',
-            'mobileSpecialFocus'
+            'mobile-special-focus'
         ],
         data(){
             return {
@@ -271,7 +271,7 @@
                     this.isTermCreationModalOpen = true;
             },
             onMobileSpecialFocus() {
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             }
         }
     }

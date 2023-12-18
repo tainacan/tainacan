@@ -126,7 +126,7 @@
                                     class="content">
                                 <p class="tainacan-p-break">
                                     {{ diff.old ?
-                                    `Taxonomy ID: ${diff.old.taxonomy_id};
+                                        `Taxonomy ID: ${diff.old.taxonomy_id};
                                     Input type: ${diff.old.input_type};
                                     Allow new terms: ${diff.old.allow_new_terms}` : infoEmpty }}
                                 </p>
@@ -261,7 +261,7 @@
                         <div
                                 v-if="activity.action == 'update-thumbnail'"
                                 class="content">
-                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ $i18n.get('label_thumbnail') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
@@ -392,8 +392,8 @@
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_before')})` }}</small>
                             </p>
                             <p
-                                class="tainacan-p-break"
-                                v-html="!activity.old_value ? infoEmpty : (activity.old_value instanceof Array ? activity.old_value.join(`<span class='multivalue-separator'>|</span>`) : activity.old_value)" />
+                                    class="tainacan-p-break"
+                                    v-html="!activity.old_value ? infoEmpty : (activity.old_value instanceof Array ? activity.old_value.join(`<span class='multivalue-separator'>|</span>`) : activity.old_value)" />
                         </div>
                     </div>
 
@@ -403,7 +403,7 @@
                         <div
                                 v-if="activity.action == 'update-thumbnail'"
                                 class="content">
-                             <p class="is-capitalized has-text-blue5 has-text-weight-bold">
+                            <p class="is-capitalized has-text-blue5 has-text-weight-bold">
                                 {{ $i18n.get('label_thumbnail') }}
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
@@ -539,8 +539,8 @@
                                 <small class="has-text-gray4 has-text-weight-normal"> {{ `(${$i18n.get('info_logs_after')})` }}</small>
                             </p>
                             <p
-                                class="tainacan-p-break"
-                                v-html="!activity.new_value ? infoEmpty : (activity.new_value instanceof Array ? activity.new_value.join(`<span class='multivalue-separator'>|</span>`) : activity.new_value)" />
+                                    class="tainacan-p-break"
+                                    v-html="!activity.new_value ? infoEmpty : (activity.new_value instanceof Array ? activity.new_value.join(`<span class='multivalue-separator'>|</span>`) : activity.new_value)" />
                         </div>
                     </div>
                 </div>
@@ -556,36 +556,36 @@
                 </button>
                 <div class="buttons is-pulled-right">
                     <!--<button-->
-                            <!--v-if="activity.status != 'publish'"-->
-                            <!--@click="notApproveActivity"-->
-                            <!--type="button"-->
-                            <!--class="button is-danger">-->
-                        <!--<b-icon-->
-                                <!--size="is-small"-->
-                                <!--icon="close"/>-->
-                        <!--<span>{{ $i18n.get('not_approve_item') }}</span>-->
+                    <!--v-if="activity.status != 'publish'"-->
+                    <!--@click="notApproveActivity"-->
+                    <!--type="button"-->
+                    <!--class="button is-danger">-->
+                    <!--<b-icon-->
+                    <!--size="is-small"-->
+                    <!--icon="close"/>-->
+                    <!--<span>{{ $i18n.get('not_approve_item') }}</span>-->
                     <!--</button>-->
                     <!--<button-->
-                            <!--v-if="activity.status != 'publish'"-->
-                            <!--@click="approveActivity"-->
-                            <!--type="button"-->
-                            <!--class="button is-secondary">-->
-                        <!--<b-icon-->
-                                <!--size="is-small"-->
-                                <!--icon="check"/>-->
-                        <!--<span>{{ $i18n.get('approve_item') }}</span>-->
+                    <!--v-if="activity.status != 'publish'"-->
+                    <!--@click="approveActivity"-->
+                    <!--type="button"-->
+                    <!--class="button is-secondary">-->
+                    <!--<b-icon-->
+                    <!--size="is-small"-->
+                    <!--icon="check"/>-->
+                    <!--<span>{{ $i18n.get('approve_item') }}</span>-->
                     <!--</button>-->
 
                     <!--<button-->
-                            <!--v-if="activity.status == 'publish'"-->
-                            <!--@click="notApproveActivity"-->
-                            <!--type="button"-->
-                            <!--class="button is-blue5">-->
-                        <!--<b-icon-->
-                                <!--custom-class="mdi-flip-h"-->
-                                <!--size="is-small"-->
-                                <!--icon="share"/>-->
-                        <!--<span>{{ $i18n.get('undo') }}</span>-->
+                    <!--v-if="activity.status == 'publish'"-->
+                    <!--@click="notApproveActivity"-->
+                    <!--type="button"-->
+                    <!--class="button is-blue5">-->
+                    <!--<b-icon-->
+                    <!--custom-class="mdi-flip-h"-->
+                    <!--size="is-small"-->
+                    <!--icon="share"/>-->
+                    <!--<span>{{ $i18n.get('undo') }}</span>-->
                     <!--</button>-->
 
                     <!-- <button
@@ -617,6 +617,7 @@
         emits: [
             'approveActivity',
             'notApproveActivity',
+            'close'
         ],
         data() {
             return {

@@ -32,7 +32,7 @@
         mixins: [filterTypeMixin, dynamicFilterTypeMixin],
         emits: [
             'input',
-            'updateParentCollapse'
+            'update-parent-collapse'
         ],
         data(){
             return {
@@ -81,7 +81,7 @@
                         this.updateSelectedValues();
                         
                         if (res && res.data && res.data.values)
-                            this.$emit('updateParentCollapse', res.data.values.length > 0 );
+                            this.$emit('update-parent-collapse', res.data.values.length > 0 );
                     })
                     .catch( error => {
                         if (isCancel(error))

@@ -1,123 +1,123 @@
 <template>
-<div class="child-metadata-inputs">
-    <a
-            v-if="!hideCollapses && childItemMetadataGroups.length > 0"
-            class="collapse-all"
-            @click="toggleCollapseAllChildren()">
-        <span class="icon">
-            <i
-                    :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright' : !collapseAllChildren }"
-                    class="tainacan-icon tainacan-icon-1-25em" />
-        </span>
-        {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
-    </a>
-    
-    <div
-            v-if="childItemMetadataGroups.length > 0"
-            class="multiple-inputs">
-        <template 
-                v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups"
-                :key="groupIndex">
-            <hr v-if="groupIndex > 0">
-            
-            <template 
-                    v-for="(childItemMetadatum, childIndex) of childItemMetadata"
-                    :key="groupIndex + '-' + childIndex">
-                <div 
-                        v-if="isRemovingGroup"
-                        class="field">
-                    <span class="collapse-handle">
-                        <span class="icon">
-                            <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                        </span>
-                        <label class="label has-tooltip">
-                            <span
-                                    v-if="enumerateMetadatum"
-                                    style="opacity: 0.65;"
-                                    class="metadatum-section-enumeration">
-                                {{ enumerateMetadatum }}.
-                            </span>
-                            {{ childItemMetadatum.metadatum.name }}
-                        </label>
-                        <span
-                            v-if="childItemMetadatum.metadatum.required == 'yes'"
-                            class="required-metadatum-asterisk">
-                            *
-                        </span>
-                        <span class="metadata-type">
-                            ({{ childItemMetadatum.metadatum.metadata_type_object.name }})
-                        </span>
-                        <help-button 
-                                :title="childItemMetadatum.metadatum.name"
-                                :message="childItemMetadatum.metadatum.description" />
-                    </span> 
-                    <div 
-                            class="skeleton"
-                            :style="{ 
-                                minHeight: (childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-checkbox' || childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-taxonomy-checkbox') ? '150px' : '30px'
-                            }" />
-                </div>
-                <tainacan-form-item
-                        v-else
-                        v-show="(metadataNameFilterString == '' || filterByMetadatumName(childItemMetadatum))"
-                        :ref="'tainacan-form-item--' + groupIndex + '-' + childIndex"
-                        :item-metadatum="childItemMetadatum"
-                        :hide-collapses="hideCollapses"
-                        :hide-metadata-types="hideMetadataTypes"
-                        :hide-help-buttons="hideHelpButtons"
-                        :help-info-bellow-label="helpInfoBellowLabel"
-                        :is-collapsed="childItemMetadatum.collapse"
-                        :is-mobile-screen="isMobileScreen"
-                        :class="{ 
-                            'is-last-input': childIndex == childItemMetadata.length - 1,
-                            'is-metadata-navigation-active': isMetadataNavigation
-                        }"
-                        :is-focused="(focusedGroupMetadatum === groupIndex) && (focusedChildMetadatum === childIndex)"
-                        :is-metadata-navigation="isMetadataNavigation"
-                        :enumerate-metadatum="enumerateMetadatum ? ( enumerateMetadatum + ( childItemMetadataGroups.length > 1 ? ( '.' + (Number(groupIndex) + 1) ) : '' ) + '.' + (Number(childIndex) + 1) ) : false"
-                        @changeCollapse="onChangeCollapse($event, groupIndex, childIndex)"
-                        @touchstart="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
-                        @mousedown="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
-                        @mobileSpecialFocus="setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: true })"
-                    />
-
-            </template>
-            <a 
-                    v-if="isMultiple" 
-                    class="add-link"
-                    @click="removeGroup(groupIndex)">
-                <span class="icon is-small">
-                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
-                </span>
-                &nbsp;{{ $i18n.get('label_remove_value') }}
-            </a>
-        </template>
-        <transition name="filter-item">
-            <span 
-                    v-if="isCreatingGroup"
-                    style="width: 100%;"
-                    class="icon has-text-success loading-icon">
-                <div class="control has-icons-right is-loading is-clearfix" />
+    <div class="child-metadata-inputs">
+        <a
+                v-if="!hideCollapses && childItemMetadataGroups.length > 0"
+                class="collapse-all"
+                @click="toggleCollapseAllChildren()">
+            <span class="icon">
+                <i
+                        :class="{ 'tainacan-icon-arrowdown' : collapseAllChildren, 'tainacan-icon-arrowright' : !collapseAllChildren }"
+                        class="tainacan-icon tainacan-icon-1-25em" />
             </span>
-        </transition>
-    </div>
-    <p 
-            v-else
-            class="empty-label">
-        {{ $i18n.get('info_no_value_compound_metadata') }}
-    </p>
-    <a
-            v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > childItemMetadataGroups.length))"
-            :disabled="itemMetadatum.item.id && (childItemMetadataGroups.length > 0 && !someValueOnLastInput)"
-            class="is-inline-block add-link"
-            @click="addGroup">
-        <span class="icon is-small">
-            <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
-        </span>
-        &nbsp;{{ $i18n.get('label_add_value') }}
-    </a>
+            {{ collapseAllChildren ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
+        </a>
+    
+        <div
+                v-if="childItemMetadataGroups.length > 0"
+                class="multiple-inputs">
+            <template 
+                    v-for="(childItemMetadata, groupIndex) of childItemMetadataGroups"
+                    :key="groupIndex">
+                <hr v-if="groupIndex > 0">
+            
+                <template 
+                        v-for="(childItemMetadatum, childIndex) of childItemMetadata"
+                        :key="groupIndex + '-' + childIndex">
+                    <div 
+                            v-if="isRemovingGroup"
+                            class="field">
+                        <span class="collapse-handle">
+                            <span class="icon">
+                                <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                            <label class="label has-tooltip">
+                                <span
+                                        v-if="enumerateMetadatum"
+                                        style="opacity: 0.65;"
+                                        class="metadatum-section-enumeration">
+                                    {{ enumerateMetadatum }}.
+                                </span>
+                                {{ childItemMetadatum.metadatum.name }}
+                            </label>
+                            <span
+                                    v-if="childItemMetadatum.metadatum.required == 'yes'"
+                                    class="required-metadatum-asterisk">
+                                *
+                            </span>
+                            <span class="metadata-type">
+                                ({{ childItemMetadatum.metadatum.metadata_type_object.name }})
+                            </span>
+                            <help-button 
+                                    :title="childItemMetadatum.metadatum.name"
+                                    :message="childItemMetadatum.metadatum.description" />
+                        </span> 
+                        <div 
+                                class="skeleton"
+                                :style="{ 
+                                    minHeight: (childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-checkbox' || childItemMetadatum.metadatum.metadata_type_object.component == 'tainacan-taxonomy-checkbox') ? '150px' : '30px'
+                                }" />
+                    </div>
+                    <tainacan-form-item
+                            v-else
+                            v-show="(metadataNameFilterString == '' || filterByMetadatumName(childItemMetadatum))"
+                            :ref="'tainacan-form-item--' + groupIndex + '-' + childIndex"
+                            :item-metadatum="childItemMetadatum"
+                            :hide-collapses="hideCollapses"
+                            :hide-metadata-types="hideMetadataTypes"
+                            :hide-help-buttons="hideHelpButtons"
+                            :help-info-bellow-label="helpInfoBellowLabel"
+                            :is-collapsed="childItemMetadatum.collapse"
+                            :is-mobile-screen="isMobileScreen"
+                            :class="{ 
+                                'is-last-input': childIndex == childItemMetadata.length - 1,
+                                'is-metadata-navigation-active': isMetadataNavigation
+                            }"
+                            :is-focused="(focusedGroupMetadatum === groupIndex) && (focusedChildMetadatum === childIndex)"
+                            :is-metadata-navigation="isMetadataNavigation"
+                            :enumerate-metadatum="enumerateMetadatum ? ( enumerateMetadatum + ( childItemMetadataGroups.length > 1 ? ( '.' + (Number(groupIndex) + 1) ) : '' ) + '.' + (Number(childIndex) + 1) ) : false"
+                            @change-collapse="onChangeCollapse($event, groupIndex, childIndex)"
+                            @touchstart="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
+                            @mousedown="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
+                            @mobile-special-focus="setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: true })"
+                        />
 
-</div>
+                </template>
+                <a 
+                        v-if="isMultiple" 
+                        class="add-link"
+                        @click="removeGroup(groupIndex)">
+                    <span class="icon is-small">
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
+                    </span>
+                    &nbsp;{{ $i18n.get('label_remove_value') }}
+                </a>
+            </template>
+            <transition name="filter-item">
+                <span 
+                        v-if="isCreatingGroup"
+                        style="width: 100%;"
+                        class="icon has-text-success loading-icon">
+                    <div class="control has-icons-right is-loading is-clearfix" />
+                </span>
+            </transition>
+        </div>
+        <p 
+                v-else
+                class="empty-label">
+            {{ $i18n.get('info_no_value_compound_metadata') }}
+        </p>
+        <a
+                v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > childItemMetadataGroups.length))"
+                :disabled="itemMetadatum.item.id && (childItemMetadataGroups.length > 0 && !someValueOnLastInput)"
+                class="is-inline-block add-link"
+                @click="addGroup">
+            <span class="icon is-small">
+                <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
+            </span>
+            &nbsp;{{ $i18n.get('label_add_value') }}
+        </a>
+
+    </div>
 </template>
 
 <script>

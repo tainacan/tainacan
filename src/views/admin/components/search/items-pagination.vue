@@ -8,10 +8,10 @@
                 class="shown-items is-hidden-mobile">
             {{ 
                 $i18n.get('info_showing_items') +
-                getFirstItem() +
-                $i18n.get('info_to') + 
-                getLastItemNumber() +
-                $i18n.get('info_of')
+                    getFirstItem() +
+                    $i18n.get('info_to') + 
+                    getLastItemNumber() +
+                    $i18n.get('info_of')
             }} 
             <span :class="{ 'has-text-warning': isSortingByCustomMetadata }">
                 {{ totalItems + '.' }}
@@ -48,7 +48,7 @@
                         <option
                                 v-if="maxItemsPerPage >= 12"
                                 :value="itemsPerPageOption">
-                        {{ itemsPerPageOption }} &nbsp;
+                            {{ itemsPerPageOption }} &nbsp;
                         </option>
                     </template>
                 </b-select>
@@ -111,7 +111,7 @@
 import { mapGetters } from 'vuex';
 
 export default {
-    name: 'Pagination',
+    name: 'ItemsPagination',
     props: {
         isSortingByCustomMetadata: Boolean,
         hideItemsPerPageButton: false,

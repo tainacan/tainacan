@@ -30,8 +30,8 @@
 
         <transition name="fade">
             <div
-                v-if="loadingMetadata"
-                class="loading-spinner" />
+                    v-if="loadingMetadata"
+                    class="loading-spinner" />
         </transition>
         <transition name="filter-item">
             <b-field
@@ -143,7 +143,7 @@
     export default {
         props: {
             search: [ String ],
-            collection_id: [ Number ],
+            collectionId: [ Number ],
             value: [ String, Object, Array ],
             metadatum: [ String, Object ],
             errors: [ String, Object, Array ]
@@ -170,18 +170,17 @@
         },
         computed: {
             setError(){
-                if( this.errors && this.errors.collection_id !== '' ){
+                if ( this.errors && this.errors.collection_id !== '' )
                     this.setErrorsAttributes( 'is-danger', this.errors.collection_id );
-                } else {
+                else
                     this.setErrorsAttributes( '', '' );
-                }
                 return true;
             }
         },
         watch:{
             collection( value ) {
                 this.collection = value;
-                if( value && value !== '' ) {
+                if ( value && value !== '' ) {
                     this.fetchMetadataFromCollection(value);
                 } else {
                     this.metadata = [];
@@ -200,13 +199,13 @@
             }
         },
         created(){
-            this.fetchCollections().then(() => {
-                if( this.collection_id && this.collection_id !== '' ){
-                    this.collection = this.collection_id;
-                } else if ( this.value ) {
-                    this.collection = this.value.collection_id;
-                }
-            });
+            this.fetchCollections()
+                .then(() => {
+                    if ( this.collectionId && this.collectionId !== '' )
+                        this.collection = this.collectionId;
+                    else if ( this.value )
+                        this.collection = this.value.collection_id;
+                });
 
             this.displayRelatedItemMetadata = this.value && this.value.display_related_item_metadata && Array.isArray(this.value.display_related_item_metadata) ? this.value.display_related_item_metadata : [];
             this.modelDisplayInRelatedItems = this.value && this.value.display_in_related_items ? this.value.display_in_related_items : 'no';

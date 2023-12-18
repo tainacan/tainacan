@@ -103,7 +103,7 @@
                             <i :class="'tainacan-icon tainacan-icon-1-25em tainacan-icon-' + (isCollapseOpen(metadatum.id) ? 'arrowdown' : 'arrowright')" />
                         </span>
                         <span class="metadatum-name">
-                                {{ metadatum.name }}
+                            {{ metadatum.name }}
                         </span>
                         <span   
                                 v-if="metadatum.id != undefined && metadatum.metadata_type_object"
@@ -123,12 +123,12 @@
                             <em 
                                     v-if="metadatum.metadata_type_object.core && 
                                         metadatum.metadata_type_object.related_mapped_prop == 'title'">
-                                    {{ $i18n.get('label_core_title') }}
+                                {{ $i18n.get('label_core_title') }}
                             </em>
                             <em 
                                     v-if="metadatum.metadata_type_object.core && 
                                         metadatum.metadata_type_object.related_mapped_prop == 'description'">
-                                    {{ $i18n.get('label_core_description') }}
+                                {{ $i18n.get('label_core_description') }}
                             </em>
                             <span 
                                     v-if="metadatum.status == 'private'"
@@ -150,14 +150,14 @@
                                     }"
                                     class="icon icon-level-identifier">
                                 <i 
-                                    :class="{ 
-                                        'tainacan-icon-collection': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                        'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
-                                        'has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
-                                        'has-text-blue5': (metadatum.collection_id == 'default' || isRepositoryLevel),
-                                        'has-text-gray3': !parent.enabled
-                                    }"
-                                    class="tainacan-icon" />
+                                        :class="{ 
+                                            'tainacan-icon-collection': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                            'tainacan-icon-repository': (metadatum.collection_id == 'default') || isRepositoryLevel,
+                                            'has-text-turquoise5': (metadatum.collection_id != 'default' && !isRepositoryLevel), 
+                                            'has-text-blue5': (metadatum.collection_id == 'default' || isRepositoryLevel),
+                                            'has-text-gray3': !parent.enabled
+                                        }"
+                                        class="tainacan-icon" />
                             </span>
                         </span>
                         <span 
@@ -169,9 +169,9 @@
                             <a 
                                     v-if="metadatum.current_user_can_edit"
                                     :style="{ visibility: 
-                                            metadatum.collection_id != collectionId
+                                        metadatum.collection_id != collectionId
                                             ? 'hidden' : 'visible'
-                                        }" 
+                                    }" 
                                     @click.prevent="toggleMetadatumEdition(metadatum.id)">
                                 <span 
                                         v-tooltip="{
@@ -187,11 +187,11 @@
                             <a 
                                     v-if="metadatum.current_user_can_delete"
                                     :style="{ visibility: 
-                                            metadatum.collection_id != collectionId ||
-                                                metadatum.metadata_type_object.related_mapped_prop == 'title' ||
-                                            metadatum.metadata_type_object.related_mapped_prop == 'description'
+                                        metadatum.collection_id != collectionId ||
+                                        metadatum.metadata_type_object.related_mapped_prop == 'title' ||
+                                        metadatum.metadata_type_object.related_mapped_prop == 'description'
                                             ? 'hidden' : 'visible'
-                                        }" 
+                                    }" 
                                     @click.prevent="removeMetadatum(metadatum)">
                                 <span
                                         v-tooltip="{
@@ -225,8 +225,8 @@
                                 :is-parent-multiple="isParentMultiple"
                                 :is-repository-level="isRepositoryLevel"
                                 :index="index"
-                                @onEditionFinished="onEditionFinished()"
-                                @onEditionCanceled="onEditionCanceled()" />
+                                @on-edition-finished="onEditionFinished()"
+                                @on-edition-canceled="onEditionCanceled()" />
                     </b-modal>
                 </div>
             </template>

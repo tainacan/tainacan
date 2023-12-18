@@ -24,7 +24,7 @@
                     type="button"
                     class="link-style"
                     :disabled="isLoading"
-                    @click.prevent="($event) => $emit('openAttachmentsMediaFrame', $event)">
+                    @click.prevent="($event) => $emit('open-attachments-media-frame', $event)">
                 <span class="icon">
                     <i class="tainacan-icon tainacan-icon-edit" />
                 </span>
@@ -41,7 +41,7 @@
                     :collection="collection"
                     :is-editable="true"
                     :should-load-attachments="shouldLoadAttachments"
-                    @onDeleteAttachment="($event) => $emit('onDeleteAttachment', $event)" />
+                    @on-delete-attachment="($event) => $emit('on-delete-attachment', $event)" />
         </div>
     </div>
 </template>
@@ -62,8 +62,8 @@ export default {
         shouldLoadAttachments: Boolean
     },
     emits: [
-        'openAttachmentsMediaFrame',
-        'onDeleteAttachment'
+        'open-attachments-media-frame',
+        'on-delete-attachment'
     ]
 }
 </script>

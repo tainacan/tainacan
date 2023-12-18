@@ -149,7 +149,7 @@ export default {
         highlightedMetadatum: String
     },
     emits: [
-        'onFinishedLoadingMetadataTypes'
+        'on-finished-loading-metadata-types'
     ],
     data() {
         return {
@@ -177,7 +177,7 @@ export default {
 
         this.fetchMetadatumTypes()
             .then(() => {
-                this.$emit('onFinishedLoadingMetadataTypes');
+                this.$emit('on-finished-loading-metadata-types');
                 this.isLoadingMetadataTypes = false;
             })
             .catch(() => {

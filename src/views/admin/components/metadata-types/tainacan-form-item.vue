@@ -7,11 +7,11 @@
             :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                @click="(!hideCollapses && !isMetadataNavigation) ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
+                @click="(!hideCollapses && !isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''">
             <span 
                     v-if="!hideCollapses"
                     class="icon"
-                    @click="(!hideCollapses && isMetadataNavigation) ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
+                    @click="(!hideCollapses && isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''">
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown' : isCollapsed || errorMessage,
@@ -77,7 +77,7 @@
                         :is-metadata-navigation="isMetadataNavigation"
                         @input="changeValue"
                         @blur="performValueChange"
-                        @mobileSpecialFocus="onMobileSpecialFocus" />
+                        @mobile-special-focus="onMobileSpecialFocus" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
                             tag="div"
@@ -102,7 +102,7 @@
                                     :is-metadata-navigation="isMetadataNavigation"
                                     @input="changeValue"
                                     @blur="performValueChange"
-                                    @mobileSpecialFocus="onMobileSpecialFocus" />
+                                    @mobile-special-focus="onMobileSpecialFocus" />
                             <a 
                                     v-if="index > 0" 
                                     :key="index"
@@ -159,7 +159,7 @@
                         :enumerate-metadatum="enumerateMetadatum"
                         @input="changeValue"
                         @blur="performValueChange"
-                        @mobileSpecialFocus="onMobileSpecialFocus" />
+                        @mobile-special-focus="onMobileSpecialFocus" />
             </div>
         </transition>
     </b-field>
@@ -186,8 +186,8 @@
         },
         emits: [
             'input',
-            'changeCollapse',
-            'mobileSpecialFocus'
+            'change-collapse',
+            'mobile-special-focus'
         ],
         data(){
             return {
@@ -343,7 +343,7 @@
             },
             onMobileSpecialFocus() {
                 if (this.isMobileScreen)
-                    this.$emit('mobileSpecialFocus');
+                    this.$emit('mobile-special-focus');
             }
         }
     }

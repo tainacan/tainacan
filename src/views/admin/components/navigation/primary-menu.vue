@@ -103,9 +103,9 @@
                                 activeRoute == 'ImporterEditionForm' ||
                                 activeRoute == 'ImporterCreationForm' ||
                                 activeRoute == 'ImporterMappingForm' ) ? 'is-active':''">
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-importers" />
-                            </span>
+                        <span class="icon">
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-importers" />
+                        </span>
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
                 </li>

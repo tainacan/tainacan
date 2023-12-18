@@ -67,7 +67,7 @@
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings" />
                         </span>
                     
-                    <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
+                        <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
                     </router-link>
                 </li>
                 <li 
@@ -80,7 +80,7 @@
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
                         </span>
-                    <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
+                        <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
                 </li>
                 <li 
@@ -93,7 +93,7 @@
                         <span class="icon">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
                         </span>
-                    <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
+                        <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
                 </li>
                 <li 

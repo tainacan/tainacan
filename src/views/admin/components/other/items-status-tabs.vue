@@ -39,7 +39,7 @@
                             <i 
                                     class="tainacan-icon tainacan-icon-1-125em"
                                     :class="$statusHelper.getIcon(statusOption.slug)"
-                                    />
+                                />
                         </span>
                         {{ statusOption.name }}
                         <span 

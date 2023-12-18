@@ -255,9 +255,9 @@
                         :to="$routerHelper.getCollectionPath(collection.id)"
                         class="card-body">
                     <img 
-                        v-if="collection.thumbnail != undefined"
-                        :alt="$i18n.get('label_thumbnail')"
-                        :src="$thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium')">  
+                            v-if="collection.thumbnail != undefined"
+                            :alt="$i18n.get('label_thumbnail')"
+                            :src="$thumbHelper.getSrc(collection['thumbnail'], 'tainacan-medium')">  
                     
                     <!-- Name -->
                     <div class="metadata-title">

@@ -6,7 +6,7 @@
             <slot />
             
             <!-- MAP VIEW MODE -->
-           <div 
+            <div 
                     class="tainacan-leaflet-map-container"
                     :class="{ 'has-selected-item': mapSelectedItemId }">
                 <ul class="tainacan-map-cards-container">
@@ -219,8 +219,8 @@
                             </span>
                         </button>
                         <transition-group
-                                    tag="ul"
-                                    name="appear">
+                                tag="ul"
+                                name="appear">
                             <li
                                     v-for="(item, index) of items.filter(anItem => mapSelectedItemId == anItem.id)"
                                     :key="item.id"
@@ -362,7 +362,7 @@
                         </transition-group>
                     </l-control>
                 </l-map>
-           </div>
+            </div>
         </div> 
     </div>
 </template>

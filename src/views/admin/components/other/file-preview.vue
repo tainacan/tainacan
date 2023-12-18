@@ -34,6 +34,9 @@ export default {
     name: 'FilePreview',
     props: {
         file: Object
-    }
+    },
+    emits: [
+        'close'
+    ]
 }
 </script>

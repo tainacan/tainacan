@@ -28,16 +28,16 @@ import mitt from 'mitt';
 import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
 
 // Metadata Types
-import Text from '../../../admin/components/metadata-types/text/Text.vue';
-import Textarea from '../../../admin/components/metadata-types/textarea/Textarea.vue';
-import Selectbox from '../../../admin/components/metadata-types/selectbox/Selectbox.vue';
-import Numeric from '../../../admin/components/metadata-types/numeric/Numeric.vue';
-import Date from '../../../admin/components/metadata-types/date/Date.vue';
-import Relationship from '../../../admin/components/metadata-types/relationship/Relationship.vue';
-import Taxonomy from '../../../admin/components/metadata-types/taxonomy/Taxonomy.vue';
-import Compound from '../../../admin/components/metadata-types/compound/Compound.vue';
-import User from '../../../admin/components/metadata-types/user/User.vue';
-import GeoCoordinate from '../../../admin/components/metadata-types/geocoordinate/GeoCoordinate.vue';
+import TainacanText from '../../../admin/components/metadata-types/text/TainacanText.vue';
+import TainacanTextarea from '../../../admin/components/metadata-types/textarea/TainacanTextarea.vue';
+import TainacanSelectbox from '../../../admin/components/metadata-types/selectbox/TainacanSelectbox.vue';
+import TainacanNumeric from '../../../admin/components/metadata-types/numeric/TainacanNumeric.vue';
+import TainacanDate from '../../../admin/components/metadata-types/date/TainacanDate.vue';
+import TainacanRelationship from '../../../admin/components/metadata-types/relationship/TainacanRelationship.vue';
+import TainacanTaxonomy from '../../../admin/components/metadata-types/taxonomy/TainacanTaxonomy.vue';
+import TainacanCompound from '../../../admin/components/metadata-types/compound/TainacanCompound.vue';
+import TainacanUser from '../../../admin/components/metadata-types/user/TainacanUser.vue';
+import TainacanGeoCoordinate from '../../../admin/components/metadata-types/geocoordinate/TainacanGeoCoordinate.vue';
 
 // Main components
 import ItemSubmissionForm from './theme.vue';
@@ -166,16 +166,16 @@ export default (element) => {
             }
 
             /* Metadata */
-            VueItemSubmission.component('tainacan-text', Text);
-            VueItemSubmission.component('tainacan-textarea', Textarea);
-            VueItemSubmission.component('tainacan-selectbox', Selectbox);
-            VueItemSubmission.component('tainacan-numeric', Numeric);
-            VueItemSubmission.component('tainacan-date', Date);
-            VueItemSubmission.component('tainacan-relationship', Relationship);
-            VueItemSubmission.component('tainacan-taxonomy', Taxonomy);
-            VueItemSubmission.component('tainacan-compound', Compound);
-            VueItemSubmission.component('tainacan-user', User);
-            VueItemSubmission.component('tainacan-geocoordinate', GeoCoordinate);
+            VueItemSubmission.component('tainacan-text', TainacanText);
+            VueItemSubmission.component('tainacan-textarea', TainacanTextarea);
+            VueItemSubmission.component('tainacan-selectbox', TainacanSelectbox);
+            VueItemSubmission.component('tainacan-numeric', TainacanNumeric);
+            VueItemSubmission.component('tainacan-date', TainacanDate);
+            VueItemSubmission.component('tainacan-relationship', TainacanRelationship);
+            VueItemSubmission.component('tainacan-taxonomy', TainacanTaxonomy);
+            VueItemSubmission.component('tainacan-compound', TainacanCompound);
+            VueItemSubmission.component('tainacan-user', TainacanUser);
+            VueItemSubmission.component('tainacan-geocoordinate', TainacanGeoCoordinate);
 
             /* Others */
             VueItemSubmission.component('tainacan-form-item', TainacanFormItem);

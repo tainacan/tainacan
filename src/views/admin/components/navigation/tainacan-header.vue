@@ -91,7 +91,7 @@
             </button>
             <processes-popup
                     v-if="showProcesses"
-                    @closeProcessesPopup="showProcesses = false" />
+                    @close-processes-popup="showProcesses = false" />
             <a
                     class="level-item"
                     :href="wordpressAdmin"

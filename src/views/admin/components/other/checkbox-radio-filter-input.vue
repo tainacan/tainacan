@@ -138,8 +138,8 @@
                                                     }" 
                                                     class="checkbox-label-text">{{ `${ (option.label ? option.label : '') }` }}</span> 
                                             <span 
-                                                v-if="option.total_items != undefined"
-                                                class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
+                                                    v-if="option.total_items != undefined"
+                                                    class="has-text-gray">&nbsp;{{ "(" + option.total_items + ")" }}</span>
                                         </span>
                                     </label>
                                 </li>
@@ -273,7 +273,7 @@
                                         closable
                                         :class="isModal ? '' : 'is-small'"
                                         @close="$emit('input', term)">
-                                       <span v-html="(isTaxonomy || metadatum_type === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
+                                    <span v-html="(isTaxonomy || metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />
                                 </b-tag>
                             </div>
                         </b-field>
@@ -333,7 +333,7 @@
         props: {
             filter: '',
             parent: [Number, String],
-            taxonomy_id: [Number, String],
+            taxonomyId: [Number, String],
             taxonomy: String,
             collectionId: [String, Number],
             metadatumId: [Number, String],
@@ -344,7 +344,7 @@
                 type: Boolean,
                 default: false,
             },
-            metadatum_type: String,
+            metadatumType: String,
             query: Object,
             isRepositoryLevel: Boolean,
             isModal: {
@@ -354,6 +354,7 @@
         },
         emits: [
             'input',
+            'close',
             'appliedCheckBoxModal'
         ],
         data() {
@@ -406,7 +407,7 @@
                 this.isCheckboxListLoading = true;
             
             this.$emitter.on('updateTaxonomyInputs', ($event) => { 
-                if ($event.taxonomyId == this.taxonomy_id && $event.metadatumId == this.metadatumId) {
+                if ($event.taxonomyId == this.taxonomyId && $event.metadatumId == this.metadatumId) {
                     this.finderColumns = [];
                     this.optionName = '';
                     this.hierarchicalPath = [];
@@ -444,7 +445,7 @@
 
                 let selected = this.selected instanceof Array ? this.selected : [this.selected];
 
-                if (this.taxonomy_id && selected.length) {
+                if (this.taxonomyId && selected.length) {
 
                     this.isSelectedTermsLoading = true;
 
@@ -460,7 +461,7 @@
                             this.isSelectedTermsLoading = false;
                         });
                     
-                } else if (this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
+                } else if (this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' && selected.length) {
                     this.isSelectedTermsLoading = true;
 
                     axios.get(`/items/?${qs.stringify({ fetch_only: 'title', postin: selected})}`)
@@ -557,7 +558,7 @@
                 if (this.getOptionsValuesCancel != undefined)
                     this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-                if ( this.metadatum_type === 'Tainacan\\Metadata_Types\\Relationship' )
+                if ( this.metadatumType === 'Tainacan\\Metadata_Types\\Relationship' )
                     promise = this.getValuesRelationship({
                         search: this.optionName,
                         isRepositoryLevel: this.isRepositoryLevel,

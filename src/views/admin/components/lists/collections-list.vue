@@ -9,7 +9,7 @@
                 <span>
                     <b-checkbox 
                             :model-value="allCollectionsOnPageSelected" 
-                            @click.native="selectAllCollectionsOnPage()">
+                            @input="selectAllCollectionsOnPage()">
                         {{ $i18n.get('label_select_all_collections_page') }}
                     </b-checkbox>
                 </span>
@@ -51,9 +51,9 @@
 
                 <!-- Backdrop for escaping context menu -->
                 <div 
-                    class="context-menu-backdrop"
-                    @click.left="clearContextMenu()"
-                    @click.right="clearContextMenu()" /> 
+                        class="context-menu-backdrop"
+                        @click.left="clearContextMenu()"
+                        @click.right="clearContextMenu()" /> 
 
                 <b-dropdown 
                         inline
@@ -92,7 +92,7 @@
                         <!-- Checking list -->
                         <th v-if="$userCaps.hasCapability('tnc_rep_delete_collections')">
                             &nbsp;
-                            <!-- nothing to show on header -->
+                        <!-- nothing to show on header -->
                         </th>
                         <!-- Status icon -->
                         <th v-if="isOnAllCollectionsTab">
@@ -130,7 +130,7 @@
                                 v-if="collections.findIndex((collection) => collection.current_user_can_edit || collection.current_user_can_delete) >= 0"
                                 class="actions-header">
                             &nbsp;
-                            <!-- nothing to show on header for actions cell-->
+                        <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
@@ -163,7 +163,7 @@
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(collection.status)"
-                                        />
+                                    />
                             </span>
                         </td>
                         <!-- Thumbnail -->

@@ -1,255 +1,255 @@
 <template>
-<form
-        id="metadataSectionEditForm"
-        autofocus="true"
-        tabindex="-1"
-        role="dialog"
-        aria-modal
-        @submit.prevent="saveEdition(form)">
-    <div 
-            v-if="form && Object.keys(form).length"
-            class="tainacan-modal-content">
-        <div class="tainacan-modal-title">
-            <h2 v-if="form.name">
-                {{ $i18n.get('instruction_configure_the_metadata_section') }}&nbsp;<em>{{ form.name }}</em>
-            </h2>
-            <h2 v-else>
-                {{ $i18n.get('instruction_configure_new_metadata_section') }}
-            </h2>
-            <hr>
-        </div>
-        <div class="tainacan-form">
-            <div class="options-columns">
-                <b-field
-                        :addons="false"
-                        :type="formErrors['name'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
-                    <label class="label is-inline">
-                        {{ $i18n.get('label_name') }}
-                        <span
-                                class="required-metadata-section-asterisk"
-                                :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span>
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata-sections', 'name')"
-                                :message="$i18n.getHelperMessage('metadata-sections', 'name')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </label>
-                    <b-input
-                            v-model="form.name"
-                            name="name"
-                            @focus="clearErrors('name')" />
-                </b-field>
-
-                <!-- Hook for extra Form options -->
-                <template 
-                        v-if="hasBeginLeftForm">  
-                    <form 
-                        id="form-metadataSection-begin-left"
-                        class="form-hook-region"
-                        v-html="getBeginLeftForm" />
-                </template>
-
-                <b-field
-                        :addons="false"
-                        :type="formErrors['description'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
-                    <label class="label is-inline">
-                        {{ $i18n.get('label_description') }}
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata-sections', 'description')"
-                                :message="$i18n.getHelperMessage('metadata-sections', 'description')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </label>
-                    <b-input
-                            v-model="form.description"
-                            type="textarea"
-                            name="description"
-                            rows="3"
-                            @focus="clearErrors('description')" />
-                </b-field>
-
-                <b-field 
-                        :addons="false"
-                        :label="$i18n.getHelperTitle('metadata-sections', 'description_bellow_name')"
-                        :type="formErrors['description_bellow_name'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['description_bellow_name'] != undefined ? formErrors['description_bellow_name'] : ''">
-                        &nbsp;
-                    <b-switch
-                            v-model="form.description_bellow_name"
-                            size="is-small"
-                            true-value="yes"
-                            false-value="no"
-                            name="description_bellow_name"
-                            @update:model-value="clearErrors('description_bellow_name')">
-                    <help-button
-                            :title="$i18n.getHelperTitle('metadata-sections', 'description_bellow_name')"
-                            :message="$i18n.getHelperMessage('metadata-sections', 'description_bellow_name')"
-                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </b-switch>
-                </b-field>
-
-                <b-field
-                        v-if="form.id !== 'default_section'"
-                        :addons="false"
-                        :type="formErrors['status'] != undefined ? 'is-danger' : ''"
-                        :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
-                    <label class="label is-inline">
-                        {{ $i18n.get('label_status') }}
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata-sections', 'status')"
-                                :message="$i18n.getHelperMessage('metadata-sections', 'status')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                    </label>
-                    <div class="is-flex is-justify-content-space-between">
-                        <b-radio
-                                id="tainacan-select-status-publish"
-                                v-model="form.status"
-                                name="status"
-                                native-value="publish"
-                                @focus="clearErrors('label_status')">
-                            <span class="icon has-text-gray3">
-                                <i class="tainacan-icon tainacan-icon-public" />
-                            </span>
-                            {{ $i18n.get('status_public') }}
-                        </b-radio>
-                        <b-radio
-                                id="tainacan-select-status-private"
-                                v-model="form.status"
-                                name="status"
-                                native-value="private"
-                                @focus="clearErrors('label_status')">
-                            <span class="icon has-text-gray3">
-                                <i class="tainacan-icon tainacan-icon-private" />
-                            </span>
-                            {{ $i18n.get('status_private') }}
-                        </b-radio>
-                    </div>
-                </b-field>
-
-            </div>
-
-            <div 
-                    v-if="form.id !== 'default_section'"
-                    class="metadata-form-section"
-                    @click="hideConditionalSectionSettings = !hideConditionalSectionSettings;">
-                <span class="icon">
-                    <i 
-                            class="tainacan-icon"
-                            :class="!hideConditionalSectionSettings ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
-                </span>
-                <strong>{{ $i18n.get('label_advanced_metadata_options') }}</strong>
+    <form
+            id="metadataSectionEditForm"
+            autofocus="true"
+            tabindex="-1"
+            role="dialog"
+            aria-modal
+            @submit.prevent="saveEdition(form)">
+        <div 
+                v-if="form && Object.keys(form).length"
+                class="tainacan-modal-content">
+            <div class="tainacan-modal-title">
+                <h2 v-if="form.name">
+                    {{ $i18n.get('instruction_configure_the_metadata_section') }}&nbsp;<em>{{ form.name }}</em>
+                </h2>
+                <h2 v-else>
+                    {{ $i18n.get('instruction_configure_new_metadata_section') }}
+                </h2>
                 <hr>
-
             </div>
+            <div class="tainacan-form">
+                <div class="options-columns">
+                    <b-field
+                            :addons="false"
+                            :type="formErrors['name'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['name'] != undefined ? formErrors['name'] : ''">
+                        <label class="label is-inline">
+                            {{ $i18n.get('label_name') }}
+                            <span
+                                    class="required-metadata-section-asterisk"
+                                    :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span>
+                            <help-button
+                                    :title="$i18n.getHelperTitle('metadata-sections', 'name')"
+                                    :message="$i18n.getHelperMessage('metadata-sections', 'name')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </label>
+                        <b-input
+                                v-model="form.name"
+                                name="name"
+                                @focus="clearErrors('name')" />
+                    </b-field>
 
-            <transition 
-                    v-if="form.id !== 'default_section'"
-                    name="filter-item">
-                <div 
-                        v-show="!hideConditionalSectionSettings"
-                        class="options-columns">
+                    <!-- Hook for extra Form options -->
+                    <template 
+                            v-if="hasBeginLeftForm">  
+                        <form 
+                                id="form-metadataSection-begin-left"
+                                class="form-hook-region"
+                                v-html="getBeginLeftForm" />
+                    </template>
+
+                    <b-field
+                            :addons="false"
+                            :type="formErrors['description'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['description'] != undefined ? formErrors['description'] : ''">
+                        <label class="label is-inline">
+                            {{ $i18n.get('label_description') }}
+                            <help-button
+                                    :title="$i18n.getHelperTitle('metadata-sections', 'description')"
+                                    :message="$i18n.getHelperMessage('metadata-sections', 'description')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </label>
+                        <b-input
+                                v-model="form.description"
+                                type="textarea"
+                                name="description"
+                                rows="3"
+                                @focus="clearErrors('description')" />
+                    </b-field>
+
                     <b-field 
                             :addons="false"
-                            :label="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
-                            :type="formErrors['is_conditional_section'] != undefined ? 'is-danger' : ''"
-                            :message="formErrors['is_conditional_section'] != undefined ? formErrors['is_conditional_section'] : ''">
-                            &nbsp;
+                            :label="$i18n.getHelperTitle('metadata-sections', 'description_bellow_name')"
+                            :type="formErrors['description_bellow_name'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['description_bellow_name'] != undefined ? formErrors['description_bellow_name'] : ''">
+                        &nbsp;
                         <b-switch
-                                v-model="form.is_conditional_section"
+                                v-model="form.description_bellow_name"
                                 size="is-small"
                                 true-value="yes"
                                 false-value="no"
-                                name="is_conditional_section"
-                                @update:model-value="clearErrors('is_conditional_section')">
-                        <help-button
-                                :title="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
-                                :message="$i18n.getHelperMessage('metadata-sections', 'is_conditional_section')"
-                                :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                name="description_bellow_name"
+                                @update:model-value="clearErrors('description_bellow_name')">
+                            <help-button
+                                    :title="$i18n.getHelperTitle('metadata-sections', 'description_bellow_name')"
+                                    :message="$i18n.getHelperMessage('metadata-sections', 'description_bellow_name')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                         </b-switch>
                     </b-field>
-                    <div v-if="isConditionalSection && !availableConditionalMetadata.length">
-                        <p style="break-inside: avoid;">{{ $i18n.get('info_create_select_metadatum_for_conditional_section') }}</p>
-                    </div>
-                    <transition name="filter-item">
-                        <b-field
-                                v-if="isConditionalSection && availableConditionalMetadata.length"
-                                :addons="false"
-                                :type="formErrors['conditional_section_rules'] != undefined ? 'is-danger' : ''"
-                                :message="formErrors['conditional_section_rules'] != undefined ? formErrors['conditional_section_rules'] : ''">
-                            <label class="label is-inline">
-                                {{ $i18n.getHelperTitle('metadata-sections', 'conditional_section_rules') }}
-                                <help-button
-                                        :title="$i18n.getHelperTitle('metadata-sections', 'conditional_section_rules')"
-                                        :message="$i18n.getHelperMessage('metadata-sections', 'conditional_section_rules')"
-                                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
-                            </label>
-                            <b-select 
-                                    v-model="selectedConditionalMetadatumId"
-                                    :placeholder="$i18n.get('label_select_metadatum')"
-                                    @input="reloadConditionalValueComponent()">
-                                <option 
-                                        v-for="conditionalMetadatum of availableConditionalMetadata"
-                                        :key="conditionalMetadatum.id"
-                                        :value="conditionalMetadatum.id">
-                                    {{ conditionalMetadatum.name }}
-                                </option>
-                            </b-select>
-                        </b-field>
-                    </transition>
-                    <transition name="filter-item">
-                        <b-field
-                                v-if="isConditionalSection && selectedConditionalMetadatumId && selectedConditionalMetadatum && selectedConditionalMetadatum.name"
-                                :addons="false"
-                                :type="formErrors['conditional_section_rules'] != undefined ? 'is-danger' : ''"
-                                :message="formErrors['conditional_section_rules'] != undefined ? formErrors['conditional_section_rules'] : ''">
-                            <label class="label is-inline">
-                                {{ selectedConditionalMetadatum.name }}
-                            </label>
-                            <component
-                                    :is="selectedConditionalMetadatum.metadata_type_object.component"
-                                    v-if="shouldUpdateConditionalValue"
-                                    :forced-component-type="selectedConditionalMetadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
-                                    :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
-                                    :value="Array.isArray(selectedConditionalValue) ? selectedConditionalValue[0] : selectedConditionalValue"
-                                    :allow-new="false"
-                                    :maxtags="1"
-                                    @input="selectConditionalValue"
-                            />
-                        </b-field>
-                    </transition>
+
+                    <b-field
+                            v-if="form.id !== 'default_section'"
+                            :addons="false"
+                            :type="formErrors['status'] != undefined ? 'is-danger' : ''"
+                            :message="formErrors['status'] != undefined ? formErrors['status'] : ''">
+                        <label class="label is-inline">
+                            {{ $i18n.get('label_status') }}
+                            <help-button
+                                    :title="$i18n.getHelperTitle('metadata-sections', 'status')"
+                                    :message="$i18n.getHelperMessage('metadata-sections', 'status')"
+                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                        </label>
+                        <div class="is-flex is-justify-content-space-between">
+                            <b-radio
+                                    id="tainacan-select-status-publish"
+                                    v-model="form.status"
+                                    name="status"
+                                    native-value="publish"
+                                    @focus="clearErrors('label_status')">
+                                <span class="icon has-text-gray3">
+                                    <i class="tainacan-icon tainacan-icon-public" />
+                                </span>
+                                {{ $i18n.get('status_public') }}
+                            </b-radio>
+                            <b-radio
+                                    id="tainacan-select-status-private"
+                                    v-model="form.status"
+                                    name="status"
+                                    native-value="private"
+                                    @focus="clearErrors('label_status')">
+                                <span class="icon has-text-gray3">
+                                    <i class="tainacan-icon tainacan-icon-private" />
+                                </span>
+                                {{ $i18n.get('status_private') }}
+                            </b-radio>
+                        </div>
+                    </b-field>
+
                 </div>
-            </transition>
+
+                <div 
+                        v-if="form.id !== 'default_section'"
+                        class="metadata-form-section"
+                        @click="hideConditionalSectionSettings = !hideConditionalSectionSettings;">
+                    <span class="icon">
+                        <i 
+                                class="tainacan-icon"
+                                :class="!hideConditionalSectionSettings ? 'tainacan-icon-arrowdown' : 'tainacan-icon-arrowright'" />
+                    </span>
+                    <strong>{{ $i18n.get('label_advanced_metadata_options') }}</strong>
+                    <hr>
+
+                </div>
+
+                <transition 
+                        v-if="form.id !== 'default_section'"
+                        name="filter-item">
+                    <div 
+                            v-show="!hideConditionalSectionSettings"
+                            class="options-columns">
+                        <b-field 
+                                :addons="false"
+                                :label="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
+                                :type="formErrors['is_conditional_section'] != undefined ? 'is-danger' : ''"
+                                :message="formErrors['is_conditional_section'] != undefined ? formErrors['is_conditional_section'] : ''">
+                            &nbsp;
+                            <b-switch
+                                    v-model="form.is_conditional_section"
+                                    size="is-small"
+                                    true-value="yes"
+                                    false-value="no"
+                                    name="is_conditional_section"
+                                    @update:model-value="clearErrors('is_conditional_section')">
+                                <help-button
+                                        :title="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
+                                        :message="$i18n.getHelperMessage('metadata-sections', 'is_conditional_section')"
+                                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                            </b-switch>
+                        </b-field>
+                        <div v-if="isConditionalSection && !availableConditionalMetadata.length">
+                            <p style="break-inside: avoid;">{{ $i18n.get('info_create_select_metadatum_for_conditional_section') }}</p>
+                        </div>
+                        <transition name="filter-item">
+                            <b-field
+                                    v-if="isConditionalSection && availableConditionalMetadata.length"
+                                    :addons="false"
+                                    :type="formErrors['conditional_section_rules'] != undefined ? 'is-danger' : ''"
+                                    :message="formErrors['conditional_section_rules'] != undefined ? formErrors['conditional_section_rules'] : ''">
+                                <label class="label is-inline">
+                                    {{ $i18n.getHelperTitle('metadata-sections', 'conditional_section_rules') }}
+                                    <help-button
+                                            :title="$i18n.getHelperTitle('metadata-sections', 'conditional_section_rules')"
+                                            :message="$i18n.getHelperMessage('metadata-sections', 'conditional_section_rules')"
+                                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                </label>
+                                <b-select 
+                                        v-model="selectedConditionalMetadatumId"
+                                        :placeholder="$i18n.get('label_select_metadatum')"
+                                        @input="reloadConditionalValueComponent()">
+                                    <option 
+                                            v-for="conditionalMetadatum of availableConditionalMetadata"
+                                            :key="conditionalMetadatum.id"
+                                            :value="conditionalMetadatum.id">
+                                        {{ conditionalMetadatum.name }}
+                                    </option>
+                                </b-select>
+                            </b-field>
+                        </transition>
+                        <transition name="filter-item">
+                            <b-field
+                                    v-if="isConditionalSection && selectedConditionalMetadatumId && selectedConditionalMetadatum && selectedConditionalMetadatum.name"
+                                    :addons="false"
+                                    :type="formErrors['conditional_section_rules'] != undefined ? 'is-danger' : ''"
+                                    :message="formErrors['conditional_section_rules'] != undefined ? formErrors['conditional_section_rules'] : ''">
+                                <label class="label is-inline">
+                                    {{ selectedConditionalMetadatum.name }}
+                                </label>
+                                <component
+                                        :is="selectedConditionalMetadatum.metadata_type_object.component"
+                                        v-if="shouldUpdateConditionalValue"
+                                        :forced-component-type="selectedConditionalMetadatum.metadata_type_object.component.includes('taxonomy') ? 'tainacan-taxonomy-tag-input' : ''"
+                                        :item-metadatum="{ metadatum: selectedConditionalMetadatum }"
+                                        :value="Array.isArray(selectedConditionalValue) ? selectedConditionalValue[0] : selectedConditionalValue"
+                                        :allow-new="false"
+                                        :maxtags="1"
+                                        @input="selectConditionalValue"
+                                    />
+                            </b-field>
+                        </transition>
+                    </div>
+                </transition>
             
-            <!-- Hook for extra Form options -->
-            <template v-if="hasEndLeftForm">  
-                <form 
-                    id="form-metadataSection-end-left"
-                    class="form-hook-region"
-                    v-html="getEndLeftForm" />
-            </template>
+                <!-- Hook for extra Form options -->
+                <template v-if="hasEndLeftForm">  
+                    <form 
+                            id="form-metadataSection-end-left"
+                            class="form-hook-region"
+                            v-html="getEndLeftForm" />
+                </template>
                 
+            </div>
         </div>
-    </div>
-    <div class="field is-grouped form-submit">
-        <div class="control">
-            <button
-                    type="button"
-                    class="button is-outlined"
-                    @click.prevent="cancelEdition()">
-                {{ $i18n.get('cancel') }}
-            </button>
+        <div class="field is-grouped form-submit">
+            <div class="control">
+                <button
+                        type="button"
+                        class="button is-outlined"
+                        @click.prevent="cancelEdition()">
+                    {{ $i18n.get('cancel') }}
+                </button>
+            </div>
+            <p class="help is-danger">{{ formErrorMessage }}</p>
+            <div class="control">
+                <b-button
+                        :loading="isUpdating"
+                        class="button is-success"
+                        native-type="submit">
+                    {{ $i18n.get('save') }}
+                </b-button>
+            </div>
         </div>
-        <p class="help is-danger">{{ formErrorMessage }}</p>
-        <div class="control">
-            <b-button
-                    :loading="isUpdating"
-                    class="button is-success"
-                    native-type="submit">
-                {{ $i18n.get('save') }}
-            </b-button>
-        </div>
-    </div>
-</form>
+    </form>
 </template>
 
 <script>
@@ -267,8 +267,8 @@
             isInsideImporterFlow: false,
         },
         emits: [
-            'onEditionFinished',
-            'onEditionCanceled'
+            'on-edition-finished',
+            'on-edition-canceled'
         ],
         data() {
             return {
@@ -353,7 +353,7 @@
                         this.isUpdating = false;
                         this.closedByForm = true;
 
-                        this.$emit('onEditionFinished');
+                        this.$emit('on-edition-finished');
                     })
                     .catch((errors) => {
                         this.isUpdating = false;
@@ -372,7 +372,7 @@
             },
             cancelEdition() {
                 this.closedByForm = true;
-                this.$emit('onEditionCanceled');
+                this.$emit('on-edition-canceled');
             },
             selectConditionalValue(selected) {
                 const selectedValues = Array.isArray(selected) ? selected : [ selected ]; 

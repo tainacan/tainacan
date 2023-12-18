@@ -63,7 +63,7 @@
                             </span>
                             &nbsp;{{ $i18n.get('label_new_term') }}
                         </a>
-                         <a 
+                        <a 
                                 :style="!column.children.length ? 'opacity: 0; visibility: hidden;' : 'position: relative;'"
                                 class="add-link"
                                 @click="multipleInsertion({ parentId: column.id, parentName: column.name })">
@@ -103,7 +103,7 @@
                                         v-if="!isHierarchical || (isHierarchical && !searchString.length)" 
                                         class="checkbox-name-text">
                                     {{ term.name }}
-                                 </span> 
+                                </span> 
                                 <span
                                         v-else
                                         class="checkbox-name-text"
@@ -271,7 +271,7 @@
                     :taxonomy-id="taxonomyId"
                     :is-modal="true"
                     :original-form="editTerm"
-                    @onEditionFinished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)" />
+                    @on-edition-finished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)" />
         </b-modal>
     </div>
 </template>
@@ -297,8 +297,8 @@ export default {
         isHierarchical: Boolean
     },
     emits: [
-        'onUpdateSelectedColumnIndex',
-        'onUpdateSelectedTerms',
+        'on-update-selected-column-index',
+        'on-update-selected-terms',
     ],
     data() {
         return {
@@ -513,7 +513,7 @@ export default {
         },
         selectColumn(index) {
             const newIndex = this.selectedColumnIndex != index ? index : -1;
-            this.$emit('onUpdateSelectedColumnIndex', { index: newIndex, object: this.termColumns[newIndex] ? this.termColumns[newIndex] : null });
+            this.$emit('on-update-selected-column-index', { index: newIndex, object: this.termColumns[newIndex] ? this.termColumns[newIndex] : null });
         },
         removeTerm(term) {
 
@@ -605,7 +605,7 @@ export default {
             });  
         },
         updateSelectedTerms(selectedTerm) {
-            this.$emit('onUpdateSelectedColumnIndex', { index: -1, object: null });
+            this.$emit('on-update-selected-column-index', { index: -1, object: null });
 
             let currentSelected = JSON.parse(JSON.stringify(this.selected));
             
@@ -616,7 +616,7 @@ export default {
             else
                 currentSelected.push(selectedTerm);
 
-            this.$emit('onUpdateSelectedTerms', currentSelected);
+            this.$emit('on-update-selected-terms', currentSelected);
         },
         onTermRemovalFinished(term) {
             const removedTermParentColumn = this.termColumns.findIndex((aFinderColumn) => aFinderColumn.id == term.parent);
@@ -774,8 +774,8 @@ export default {
             });      
         },
         resetTermsListUI() {
-            this.$emit('onUpdateSelectedTerms', []);
-            this.$emit('onUpdateSelectedColumnIndex', { index: -1, object: null });
+            this.$emit('on-update-selected-terms', []);
+            this.$emit('on-update-selected-column-index', { index: -1, object: null });
             this.removeLevelsAfterIndex(-1);
         
             this.fetchTerms();

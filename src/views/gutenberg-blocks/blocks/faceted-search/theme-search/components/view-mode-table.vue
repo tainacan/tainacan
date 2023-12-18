@@ -19,14 +19,14 @@
                                 v-if="column.display"
                                 class="column-default-width"
                                 :class="{
-                                        'thumbnail-cell': column.metadatum == 'row_thumbnail',
-                                        'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'float' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'int') : false,
-                                        'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'term' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'item' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'compound') : false,
-                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
+                                    'thumbnail-cell': column.metadatum == 'row_thumbnail',
+                                    'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
+                                        column.metadata_type_object.primitive_type == 'float' ||
+                                        column.metadata_type_object.primitive_type == 'int') : false,
+                                    'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'term' || 
+                                        column.metadata_type_object.primitive_type == 'item' || 
+                                        column.metadata_type_object.primitive_type == 'compound') : false,
+                                    'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' || column.metadata_type_object.related_mapped_prop == 'description') : false,
                                 }">
                             <div class="th-wrap">{{ column.name }}</div>
                         </th>
@@ -62,17 +62,17 @@
                                     v-if="column.display"
                                     class="column-default-width"
                                     :class="{
-                                            'thumbnail-cell': column.metadatum == 'row_thumbnail',
-                                            'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 
-                                                                                                                                column.metadata_type_object.primitive_type == 'int' ) : false,
-                                            'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'float' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'int') : false,
-                                            'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'term' || 
-                                                                                                                column.metadata_type_object.primitive_type == 'item') : false,
-                                            'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
-                                                                                                            column.metadata_type_object.related_mapped_prop == 'description' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'compound') : false,
+                                        'thumbnail-cell': column.metadatum == 'row_thumbnail',
+                                        'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 
+                                            column.metadata_type_object.primitive_type == 'int' ) : false,
+                                        'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
+                                            column.metadata_type_object.primitive_type == 'float' ||
+                                            column.metadata_type_object.primitive_type == 'int') : false,
+                                        'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'term' || 
+                                            column.metadata_type_object.primitive_type == 'item') : false,
+                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
+                                            column.metadata_type_object.related_mapped_prop == 'description' || 
+                                            column.metadata_type_object.primitive_type == 'compound') : false,
                                     }">
                                 <div class="th-wrap">{{ column.name }}</div>
                             </th>
@@ -111,19 +111,19 @@
                                     v-if="column.display"
                                     class="column-default-width"
                                     :class="{
-                                            'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
-                                            'thumbnail-cell': column.metadatum == 'row_thumbnail',
-                                            'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
-                                            'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 
-                                                                                                                                column.metadata_type_object.primitive_type == 'int' ) : false,
-                                            'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
-                                                                                                            column.metadata_type_object.primitive_type == 'int' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'float') : false,
-                                            'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'item' || 
-                                                                                                                column.metadata_type_object.primitive_type == 'term' ) : false,
-                                            'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
-                                                                                                            column.metadata_type_object.primitive_type == 'compound' ||
-                                                                                                            column.metadata_type_object.related_mapped_prop == 'description') : false,
+                                        'metadata-type-textarea': column.metadata_type_object != undefined && column.metadata_type_object.component == 'tainacan-textarea',
+                                        'thumbnail-cell': column.metadatum == 'row_thumbnail',
+                                        'column-main-content' : column.metadata_type_object != undefined ? (column.metadata_type_object.related_mapped_prop == 'title') : false,
+                                        'column-needed-width column-align-right' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'float' || 
+                                            column.metadata_type_object.primitive_type == 'int' ) : false,
+                                        'column-small-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'date' || 
+                                            column.metadata_type_object.primitive_type == 'int' ||
+                                            column.metadata_type_object.primitive_type == 'float') : false,
+                                        'column-medium-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'item' || 
+                                            column.metadata_type_object.primitive_type == 'term' ) : false,
+                                        'column-large-width' : column.metadata_type_object != undefined ? (column.metadata_type_object.primitive_type == 'long_string' ||
+                                            column.metadata_type_object.primitive_type == 'compound' ||
+                                            column.metadata_type_object.related_mapped_prop == 'description') : false,
                                     }">
                                 <a :href="getItemLink(item.url, index)">
                                     <p
@@ -218,7 +218,7 @@
                         <td 
                                 v-if="hasAfterHook()"
                                 class="faceted-search-hook faceted-search-hook-item-after"
-                                    v-html="getAfterHook(item)" />
+                                v-html="getAfterHook(item)" />
 
                     </tr>
                 </tbody>
