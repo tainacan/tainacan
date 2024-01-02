@@ -1214,7 +1214,7 @@ export default {
         },
         getMetadatumOrderInSection(sectionIndex, metadatum) {
 
-            if ( !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
+            if ( !this.collection || !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
                 return -1;
 
             let enabledMetadataInSection = [];
