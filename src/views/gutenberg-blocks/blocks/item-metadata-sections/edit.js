@@ -1,5 +1,7 @@
 const { __ } = wp.i18n;
 
+const { useEffect } = wp.element;
+
 const { Button, Spinner, Placeholder, ToggleControl, PanelBody } = wp.components;
 
 const ServerSideRender = wp.serverSideRender;
@@ -13,7 +15,6 @@ import axios from 'axios';
 export default function ({ attributes, setAttributes, isSelected }) {
     
     let {
-        content, 
         collectionId,
         itemId,
         isLoading,
@@ -33,6 +34,10 @@ export default function ({ attributes, setAttributes, isSelected }) {
         }
     } );
     const className = blockProps.className;
+
+    useEffect(() => {
+        setContent();
+    }, []);
 
     function setContent() {
 
@@ -117,14 +122,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
         }
     }
     
-    return content == 'preview' ? 
-        <div className={className}>
-            <img
-                    width="100%"
-                    src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
-        </div>
-        : (
-        <div { ...blockProps }>
+    return <div { ...blockProps }>
 
             <InspectorControls>
                 <PanelBody
@@ -241,6 +239,5 @@ export default function ({ attributes, setAttributes, isSelected }) {
                 </div>
             }
             
-        </div>
-    );
+        </div>;
 };
