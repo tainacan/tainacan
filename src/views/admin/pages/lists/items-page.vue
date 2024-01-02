@@ -816,141 +816,136 @@
                     if (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage')
                         this.$eventBusSearch.setCollectionId( !this.$route.params.collectionId ? this.$route.params.collectionId : parseInt(this.$route.params.collectionId) );
                     
-                    // Fills the URL with appropriate default values in case a query is not passed
-                    if (this.$route.name == null || this.$route.name == undefined || this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') {
-                        
-                        // Items Per Page
-                        if (this.$route.query.perpage == undefined || to.params.collectionId != from.params.collectionId) {
-                            let perPageKey = (this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page');
-                            let perPageValue = this.$userPrefs.get(perPageKey);
+                    // Items Per Page
+                    if (this.$route.query.perpage == undefined || to.params.collectionId != from.params.collectionId) {
+                        let perPageKey = (this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page');
+                        let perPageValue = this.$userPrefs.get(perPageKey);
 
-                            if (perPageValue)
-                                this.$route.query.perpage = perPageValue;
-                            else {
-                                this.$route.query.perpage = 12;
-                                this.$userPrefs.set(perPageKey, 12);
-                            }
-                        }    
-                        
-                        // Page
-                        if (this.$route.query.paged == undefined || to.params.collectionId != from.params.collectionId)
-                            this.$route.query.paged = 1;
+                        if (perPageValue)
+                            this.$route.query.perpage = perPageValue;
+                        else {
+                            this.$route.query.perpage = 12;
+                            this.$userPrefs.set(perPageKey, 12);
+                        }
+                    }    
                     
-                        // Order (ASC, DESC)
-                        if (this.$route.query.order == undefined || to.params.collectionId != from.params.collectionId) {
-                            let orderKey = (this.collectionId != undefined ? 'order_' + this.collectionId : 'order');
-                            let orderValue = this.$userPrefs.get(orderKey) ? this.$userPrefs.get(orderKey) : this.defaultOrder;
+                    // Page
+                    if (this.$route.query.paged == undefined || to.params.collectionId != from.params.collectionId)
+                        this.$route.query.paged = 1;
+                
+                    // Order (ASC, DESC)
+                    if (this.$route.query.order == undefined || to.params.collectionId != from.params.collectionId) {
+                        let orderKey = (this.collectionId != undefined ? 'order_' + this.collectionId : 'order');
+                        let orderValue = this.$userPrefs.get(orderKey) ? this.$userPrefs.get(orderKey) : this.defaultOrder;
+                        
+                        if (orderValue)
+                            this.$route.query.order = orderValue;
+                        else {
+                            this.$route.query.order = 'DESC';
+                            this.$userPrefs.set(orderKey, 'DESC');
+                        }
+                    }
+                    
+                    // Order By (required extra work to deal with custom metadata ordering)
+                    if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
+                        let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
+                        let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
+                    
+                        if (orderBy && orderBy != 'name') {
+                        
+                            // Previously was stored as a metadata object, now it is a orderby object
+                            if (orderBy.slug || typeof orderBy == 'string')
+                                orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
+
+                            if (orderBy.orderby)
+                                Object.keys(orderBy).forEach((paramKey) => {
+                                    this.$route.query[paramKey] = orderBy[paramKey];
+                                });
+                            else
+                                this.$route.query.orderby = 'date'
                             
-                            if (orderValue)
-                                this.$route.query.order = orderValue;
-                            else {
-                                this.$route.query.order = 'DESC';
-                                this.$userPrefs.set(orderKey, 'DESC');
-                            }
-                        }
-                        
-                        // Order By (required extra work to deal with custom metadata ordering)
-                        if (this.$route.query.orderby == undefined || (to.params.collectionId != from.params.collectionId)) {
-                            let orderByKey = (this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by');
-                            let orderBy = this.$userPrefs.get(orderByKey) ? this.$userPrefs.get(orderByKey) : this.defaultOrderBy;
-                        
-                            if (orderBy && orderBy != 'name') {
-                            
-                                // Previously was stored as a metadata object, now it is a orderby object
-                                if (orderBy.slug || typeof orderBy == 'string')
-                                    orderBy = this.$orderByHelper.getOrderByForMetadatum(orderBy);
-
-                                if (orderBy.orderby)
-                                    Object.keys(orderBy).forEach((paramKey) => {
-                                        this.$route.query[paramKey] = orderBy[paramKey];
-                                    });
-                                else
-                                    this.$route.query.orderby = 'date'
-                                
-                            } else {
-                                this.$route.query.orderby = 'date';
-                                this.$userPrefs.set(orderByKey, { 
-                                    slug: 'creation_date',
-                                    name: this.$i18n.get('label_creation_date')
-                                }).catch(() => { });
-                            }
-                        } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
-                            this.$route.query.orderby = 'date'
-                        }
-                        
-                        // Theme View Modes
-                        if ((this.$route.name == null || this.$route.name == undefined ) && 
-                            this.$route.name != 'CollectionItemsPage' && this.$route.name != 'ItemsPage' &&
-                            (this.$route.query.view_mode == undefined || to.params.collectionId != from.params.collectionId)
-                        ) {
-                            
-                            let viewModeKey = (this.collectionId != undefined ? 'view_mode_' + this.collectionId : 'view_mode');
-                            let viewModeValue = this.$userPrefs.get(viewModeKey);
-
-                            if (viewModeValue)
-                                this.$route.query.view_mode = viewModeValue;
-                            else {
-                                this.$route.query.view_mode = 'table';
-                                this.$userPrefs.set(viewModeKey, 'table');
-                            }
-                        }
-
-                        // Emit slideshow-from to start this view mode from index
-                        if (this.$route.query.view_mode != 'slideshow' && this.$route.query['slideshow-from'] !== null && this.$route.query['slideshow-from'] !== undefined && this.$route.query['slideshow-from'] !== false)
-                            this.$eventBusSearchEmitter.emit('startSlideshowFromItem', this.$route.query['slideshow-from']);
-                       
-                        // Admin View Modes
-                        if (this.$route.name != null && this.$route.name != undefined  && 
-                            (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') &&
-                            (this.$route.query.admin_view_mode == undefined || to.params.collectionId != from.params.collectionId)
-                        ) {
-                            let adminViewModeKey = (this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode');
-                            let adminViewModeValue = this.$userPrefs.get(adminViewModeKey);
-
-                            if (adminViewModeValue)
-                                this.$route.query.admin_view_mode = adminViewModeValue;
-                            else {
-                                this.$route.query.admin_view_mode = 'table';
-                                this.$userPrefs.set(adminViewModeKey, 'table');
-                            }
-                        }
-                        
-                        // Advanced Search
-                        if (this.$route.query && this.$route.query.advancedSearch){
-                            this.$store.dispatch('search/set_advanced_query', this.$route.query);
                         } else {
-                            this.$store.dispatch('search/set_postquery', this.$route.query);
+                            this.$route.query.orderby = 'date';
+                            this.$userPrefs.set(orderByKey, { 
+                                slug: 'creation_date',
+                                name: this.$i18n.get('label_creation_date')
+                            }).catch(() => { });
                         }
+                    } else if ( this.$route.query.orderby == 'creation_date' ) { // Fixes old usage of creation_date
+                        this.$route.query.orderby = 'date'
+                    }
+                    
+                    // Theme View Modes
+                    if ((this.$route.name == null || this.$route.name == undefined ) && 
+                        this.$route.name != 'CollectionItemsPage' && this.$route.name != 'ItemsPage' &&
+                        (this.$route.query.view_mode == undefined || to.params.collectionId != from.params.collectionId)
+                    ) {
                         
-                        // Finally, loads items even berfore facets so they won't stuck them 
-                        if (to.fullPath != from.fullPath)
-                            this.$eventBusSearch.loadItems();
-                        
-                        // Checks current metaqueries and taxqueries to alert filters that should reload
-                        // For some reason, this process is not working accessing to.query, so we need to check the path string. 
-                        const oldQueryString = from.fullPath.replace(from.path + '?', '');
-                        const newQueryString = to.fullPath.replace(from.path + '?', '');
-                        
-                        const oldQueryArray = oldQueryString.split('&');
-                        const newQueryArray = newQueryString.split('&');
+                        let viewModeKey = (this.collectionId != undefined ? 'view_mode_' + this.collectionId : 'view_mode');
+                        let viewModeValue = this.$userPrefs.get(viewModeKey);
 
-                        const oldMetaQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
-                        const newMetaQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
-                        const oldTaxQueryArray  = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
-                        const newTaxQueryArray  = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
-                        const oldStatusArray    = oldQueryArray.filter(queryItem => queryItem.startsWith('status'));
-                        const newStatusArray    = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
-                        const oldSearchQuery    = oldQueryArray.filter(queryItem => queryItem.startsWith('search'));
-                        const newSearchQuery    = newQueryArray.filter(queryItem => queryItem.startsWith('search'));
-
-                        if (
-                            JSON.stringify(oldMetaQueryArray) != JSON.stringify(newMetaQueryArray) ||
-                            JSON.stringify(oldTaxQueryArray)  != JSON.stringify(newTaxQueryArray) ||
-                            JSON.stringify(oldStatusArray)    != JSON.stringify(newStatusArray) ||
-                            JSON.stringify(oldSearchQuery)    != JSON.stringify(newSearchQuery)
-                        ) {
-                            this.$eventBusSearchEmitter.emit('hasToReloadFacets', true);
+                        if (viewModeValue)
+                            this.$route.query.view_mode = viewModeValue;
+                        else {
+                            this.$route.query.view_mode = 'table';
+                            this.$userPrefs.set(viewModeKey, 'table');
                         }
+                    }
+
+                    // Emit slideshow-from to start this view mode from index
+                    if (this.$route.query.view_mode != 'slideshow' && this.$route.query['slideshow-from'] !== null && this.$route.query['slideshow-from'] !== undefined && this.$route.query['slideshow-from'] !== false)
+                        this.$eventBusSearchEmitter.emit('startSlideshowFromItem', this.$route.query['slideshow-from']);
+                    
+                    // Admin View Modes
+                    if (this.$route.name != null && this.$route.name != undefined  && 
+                        (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') &&
+                        (this.$route.query.admin_view_mode == undefined || to.params.collectionId != from.params.collectionId)
+                    ) {
+                        let adminViewModeKey = (this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode');
+                        let adminViewModeValue = this.$userPrefs.get(adminViewModeKey);
+
+                        if (adminViewModeValue)
+                            this.$route.query.admin_view_mode = adminViewModeValue;
+                        else {
+                            this.$route.query.admin_view_mode = 'table';
+                            this.$userPrefs.set(adminViewModeKey, 'table');
+                        }
+                    }
+                    
+                    // Advanced Search
+                    if (this.$route.query && this.$route.query.advancedSearch)
+                        this.$store.dispatch('search/setAdvancedQuery', this.$route.query);
+                    else 
+                        this.$store.dispatch('search/setPostQuery', this.$route.query);
+                    
+                    // Finally, loads items even berfore facets so they won't stuck them 
+                    if (to.fullPath != from.fullPath)
+                        this.$eventBusSearch.loadItems();
+                    
+                    // Checks current metaqueries and taxqueries to alert filters that should reload
+                    // For some reason, this process is not working accessing to.query, so we need to check the path string. 
+                    const oldQueryString = from.fullPath.replace(from.path + '?', '');
+                    const newQueryString = to.fullPath.replace(from.path + '?', '');
+                    
+                    const oldQueryArray = oldQueryString.split('&');
+                    const newQueryArray = newQueryString.split('&');
+
+                    const oldMetaQueryArray = oldQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
+                    const newMetaQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
+                    const oldTaxQueryArray  = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                    const newTaxQueryArray  = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
+                    const oldStatusArray    = oldQueryArray.filter(queryItem => queryItem.startsWith('status'));
+                    const newStatusArray    = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
+                    const oldSearchQuery    = oldQueryArray.filter(queryItem => queryItem.startsWith('search'));
+                    const newSearchQuery    = newQueryArray.filter(queryItem => queryItem.startsWith('search'));
+
+                    if (
+                        JSON.stringify(oldMetaQueryArray) != JSON.stringify(newMetaQueryArray) ||
+                        JSON.stringify(oldTaxQueryArray)  != JSON.stringify(newTaxQueryArray) ||
+                        JSON.stringify(oldStatusArray)    != JSON.stringify(newStatusArray) ||
+                        JSON.stringify(oldSearchQuery)    != JSON.stringify(newSearchQuery)
+                    ) {
+                        this.$eventBusSearchEmitter.emit('hasToReloadFacets', true);
                     }
                 },
                 deep: true

@@ -13,7 +13,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
             // Sets term query in case it's on a term items page
             if (termId != undefined && taxonomy != undefined) {
 
-                dispatch('search/add_taxquery', {
+                dispatch('search/addTaxquery', {
                     taxonomy: taxonomy,
                     terms:[ termId ],
                     compare: 'IN'
@@ -45,15 +45,15 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                 postQueries.status = 'publish,private,draft';
                 dispatch('search/setStatus', 'publish,private,draft', { root: true });
             }
-            
+
             // Guarantees at least status is passed in case none is found
             if (postQueries.fetch_only == '')
-                dispatch('search/add_fetch_only', 'status', { root: true });
+                dispatch('search/addFetchOnly', 'status', { root: true });
             else
                 postQueries.fetch_only += ',status';
                     
             if (postQueries.fetch_only_meta == '')
-                dispatch('search/add_fetch_only_meta', '', { root: true });
+                dispatch('search/addFetchOnlyMeta', '', { root: true });
 
             let query = qs.stringify(postQueries);
 
@@ -97,7 +97,7 @@ export const fetchItems = ({ rootGetters, dispatch, commit }, { collectionId, is
                             hasFiltered: hasFiltered, 
                             itemsPerPage: res.headers['x-wp-itemperpage'] });                            
                     }
-                    console.log(res.headers['x-wp-total']);
+                    
                     dispatch('search/setTotalItems', Number(res.headers['x-wp-total']), { root: true } );
                     dispatch('search/setTotalPages', res.headers['x-wp-totalpages'], { root: true } );
                     dispatch('search/setItemsPerPage', res.headers['x-wp-itemsperpage'], { root: true } );

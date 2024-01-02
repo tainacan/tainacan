@@ -936,9 +936,9 @@
                         
                         // Advanced Search
                         if (this.$route.query && this.$route.query.advancedSearch){
-                            this.$store.dispatch('search/set_advanced_query', this.$route.query);
+                            this.$store.dispatch('search/setAdvancedQuery', this.$route.query);
                         } else {
-                            this.$store.dispatch('search/set_postquery', this.$route.query);
+                            this.$store.dispatch('search/setPostQuery', this.$route.query);
                         }
                         
                          // Finally, loads items even berfore facets so they won't stuck them

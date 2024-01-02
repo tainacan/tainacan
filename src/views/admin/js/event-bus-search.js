@@ -2,16 +2,15 @@ import mitt from 'mitt';
 
 export default {
 
-    install(app, options = {}) {
+    install(app) {
         
+        const router = app.config.globalProperties.$router;
+        const route = app.config.globalProperties.$route;
+        const store = app.config.globalProperties.$store;
+        const userPrefs = app.config.globalProperties.$userPrefs;
+
         const emitter = mitt();
         const bus = {
-            $userPrefs: app.config.globalProperties.$userPrefs,
-            $store: app.config.globalProperties.$store,
-            $router: app.config.globalProperties.$router,
-            $route: app.config.globalProperties.$route,
-            errors : [],
-            query: {},
             collectionId: undefined,
             defaultOrder: 'ASC',
             defaultOrderBy: 'date',
@@ -19,18 +18,18 @@ export default {
             termId: undefined,
             searchCancel: undefined,
             performAdvancedSearch(data) {
-                this.$store.dispatch('search/set_advanced_query', data);
+                store.dispatch('search/setAdvancedQuery', data);
                 this.updateURLQueries();
             },
             addMetaquery( data ){
                 if ( data && data.collection_id ){
-                    this.$store.dispatch('search/add_metaquery', data );
+                    store.dispatch('search/addMetaquery', data );
                 }
                 this.updateURLQueries();
             },
             addTaxquery( data ){
                 if ( data && data.collection_id ){
-                    this.$store.dispatch('search/add_taxquery', data );
+                    store.dispatch('search/addTaxquery', data );
                 }
                 this.updateURLQueries();
             },
@@ -40,7 +39,7 @@ export default {
                     
                     if (filterTag.argType !== 'postin') {
                         if (filterTag.taxonomy) {
-                            this.$store.dispatch('search/remove_taxquery', {
+                            store.dispatch('search/removeTaxQuery', {
                                 filterId: filterTag.filterId,
                                 label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
                                 isMultiValue: filterTag.singleLabel ? false : true,
@@ -48,7 +47,7 @@ export default {
                                 value: filterTag.value
                             });
                         } else {
-                            this.$store.dispatch('search/remove_metaquery', {
+                            store.dispatch('search/removeMetaQuery', {
                                 filterId: filterTag.filterId,
                                 label: filterTag.singleLabel ? filterTag.singleLabel : filterTag.label,
                                 isMultiValue: filterTag.singleLabel ? false : true,
@@ -57,50 +56,50 @@ export default {
                             });
                         }
                     } else {
-                        this.$store.dispatch('search/remove_postin');
+                        store.dispatch('search/removePostIn');
                     }
-                    this.$store.dispatch('search/removeFilterTag', filterTag);
+                    store.dispatch('search/removeFilterTag', filterTag);
                 }
                 this.updateURLQueries();
             },
             addFetchOnly( metadatum, ignorePrefs, metadatumIDs ) {
-                this.$store.dispatch('search/add_fetch_only', metadatum );
-                this.$store.dispatch('search/add_fetch_only_meta', metadatumIDs);
+                store.dispatch('search/addFetchOnly', metadatum );
+                store.dispatch('search/addFetchOnlyMeta', metadatumIDs);
                 this.updateURLQueries();  
                 
                 if (!ignorePrefs) {
                     let prefsFetchOnly = this.collectionId ? `fetch_only_${this.collectionId}` : 'fetch_only';
                     let prefsFetchOnlyMeta = this.collectionId ? `fetch_only_meta_${this.collectionId}` : 'fetch_only_meta';
 
-                    if (this.$userPrefs.get(prefsFetchOnly) != metadatum)
-                        this.$userPrefs.set(prefsFetchOnly, metadatum);
+                    if (userPrefs.get(prefsFetchOnly) != metadatum)
+                        userPrefs.set(prefsFetchOnly, metadatum);
 
-                    if (this.$userPrefs.get(prefsFetchOnlyMeta) != metadatumIDs)
-                        this.$userPrefs.set(prefsFetchOnlyMeta, metadatumIDs);
+                    if (userPrefs.get(prefsFetchOnlyMeta) != metadatumIDs)
+                        userPrefs.set(prefsFetchOnlyMeta, metadatumIDs);
                 }
             },
             cleanFetchOnly() {
-                this.$store.dispatch('search/cleanFetchOnly');
+                store.dispatch('search/cleanFetchOnly');
             },
             removeFetchOnlyMeta( metadatum ){
-                this.$store.dispatch('search/remove_fetch_only_meta', metadatum );
+                store.dispatch('search/removeFetchOnlyMeta', metadatum );
                 this.updateURLQueries();             
             },
             setPage(page) {
-                this.$store.dispatch('search/setPage', page);
+                store.dispatch('search/setPage', page);
                 this.updateURLQueries();
             },
             resetPageOnStore() {
-                this.$store.dispatch('search/setPage', 1);
+                store.dispatch('search/setPage', 1);
             },
             setItemsPerPage(itemsPerPage, shouldNotUpdatePrefs) {
-                this.$store.dispatch('search/setItemsPerPage', itemsPerPage);
+                store.dispatch('search/setItemsPerPage', itemsPerPage);
                 this.updateURLQueries();
 
                 if (shouldNotUpdatePrefs == undefined || shouldNotUpdatePrefs == false) {
                     let prefsPerPage = this.collectionId != undefined ? 'items_per_page_' + this.collectionId : 'items_per_page';
-                    if (this.$userPrefs.get(prefsPerPage) != itemsPerPage) {
-                        this.$userPrefs.set(prefsPerPage, itemsPerPage)
+                    if (userPrefs.get(prefsPerPage) != itemsPerPage) {
+                        userPrefs.set(prefsPerPage, itemsPerPage)
                             .catch(() => {});
                     }
                 }
@@ -109,77 +108,76 @@ export default {
                 let prefsOrderBy = this.collectionId != undefined ? 'order_by_' + this.collectionId : 'order_by';
 
                 if (orderBy.metakey) {
-                    if (!this.$userPrefs.get(prefsOrderBy) || orderBy.metakey != this.$userPrefs.get(prefsOrderBy).metakey)
-                        this.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
+                    if (!userPrefs.get(prefsOrderBy) || orderBy.metakey != userPrefs.get(prefsOrderBy).metakey)
+                        userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
                 } else {
-                    if (orderBy != this.$userPrefs.get(prefsOrderBy))
-                        this.$userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
+                    if (orderBy != userPrefs.get(prefsOrderBy))
+                        userPrefs.set(prefsOrderBy, orderBy).catch(() => {});
                 }
                 
-                this.$store.dispatch('search/setOrderBy', orderBy);
+                store.dispatch('search/setOrderBy', orderBy);
                 this.updateURLQueries();
             },
             setOrder(order) {
                 let prefsOrder = this.collectionId != undefined ? 'order_' + this.collectionId : 'order';
-                if (this.$userPrefs.get(prefsOrder) != order) {
-                    this.$userPrefs.set(prefsOrder, order)
+                if (userPrefs.get(prefsOrder) != order) {
+                    userPrefs.set(prefsOrder, order)
                         .catch(() => {});
                 }
 
-                this.$store.dispatch('search/setOrder', order);
+                store.dispatch('search/setOrder', order);
                 this.updateURLQueries();
             },
             setStatus(status) {
-                this.$store.dispatch('search/setStatus', status);
+                store.dispatch('search/setStatus', status);
                 this.updateURLQueries();
             },
             setTotalItems(totalItems) {
-                this.$store.dispatch('search/setTotalItems', totalItems);
+                store.dispatch('search/setTotalItems', totalItems);
             },
             setSentenceMode(sentenceMode) {
-                this.$store.dispatch('search/setSentenceMode', sentenceMode);
+                store.dispatch('search/setSentenceMode', sentenceMode);
             },
             setSearchQuery(searchQuery) {
-                this.$store.dispatch('search/setSearchQuery', searchQuery);
+                store.dispatch('search/setSearchQuery', searchQuery);
                 this.updateURLQueries();
             },
             setViewMode(viewMode) {
-                this.$store.dispatch('search/setViewMode', viewMode);
+                store.dispatch('search/setViewMode', viewMode);
                 this.updateURLQueries(); 
                 
                 let prefsViewMode = this.collectionId != undefined ? 'view_mode_' + this.collectionId : 'view_mode';
-                if(this.$userPrefs.get(prefsViewMode) != viewMode) {
-                    this.$userPrefs.set(prefsViewMode, viewMode)
+                if(userPrefs.get(prefsViewMode) != viewMode) {
+                    userPrefs.set(prefsViewMode, viewMode)
                         .catch(() => {});
                 }
             },
             setAdminViewMode(adminViewMode) {
-                console.log('setAdminViewMode', adminViewMode);
-                this.$store.dispatch('search/setAdminViewMode', adminViewMode);
+                store.dispatch('search/setAdminViewMode', adminViewMode);
                 this.updateURLQueries();  
 
                 let prefsAdminViewMode = this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';
-                if (this.$userPrefs.get(prefsAdminViewMode) != adminViewMode) {
-                    this.$userPrefs.set(prefsAdminViewMode, adminViewMode)
+                if (userPrefs.get(prefsAdminViewMode) != adminViewMode) {
+                    userPrefs.set(prefsAdminViewMode, adminViewMode)
                         .catch(() => {  });
                 }
             },
             setInitialViewMode(viewMode) {
-                this.$store.dispatch('search/setViewMode', viewMode);
+                store.dispatch('search/setViewMode', viewMode);
                 this.updateURLQueries(); 
             },
             setInitialAdminViewMode(adminViewMode) { 
-                this.$store.dispatch('search/setAdminViewMode', adminViewMode);
+                store.dispatch('search/setAdminViewMode', adminViewMode);
                 this.updateURLQueries();  
             },
             async setSelectedItemsForIframe(selectedItems, singleSelection) {
 
                 if (singleSelection)
-                    this.$store.dispatch('search/cleanSelectedItems');
+                    store.dispatch('search/cleanSelectedItems');
 
-                this.$store.dispatch('search/setSelectedItems', selectedItems);
+                store.dispatch('search/setSelectedItems', selectedItems);
 
-                let currentSelectedItems = this.$store.getters['search/getSelectedItems'];
+                let currentSelectedItems = store.getters['search/getSelectedItems'];
 
                 if (window.history.replaceState) {
                     let searchParams = new URLSearchParams(window.location.search);
@@ -189,51 +187,51 @@ export default {
 
                     let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + searchParams.toString() + window.location.hash;
 
-                    await this.$router.push(newurl)
+                    await router.push(newurl)
                     window.history.replaceState({ ...window.history.state, ...{ path: newurl } }, '')
                 }      
             },
             cleanSelectedItems() {
-                this.$store.dispatch('search/cleanSelectedItems');
+                store.dispatch('search/cleanSelectedItems');
             },
             filterBySelectedItems(selectedItems) {
-                if ( app.config.globalProperties.$route.name ) {
-                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: {} });
-                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: { postin: selectedItems } });
+                if ( route.name ) {
+                    router.replace({ query: {} });
+                    router.replace({ query: { postin: selectedItems } });
                 } else {
-                    this.$router.replace({ path: '', query: {} });
-                    this.$router.replace({ path: '', query: { postin: selectedItems } });
+                    router.replace({ query: {} });
+                    router.replace({ query: { postin: selectedItems } });
                 }
             },
             highlightsItem(itemId) {
-                this.$store.dispatch('search/highlightsItem', itemId);
+                store.dispatch('search/highlightsItem', itemId);
                 this.updateURLQueries();
             },
-            updateURLQueries() {
-                if ( app.config.globalProperties.$route.name ) {
-                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: {} });
-                    this.$router.replace({ name: app.config.globalProperties.$route.name, query: this.$store.getters['search/getPostQuery'], onabort: () => { console.log('abort'); }, onerror: () => { console.log('error'); }, onready: () => { console.log('ready'); }, onsuccess: () => { console.log('success'); } });
-                } else {
-                    this.$router.replace({ path: this.$route.path, query: {} });
-                    this.$router.replace({ path: this.$route.path, query: this.$store.getters['search/getPostQuery'] });
-                }
+            async updateURLQueries() {
+                const newQueries = store.getters['search/getPostQuery'];
+
+     
+                    await router.replace({ query: {} });
+                    await router.replace({ query: newQueries });
+                
             },
             updateStoreFromURL() {
-                this.$store.dispatch('search/set_postquery', this.$route.query);
+                store.dispatch('search/setPostQuery', route.query);
             },
             loadItems() {
-                
+                console.log('loadItems')
+                console.log(JSON.parse(JSON.stringify(store.getters['search/getPostQuery'])))
                 // Forces fetch_only to be filled before any search happens
-                if (this.$store.getters['search/getPostQuery']['fetch_only'] != undefined) {  
+                if (store.getters['search/getPostQuery']['fetch_only'] != undefined) {  
 
                     app.config.globalProperties.$eventBusSearchEmitter.emit( 'isLoadingItems', true);
                     // Cancels previous Request
                     if (this.searchCancel != undefined)
                         this.searchCancel.cancel('Item search Canceled.');
-
-                    this.$store.dispatch('collection/fetchItems', {
+                    console.log('fetching')
+                    store.dispatch('collection/fetchItems', {
                         'collectionId': this.collectionId,
-                        'isOnTheme': app.config.globalProperties.$route.meta && app.config.globalProperties.$route.meta.isOnTheme,
+                        'isOnTheme': route.meta && route.meta.isOnTheme,
                         'termId': this.termId,
                         'taxonomy': this.taxonomy
                     }).then((resp) => {
@@ -267,9 +265,9 @@ export default {
                 this.taxonomy = taxonomy;
             },
             clearAllFilters() {
-                this.$store.dispatch('search/cleanFilterTags');
-                this.$store.dispatch('search/cleanMetaQueries', { keepCollections: true });
-                this.$store.dispatch('search/cleanTaxQueries');
+                store.dispatch('search/cleanFilterTags');
+                store.dispatch('search/cleanMetaQueries', { keepCollections: true });
+                store.dispatch('search/cleanTaxQueries');
                 this.updateURLQueries();
             }
         }
