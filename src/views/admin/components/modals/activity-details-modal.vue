@@ -658,7 +658,7 @@
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/></span>`;
                     case 'Tainacan\\Entities\\Item_Metadata_Entity':
                         return `${ this.$i18n.get('item') } 
-                                <a href="${ this.adminFullURL + this.$routerHelper.getItemEditPath(this.activity.object.collection_id, this.activity.item.id) }">${ this.activity.item.title }</a>
+                                <a href="${ this.adminFullURL + this.$routerHelper.getItemEditPath(this.activity.item.collection_id, this.activity.item.id) }">${ this.activity.item.title }</a>
                                 <span class="icon has-text-gray3">&nbsp;<i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/></span>`;
                     default: 
                         return '';
