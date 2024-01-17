@@ -19,7 +19,7 @@ class REST_Items_Controller extends REST_Controller {
 	private $metadatum_repository;
 	private $terms_repository;
 	private $filters_repository;
-	private $taxonomy_repository;
+	private $taxonomies_repository;
 
 	/**
 	 * REST_Items_Controller constructor.
@@ -587,7 +587,7 @@ class REST_Items_Controller extends REST_Controller {
 			}
 
 			$filter_name = is_string($filter_type_component) 
-				? "tainacan-api-items-${filter_type_component}-filter-arguments"
+				? "tainacan-api-items-$filter_type_component-filter-arguments"
 				: 'tainacan-api-items-filter-arguments';
 
 			$filters_arguments[] = apply_filters($filter_name, array(

@@ -4,6 +4,15 @@ namespace Tainacan;
 
 class Generic_Process_Handler {
 
+	
+	/**
+	 * bg_process
+	 *
+	 * @var Background_Generic_Process
+	 * @access protected
+	 */
+	protected $bg_process;
+
 	private $registered_process = [];
 
 	function __construct() {

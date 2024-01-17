@@ -29,6 +29,10 @@ class OAIPMH_Expose {
     var $token_valid;
     var $token_prefix;
 
+    protected $collection_repository;
+    protected $item_repository;
+    protected $repositoryIdentifier;
+
     /**
      *
      */

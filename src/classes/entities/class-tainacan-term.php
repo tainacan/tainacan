@@ -15,7 +15,8 @@ class Term extends Entity {
 		$description,
 		$user,
 		$header_image_id,
-		$taxonomy;
+		$taxonomy,
+		$WP_Term;
 
 
 	static $post_type = false;
