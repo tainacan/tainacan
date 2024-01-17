@@ -14,6 +14,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  */
 trait Entity_Collection_Relation {
 
+    protected $collection;
 	/**
 	 *
 	 * @return int collection item ID

@@ -173,7 +173,8 @@ class Exposers_Handler {
 	 * @return Exposers\Exposer|boolean false
 	 */
 	public static function request_has_exposer($request) {
-		$body = json_decode( $request->get_body(), true );
+		$data_body = $request->get_body() ?? '';
+		$body = json_decode( $data_body, true );
 		$query_url_params = $request->get_query_params();
 		$Tainacan_Exposers = self::get_instance();
 		if(

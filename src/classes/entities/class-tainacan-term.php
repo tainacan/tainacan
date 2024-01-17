@@ -8,6 +8,8 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Represents the Entity Term
 */
 class Term extends Entity {
+	public $WP_Term;
+
 	protected
 		$term_id,
 		$name,
@@ -15,8 +17,7 @@ class Term extends Entity {
 		$description,
 		$user,
 		$header_image_id,
-		$taxonomy,
-		$WP_Term;
+		$taxonomy;
 
 
 	static $post_type = false;
