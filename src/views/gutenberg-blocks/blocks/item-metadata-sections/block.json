@@ -7,17 +7,7 @@
     "keywords": [ "item", "metadata", "sections", "regions", "fields" ],
     "description": "The metadata sections, including their labels and metadata whitin it.",
     "textdomain": "tainacan",
-    "example": {
-        "attributes": {
-            "content": "preview"
-        }
-    },
     "attributes": {
-        "content": {
-            "type": "array",
-            "source": "query",
-            "selector": "div"
-        },
         "templateMode": {
             "type": "boolean",
             "default": false

@@ -668,8 +668,17 @@
                         </span>
                         <span>{{ $i18n.get('info_updating_metadata_values') }}</span>
                     </span>
-                    <span v-else>{{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}</span>
-
+                    <template v-else> 
+                        <span 
+                                v-if="form.status === 'auto-draft'"
+                                class="has-text-danger">
+                            {{ $i18n.get('info_autodraft_updated') }}
+                        </span>
+                        <span v-else>
+                           {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                        </span>
+                    </template>
+                    
                     <span class="help is-danger">
                         {{ formErrorMessage }}
                         <item-metadatum-errors-tooltip 
@@ -1882,7 +1891,7 @@ export default {
         },
         getMetadatumOrderInSection(sectionIndex, metadatum) {
 
-            if ( !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
+            if ( !this.collection || !Array.isArray(this.collection['metadata_section_order']) || !this.collection['metadata_section_order'][sectionIndex] || !Array.isArray(this.collection['metadata_section_order'][sectionIndex]['metadata_order']) )
                 return -1;
 
             let enabledMetadata = [];

@@ -127,7 +127,6 @@ class Admin {
 		global $TAINACAN_BASE_URL;
 
 		wp_enqueue_style( 'tainacan-fonts', $TAINACAN_BASE_URL . '/assets/css/tainacanicons.css', [], TAINACAN_VERSION );
-		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [] );
 		wp_enqueue_script('underscore');
 	}
 
@@ -202,6 +201,7 @@ class Admin {
 	function add_admin_css() {
 		global $TAINACAN_BASE_URL;
 
+		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [] );
 		wp_enqueue_style( 'tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css', [], TAINACAN_VERSION );
 
 //		$undesired_wp_styles = [

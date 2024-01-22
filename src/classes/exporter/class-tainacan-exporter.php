@@ -28,6 +28,10 @@ abstract class Exporter {
 				}
 			}
 		}
+		if(!is_user_logged_in()) {
+			$author = $this->get_transient('author');
+			wp_set_current_user($author);
+		}
 	}
 
 	/**
@@ -622,7 +626,7 @@ abstract class Exporter {
 			'post_status' => ["private", "publish", "draft"]
 		];
 
-		$this->add_log("Retrieving $per_page items on page index: $index, in collection " . $collection_definition['id'] );
+		$this->add_log("Retrieving $per_page items on page index: $page , item index: $index, in collection " . $collection_definition['id'] );
 		$items = $tainacan_items->fetch($filters, $collection_id, 'WP_Query');
 
 		if ( !isset($collection_definition['total_items']) ) {
@@ -645,6 +649,8 @@ abstract class Exporter {
 			}
 		}
 		wp_reset_postdata();
+		$dataLen = count($data);
+		$this->add_log("Retrieved data size: $dataLen");
 		return $data;
 	}
 	
@@ -809,9 +815,6 @@ abstract class Exporter {
 		$method_name = $steps[$current_step]['callback'];
 
 		if (method_exists($this, $method_name)) {
-			$author = $this->get_transient('author');
-			$this->add_log('User in process: ' . $author);
-			wp_set_current_user($author);
 			$result = $this->$method_name();
 		} else {
 			$this->add_error_log( 'Callback not found for step ' . $steps[$current_step]['name']);

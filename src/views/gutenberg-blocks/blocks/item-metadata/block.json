@@ -7,17 +7,7 @@
     "keywords": [ "item", "metadata", "fields", "values" ],
     "description": "The item metadata, including their labels and values.",
     "textdomain": "tainacan",
-    "example": {
-        "attributes": {
-            "content": "preview"
-        }
-    },
     "attributes": {
-        "content": {
-            "type": "array",
-            "source": "query",
-            "selector": "div"
-        },
         "dataSource": {
             "type": "string",
             "default": "selection"

@@ -7,20 +7,10 @@
     "keywords": [ "item", "document", "carousel", "attachments", "zoom" ],
     "description": "The media gallery of the item, displaying document, attachments and more.",
     "textdomain": "tainacan",
-    "example": {
-        "attributes": {
-            "content": "preview"
-        }
-    },
     "attributes": {
         "blockId": {
             "type": "string",
             "default": ""
-        },
-        "content": {
-            "type": "array",
-            "source": "query",
-            "selector": "div"
         },
         "collectionId": {
             "type": "string",

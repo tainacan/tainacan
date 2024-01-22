@@ -249,14 +249,16 @@ function tainacan_blocks_add_common_theme_scripts() {
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_blocks', $block_settings);
 	wp_localize_script( 'tainacan-blocks-common-scripts', 'tainacan_plugin', $plugin_settings);
 
-	// Necessary while we don't have a better way to do this only
-	// when item submission block is present
-	tainacan_blocks_add_extra_item_submission_assets();
+	// Necessary do this only when the item submission block is present
+	function tainacan_enqueue_extra_item_submission_assets() {
+		if ( has_block( 'tainacan/item-submission-form', get_the_ID() ) )
+			tainacan_blocks_add_extra_item_submission_assets();
+	}
+	add_action('wp', 'tainacan_enqueue_extra_item_submission_assets');
 }
 
 /** 
- * Registers the extra scripts necessary for item submission block,
- * even on theme side :/
+ * Registers the extra scripts necessary for item submission block
  */
 function tainacan_blocks_add_extra_item_submission_assets() {
 	
@@ -266,6 +268,7 @@ function tainacan_blocks_add_extra_item_submission_assets() {
 		'https://www.google.com/recaptcha/api.js',
 		[], false, true 
 	);
+	
 	wp_enqueue_script('tainacan-google-recaptcha-script');
 
 	// Registers extra metadata type forms

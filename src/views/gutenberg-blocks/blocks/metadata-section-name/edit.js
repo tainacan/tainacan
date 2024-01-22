@@ -15,7 +15,6 @@ const levelToPath = {
 export default function ({ attributes, setAttributes, context }) {
     
     let {
-        content, 
         sectionId,
         sectionName,
         labelLevel,
@@ -39,14 +38,7 @@ export default function ({ attributes, setAttributes, context }) {
     if ( context['tainacan/metadataSectionId'] || context['tainacan/metadataSectionName'] )
         setAttributes({ sectionId, sectionName });
     
-    return content == 'preview' ? 
-            <div className={className}>
-                <img
-                        width="100%"
-                        src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
-            </div>
-        : (
-        <>
+    return <>
 
             <BlockControls group="block">
                 <ToolbarDropdownMenu
@@ -105,6 +97,5 @@ export default function ({ attributes, setAttributes, context }) {
                     id={ 'tainacan-metadata-section-name-block-id--' + sectionId }>
                 { sectionName }
             </Heading>
-        </>
-    );
+        </>;
 };

@@ -1183,18 +1183,12 @@ class Item extends Entity {
 		$return = '';
 
 		if ( $metadata_section->is_conditional_section() ) {
-
 			$rules = $metadata_section->get_conditional_section_rules();
-			if( !empty($rules) ) {
-				$item_id = $this->get_id();
-
+			if ( !empty($rules) ) {
 				foreach ( $rules as $meta_id => $meta_values_conditional ) {
-
 					$meta_values = [];
 					$metadatum = new \Tainacan\Entities\Metadatum($meta_id);
-
 					$metadatum_type = $metadatum->get_metadata_type_object();
-
 					if ( $metadatum_type->get_primitive_type() == 'term' ) {
 						$item_metadata = new \Tainacan\Entities\Item_Metadata_Entity($this, $metadatum);
 						$term_values = $metadatum->is_multiple() ? $item_metadata->get_value() : array( $item_metadata->get_value() );
@@ -1202,9 +1196,10 @@ class Item extends Entity {
 							return $term->get_id();
 						}, $term_values);
 					} else {
+						$item_id = $this->get_id();
 						$meta_values = get_post_meta( $item_id, $meta_id );
 					}
-					
+
 					if ( !array_intersect($meta_values, $meta_values_conditional) )
 						return $return;
 				}

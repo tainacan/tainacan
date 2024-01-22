@@ -11,7 +11,6 @@ import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainac
 export default function ({ attributes, setAttributes, isSelected, clientId }) {
     
     let {
-        content, 
         collectionId,
         itemId,
         isModalOpen,
@@ -57,14 +56,7 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
         }
     }
 
-    return content == 'preview' ? 
-            <div className={className}>
-                <img
-                        width="100%"
-                        src={ `${tainacan_blocks.base_url}/assets/images/related-carousel-items.png` } />
-            </div>
-        : (
-        <div { ...blockProps }>
+    return <div { ...blockProps }>
 
             <InspectorControls>
                 
@@ -401,6 +393,5 @@ export default function ({ attributes, setAttributes, isSelected, clientId }) {
                 ) : null
             }
             
-        </div>
-    );
+        </div>;
 };
