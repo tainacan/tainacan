@@ -675,7 +675,7 @@
                             {{ $i18n.get('info_autodraft_updated') }}
                         </span>
                         <span v-else>
-                           {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
+                            {{ ($i18n.get('info_updated_at') + ' ' + lastUpdated) }}
                         </span>
                     </template>
                     

@@ -181,7 +181,6 @@
                             aria-role="listitem">
                         <div
                                 id="a-create-item"
-                                tag="div"
                                 @click="onOpenCollectionsModal">
                             {{ $i18n.get('add_one_item') }}
                         </div>
@@ -193,14 +192,14 @@
                                 v-slot="{ navigate }"
                                 :to="{ path: $routerHelper.getNewItemBulkAddPath(collectionId) }"
                                 custom>
-                            <button
+                            <div
                                     id="a-item-add-bulk"
                                     role="link"
                                     @click="navigate()">
                                 {{ $i18n.get('add_items_bulk') }}
                                 <br> 
                                 <small class="is-small">{{ $i18n.get('info_bulk_add_items') }}</small>
-                            </button>
+                            </div>
                         </router-link>
                     </b-dropdown-item>
                     <b-dropdown-item 
@@ -981,9 +980,9 @@
             }
         },
         created() {
-
             this.isRepositoryLevel = (this.collectionId === undefined);
 
+            this.$eventBusSearch.setTotalItems(null);
             this.$eventBusSearch.setCollectionId(this.collectionId);
             this.$eventBusSearch.updateStoreFromURL();
 

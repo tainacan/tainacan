@@ -129,7 +129,7 @@ export default {
         TermsListHierarchical
     },
     props: {
-        taxonomyId: Number,
+        taxonomyId: String,
         currentUserCanEditTaxonomy: Boolean,
         isHierarchical: Boolean
     },

@@ -271,7 +271,8 @@
                     :taxonomy-id="taxonomyId"
                     :is-modal="true"
                     :original-form="editTerm"
-                    @on-edition-finished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)" />
+                    @on-edition-finished="onTermEditionFinished($event.term, $event.hasChangedParent, $event.initialParent)"
+                    @close="isEditingTerm = false" />
         </b-modal>
     </div>
 </template>
@@ -289,7 +290,7 @@ import { tainacan as axios } from '../../js/axios';
 export default {
     name: 'TermsListHierarchical',
     props: {
-        taxonomyId: Number,
+        taxonomyId: String,
         currentUserCanEditTaxonomy: Boolean,
         selected: Array,
         selectedColumnIndex: Number,

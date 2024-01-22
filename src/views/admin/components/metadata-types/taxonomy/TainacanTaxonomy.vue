@@ -65,8 +65,7 @@
                         :original-form="{ id: 'new', name: newTermName ? newTermName : '' }"
                         :is-term-insertion-flow="true"
                         @on-edition-finished="($event) => addRecentlyCreatedTerm($event.term)"
-                        @on-edition-canceled="() => $console.log('Editing canceled')"
-                        @on-error-found="($event) => $console.log('Form with errors: ' + $event)" />
+                        @close="isTermCreationModalOpen = false" />
             </b-modal>
 
             <!-- Term creation panel, used on item submission block for a simpler term creation -->

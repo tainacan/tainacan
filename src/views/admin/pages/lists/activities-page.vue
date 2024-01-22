@@ -242,7 +242,7 @@
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-activities" />
                                 </span>
                             </p>
-                            <p v-if="status == undefined || status == ''">
+                            <p>
                                 {{ $i18n.get('info_no_process') }}
                             </p>
                         </div>
@@ -375,6 +375,7 @@
                 processesPage: 1,
                 activitiesPerPage: 12,
                 processesPerPage: 12,
+                totalProcesses: 0,
                 isRepositoryLevel: false,
                 tab: '',
                 isItemLevel: false,

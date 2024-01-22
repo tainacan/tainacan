@@ -322,12 +322,10 @@
             </div>
         </div>
 
-        <div v-else-if="isLoading">
-            <center>
-                <span>
-                    {{ $i18n.get('loading_processes') }}
-                </span>
-            </center>
+        <div 
+                v-else-if="isLoading"
+                class="has-text-centered">
+            {{ $i18n.get('loading_processes') }}
         </div>
     </div>
 </template>

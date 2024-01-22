@@ -88,5 +88,13 @@ const routes = [
 
 export default createRouter({
     routes,
-    history: createWebHashHistory()
+    history: createWebHashHistory(),
+    // Set custom query resolver. Important for dealing with nested query params such as taxquery objects.
+    parseQuery(query) {
+        return qs.parse(query);
+    },
+    stringifyQuery(query) {
+        let result = qs.stringify(query);
+        return result ? result : '';
+    }
 });

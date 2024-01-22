@@ -251,7 +251,6 @@ export default {
                 }  
             },
             setCollectionId(collectionId) {
-                this.setTotalItems(null);
                 this.collectionId = collectionId;
             },
             setDefaultOrder(defaultOrder) {
