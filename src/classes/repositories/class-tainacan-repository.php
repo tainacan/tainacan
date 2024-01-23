@@ -941,7 +941,10 @@ abstract class Repository {
 	}
 
 	protected function sanitize_value($content) {
-		if (is_numeric($content) || empty($content) ) {
+		if( $content == null ) {
+			return '';
+		}
+		if (is_numeric($content) || empty($content ) ) {
 			return $content;
 		}
 

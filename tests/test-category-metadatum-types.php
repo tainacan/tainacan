@@ -127,7 +127,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 
 		$this->assertFalse($metadatum2->validate(), 'Taxonomy Metadatum should not validate when using a taxonomy in use by another metadatum in the same collection');
 		$errors = $metadatum2->get_errors();
-		$this->assertInternalType('array', $errors);
+		$this->assertIsArray($errors);
 		$this->assertArrayHasKey('taxonomy_id', $errors[0]['metadata_type_options']);
     }
 
@@ -193,7 +193,7 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 
 
 		$checkTax = $Tainacan_Taxonomies->fetch($tax->get_id());
-		$this->assertContains($collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be added to taxonomy when metadatum is created');
+		$this->assertContains((string)$collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be added to taxonomy when metadatum is created');
 
 
 		$metadatum->set_metadata_type_options([
@@ -206,14 +206,14 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 
 		$checkTax = $Tainacan_Taxonomies->fetch($tax->get_id());
 		$checkTax2 = $Tainacan_Taxonomies->fetch($tax2->get_id());
-		$this->assertContains($collection->get_id(), $checkTax2->get_collections_ids(), 'Collection must be added to taxonomy when metadatum is updated');
-		$this->assertNotContains($collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be removed from taxonomy when metadatum is updated');
+		$this->assertContains((string)$collection->get_id(), $checkTax2->get_collections_ids(), 'Collection must be added to taxonomy when metadatum is updated');
+		$this->assertNotContains((string)$collection->get_id(), $checkTax->get_collections_ids(), 'Collection must be removed from taxonomy when metadatum is updated');
 
 		$metadatum = $Tainacan_Metadata->trash($metadatum);
 
 		$checkTax2 = $Tainacan_Taxonomies->fetch($tax2->get_id());
 
-		$this->assertNotContains($collection->get_id(), $checkTax2->get_collections_ids(), 'Collection must be removed from taxonomy when metadatum is deleted');
+		$this->assertNotContains((string)$collection->get_id(), $checkTax2->get_collections_ids(), 'Collection must be removed from taxonomy when metadatum is deleted');
 
 
 		$metadatum_repo = $this->tainacan_entity_factory->create_entity(
@@ -590,10 +590,10 @@ class TaxonomyMetadatumTypes extends TAINACAN_UnitTestCase {
 
 		$meta = $Tainacan_ItemMetadata->insert($meta);
 
-		$this->assertInternalType( 'string', $meta->get_value_as_html() );
-		$this->assertInternalType( 'string', $meta->get_value_as_string() );
+		$this->assertIsString( $meta->get_value_as_html() );
+		$this->assertIsString( $meta->get_value_as_string() );
 
-		$this->assertInternalType( 'integer', strpos($meta->get_value_as_html(), '<a ') );
+		$this->assertIsInt( strpos($meta->get_value_as_html(), '<a ') );
 		$this->assertFalse( strpos($meta->get_value_as_string(), '<a ') );
 
 

@@ -273,7 +273,7 @@ class Bulk_Edit_Process extends Generic_Process {
 
 			$serealize_erro = (object) array('err' => array());
 			$erro = $item_metadata->get_errors();
-			array_walk_recursive($erro, function($v, $k, &$t) {$t->err[] = $v;}, $serealize_erro);
+			array_walk_recursive($erro, function($v, $k, $t) {$t->err[] = $v;}, $serealize_erro);
 			$this->add_error_log( __('errors: ', 'tainacan') . implode(", ", $serealize_erro->err) );
 
 			return false;

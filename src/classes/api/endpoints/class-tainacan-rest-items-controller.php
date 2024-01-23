@@ -1025,7 +1025,8 @@ class REST_Items_Controller extends REST_Controller {
 			'status' => 'draft'
 		];
 
-		$body = json_decode($request->get_body(), true);
+		$data_body = $request->get_body() ?? '';
+		$body = json_decode($data_body, true);
 
 		if (!is_array($body)) {
 			$body = [];
@@ -1178,7 +1179,7 @@ class REST_Items_Controller extends REST_Controller {
 			}
 			return $new_term;
 		}
-		return count($split_value) > 1 ? $value : filter_var($value, FILTER_SANITIZE_STRING);
+		return count($split_value) > 1 ? $value : htmlspecialchars($value);
 	}
 
 	private function submission_rollback_new_terms () {
@@ -1193,7 +1194,7 @@ class REST_Items_Controller extends REST_Controller {
 		$item          = json_decode($request->get_body(), true);
 		$metadata = $item['metadata'];
 		foreach ($item as $key => $value) {
-			$item[$key] = ( is_string($value) && !is_numeric($value) ? filter_var($value, FILTER_SANITIZE_STRING) : $value );
+			$item[$key] = ( is_string($value) && !is_numeric($value) ? htmlspecialchars($value) : $value );
 		}
 
 		$response_recaptcha = $this->submission_item_check_recaptcha($request);
@@ -1236,7 +1237,7 @@ class REST_Items_Controller extends REST_Controller {
 										$child_value = implode(' ', $child_value);
 									}
 									if (is_numeric($value) != true) {
-										$child_value = filter_var($child_value, FILTER_SANITIZE_STRING);
+										$child_value = htmlspecialchars($child_value);
 									}
 									$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
 									$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
@@ -1258,7 +1259,7 @@ class REST_Items_Controller extends REST_Controller {
 									$child_value = implode(' ', $child_value);
 								}
 								if (is_numeric($value) != true) {
-									$child_value = filter_var($child_value, FILTER_SANITIZE_STRING);
+									$child_value = htmlspecialchars($child_value);
 								}
 								$metadatum_child = $this->metadatum_repository->fetch( $child['metadatum_id'] );
 								$item_metadata_child = new Entities\Item_Metadata_Entity($item, $metadatum_child, null, $parent_meta_id);
@@ -1291,9 +1292,9 @@ class REST_Items_Controller extends REST_Controller {
 						}
 					} else {
 						if (is_array($value) == true) {
-							$value = array_map( function($v) { return is_numeric($v) ? $v : filter_var($v, FILTER_SANITIZE_STRING); }, $value);
+							$value = array_map( function($v) { return is_numeric($v) ? $v : htmlspecialchars($v); }, $value);
 						} else if (is_numeric($value) != true) {
-							$value = filter_var($value, FILTER_SANITIZE_STRING);
+							$value = htmlspecialchars($value);
 						}
 						if ($item_metadata->is_multiple()) {
 							$item_metadata->set_value( is_array($value) ? $value : [$value] );

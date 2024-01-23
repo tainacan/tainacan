@@ -56,8 +56,8 @@ class Item extends Entity {
 		$array_item['_thumbnail_id']     = $this->get__thumbnail_id();
 		$array_item['author_name']       = $this->get_author_name();
 		$array_item['url']               = get_permalink( $this->get_id() );
-		$array_item['creation_date']     = $this->get_date_i18n( explode( ' ', $array_item['creation_date'] )[0] );
-		$array_item['modification_date'] = $this->get_date_i18n( explode( ' ', $array_item['modification_date'] )[0] );
+		$array_item['creation_date']     = $this->get_date_i18n( explode( ' ', $array_item['creation_date'] ?? '' )[0] );
+		$array_item['modification_date'] = $this->get_date_i18n( explode( ' ', $array_item['modification_date'] ?? '' )[0] );
 		$array_item['document_mimetype'] = $this->get_document_mimetype();
 		return apply_filters('tainacan-item-to-array', $array_item, $this);
 	}

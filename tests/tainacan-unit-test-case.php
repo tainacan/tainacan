@@ -4,6 +4,7 @@ namespace Tainacan\Tests;
 
 use Tainacan\Tests\Factories;
 
+#[\AllowDynamicProperties]
 class TAINACAN_UnitTestCase extends \WP_UnitTestCase {
 	protected $tainacan_entity_factory;
 	protected $tainacan_metadatum_factory;
@@ -11,7 +12,7 @@ class TAINACAN_UnitTestCase extends \WP_UnitTestCase {
 	protected $tainacan_item_metadata_factory;
 	protected $user_id;
 
-	public function setUp(){
+	public function setUp(): void {
 		parent::setUp();
 		$this->tainacan_entity_factory = new Factories\Entity_Factory();
 		$this->tainacan_metadatum_factory  = new Factories\Metadatum_Factory();
