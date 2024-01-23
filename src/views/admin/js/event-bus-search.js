@@ -207,6 +207,9 @@ export default {
                 store.dispatch('search/highlightsItem', itemId);
                 this.updateURLQueries();
             },
+            exitViewModeWithoutPagination() {
+                app.config.globalProperties.$eventBusSearchEmitter.emit( 'exitViewModeWithoutPagination', true);
+            },
             async updateURLQueries() {
                 const newQueries = store.getters['search/getPostQuery'];
 

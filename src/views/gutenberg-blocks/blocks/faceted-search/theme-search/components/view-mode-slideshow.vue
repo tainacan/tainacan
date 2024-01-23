@@ -414,12 +414,6 @@ export default {
         }
     },
     watch: {
-        'swiper.activeIndex': {
-            handler(currentIndex, previousIndex) { 
-                this.updateSliderBasedOnIndex(currentIndex, previousIndex);
-            },
-            immediate: true
-        }, 
         isLoading: {
             handler(val, oldValue) {
                 if (val === false && oldValue === true && this.swiper && this.items && this.items.length) {
@@ -472,6 +466,7 @@ export default {
             preventInteractionOnTransition: true,
             slidesPerView: 24,
             spaceBetween: 12,
+            initialSlide: self.itemPosition,
             centeredSlides: true,
             centerInsufficientSlides: false,
             slideToClickedSlide: true,
@@ -516,6 +511,9 @@ export default {
                         this.slideTo(self.itemPosition);
                         self.itemPosition = null;
                     }
+                },
+                activeIndexChange: function() {
+                    self.updateSliderBasedOnIndex(this.activeIndex);
                 }
             },
             modules: [Navigation, Virtual, Mousewheel]
@@ -558,14 +556,7 @@ export default {
             this.hideControls = !this.hideControls;
         },
         closeSlideViewMode() {
-            let currentQuery = this.$route.query;
-            delete currentQuery['slideshow-from'];
-            this.$router.replace({ query: currentQuery });
-
-            // Sets the perpage and paged from previous configuration
-            this.$eventBusSearch.setItemsPerPage(this.$parent.latestPerPageAfterViewModeWithoutPagination, true);
-            this.$eventBusSearch.setPage(this.$parent.latestPageAfterViewModeWithoutPagination);
-            this.$parent.onChangeViewMode(this.$parent.latestNonFullscreenViewMode ? this.$parent.latestNonFullscreenViewMode : this.$parent.defaultViewMode);
+           this.$eventBusSearch.exitViewModeWithoutPagination();
         },
         moveToClikedSlide(index) {
             if (this.swiper)
@@ -690,21 +681,7 @@ export default {
 </script>
 
 <style  lang="scss">
-
     @import "../scss/_view-mode-slideshow.scss";
-
-    .is-fullscreen .table-wrapper {
-        overflow: hidden !important;
-        display: flex;
-        flex-wrap: nowrap;
-        flex-direction: column;
-        justify-content: space-between;
-        width: 100%;
-        height: 100%;
-        height: 100vh;
-        width: 100vw;
-    }
-
 </style>
 
 

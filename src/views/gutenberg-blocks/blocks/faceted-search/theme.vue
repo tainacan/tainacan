@@ -1078,6 +1078,17 @@
             this.$eventBusSearchEmitter.on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
             });
+
+            this.$eventBusSearchEmitter.on('exitViewModeWithoutPagination', () => {
+                let currentQuery = this.$route.query;
+                delete currentQuery['slideshow-from'];
+                this.$router.replace({ query: currentQuery });
+    
+                // Sets the perpage and paged from previous configuration
+                this.$eventBusSearch.setItemsPerPage(this.latestPerPageAfterViewModeWithoutPagination, true);
+                this.$eventBusSearch.setPage(this.latestPageAfterViewModeWithoutPagination);
+                this.onChangeViewMode(this.latestNonFullscreenViewMode ? this.latestNonFullscreenViewMode : this.defaultViewMode);
+            });
             
             if (!this.hideAdvancedSearch) {
 
