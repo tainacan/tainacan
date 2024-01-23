@@ -619,7 +619,7 @@ class Theme_Helper {
 		// If in a collection page
 		$collection = tainacan_get_collection($args);
 		if ($collection) {
-			$props .= "collection-id='" . $collection->get_id() . "' ";
+			$props .= "data-collection-id='" . $collection->get_id() . "' ";
 			$default_view_mode = $collection->get_default_view_mode();
 			$enabled_view_modes = $collection->get_enabled_view_modes();
 			$default_order = $collection->get_default_order();

@@ -982,7 +982,6 @@
 
                     if ( this.$el && this.$el.parentElement && this.$el.parentElement.className !==  "theme-items-list has-mounted " + classesAsString )
                         this.$el.parentElement.className = "theme-items-list has-mounted " + classesAsString;
-            
                 },
                 immediate: true,
             },
@@ -1936,40 +1935,6 @@
 </style>
 
 <style lang="scss" scoped>
-
-    @keyframes open-full-screen {
-        from {
-            opacity: 0;
-            transform: scale(0.6);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1.0);
-        }
-    }
-
-    .is-fullscreen {
-        position: fixed !important;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        width: 100vw;
-        height: 100vh;
-        z-index: 999999999;
-        background-color: var(--tainacan-black) !important;
-        transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
-        animation: open-full-screen 0.4s ease;
-
-        .filters-menu {
-            display: none !important;
-        }
-        .metadata-alert {
-            position: absolute;
-        }
-    }
 
     .advanced-search-form-submit {
         display: flex;
