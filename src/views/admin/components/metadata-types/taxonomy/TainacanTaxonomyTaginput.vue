@@ -62,7 +62,7 @@
             isLastMetadatum: false
         },
         emits: [
-            'input',
+            'update:value',
             'show-add-new-term'
         ],
         data() {
@@ -172,7 +172,7 @@
                     for (let term of val)
                         results.push( term.value );
                 
-                    this.$emit('input', results);
+                    this.$emit('update:value', results);
                 }
             },
             emitRemove(){
@@ -182,7 +182,7 @@
                 for (let term of val)
                     results.push(term.value);
 
-                this.$emit('input', results);
+                this.$emit('update:value', results);
             }
         }
     }

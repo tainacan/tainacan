@@ -268,11 +268,12 @@
                                         :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
                             </label>
                             <b-numberinput
-                                    v-model="form.cardinality"
                                     :disabled="!showCardinalityOptions || form.multiple != 'yes'"
                                     name="cardinality"
                                     step="1"
-                                    min="2" />
+                                    min="2"
+                                    :model-value="form.cardinality ? Number(form.cardinality) : 2"
+                                    @update:model-value="(newCardinalty) => form.cardinality = newCardinalty" />
                         </b-field>
 
                         <b-field v-if="!isRepositoryLevel && isInsideImporterFlow">
@@ -429,7 +430,7 @@
         },
         watch: {
             showCardinalityOptions() {
-                this.form.cardinality = !this.showCardinalityOptions ? 1 : Number(this.form.cardinality);
+                this.form.cardinality = !this.showCardinalityOptions ? '' : Number(this.form.cardinality);
             }
         },
         created() {

@@ -75,7 +75,7 @@
                         :is-mobile-screen="isMobileScreen"
                         :is-focused="isFocused"
                         :is-metadata-navigation="isMetadataNavigation"
-                        @input="changeValue"
+                        @update:value="changeValue"
                         @blur="performValueChange"
                         @mobile-special-focus="onMobileSpecialFocus" />
                 <template v-if="isMultiple && values.length > 1">
@@ -100,7 +100,7 @@
                                     :is-mobile-screen="isMobileScreen"
                                     :is-focused="isFocused"
                                     :is-metadata-navigation="isMetadataNavigation"
-                                    @input="changeValue"
+                                    @update:value="changeValue"
                                     @blur="performValueChange"
                                     @mobile-special-focus="onMobileSpecialFocus" />
                             <a 
@@ -157,7 +157,7 @@
                         :is-focused="isFocused"
                         :is-metadata-navigation="isMetadataNavigation"
                         :enumerate-metadatum="enumerateMetadatum"
-                        @input="changeValue"
+                        @update:value="changeValue"
                         @blur="performValueChange"
                         @mobile-special-focus="onMobileSpecialFocus" />
             </div>

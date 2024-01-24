@@ -64,7 +64,7 @@ export default {
         isLastMetadatum: false
     },
     emits: [
-        'input',
+        'update:value',
         'blur',
         'mobile-special-focus'
     ],
@@ -98,7 +98,7 @@ export default {
         ]),
         onInput(newSelected) {
             this.selected = newSelected;
-            this.$emit('input', newSelected.map((user) => user.id || user.value));
+            this.$emit('update:value', newSelected.map((user) => user.id || user.value));
         },
         onBlur() {
             this.$emit('blur');

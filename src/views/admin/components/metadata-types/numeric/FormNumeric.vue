@@ -98,7 +98,7 @@
                     v-model="min"
                     name="min"
                     step="1"
-                    @input="onUpdateMin" />
+                    @update:model-value="onUpdateMin" />
         </b-field>
         <b-field :addons="false">
             <label class="label is-inline">
@@ -111,7 +111,7 @@
                     v-model="max"
                     name="max"
                     step="1"
-                    @input="onUpdateMax" />
+                    @update:model-value="onUpdateMax" />
         </b-field>
     </section>
 </template>
@@ -121,7 +121,7 @@
         props: {
             value: [ String, Object, Array ]
         },
-        emits: ['input'],
+        emits: ['update:value'],
         data() {
             return {
                 step: [Number, String],
@@ -137,13 +137,13 @@
         },
         methods: {
             onUpdateStep(value) {
-                this.$emit('input', { step: value, min: this.min, max: this.max });
+                this.$emit('update:value', { step: value, min: this.min, max: this.max });
             },
             onUpdateMin(value) {
-                this.$emit('input', { step: this.step, min: value, max: this.max });
+                this.$emit('update:value', { step: this.step, min: value, max: this.max });
             },
             onUpdateMax(value) {
-                this.$emit('input', { step: this.step, min: this.min, max: value });
+                this.$emit('update:value', { step: this.step, min: this.min, max: value });
             }
         }
     }

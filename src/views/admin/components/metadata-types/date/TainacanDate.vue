@@ -1,27 +1,18 @@
 <template>
-    <div>
-        <!-- <b-input
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
-                :disabled="disabled"
-                :custom-class="isInvalidDate && dateValue ? 'is-danger' : ''"
-                type="text"
-                v-imask="dateMask"
-                v-model="dateValue"
-                @update:model-value="onInput"
-                @blur="onBlur"
-                @focus="onMobileSpecialFocus"
-                :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : dateFormat.toLowerCase()" /> -->
-        <!-- TODO: FIX IMASK -->    
-        <b-input
+    <div class="control is-clearfix">
+        <input
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 v-model="dateValue"
                 :disabled="disabled"
-                :custom-class="isInvalidDate && dateValue ? 'is-danger' : ''"
+                class="input"
+                :class="isInvalidDate && dateValue ? 'is-danger' : ''"
                 type="text"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : dateFormat.toLowerCase()"
-                @update:model-value="onInput"
+                :mask="Date"
+                :pattern="dateMask"
+                @input="onInput"
                 @blur="onBlur"
-                @focus="onMobileSpecialFocus" />
+                @focus="onMobileSpecialFocus">
         <p
                 v-if="isInvalidDate && dateValue"
                 style="font-size: 0.75em;"
@@ -45,7 +36,7 @@
             disabled: false,
         },
         emits: [
-            'input',
+            'update:value',
             'blur',
             'mobile-special-focus'
         ],
@@ -79,18 +70,18 @@
                         this.isInvalidDate = true;
                         
                         if (!this.isOnItemSubmissionForm)
-                            this.$emit('input', false);
+                            this.$emit('update:value', false);
                         else
-                            this.$emit('input', this.dateValue) // On item submission form we keep the error here to allow the server to return the correct format.
+                            this.$emit('update:value', this.dateValue) // On item submission form we keep the error here to allow the server to return the correct format.
                             
                     } else {
                         this.isInvalidDate = false;
-                        this.$emit('input', dateISO);
+                        this.$emit('update:value', dateISO);
                     }
 
                     
                 } else  {
-                   this.$emit('input', ''); 
+                   this.$emit('update:value', ''); 
                 }
             }, 300),
             onBlur() {

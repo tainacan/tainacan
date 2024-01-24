@@ -58,7 +58,7 @@
             metadatum: [ String, Object ],
             errors: [ String, Object, Array ]
         },
-        emits: ['input'],
+        emits: ['update:value'],
         data() {
             return {
                 optionType: '',
@@ -89,7 +89,7 @@
                 this.optionMessage = '';
             },
             emitValues() {
-                this.$emit('input', {
+                this.$emit('update:value', {
                     options: ( this.options.length > 0 ) ? this.options.join('\n') : '',
                     options_separator: JSON.stringify(this.optionsSeparator)
                 })

@@ -24,7 +24,7 @@
             value: [ String, Object, Array ]
         },
         emits: [
-            'input',
+            'update:value',
         ],
         data() {
             return {
@@ -36,7 +36,7 @@
         },
         methods: {
             onUpdateDefaultAuthor(value) {
-                this.$emit('input', { default_author: value });
+                this.$emit('update:value', { default_author: value });
             }
         }
     }

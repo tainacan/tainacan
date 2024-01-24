@@ -117,7 +117,7 @@
             maxtags: '',
             isLastMetadatum: false
         },
-        emits: ['input'],
+        emits: ['update:value'],
         data() {
             return {
                 editingMarkerIndex: -1,
@@ -255,7 +255,7 @@
             onUpdateFromLatitudeAndLongitude() {
                 if (this.editingMarkerIndex >= 0) {
                     this.selected.splice(this.editingMarkerIndex, 1, this.latitude + ',' + this.longitude);
-                    this.$emit('input', this.selected);
+                    this.$emit('update:value', this.selected);
                 }
             },
             onDragMarker($event, index) {
@@ -265,7 +265,7 @@
                         this.longitude = $event.target['_latlng']['lng'];
                     }
                     this.selected.splice(index, 1, $event.target['_latlng']['lat'] + ',' + $event.target['_latlng']['lng']);
-                    this.$emit('input', this.selected);
+                    this.$emit('update:value', this.selected);
                 }
             },
             onDragEditingMarker($event) {
@@ -292,7 +292,7 @@
                 const existintSelectedValue = this.selected.indexOf(newLocationValue);
                 if (existintSelectedValue < 0) {
                     this.selected.push(newLocationValue);
-                    this.$emit('input', this.selected);
+                    this.$emit('update:value', this.selected);
                     this.editingMarkerIndex = this.selected.length - 1;
                 }
             },
@@ -315,7 +315,7 @@
                 this.longitude = this.selectedLatLng[index].lng;
 
                 this.selected.splice(index, 1);
-                this.$emit('input', this.selected);
+                this.$emit('update:value', this.selected);
             },
             handleWindowResize(mapComponentRef) {
                 setTimeout(() => {

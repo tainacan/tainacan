@@ -35,7 +35,7 @@
         props: {
             value: [ String, Object, Array ]
         },
-        emits: ['input'],
+        emits: ['update:value'],
         data() {
             return {
                 displaySuggestions: String,
@@ -49,11 +49,11 @@
         methods: {
             onUpdateDisplaySuggestions(value) {
                 this.displaySuggestions = value;
-                this.$emit('input', { display_suggestions: value, mask: value == 'yes' ? '' : this.mask });
+                this.$emit('update:value', { display_suggestions: value, mask: value == 'yes' ? '' : this.mask });
             },
             onUpdateMask(value) {
                 this.mask = value;
-                this.$emit('input', { display_suggestions: this.displaySuggestions, mask: value });
+                this.$emit('update:value', { display_suggestions: this.displaySuggestions, mask: value });
             }
         }
     }

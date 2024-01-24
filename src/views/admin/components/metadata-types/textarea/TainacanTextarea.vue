@@ -20,7 +20,7 @@
             disabled: false
         },
         emits: [
-            'input',
+            'update:value',
             'blur',
             'mobile-special-focus'
         ],
@@ -38,7 +38,7 @@
                 if ( inputRef && this.getMaxlength && !inputRef.checkHtml5Validity() )
                     return;
 
-                this.$emit('input', value);
+                this.$emit('update:value', value);
             },
             onBlur() {
                 this.$emit('blur');

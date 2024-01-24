@@ -153,7 +153,7 @@
             isMobileScreen: false
         },
         emits: [
-            'input',
+            'update:value',
             'blur',
             'mobile-special-focus'    
         ],
@@ -279,7 +279,7 @@
                 this.search('');
 
                 this.selected = newSelected;
-                this.$emit('input', newSelected.map((item) => item.value));
+                this.$emit('update:value', newSelected.map((item) => item.value));
             },
             onBlur() {
                 this.$emit('blur');

@@ -107,9 +107,9 @@
             isMobileScreen: false,
         },
         emits: [
-            'input',
             'updateTaxonomyInputs',
-            'mobile-special-focus'
+            'mobile-special-focus',
+            'update:value'
         ],
         data(){
             return {
@@ -164,7 +164,7 @@
         watch: {
             valueComponent: {
                 handler( val ) {
-                    this.$emit('input', val);
+                    this.$emit('update:value', val);
                 },
                 deep: true
             }

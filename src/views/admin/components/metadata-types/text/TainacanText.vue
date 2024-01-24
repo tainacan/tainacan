@@ -8,7 +8,7 @@
                     v-imask="getMask"
                     class="input"
                     :disabled="disabled"
-                    :model-value="value"
+                    :value="value"
                     :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                     @focus="onMobileSpecialFocus"
                     @complete="($event) => getMask ? onInput($event.detail.value) : null"
@@ -63,7 +63,7 @@
             disabled: false
         },
         emits: [
-            'input',
+            'update:value',
             'blur',
             'mobile-special-focus'
         ],
@@ -105,7 +105,7 @@
         },
         methods: {
             onInput(value) {
-                this.$emit('input', value);
+                this.$emit('update:value', value);
             },
             onBlur() {
                 this.$emit('blur');

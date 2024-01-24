@@ -35,7 +35,7 @@
             disabled: false,
         },
         emits: [
-            'input',
+            'update:value',
             'mobile-special-focus'
         ],
         computed: {
@@ -49,7 +49,7 @@
         },
         methods: {
             onSelected(value) {
-                this.$emit('input', value);
+                this.$emit('update:value', value);
             },
             onMobileSpecialFocus($event) {
                 $event.target.blur();
