@@ -1802,7 +1802,8 @@ export default {
         flex-wrap: wrap;
         gap: 0.5rem;
         justify-content: space-between;
-        :deep(.b-checkbox.checkbox) {
+        :deep(.b-checkbox.checkbox),
+        :deep(.b-radio.radio) {
             width: auto
         }
         .control-label {

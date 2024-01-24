@@ -96,6 +96,20 @@ import mitt from 'mitt';
 //     MODE: 3
 // })
 
+function copyAppContext(src, dest) {
+    // replacing _context won't work because methods of app bypasses app._context
+    const { _context: srcContext } = src
+    const { _context: destContext } = dest
+    destContext.config = srcContext.config
+    destContext.mixins = srcContext.mixins
+    destContext.components = srcContext.components
+    destContext.directives = srcContext.directives
+    destContext.provdes = srcContext.provides
+    destContext.optionsCache = srcContext.optionsCache
+    destContext.propsCache = srcContext.propsCache
+    destContext.emitsCache = srcContext.emitsCache
+}
+
 export default (element) => {
 
     function renderTainacanAdminPage() {
@@ -119,8 +133,10 @@ export default (element) => {
 
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
-                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins))
-                    app.use(extraVuePluginObject);
+                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
+                    const aPlugin = app.use(extraVuePluginObject);
+                    //copyAppContext(app, aPlugin);
+                }
             }
 
             // Configure and Register Plugins
@@ -199,7 +215,8 @@ export default (element) => {
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {
                 for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
-                    app.component(extraVueComponentName, extraVueComponentObject);
+                    const aComponent = app.component(extraVueComponentName, extraVueComponentObject);
+                    //copyAppContext(app, aComponent);
                 }
             }
 

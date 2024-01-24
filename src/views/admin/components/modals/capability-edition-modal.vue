@@ -10,7 +10,7 @@
                 v-if="!isLoading"
                 class="capabilities-edit-form">  
             <div>
-                <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
+                <template v-if="roles && Object.values(roles).length && capability.roles">
                     <b-field :addons="false">
                         <label class="label is-inline">
                             {{ $i18n.get('label_associated_roles') }}
@@ -19,7 +19,7 @@
                         <br>
                         <div class="roles-list">
                             <template
-                                    v-for="(role, roleIndex) of existingRoles"
+                                    v-for="(role, roleIndex) of roles"
                                     :key="roleIndex">
                                 <b-checkbox
                                         v-if="!capability.roles_inherited[role.slug]"
@@ -39,7 +39,7 @@
                 </p>
             </div>
             <div>
-                <template v-if="existingRoles && Object.values(existingRoles).length && capability.roles">
+                <template v-if="roles && Object.values(roles).length && capability.roles">
                     <b-field :addons="false">
                         <label class="label is-inline">
                             <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-alertcircle" />
@@ -53,7 +53,7 @@
                         <br>
                         <div class="roles-list">
                             <template 
-                                    v-for="(role, roleIndex) of existingRoles"
+                                    v-for="(role, roleIndex) of roles"
                                     :key="roleIndex">
                                 <b-checkbox
                                         v-if="capability.roles_inherited[role.slug]"
@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'CapabilityEditionModal',
@@ -106,14 +106,17 @@ export default {
     ],
     data() {
         return {
-            existingRoles: [],
             isLoading: false
+        }
+    },
+    computed: {
+        roles() {
+            return this.getRoles();
         }
     },
     created() {
         this.isLoading = true;
-        this.fetchRoles().then((roles) => {
-            this.existingRoles = roles;
+        this.fetchRoles().then(() => {
             this.isLoading = false;
         });
     },
@@ -122,6 +125,9 @@ export default {
             'fetchRoles',
             'addCapabilityToRole',
             'removeCapabilityFromRole'
+        ]),
+        ...mapGetters('capability', [
+            'getRoles',
         ]),
         updateRole(role, value) {
             if (value)

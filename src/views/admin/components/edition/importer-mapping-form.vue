@@ -222,7 +222,7 @@
                             aria-modal>
                         <b-loading 
                                 v-model="isLoadingMetadatumTypes" 
-                                :is-full-page="isFullPage" />
+                                :is-full-page="false" />
                         <div 
                                 
                                 class="tainacan-modal-content">
