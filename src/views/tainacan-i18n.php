@@ -706,6 +706,7 @@ return apply_filters( 'tainacan-i18n', [
 	'label_item_edition_form_options'				 => __( 'Item edition form options', 'tainacan' ),
 	'label_item_submission_options'				 	 => __( 'Item submission options', 'tainacan' ),
 	'label_metadata_related_features'				 => __( 'Metadata related features', 'tainacan' ),
+	'label_preview'									 => __( 'Preview', 'tainacan' ),
 
 	// Instructions. More complex sentences to guide user and placeholders
 	'instruction_delete_selected_collections'        => __( 'Delete selected collections', 'tainacan' ),

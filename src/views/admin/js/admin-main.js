@@ -44,6 +44,7 @@ import TainacanTaxonomy from '../components/metadata-types/taxonomy/TainacanTaxo
 import TainacanCompound from '../components/metadata-types/compound/TainacanCompound.vue';
 import TainacanUser from '../components/metadata-types/user/TainacanUser.vue';
 import TainacanGeoCoordinate from '../components/metadata-types/geocoordinate/TainacanGeoCoordinate.vue'
+import TainacanURL from '../components/metadata-types/url/TainacanURL.vue';
 
 import FormText from '../components/metadata-types/text/FormText.vue';
 import FormTextarea from '../components/metadata-types/textarea/FormTextarea.vue';
@@ -53,6 +54,7 @@ import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.
 import FormNumeric from '../components/metadata-types/numeric/FormNumeric.vue';
 import FormUser from '../components/metadata-types/user/FormUser.vue';
 import FormGeoCoordinate from '../components/metadata-types/geocoordinate/FormGeoCoordinate.vue';
+import FormURL from '../components/metadata-types/url/FormURL.vue';
 
 // Term edition form must be imported here so that it is not necessary on item-submission bundle
 import TermEditionForm from '../components/edition/term-edition-form.vue';
@@ -231,6 +233,7 @@ export default (element) => {
             app.component('tainacan-compound', TainacanCompound);
             app.component('tainacan-user', TainacanUser);
             app.component('tainacan-geocoordinate', TainacanGeoCoordinate);
+            app.component('tainacan-url', TainacanURL);
             
 
             /* Metadata Option forms */
@@ -243,6 +246,7 @@ export default (element) => {
             app.component('tainacan-form-user', FormUser);
             app.component('term-edition-form', TermEditionForm);
             app.component('tainacan-form-geocoordinate', FormGeoCoordinate);
+            app.component('tainacan-form-url', FormURL);
 
             /* Filter Metadata Option forms */
             app.component('tainacan-filter-form-numeric', FormFilterNumeric);

@@ -38,6 +38,7 @@ import TainacanTaxonomy from '../../../admin/components/metadata-types/taxonomy/
 import TainacanCompound from '../../../admin/components/metadata-types/compound/TainacanCompound.vue';
 import TainacanUser from '../../../admin/components/metadata-types/user/TainacanUser.vue';
 import TainacanGeoCoordinate from '../../../admin/components/metadata-types/geocoordinate/TainacanGeoCoordinate.vue';
+import TainacanURL from '../../../admin/components/metadata-types/url/TainacanURL.vue';
 
 // Main components
 import ItemSubmissionForm from './theme.vue';
@@ -176,6 +177,7 @@ export default (element) => {
             VueItemSubmission.component('tainacan-compound', TainacanCompound);
             VueItemSubmission.component('tainacan-user', TainacanUser);
             VueItemSubmission.component('tainacan-geocoordinate', TainacanGeoCoordinate);
+            VueItemSubmission.component('tainacan-url', TainacanURL);
 
             /* Others */
             VueItemSubmission.component('tainacan-form-item', TainacanFormItem);

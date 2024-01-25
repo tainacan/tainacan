@@ -304,6 +304,24 @@ html.is-clipped .page-container-small:not(.is-filters-menu-open) {
 .taginput-container .input:hover {
     border: none !important;
 }
+.metadata-type-ainacan_url_plugin_metadata_type .multivalue-separator,
+.metadata-type-tainacan_url_plugin_metadata_type .multivalue-separator {
+    display: block;
+    max-height: 1px;
+    width: 80px;
+    background: var(--tainacan-gray3, #a5a5a5);
+    content: none;
+    color: transparent !important;
+    margin: 1em auto 1em 0 !important;
+}
+.metadata-type-ainacan_url_plugin_metadata_type .wp-block-buttons,
+.metadata-type-tainacan_url_plugin_metadata_type .wp-block-buttons {
+    display: flex !important;
+}
+.metadata-type-ainacan_url_plugin_metadata_type .wp-block-buttons>.wp-block-button,
+.metadata-type-tainacan_url_plugin_metadata_type .wp-block-buttons>.wp-block-button {
+    width: auto !important;
+}
 
 // Buefy notices (toast, snackbar...)
 .notices {

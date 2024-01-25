@@ -43,6 +43,7 @@ class Metadata_Type_Helper {
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\User');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\Control');
 		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\GeoCoordinate');
+		$this->Tainacan_Metadata->register_metadata_type('Tainacan\Metadata_Types\URL');
 
 		// the priority should see less than on function 
 		// `load_admin_page()` of class `Admin` in file /src/views/class-tainacan-admin.php
