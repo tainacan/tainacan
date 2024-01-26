@@ -9,7 +9,7 @@
                 <span>
                     <b-checkbox 
                             :model-value="allCollectionsOnPageSelected" 
-                            @input="selectAllCollectionsOnPage()">
+                            @update:model-value="selectAllCollectionsOnPage()">
                         {{ $i18n.get('label_select_all_collections_page') }}
                     </b-checkbox>
                 </span>

@@ -22,10 +22,10 @@
                         :message="$i18n.getHelperMessage('tainacan-text', 'mask')" />
             </label>
             <b-input
-                    :value="displaySuggestions === 'yes' ? '' : mask"
+                    :model-value="displaySuggestions === 'yes' ? '' : mask"
                     :disabled="displaySuggestions === 'yes'"
                     name="mask"
-                    @input="onUpdateMask" />
+                    @update:model-value="onUpdateMask" />
         </b-field>
     </section>
 </template>

@@ -188,7 +188,7 @@
                                 <b-select 
                                         v-model="selectedConditionalMetadatumId"
                                         :placeholder="$i18n.get('label_select_metadatum')"
-                                        @input="reloadConditionalValueComponent()">
+                                        @update:model-value="reloadConditionalValueComponent()">
                                     <option 
                                             v-for="conditionalMetadatum of availableConditionalMetadata"
                                             :key="conditionalMetadatum.id"

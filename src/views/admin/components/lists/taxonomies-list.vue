@@ -10,7 +10,7 @@
                 <span>
                     <b-checkbox 
                             :model-value="allOnPageSelected" 
-                            @input="selectAllOnPage()">
+                            @update:model-value="selectAllOnPage()">
                         {{ $i18n.get('label_select_all_taxonomies_page') }}
                     </b-checkbox>
                 </span>

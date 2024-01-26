@@ -193,7 +193,7 @@
                         :false-value="'no'"
                         :native-value="form.display_in_repository_level_lists == 'yes' ? 'yes' : 'no'"
                         name="display_in_repository_level_lists"
-                        @input="clearErrors('display_in_repository_level_lists')">
+                        @update:model-value="clearErrors('display_in_repository_level_lists')">
                     <help-button
                             :title="$i18n.getHelperTitle('filters', 'display_in_repository_level_lists')"
                             :message="$i18n.getHelperMessage('filters', 'display_in_repository_level_lists')"

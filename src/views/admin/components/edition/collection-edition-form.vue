@@ -177,9 +177,9 @@
                                                     aria-role="listitem">
                                                 <b-checkbox
                                                         v-if="registeredViewModes[viewMode] != undefined"
-                                                        :value="checkIfViewModeEnabled(viewMode)"
+                                                        :model-value="checkIfViewModeEnabled(viewMode)"
                                                         :disabled="checkIfViewModeEnabled(viewMode) && form.enabled_view_modes.filter((aViewMode) => (registeredViewModes[aViewMode] && registeredViewModes[aViewMode].full_screen != true)).length <= 1"
-                                                        @input="updateViewModeslist(viewMode)">
+                                                        @update:model-value="updateViewModeslist(viewMode)">
                                                     <p>
                                                         <strong>
                                                             <span 
@@ -721,7 +721,7 @@
                                     :loading="isFetchingPages"
                                     check-infinite-scroll
                                     @select="onSelectCoverPage($event)"
-                                    @input="fecthCoverPages"
+                                    @update:model-value="fecthCoverPages"
                                     @focus="clearErrors('cover_page_id')"
                                     @infinite-scroll="fetchMoreCoverPages">
                                 <template #default="props">

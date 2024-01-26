@@ -128,7 +128,7 @@
                     size="is-small"
                     true-value="yes"
                     false-value="no"
-                    @input="emitValues()" />
+                    @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-relationship', 'accept_only_items_authored_by_current_user')"
                     :message="$i18n.getHelperMessage('tainacan-relationship', 'accept_only_items_authored_by_current_user')" />
