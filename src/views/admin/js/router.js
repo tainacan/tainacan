@@ -2,27 +2,27 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import qs from 'qs';
 
 // Main Pages
-import HomePage from '../pages/home-page.vue'
-import CollectionsPage from '../pages/lists/collections-page.vue'
-import CollectionPage from '../pages/singles/collection-page.vue'
-import ItemsPage from '../pages/lists/items-page.vue'
-import ItemPage from '../pages/singles/item-page.vue'
-import MetadataPage from '../pages/lists/metadata-page.vue'
-import FiltersPage from '../pages/lists/filters-page.vue'
-import TaxonomyPage from '../pages/lists/taxonomies-page.vue'
-import ActivitiesPage from '../pages/lists/activities-page.vue'
-import AvailableExportersPage from '../pages/lists/available-exporters-page.vue'
-import AvailableImportersPage from '../pages/lists/available-importers-page.vue'
-import CapabilitiesPage from '../pages/lists/capabilities-page.vue'
+const HomePage = () => import('../pages/home-page.vue');
+const CollectionsPage = () => import('../pages/lists/collections-page.vue');
+const CollectionPage = () => import('../pages/singles/collection-page.vue');
+const ItemsPage = () => import('../pages/lists/items-page.vue');
+const ItemPage = () => import('../pages/singles/item-page.vue');
+const MetadataPage = () => import('../pages/lists/metadata-page.vue');
+const FiltersPage = () => import('../pages/lists/filters-page.vue');
+const TaxonomyPage = () => import('../pages/lists/taxonomies-page.vue');
+const ActivitiesPage = () => import('../pages/lists/activities-page.vue');
+const AvailableExportersPage = () => import('../pages/lists/available-exporters-page.vue');
+const AvailableImportersPage = () => import('../pages/lists/available-importers-page.vue');
+const CapabilitiesPage = () => import('../pages/lists/capabilities-page.vue');
 
 // Edit Form Components
-import CollectionEditionForm from '../components/edition/collection-edition-form.vue'
-import ImporterEditionForm from '../components/edition/importer-edition-form.vue'
-import ImporterMappingForm from '../components/edition/importer-mapping-form.vue'
-import ItemEditionForm from '../components/edition/item-edition-form.vue'
-import ItemBulkEditionForm from '../components/edition/item-bulk-edition-form.vue'
-import TaxonomyEditionForm from '../components/edition/taxonomy-edition-form.vue'
-import ExporterEditionForm from '../components/edition/exporter-edition-form.vue'
+const CollectionEditionForm = () => import('../components/edition/collection-edition-form.vue');
+const ImporterEditionForm = () => import('../components/edition/importer-edition-form.vue');
+const ImporterMappingForm = () => import('../components/edition/importer-mapping-form.vue');
+const ItemEditionForm = () => import('../components/edition/item-edition-form.vue');
+const ItemBulkEditionForm = () => import('../components/edition/item-bulk-edition-form.vue');
+const TaxonomyEditionForm = () => import('../components/edition/taxonomy-edition-form.vue');
+const ExporterEditionForm = () => import('../components/edition/exporter-edition-form.vue');
 
 const i18nGet = function (key) {
   let string = tainacan_plugin.i18n[key];
