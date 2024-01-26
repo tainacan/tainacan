@@ -44,7 +44,7 @@ const routes = [
          * https://router.vuejs.org/guide/migration/#Named-children-routes-with-an-empty-path-no-longer-appends-a-slash
          */
         { path: '/collections/:collectionId', redirect: { name: 'CollectionItemsPage' }},
-        { path: 'items', component: ItemsPage, name: 'CollectionItemsPage', meta: {title: i18nGet('title_collection_page') }, meta: { isOnTheme: false } },
+        { path: 'items', component: ItemsPage, name: 'CollectionItemsPage', meta: {title: i18nGet('title_collection_page') }, props: { isOnTheme: false } },
         { path: 'items/:itemId/edit', name: 'ItemEditionForm', component: ItemEditionForm, meta: {title:  i18nGet('title_edit_item') } },
         { path: 'items/new', name: 'CollectionItemCreatePage', component: ItemEditionForm, meta: {title: i18nGet('title_create_item_collection') } },
         { path: 'items/:itemId', name: 'ItemPage', component: ItemPage, meta: {title: i18nGet('title_item_page') } },
@@ -83,7 +83,7 @@ const routes = [
     { path: '/exporters/', name: 'ExportersPage', component: AvailableExportersPage, meta: {title: i18nGet('title_exporters_page') } },
     { path: '/exporters/:exporterSlug', name: 'ExporterEditionForm', component: ExporterEditionForm, meta: {title: i18nGet('title_exporter_page') }},
 
-    { path: '/:pathMatch(.*)*', redirect: { name: 'HomePage' } }
+    { path: '/:pathMatch(.*)*', name: 'DefaultRedirect', redirect: { name: 'HomePage' } }
 ];
 
 export default createRouter({

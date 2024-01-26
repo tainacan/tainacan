@@ -560,6 +560,38 @@ AdminOptionsHelperPlugin.install = function (app, options = {}) {
 
             console.log('Tainacan Admin loaded in ' + adminSpecialMode);
 
+            // Under these special modes, several routes do not need to exist
+            if (
+                adminSpecialMode === 'itemsMultipleSelectionMode' ||
+                adminSpecialMode === 'itemsSingleSelectionMode' ||
+                adminSpecialMode === 'itemsSearchSelectionMode' ||
+                adminSpecialMode === 'itemEditionMode'
+            ) {
+                app.config.globalProperties.$router.removeRoute('HomePage');
+                app.config.globalProperties.$router.removeRoute('CollectionsPage');
+                app.config.globalProperties.$router.removeRoute('CollectionCreationForm');
+                app.config.globalProperties.$router.removeRoute('CollectionItemBulkAddPage');
+                app.config.globalProperties.$router.removeRoute('CollectionEditionForm');
+                app.config.globalProperties.$router.removeRoute('CollectionMetadataPage');
+                app.config.globalProperties.$router.removeRoute('CollectionFiltersPage');
+                app.config.globalProperties.$router.removeRoute('CollectionActivitiesPage');
+                app.config.globalProperties.$router.removeRoute('CollectionCapabilitiesPage');
+                app.config.globalProperties.$router.removeRoute('MappedCollectionCreationForm');
+                app.config.globalProperties.$router.removeRoute('FiltersPage');
+                app.config.globalProperties.$router.removeRoute('MetadataPage');
+                app.config.globalProperties.$router.removeRoute('TaxonomyPage');
+                app.config.globalProperties.$router.removeRoute('TaxonomyCreationForm');
+                app.config.globalProperties.$router.removeRoute('TaxonomyEditionForm');
+                app.config.globalProperties.$router.removeRoute('ActivitiesPage');
+                app.config.globalProperties.$router.removeRoute('CapabilitiesPage');
+                app.config.globalProperties.$router.removeRoute('AvailableImportersPage');
+                app.config.globalProperties.$router.removeRoute('ImporterEditionForm');
+                app.config.globalProperties.$router.removeRoute('ImporterCreationForm');
+                app.config.globalProperties.$router.removeRoute('ImporterMappingForm');
+                app.config.globalProperties.$router.removeRoute('ExportersPage');
+                app.config.globalProperties.$router.removeRoute('ExporterEditionForm');
+            }
+
             for (let option in adminSpecialModes[adminSpecialMode])
                 app.config.globalProperties.$adminOptions[option] = adminSpecialModes[adminSpecialMode][option];
         }
