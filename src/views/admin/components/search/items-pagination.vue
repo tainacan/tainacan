@@ -92,7 +92,7 @@
         
         <div class="pagination"> 
             <b-pagination
-                    v-model="page"
+                    :model-value="page"
                     aria-controls="items-list-results"
                     :total="totalItems"
                     order="is-centered"

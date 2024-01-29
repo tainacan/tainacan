@@ -563,9 +563,9 @@
                     :is-repository-level="isRepositoryLevel" />
 
             <!-- FILTERS TAG LIST-->
-            <filters-tags-list 
-                    v-if="hasFiltered && !openAdvancedSearch"
-                    class="filter-tags-list" />
+            <template v-if="hasFiltered && !openAdvancedSearch">
+                <filters-tags-list class="filter-tags-list" />
+            </template>
             
             <!-- ITEMS LISTING RESULTS ------------------------- -->
             <div 
@@ -704,13 +704,9 @@
 </template>
 
 <script>
-    import { nextTick } from 'vue';
+    import { nextTick, defineAsyncComponent } from 'vue';
     import ItemsList from '../../components/lists/items-list.vue';
-    import FiltersTagsList from '../../components/search/filters-tags-list.vue';
-    import FiltersItemsList from '../../components/search/filters-items-list.vue';
-    import ItemsStatusTabs from '../../components/other/items-status-tabs.vue';
     import ItemsPagination from '../../components/search/items-pagination.vue'
-    import AdvancedSearch from '../../components/search/advanced-search.vue';
     import AvailableImportersModal from '../../components/modals/available-importers-modal.vue';
     import ExposersModal from '../../components/modals/exposers-modal.vue';
     import CollectionsModal from '../../components/modals/collections-modal.vue';
@@ -721,11 +717,11 @@
         name: 'ItemsPage',
         components: {
             ItemsList,
-            FiltersTagsList,
-            FiltersItemsList,
-            ItemsStatusTabs,
+            FiltersTagsList: defineAsyncComponent(() => import('../../components/search/filters-tags-list.vue')),
+            FiltersItemsList: defineAsyncComponent(() => import('../../components/search/filters-items-list.vue')),
+            ItemsStatusTabs: defineAsyncComponent(() => import('../../components/other/items-status-tabs.vue')),
             ItemsPagination,
-            AdvancedSearch
+            AdvancedSearch: defineAsyncComponent(() => import('../../components/search/advanced-search.vue'))
         },
         props: {
             collectionId: [String, Number]

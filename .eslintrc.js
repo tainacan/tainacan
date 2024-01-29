@@ -5,7 +5,7 @@ module.exports = {
         'plugin:vue/vue3-recommended'
     ],
     parserOptions: {
-        'ecmaVersion': 2018
+        'ecmaVersion': 2020
     },
     rules: {
         /* Override/add rules settings here, such as: */

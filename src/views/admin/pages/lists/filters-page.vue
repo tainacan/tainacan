@@ -212,6 +212,7 @@
                                 <transition name="form-collapse">
                                     <b-field v-if="openedFilterId == filter.id">
                                         <filter-edition-form
+                                                :is-repository-level="isRepositoryLevel"
                                                 :index="index"
                                                 :original-filter="filter"
                                                 :edited-filter="editForms[openedFilterId]"
@@ -652,7 +653,6 @@ export default {
 
             this.allowedFilterTypes = [];
             this.selectedFilterType = {};
-
             for (let filter of this.filterTypes) {
                 for (let supportedType of filter['supported_types']) {
                     if (choosenMetadatum.metadata_type_object.primitive_type == supportedType)

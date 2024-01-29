@@ -11,7 +11,7 @@
                 <b-field>
                     <b-checkbox
                             v-model="showIntervalOnTag"
-                            @update:model-value="onUpdateShowIntervalOnTag()">
+                            @update:model-value="onUpdateShowIntervalOnTag">
                         {{ $i18n.get('info_show_interval_on_tag') }}
                     </b-checkbox>
                 </b-field>
@@ -89,12 +89,12 @@
     export default {
         props: {
             filter: Object,
-            value: [String, Number, Array],
+            modelValue: Object,
             id: '',
             disabled: false,
         },
         emits: [
-            'input',
+            'update:model-value',
         ],
         data() {
             return {
@@ -105,14 +105,14 @@
         },
         created() {
             this.intervals = 
-                this.value && this.value.intervals && this.value.intervals.length > 0 ? 
-                    this.value.intervals : 
+                this.modelValue && this.modelValue.intervals && this.modelValue.intervals.length > 0 ? 
+                    this.modelValue.intervals : 
                     [{
                         label: '',
                         to: null,
                         from: null
                     }];
-            this.showIntervalOnTag = this.value && this.value.showIntervalOnTag != undefined ? this.value.showIntervalOnTag : true;
+            this.showIntervalOnTag = this.modelValue && this.modelValue.showIntervalOnTag != undefined ? this.modelValue.showIntervalOnTag : true;
         },
         methods: {
             onUpdate: _.debounce( function(interval, validade) {
@@ -127,7 +127,7 @@
                         this.showErrorMessage()
                 } else {
                     this.isValid = true;
-                    this.$emit('input', {
+                    this.$emit('update:model-value', {
                         intervals: this.intervals,
                         showIntervalOnTag: this.showIntervalOnTag
                     });
@@ -135,7 +135,7 @@
             }, 600),
             onUpdateShowIntervalOnTag() {
                 if (this.isValid) {
-                    this.$emit('input', {
+                    this.$emit('update:model-value', {
                         intervals: this.intervals,
                         showIntervalOnTag: this.showIntervalOnTag
                     });

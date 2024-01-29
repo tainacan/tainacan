@@ -319,7 +319,7 @@
         name: "BulkEditionModal",
         props: {
             modalTitle: String,
-            totalItems: Array,
+            totalItems: Number,
             objectType: String,
             selectedForBulk: Object,
             collectionId: [String, Number]

@@ -77,7 +77,7 @@
         <div v-else>
             <b-loading
                     v-model="isLoading" 
-                    is-full-page="false" />
+                    :is-full-page="false" />
         </div>
         <div class="field is-grouped form-submit">
             <div class="control">

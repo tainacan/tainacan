@@ -204,7 +204,7 @@
             <component
                     :is="form.filter_type_object.form_component"
                     v-if="(form.filter_type_object && form.filter_type_object.form_component) || form.edit_form == ''"
-                    v-model:value="form.filter_type_options"
+                    v-model="form.filter_type_options"
                     :errors="formErrors['filter_type_options']"
                     :filter="form" />
             <div 
@@ -256,6 +256,7 @@ export default {
         index: '',
         editedFilter: Object,
         originalFilter: Object,
+        isRepositoryLevel: Boolean
     }, 
     emits: [
         'on-update-saved-state',

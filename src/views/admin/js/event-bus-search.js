@@ -207,8 +207,6 @@ export default {
                 app.config.globalProperties.$store.dispatch('search/setPostQuery', app.config.globalProperties.$route.query);
             },
             loadItems() {
-                console.log('loadItems')
-                console.log(JSON.parse(JSON.stringify(app.config.globalProperties.$store.getters['search/getPostQuery'])))
                 // Forces fetch_only to be filled before any search happens
                 if (app.config.globalProperties.$store.getters['search/getPostQuery']['fetch_only'] != undefined) {  
 
@@ -216,7 +214,7 @@ export default {
                     // Cancels previous Request
                     if (this.searchCancel != undefined)
                         this.searchCancel.cancel('Item search Canceled.');
-                    console.log('fetching')
+                    
                     app.config.globalProperties.$store.dispatch('collection/fetchItems', {
                         'collectionId': this.collectionId,
                         'isOnTheme': app.config.globalProperties.$route.meta && app.config.globalProperties.$route.meta.isOnTheme,
@@ -269,13 +267,12 @@ export default {
         });
 
         emitter.on('closeAdvancedSearch', () => {
-            app.config.globalProperties.$eventBusSearch.$store.dispatch('search/setPage', 1);
-            
+            app.config.globalProperties.$store.dispatch('search/setPage', 1);
             app.config.globalProperties.$eventBusSearch.performAdvancedSearch({});
         });
 
         emitter.on('performAdvancedSearch', advancedSearchQuery => {
-            app.config.globalProperties.$eventBusSearch.$store.dispatch('search/setPage', 1);
+            app.config.globalProperties.$store.dispatch('search/setPage', 1);
             app.config.globalProperties.$eventBusSearch.performAdvancedSearch(advancedSearchQuery);
 
             app.config.globalProperties.$eventBusSearch.updateURLQueries();

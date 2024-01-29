@@ -618,7 +618,7 @@
             FileItem
         },
         props: {
-            activityId: String
+            activityId: Number
         },
         emits: [
             'approveActivity',

@@ -95,10 +95,10 @@
 
     export default {
         props: {
-            value: [String, Number, Array]
+            modelValue: Object
         },
         emits: [
-            'input',
+            'update:model-value',
         ],
         data() {
             return {
@@ -107,11 +107,11 @@
             }
         },
         created() {
-            this.step = this.value && this.value.step ? this.value.step : 1;
+            this.step = this.modelValue && this.modelValue.step ? this.modelValue.step : 1;
         },
         methods: {
-            onUpdateStep(value) {
-                this.$emit('input', { step: value });
+            onUpdateStep(modelValue) {
+                this.$emit('update:model-value', { step: modelValue });
             },
         }
     }
