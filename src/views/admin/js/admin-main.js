@@ -62,7 +62,6 @@ import TermEditionForm from '../components/edition/term-edition-form.vue';
 import FormFilterNumeric from '../components/filter-types/numeric/FormNumeric.vue';
 import FormFilterNumericInterval from '../components/filter-types/numeric-interval/FormNumericInterval.vue';
 import FormFilterNumericListInterval from '../components/filter-types/numeric-list-interval/FormNumericListInterval.vue';
-// import FormDate from '../../../classes/filter-types/date/FormDate.vue';
 
 import TainacanFormItem from '../components/metadata-types/tainacan-form-item.vue';
 
@@ -252,7 +251,6 @@ export default (element) => {
             app.component('tainacan-filter-form-numeric', FormFilterNumeric);
             app.component('tainacan-filter-form-numeric-interval', FormFilterNumericInterval);
             app.component('tainacan-filter-form-numeric-list-interval', FormFilterNumericListInterval);
-            //  app.component('tainacan-filter-form-date', FormDate);
 
             // Metadadum parent containers
             app.component('tainacan-form-item', TainacanFormItem);
