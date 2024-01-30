@@ -20,6 +20,10 @@ export const setSingleFilter = (state, { filter, index}) => {
     Object.assign(state.filters, { [index]: filter });
 }
 
+export const addSingleFilter = (state, { filter, index}) => {
+    state.filters.splice( index, 0, filter );
+}
+
 export const setFilters = (state, filters) => {
     state.filters = filters;
 }

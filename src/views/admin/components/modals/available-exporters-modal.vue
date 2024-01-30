@@ -56,7 +56,7 @@
     export default {
         name: 'AvailableExportersModal',
         props: {
-            sourceCollection: String,
+            sourceCollection: [Number,String],
             hideWhenManualCollection: false
         },
         emits: [

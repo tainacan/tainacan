@@ -310,6 +310,17 @@
                                                 style="font-size: 0.875em;"> 
                                             <em>{{ '(' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')' }}</em>
                                         </span>
+                                        <span 
+                                                v-if="metadatum.status === 'private'"
+                                                v-tooltip="{
+                                                    content: $i18n.get('status_private'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip'],
+                                                    placement: 'auto-start'
+                                                }"
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-private" />
+                                        </span>
                                     </span>
                                     <span 
                                             v-tooltip="{
@@ -767,7 +778,7 @@ export default {
             })
             .then((filter) => {
 
-                if (!this.isRepositoryLevel)
+                if ( !this.isRepositoryLevel )
                     this.updateFiltersOrder();
 
                 this.newFilterIndex = 0;
@@ -815,7 +826,7 @@ export default {
         },
         toggleFilterEdition(filterId) {
             // Closing collapse
-            if (this.openedFilterId == filterId) {
+            if ( this.openedFilterId == filterId ) {
                 this.openedFilterId = '';
                 this.$router.push({ query: {}});
 
@@ -1172,6 +1183,10 @@ export default {
                     color: var(--tainacan-secondary);
                 }
 
+            }
+            .available-metadatum-item:not(.sortable-ghost):not(.disabled-metadatum) {
+                display: none;
+                visibility: hidden;
             }
             .sortable-ghost {
                 border: 1px dashed var(--tainacan-gray2);

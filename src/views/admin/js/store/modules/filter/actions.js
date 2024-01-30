@@ -66,7 +66,7 @@ export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filte
         })
             .then( res => {
                 let filter = res.data;
-                commit('setSingleFilter', { filter: filter , index: newIndex});
+                commit('addSingleFilter', { filter: filter , index: newIndex});
                 resolve( filter );
             })
             .catch(error => {
@@ -92,8 +92,8 @@ export const updateFilter = ( { commit }, { filterId, index, options }) => {
                 commit('setSingleFilter', { filter: filter, index: index });
                 resolve( filter );
             })
-            .catch(error => {
-                console.log(error);
+            .catch( (error) => {
+                console.log(JSON.parse(JSON.stringify(error)));
                 reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
     });
