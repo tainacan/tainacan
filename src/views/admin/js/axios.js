@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { SnackbarProgrammatic as Snackbar } from '@ntohq/buefy-next';
-import { ModalProgrammatic as Modal } from '@ntohq/buefy-next';
+import { SnackbarProgrammatic, ModalProgrammatic } from '@ntohq/buefy-next';
 import CustomDialog from '../components/other/custom-dialog.vue'
 
 // Simpler version of the i18n plugin to translate error feedback messages
@@ -40,26 +39,27 @@ export const tainacanErrorHandler = function(error) {
                     errorMessage = i18nGet('error_other');
                     break;
             }
-            Snackbar.open({
-                message: tainacanSanitize(errorMessage),
-                type: 'is-danger',
-                duration: duration,
-                actionText: errorMessageDetail != '' ? i18nGet('label_know_more') : null,
-                onAction: () => {
-                    Modal.open({
-                        component: CustomDialog,
-                        props: {
-                            title: i18nGet('label_error') + ' ' + error.response.status + '!',
-                            message: errorMessageDetail,
-                            hideCancel: true
-                        },
-                        ariaRole: 'alertdialog',
-                        ariaModal: true,
-                        customClass: 'tainacan-modal',
-                        closeButtonAriaLabel: i18nGet('close')
-                    });
-                }
-            });
+
+            // Snackbar.open({
+            //     message: tainacanSanitize(errorMessage),
+            //     type: 'is-danger',
+            //     duration: duration,
+            //     actionText: errorMessageDetail != '' ? i18nGet('label_know_more') : null,
+            //     onAction: () => {
+            //         Modal.open({
+            //             component: CustomDialog,
+            //             props: {
+            //                 title: i18nGet('label_error') + ' ' + error.response.status + '!',
+            //                 message: errorMessageDetail,
+            //                 hideCancel: true
+            //             },
+            //             ariaRole: 'alertdialog',
+            //             ariaModal: true,
+            //             customClass: 'tainacan-modal',
+            //             closeButtonAriaLabel: i18nGet('close')
+            //         });
+            //     }
+            // });
         } else {
             console.log('Tainacan Error Handler: ', error.response);
         }
