@@ -1685,6 +1685,9 @@
 
         // Vue Blurhash transtition effect
         @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
+        :deep(canvas.child) {
+            max-width: 100%;
+        }
 
         // Tainacan imports
         @import "../../../admin/scss/_tables.scss";

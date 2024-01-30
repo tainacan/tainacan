@@ -239,8 +239,8 @@
                             @click.left="onClickItem($event, item)"
                             @click.right="onRightClickItem($event, item)">
                         <blur-hash-image
-                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 120)"
-                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 120)"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium', 255)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], 'tainacan-medium', 255)"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], 'tainacan-medium')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype)"
                                 :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
@@ -403,8 +403,8 @@
                         <blur-hash-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
-                                :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 280)"
-                                :height="$thumbHelper.getHeight(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 280)"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 320)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 320)"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
@@ -2695,6 +2695,9 @@ export default {
     
     // Vue Blurhash transtition effect
     @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
+    :deep(canvas.child) {
+        max-width: 100%;
+    }
 
     .selection-control {
         margin-bottom: 6px;
