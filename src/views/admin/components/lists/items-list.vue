@@ -2110,6 +2110,9 @@ export default {
             if ( this.viewMode == 'map' && this.selectedGeocoordinateMetadatum.slug && this.items ) {
                 for (let item of this.items) {
                     
+                    if ( !item.metadata )
+                        continue;
+                    
                     let selectedItemMetadatum = item.metadata[this.selectedGeocoordinateMetadatum.slug];
 
                     // Handle compound metadata child first, as they will not appear in this list by default (they are inside their parents value)

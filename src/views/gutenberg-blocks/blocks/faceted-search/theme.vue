@@ -602,7 +602,8 @@
                     :total-items="totalItems"
                     :is-loading="showLoading"
                     :enabled-view-modes="enabledViewModes"
-                    :initial-item-position="initialItemPosition">
+                    :initial-item-position="initialItemPosition"
+                    :is-repository-level="isRepositoryLevel">
                 
                 
                 <!-- Empty Placeholder, rendered in a slot inside the view modes -->
@@ -988,7 +989,7 @@
             },
             openAdvancedSearch(newValue){
                 if (newValue == false){
-                    this.$eventBusSearchEmitter.$emit('closeAdvancedSearch');
+                    this.$eventBusSearchEmitter.emit('closeAdvancedSearch');
 
                     if ( !this.isMobileScreen )
                         this.isFiltersModalActive = !this.startWithFiltersHidden;
@@ -1673,14 +1674,14 @@
     @import "../../../admin/scss/_tooltips.scss";
     @import "../../../admin/scss/_notices.scss";
     @import "../../../admin/scss/_modals.scss";
-    
+
     // Scoped, to avoid conflicts with theme's css 
     .tainacan-modal,
     .theme-items-list {
 
         // Vue Blurhash transtition effect
         @import '../../../../../node_modules/another-vue3-blurhash/dist/style.css';
-        :deep(canvas.child) {
+        canvas.child {
             max-width: 100%;
         }
 

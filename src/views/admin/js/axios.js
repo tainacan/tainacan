@@ -2,7 +2,6 @@ import axios from 'axios';
 import { SnackbarProgrammatic, ModalProgrammatic } from '@ntohq/buefy-next';
 import CustomDialog from '../components/other/custom-dialog.vue'
 
-
 // Simpler version of the i18n plugin to translate error feedback messages
 const i18nGet = function (key) {
     let string = tainacan_plugin.i18n[key];
@@ -14,8 +13,6 @@ const tainacanSanitize = function(htmlString) {
 }
 
 export const tainacanErrorHandler = function(error) {
-
-    const self = getCurrentInstance();
 
     if (error.response && error.response.status) {
         // The request was made and the server responded with a status code

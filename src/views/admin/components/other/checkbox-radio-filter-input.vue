@@ -444,17 +444,21 @@
                 return this.totalRemaining[key].remaining === true || (this.finderColumns[key].children.length < this.totalRemaining[key].remaining);
             },
             fetchSelectedLabels() {
-
+                
                 let selected = this.selected instanceof Array ? this.selected : [this.selected];
 
                 if (this.taxonomyId && selected.length) {
 
                     this.isSelectedTermsLoading = true;
 
-                    axios.get(`/taxonomy/${this.taxonomy_id}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
+                    axios.get(`/taxonomy/${this.taxonomyId}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
                         .then((res) => {
                             for (const term of res.data)
-                                this.saveSelectedTagName(term.id, term.name, term.url);
+                                this.saveSelectedTagName(
+                                    term.id,
+                                    term.name,
+                                    term.url
+                                );
 
                             this.isSelectedTermsLoading = false;
                         })

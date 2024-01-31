@@ -3,7 +3,7 @@
         <div class="table-container">
             <b-loading
                     v-model="displayLoading" 
-                    is-full-page="false" />
+                    :is-full-page="false" />
             <div class="table-wrapper">
                 <div class="related-items-list">
                     <div 

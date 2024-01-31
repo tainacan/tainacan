@@ -29,6 +29,10 @@
         text-decoration: none !important;
         transition: background-color 0.2s ease;
 
+        :deep(img) {
+            height: auto;
+        }
+
         &.selected-card {
             background-color: var(--tainacan-turquoise1);
             .metadata-title {

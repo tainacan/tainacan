@@ -391,6 +391,12 @@ export default {
     mixins: [
         viewModesMixin
     ],
+    props: {
+        isRepositoryLevel: {
+            type: Boolean,
+            default: false
+        }
+    },
     data () {
         return {
             selectedGeocoordinateMetadatumId: false,
@@ -415,6 +421,9 @@ export default {
             
             if ( this.selectedGeocoordinateMetadatum.slug && this.items ) {
                 for (let item of this.items) {
+                    
+                    if ( !item.metadata )
+                        continue;
                     
                     let selectedItemMetadatum = item.metadata[this.selectedGeocoordinateMetadatum.slug];
 

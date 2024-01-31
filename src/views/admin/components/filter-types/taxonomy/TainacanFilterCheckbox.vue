@@ -251,7 +251,7 @@
                     props: {
                         parent: parent,
                         filter: this.filter,
-                        taxonomy_id: this.taxonomyId,
+                        taxonomyId: this.taxonomyId,
                         selected: this.selected,
                         metadatumId: this.metadatumId,
                         taxonomy: this.taxonomy,

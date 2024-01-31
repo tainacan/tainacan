@@ -22,6 +22,10 @@
         margin: 15px;
         text-align: center;
         transition: background-color 0.2s ease;
+        
+        :deep(img) {
+            height: auto;
+        }
 
         &:hover {
             background-color: var(--tainacan-item-heading-hover-background-color);

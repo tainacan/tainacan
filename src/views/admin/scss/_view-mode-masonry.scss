@@ -69,6 +69,10 @@
         text-decoration: none;
         transition: background-color 0.2s ease;
 
+        :deep(img) {
+            height: auto;
+        }
+
         &:hover:not(.skeleton) {
             background-color: var(--tainacan-item-heading-hover-background-color);
         }

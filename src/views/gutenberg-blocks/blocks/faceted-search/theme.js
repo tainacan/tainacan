@@ -13,6 +13,7 @@ import {
     Checkbox,
     Radio,
     Tag,
+    Icon,
     Loading,
     Dropdown,
     Modal,
@@ -175,6 +176,7 @@ export default (element) => {
             VueItemsList.use(Checkbox);
             VueItemsList.use(Radio);
             VueItemsList.use(Tag);
+            VueItemsList.use(Icon);
             VueItemsList.use(Tabs);
             VueItemsList.use(Loading);
             VueItemsList.use(Dropdown);

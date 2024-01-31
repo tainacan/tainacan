@@ -39,6 +39,10 @@
         display: block;
         transition: background-color 0.2s ease;
 
+        :deep(img) {
+            height: auto;
+        }
+
         &:hover {
             background-color: var(--tainacan-item-hover-background-color) !important;
         }
