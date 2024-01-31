@@ -560,48 +560,6 @@
                         @click="$emit('close')">
                     {{ $i18n.get('close') }}
                 </button>
-                <div class="buttons is-pulled-right">
-                    <!--<button-->
-                    <!--v-if="activity.status != 'publish'"-->
-                    <!--@click="notApproveActivity"-->
-                    <!--type="button"-->
-                    <!--class="button is-danger">-->
-                    <!--<b-icon-->
-                    <!--size="is-small"-->
-                    <!--icon="close"/>-->
-                    <!--<span>{{ $i18n.get('not_approve_item') }}</span>-->
-                    <!--</button>-->
-                    <!--<button-->
-                    <!--v-if="activity.status != 'publish'"-->
-                    <!--@click="approveActivity"-->
-                    <!--type="button"-->
-                    <!--class="button is-secondary">-->
-                    <!--<b-icon-->
-                    <!--size="is-small"-->
-                    <!--icon="check"/>-->
-                    <!--<span>{{ $i18n.get('approve_item') }}</span>-->
-                    <!--</button>-->
-
-                    <!--<button-->
-                    <!--v-if="activity.status == 'publish'"-->
-                    <!--@click="notApproveActivity"-->
-                    <!--type="button"-->
-                    <!--class="button is-blue5">-->
-                    <!--<b-icon-->
-                    <!--custom-class="mdi-flip-h"-->
-                    <!--size="is-small"-->
-                    <!--icon="share"/>-->
-                    <!--<span>{{ $i18n.get('undo') }}</span>-->
-                    <!--</button>-->
-
-                    <!-- <button
-                            v-if="activity.status == 'publish'"
-                            @click="$emit('close')"
-                            type="button"
-                            class="button is-secondary">
-                        <span>OK</span>
-                    </button> -->
-                </div>
             </div>
         </footer>
     </div>

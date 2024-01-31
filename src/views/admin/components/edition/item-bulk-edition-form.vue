@@ -34,9 +34,9 @@
                     <section class="drop-inner">
                         <div class="content has-text-centered">
                             <p>
-                                <b-icon
-                                        icon="upload"
-                                        size="is-large" />
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-upload" />
+                                </span>
                             </p>
                             <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
                         </div>

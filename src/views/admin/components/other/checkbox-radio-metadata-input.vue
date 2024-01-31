@@ -304,6 +304,7 @@
                                     v-if="selected instanceof Array ? true : selected != ''"
                                     attached
                                     closable
+                                    close-icon="<span class='icon'><i class='tainacan-icon tainacan-icon-1-25em tainacan-icon-close'></i></span>"
                                     class="is-small"
                                     @close="updateLocalSelection(term)">
                                 <span v-html="(isTaxonomy || metadatumType === 'Tainacan\\Metadata_Types\\Relationship') ? selectedTagsName[term] : term" />

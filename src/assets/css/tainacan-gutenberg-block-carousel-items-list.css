@@ -434,7 +434,8 @@
         display: block; }
       .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper .is-forced-square > a > div img {
         object-fit: cover;
-        object-position: center; }
+        object-position: center;
+        height: auto; }
   .wp-block-tainacan-carousel-items-list .preview-warning {
     width: 100%;
     font-size: 0.875rem;

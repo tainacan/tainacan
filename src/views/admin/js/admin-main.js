@@ -46,23 +46,6 @@ import TainacanUser from '../components/metadata-types/user/TainacanUser.vue';
 import TainacanGeoCoordinate from '../components/metadata-types/geocoordinate/TainacanGeoCoordinate.vue'
 import TainacanURL from '../components/metadata-types/url/TainacanURL.vue';
 
-import FormText from '../components/metadata-types/text/FormText.vue';
-import FormTextarea from '../components/metadata-types/textarea/FormTextarea.vue';
-import FormRelationship from '../components/metadata-types/relationship/FormRelationship.vue';
-import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue';
-import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.vue';
-import FormNumeric from '../components/metadata-types/numeric/FormNumeric.vue';
-import FormUser from '../components/metadata-types/user/FormUser.vue';
-import FormGeoCoordinate from '../components/metadata-types/geocoordinate/FormGeoCoordinate.vue';
-import FormURL from '../components/metadata-types/url/FormURL.vue';
-
-// Term edition form must be imported here so that it is not necessary on item-submission bundle
-import TermEditionForm from '../components/edition/term-edition-form.vue';
-
-import FormFilterNumeric from '../components/filter-types/numeric/FormNumeric.vue';
-import FormFilterNumericInterval from '../components/filter-types/numeric-interval/FormNumericInterval.vue';
-import FormFilterNumericListInterval from '../components/filter-types/numeric-list-interval/FormNumericListInterval.vue';
-
 import TainacanFormItem from '../components/metadata-types/tainacan-form-item.vue';
 
 // Remaining imports
@@ -233,24 +216,6 @@ export default (element) => {
             app.component('tainacan-user', TainacanUser);
             app.component('tainacan-geocoordinate', TainacanGeoCoordinate);
             app.component('tainacan-url', TainacanURL);
-            
-
-            /* Metadata Option forms */
-            app.component('tainacan-form-text', FormText);
-            app.component('tainacan-form-textarea', FormTextarea);
-            app.component('tainacan-form-relationship', FormRelationship);
-            app.component('tainacan-form-taxonomy', FormTaxonomy);
-            app.component('tainacan-form-selectbox', FormSelectbox);
-            app.component('tainacan-form-numeric', FormNumeric);
-            app.component('tainacan-form-user', FormUser);
-            app.component('term-edition-form', TermEditionForm);
-            app.component('tainacan-form-geocoordinate', FormGeoCoordinate);
-            app.component('tainacan-form-url', FormURL);
-
-            /* Filter Metadata Option forms */
-            app.component('tainacan-filter-form-numeric', FormFilterNumeric);
-            app.component('tainacan-filter-form-numeric-interval', FormFilterNumericInterval);
-            app.component('tainacan-filter-form-numeric-list-interval', FormFilterNumericListInterval);
 
             // Metadadum parent containers
             app.component('tainacan-form-item', TainacanFormItem);

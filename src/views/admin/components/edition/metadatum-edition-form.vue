@@ -399,8 +399,29 @@
     import {mapActions} from 'vuex';
     import { formHooks } from "../../js/mixins";
 
+    import FormText from '../metadata-types/text/FormText.vue';
+    import FormTextarea from '../metadata-types/textarea/FormTextarea.vue';
+    import FormRelationship from '../metadata-types/relationship/FormRelationship.vue';
+    import FormTaxonomy from '../metadata-types/taxonomy/FormTaxonomy.vue';
+    import FormSelectbox from '../metadata-types/selectbox/FormSelectbox.vue';
+    import FormNumeric from '../metadata-types/numeric/FormNumeric.vue';
+    import FormUser from '../metadata-types/user/FormUser.vue';
+    import FormGeoCoordinate from '../metadata-types/geocoordinate/FormGeoCoordinate.vue';
+    import FormURL from '../metadata-types/url/FormURL.vue';
+
     export default {
         name: 'MetadatumEditionForm',
+        components: {
+            'tainacan-form-text': FormText,
+            'tainacan-form-textarea': FormTextarea,
+            'tainacan-form-relationship': FormRelationship,
+            'tainacan-form-taxonomy': FormTaxonomy,
+            'tainacan-form-selectbox': FormSelectbox,
+            'tainacan-form-numeric': FormNumeric,
+            'tainacan-form-user': FormUser,
+            'tainacan-form-geocoordinate': FormGeoCoordinate,
+            'tainacan-form-url': FormURL
+        },
         mixins: [ formHooks ],
         props: {
             index: '',

@@ -249,8 +249,17 @@ import { nextTick } from 'vue';
 import { mapActions } from 'vuex';
 import { formHooks } from "../../js/mixins";
 
+import FormFilterNumeric from '../filter-types/numeric/FormNumeric.vue';
+import FormFilterNumericInterval from '../filter-types/numeric-interval/FormNumericInterval.vue';
+import FormFilterNumericListInterval from '../filter-types/numeric-list-interval/FormNumericListInterval.vue';
+
 export default {
     name: 'FilterEditionForm',
+    components: {
+        'tainacan-filter-form-numeric': FormFilterNumeric,
+        'tainacan-filter-form-numeric-interval': FormFilterNumericInterval,
+        'tainacan-filter-form-numeric-list-interval': FormFilterNumericListInterval
+    },
     mixins: [ formHooks ],
     props: {
         index: '',

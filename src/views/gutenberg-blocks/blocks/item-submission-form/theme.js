@@ -6,6 +6,7 @@ import {
     Switch,
     Tabs,
     Tag,
+    Icon,
     Modal,
     Checkbox,
     Collapse,
@@ -118,6 +119,7 @@ export default (element) => {
             VueItemSubmission.use(Switch);
             VueItemSubmission.use(Tabs);
             VueItemSubmission.use(Tag);
+            VueItemSubmission.use(Icon);
             VueItemSubmission.use(Checkbox);
             VueItemSubmission.use(Radio);
             VueItemSubmission.use(Button);

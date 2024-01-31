@@ -89,13 +89,15 @@
 <script>
     import TainacanTaxonomyTagInput from './TainacanTaxonomyTaginput.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
-    import { tainacan as axios } from '../../../js/axios.js';
+    import { tainacan as axios } from '../../../js/axios';
     import { mapActions } from 'vuex';
+    import { defineAsyncComponent } from 'vue';
 
     export default {
         components: {
             TainacanTaxonomyTagInput,
-            CheckboxRadioMetadataInput
+            CheckboxRadioMetadataInput,
+            TermEditionForm: defineAsyncComponent(() => import('../../edition/term-edition-form.vue')),
         },
         props: {
             itemMetadatum: Object,

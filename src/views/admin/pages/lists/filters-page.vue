@@ -178,7 +178,7 @@
                                                 :model-value="filter.enabled" 
                                                 @update:model-value="onChangeEnable($event, index)" />
                                         <a 
-                                                v-if="filter.current_user_can_delete"
+                                                v-if="filter.current_user_can_edit"
                                                 :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
                                                 @click.prevent="toggleFilterEdition(filter.id)">
                                             <span 
@@ -194,7 +194,7 @@
                                         </a>
                                         <a 
                                                 v-if="filter.current_user_can_delete"
-                                                :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel ? 'hidden' : 'visible' }"
+                                                :style="{ visibility: (filter.collection_id != collectionId && !isRepositoryLevel) || (filter.id == openedFilterId) ? 'hidden' : 'visible' }"
                                                 @click.prevent="removeFilter(filter)">
                                             <span
                                                     v-tooltip="{
