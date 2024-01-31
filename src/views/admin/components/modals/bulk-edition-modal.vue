@@ -314,9 +314,23 @@
 
 <script>
     import { mapActions, mapGetters } from 'vuex';
+    import { defineAsyncComponent } from 'vue';
 
     export default {
         name: "BulkEditionModal",
+        components:{
+            TainacanText: defineAsyncComponent(() => import('../metadata-types/text/TainacanText.vue')),
+            TainacanTextarea: defineAsyncComponent(() => import('../metadata-types/textarea/TainacanTextarea.vue')),
+            TainacanSelectbox: defineAsyncComponent(() => import('../metadata-types/selectbox/TainacanSelectbox.vue')),
+            TainacanNumeric: defineAsyncComponent(() => import('../metadata-types/numeric/TainacanNumeric.vue')),
+            TainacanDate: defineAsyncComponent(() => import('../metadata-types/date/TainacanDate.vue')),
+            TainacanRelationship: defineAsyncComponent(() => import('../metadata-types/relationship/TainacanRelationship.vue')),
+            TainacanTaxonomy: defineAsyncComponent(() => import('../metadata-types/taxonomy/TainacanTaxonomy.vue')),
+            TainacanCompound: defineAsyncComponent(() => import('../metadata-types/compound/TainacanCompound.vue')),
+            TainacanUser: defineAsyncComponent(() => import('../metadata-types/user/TainacanUser.vue')),
+            TainacanGeocoordinate: defineAsyncComponent(() => import('../metadata-types/geocoordinate/TainacanGeoCoordinate.vue')),
+            TainacanURL: defineAsyncComponent(() => import('../metadata-types/url/TainacanURL.vue'))
+        },
         props: {
             modalTitle: String,
             totalItems: Number,

@@ -5,7 +5,6 @@
                 v-model:value="valueComponent"
                 :disabled="disabled || isFetchingTerms"
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
-                :allow-select-to-create="allowSelectToCreate"
                 :allow-new="allowNewFromOptions"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('instruction_type_existing_term')"
                 :taxonomy-id="taxonomyId"

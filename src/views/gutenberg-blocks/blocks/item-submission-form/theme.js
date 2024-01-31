@@ -66,6 +66,12 @@ export default (element) => {
         if ( blockElement && blockElement.classList && !blockElement.classList.contains('has-mounted') ) {
 
             const VueItemSubmission = createApp({
+                created() {
+                    blockElement.classList.add('tainacan-item-submission-form'); // This used to be on the component, but as Vue now do not renders the component inside a div...
+                },
+                mounted() {
+                    blockElement.classList.add('has-mounted');
+                },
                 render: () => h(ItemSubmissionForm, {
                     collectionId: getDataAttribute(blockElement, 'collection-id'),
                     hideFileModalButton: isParameterTrue(getDataAttribute(blockElement,'hide-file-modal-button')),
@@ -96,13 +102,7 @@ export default (element) => {
                             return {};
                         }
                     })(),
-                }),
-                created() {
-                    blockElement.classList.add('tainacan-item-submission-form'); // This used to be on the component, but as Vue now do not renders the component inside a div...
-                },
-                mounted() {
-                    blockElement.classList.add('has-mounted');
-                }
+                })
             });
 
             VueItemSubmission.use(store);

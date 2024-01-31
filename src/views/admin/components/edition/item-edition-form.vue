@@ -733,7 +733,7 @@
 </template>
 
 <script>
-import { nextTick } from 'vue';
+import { nextTick, defineAsyncComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
 import wpMediaFrames from '../../js/wp-media-frames';
@@ -765,7 +765,8 @@ export default {
         ItemThumbnailEditionForm,
         ItemDocumentEditionForm,
         ItemAttachmentsEditionForm,
-        ItemFormFooterButtons
+        ItemFormFooterButtons,
+        TainacanFormItem: defineAsyncComponent(() => import('../metadata-types/tainacan-form-item.vue')),
     },
     mixins: [ formHooks, itemMetadataMixin ],
     beforeRouteLeave ( to, from, next ) {

@@ -98,6 +98,23 @@ export default (element) => {
                 possibleViewModes.push(possibleDefaultViewMode);
 
             const VueItemsList = createApp({
+                created() {
+                    blockElement.setAttribute('aria-live', 'polite');
+                    blockElement.classList.add('theme-items-list'); // This used to be on the component, but as Vue now do not renders the component inside a div...
+                },
+                mounted() {
+                    blockElement.classList.add('has-mounted');
+                },
+                beforeMount() {
+                    // Loads params if passed previously 
+                    if (this.$route.hash && this.$route.hash.split('#/?') && this.$route.hash.split('#/?')[1]) {
+                        const existingQueries = qs.parse(this.$route.hash.split('#/?')[1]); 
+
+                        for (let key of Object.keys(existingQueries))
+                            this.$route.query[key] = existingQueries[key];
+                    }
+
+                },
                 render: () => h(ThemeSearch, {
                     collectionId: getDataAttribute(blockElement, 'collection-id'),
                     termId: getDataAttribute(blockElement, 'term-id'),
@@ -131,23 +148,6 @@ export default (element) => {
                     showInlineViewModeOptions: isParameterTrue(getDataAttribute(blockElement, 'show-inline-view-mode-options')),
                     showFullscreenWithViewModes: isParameterTrue(getDataAttribute(blockElement, 'show-fullscreen-with-view-modes'))
                 }),
-                beforeMount() {
-                    // Loads params if passed previously 
-                    if (this.$route.hash && this.$route.hash.split('#/?') && this.$route.hash.split('#/?')[1]) {
-                        const existingQueries = qs.parse(this.$route.hash.split('#/?')[1]); 
-
-                        for (let key of Object.keys(existingQueries))
-                            this.$route.query[key] = existingQueries[key];
-                    }
-
-                },
-                created() {
-                    blockElement.setAttribute('aria-live', 'polite');
-                    blockElement.classList.add('theme-items-list'); // This used to be on the component, but as Vue now do not renders the component inside a div...
-                },
-                mounted() {
-                    blockElement.classList.add('has-mounted');
-                }
             });
 
             VueItemsList.use(store);

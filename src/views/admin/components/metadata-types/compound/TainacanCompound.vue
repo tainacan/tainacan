@@ -121,10 +121,13 @@
 </template>
 
 <script>
-    import { nextTick } from 'vue';
+    import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions } from 'vuex';
 
     export default {
+        components: {
+            TainacanFormItem: defineAsyncComponent(() => import('../tainacan-form-item.vue')),
+        },
         props: {
             itemMetadatum: Object,
             value: [String, Number, Array],

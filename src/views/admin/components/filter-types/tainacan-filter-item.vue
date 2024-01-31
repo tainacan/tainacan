@@ -86,32 +86,22 @@
 </template>
 
 <script>
-    import TainacanFilterNumeric from './numeric/TainacanFilterNumeric.vue';
-    import TainacanFilterDate from './date/TainacanFilterDate.vue';
-    import TainacanFilterSelectbox from './selectbox/TainacanFilterSelectbox.vue';
-    import TainacanFilterAutocomplete from './autocomplete/TainacanFilterAutocomplete.vue';
-    import TainacanFilterCheckbox from './checkbox/TainacanFilterCheckbox.vue';
-    import TainacanFilterTaginput from './taginput/TainacanFilterTaginput.vue';
-    import TainacanFilterTaxonomyCheckbox from './taxonomy/TainacanFilterCheckbox.vue';
-    import TainacanFilterTaxonomyTaginput from './taxonomy/TainacanFilterTaginput.vue';
-    import TainacanFilterDateInterval from './date-interval/TainacanFilterDateInterval.vue';
-    import TainacanFilterNumericInterval from './numeric-interval/TainacanFilterNumericInterval.vue';
-    import TainacanFilterNumericListInterval from './numeric-list-interval/TainacanFilterNumericListInterval.vue';
+    import { defineAsyncComponent } from 'vue';
 
     export default {
         name: 'TainacanFilterItem',
          components: {
-            TainacanFilterNumeric,
-            TainacanFilterDate,
-            TainacanFilterSelectbox,
-            TainacanFilterAutocomplete,
-            TainacanFilterCheckbox,
-            TainacanFilterTaginput,
-            TainacanFilterTaxonomyCheckbox,
-            TainacanFilterTaxonomyTaginput,
-            TainacanFilterDateInterval,
-            TainacanFilterNumericInterval,
-            TainacanFilterNumericListInterval
+            TainacanFilterNumeric: defineAsyncComponent(() => import('./numeric/TainacanFilterNumeric.vue')),
+            TainacanFilterDate: defineAsyncComponent(() => import('./date/TainacanFilterDate.vue')),
+            TainacanFilterSelectbox: defineAsyncComponent(() => import('./selectbox/TainacanFilterSelectbox.vue')),
+            TainacanFilterAutocomplete: defineAsyncComponent(() => import('./autocomplete/TainacanFilterAutocomplete.vue')),
+            TainacanFilterCheckbox: defineAsyncComponent(() => import('./checkbox/TainacanFilterCheckbox.vue')),
+            TainacanFilterTaginput: defineAsyncComponent(() => import('./taginput/TainacanFilterTaginput.vue')),
+            TainacanFilterTaxonomyCheckbox: defineAsyncComponent(() => import('./taxonomy/TainacanFilterCheckbox.vue')),
+            TainacanFilterTaxonomyTaginput: defineAsyncComponent(() => import('./taxonomy/TainacanFilterTaginput.vue')),
+            TainacanFilterDateInterval: defineAsyncComponent(() => import('./date-interval/TainacanFilterDateInterval.vue')),
+            TainacanFilterNumericInterval: defineAsyncComponent(() => import('./numeric-interval/TainacanFilterNumericInterval.vue')),
+            TainacanFilterNumericListInterval: defineAsyncComponent(() => import('./numeric-list-interval/TainacanFilterNumericListInterval.vue'))
         },
         props: {
             filter: Object,

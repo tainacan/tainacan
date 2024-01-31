@@ -1979,12 +1979,10 @@
 </template>
 
 <script>
-import { nextTick } from 'vue';
+import { nextTick, defineAsyncComponent } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
 
 import CustomDialog from '../other/custom-dialog.vue';
-import ItemCopyDialog from '../other/item-copy-dialog.vue';
-import BulkEditionModal from '../modals/bulk-edition-modal.vue';
 
 import Masonry from 'masonry-layout';
 import { dateInter } from "../../js/mixins";
@@ -2330,7 +2328,7 @@ export default {
         openBulkEditionModal(){
             this.$buefy.modal.open({
                 parent: this,
-                component: BulkEditionModal,
+                component: defineAsyncComponent(() => import('../modals/bulk-edition-modal.vue')),
                 props: {
                     modalTitle: this.$i18n.get('info_editing_items_in_bulk'),
                     totalItems: Object.keys(this.queryAllItemsSelected).length ? this.totalItems : this.selectedItems.length,
@@ -2367,7 +2365,7 @@ export default {
 
             this.$buefy.modal.open({
                 parent: this,
-                component: ItemCopyDialog,
+                component: defineAsyncComponent(() => import('../other/item-copy-dialog.vue')),
                 canCancel: false,
                 props: {
                     icon: 'items',

@@ -33,21 +33,6 @@ import FloatingVue from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
 import VueBlurHash from 'another-vue3-blurhash';
 
-// Metadata Types
-import TainacanText from '../components/metadata-types/text/TainacanText.vue';
-import TainacanTextarea from '../components/metadata-types/textarea/TainacanTextarea.vue';
-import TainacanSelectbox from '../components/metadata-types/selectbox/TainacanSelectbox.vue';
-import TainacanNumeric from '../components/metadata-types/numeric/TainacanNumeric.vue';
-import TainacanDate from '../components/metadata-types/date/TainacanDate.vue';
-import TainacanRelationship from '../components/metadata-types/relationship/TainacanRelationship.vue';
-import TainacanTaxonomy from '../components/metadata-types/taxonomy/TainacanTaxonomy.vue';
-import TainacanCompound from '../components/metadata-types/compound/TainacanCompound.vue';
-import TainacanUser from '../components/metadata-types/user/TainacanUser.vue';
-import TainacanGeoCoordinate from '../components/metadata-types/geocoordinate/TainacanGeoCoordinate.vue'
-import TainacanURL from '../components/metadata-types/url/TainacanURL.vue';
-
-import TainacanFormItem from '../components/metadata-types/tainacan-form-item.vue';
-
 // Remaining imports
 import AdminPage from '../admin.vue'
 import HelpButton from '../components/other/help-button.vue';
@@ -203,22 +188,6 @@ export default (element) => {
                     //copyAppContext(app, aComponent);
                 }
             }
-
-            /* Metadata */
-            app.component('tainacan-text', TainacanText);
-            app.component('tainacan-textarea', TainacanTextarea);
-            app.component('tainacan-selectbox', TainacanSelectbox);
-            app.component('tainacan-numeric', TainacanNumeric);
-            app.component('tainacan-date', TainacanDate);
-            app.component('tainacan-relationship', TainacanRelationship);
-            app.component('tainacan-taxonomy', TainacanTaxonomy);
-            app.component('tainacan-compound', TainacanCompound);
-            app.component('tainacan-user', TainacanUser);
-            app.component('tainacan-geocoordinate', TainacanGeoCoordinate);
-            app.component('tainacan-url', TainacanURL);
-
-            // Metadadum parent containers
-            app.component('tainacan-form-item', TainacanFormItem);
 
             /* Others */
             app.component('help-button', HelpButton);

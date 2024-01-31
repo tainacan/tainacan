@@ -166,10 +166,23 @@
 </template>
 
 <script>
-    import { nextTick } from 'vue';
+    import { nextTick, defineAsyncComponent } from 'vue';
 
     export default {
         name: 'TainacanFormItem',
+        components:{
+            TainacanText: defineAsyncComponent(() => import('./text/TainacanText.vue')),
+            TainacanTextarea: defineAsyncComponent(() => import('./textarea/TainacanTextarea.vue')),
+            TainacanSelectbox: defineAsyncComponent(() => import('./selectbox/TainacanSelectbox.vue')),
+            TainacanNumeric: defineAsyncComponent(() => import('./numeric/TainacanNumeric.vue')),
+            TainacanDate: defineAsyncComponent(() => import('./date/TainacanDate.vue')),
+            TainacanRelationship: defineAsyncComponent(() => import('./relationship/TainacanRelationship.vue')),
+            TainacanTaxonomy: defineAsyncComponent(() => import('./taxonomy/TainacanTaxonomy.vue')),
+            TainacanCompound: defineAsyncComponent(() => import('./compound/TainacanCompound.vue')),
+            TainacanUser: defineAsyncComponent(() => import('./user/TainacanUser.vue')),
+            TainacanGeocoordinate: defineAsyncComponent(() => import('./geocoordinate/TainacanGeoCoordinate.vue')),
+            TainacanURL: defineAsyncComponent(() => import('./url/TainacanURL.vue'))
+        },
         props: {
             itemMetadatum: Object,
             isCollapsed: true,

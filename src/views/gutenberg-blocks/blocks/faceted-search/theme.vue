@@ -690,21 +690,16 @@
 </template>
 
 <script>
-    import { nextTick } from 'vue';
+    import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
-    import FiltersTagsList from '../../../admin/components/search/filters-tags-list.vue';
     import ItemsPagination from '../../../admin/components/search/items-pagination.vue'
-    import AdvancedSearch from '../../../admin/components/search/advanced-search.vue';
-    import ExposersModal from '../../../admin/components/modals/exposers-modal.vue';
-    import CustomDialog from '../../../admin/components/other/custom-dialog.vue';
 
     export default {
         name: 'ThemeSearch',
         components: {
-            FiltersTagsList,
+            FiltersTagsList: defineAsyncComponent(() => import('../../../admin/components/search/filters-tags-list.vue')),
             ItemsPagination,
-            AdvancedSearch,
-            ExposersModal
+            AdvancedSearch: defineAsyncComponent(() => import('../../../admin/components/search/advanced-search.vue')),
         },
         props: {
             // Source settings
@@ -1301,7 +1296,7 @@
             openExposersModal() {
                 this.$buefy.modal.open({
                     parent: this,
-                    component: ExposersModal,
+                    component: defineAsyncComponent(() => import('../../../admin/components/modals/exposers-modal.vue')),
                     hasModalCard: true,
                     props: { 
                         collectionId: this.collectionId,
@@ -1586,7 +1581,7 @@
             openMetatadaSortingWarningDialog({ offerCheckbox }) {
                 this.$buefy.modal.open({
                         parent: this,
-                        component: CustomDialog,
+                        component: defineAsyncComponent(() => import('../../../admin/components/other/custom-dialog.vue')),
                         props: {
                             icon: 'alert',
                             title: this.$i18n.get('label_warning'),
