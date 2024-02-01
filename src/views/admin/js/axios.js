@@ -1,26 +1,20 @@
 import axios from 'axios';
-import { SnackbarProgrammatic, ModalProgrammatic } from '@ntohq/buefy-next';
-import CustomDialog from '../components/other/custom-dialog.vue'
 
 // Simpler version of the i18n plugin to translate error feedback messages
 const i18nGet = function (key) {
     let string = tainacan_plugin.i18n[key];
     return (string !== undefined && string !== null && string !== '' ) ? string : "ERROR: Invalid i18n key!";
 };
-
-const tainacanSanitize = function(htmlString) {
-    return htmlString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;')
-}
-
 export const tainacanErrorHandler = function(error) {
+
+    let errorMessage;
+    let errorMessageDetail;
 
     if (error.response && error.response.status) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
         
         if (error.response.status) {
-            let errorMessage = '';
-            let errorMessageDetail = '';
             let duration = 5000;
             switch(error.response.status) {
                 case 400:
@@ -40,27 +34,6 @@ export const tainacanErrorHandler = function(error) {
                     errorMessage = i18nGet('error_other');
                     break;
             }
-
-            // Snackbar.open({
-            //     message: tainacanSanitize(errorMessage),
-            //     type: 'is-danger',
-            //     duration: duration,
-            //     actionText: errorMessageDetail != '' ? i18nGet('label_know_more') : null,
-            //     onAction: () => {
-            //         Modal.open({
-            //             component: CustomDialog,
-            //             props: {
-            //                 title: i18nGet('label_error') + ' ' + error.response.status + '!',
-            //                 message: errorMessageDetail,
-            //                 hideCancel: true
-            //             },
-            //             ariaRole: 'alertdialog',
-            //             ariaModal: true,
-            //             customClass: 'tainacan-modal',
-            //             closeButtonAriaLabel: i18nGet('close')
-            //         });
-            //     }
-            // });
         } else {
             console.log('Tainacan Error Handler: ', error.response);
         }
@@ -74,34 +47,46 @@ export const tainacanErrorHandler = function(error) {
         // Something happened in setting up the request that triggered an Error
         console.error('Tainacan Error Handler: ', error.message);
     }
-    return Promise.reject(error);
+    return Promise.reject({ error, errorMessage, errorMessageDetail });
 }
 
 // Tainacan API Axios
-export const tainacan = axios.create({
+export const tainacanApi = axios.create({
     baseURL: tainacan_plugin.tainacan_api_url
 });
 if (tainacan_plugin.nonce) {
-    tainacan.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+    tainacanApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 }
 if (tainacan_plugin.admin_request_options) {
     Object.keys(tainacan_plugin.admin_request_options).forEach(requestOption => {
-        tainacan.defaults.headers[requestOption] = tainacan_plugin.admin_request_options[requestOption];
+        tainacanApi.defaults.headers[requestOption] = tainacan_plugin.admin_request_options[requestOption];
     });
 }
-tainacan.interceptors.response.use(
+tainacanApi.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
 
 // WordPress JSON API axios
-export const wp = axios.create({
+export const wpApi= axios.create({
     baseURL: tainacan_plugin.wp_api_url
 });
 if (tainacan_plugin.nonce) {
-    wp.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+    wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
 }
-wp.interceptors.response.use(
+wpApi.interceptors.response.use(
+    (response) => response,
+    (error) => tainacanErrorHandler(error)
+);
+
+// WordPress AJAX axios
+export const wpAjax = axios.create({
+    baseURL: tainacan_plugin.wp_ajax_url
+});
+if (tainacan_plugin.nonce) {
+    wpAjax.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+}
+wpAjax.interceptors.response.use(
     (response) => response,
     (error) => tainacanErrorHandler(error)
 );
@@ -109,5 +94,4 @@ wp.interceptors.response.use(
 export const CancelToken = axios.CancelToken;
 export const isCancel = axios.isCancel;
 export const all = axios.all;
-
-export default { tainacan, wp, CancelToken, isCancel, all, tainacanErrorHandler};
+export default { tainacanApi, wpApi, wpAjax, CancelToken, isCancel, all, tainacanErrorHandler };

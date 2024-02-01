@@ -271,13 +271,6 @@ export default {
             app.config.globalProperties.$eventBusSearch.performAdvancedSearch({});
         });
 
-        emitter.on('performAdvancedSearch', advancedSearchQuery => {
-            app.config.globalProperties.$store.dispatch('search/setPage', 1);
-            app.config.globalProperties.$eventBusSearch.performAdvancedSearch(advancedSearchQuery);
-
-            app.config.globalProperties.$eventBusSearch.updateURLQueries();
-        });
-
         app.config.globalProperties.$eventBusSearchEmitter = emitter;
     }
 }

@@ -9,7 +9,7 @@ const { useSelect } = wp.data;
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
 import TermsModal from '../terms-list/terms-modal.js';
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
@@ -139,7 +139,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }){
         terms = [];
 
         let endpoint = '/taxonomy/' + taxonomyId + '/terms/?'+ qs.stringify({ hideempty: 0, include: selectedTerms.map((term) => { return term.id; }), fetch_preview_image_items: showTermThumbnail ? 0 : 3 }) + '&order=asc';
-        tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
             .then(response => {
 
                 for (let term of response.data)

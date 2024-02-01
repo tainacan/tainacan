@@ -344,7 +344,7 @@
 <script>
     import { nextTick } from 'vue';
     import qs from 'qs';
-    import { tainacan as axios, isCancel } from '../../js/axios';
+    import { tainacanApi, isCancel } from '../../js/axios';
     import { dynamicFilterTypeMixin } from '../../js/filter-types-mixin';
 
     export default {
@@ -476,7 +476,7 @@
 
                     if (selected.length) {
                         this.isSelectedTermsLoading = true;
-                        axios.get(`/taxonomy/${this.taxonomyId}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
+                        tainacanApi.get(`/taxonomy/${this.taxonomyId}/terms/?${qs.stringify({ hideempty: 0, include: selected})}`)
                             .then((res) => {
                                 for (const term of res.data)
                                     this.saveSelectedTagName(
@@ -502,7 +502,7 @@
                     
                     this.isSelectedTermsLoading = true;
 
-                    axios.get(`/items/?${qs.stringify({ fetch_only: 'title', postin: selected})}`)
+                    tainacanApi.get(`/items/?${qs.stringify({ fetch_only: 'title', postin: selected})}`)
                         .then((res) => {
                             for (const item of res.data.items)
                                 this.saveSelectedTagName(item.id, item.title, item.url);
@@ -634,7 +634,7 @@
                     if (this.collectionId == 'default')
                         route = `/facets/${this.metadatumId}${query}`;
 
-                    axios.get(route)
+                    tainacanApi.get(route)
                         .then((res) => {
                             this.searchResults = res.data.values;
                             this.isLoadingSearch = false;
@@ -787,7 +787,7 @@
                 if (this.collectionId == 'default')
                     route = `/facets/${this.metadatumId}${query}`
                 
-                axios.get(route)
+                tainacanApi.get(route)
                     .then(res => {
                         
                         this.hasToDisplaySearchBar = !this.isSearching && (this.hasToDisplaySearchBar || res.headers['x-wp-totalpages'] > 1 || res.data.values.some((aValue) => aValue.total_children != undefined && aValue.total_children != 0));
@@ -822,7 +822,7 @@
                     if (this.collectionId == 'default')
                         route = `/facets/${this.metadatumId}${query}`
 
-                    axios.get(route)
+                    tainacanApi.get(route)
                         .then(res => {
                             this.appendMore(res.data.values, key, res.data.last_term.es_term);
 

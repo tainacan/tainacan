@@ -88,7 +88,7 @@
 <script>
     import TainacanTaxonomyTagInput from './TainacanTaxonomyTaginput.vue';
     import CheckboxRadioMetadataInput from '../../other/checkbox-radio-metadata-input.vue';
-    import { tainacan as axios } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios';
     import { mapActions } from 'vuex';
     import { defineAsyncComponent } from 'vue';
 
@@ -234,7 +234,7 @@
                     let val = this.valueComponent;
 
                     if ((!Array.isArray(val) || val.length == 0) && this.itemMetadatum.metadatum.multiple === 'no') {
-                        axios.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
+                        tainacanApi.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
                             values: term.id,
                         }).then(() => {
                             this.isAddingNewTermVaue = false;
@@ -244,7 +244,7 @@
                     } else {
                         val = val ? val : [];
                         val.push( this.getComponent == ('tainacan-taxonomy-checkbox' || 'tainacan-taxonomy-radio') ? term.id : {'label': term.name, 'value': term.id} );
-                        axios.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
+                        tainacanApi.patch(`/item/${this.itemMetadatum.item.id}/metadata/${this.itemMetadatum.metadatum.id}`, {
                             values: val,
                         }).then(() => {
                             this.isAddingNewTermVaue = false;

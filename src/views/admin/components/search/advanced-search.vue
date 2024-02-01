@@ -204,8 +204,7 @@
                         aria-controls="items-list-results"
                         type="submit"
                         :disabled="!hasUpdatedSearch"
-                        class="button is-secondary"
-                        @click.prevent="performAdvancedSearch">
+                        class="button is-secondary">
                     {{ $i18n.get('apply') }}
                 </button>
             </p>
@@ -630,7 +629,8 @@
                 }
 
                 this.hasUpdatedSearch = false;
-                this.$eventBusSearchEmitter.emit('performAdvancedSearch', this.advancedSearchQuery);
+                this.$store.dispatch('search/setPage', 1);
+                this.$eventBusSearch.performAdvancedSearch(this.advancedSearchQuery);
             },
             getAdvancedSearchQueryCriterionMetadataType(searchCriterion) {
                 if (this.advancedSearchQuery.metaquery[searchCriterion] &&

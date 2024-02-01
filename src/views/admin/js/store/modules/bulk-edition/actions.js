@@ -23,7 +23,7 @@ export const createEditGroup = ({commit}, parameters) => {
     }
 
     return new Promise ((resolve, reject) => {
-        axios.tainacan.post(`/collection/${collectionId}/bulk-edit`, bulkEditParams)
+        axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit`, bulkEditParams)
             .then(response => {
                 commit('setGroup', response.data);
                 resolve(response.data);
@@ -38,7 +38,7 @@ export const createEditGroup = ({commit}, parameters) => {
 export const fetchGroup = ({commit}, { collectionId, groupId }) => {
 
     return new Promise ((resolve, reject) => {
-        axios.tainacan.get(`/collection/${collectionId}/bulk-edit/${groupId}`)
+        axios.tainacanApi.get(`/collection/${collectionId}/bulk-edit/${groupId}`)
             .then(response => {
                 commit('setGroup', response.data);
                 resolve(response.data);
@@ -53,7 +53,7 @@ export const fetchGroup = ({commit}, { collectionId, groupId }) => {
 export const fetchSequenceGroup = ({commit}, { collectionId, groupId }) => {
 
     return new Promise ((resolve, reject) => {
-        axios.tainacan.get(`/collection/${collectionId}/sequence-edit/${groupId}`)
+        axios.tainacanApi.get(`/collection/${collectionId}/sequence-edit/${groupId}`)
             .then(response => {
                 commit('setGroup', response.data);
                 resolve(response.data);
@@ -74,7 +74,7 @@ export const setValueInBulk = ({commit}, parameters) => {
      * */
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/set`, bodyParams)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set`, bodyParams)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -93,7 +93,7 @@ export const addValueInBulk = ({commit}, parameters) => {
      * */
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/add`, bodyParams)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/add`, bodyParams)
         .then(response => {
             return response;
         })
@@ -111,7 +111,7 @@ export const removeValueInBulk = ({commit}, parameters) => {
      * */
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/remove`, bodyParams)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/remove`, bodyParams)
         .catch(error => {
             console.error(error);
         });
@@ -126,7 +126,7 @@ export const clearValuesInBulk = ({commit}, parameters) => {
      * */
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/clear`, bodyParams)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/clear`, bodyParams)
         .catch(error => {
             console.error(error);
         });
@@ -141,7 +141,7 @@ export const replaceValueInBulk = ({commit}, parameters) => {
      * */
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/replace`, bodyParams)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/replace`, bodyParams)
         .then(response => {
             return response;
         })
@@ -160,7 +160,7 @@ export const setStatusInBulk = ({commit}, parameters) => {
      * */
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_status`, bodyParams)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_status`, bodyParams)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -180,7 +180,7 @@ export const setCommentStatusInBulk = ({commit}, parameters) => {
      * */
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_comment_status`, bodyParams)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/set_comment_status`, bodyParams)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -194,7 +194,7 @@ export const trashItemsInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/trash`)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/trash`)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -208,7 +208,7 @@ export const untrashItemsInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/untrash`)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/untrash`)
         .then(response => {
             return response;
         })
@@ -221,7 +221,7 @@ export const deleteItemsInBulk = ({commit}, parameters) => {
     let groupId = parameters.groupId;
     let collectionId = parameters.collectionId;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/delete_items`)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/delete_items`)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -241,7 +241,7 @@ export const copyValuesInBulk = ({commit}, parameters) => {
      * */
     let bodyParams = parameters.bodyParams;
 
-    return axios.tainacan.post(`/collection/${collectionId}/bulk-edit/${groupId}/copy_value`, bodyParams)
+    return axios.tainacanApi.post(`/collection/${collectionId}/bulk-edit/${groupId}/copy_value`, bodyParams)
         .then(response => {
             commit('setLastUpdated');
             return response;
@@ -255,7 +255,7 @@ export const copyValuesInBulk = ({commit}, parameters) => {
 export const fetchItemIdInSequence = ({commit}, { collectionId, sequenceId, itemPosition }) => {
 
     return new Promise ((resolve, reject) => {
-        axios.tainacan.get(`/collection/${collectionId}/sequence-edit/${sequenceId}/${itemPosition}`)
+        axios.tainacanApi.get(`/collection/${collectionId}/sequence-edit/${sequenceId}/${itemPosition}`)
             .then(response => {
                 commit('setItemIdInSequence', response.data);
                 resolve(response.data);
@@ -285,7 +285,7 @@ export const createSequenceEditGroup = ({commit}, parameters) => {
     }
 
     return new Promise ((resolve, reject) => {
-        axios.tainacan.post(`/collection/${collectionId}/sequence-edit`, sequenceEditParams)
+        axios.tainacanApi.post(`/collection/${collectionId}/sequence-edit`, sequenceEditParams)
             .then(response => {
                 commit('setGroup', response.data);
                 resolve(response.data);

@@ -9,7 +9,7 @@ const { useSelect } = wp.data;
 import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; -> These causes conflicts with underscore due to lodash global variable
 import pick from 'lodash/pick';
 import DynamicItemsModal from '../carousel-items-list/dynamic-and-carousel-items-modal.js';
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
@@ -232,7 +232,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
             
             let endpoint = '/collection/' + collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&orderby=post__in&fetch_only=title,url,thumbnail';
             
-            tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+            tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
                 .then(response => {
 
                     if (layout !== 'mosaic') {
@@ -344,7 +344,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 
                 endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject) + '&fetch_only=title,url,thumbnail';
                 
-                tainacan.get(endpoint, { cancelToken: itemsRequestSource.token })
+                tainacanApi.get(endpoint, { cancelToken: itemsRequestSource.token })
                     .then(response => {
                         
                         if (layout !== 'mosaic') {
@@ -398,7 +398,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                 isLoadingCollection: isLoadingCollection
             });
 
-            tainacan.get('/collections/' + collectionId + '?fetch_only=name,thumbnail,header_image')
+            tainacanApi.get('/collections/' + collectionId + '?fetch_only=name,thumbnail,header_image')
                 .then(response => {
                     collection = response.data;
                     isLoadingCollection = false;      

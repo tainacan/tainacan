@@ -139,7 +139,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios';
     import { mapGetters } from 'vuex';
     import qs from 'qs';
 
@@ -243,7 +243,7 @@
                 if ( this.isAcceptingDraftItems )
                     query['status'] = ['publish','private','draft'];
 
-                axios.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
+                tainacanApi.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
                     .then( res => {
                         if (res.data.items) {
                             for (let item of res.data.items) {
@@ -265,7 +265,7 @@
             if (this.collection && this.collection.id == this.collectionId)
                 this.currentUserCanEditItems = this.collection.current_user_can_edit_items;
             else {
-                axios.get('/collections/' + this.collectionId + '?fetch_only=name,url,allow_comments&context=edit')
+                tainacanApi.get('/collections/' + this.collectionId + '?fetch_only=name,url,allow_comments&context=edit')
                     .then(res => this.currentUserCanEditItems = res.data.current_user_can_edit_items )
                     .catch(() => this.currentUserCanEditItems = false );
             }
@@ -311,7 +311,7 @@
                 if (this.searchQuery !== '') {
                     this.isLoading = true;
 
-                    axios.get('/collection/' + this.collectionId + '/items?' + this.getQueryString(this.searchQuery))
+                    tainacanApi.get('/collection/' + this.collectionId + '/items?' + this.getQueryString(this.searchQuery))
                         .then( res => {
 
                             if (res.data.items) {

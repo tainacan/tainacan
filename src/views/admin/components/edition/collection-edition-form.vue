@@ -901,14 +901,14 @@ import { nextTick } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import wpMediaFrames from '../../js/wp-media-frames';
 import FileItem from '../other/file-item.vue';
-import { wpAjax, formHooks } from '../../js/mixins';
+import { permalinkGetter, formHooks } from '../../js/mixins';
 
 export default {
     name: 'CollectionEditionForm',
     components: {
         FileItem
     },
-    mixins: [ wpAjax, formHooks ],
+    mixins: [ permalinkGetter, formHooks ],
     data(){
         return {
             collectionId: [String, Number],

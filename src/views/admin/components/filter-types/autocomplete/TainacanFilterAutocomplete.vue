@@ -45,7 +45,7 @@
 </template>
 
 <script>
-    import { tainacan as axios, isCancel } from '../../../js/axios'
+    import { tainacanApi, isCancel } from '../../../js/axios'
     import { filterTypeMixin, dynamicFilterTypeMixin } from '../../../js/filter-types-mixin';
 
     export default {
@@ -174,7 +174,7 @@
 
                         let endpoint = '/items/' + metadata.value + '?fetch_only=title,thumbnail';
 
-                        axios.get(endpoint)
+                        tainacanApi.get(endpoint)
                             .then( res => {
                                 let item = res.data;
                                 this.label = item.title;

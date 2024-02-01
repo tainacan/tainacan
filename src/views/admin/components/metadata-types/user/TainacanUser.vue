@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { wp as wpAxios } from '../../../js/axios';
+import { wpApi } from '../../../js/axios';
 import { mapActions } from 'vuex';
 import qs from 'qs';
     
@@ -110,7 +110,7 @@ export default {
                 let query = qs.stringify({ include: this.itemMetadatum.value });
                 let endpoint = '/users/';
 
-                wpAxios.get(endpoint + '?' + query)
+                wpApi.get(endpoint + '?' + query)
                     .then((res) => {
                         for (let user of res.data) {
                             this.selected.push({

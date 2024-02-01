@@ -10,7 +10,7 @@ import map from 'lodash/map'; // Do not user import { map,pick } from 'lodash'; 
 import pick from 'lodash/pick';
 import MetadataModal from './metadata-modal.js';
 import ParentTermModal from './parent-term-modal.js';
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 import { ThumbnailHelperFunctions } from '../../../admin/js/utilities.js';
@@ -254,7 +254,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         
         endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
         
-        tainacan.get(endpoint, { cancelToken: facetsRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: facetsRequestSource.token })
             .then(response => {
                 facetsObject = [];
 
@@ -338,7 +338,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
         queryObject.parent = parentTermId;
         endpoint = endpoint.split('?')[0] + '?' + qs.stringify(queryObject);
         
-        tainacan.get(endpoint)
+        tainacanApi.get(endpoint)
             .then(response => {
                 let childFacets = [];
 

@@ -267,7 +267,7 @@
 
 <script>
     import { nextTick } from 'vue';
-    import { wpAjax, formHooks } from "../../js/mixins";
+    import { permalinkGetter, formHooks } from "../../js/mixins";
     import { mapActions, mapGetters } from 'vuex';
     import TermsList from '../lists/terms-list.vue';
     import CustomDialog from '../other/custom-dialog.vue';
@@ -277,7 +277,7 @@
         components: {
            TermsList
         },
-        mixins: [ wpAjax, formHooks ],
+        mixins: [ permalinkGetter, formHooks ],
         beforeRouteLeave( to, from, next ) {
             let formNotSaved = false;
 

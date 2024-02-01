@@ -1,4 +1,4 @@
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
 const { __ } = wp.i18n;
@@ -83,7 +83,7 @@ export default class MetadataModal extends React.Component {
             modalCollections: someModalCollections
         });
 
-        tainacan.get(endpoint)
+        tainacanApi.get(endpoint)
             .then(response => {
 
                 let otherModalCollections = this.state.modalCollections;
@@ -156,7 +156,7 @@ export default class MetadataModal extends React.Component {
         else if (this.state.collectionOrderBy == 'title-desc')
             endpoint += '&orderby=title&order=desc';
 
-        tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
                 let someCollections = response.data.map((collection) => ({ name: collection.name, id: collection.id + '', slug: collection.slug }));
 
@@ -202,7 +202,7 @@ export default class MetadataModal extends React.Component {
             modalMetadata: someModalMetadata
         });
 
-        tainacan.get(endpoint)
+        tainacanApi.get(endpoint)
             .then(response => {
 
                 let otherModalMetadata = this.state.modalMetadata;

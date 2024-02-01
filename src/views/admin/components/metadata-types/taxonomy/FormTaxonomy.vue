@@ -175,7 +175,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios';
 
     export default {
         props: {
@@ -296,7 +296,7 @@
             fetchCollections() {
                 this.loadingCollections = true;
 
-                return axios.get('/collections?nopaging=1&context=edit&nopaging=1&fetch_only=name,id,thumbnail')
+                return tainacanApi.get('/collections?nopaging=1&context=edit&nopaging=1&fetch_only=name,id,thumbnail')
                     .then(res => {
                         this.collections = res.data ? res.data : [];
                         this.loadingCollections = false;
@@ -309,7 +309,7 @@
             fetchTaxonomies(){
                 this.loading = true;
 
-                return axios.get('/taxonomies?nopaging=1&order=asc&orderby=title')
+                return tainacanApi.get('/taxonomies?nopaging=1&order=asc&orderby=title')
                     .then(res => {
                         this.taxonomies = res.data ? res.data : [];
                         this.loading = false;

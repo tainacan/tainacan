@@ -1,11 +1,6 @@
 import qs from 'qs';
-import axios from 'axios';
-
-const wpApi = axios.create({
-    baseURL: tainacan_plugin.wp_api_url
-});
-
-wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+import axios from './axios';
+import CustomDialog from '../components/other/custom-dialog.vue'
 
 const tainacanSanitize = function(htmlString) {
     return htmlString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;')
@@ -69,14 +64,18 @@ ConsolePlugin.install = function (app, options = { visual: false }) {
     }
 };
 
+const i18nGet = function (key) {
+    let string = tainacan_plugin.i18n[key];
+    return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
+};
+
 // I18N PLUGIN - Allows access to Wordpress translation file.
 export const I18NPlugin = {};
 I18NPlugin.install = function (app, options = {}) {
     
     app.config.globalProperties.$i18n = {
         get(key) {
-            let string = tainacan_plugin.i18n[key];
-            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
+            return i18nGet(key);
         },
         getFrom(entity, key) {
             if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
@@ -165,7 +164,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
                 let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
                 if (tainacan_plugin.nonce) {
-                    wpApi.post('/users/me/', qs.stringify(data))
+                    axios.wpApi.post('/users/me/', qs.stringify(data))
                         .then( updatedRes => {
                             let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
                             this.tainacanPrefs = prefs;
@@ -187,7 +186,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
 
             if (tainacan_plugin.nonce) {
                 return new Promise(( resolve, reject ) => {
-                    wpApi.post('/users/me/', qs.stringify(data))
+                    axios.wpApi.post('/users/me/', qs.stringify(data))
                         .then( res => {
                             let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
                             this.tainacanPrefs[key] = prefs[key];
@@ -209,7 +208,7 @@ UserPrefsPlugin.install = function (app, options = {}) {
         clean() {
             let data = {'meta': {'tainacan_prefs': ''} };
             if (tainacan_plugin.nonce)
-                wpApi.post('/users/me/', qs.stringify(data));
+                axios.wpApi.post('/users/me/', qs.stringify(data));
         }
     }
 
@@ -403,35 +402,35 @@ StatusHelperPlugin.install = function (app, options = {}) {
             return  this.statuses;
         },
         loadStatuses() {
-            wpApi.get('/statuses/')
-                    .then( res => {
-                        let loadedStatus = res.data;
-                        this.statuses = [];
+            axios.wpApi.get('/statuses/')
+                .then( res => {
+                    let loadedStatus = res.data;
+                    this.statuses = [];
 
-                        if (loadedStatus['publish'] != undefined)
-                            this.statuses.push(loadedStatus['publish']);
-                        
-                        this.statuses.concat(Object.values(loadedStatus).filter((status) => {
-                            return !['publish','private', 'draft', 'trash'].includes(status.slug); 
-                        }));
+                    if (loadedStatus['publish'] != undefined)
+                        this.statuses.push(loadedStatus['publish']);
+                    
+                    this.statuses.concat(Object.values(loadedStatus).filter((status) => {
+                        return !['publish','private', 'draft', 'trash'].includes(status.slug); 
+                    }));
 
-                        // We always show private, draft and trash
-                        this.statuses.push({
-                            name: tainacan_plugin.i18n['status_private'],
-                            slug: 'private'
-                        });
-                        this.statuses.push({
-                            name: tainacan_plugin.i18n['status_draft'],
-                            slug: 'draft'
-                        });
-                        this.statuses.push({
-                            name: tainacan_plugin.i18n['status_trash'],
-                            slug: 'trash'}
-                        );
-                    })
-                    .catch(error => {
-                        console.error( error );
+                    // We always show private, draft and trash
+                    this.statuses.push({
+                        name: tainacan_plugin.i18n['status_private'],
+                        slug: 'private'
                     });
+                    this.statuses.push({
+                        name: tainacan_plugin.i18n['status_draft'],
+                        slug: 'draft'
+                    });
+                    this.statuses.push({
+                        name: tainacan_plugin.i18n['status_trash'],
+                        slug: 'trash'}
+                    );
+                })
+                .catch(error => {
+                    console.error( error );
+                });
         }
     }
 
@@ -453,6 +452,53 @@ CommentsStatusHelperPlugin.install = function (app, options = {}) {
     }
 
 };
+
+export const AxiosErrorHandlerPlugin = {};
+AxiosErrorHandlerPlugin.install = function (app, options = {}) {
+    
+    const tainacanVisualErrorHandler = function({ error, errorMessage, errorMessageDetail }) {
+
+        if (errorMessage) {
+            app.config.globalProperties.$buefy.snackbar.open({
+                message: tainacanSanitize(errorMessage),
+                type: 'is-danger',
+                duration: 5000,
+                actionText: errorMessageDetail ? i18nGet('label_know_more') : null,
+                onAction: () => {
+                    app.config.globalProperties.$buefy.modal.open({
+                        component: CustomDialog,
+                        props: {
+                            title: i18nGet('label_error') + ' ' + error.response.status + '!',
+                            message: errorMessageDetail,
+                            hideCancel: true
+                        },
+                        ariaRole: 'alertdialog',
+                        ariaModal: true,
+                        customClass: 'tainacan-modal',
+                        closeButtonAriaLabel: i18nGet('close')
+                    });
+                }
+            });
+        }
+    }
+
+    axios.tainacanApi.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            // Sends only necessary parts from error object, since we already used errorMessage
+            tainacanVisualErrorHandler(error)
+            return Promise.reject(error.error ? error.error : error);
+        }
+    );
+    axios.wpApi.interceptors.response.use(
+        (response) => response,
+        (error) =>  {
+            tainacanVisualErrorHandler(error)
+            // Sends only necessary parts from error object, since we already used errorMessage
+            return Promise.reject(error.error ? error.error : error);  
+        }
+    );
+}
 
 // ADMIN OPTIONS HELPER PLUGIN - Stores options passed to the data-options in the admin div.
 export const AdminOptionsHelperPlugin = {};

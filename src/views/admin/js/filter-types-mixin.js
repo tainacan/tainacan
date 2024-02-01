@@ -110,7 +110,7 @@ export const dynamicFilterTypeMixin = {
                 return new Object ({
                     request: 
                         new Promise((resolve, reject) => {
-                            axios.tainacan.get(url, { cancelToken: source.token })
+                            axios.tainacanApi.get(url, { cancelToken: source.token })
                                 .then(res => {
                                     this.isLoadingOptions = false;
 
@@ -191,7 +191,7 @@ export const dynamicFilterTypeMixin = {
                 return new Object ({
                     request:
                         new Promise((resolve, reject) => {
-                            axios.tainacan.get(url + '&' + qs.stringify(query_items))
+                            axios.tainacanApi.get(url + '&' + qs.stringify(query_items))
                                 .then(res => {
 
                                     this.isLoadingOptions = false;

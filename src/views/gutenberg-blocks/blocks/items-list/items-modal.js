@@ -1,4 +1,4 @@
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 import qs from 'qs';
 
@@ -88,7 +88,7 @@ export default class ItemsModal extends React.Component {
 
         let endpoint = '/collection/' + this.state.collectionId + '/items?'+ qs.stringify({ postin: selectedItems, perpage: selectedItems.length }) + '&orderby=post__in&fetch_only=title,url,thumbnail';
         
-        tainacan.get(endpoint, { cancelToken: anItemsRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: anItemsRequestSource.token })
             .then(response => {
                 
                 let someItems = response.data.items.map((item) => ({ 
@@ -139,7 +139,7 @@ export default class ItemsModal extends React.Component {
             modalCollections: someModalCollections
         });
 
-        tainacan.get(endpoint)
+        tainacanApi.get(endpoint)
             .then(response => {
 
                 let otherModalCollections = this.state.modalCollections;
@@ -164,7 +164,7 @@ export default class ItemsModal extends React.Component {
     }
 
     fetchCollection(collectionId) {
-        tainacan.get('/collections/' + collectionId)
+        tainacanApi.get('/collections/' + collectionId)
             .then((response) => {
                 this.setState({ collectionName: response.data.name });
             }).catch(error => {
@@ -209,7 +209,7 @@ export default class ItemsModal extends React.Component {
         else if (this.state.collectionOrderBy == 'title-desc')
             endpoint += '&orderby=title&order=desc';
 
-        tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
                 let someCollections = response.data.map((collection) => ({ name: collection.name, id: collection.id + '' }));
 

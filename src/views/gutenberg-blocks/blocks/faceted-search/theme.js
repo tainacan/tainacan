@@ -39,7 +39,8 @@ import {
     I18NPlugin,
     UserPrefsPlugin,
     ConsolePlugin,
-    AdminOptionsHelperPlugin
+    AdminOptionsHelperPlugin,
+    AxiosErrorHandlerPlugin
 } from '../../../admin/js/admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -202,6 +203,7 @@ export default (element) => {
             VueItemsList.use(UserPrefsPlugin);
             VueItemsList.use(ThumbnailHelperPlugin);
             VueItemsList.use(OrderByHelperPlugin);
+            VueItemsList.use(AxiosErrorHandlerPlugin);
             VueItemsList.use(ConsolePlugin, {visual: false});
             VueItemsList.use(AdminOptionsHelperPlugin, blockElement.dataset['options']);
 

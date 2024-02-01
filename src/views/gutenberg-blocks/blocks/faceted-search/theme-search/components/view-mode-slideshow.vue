@@ -653,7 +653,7 @@ export default {
                 // Loads next item, just in case
                 let nextIndex = (this.goingRight || this.goingRight == undefined) ? this.swiper.activeIndex + 1 : this.swiper.activeIndex - 1;
                 if (this.slideItems[nextIndex] != undefined && this.slideItems[nextIndex].id != undefined) {
-                    axios.tainacan.get('/items/' + this.slideItems[nextIndex].id)
+                    axios.tainacanApi.get('/items/' + this.slideItems[nextIndex].id)
                         .then(res => {
                             this.preloadedItem = res.data;
                         })

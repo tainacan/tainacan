@@ -285,7 +285,7 @@ import TermDeletionDialog from '../other/term-deletion-dialog.vue';
 import TermParentSelectionDialog from '../other/term-parent-selection-dialog.vue';
 import TermMultipleInsertionDialog from '../other/term-multiple-insertion-dialog.vue';
 
-import { tainacan as axios } from '../../js/axios';
+import { tainacanApi } from '../../js/axios';
 
 export default {
     name: 'TermsListHierarchical',
@@ -456,7 +456,7 @@ export default {
             if ( this.searchString.length )
                 route += '&searchterm=' + this.searchString;
 
-            axios.get(route)
+            tainacanApi.get(route)
                 .then(res => {
                     
                     this.totalRemaining = Object.assign({}, this.totalRemaining, {
@@ -492,7 +492,7 @@ export default {
                 if (this.searchString.length)
                     route += '&searchterm=' + this.searchString;
 
-                axios.get(route)
+                tainacanApi.get(route)
                     .then(res => {
 
                         this.totalRemaining = Object.assign({}, this.totalRemaining, {

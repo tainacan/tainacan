@@ -39,7 +39,7 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios';
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     
     export default {
@@ -132,7 +132,7 @@
                 
                 const valuesToIgnore = JSON.parse(JSON.stringify(this.selected));
 
-                return axios.get(endpoint).then( res => {
+                return tainacanApi.get(endpoint).then( res => {
                     for (let term of res.data.values) {   
 
                         if (valuesToIgnore != undefined && valuesToIgnore.length > 0) {

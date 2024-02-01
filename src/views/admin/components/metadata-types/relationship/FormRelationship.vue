@@ -138,7 +138,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios';
 
     export default {
         props: {
@@ -218,7 +218,7 @@
                 this.collectionType = message;
             },
             async fetchCollections(){
-                return await axios.get('/collections?nopaging=1')
+                return await tainacanApi.get('/collections?nopaging=1')
                     .then(res => {
                         const collections = res.data;
 
@@ -233,7 +233,7 @@
                 this.loadingMetadata = true;
                 this.hasMetadata = false;
 
-                axios.get('/collection/' + value + '/metadata/?nopaging=1')
+                tainacanApi.get('/collection/' + value + '/metadata/?nopaging=1')
                     .then((res) => {
                         this.loadingMetadata = false;
                         let metadata = res.data;

@@ -112,6 +112,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+// We use axios directly instead of tainacanApi because the base url is given from the preset settings
 import axios from 'axios';
 import { tainacanErrorHandler } from '../../js/axios';
 

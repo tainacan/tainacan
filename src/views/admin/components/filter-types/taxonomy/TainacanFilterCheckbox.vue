@@ -65,7 +65,7 @@
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios, CancelToken, isCancel } from '../../../js/axios';
+    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios';
     import { mapGetters } from 'vuex';
     import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
@@ -182,7 +182,7 @@
                     promise = new Object({
                         request:
                             new Promise((resolve, reject) => {
-                                axios.get(route, { cancelToken: source.token})
+                                tainacanApi.get(route, { cancelToken: source.token})
                                     .then( res => {
                                         resolve(res)
                                     })

@@ -1,8 +1,8 @@
-import { tainacan } from '../../../axios';
+import { tainacanApi } from '../../../axios';
 
 export const fetchAvailableExporters = () => {
 
-    return tainacan.get('/exporters/available')
+    return tainacanApi.get('/exporters/available')
         .then(response => {
             return response.data;
         })
@@ -13,7 +13,7 @@ export const fetchAvailableExporters = () => {
 
 export const createExporterSession = ({commit}, slug) => {
 
-    return tainacan.post('/exporters/session', { exporter_slug: slug })
+    return tainacanApi.post('/exporters/session', { exporter_slug: slug })
         .then(response => {
             commit('setExporterSession', response.data);
 
@@ -27,7 +27,7 @@ export const createExporterSession = ({commit}, slug) => {
 export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
 
     return new Promise(( resolve, reject ) => { 
-        tainacan.patch(`/exporters/session/${exporterSessionUpdated.id}`, exporterSessionUpdated.body)
+        tainacanApi.patch(`/exporters/session/${exporterSessionUpdated.id}`, exporterSessionUpdated.body)
             .then(response => {
                 commit('setExporterSession');
                 resolve( response.data );
@@ -41,7 +41,7 @@ export const updateExporterSession = ({commit}, exporterSessionUpdated) => {
 export const runExporterSession = ({commit}, exporterSessionID) => {
 
     return new Promise(( resolve, reject ) => { 
-        tainacan.post(`/exporters/session/${exporterSessionID}/run`)
+        tainacanApi.post(`/exporters/session/${exporterSessionID}/run`)
             .then(response => {
                 commit('setBackGroundProcessID', response.data);
                 resolve(response.data);

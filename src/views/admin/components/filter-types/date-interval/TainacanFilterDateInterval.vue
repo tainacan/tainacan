@@ -51,13 +51,12 @@
 </template>
 
 <script>
-    import { wpAjax, dateInter } from "../../../js/mixins";
+    import { dateInter } from "../../../js/mixins";
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     import moment from 'moment';
 
     export default {
-        mixins: [ 
-            wpAjax,
+        mixins: [
             dateInter, 
             filterTypeMixin
         ],

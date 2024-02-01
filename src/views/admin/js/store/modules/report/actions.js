@@ -13,7 +13,7 @@ export const fetchSummary = ({ commit }, { collectionId, force } ) => {
         endpoint += '?force=yes'
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let summary = res.data;
 
@@ -38,7 +38,7 @@ export const fetchMetadata = ({ commit }, { collectionId, force } ) => {
         endpoint += '?force=yes';
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let metadata = res.data;
 
@@ -63,7 +63,7 @@ export const fetchMetadataList = ({ commit }, { collectionId, onlyTaxonomies } )
         endpoint += '&metaquery[0][key]=metadata_type&metaquery[0][value]=Tainacan\\Metadata_Types\\Taxonomy';
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let metadataList = res.data;
 
@@ -82,7 +82,7 @@ export const fetchCollectionsList = ({ commit }, force) => {
         endpoint += '?force=yes';
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let collectionsList = res.data.list ? res.data.list : {};
 
@@ -102,7 +102,7 @@ export const fetchTaxonomiesList = ({ commit }, force) => {
         endpoint += '?force=yes';
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let taxonomiesList = res.data.list ? res.data.list : {};
 
@@ -130,7 +130,7 @@ export const fetchTaxonomyTerms = ({ commit }, { taxonomyId, collectionId, paren
         endpoint += '&parent=' + parentTerm;
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let taxonomyTerms = {};
                 if (collectionId && collectionId != 'default')
@@ -173,7 +173,7 @@ export const fetchActivities = ({ commit }, { collectionId, startDate, force } )
         endpoint += '&force=yes';
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let activities = res.data;
 

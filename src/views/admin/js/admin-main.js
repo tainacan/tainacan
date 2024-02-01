@@ -49,7 +49,8 @@ import {
     StatusHelperPlugin,
     CommentsStatusHelperPlugin,
     AdminOptionsHelperPlugin,
-    HtmlSanitizerPlugin 
+    HtmlSanitizerPlugin,
+    AxiosErrorHandlerPlugin 
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -178,6 +179,7 @@ export default (element) => {
             app.use(HtmlSanitizerPlugin);
             app.use(ConsolePlugin, {visual: false});
             app.use(CommentsStatusHelperPlugin);
+            app.use(AxiosErrorHandlerPlugin);
             app.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
 
 
@@ -185,7 +187,7 @@ export default (element) => {
             if (typeof window.tainacan_extra_components != "undefined") {
                 for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
                     const aComponent = app.component(extraVueComponentName, extraVueComponentObject);
-                    //copyAppContext(app, aComponent);
+                    ///copyAppContext(app, aComponent);
                 }
             }
 

@@ -1,4 +1,4 @@
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
 const { __ } = wp.i18n;
@@ -64,7 +64,7 @@ export default class ParentTermModal extends React.Component {
             modalFacets: someModalFacets
         });
 
-        tainacan.get(endpoint)
+        tainacanApi.get(endpoint)
             .then(response => {
 
                 let otherModalFacets = this.state.modalFacets;
@@ -134,7 +134,7 @@ export default class ParentTermModal extends React.Component {
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
 
-        tainacan.get(endpoint, { cancelToken: aFacetRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: aFacetRequestSource.token })
             .then(response => {
                 let someFacets = response.data.values.map((facet) => ({ name: facet.label, id: facet.value + '' }));
 
