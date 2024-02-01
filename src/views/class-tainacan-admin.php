@@ -77,7 +77,7 @@ class Admin {
 		);
 
 		$mobile_app_page_suffix = add_submenu_page(
-			null, // Mobile app page is not listed in the menu
+			'tainacan-no-show-menu', // Mobile app page is not listed in the menu
 			__('Mobile App', 'tainacan'),
 			__('Mobile App', 'tainacan'),
 			'manage_tainacan',
@@ -204,39 +204,39 @@ class Admin {
 		wp_enqueue_style( 'roboto-fonts', 'https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i', [] );
 		wp_enqueue_style( 'tainacan-admin-page', $TAINACAN_BASE_URL . '/assets/css/tainacan-admin.css', [], TAINACAN_VERSION );
 
-//		$undesired_wp_styles = [
-//			'admin-menu',
-//			'admin-bar',
-//			'code-editor',
-//			'color-picker',
-//			'customize-controls',
-//			'customize-nav-menus',
-//			'customize-widgets',
-//			'dashboard',
-//			'dashicons',
-//			'deprecated-media',
-//			'edit',
-//			'wp-pointer',
-//			'farbtastic',
-//			'forms',
-//			'common',
-//			'install',
-//			'wp-auth-check',
-//			'site-icon',
-//			'buttons',
-//			'l10n',
-//			'list-tables',
-//			'login',
-//			'media',
-//			'nav-menus',
-//			'revisions',
-//			'themes',
-//			'widgets',
-//			'wp-admin'
-//		];
-//
-//		wp_dequeue_style( $undesired_wp_styles );
-//		wp_deregister_style( $undesired_wp_styles );
+		// $undesired_wp_styles = [
+		// 	'admin-menu',
+		// 	'admin-bar',
+		// 	'code-editor',
+		// 	'color-picker',
+		// 	'customize-controls',
+		// 	'customize-nav-menus',
+		// 	'customize-widgets',
+		// 	'dashboard',
+		// 	'dashicons',
+		// 	'deprecated-media',
+		// 	'edit',
+		// 	'wp-pointer',
+		// 	'farbtastic',
+		// 	'forms',
+		// 	'common',
+		// 	'install',
+		// 	'wp-auth-check',
+		// 	'site-icon',
+		// 	'buttons',
+		// 	'l10n',
+		// 	'list-tables',
+		// 	'login',
+		// 	'media',
+		// 	'nav-menus',
+		// 	'revisions',
+		// 	'themes',
+		// 	'widgets',
+		// 	'wp-admin'
+		// ];
+
+		// wp_dequeue_style( $undesired_wp_styles );
+		// wp_deregister_style( $undesired_wp_styles );
 
 	}
 

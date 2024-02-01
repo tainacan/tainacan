@@ -14,6 +14,7 @@ use \Respect\Validation\Validator as v;
 class Metadata extends Repository {
 	public $entities_type = '\Tainacan\Entities\Metadatum';
 	protected $default_metadata = 'default';
+	protected $current_taxonomy;
 
 	public $metadata_types = [];
 
@@ -1265,7 +1266,7 @@ class Metadata extends Repository {
 		}
 
 		$search_q = '';
-		$search = trim($args['search']);
+		$search = trim($args['search'] ?? '');
 		if (!empty($search)) {
 			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
 				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s )", '%' . $search . '%');
@@ -1384,7 +1385,7 @@ class Metadata extends Repository {
 				}
 			}
 
-			$number = ctype_digit($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
+			$number = ctype_digit((string)$args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
 				$pages = 1;
 			} else {
@@ -1401,8 +1402,10 @@ class Metadata extends Repository {
 				$total_items = null;
 
 				if ( $args['count_items'] ) {
-					$count_items_query = $args['items_filter'];
-					$count_items_query['posts_per_page'] = 1;
+					$count_items_query = array(
+						'posts_per_page' => 1
+					);
+					$count_items_query = array_merge($args['items_filter'] != false ? $args['items_filter'] : [], $count_items_query);
 					if ( !isset($count_items_query['tax_query']) ) {
 						$count_items_query['tax_query'] = [];
 					}
@@ -1448,7 +1451,7 @@ class Metadata extends Repository {
 
 			$results = $wpdb->get_col($query);
 			$total = $wpdb->get_var($total_query);
-			$number = ctype_digit($args['number']) && $args['number'] >=1 ? $args['number'] : $total;
+			$number = ctype_digit((string)$args['number']) && $args['number'] >=1 ? $args['number'] : $total;
 			if( $number < 1){
 				$pages = 1;
 			} else {
@@ -1485,7 +1488,7 @@ class Metadata extends Repository {
 
 				if ( $args['count_items'] ) {
 					$count_items_query = $args['items_filter'];
-					$count_items_query['posts_per_page'] = 1;
+					$count_items_query['posts_per_page'] = (int)1;
 					if ( !isset($count_items_query['meta_query']) ) {
 						$count_items_query['meta_query'] = [];
 					}

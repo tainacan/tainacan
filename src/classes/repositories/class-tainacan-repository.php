@@ -121,6 +121,7 @@ abstract class Repository {
 	 * @throws \Exception
 	 */
 	public function insert( $obj ) {
+		$obj_post_type = $obj->get_post_type();
 		// validate
 		$required_validation_statuses = ['publish', 'future', 'private'];
 		if (in_array( $obj->get_status(), apply_filters( 'tainacan-status-require-validation', $required_validation_statuses) ) && ! $obj->get_validated() ) {
@@ -173,6 +174,9 @@ abstract class Repository {
 		if ( ! $obj instanceof Entities\Log ) {
 			$obj->WP_Post->post_title = $sanitized_title;
 			$obj->WP_Post->post_content = $sanitized_desc;
+		} else {
+			$obj->WP_Post->post_title = $this->sanitize_value($obj->WP_Post->post_title);
+			$obj->WP_Post->post_content = $this->sanitize_value($obj->WP_Post->post_content);
 		}
 
 		$id = wp_insert_post( $obj->WP_Post );
@@ -941,7 +945,10 @@ abstract class Repository {
 	}
 
 	protected function sanitize_value($content) {
-		if (is_numeric($content) || empty($content) ) {
+		if( $content == null ) {
+			return '';
+		}
+		if (is_numeric($content) || empty($content ) ) {
 			return $content;
 		}
 

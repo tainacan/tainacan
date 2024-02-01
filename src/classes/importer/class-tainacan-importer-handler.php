@@ -4,6 +4,14 @@ namespace Tainacan;
 
 class Importer_Handler {
 
+	/**
+	 * bg_importer
+	 *
+	 * @var Background_Importer
+	 * @access protected
+	 */
+	protected $bg_importer;
+
 	private $registered_importers = [];
 
 	function __construct() {

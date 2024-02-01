@@ -5,6 +5,8 @@ use Tainacan;
 use Tainacan\Entities;
 
 class CSV extends Importer {
+	private $items_repo;
+	
 	public function __construct($attributes = array()) {
 		parent::__construct($attributes);
 		$this->items_repo = \Tainacan\Repositories\Items::get_instance();
@@ -487,7 +489,7 @@ class CSV extends Importer {
 			case 'utf8':
 				return $string;
 			case 'iso88591':
-				return utf8_encode($string);
+				return mb_convert_encoding($string, 'UTF-8', 'ISO-8859-1');
 			default:
 				return $string;
 		}
@@ -1089,11 +1091,11 @@ class CSV extends Importer {
 		$author = $current_user->user_login;
 
 		$message  = __('imported file:', 'tainacan');
-		$message .= " <b> ${imported_file} </b><br/>";
+		$message .= " <b> $imported_file </b><br/>";
 		$message .= __('target collections:', 'tainacan');
 		$message .= " <b>" . implode(", ", $this->get_collections_names() ) . "</b><br/>";
 		$message .= __('Imported by:', 'tainacan');
-		$message .= " <b> ${author} </b><br/>";
+		$message .= " <b> $author </b><br/>";
 
 		return $message;
 	}

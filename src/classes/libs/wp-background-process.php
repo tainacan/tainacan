@@ -52,6 +52,38 @@
 		protected $cron_interval_identifier;
 
 		/**
+		 * cron_hook_check_identifier
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $cron_hook_check_identifier;
+
+		/**
+		 * process_lock_in_time
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $process_lock_in_time;
+		
+		/**
+		 * queue_lock_time
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $queue_lock_time;
+		
+		/**
+		 * cron_interval
+		 *
+		 * @var string
+		 * @access protected
+		 */
+		protected $cron_interval;
+
+		/**
 		 * Initiate new background process
 		 */
 		public function __construct() {

@@ -79,7 +79,7 @@ class Facets extends TAINACAN_UnitApiTestCase {
 	 * 
 	 */
 	
-	function setUp() {
+	function setUp() : void{
 		parent::setUp();
 		$collection1 = $this->tainacan_entity_factory->create_entity(
 			'collection',

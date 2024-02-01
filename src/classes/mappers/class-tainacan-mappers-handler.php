@@ -137,7 +137,8 @@ class Mappers_Handler {
 	 * @return Mappers\Mapper|boolean false
 	 */
 	public static function get_mapper_from_request($request) {
-		$body = json_decode( $request->get_body(), true );
+		$data_body = $request->get_body() ?? '';
+		$body = json_decode( $data_body, true );
 		$Tainacan_Mappers = self::get_instance();
 		$query_url_params = $request->get_query_params();
 		
