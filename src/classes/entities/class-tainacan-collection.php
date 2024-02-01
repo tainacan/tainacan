@@ -91,8 +91,8 @@ class Collection extends Entity {
 		$array_collection['header_image']      = $this->get_header_image();
 		$array_collection['author_name']       = $this->get_author_name();
 		$array_collection['url']               = $this->get_url();
-		$array_collection['creation_date']     = $this->get_date_i18n( explode( ' ', $array_collection['creation_date'] )[0] );
-		$array_collection['modification_date'] = $this->get_date_i18n( explode( ' ', $array_collection['modification_date'] )[0] );
+		$array_collection['creation_date']     = $this->get_date_i18n( explode( ' ', $array_collection['creation_date'] ?? '' )[0]  );
+		$array_collection['modification_date'] = $this->get_date_i18n( explode( ' ', $array_collection['modification_date'] ?? '' )[0]  );
 
 		return apply_filters('tainacan-collection-to-array', $array_collection, $this);
 	}

@@ -14,7 +14,7 @@ namespace Tainacan\Tests;
 class TestEntities extends TAINACAN_UnitTestCase {
 	
 	
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 		$this->collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

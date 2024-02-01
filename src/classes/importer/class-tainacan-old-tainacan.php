@@ -3,7 +3,14 @@
 namespace Tainacan\Importer;
 use \Tainacan\Entities;
 
-class Old_Tainacan extends Importer{
+class Old_Tainacan extends Importer {
+
+    protected $tax_repo;
+    protected $col_repo;
+    protected $items_repo;
+    protected $metadata_repo;
+    protected $term_repo;
+    protected $item_metadata_repo;
 
     protected $steps = [
 		[
@@ -443,7 +450,7 @@ class Old_Tainacan extends Importer{
         $info = $this->requester( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items",  $args );
 
         if( !isset($info['body']) ){
-            $this->add_error_log($result->get_error_message());
+            $this->add_error_log($info->get_error_message());
             $this->add_error_log('Error in fetch remote total items');
 			$this->abort();
             return false;
@@ -474,7 +481,7 @@ class Old_Tainacan extends Importer{
         $info = wp_remote_get( $this->get_url() . $this->tainacan_api_address . "/collections/".$collection_id."/items?includeMetadata=1&filter[page]=" . $page,  $args );
 
         if( !isset($info['body']) ){
-            $this->add_error_log($result->get_error_message());
+            $this->add_error_log($info->get_error_message());
             $this->add_error_log('Error in fetch remote first page item');
 			$this->abort();
             return false;
@@ -493,7 +500,7 @@ class Old_Tainacan extends Importer{
             $info = json_decode($info['body']);
 
             if( !isset($info['body']) ){
-                $this->add_error_log($result->get_error_message());
+                $this->add_error_log($info->get_error_message());
                 $this->add_error_log('Error in fetch remote ' . $page . ' page item');
                 $this->abort();
                 return false;
@@ -613,7 +620,7 @@ class Old_Tainacan extends Importer{
             if (is_wp_error($result)) {
 
                 $this->add_log($result->get_error_message());
-                $this->add_log('Error in fetch remote' . $url);
+                $this->add_log('Error in fetch remote' . $link);
                 $this->add_log('request number ' . $requests);
 
             } else if (isset($result['body'])){
@@ -644,7 +651,7 @@ class Old_Tainacan extends Importer{
 
 
 
-        $this->add_error_log('Error in fetch remote, expired the 10 requests limit ' . $url);
+        $this->add_error_log('Error in fetch remote, expired the 10 requests limit ' . $link);
         $this->abort();
         return false;
     }
@@ -713,10 +720,9 @@ class Old_Tainacan extends Importer{
      * @return int $metadatum_id
      */
     protected function create_metadata( $node_metadata_old, $collection_id = null){
-        $this->add_log('Creating metadata' . $meta->name);
-
         $newMetadatum = new Entities\Metadatum();
         $meta = $node_metadata_old;
+        $this->add_log('Creating metadata' . $meta->name);
 
         $name = $meta->name;
         $type = $this->define_type($meta->type);
@@ -856,7 +862,7 @@ class Old_Tainacan extends Importer{
     /**
      * create attachments, document and thumb from old
      *
-     * @param string $node_old
+     * @param Object $node_old
      *
      * @return string the class name
      */

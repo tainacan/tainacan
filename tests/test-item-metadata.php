@@ -19,7 +19,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	private $item = null;
 	private $separator = '<span class="multivalue-separator"> | </span>';
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$c = $this->tainacan_entity_factory->create_entity('collection', ['name' => 'My Collection'], true);
 		$i = $this->tainacan_entity_factory->create_entity(
@@ -652,7 +652,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 
 		$relationship_metadata->set_multiple('yes');
 		$item_metadata_relationship->set_value([ $mystify->get_id(), $disappear->get_id() ]);
-		$this->assertEquals($item_metadata_relationship->get_value_as_html(), "${expected_return}" . $this->separator . "${expected_return2}");
+		$this->assertEquals($item_metadata_relationship->get_value_as_html(), "$expected_return" . $this->separator . "$expected_return2");
 	}
 
 	function test_taxonomy_metadata_html() {
@@ -760,7 +760,7 @@ class Item_Metadata extends TAINACAN_UnitTestCase {
 	private function relationship_expected_return($id, $title) {
 		$URL = get_permalink($id);
 		
-		return "<a data-linkto='item' data-id='${id}' href='${URL}'>${title}</a>";
+		return "<a data-linkto='item' data-id='$id' href='$URL'>$title</a>";
 	}
 
 	function test_multiple_with_cardinality() {

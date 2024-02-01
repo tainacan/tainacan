@@ -6,8 +6,10 @@ use Tainacan\Repositories\Repository;
 class Roles {
 
 	private static $instance = null;
-
 	private $capabilities;
+	private $meta_caps;
+	private $meta_section_caps;
+	private $filters_caps;
 
 	public static function get_instance()
 	{
@@ -585,7 +587,7 @@ class Roles {
 
 		foreach ( $caps as $cap ) {
 
-			if ( array_key_exists($cap, $allcaps) && $allcaps[$cap] === true ) {
+			if ( isset($cap) && $cap !== false && array_key_exists($cap, $allcaps) && $allcaps[$cap] === true ) {
 				continue;
 			}
 

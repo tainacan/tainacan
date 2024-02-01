@@ -174,8 +174,9 @@ abstract class Metadata_Type  {
     /**
      * @param $options
      */
-    public function set_options( $options ){
-	    $this->options = ( is_array( $options ) ) ? $options : (!is_array(unserialize( $options )) ? [] : unserialize( $options ));
+    public function set_options( $options ) {
+        $options = $options ?? '';
+        $this->options = ( is_array( $options ) ) ? $options : (!is_array(unserialize( $options )) ? [] : unserialize( $options ));
     }
     
     public function set_default_options(Array $options) {

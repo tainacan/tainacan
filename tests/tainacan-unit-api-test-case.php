@@ -20,7 +20,15 @@ class TAINACAN_UnitApiTestCase extends TAINACAN_UnitTestCase {
 	 */
 	protected $namespace = '/tainacan/v2';
 
-	public function setUp(){
+	public $collection;
+	public $metadatum;
+	public $item;
+	public $multiple_meta;
+	public $taxonomy;
+	public $category;
+	public $api_baseroute;
+
+	public function setUp() : void{
 		parent::setUp();
 
 		global $wp_rest_server;

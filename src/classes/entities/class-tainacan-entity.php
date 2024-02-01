@@ -8,6 +8,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
  * Entity Super class
  *
  */
+#[\AllowDynamicProperties]
 class Entity {
 	/**
 	 * The repository of that entity 
@@ -202,6 +203,9 @@ class Entity {
 			return $this->$method($value);
 		}
 	}
+	// public function __set(string $name, mixed $value): void {
+    //     $this->{$name} = $value;
+    // }
 
 	/**
 	 * get the value property
@@ -216,6 +220,9 @@ class Entity {
 			return $this->$method();
 		}
 	}
+	// public function __get(string $name) {
+    //     return $this->{$name};
+    // }
 
 	/**
 	 * set the status of the entity

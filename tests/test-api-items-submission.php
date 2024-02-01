@@ -6,8 +6,11 @@ namespace Tainacan\Tests;
  * @group api
  */
 class TAINACAN_REST_Items_Submission extends TAINACAN_UnitApiTestCase {
-
-	function setUp() {
+	private $col_user_anonymous;
+	private $col_user_logged;
+	private $collections_metadatum;
+	
+	function setUp(): void {
 		parent::setUp();
 
 		// collections:

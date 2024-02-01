@@ -10,8 +10,11 @@ use Tainacan\Entities;
 class SequenceEdit extends TAINACAN_UnitApiTestCase {
 
 	public $items_ids = [];
+	public $collection;
+	public $metadatum;
+	public $api_baseroute;
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 		$collection = $this->tainacan_entity_factory->create_entity(
 			'collection',

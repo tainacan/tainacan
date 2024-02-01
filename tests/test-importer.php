@@ -282,7 +282,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 			having
 			multiple
 			lines', 'Data 24', 'Data 25'),
-			array(get_current_user_id(), 'Data 31', 'Data 32', utf8_decode( 'Data 33||Rééço' ), 'Data 34', 'Data 35'),
+			array(get_current_user_id(), 'Data 31', 'Data 32', mb_convert_encoding('Data 33||Rééço', 'UTF-8', 'ISO-8859-1'), 'Data 34', 'Data 35'),
 			array(get_current_user_id(), 'Data 41', 'Data 42', 'Data 43||limbbo', 'Data 44', 'Data 45'),
 			array(get_current_user_id(), 'Data 51', 'Data 52', 'Data 53', 'Data 54', 'Data 55>>DATA551')
 		);
@@ -447,7 +447,7 @@ class ImporterTests extends TAINACAN_UnitTestCase {
 			array(
 				'Data 31', 
 				'458', 
-				utf8_decode( 'Data 33||Rééço' ), 
+				mb_convert_encoding( 'Data 33||Rééço', 'ISO-8859-1', 'UTF-8' ), 
 				'https://www.codeproject.com/KB/GDI-plus/ImageProcessing2/img.jpg||https://cloud.netlifyusercontent.com/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/58f72418-b5ee-4765-8e80-e463623a921d/01-httparchive-opt-small.png', 
 				'file:https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg'),
 			array('Data 41', '459', 'Data 43||limbbo', 'photos/SamplePNGImage_100kbmb.png||audios/SampleAudio_0.4mb.mp3', 'url:http://www.pdf995.com/samples/pdf.pdf'),
