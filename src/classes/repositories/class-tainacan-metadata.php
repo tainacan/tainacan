@@ -1266,7 +1266,7 @@ class Metadata extends Repository {
 		}
 
 		$search_q = '';
-		$search = trim($args['search']);
+		$search = trim($args['search'] ?? '');
 		if (!empty($search)) {
 			if( $metadatum_type === 'Tainacan\Metadata_Types\Relationship' ) {
 				$search_q = $wpdb->prepare("AND meta_value IN ( SELECT ID FROM $wpdb->posts WHERE post_title LIKE %s )", '%' . $search . '%');
