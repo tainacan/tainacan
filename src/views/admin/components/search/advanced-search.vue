@@ -685,7 +685,9 @@
                     }
                 }
             }
-
+            .add-link-advanced-search {
+                margin-top: 0.75rem;
+            }
             .add-link-advanced-search a {
                 font-size: 0.8125em;
                 display: inline-flex;

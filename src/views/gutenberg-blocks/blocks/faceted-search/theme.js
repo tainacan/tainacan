@@ -103,19 +103,17 @@ export default (element) => {
                 created() {
                     blockElement.setAttribute('aria-live', 'polite');
                     blockElement.classList.add('theme-items-list'); // This used to be on the component, but as Vue now do not renders the component inside a div...
+                    
+                    // Loads params if passed previously 
+                    const currentRouteQueries = qs.parse(location.search.split('?')[1]);
+                    
+                    if ( currentRouteQueries.advancedSearch )
+                        this.$store.dispatch('search/setAdvancedQuery', currentRouteQueries);
+                    else
+                        this.$store.dispatch('search/setPostQuery', currentRouteQueries )
                 },
                 mounted() {
                     blockElement.classList.add('has-mounted');
-                },
-                beforeMount() {
-                    // Loads params if passed previously 
-                    if (this.$route.hash && this.$route.hash.split('#/?') && this.$route.hash.split('#/?')[1]) {
-                        const existingQueries = qs.parse(this.$route.hash.split('#/?')[1]); 
-
-                        for (let key of Object.keys(existingQueries))
-                            this.$route.query[key] = existingQueries[key];
-                    }
-
                 },
                 render: () => h(ThemeSearch, {
                     collectionId: getDataAttribute(blockElement, 'collection-id'),

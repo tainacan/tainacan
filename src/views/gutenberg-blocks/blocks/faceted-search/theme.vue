@@ -913,29 +913,13 @@
                         // Emit slideshow-from to start this view mode from index
                         if (this.$route.query.view_mode != 'slideshow' && this.$route.query['slideshow-from'] !== null && this.$route.query['slideshow-from'] !== undefined && this.$route.query['slideshow-from'] !== false)
                             this.$eventBusSearchEmitter.emit('startSlideshowFromItem', this.$route.query['slideshow-from']);
-                       
-                        // Admin View Modes
-                        if (this.$route.name != null && this.$route.name != undefined  && 
-                            (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') &&
-                            (this.$route.query.admin_view_mode == undefined || to.params.collectionId != from.params.collectionId)
-                        ) {
-                            let adminViewModeKey = (this.collectionId != undefined ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode');
-                            let adminViewModeValue = this.$userPrefs.get(adminViewModeKey);
-
-                            if (adminViewModeValue)
-                                this.$route.query.admin_view_mode = adminViewModeValue;
-                            else {
-                                this.$route.query.admin_view_mode = 'table';
-                                this.$userPrefs.set(adminViewModeKey, 'table');
-                            }
-                        }
                         
                         // Advanced Search
-                        if (this.$route.query && this.$route.query.advancedSearch){
-                            this.$store.dispatch('search/setAdvancedQuery', this.$route.query);
-                        } else {
-                            this.$store.dispatch('search/setPostQuery', this.$route.query);
-                        }
+                       // if (this.$route.query && this.$route.query.advancedSearch){
+                       //     this.$store.dispatch('search/setAdvancedQuery', this.$route.query);
+                        //} else {
+                        //    this.$store.dispatch('search/setPostQuery', this.$route.query);
+                        //}
                         
                          // Finally, loads items even berfore facets so they won't stuck them
                          if (to.fullPath != from.fullPath)

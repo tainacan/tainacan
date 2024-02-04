@@ -7,6 +7,7 @@ const themeRoutes = [
     {
         path: '/:catchAll(.*)*',
         component: ThemeSearch, // The component where you want to respond to changes
+        props: true
     }
 ];
 
