@@ -198,13 +198,13 @@ export default {
             exitViewModeWithoutPagination() {
                 app.config.globalProperties.$eventBusSearchEmitter.emit( 'exitViewModeWithoutPagination', true);
             },
-            async updateURLQueries() {
-                const newQueries = app.config.globalProperties.$store.getters['search/getPostQuery'];
-                await app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: {} });
-                await app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: newQueries });
+            updateURLQueries() {
+                const newQueries = JSON.parse(JSON.stringify(app.config.globalProperties.$store.getters['search/getPostQuery']));
+                //app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: {} });
+                app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: newQueries });
             },
             updateStoreFromURL() {
-                app.config.globalProperties.$store.dispatch('search/setPostQuery', app.config.globalProperties.$route.query);
+                app.config.globalProperties.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(app.config.globalProperties.$route.query)));
             },
             loadItems() {
                 // Forces fetch_only to be filled before any search happens

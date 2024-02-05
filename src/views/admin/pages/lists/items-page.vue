@@ -909,14 +909,14 @@
                     
                     // Advanced Search
                     if (this.$route.query && this.$route.query.advancedSearch)
-                        this.$store.dispatch('search/setAdvancedQuery', this.$route.query);
+                        this.$store.dispatch('search/setAdvancedQuery', JSON.parse(JSON.stringify(this.$route.query)));
                     else 
-                        this.$store.dispatch('search/setPostQuery', this.$route.query);
+                        this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
                     
                     // Finally, loads items even berfore facets so they won't stuck them 
                     if (to.fullPath != from.fullPath)
                         this.$eventBusSearch.loadItems();
-                    
+
                     // Checks current metaqueries and taxqueries to alert filters that should reload
                     // For some reason, this process is not working accessing to.query, so we need to check the path string. 
                     const oldQueryString = from.fullPath.replace(from.path + '?', '');
