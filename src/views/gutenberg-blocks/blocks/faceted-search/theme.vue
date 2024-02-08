@@ -693,6 +693,7 @@
 <script>
     import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
+    import qs from 'qs';
     import ItemsPagination from '../../../admin/components/search/items-pagination.vue'
 
     export default {
@@ -915,11 +916,10 @@
                             this.$eventBusSearchEmitter.emit('startSlideshowFromItem', this.$route.query['slideshow-from']);
                         
                         // Advanced Search
-                       // if (this.$route.query && this.$route.query.advancedSearch){
-                       //     this.$store.dispatch('search/setAdvancedQuery', this.$route.query);
-                        //} else {
-                        //    this.$store.dispatch('search/setPostQuery', this.$route.query);
-                        //}
+                        if (this.$route.query && this.$route.query.advancedSearch)
+                           this.$store.dispatch('search/setAdvancedQuery', JSON.parse(JSON.stringify(this.$route.query)));
+                        else
+                           this.$store.dispatch('search/setPostQuery', JSON.parse(JSON.stringify(this.$route.query)));
                         
                          // Finally, loads items even berfore facets so they won't stuck them
                          if (to.fullPath != from.fullPath)
@@ -937,15 +937,12 @@
                         const newMetaQueryArray = newQueryArray.filter(queryItem => queryItem.startsWith('metaquery'));
                         const oldTaxQueryArray  = oldQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
                         const newTaxQueryArray  = newQueryArray.filter(queryItem => queryItem.startsWith('taxquery'));
-                        const oldStatusArray    = oldQueryArray.filter(queryItem => queryItem.startsWith('status'));
-                        const newStatusArray    = newQueryArray.filter(queryItem => queryItem.startsWith('status'));
                         const oldSearchQuery    = oldQueryArray.filter(queryItem => queryItem.startsWith('search'));
                         const newSearchQuery    = newQueryArray.filter(queryItem => queryItem.startsWith('search'));
 
                         if (
                             JSON.stringify(oldMetaQueryArray) != JSON.stringify(newMetaQueryArray) ||
                             JSON.stringify(oldTaxQueryArray)  != JSON.stringify(newTaxQueryArray) ||
-                            JSON.stringify(oldStatusArray)    != JSON.stringify(newStatusArray) ||
                             JSON.stringify(oldSearchQuery)    != JSON.stringify(newSearchQuery)
                         ) {
                             this.$eventBusSearchEmitter.emit('hasToReloadFacets', true);
@@ -999,12 +996,12 @@
             }
         },
         created() {
-
             this.$userPrefs.init();
             
             this.isRepositoryLevel = (this.collectionId == undefined || this.collectionId == '' || this.collectionId == null);
 
-            this.$eventBusSearch.updateStoreFromURL();
+            // Loads params if passed previously 
+            let currentQuery = qs.parse(location.search.split('?')[1]);
 
             // Sets initial variables important to searchbus
             if (this.collectionId != undefined)
@@ -1013,7 +1010,7 @@
                 this.$eventBusSearch.setTerm(this.termId, this.taxonomy);
             if (this.defaultOrder != undefined) {
                 this.$eventBusSearch.setDefaultOrder(this.defaultOrder);
-                if (!this.$route.query.order)
+                if (!currentQuery.order)
                     this.$eventBusSearch.setOrder(this.defaultOrder);
             }
             if (this.defaultOrderBy != undefined) {
@@ -1030,15 +1027,36 @@
                     
                     this.$eventBusSearch.setDefaultOrderBy(orderByObject);
 
-                    if (!this.$route.query.orderby)
+                    if (!currentQuery.orderby)
                         this.$eventBusSearch.setOrderBy(orderByObject);
                 
                 } else {                    
                     this.$eventBusSearch.setDefaultOrderBy(this.defaultOrderBy);
 
-                    if (!this.$route.query.orderby)
+                    if (!currentQuery.orderby)
                         this.$eventBusSearch.setOrderBy(this.defaultOrderBy);
                 }
+            }
+
+            for (let key in currentQuery) {
+                if (currentQuery[key] == 'true')
+                    currentQuery[key] = true;
+                if (currentQuery[key] == 'false')
+                    currentQuery[key] = false;
+            }
+
+            if ( currentQuery.advancedSearch )
+                this.$store.dispatch('search/setAdvancedQuery', currentQuery);
+            else
+                this.$store.dispatch('search/setPostQuery', currentQuery )
+
+            if (!this.hideAdvancedSearch) {
+                if (currentQuery && currentQuery.advancedSearch)
+                    this.openAdvancedSearch = !!currentQuery.advancedSearch;
+
+                this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
+                    this.openAdvancedSearch = openAdvancedSearch;
+                });
             }
 
             this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
@@ -1060,7 +1078,7 @@
             });
 
             this.$eventBusSearchEmitter.on('exitViewModeWithoutPagination', () => {
-                let currentQuery = this.$route.query;
+                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
                 delete currentQuery['slideshow-from'];
                 this.$router.replace({ query: currentQuery });
     
@@ -1069,20 +1087,9 @@
                 this.$eventBusSearch.setPage(this.latestPageAfterViewModeWithoutPagination);
                 this.onChangeViewMode(this.latestNonFullscreenViewMode ? this.latestNonFullscreenViewMode : this.defaultViewMode);
             });
-            
-            if (!this.hideAdvancedSearch) {
-
-                if (this.$route.query && this.$route.query.advancedSearch) {
-                    this.openAdvancedSearch = this.$route.query.advancedSearch;
-                }
-
-                this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
-                    this.openAdvancedSearch = openAdvancedSearch;
-                });
-            }
 
             this.$eventBusSearchEmitter.on('startSlideshowFromItem', (index) => {
-                let currentQuery = this.$route.query;
+                let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
                 delete currentQuery['slideshow-from'];
                 this.$router.replace({ query: currentQuery }).catch((error) => this.$console.log(error));
 

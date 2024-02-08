@@ -188,7 +188,6 @@ export default {
                 app.config.globalProperties.$store.dispatch('search/cleanSelectedItems');
             },
             async filterBySelectedItems(selectedItems) {
-                await app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: {} });
                 await app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: { postin: selectedItems } });
             },
             highlightsItem(itemId) {
@@ -200,7 +199,6 @@ export default {
             },
             updateURLQueries() {
                 const newQueries = JSON.parse(JSON.stringify(app.config.globalProperties.$store.getters['search/getPostQuery']));
-                //app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: {} });
                 app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: newQueries });
             },
             updateStoreFromURL() {

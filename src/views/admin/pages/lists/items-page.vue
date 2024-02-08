@@ -870,27 +870,6 @@
                         this.$route.query.orderby = 'date'
                     }
                     
-                    // Theme View Modes
-                    if ((this.$route.name == null || this.$route.name == undefined ) && 
-                        this.$route.name != 'CollectionItemsPage' && this.$route.name != 'ItemsPage' &&
-                        (this.$route.query.view_mode == undefined || to.params.collectionId != from.params.collectionId)
-                    ) {
-                        
-                        let viewModeKey = (this.collectionId != undefined ? 'view_mode_' + this.collectionId : 'view_mode');
-                        let viewModeValue = this.$userPrefs.get(viewModeKey);
-
-                        if (viewModeValue)
-                            this.$route.query.view_mode = viewModeValue;
-                        else {
-                            this.$route.query.view_mode = 'table';
-                            this.$userPrefs.set(viewModeKey, 'table');
-                        }
-                    }
-
-                    // Emit slideshow-from to start this view mode from index
-                    if (this.$route.query.view_mode != 'slideshow' && this.$route.query['slideshow-from'] !== null && this.$route.query['slideshow-from'] !== undefined && this.$route.query['slideshow-from'] !== false)
-                        this.$eventBusSearchEmitter.emit('startSlideshowFromItem', this.$route.query['slideshow-from']);
-                    
                     // Admin View Modes
                     if (this.$route.name != null && this.$route.name != undefined  && 
                         (this.$route.name == 'CollectionItemsPage' || this.$route.name == 'ItemsPage') &&
@@ -982,6 +961,15 @@
             this.$eventBusSearch.setCollectionId(this.collectionId);
             this.$eventBusSearch.updateStoreFromURL();
 
+            let currentQuery = JSON.parse(JSON.stringify(this.$route.query));
+
+            if (currentQuery && currentQuery.advancedSearch)
+                this.openAdvancedSearch = !!currentQuery.advancedSearch;
+
+            this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
+                this.openAdvancedSearch = openAdvancedSearch;
+            });
+
             this.$eventBusSearchEmitter.on('isLoadingItems', isLoadingItems => {
                 
                 if (isLoadingItems != this.isLoadingItems && this.$refs['items-page-container'] && this.$refs['search-control']) {
@@ -997,14 +985,6 @@
 
             this.$eventBusSearchEmitter.on('hasFiltered', hasFiltered => {
                 this.hasFiltered = hasFiltered;
-            });
-            
-            if (this.$route.query && this.$route.query.advancedSearch) {
-                this.openAdvancedSearch = this.$route.query.advancedSearch;
-            }
-
-            this.$emitter.on('openAdvancedSearch', (openAdvancedSearch) => {
-                this.openAdvancedSearch = openAdvancedSearch;
             });
 
         },

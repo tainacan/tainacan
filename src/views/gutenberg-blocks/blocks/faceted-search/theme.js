@@ -25,7 +25,6 @@ import {
 } from '@ntohq/buefy-next';
 import VTooltip from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
-import qs from 'qs';
 import VueBlurHash from 'another-vue3-blurhash';
 
 import getDataAttribute from '../../js/compatibility/tainacan-blocks-compat-data-attributes.js';
@@ -103,14 +102,6 @@ export default (element) => {
                 created() {
                     blockElement.setAttribute('aria-live', 'polite');
                     blockElement.classList.add('theme-items-list'); // This used to be on the component, but as Vue now do not renders the component inside a div...
-                    
-                    // Loads params if passed previously 
-                    const currentRouteQueries = qs.parse(location.search.split('?')[1]);
-                    
-                    if ( currentRouteQueries.advancedSearch )
-                        this.$store.dispatch('search/setAdvancedQuery', currentRouteQueries);
-                    else
-                        this.$store.dispatch('search/setPostQuery', currentRouteQueries )
                 },
                 mounted() {
                     blockElement.classList.add('has-mounted');
