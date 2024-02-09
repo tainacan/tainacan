@@ -16,7 +16,7 @@ export const permalinkGetter = {
     }
 };
 
-/* Used by date metadata  and filter fields */
+/* Used by date metadata and filter fields */
 export const dateInter = {
     created() {
         let locale = navigator.language;
@@ -25,7 +25,7 @@ export const dateInter = {
 
         let localeData = moment.localeData();
         this.dateFormat = localeData.longDateFormat('L') ? localeData.longDateFormat('L') : (localeData._abbr == 'pt_BR' ? 'DD/MM/YYYY' : 'YYYY-MM-DD');
-        this.dateMask = this.dateFormat.replace(/[\w]/g, '#');
+        this.dateMask = this.dateFormat.replace(/[\w]/g, '0');
     },
     data() {
         return {
@@ -37,7 +37,7 @@ export const dateInter = {
         parseDateToNavigatorLanguage(date) {
             date = new Date(date.replace(/-/g, '/'));
             return moment(date, moment.ISO_8601).format(this.dateFormat);  
-        },
+        }
     }
 };
 

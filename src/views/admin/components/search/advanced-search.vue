@@ -112,7 +112,7 @@
                             />
                         <input
                                 v-else-if="getAdvancedSearchQueryCriterionMetadataType(searchCriterion.index) == 'date'"
-                                v-imask="dateMask"
+                                v-imask="{ mask: dateMask, skipInvalid: false }"
                                 class="input"
                                 :value="parseValidDateToNavigatorLanguage(advancedSearchQuery.metaquery[searchCriterion.index].value)"
                                 :placeholder="dateFormat"
