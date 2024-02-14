@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "apexcharts": "^3.40.0",
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "blurhash": "^2.0.5",
     "buefy": "^0.9.23",
     "bulma": "^0.9.4",
