@@ -32,7 +32,7 @@
     "sortablejs": "^1.15.2",
     "sortablejs-vue3": "^1.2.11",
     "swiper": "^11.0.6",
-    "vue": "^3.4.16",
+    "vue": "^3.4.19",
     "vue-countup-v3": "^1.4.1",
     "vue-imask": "^7.4.0",
     "vue-router": "^4.2.5",
