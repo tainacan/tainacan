@@ -182,6 +182,8 @@ class URL extends Metadata_Type {
 				// Empty strings are valid
 				if ( !empty($url_value) ) {
 
+					$url_value = trim($url_value);
+
 					// If this seems to be a markdown link, we check if the url inside it is ok as well
 					if ( !preg_match($reg_url, $url_value) && !preg_match($reg_full, $url_value) ) {
 						$this->add_error( sprintf( __('"%s" is invalid. Please provide a valid, full URL or a Markdown link in the form of [label](url).', 'tainacan'), $url_value ) );
@@ -195,6 +197,8 @@ class URL extends Metadata_Type {
 		// Single valued metadata --------------
 		// Empty strings are valid
 		if ( !empty($value) ) {
+
+			$value = trim($value);
 
 			// If this seems to be a markdown link, we check if the url inside it is ok as well
 			if ( !preg_match($reg_url, $value) && !preg_match($reg_full, $value) ) {
