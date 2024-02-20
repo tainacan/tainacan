@@ -31,8 +31,7 @@
                                     :class="formErrors['name'] != undefined ? 'is-danger' : ''">*</span>
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata-sections', 'name')"
-                                    :message="$i18n.getHelperMessage('metadata-sections', 'name')"
-                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                    :message="$i18n.getHelperMessage('metadata-sections', 'name')" />
                         </label>
                         <b-input
                                 v-model="form.name"
@@ -57,8 +56,7 @@
                             {{ $i18n.get('label_description') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata-sections', 'description')"
-                                    :message="$i18n.getHelperMessage('metadata-sections', 'description')"
-                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                    :message="$i18n.getHelperMessage('metadata-sections', 'description')" />
                         </label>
                         <b-input
                                 v-model="form.description"
@@ -83,8 +81,7 @@
                                 @update:model-value="clearErrors('description_bellow_name')">
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata-sections', 'description_bellow_name')"
-                                    :message="$i18n.getHelperMessage('metadata-sections', 'description_bellow_name')"
-                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                    :message="$i18n.getHelperMessage('metadata-sections', 'description_bellow_name')" />
                         </b-switch>
                     </b-field>
 
@@ -97,8 +94,7 @@
                             {{ $i18n.get('label_status') }}
                             <help-button
                                     :title="$i18n.getHelperTitle('metadata-sections', 'status')"
-                                    :message="$i18n.getHelperMessage('metadata-sections', 'status')"
-                                    :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                    :message="$i18n.getHelperMessage('metadata-sections', 'status')" />
                         </label>
                         <div class="is-flex is-justify-content-space-between">
                             <b-radio
@@ -163,8 +159,7 @@
                                     @update:model-value="clearErrors('is_conditional_section')">
                                 <help-button
                                         :title="$i18n.getHelperTitle('metadata-sections', 'is_conditional_section')"
-                                        :message="$i18n.getHelperMessage('metadata-sections', 'is_conditional_section')"
-                                        :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                        :message="$i18n.getHelperMessage('metadata-sections', 'is_conditional_section')" />
                             </b-switch>
                         </b-field>
                         <div v-if="isConditionalSection && !availableConditionalMetadata.length">
@@ -182,8 +177,7 @@
                                     {{ $i18n.getHelperTitle('metadata-sections', 'conditional_section_rules') }}
                                     <help-button
                                             :title="$i18n.getHelperTitle('metadata-sections', 'conditional_section_rules')"
-                                            :message="$i18n.getHelperMessage('metadata-sections', 'conditional_section_rules')"
-                                            :extra-classes="isRepositoryLevel ? 'tainacan-repository-tooltip' : ''" />
+                                            :message="$i18n.getHelperMessage('metadata-sections', 'conditional_section_rules')" />
                                 </label>
                                 <b-select 
                                         v-model="selectedConditionalMetadatumId"
@@ -257,12 +251,16 @@
 </template>
 
 <script>
-    import { nextTick } from 'vue';
+    import { nextTick, defineAsyncComponent } from 'vue';
     import { mapActions, mapGetters } from 'vuex';
     import { formHooks } from "../../js/mixins";
 
     export default {
         name: 'MetadataSectionEditionForm',
+        components:{
+            TainacanSelectbox: defineAsyncComponent(() => import('../metadata-types/selectbox/TainacanSelectbox.vue')),
+            TainacanTaxonomy: defineAsyncComponent(() => import('../metadata-types/taxonomy/TainacanTaxonomy.vue')),
+        },
         mixins: [ formHooks ],
         props: {
             index: '',
