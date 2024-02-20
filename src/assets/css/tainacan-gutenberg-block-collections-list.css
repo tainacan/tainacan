@@ -20,7 +20,9 @@
       margin-left: 0 !important;
       height: 185px !important; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-list-without-margin li img,
-      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-list-without-margin li img {
+      .wp-block-tainacan-collections-list ul.collections-list.collections-list-without-margin li canvas,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-list-without-margin li img,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-list-without-margin li canvas {
         height: 185px !important;
         margin-bottom: 0px !important; }
   .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid,
@@ -50,7 +52,9 @@
         line-height: normal;
         display: block; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item img,
-      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item img {
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item canvas,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item img,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item canvas {
         height: auto;
         width: 185px;
         min-width: 185px;
@@ -103,8 +107,9 @@
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item {
         width: 100%; }
-        .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item img,
-        .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item img {
+        .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item img, .wp-block-tainacan-collections-list ul.collections-list.collections-layout-grid li.collection-list-item canvas,
+        .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item img,
+        .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-grid li.collection-list-item canvas {
           width: 100%; } }
   .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list,
   .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list {
@@ -130,14 +135,18 @@
         word-break: break-all;
         word-break: break-word; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item img,
-      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item img {
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item canvas,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item img,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item canvas {
         height: auto;
         width: 54px;
         min-width: 54px;
         padding: 0px;
         margin-right: 20px; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item a.collection-without-image img,
-      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item a.collection-without-image img {
+      .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item a.collection-without-image canvas,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item a.collection-without-image img,
+      .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item a.collection-without-image canvas {
         display: none; }
       .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item a, .wp-block-tainacan-collections-list ul.collections-list.collections-layout-list li.collection-list-item:hover a,
       .wp-block-tainacan-collections-list ul.collections-list-edit.collections-layout-list li.collection-list-item a,

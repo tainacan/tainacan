@@ -42,7 +42,8 @@
                 line-height: normal;
             }
 
-            img {
+            img,
+            canvas {
                 height: auto;
                 width: 185px;
                 min-width: 185px;
@@ -107,7 +108,7 @@
 
             li.term-list-item { 
                 width: 100%;
-                img { width: 100%; }
+                img, canvas { width: 100%; }
             }
         }
     }
@@ -138,7 +139,8 @@
                 word-break: break-word;
             }
 
-            img {
+            img,
+            canvas {
                 height: auto;
                 width: 54px;
                 min-width: 54px;
@@ -146,7 +148,8 @@
                 margin-right: 20px;
             }
 
-            a.term-without-image img {
+            a.term-without-image img,
+            a.term-without-image canvas {
                 display: none;
             }
 

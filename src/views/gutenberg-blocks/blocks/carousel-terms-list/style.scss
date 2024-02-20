@@ -158,7 +158,8 @@
                 line-height: 1.2em;
                 word-break: break-word;
             }
-            a>img {
+            a>img,
+            a>canvas {
                 width: 100%;
                 height: auto;
             }
@@ -169,7 +170,8 @@
                 display: block;
             }
 
-            .swiper-slide-duplicate img {
+            .swiper-slide-duplicate img,
+            .swiper-slide-duplicate canvas {
                 display: initial !important;
             }
 
@@ -202,7 +204,8 @@
                         // padding-bottom: 100% !important;
                     }
 
-                    img {
+                    img,
+                    canvas {
                         object-fit: cover;
                         object-position: center;
                         width: 100%;
@@ -343,7 +346,8 @@
                 }
             }
 
-            img {
+            img,
+            canvas {
                 height: auto;
                 padding: 0px;
                 margin-bottom: 0.5em;

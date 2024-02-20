@@ -417,7 +417,8 @@
         display: block;
         line-height: 1.2em;
         word-break: break-word; }
-      .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper a > img {
+      .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper a > img,
+      .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper a > canvas {
         width: 100%;
         height: auto; }
       .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper a,
@@ -425,7 +426,8 @@
         color: inherit;
         text-decoration: none;
         display: block; }
-      .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper .swiper-slide-duplicate img {
+      .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper .swiper-slide-duplicate img,
+      .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper .swiper-slide-duplicate canvas {
         display: initial !important; }
       .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper .swiper-slide.term-list-item-grid a {
         width: 100%;
@@ -454,7 +456,8 @@
           width: 100%;
           height: auto;
           margin-bottom: 0px; }
-        .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper .swiper-slide.term-list-item-grid .term-items-grid img {
+        .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper .swiper-slide.term-list-item-grid .term-items-grid img,
+        .wp-block-tainacan-carousel-terms-list .tainacan-carousel .swiper .swiper-slide.term-list-item-grid .term-items-grid canvas {
           object-fit: cover;
           object-position: center;
           width: 100%; }
@@ -565,7 +568,8 @@
           display: block;
           line-height: 1.2em;
           word-break: break-word; }
-      .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item img {
+      .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item img,
+      .wp-block-tainacan-carousel-terms-list ul.terms-list-edit li.term-list-item canvas {
         height: auto;
         padding: 0px;
         margin-bottom: 0.5em;

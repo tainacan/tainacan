@@ -170,7 +170,8 @@
                 line-height: 1.2em;
                 word-break: break-word;
             }
-            a>img {
+            a>img,
+            canvas {
                 width: 100%;
                 height: auto;
             }
@@ -181,7 +182,8 @@
                 display: block;
             }
             .is-forced-square>a>div {
-                img {
+                img,
+                canvas {
                     object-fit: cover;
                     object-position: center;
                     height: auto;
@@ -316,7 +318,8 @@
                 }
             }
 
-            img {
+            img,
+            canvas {
                 height: auto;
                 display: block;
                 padding: 0px;
@@ -331,7 +334,8 @@
                     width: 100%;
                     position: relative;
                 }
-                img {
+                img,
+                canvas {
                     display: block;
                     padding: 0px;
                     margin-bottom: 0.5em;
@@ -598,7 +602,8 @@
             }
         }
     }
-    .swiper-slide-duplicate img {
+    .swiper-slide-duplicate img,
+    .swiper-slide-duplicate canvas {
         display: initial !important;
     }
 }

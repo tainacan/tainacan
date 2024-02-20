@@ -34,7 +34,9 @@
         font-weight: bold;
         line-height: normal; }
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item img,
-      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item img {
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item canvas,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item img,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item canvas {
         height: auto;
         width: 185px;
         min-width: 185px;
@@ -87,8 +89,9 @@
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item,
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item {
         width: 100%; }
-        .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item img,
-        .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item img {
+        .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item img, .wp-block-tainacan-terms-list ul.terms-list.terms-layout-grid li.term-list-item canvas,
+        .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item img,
+        .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-grid li.term-list-item canvas {
           width: 100%; } }
   .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list,
   .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list {
@@ -114,14 +117,18 @@
         word-break: break-all;
         word-break: break-word; }
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item img,
-      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item img {
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item canvas,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item img,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item canvas {
         height: auto;
         width: 54px;
         min-width: 54px;
         padding: 0px;
         margin-right: 20px; }
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item a.term-without-image img,
-      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item a.term-without-image img {
+      .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item a.term-without-image canvas,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item a.term-without-image img,
+      .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item a.term-without-image canvas {
         display: none; }
       .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item a, .wp-block-tainacan-terms-list ul.terms-list.terms-layout-list li.term-list-item:hover a,
       .wp-block-tainacan-terms-list ul.terms-list-edit.terms-layout-list li.term-list-item a,

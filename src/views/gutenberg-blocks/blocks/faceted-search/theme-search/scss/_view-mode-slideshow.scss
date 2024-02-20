@@ -486,7 +486,8 @@
                 border-bottom: 4px solid var(--tainacan-gray2);
             }
 
-            img {
+            img,
+            canvas {
                 color: var(--tainacan-white);
                 width: 100%;//85px;
                 height: auto;

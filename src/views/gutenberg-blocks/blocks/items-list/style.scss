@@ -30,7 +30,8 @@
             margin-left: 0 !important;
             height: 185px !important;
 
-            img { 
+            img,
+            canvas { 
                 height: 185px !important;
                 margin-bottom: 0px !important;
             }
@@ -66,7 +67,8 @@
                 }
             }
 
-            img {
+            img,
+            canvas {
                 height: auto;
                 width: 185px;
                 min-width: 185px;
@@ -131,7 +133,7 @@
 
             li.item-list-item { 
                 width: 100%;
-                img { width: 100%; }
+                img, canvas { width: 100%; }
             }
         }
     }
@@ -162,7 +164,8 @@
                 word-break: break-word;
             }
 
-            img {
+            img,
+            canvas {
                 height: auto;
                 width: 54px;
                 min-width: 54px;
@@ -170,7 +173,8 @@
                 margin-right: 20px;
             }
 
-            a.item-without-image img {
+            a.item-without-image img,
+            a.item-without-image canvas {
                 display: none;
             }
 

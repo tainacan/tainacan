@@ -424,7 +424,8 @@
         display: block;
         line-height: 1.2em;
         word-break: break-word; }
-      .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper a > img {
+      .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper a > img,
+      .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper canvas {
         width: 100%;
         height: auto; }
       .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper a,
@@ -432,7 +433,8 @@
         color: inherit;
         text-decoration: none;
         display: block; }
-      .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper .is-forced-square > a > div img {
+      .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper .is-forced-square > a > div img,
+      .wp-block-tainacan-carousel-items-list .tainacan-carousel .swiper .is-forced-square > a > div canvas {
         object-fit: cover;
         object-position: center;
         height: auto; }
@@ -540,7 +542,8 @@
           display: block;
           line-height: 1.2em;
           word-break: break-word; }
-      .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item img {
+      .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item img,
+      .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item canvas {
         height: auto;
         display: block;
         padding: 0px;
@@ -551,7 +554,8 @@
         content: '';
         width: 100%;
         position: relative; }
-      .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.is-forced-square img {
+      .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.is-forced-square img,
+      .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.is-forced-square canvas {
         display: block;
         padding: 0px;
         margin-bottom: 0.5em;
@@ -732,7 +736,8 @@
       .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-items-per-screen-6, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-items-per-screen-5, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-items-per-screen-4, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-items-per-screen-3, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-items-per-screen-2, .wp-block-tainacan-carousel-items-list ul.items-list-edit li.item-list-item.max-items-per-screen-1 {
         width: calc(100% - var(--spaceBetweenItems, 32px) );
         min-width: calc(100% - var(--spaceBetweenItems, 32px) ); } }
-  .wp-block-tainacan-carousel-items-list .swiper-slide-duplicate img {
+  .wp-block-tainacan-carousel-items-list .swiper-slide-duplicate img,
+  .wp-block-tainacan-carousel-items-list .swiper-slide-duplicate canvas {
     display: initial !important; }
 
 .block-editor-block-list__block > .wp-block-tainacan-carousel-items-list {
