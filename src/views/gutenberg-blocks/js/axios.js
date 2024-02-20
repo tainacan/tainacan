@@ -8,4 +8,4 @@ if (tainacan_blocks.nonce) {
     tainacanApi.defaults.headers.common['X-WP-Nonce'] = tainacan_blocks.nonce;
 }
 
-export default tainacan;
+export default tainacanApi;
