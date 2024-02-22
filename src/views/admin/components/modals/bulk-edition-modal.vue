@@ -303,7 +303,7 @@
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$root.$emit('openProcessesPopup'); $eventBusSearch.loadItems(); $emit('close');">
+                            @click="$emitter.emit('openProcessesPopup'); $eventBusSearch.loadItems(); $emit('close');">
                         {{ $i18n.get('finish') }}
                     </button>
                 </p>

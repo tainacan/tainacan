@@ -129,11 +129,6 @@ export default {
     mixins: [
         viewModesMixin
     ],
-    data() {
-        return {
-            shouldHideItemsThumbnail: this.$root.hideItemsThumbnail
-        }
-    },
     computed: {
         descriptionMaxCharacter() {
             return (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth) <= 480 ? (this.shouldHideItemsThumbnail ? 185 : 155) : (this.shouldHideItemsThumbnail ? 480 : 330);

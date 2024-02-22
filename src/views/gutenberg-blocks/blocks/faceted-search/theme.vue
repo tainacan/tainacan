@@ -595,8 +595,10 @@
                     :is="registeredViewModes[viewMode] != undefined ? registeredViewModes[viewMode].component : ''"
                     v-if="registeredViewModes[viewMode] != undefined &&
                         registeredViewModes[viewMode].type == 'component'"
-                    :collection-id="collectionId" 
+                    :collection-id="collectionId"
+                    :term-id="termId"
                     :displayed-metadata="displayedMetadata"
+                    :should-hide-items-thumbnail="hideItemsThumbnail"
                     :items="items"
                     :is-filters-menu-compressed="!hideFilters && !isFiltersModalActive"
                     :total-items="totalItems"
