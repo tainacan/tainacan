@@ -104,7 +104,6 @@
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                             :transition-duration="500"
                                             @click.left="onClickItem($event, item)"
-                                            @click.right="onRightClickItem($event, item)"
                                         />
                                     <div 
                                             :style="{ 
