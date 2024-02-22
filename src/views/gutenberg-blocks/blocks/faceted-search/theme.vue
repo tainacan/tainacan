@@ -1559,8 +1559,8 @@
                     this.openMetatadaSortingWarningDialog({ offerCheckbox: true });
                 }
             },
-            typeFutureSearch($event) {
-                this.futureSearchQuery = $event.target.value;
+            typeFutureSearch(value) {
+                this.futureSearchQuery = value;
                 
                 // If we have more than one word and the dropdown is not active, open it
                 if ( this.hasSearchByMoreThanOneWord && this.$refs['tainacan-textual-search-input'] && !this.$refs['tainacan-textual-search-input'].isActive && typeof this.$refs['tainacan-textual-search-input'].toggle === 'function' )
