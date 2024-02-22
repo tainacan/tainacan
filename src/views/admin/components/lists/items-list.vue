@@ -2460,7 +2460,7 @@ export default {
                                 groupId: groupId
                             }).then(() => {
                                 this.$eventBusSearch.loadItems();
-                                this.$root.$emit('openProcessesPopup');
+                                this.$emitter.emit('openProcessesPopup');
                             });
                         });
                     }
@@ -2493,7 +2493,7 @@ export default {
                                     groupId: groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
-                                    this.$root.$emit('openProcessesPopup');
+                                    this.$emitter.emit('openProcessesPopup');
                                 });
                             } else {
                                 this.trashItemsInBulk({
@@ -2501,7 +2501,7 @@ export default {
                                     groupId: groupId
                                 }).then(() => {
                                     this.$eventBusSearch.loadItems();
-                                    this.$root.$emit('openProcessesPopup');
+                                    this.$emitter.emit('openProcessesPopup');
                                 });
                             }
                         });

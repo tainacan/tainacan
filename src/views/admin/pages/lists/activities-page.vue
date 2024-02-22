@@ -413,7 +413,7 @@
         },
         mounted(){
             if (!this.isRepositoryLevel)
-                this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('activities') }]);
+                this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('activities') }]);
 
             if (this.$route.query.tab == 'processes' && this.isRepositoryLevel)
                 this.tab = 'processes';

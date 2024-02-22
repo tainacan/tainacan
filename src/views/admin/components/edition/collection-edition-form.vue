@@ -1035,7 +1035,7 @@ export default {
         }
     },
     mounted(){
-        this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('settings') }]);
+        this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('settings') }]);
 
 
         if (this.$route.query.fromImporter != undefined) 

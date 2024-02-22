@@ -223,7 +223,7 @@ export default {
         this.cleanFiles();
 
         // Updates Collection BreadCrumb
-        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
             { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
             { path: '', label: this.$i18n.get('add_items_bulk') }
         ]);

@@ -994,7 +994,7 @@
             this.localDisplayedMetadata = JSON.parse(JSON.stringify(this.displayedMetadata));
 
             // Updates Collection Header Breadcrumb
-            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('items') }]);
+            this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('items') }]);
 
             // Setting initial view mode
             let prefsAdminViewMode = !this.isRepositoryLevel ? 'admin_view_mode_' + this.collectionId : 'admin_view_mode';

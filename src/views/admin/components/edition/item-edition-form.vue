@@ -1284,7 +1284,7 @@ export default {
             this.isLoading = true;
 
             // Updates Collection BreadCrumb
-            this.$root.$emit('onCollectionBreadCrumbUpdate', [
+            this.$emitter.emit('onCollectionBreadCrumbUpdate', [
                 { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
                 { path: '', label: this.$i18n.get('new') }
             ]);
@@ -1722,14 +1722,14 @@ export default {
 
                     // Updates Collection BreadCrumb
                     if (this.isOnSequenceEdit) {
-                        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
                             { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
                             { path: '', label: this.$i18n.get('sequence') },
                             { path: '', label: this.item.title },
                             { path: '', label: this.$i18n.get('edit') }
                         ]);
                     } else {
-                        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
                             { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
                             { path: this.$routerHelper.getItemPath(this.form.collectionId, this.itemId), label: this.item.title },
                             { path: '', label: this.$i18n.get('edit') }
