@@ -511,10 +511,10 @@ class Migrations {
 	static function update_plugin_url_metadata_type_slug_to_core() {
 		global $wpdb;
 		// Brings plugin metadata type url to core
-		$wpdb->query(
-			"UPDATE $wpdb->postmeta SET meta_value = 'Tainacan\\Metadata_Types\\URL'
-			WHERE meta_value='TAINACAN_URL_Plugin_Metadata_Type' 
-			"
+		$wpdb->update($wpdb->postmeta,
+	        	['meta_value' => 'Tainacan\Metadata_Types\URL'],
+	        	['meta_value' => 'TAINACAN_URL_Plugin_Metadata_Type'],
+	        	'%s', '%s'
 		);
 		\deactivate_plugins( 'tainacan-url-metadata-type/tainacan-metadata-type-url.php' );
 	}
