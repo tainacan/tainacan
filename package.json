@@ -21,7 +21,7 @@
     "leaflet-active-area": "^1.2.1",
     "masonry-layout": "^4.2.2",
     "moment": "^2.29.4",
-    "node-sass": "^9.0.0",
+    "node-sass": "^8.0.0",
     "photoswipe": "^5.3.7",
     "qs": "^6.11.2",
     "react": "^17.0.2",
