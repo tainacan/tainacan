@@ -139,14 +139,12 @@
         },
         methods: {
             async updateSearch() {
-                console.log(this.$route.path, this.futureSearchQuery)
-
-                this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
                 if (this.$route.path !== '/items') {
                     await this.$router.push({
                         path: '/items',
                     });
                 }
+                await this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             }
         }
     }
