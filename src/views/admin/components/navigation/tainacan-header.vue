@@ -62,9 +62,9 @@
                         :model-value="searchQuery"
                         icon-right="magnify"
                         icon-right-clickable
-                        @update:model-value="futureSearchQuery = $event.target.value"
-                        @keyup.enter="updateSearch()"
-                        @icon-right-click="updateSearch()" />
+                        @update:model-value="(value) => futureSearchQuery = value"
+                        @keyup.enter="updateSearch"
+                        @icon-right-click="updateSearch" />
                 <router-link
                         v-if="!$adminOptions.hideTainacanHeaderAdvancedSearch"
                         class="advanced-search-text"
@@ -138,13 +138,15 @@
             this.$emitter.off('openProcessesPopup');
         },
         methods: {
-            updateSearch() {
+            async updateSearch() {
+                console.log(this.$route.path, this.futureSearchQuery)
+
+                this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
                 if (this.$route.path !== '/items') {
-                    this.$router.push({
+                    await this.$router.push({
                         path: '/items',
                     });
                 }
-                this.$eventBusSearch.setSearchQuery(this.futureSearchQuery);
             }
         }
     }
