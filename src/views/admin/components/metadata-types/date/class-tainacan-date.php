@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 class Date extends Metadata_Type {
 
 	private $format;
-	private $output_date_format;
+	public $output_date_format;
 
 	function __construct() {
 		// call metadatum type constructor
