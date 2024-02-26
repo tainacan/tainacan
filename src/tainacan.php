@@ -5,17 +5,17 @@ Plugin URI: https://tainacan.org/
 Description: Open source, powerful and flexible repository platform for WordPress. Manage and publish you digital collections as easily as publishing a post to your blog, while having all the tools of a professional repository platform.
 Author: Tainacan.org
 Author URI: https://tainacan.org/
-Version: 0.20.6
+Version: 0.20.7
 Requires at least: 5.9
 Tested up to: 6.4
 Requires PHP: 7.0
-Stable tag: 0.20.6
+Stable tag: 0.20.7
 Text Domain: tainacan
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 */
 
-const TAINACAN_VERSION = '0.20.6';
+const TAINACAN_VERSION = '0.20.7';
 
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 $TAINACAN_BASE_URL = plugins_url('', __FILE__);
@@ -160,3 +160,31 @@ add_filter('wp_kses_allowed_html', function($allowedposttags, $context) {
 			return $allowedposttags;
 	}
 }, 10, 2);
+
+
+// Function to add rules to [upload_dir]/tainacan/.htaccess
+function tainacan_add_htaccess_rules() {
+	if( function_exists('insert_with_markers') ) {
+		$uploads_dir = wp_upload_dir(); // Uploads directory
+		$htaccess_dir = trailingslashit($uploads_dir['basedir']) . 'tainacan'; // Path to the tainacan folder
+		$htaccess_file = trailingslashit($htaccess_dir) . '.htaccess'; // Path to the .htaccess file
+
+		// If the folder doesn't exist, create it
+		if (!file_exists($htaccess_dir)) {
+			wp_mkdir_p($htaccess_dir);
+		}
+
+		$marker = 'Tainacan [<wp_upload_dir()>/tainacan] rules'; // Marker name for identification
+		$rules = array(
+			'# Prevent direct access to files',
+			'Order deny,allow',
+			'Deny from all'
+		); // Rules to be added
+
+		// Add rules to the .htaccess file
+		insert_with_markers($htaccess_file, $marker, $rules);
+	}
+}
+
+// Hook to execute the function when the plugin is activated
+register_activation_hook(__FILE__, 'tainacan_add_htaccess_rules');
