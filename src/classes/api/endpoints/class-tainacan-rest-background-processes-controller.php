@@ -244,6 +244,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
     public function prepare_item_for_response($item, $request) {
         $item->log = $this->get_log_url($item->ID, $item->action);
         $item->error_log = $this->get_log_url($item->ID, $item->action, 'error');
+        $nonce = wp_create_nonce( 'wp_rest' );
+        $item->output = str_replace("&_wpnonce=[nonce]", "&_wpnonce=$nonce", $item->output);
         return $item;
     }
 
@@ -351,7 +353,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
         if (!file_exists( $upload_url['basedir'] . '/tainacan/' . $filename )) {
             return null;
         }
-        $logs_url = esc_url_raw( rest_url() ) . "tainacan/v2/bg-processes/file?guid=$filename";
+        $nonce = wp_create_nonce( 'wp_rest' );
+        $logs_url = esc_url_raw( rest_url() ) . "tainacan/v2/bg-processes/file?guid=$filename&_wpnonce=$nonce";
         return $logs_url;
     }
 

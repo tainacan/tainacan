@@ -700,7 +700,7 @@ abstract class Exporter {
 		}
 		$file_name = "{$upload_dir}{$file_suffix}";
 		$guid = "exporter/{$prefix}_{$key}";
-		$file_url = esc_url_raw( rest_url() ) . "tainacan/v2/bg-processes/file?guid=$guid";
+		$file_url = esc_url_raw( rest_url() ) . "tainacan/v2/bg-processes/file?guid=$guid&_wpnonce=[nonce]";
 		$this->output_files[$key] = [
 			'filename' => $file_name,
 			'url' => $file_url
@@ -776,7 +776,10 @@ abstract class Exporter {
 			$user = get_userdata( (int) $author );
 			if ($user instanceof \WP_User) {
 				$msg = $this->get_output();
-				$this->add_log('Sending email to ' . $user->user_email);
+				$email_parts = explode('@', $user->user_email);
+				$first_letter = substr($email_parts[0], 0, 1);
+				$anonymized_email = $first_letter . '*****@' . $email_parts[1];
+				$this->add_log('Sending email to ' . $anonymized_email);
 				wp_mail($user->user_email, __('Finished export.', 'tainacan'), $msg);
 			}
 			
