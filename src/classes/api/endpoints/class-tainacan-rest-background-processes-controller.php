@@ -84,7 +84,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
 	        ),
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[0-9]+)', array(
-
             array(
                 'methods'             => \WP_REST_Server::READABLE,
                 'callback'            => array($this, 'get_item'),
@@ -93,7 +92,6 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[0-9]+)', array(
-
             array(
                 'methods'             => \WP_REST_Server::EDITABLE,
                 'callback'            => array($this, 'update_item'),
@@ -112,12 +110,19 @@ class REST_Background_Processes_Controller extends REST_Controller {
 
         ));
         register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[0-9]+)', array(
-
             array(
                 'methods'             => \WP_REST_Server::DELETABLE,
                 'callback'            => array($this, 'delete_item'),
                 'permission_callback' => array($this, 'bg_processes_permissions_check'),
 
+            ),
+
+        ));
+        register_rest_route($this->namespace, '/' . $this->rest_base . '/file', array(
+            array(
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array($this, 'get_file'),
+                'permission_callback' => array($this, 'bg_processes_permissions_check'),
             ),
 
         ));
@@ -131,7 +136,7 @@ class REST_Background_Processes_Controller extends REST_Controller {
 	 * @return bool|\WP_Error
 	 * @throws \Exception
 	 */
-	public function  bg_processes_permissions_check($request){
+	public function  bg_processes_permissions_check($request) { 
         // TODO
         return current_user_can('read');
 	}
@@ -246,6 +251,8 @@ class REST_Background_Processes_Controller extends REST_Controller {
     public function prepare_item_for_response($item, $request) {
         $item->log = $this->get_log_url($item->ID, $item->action);
         $item->error_log = $this->get_log_url($item->ID, $item->action, 'error');
+        $nonce = wp_create_nonce( 'wp_rest' );
+        $item->output = str_replace("&_wpnonce=[nonce]", "&_wpnonce=$nonce", $item->output);
         return $item;
     }
 
@@ -353,11 +360,33 @@ class REST_Background_Processes_Controller extends REST_Controller {
         if (!file_exists( $upload_url['basedir'] . '/tainacan/' . $filename )) {
             return null;
         }
-
-		$upload_url = trailingslashit( $upload_url['baseurl'] );
-        $logs_url = $upload_url . 'tainacan/' . $filename;
-
+        $nonce = wp_create_nonce( 'wp_rest' );
+        $logs_url = esc_url_raw( rest_url() ) . "tainacan/v2/bg-processes/file?guid=$filename&_wpnonce=$nonce";
         return $logs_url;
+    }
+
+    public function get_file( $request ) {
+        if( !isset($request['guid']) )  {
+            return new \WP_REST_Response([
+                'error_message' => __('guid must be specified', 'tainacan' )
+            ], 400);
+        }
+        $guid = $request['guid'];
+        $upload_url = wp_upload_dir();
+        $path = $upload_url['basedir'] . '/tainacan/' . $guid;
+        if ( file_exists( $path ) ) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime_type = finfo_file($finfo, $path);
+            $file_name = basename($path);
+            http_response_code(200);
+            header('Content-Description: File Transfer');
+            header("Content-Disposition: attachment; filename=$file_name"); 
+            header("Content-Type: $mime_type");
+            header("Content-Length: " . filesize( $path ));
+            \readfile($path);
+        } else {
+            return new \WP_REST_Response("file not found", 404, array('content-type' => 'text/html; charset=utf-8'));
+        }
     }
 
 }
