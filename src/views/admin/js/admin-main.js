@@ -83,8 +83,7 @@ import {
     StatusHelperPlugin,
     CommentsStatusHelperPlugin,
     AdminOptionsHelperPlugin,
-    HtmlSanitizerPlugin, 
-    FileDownloaderPlugin
+    HtmlSanitizerPlugin 
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
@@ -177,7 +176,6 @@ export default (element) => {
             Vue.use(ThumbnailHelperPlugin);
             Vue.use(OrderByHelperPlugin);
             Vue.use(StatusHelperPlugin);
-            Vue.use(FileDownloaderPlugin);
             Vue.use(HtmlSanitizerPlugin);
             Vue.use(ConsolePlugin, {visual: false});
             Vue.use(VueTheMask);

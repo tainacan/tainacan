@@ -122,12 +122,12 @@
                         <br>
                         <a 
                                 v-if="bgProcess.log"
-                                @click="$fileDownloader.fetch(bgProcess.log)">{{ $i18n.get('label_log_file') }}</a>
+                                :href="bgProcess.log">{{ $i18n.get('label_log_file') }}</a>
                         <span v-if="bgProcess.error_log"> | </span>
                         <a 
                                 v-if="bgProcess.error_log"
                                 class="has-text-danger"
-                                @click="$fileDownloader.fetch(bgProcess.error_log)">{{ $i18n.get('label_error_log_file') }}</a>
+                                :href="bgProcess.error_log">{{ $i18n.get('label_error_log_file') }}</a>
                     </div>
                 </li>
             </ul>
