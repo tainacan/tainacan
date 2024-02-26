@@ -754,9 +754,6 @@
             items() {
                 return this.getItems();
             },
-            itemsListTemplate() {
-                return this.getItemsListTemplate();
-            },
             totalItems() {
                 this.updateCollectionInfo();
                 return this.getTotalItems();
@@ -1035,7 +1032,6 @@
         methods: {
             ...mapGetters('collection', [
                 'getItems',
-                'getItemsListTemplate',
                 'getCollection'
             ]),
             ...mapActions('collection', [
