@@ -278,7 +278,7 @@
 </template>
 
 <script>
-import { nextTick } from 'vue';
+import { nextTick, defineAsyncComponent } from 'vue';
 import { mapActions } from 'vuex';
 
 import TermDeletionDialog from '../other/term-deletion-dialog.vue';
@@ -289,6 +289,9 @@ import { tainacanApi } from '../../js/axios';
 
 export default {
     name: 'TermsListHierarchical',
+    components: {
+        TermEditionForm: defineAsyncComponent(() => import('../edition/term-edition-form.vue'))
+    },
     props: {
         taxonomyId: String,
         currentUserCanEditTaxonomy: Boolean,
