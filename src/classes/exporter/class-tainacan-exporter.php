@@ -689,7 +689,7 @@ abstract class Exporter {
 		$upload_dir_info = wp_upload_dir();
 		$prefix = $this->get_id();
 		$upload_dir = trailingslashit( $upload_dir_info['basedir'] );
-		$upload_url = trailingslashit( $upload_dir_info['baseurl'] );
+		// $upload_url = trailingslashit( $upload_dir_info['baseurl'] );
 		$exporter_folder = 'tainacan/exporter';
 		$file_suffix = "{$exporter_folder}/{$prefix}_{$key}";
 
@@ -699,7 +699,8 @@ abstract class Exporter {
 			}
 		}
 		$file_name = "{$upload_dir}{$file_suffix}";
-		$file_url  = "{$upload_url}{$file_suffix}";
+		$guid = "exporter/{$prefix}_{$key}";
+		$file_url = esc_url_raw( rest_url() ) . "tainacan/v2/bg-processes/file?guid=$guid";
 		$this->output_files[$key] = [
 			'filename' => $file_name,
 			'url' => $file_url
