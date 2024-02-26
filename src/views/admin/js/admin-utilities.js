@@ -133,7 +133,6 @@ I18NPlugin.install = function (Vue, options = {}) {
             }
         }
     }
-
 };
 
 // USER PREFERENCES - Used to save key-value information for user settings of plugin
@@ -372,6 +371,64 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
     Vue.prototype.$userCaps = {
         hasCapability(key) {
             return tainacan_plugin.user_caps[key];
+        }
+    }
+};
+
+// FILE DOWNLOADER PLUGIN - Allows fetching a file passing proper headers.
+export const FileDownloaderPlugin = {};
+FileDownloaderPlugin.install = function (Vue, options = {}) {
+    
+    Vue.prototype.$fileDownloader = {
+        async fetch(urlLink) {
+            try {
+                // Build heaaders from tainacan_plugin variable
+                let requestHeaders = {};
+
+                if (tainacan_plugin.nonce) {
+                    requestHeaders['common'] = {};
+                    requestHeaders['common']['X-WP-Nonce'] = tainacan_plugin.nonce;
+                }
+
+                if (tainacan_plugin.admin_request_options) {
+                    Object.keys(tainacan_plugin.admin_request_options).forEach(requestOption => {
+                        requestHeaders[requestOption] = tainacan_plugin.admin_request_options[requestOption];
+                    });
+                }
+
+                // Async request for the file, passing propper headers
+                const response = await fetch(urlLink, {
+                    headers: requestHeaders
+                });
+        
+                // Creates an URL link in the form of blob:https://...
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+
+                // Get the filename from the Content-Disposition header
+                const contentDisposition = response.headers.get('content-disposition');
+                let filename = 'log.txt';
+                if (contentDisposition) {
+                    const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(contentDisposition);
+                    if (matches != null && matches[1])
+                        filename = matches[1].replace(/['"]/g, '');
+                }
+
+                // Creates a temporal link and clicks it to download the file
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.download = filename;
+                
+                document.body.appendChild(a);
+                a.click();
+                
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+            } catch (error) {
+                console.error('Tainacan received and error downloading file:', error);
+            }
         }
     }
 };
