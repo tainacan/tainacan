@@ -516,7 +516,9 @@ class Migrations {
 	        	['meta_value' => 'TAINACAN_URL_Plugin_Metadata_Type'],
 	        	'%s', '%s'
 		);
-		\deactivate_plugins( 'tainacan-url-metadata-type/tainacan-metadata-type-url.php' );
+
+		if ( function_exists('deactivate_plugins') )
+			\deactivate_plugins( 'tainacan-url-metadata-type/tainacan-metadata-type-url.php' );
 	}
 
 }

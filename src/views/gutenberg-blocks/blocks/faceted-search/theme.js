@@ -47,13 +47,6 @@ import {
 } from '../../../admin/js/utilities';
 import mitt from 'mitt';
 
-// import { configureCompat } from 'vue';
-// configureCompat({
-//     COMPONENT_V_MODEL: false,
-//     ATTR_FALSE_VALUE: false,
-//     RENDER_FUNCTION: false
-// })
-
 const isParameterTrue = function(value) {
     return (value == true || value == 'true' || value == '1' || value == 1) ? true : false;
 }
