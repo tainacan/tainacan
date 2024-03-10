@@ -689,7 +689,6 @@ abstract class Exporter {
 		$upload_dir_info = wp_upload_dir();
 		$prefix = $this->get_id();
 		$upload_dir = trailingslashit( $upload_dir_info['basedir'] );
-		// $upload_url = trailingslashit( $upload_dir_info['baseurl'] );
 		$exporter_folder = 'tainacan/exporter';
 		$file_suffix = "{$exporter_folder}/{$prefix}_{$key}";
 

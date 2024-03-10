@@ -509,6 +509,20 @@ class Migrations {
 		);
 	}
 
+
+	static function alter_table_tnc_bg_process_add_uuid() {
+		global $wpdb;
+		// update default order by "creation_date" to "date"
+		$table_name = $wpdb->prefix . 'tnc_bg_process';
+		$column_exists = $wpdb->get_results(  "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '$table_name' AND column_name = 'bg_uuid'"  );
+
+	    if(empty($column_exists)) {
+			$wpdb->query("
+	        ALTER TABLE $table_name
+	        ADD bg_uuid text NULL
+	        ");
+		}
+	}
 }
 
 
