@@ -1,6 +1,6 @@
 === Tainacan ===
-Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah, eduardohumberto, ravipassos, jessicafpx, marinagiolo, omarceloavila, vnmedeiros, tainacan, r-guimaraes, suelanesilva, ccaio, alanargomes, ateneagarcia123, rodrigo0freire, clarandreozzi
-Tags: museums, libraries, archives, GLAM, collections, repository
+Contributors: andrebenedito, daltonmartins, fabianobn, jacsonp, leogermani, weryques, wetah, eduardohumberto, ravipassos, jessicafpx, marinagiolo, omarceloavila, vnmedeiros, tainacan, suelanesilva, ccaio, alanargomes, ateneagarcia123, rodrigo0freire, clarandreozzi
+Tags: museums, archives, GLAM, collections, repository
 Requires at least: 5.9
 Tested up to: 6.4
 Requires PHP: 7.0
@@ -9,13 +9,13 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 
-Tainacan is an open-source, powerful and flexible digital repository platform for WordPress. With all the tools of a professional repository platform, you can manage and publish your digital collections as easily as posting to your blog. It is versatile and can be used to create a digital collection, a digital library or a digital repository for your institutional or personal collection.
+Tainacan is an open-source, powerful and flexible digital repository platform for WordPress. 
 
 == Description ==
 
 [Tainacan](https://tainacan.org/) is an [open-source](https://github.com/tainacan/tainacan), powerful and flexible digital repository platform for WordPress. Manage and publish your digital collections just as easily as you post to your blog, having all the tools of a professional repository platform. It can be used for the creation of a digital collection, a digital library or a digital repository for your institutional or personal collection.
 
-Tainacan aims to facilitate the activities of organizing, documenting, disseminating and displaying digital objects based on simple and accessible principles of digital curation. The plugin integrates with the WordPress block engine, making it easy to reuse objects for different and varied uses.
+Tainacan aims to facilitate the activities of organizing, documenting, disseminating and displaying digital objects based on simple and accessible principles of digital curation. The plugin integrates with the WordPress block engine, making it easy to reuse objects for different and varied uses. You can manage and publish your digital collections as easily as posting to your blog. It is versatile and can be used to create a digital collection, a digital library or a digital repository for your institutional or personal collection.
 
 
 
