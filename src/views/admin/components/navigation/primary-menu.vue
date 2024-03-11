@@ -103,7 +103,7 @@
                         <span class="menu-text">{{ $i18n.get('capabilities') }}</span>
                     </router-link>
                 </li>
-                <li v-if="!$adminOptions.hidePrimaryMenuImportersButton">
+                <li v-if="!$adminOptions.hidePrimaryMenuImportersButton && $userCaps.hasCapability('manage_tainacan')">
                     <router-link
                             tag="a"
                             to="/importers"
@@ -118,7 +118,7 @@
                         <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                     </router-link>
                 </li>
-                <li v-if="!$adminOptions.hidePrimaryMenuExportersButton">
+                <li v-if="!$adminOptions.hidePrimaryMenuExportersButton && $userCaps.hasCapability('manage_tainacan')">
                     <router-link
                             tag="a"
                             to="/exporters"
