@@ -88,7 +88,7 @@
                             <span class="menu-text">{{ $i18n.get('title_repository_activities_page') }}</span>
                         </router-link>
                     </li>
-                    <li v-if="!$adminOptions.hideHomeImportersButton">
+                    <li v-if="!$adminOptions.hideHomeImportersButton && $userCaps.hasCapability('manage_tainacan')">
                         <router-link
                                 tag="a"
                                 to="/importers">
@@ -98,7 +98,7 @@
                             <span class="menu-text menu-text-import">{{ $i18n.get('importers') }}</span>
                         </router-link>
                     </li>
-                    <li v-if="!$adminOptions.hideHomeExportersButton">
+                    <li v-if="!$adminOptions.hideHomeExportersButton && $userCaps.hasCapability('manage_tainacan')">
                         <router-link
                                 tag="a"
                                 to="/exporters">

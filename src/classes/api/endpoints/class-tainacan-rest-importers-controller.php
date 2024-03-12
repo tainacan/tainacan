@@ -137,7 +137,7 @@ class REST_Importers_Controller extends REST_Controller {
 	 */
 	public function  import_permissions_check($request){
 		// TODO
-		return true;
+		return current_user_can('manage_tainacan');
 	}
 
 	/**

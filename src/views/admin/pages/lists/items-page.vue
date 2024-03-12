@@ -188,7 +188,7 @@
                         </router-link>
                     </b-dropdown-item>
                     <b-dropdown-item 
-                            v-if="!$adminOptions.hideItemsListCreationDropdownImport"
+                            v-if="!$adminOptions.hideItemsListCreationDropdownImport && $userCaps.hasCapability('manage_tainacan')"
                             aria-role="listitem">
                         <div
                                 id="a-import-items"
