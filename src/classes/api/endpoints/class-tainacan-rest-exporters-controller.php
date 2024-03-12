@@ -111,7 +111,7 @@ class REST_Exporters_Controller extends REST_Controller {
 	 * @throws \Exception
 	 */
 	public function  export_permissions_check($request) {
-		return true;
+		return current_user_can('manage_tainacan');
 	}
 
 	public function get_registered_exporters() {

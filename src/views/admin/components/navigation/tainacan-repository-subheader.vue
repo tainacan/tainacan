@@ -51,12 +51,11 @@
         </h1>
 
         <ul class="repository-subheader-icons">
-            <li>
+            <li v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton && $userCaps.hasCapability('manage_tainacan')">
                 <a
                         @click="openAvailableExportersModal"
                         class="button"
                         id="exporter-collection-button"
-                        v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton"
                         :aria-label="$i18n.get('exporters')">
                     <span class="icon">
                         <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-export"/>
