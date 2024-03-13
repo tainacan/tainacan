@@ -114,7 +114,8 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 					'action' => $this->action,
 					'name' => $this->get_name(),
 					'queued_on' => date('Y-m-d H:i:s'),
-					'status' => 'waiting'
+					'status' => 'waiting',
+					'bg_uuid' => uniqid(),
 				]
 			);
 			$this->ID = $wpdb->insert_id;
@@ -263,11 +264,39 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 		$batch->key  = $query->ID;
 		$batch->data = maybe_unserialize( $query->data );
 		$batch->status = $query->status;
+		$batch->bg_uuid = $query->bg_uuid;
 		
 		if ($batch->status != 'running') {
 			$this->open($batch->key);
 		}
 		
+		return $batch;
+	}
+
+
+	/**
+	 * Get batch by key ID
+	 *
+	 * @return stdClass Return the batch
+	 */
+	protected function get_batch_by_key($key) {
+		global $wpdb;
+
+		$table = $this->table;
+
+		$query = $wpdb->get_row( $wpdb->prepare( "
+			SELECT *
+			FROM {$table}
+			WHERE action = %s
+			AND ID = %s
+			LIMIT 1
+		", $this->action, $key  ) );
+
+		$batch       = new \stdClass();
+		$batch->key  = $query->ID;
+		$batch->data = maybe_unserialize( $query->data );
+		$batch->status = $query->status;
+		$batch->bg_uuid = $query->bg_uuid;		
 		return $batch;
 	}
 
@@ -428,10 +457,14 @@ abstract class Background_Process extends \Tainacan_WP_Background_Process {
 	}
 	
 	protected function write_log($key, $log) {
-		$this->write_log_to_file($key, $log);
+		$batch = $this->get_batch_by_key($key);
+		$key_log = $batch->bg_uuid ?? $key;
+		$this->write_log_to_file($key_log, $log);
 	}
 	protected function write_error_log($key, $log) {
-		$this->write_log_to_file($key, $log, 'error');
+		$batch = $this->get_batch_by_key($key);
+		$key_log = $batch->bg_uuid ?? $key;
+		$this->write_log_to_file($key_log, $log, 'error');
 	}
 	
 	private function recursive_stingify_log_array(array $log, $break = true) {

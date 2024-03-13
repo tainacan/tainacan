@@ -45,7 +45,9 @@
                             <small class="is-small">{{ $i18n.get('info_preset_collections') }}</small>
                         </div>
                     </b-dropdown-item>
-                    <b-dropdown-item aria-role="listitem">
+                    <b-dropdown-item 
+                            v-if="$userCaps.hasCapability('manage_tainacan')"
+                            aria-role="listitem">
                         <div
                                 id="a-import-collection"
                                 tag="div"

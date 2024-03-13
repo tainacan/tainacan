@@ -249,8 +249,9 @@ class REST_Background_Processes_Controller extends REST_Controller {
     }
 
     public function prepare_item_for_response($item, $request) {
-        $item->log = $this->get_log_url($item->ID, $item->action);
-        $item->error_log = $this->get_log_url($item->ID, $item->action, 'error');
+        $key_log = $item->bg_uuid ?? $item->ID;
+        $item->log = $this->get_log_url($key_log, $item->action);
+        $item->error_log = $this->get_log_url($key_log, $item->action, 'error');
         $nonce = wp_create_nonce( 'wp_rest' );
         $item->output = str_replace("&_wpnonce=[nonce]", "&_wpnonce=$nonce", $item->output);
         return $item;

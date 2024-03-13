@@ -57,9 +57,8 @@
         </h1>
 
         <ul class="repository-subheader-icons">
-            <li>
+            <li v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton && $userCaps.hasCapability('manage_tainacan')">
                 <a
-                        v-if="!isRepositoryLevel && !$adminOptions.hideRepositorySubheaderExportButton"
                         id="exporter-collection-button"
                         class="button"
                         :aria-label="$i18n.get('exporters')"
