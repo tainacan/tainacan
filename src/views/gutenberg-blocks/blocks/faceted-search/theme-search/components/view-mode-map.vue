@@ -6,26 +6,26 @@
             <slot />
             
             <!-- MAP VIEW MODE -->
-           <div 
+            <div 
                     class="tainacan-leaflet-map-container"
                     :class="{ 'has-selected-item': mapSelectedItemId }">
                 <ul class="tainacan-map-cards-container">
                     <li
+                            v-for="(item, index) of items"
+                            :key="item.id"
                             role="listitem"
                             :aria-setsize="totalItems"
                             :aria-posinset="getPosInSet(index)"
                             :data-tainacan-item-id="item.id"
                             @mouseenter="hoveredMapCardItemId = item.id"
-                            @mouseleave="hoveredMapCardItemId = false"
-                            :key="item.id"
-                            v-for="(item, index) of items">
+                            @mouseleave="hoveredMapCardItemId = false">
                         <div 
-                                @click.prevent.stop="showLocationsByItem(item)"
                                 :class="{
                                     'clicked-map-card': mapSelectedItemId == item.id,
                                     'non-located-item': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id)
                                 }"
-                                class="tainacan-map-card">
+                                class="tainacan-map-card"
+                                @click.prevent.stop="showLocationsByItem(item)">
 
                             <!-- JS-side hook for extra content -->
                             <div 
@@ -40,6 +40,7 @@
                                         'cursor': !itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id) ? 'auto' : 'pointer',
                                     }">
                                 <p 
+                                        v-if="collectionId && titleItemMetadatum"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -51,9 +52,9 @@
                                             placement: 'top-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
-                                        v-if="collectionId && titleItemMetadatum"
                                         v-html="item.metadata != undefined ? renderMetadata(item, titleItemMetadatum) : ''" />                 
                                 <p 
+                                        v-if="!collectionId && titleItemMetadatum"
                                         v-tooltip="{
                                             delay: {
                                                 shown: 500,
@@ -65,7 +66,6 @@
                                             placement: 'top-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
-                                        v-if="!collectionId && titleItemMetadatum"
                                         v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />                             
                                 <div class="tainacan-map-card-thumbnail">
                                     <blur-hash-image
@@ -91,9 +91,9 @@
                                             placement: 'auto-start',
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"          
-                                        @click.prevent="starSlideshowFromHere(index)"
-                                        class="icon slideshow-icon">
-                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                        class="icon slideshow-icon"
+                                        @click.prevent="starSlideshowFromHere(index)">
+                                    <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
                                 </span> 
                             </div>
 
@@ -112,12 +112,12 @@
                         :zoom="5"
                         :center="[-14.4086569, -51.31668]"
                         :zoom-animation="true"
-                        @click="clearSelectedMarkers()"
-                        @ready="onMapReady()"
                         :options="{
                             name: 'tainacan-view-mode-map',
                             zoomControl: false
-                        }">
+                        }"
+                        @click="clearSelectedMarkers()"
+                        @ready="onMapReady()">
                     <l-tile-layer 
                             :url="mapTileUrl" 
                             :attribution="mapTileAttribution" />
@@ -161,9 +161,9 @@
                                     class="geocoordinate-panel--input">
                                 <label>{{ $i18n.get('label_showing_locations_for') }}&nbsp;</label>
                                 <b-select
-                                        :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')"
                                         id="tainacan-select-geocoordinate-metatum"
-                                        v-model="selectedGeocoordinateMetadatumId">
+                                        v-model="selectedGeocoordinateMetadatumId"
+                                        :placeholder="$i18n.get('instruction_select_geocoordinate_metadatum')">
                                     <option
                                             v-for="(geocoordinateMetadatum, geocoordinateMetadatumId) in geocoordinateMetadata"
                                             :key="geocoordinateMetadatum.id"
@@ -199,34 +199,34 @@
                         </div>
                     </l-control>
                     <l-control
+                            v-if="selectedMarkerIndexes.length || mapSelectedItemId"
                             :disable-scroll-propagation="true"
                             :disable-click-propagation="true"
-                            v-if="selectedMarkerIndexes.length || mapSelectedItemId"
                             position="topleft"
                             class="tainacan-records-container tainacan-records-container--map">
                         <button 
-                                :aria-label="$i18n.get('label_clean')"
-                                class="tainacan-records-close-button"
-                                @click="clearSelectedMarkers()"
                                 v-tooltip="{
                                     content: $i18n.get('label_clean'),
                                     autoHide: true,
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
-                                }">
+                                }"
+                                :aria-label="$i18n.get('label_clean')"
+                                class="tainacan-records-close-button"
+                                @click="clearSelectedMarkers()">
                             <span class="icon">
                                 <i class="tainacan-icon tainacan-icon-close" />
                             </span>
                         </button>
                         <transition-group
-                                    tag="ul"
-                                    name="appear">
+                                tag="ul"
+                                name="appear">
                             <li
+                                    v-for="(item, index) of items.filter(anItem => mapSelectedItemId == anItem.id)"
+                                    :key="item.id"
                                     :aria-setsize="totalItems"
                                     :aria-posinset="getPosInSet(index)"
-                                    :data-tainacan-item-id="item.id"
-                                    :key="item.id"
-                                    v-for="(item, index) of items.filter(anItem => mapSelectedItemId == anItem.id)">
+                                    :data-tainacan-item-id="item.id">
                                 <a 
                                         :href="getItemLink(item.url, index)"
                                         :class="{
@@ -244,13 +244,13 @@
                                     <div class="metadata-title">
                                         <span
                                                 v-if="itemsLocations.some(anItemLocation => anItemLocation.item.id == item.id) && selectedGeocoordinateMetadatum.slug"
+                                                id="button-show-location"
                                                 v-tooltip="{
                                                     content: $i18n.get('label_show_item_location_on_map'),
                                                     autoHide: true,
                                                     placement: 'auto',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }"
-                                                id="button-show-location"
                                                 class="icon"
                                                 style="margin: -1px 4px 0px 0px;"
                                                 :aria-label="$i18n.get('label_show_item_location_on_map')" 
@@ -264,6 +264,7 @@
                                             </svg>
                                         </span>
                                         <p 
+                                                v-if="collectionId && titleItemMetadatum"
                                                 v-tooltip="{
                                                     delay: {
                                                         shown: 500,
@@ -275,9 +276,9 @@
                                                     placement: 'auto-start',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }"
-                                                v-if="collectionId && titleItemMetadatum"
                                                 v-html="item.metadata != undefined ? renderMetadata(item, titleItemMetadatum) : ''" />                 
                                         <p 
+                                                v-if="!collectionId && titleItemMetadatum"
                                                 v-tooltip="{
                                                     delay: {
                                                         shown: 500,
@@ -289,7 +290,6 @@
                                                     placement: 'auto-start',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }"
-                                                v-if="!collectionId && titleItemMetadatum"
                                                 v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />            
                                         <span 
                                                 v-if="isSlideshowViewModeEnabled"
@@ -302,9 +302,9 @@
                                                     placement: 'auto-start',
                                                     popperClass: ['tainacan-tooltip', 'tooltip']
                                                 }"          
-                                                @click.prevent="starSlideshowFromHere(index)"
-                                                class="icon slideshow-icon">
-                                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                                class="icon slideshow-icon"
+                                                @click.prevent="starSlideshowFromHere(index)">
+                                            <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
                                         </span> 
                                     </div>
 
@@ -312,11 +312,9 @@
                                     <div class="media">
                                         <div class="list-metadata media-body">
                                             <div 
-                                                    class="tainacan-record-thumbnail"
-                                                    v-if="item.thumbnail != undefined">
+                                                    v-if="item.thumbnail != undefined"
+                                                    class="tainacan-record-thumbnail">
                                                 <blur-hash-image
-                                                        @click.left="onClickItem($event, item)"
-                                                        @click.right="onRightClickItem($event, item)"
                                                         v-if="item.thumbnail != undefined"
                                                         class="tainacan-record-item-thumbnail"
                                                         :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -326,6 +324,7 @@
                                                         :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                                         :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                                         :transition-duration="500"
+                                                        @click.left="onClickItem($event, item)"
                                                     />
                                                 <div 
                                                         :style="{ 
@@ -333,19 +332,20 @@
                                                             marginTop: '-' + getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'
                                                         }" />
                                             </div>
-                                            <template v-for="(column, metadatumIndex) in displayedMetadata">
+                                            <template 
+                                                    v-for="(column, metadatumIndex) in displayedMetadata"
+                                                    :key="metadatumIndex">
                                                 <span 
-                                                        :key="metadatumIndex"
-                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
                                                         v-if="renderMetadata(item, column) != '' &&
                                                             column.display && column.slug != 'thumbnail' &&
                                                             column.metadata_type_object != undefined &&
                                                             (column.metadata_type_object.related_mapped_prop != 'title') &&
-                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate') ">
+                                                            (column.metadata_type != 'Tainacan\\Metadata_Types\\GeoCoordinate') "
+                                                        :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
                                                     <h3 class="metadata-label">{{ column.name }}</h3>
                                                     <p      
-                                                            v-html="renderMetadata(item, column)"
-                                                            class="metadata-value"/>
+                                                            class="metadata-value"
+                                                            v-html="renderMetadata(item, column)" />
                                                 </span>
                                             </template>
                                         </div>
@@ -361,14 +361,14 @@
                         </transition-group>
                     </l-control>
                 </l-map>
-           </div>
+            </div>
         </div> 
     </div>
 </template>
 
 <script>
 import { viewModesMixin } from '../js/view-modes-mixin.js';
-import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from 'vue2-leaflet';
+import { LMap, LIcon, LTooltip, LTileLayer, LMarker, LControl, LControlZoom } from '@vue-leaflet/vue-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { latLng } from 'leaflet';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
@@ -390,6 +390,12 @@ export default {
     mixins: [
         viewModesMixin
     ],
+    props: {
+        isRepositoryLevel: {
+            type: Boolean,
+            default: false
+        }
+    },
     data () {
         return {
             selectedGeocoordinateMetadatumId: false,
@@ -414,6 +420,9 @@ export default {
             
             if ( this.selectedGeocoordinateMetadatum.slug && this.items ) {
                 for (let item of this.items) {
+                    
+                    if ( !item.metadata )
+                        continue;
                     
                     let selectedItemMetadatum = item.metadata[this.selectedGeocoordinateMetadatum.slug];
 
@@ -505,15 +514,18 @@ export default {
         }
     },
     watch: {
-        itemsLocations() {
-            setTimeout(() => {
-                if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
-                    if (this.itemsLocations.length == 1)
-                        this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
-                    else
-                        this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
-                }
-            }, 500)
+        itemsLocations: { 
+            handler() {
+                setTimeout(() => {
+                    if ( this.itemsLocations.length && this.$refs['tainacan-view-mode-map'] && this.$refs['tainacan-view-mode-map'].mapObject ) {
+                        if (this.itemsLocations.length == 1)
+                            this.$refs['tainacan-view-mode-map'].mapObject.panInsideBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                        else
+                            this.$refs['tainacan-view-mode-map'].mapObject.flyToBounds(this.itemsLocations.map((anItemLocation) => anItemLocation.location),  { animate: true, maxZoom: 16 });
+                    }
+                }, 500)
+            },
+            deep: true
         },
         selectedGeocoordinateMetadatum() {
             this.clearSelectedMarkers();
@@ -532,7 +544,8 @@ export default {
                 else 
                     this.selectedGeocoordinateMetadatumId = this.$userPrefs.get(prefsGeocoordinateMetadatum);
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     methods: {

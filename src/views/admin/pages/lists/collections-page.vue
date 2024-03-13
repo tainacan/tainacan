@@ -1,8 +1,8 @@
 <template>
     <div class="repository-level-page page-container">
-        <b-loading :active.sync="isLoading"/>
+        <b-loading v-model="isLoading" />
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('collections') }]" />
         <div class="sub-header">
             
             <!-- New Collection button -->
@@ -10,25 +10,29 @@
                     v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections')"
                     class="header-item">
                 <b-dropdown
-                        aria-role="list"
                         id="collection-creation-options-dropdown"
+                        aria-role="list"
                         trap-focus>
-                    <button
-                            class="button is-secondary"
-                            slot="trigger">
-                        <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                        </span>
-                    </button>
+                    <template #trigger>
+                        <button class="button is-secondary">
+                            <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </template>   
                     <b-dropdown-item aria-role="listitem">
                         <router-link
-                                id="a-create-collection"
-                                tag="div"
-                                :to="{ path: $routerHelper.getNewCollectionPath() }">
-                            {{ $i18n.get('new_blank_collection') }}
-                            <br>
-                            <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                                v-slot="{ navigate }"
+                                :to="{ path: $routerHelper.getNewCollectionPath() }"
+                                custom>
+                            <div 
+                                    id="a-create-collection"
+                                    @click="navigate()">
+                                {{ $i18n.get('new_blank_collection') }}
+                                <br>
+                                <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                            </div>
                         </router-link>
                     </b-dropdown-item>
                     <b-dropdown-item aria-role="listitem">
@@ -69,15 +73,16 @@
                             class="show metadata-options-dropdown"
                             aria-role="list"
                             trap-focus>
-                        <button
-                                :aria-label="collectionTaxonomy['name']"
-                                class="button is-white"
-                                slot="trigger">
-                            <span>{{ collectionTaxonomy['name'] }}</span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
+                        <template #trigger>
+                            <button
+                                    :aria-label="collectionTaxonomy['name']"
+                                    class="button is-white">
+                                <span>{{ collectionTaxonomy['name'] }}</span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
                         <div class="metadata-options-container">
                             <b-dropdown-item
                                     v-for="(collectionTaxonomyTerm, index) in collectionTaxonomy['terms']"
@@ -95,8 +100,8 @@
                         <div class="dropdown-item-apply">
                             <button 
                                     aria-controls="items-list-results"
-                                    @click="onChangeCollectionTaxonomyTerms(taxonomyValue)"
-                                    class="button is-success">
+                                    class="button is-success"
+                                    @click="onChangeCollectionTaxonomyTerms(taxonomyValue)">
                                 {{ $i18n.get('label_apply_changes') }}
                             </button>
                         </div>  
@@ -110,14 +115,14 @@
                     class="header-item">
                 <label class="label">{{ $i18n.get('label_show_only_created_by_me') }}&nbsp;</label>
                 <b-switch
+                        v-model="authorFilter"
                         size="is-small"
                         class="author-filter-switch"
                         :disabled="collections.length <= 0 && isLoading"
-                        @input="onChangeAuthorFilter($event)"
-                        :value="authorFilter"
                         :true-value="'current-author'"
                         :false-value="''"
-                        :label="$i18n.get('label_show_only_created_by_me')" />
+                        :label="$i18n.get('label_show_only_created_by_me')"
+                        @update:model-value="onChangeAuthorFilter" />
                 
             </b-field>
 
@@ -129,24 +134,25 @@
                 <b-dropdown
                         :mobile-modal="true"
                         :disabled="collections.length <= 0 || isLoading"
-                        @input="onChangeOrder"
                         aria-role="list"
-                        trap-focus>
-                    <button
-                            :aria-label="$i18n.get('label_sorting_direction')"
-                            class="button is-white"
-                            slot="trigger">
-                        <span 
-                                style="margin-top: -2px;"
-                                class="icon is-small gray-icon">
-                            <i 
-                                    :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                    class="tainacan-icon tainacan-icon-1-125em"/>
-                        </span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                        </span>
-                    </button>
+                        trap-focus
+                        @update:model-value="onChangeOrder">
+                    <template #trigger>
+                        <button
+                                :aria-label="$i18n.get('label_sorting_direction')"
+                                class="button is-white">
+                            <span 
+                                    style="margin-top: -2px;"
+                                    class="icon is-small gray-icon">
+                                <i 
+                                        :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                        class="tainacan-icon tainacan-icon-1-125em" />
+                            </span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button>
+                    </template>
                     <b-dropdown-item
                             aria-controls="items-list-results"
                             role="button"
@@ -155,7 +161,7 @@
                             aria-role="listitem"
                             style="padding-bottom: 0.45em">
                         <span class="icon is-small gray-icon">
-                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending"/>
+                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending" />
                         </span>
                         {{ $i18n.get('label_descending') }}
                     </b-dropdown-item>
@@ -167,7 +173,7 @@
                             aria-role="listitem"
                             style="padding-bottom: 0.45em">
                         <span class="icon is-small gray-icon">
-                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending"/>
+                            <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending" />
                         </span>
                         {{ $i18n.get('label_ascending') }}
                     </b-dropdown-item>
@@ -180,13 +186,13 @@
                 <b-select
                         class="sorting-select"
                         :disabled="collections.length <= 0"
-                        @input="onChangeOrderBy($event)"
-                        :value="orderBy"
-                        :label="$i18n.get('label_sorting')">
+                        :model-value="orderBy"
+                        :label="$i18n.get('label_sorting')"
+                        @update:model-value="onChangeOrderBy($event)">
                     <option
                             v-for="(option, index) in sortingOptions"
-                            :value="option.value"
-                            :key="index">
+                            :key="index"
+                            :value="option.value">
                         {{ option.label }}
                     </option>
                 </b-select>
@@ -197,15 +203,15 @@
                     id="collection-page-search"
                     class="header-item">
                 <b-input 
+                        v-model="searchQuery"
                         :placeholder="$i18n.get('instruction_search')"
                         type="search"
                         size="is-small"
                         :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('collections')"
                         autocomplete="on"
-                        v-model="searchQuery"
-                        @keyup.enter.native="searchCollections()"
                         icon-right="magnify"
                         icon-right-clickable
+                        @keyup.enter="searchCollections()"
                         @icon-right-click="searchCollections()" />
             </b-field>
         </div>
@@ -214,14 +220,14 @@
             <div class="tabs">
                 <ul>
                     <li 
-                            @click="onChangeTab('')"
-                            :class="{ 'is-active': status == undefined || status == ''}"
                             v-tooltip="{
                                 content: $i18n.get('info_collections_tab_all'),
                                 autoHide: true,
                                 placement: 'auto',
                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                            }">
+                            }"
+                            :class="{ 'is-active': status == undefined || status == ''}"
+                            @click="onChangeTab('')">
                         <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                             {{ `${$i18n.get('label_all_collections')}` }}
                             <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${Number(repositoryTotalCollections.private) + Number(repositoryTotalCollections.publish)})` : '' }`}` }}</span>
@@ -230,15 +236,15 @@
                     <li 
                             v-for="(statusOption, index) of statusOptionsForCollections"
                             :key="index"
-                            @click="onChangeTab(statusOption.slug)"
-                            :class="{ 'is-active': status == statusOption.slug}"
-                            :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
                             v-tooltip="{
                                 content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('collections')]),
                                 autoHide: true,
                                 placement: 'auto',
                                 popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                            }">
+                            }"
+                            :class="{ 'is-active': status == statusOption.slug}"
+                            :style="{ marginRight: statusOption.slug == 'private' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
+                            @click="onChangeTab(statusOption.slug)">
                         <a>
                             <span 
                                     v-if="$statusHelper.hasIcon(statusOption.slug)"
@@ -246,7 +252,7 @@
                                 <i 
                                         class="tainacan-icon tainacan-icon-1-125em"
                                         :class="$statusHelper.getIcon(statusOption.slug)"
-                                        />
+                                    />
                             </span>
                             {{ statusOption.name }}
                             <span class="has-text-gray">&nbsp;{{ `${` ${repositoryTotalCollections ? `(${repositoryTotalCollections[statusOption.slug]})` : '' }`}` }}</span>
@@ -273,31 +279,43 @@
                                     <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collections" />
                                 </span>
                             </p>
-                            <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_collection_created') }}</p>
-                            <p v-else>{{ $i18n.get('info_no_collections_' + status) }}</p>
-                            <p v-if="searchQuery">{{ $i18n.get('info_try_empting_the_textual_search') }}</p>
-                            <p v-if="authorFilter !== '' && !searchQuery">{{ $i18n.get('info_try_selecting_all_collections_in_filter') }}</p>
+                            <p v-if="status == undefined || status == ''">
+                                {{ $i18n.get('info_no_collection_created') }}
+                            </p>
+                            <p v-else>
+                                {{ $i18n.get('info_no_collections_' + status) }}
+                            </p>
+                            <p v-if="searchQuery">
+                                {{ $i18n.get('info_try_empting_the_textual_search') }}
+                            </p>
+                            <p v-if="authorFilter !== '' && !searchQuery">
+                                {{ $i18n.get('info_try_selecting_all_collections_in_filter') }}
+                            </p>
                             <div v-if="!$adminOptions.hideCollectionsListCreationDropdown && $userCaps.hasCapability('tnc_rep_edit_collections') && status == undefined || status == ''">
                                 <b-dropdown 
                                         id="collection-creation-options-dropdown"
                                         aria-role="list"
                                         trap-focus>
-                                    <button
-                                            class="button is-secondary"
-                                            slot="trigger">
-                                        <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
-                                        <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                                        </span>
-                                    </button>
+                                    <template #trigger>
+                                        <button class="button is-secondary">
+                                            <div>{{ $i18n.getFrom('collections', 'new_item') }}</div>
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                            </span>
+                                        </button>
+                                    </template>
                                     <b-dropdown-item aria-role="listitem">
                                         <router-link
-                                                id="a-create-collection"
-                                                tag="div"
-                                                :to="{ path: $routerHelper.getNewCollectionPath() }">
-                                            {{ $i18n.get('new_blank_collection') }}
-                                            <br>
-                                            <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                                                v-slot="{ navigate }"
+                                                :to="{ path: $routerHelper.getNewCollectionPath() }"
+                                                custom>
+                                            <div 
+                                                    id="a-create-collection"
+                                                    @click="navigate()">
+                                                {{ $i18n.get('new_blank_collection') }}
+                                                <br>
+                                                <small class="is-small">{{ $i18n.get('info_choose_your_metadata') }}</small>
+                                            </div>
                                         </router-link>
                                     </b-dropdown-item>
                                     <b-dropdown-item aria-role="listitem">
@@ -329,15 +347,15 @@
                 
                 <!-- Footer -->
                 <div
-                        class="pagination-area"
-                        v-if="collections.length > 0">
+                        v-if="collections.length > 0"
+                        class="pagination-area">
                     <div class="shown-items"> 
                         {{ 
                             $i18n.get('info_showing_collections') + 
-                            (collectionsPerPage*(page - 1) + 1) + 
-                            $i18n.get('info_to') + 
-                            getLastCollectionNumber() + 
-                            $i18n.get('info_of') + totalCollections + '.'
+                                (collectionsPerPage*(page - 1) + 1) + 
+                                $i18n.get('info_to') + 
+                                getLastCollectionNumber() + 
+                                $i18n.get('info_of') + totalCollections + '.'
                         }} 
                     </div> 
                     <div class="items-per-page">
@@ -345,28 +363,36 @@
                                 horizontal 
                                 :label="$i18n.get('label_collections_per_page')"> 
                             <b-select 
-                                    :value="collectionsPerPage"
-                                    @input="onChangeCollectionsPerPage" 
-                                    :disabled="collections.length <= 0">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="48">48</option>
-                                <option :value="maxCollectionsPerPage">{{ maxCollectionsPerPage }}</option>
+                                    :model-value="collectionsPerPage"
+                                    :disabled="collections.length <= 0" 
+                                    @update:model-value="onChangeCollectionsPerPage">
+                                <option value="12">
+                                    12
+                                </option>
+                                <option value="24">
+                                    24
+                                </option>
+                                <option value="48">
+                                    48
+                                </option>
+                                <option :value="maxCollectionsPerPage">
+                                    {{ maxCollectionsPerPage }}
+                                </option>
                             </b-select>
                         </b-field>
                     </div>
                     <div class="pagination"> 
                         <b-pagination
-                                @change="onPageChange"
+                                v-model="page"
                                 :total="totalCollections"
-                                :current.sync="page"
                                 order="is-centered"
                                 size="is-small"
                                 :per-page="collectionsPerPage"
                                 :aria-next-label="$i18n.get('label_next_page')"
                                 :aria-previous-label="$i18n.get('label_previous_page')"
                                 :aria-page-label="$i18n.get('label_page')"
-                                :aria-current-label="$i18n.get('label_current_page')"/> 
+                                :aria-current-label="$i18n.get('label_current_page')"
+                                @change="onPageChange" /> 
                     </div>
                 </div>    
             </div> 
@@ -408,7 +434,7 @@ export default {
     },
     computed: {
         collections() {
-            return this.getCollections(); 
+            return this.getCollections();
         },
         repositoryTotalCollections(){
             return this.getRepositoryTotalCollections();
@@ -517,7 +543,7 @@ export default {
             this.loadCollections();
         },
         onChangeAuthorFilter(newAuthorFilter) {
-            if (newAuthorFilter != this.authorFilter) { 
+            if ( newAuthorFilter != this.authorFilter ) { 
                 this.$userPrefs.set('collections_author_filter', newAuthorFilter)
                     .then((newAuthorFilter) => {
                         this.authorFilter = newAuthorFilter;

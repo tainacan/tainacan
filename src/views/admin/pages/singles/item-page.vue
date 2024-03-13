@@ -1,11 +1,11 @@
 <template>
     <div>
         <b-loading
-                :active.sync="isLoading"
-                :can-cancel="false"/>
+                v-model="isLoading"
+                :can-cancel="false" />
 
         <tainacan-title 
-                 v-if="!$adminOptions.hideItemSinglePageTitle"
+                v-if="!$adminOptions.hideItemSinglePageTitle"
                 :bread-crumb-items="[{ path: '', label: $i18n.get('item') }]">
             <h1>
                 <span
@@ -13,8 +13,8 @@
                         class="status-tag">
                     {{ $i18n.get('status_' + item.status) }}
                 </span>
-                    {{ $i18n.get('title_item_page') + ' ' }}
-                    <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}    
+                {{ $i18n.get('title_item_page') + ' ' }}
+                <span style="font-weight: 600;">{{ (item != null && item != undefined) ? item.title : '' }}    
                 </span>
                 <span
                         v-if="(item != null && item != undefined && item.status != undefined && item.status != 'autodraft' && !isLoading)"
@@ -23,7 +23,7 @@
                     <i 
                             class="tainacan-icon tainacan-icon-1em"
                             :class="$statusHelper.getIcon(item.status)"
-                            />
+                        />
                     <help-button
                             :title="$i18n.get('status_' + item.status)"
                             :message="$i18n.get('info_item_' + item.status) + ' ' + $i18n.get('instruction_edit_item_status')" />
@@ -43,7 +43,7 @@
                         <div
                                 id="view-item-begin-right"
                                 class="form-hook-region"
-                                v-html="getBeginRightForm"/>
+                                v-html="getBeginRightForm" />
                     </template>
 
                     <div class="b-tabs">
@@ -54,10 +54,10 @@
                             <ul>
                                 <li 
                                         v-for="(tab, tabIndex) of tabs"
+                                        :id="tab.slug + '-tab-label'"
                                         :key="tabIndex"
                                         :class="{ 'is-active': activeTab === tab.slug }"
-                                        @click="activeTab = tab.slug"
-                                        :id="tab.slug + '-tab-label'">
+                                        @click="activeTab = tab.slug">
                                     <a>
                                         <span class="icon has-text-gray4">
                                             <i :class="'tainacan-icon tainacan-icon-18px tainacan-icon-' + tab.icon" />
@@ -91,7 +91,7 @@
                                         <div class="metadata-section-header section-label">
                                             <label>
                                                 <span class="icon has-text-gray4">
-                                                    <i class="tainacan-icon tainacan-icon-metadata"/>
+                                                    <i class="tainacan-icon tainacan-icon-metadata" />
                                                 </span>
                                                 {{ metadataSection.name }}&nbsp;
                                                 <span 
@@ -117,7 +117,7 @@
                                                         <i 
                                                                 class="tainacan-icon tainacan-icon-1em"
                                                                 :class="$statusHelper.getIcon(itemMetadatum.metadatum.status)"
-                                                        />
+                                                            />
                                                     </span>
                                                 </label>
                                                 <div
@@ -130,12 +130,12 @@
                                                     <component 
                                                             :is="
                                                                 itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-compound' ||
-                                                                (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
-                                                                itemMetadatum.metadatum.metadata_type_object.options &&
-                                                                itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
-                                                                itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
-                                                                ) ? 'div' : 'p'" 
-                                                            v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`"/>
+                                                                    (itemMetadatum.metadatum.metadata_type_object.component == 'tainacan-relationship' &&
+                                                                        itemMetadatum.metadatum.metadata_type_object.options &&
+                                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata &&
+                                                                        itemMetadatum.metadatum.metadata_type_object.options.display_related_item_metadata.length > 1
+                                                                    ) ? 'div' : 'p'" 
+                                                            v-html="itemMetadatum.value_as_html != '' ? itemMetadatum.value_as_html : `<p><span class='has-text-gray is-italic'>` + $i18n.get('label_value_not_provided') + `</span></p>`" />
                                                 </div>
                                             </div>
                                             <br>
@@ -148,7 +148,7 @@
                                     <div
                                             id="view-item-end-right"
                                             class="form-hook-region"
-                                            v-html="getEndRightForm"/>
+                                            v-html="getEndRightForm" />
                                 </template>
                             </div>
 
@@ -167,11 +167,11 @@
                                 </div>
 
                                 <related-items-list
+                                        v-model:is-loading="isLoading"
                                         :item-id="itemId"
                                         :collection-id="collectionId"
                                         :related-items="item.related_items"
-                                        :is-editable="false"
-                                        :is-loading.sync="isLoading" />
+                                        :is-editable="false" />
                             </div>
 
                         </section>
@@ -188,7 +188,7 @@
                             <div
                                     id="view-item-begin-left"
                                     class="form-hook-region"
-                                    v-html="getBeginLeftForm"/>
+                                    v-html="getBeginLeftForm" />
                         </template>
 
                         <!-- Document -------------------------------- -->
@@ -197,7 +197,7 @@
                                 class="section-label">
                             <label>
                                 <span class="icon has-text-gray4 tainacan-icon-1-125em">
-                                    <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))"/>
+                                    <i :class="'tainacan-icon tainacan-icon-' + ( (!item.document_type || item.document_type == 'empty' ) ? 'item' : (item.document_type == 'attachment' ? 'attachments' : item.document_type))" />
                                 </span>
                                 {{ collection && collection.item_document_label ? collection.item_document_label : ( (item.document != undefined && item.document != null && item.document != '') ? $i18n.get('label_document') : $i18n.get('label_document_empty') ) }}
                             </label>
@@ -207,11 +207,11 @@
                                 class="section-box document-field">
                             <div
                                     v-if="item.document !== undefined && item.document !== null &&
-                                          item.document_type !== undefined && item.document_type !== null &&
-                                          item.document !== '' && item.document_type !== 'empty'"
+                                        item.document_type !== undefined && item.document_type !== null &&
+                                        item.document !== '' && item.document_type !== 'empty'"
                                     class="document-field-content"
                                     :class="'document-field-content--' + item.document_type">
-                                <div v-html="item.document_as_html"/>
+                                <div v-html="item.document_as_html" />
                             </div>
                             <div v-else>
                                 <p>{{ $i18n.get('info_no_document_to_item') }}</p>
@@ -223,7 +223,7 @@
                                 class="section-label">
                             <label>
                                 <span class="icon has-text-gray4">
-                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-image"/>
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-image" />
                                 </span>
                                 {{ collection && collection.item_thumbnail_label ? collection.item_thumbnail_label : $i18n.get('label_thumbnail') }}
                             </label>
@@ -238,11 +238,11 @@
                                         :modal-on-click="false"
                                         :size="125"
                                         :file="{
-                                    media_type: 'image',
-                                    thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
-                                    title: $i18n.get('label_thumbnail'),
-                                    description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
-                                }"/>
+                                            media_type: 'image',
+                                            thumbnails: { 'tainacan-medium': [ $thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium', item.document_mimetype) ] },
+                                            title: $i18n.get('label_thumbnail'),
+                                            description: `<img alt='` + $i18n.get('label_thumbnail') + `' src='` + $thumbHelper.getSrc(item['thumbnail'], 'full', item.document_mimetype) + `'/>` 
+                                        }" />
                                 <figure
                                         v-if="item.thumbnail == undefined || ((item.thumbnail.medium == undefined || item.thumbnail.medium == false) && (item.thumbnail['tainacan-medium'] == undefined || item.thumbnail['tainacan-medium'] == false))"
                                         class="image">
@@ -263,7 +263,7 @@
                                 <label class="label">{{ $i18n.get('label_thumbnail_alt') }}</label>
                                 <help-button
                                         :title="$i18n.get('label_thumbnail_alt')"
-                                        :message="$i18n.get('info_thumbnail_alt')"/>
+                                        :message="$i18n.get('info_thumbnail_alt')" />
                                 <p> {{ item.thumbnail_alt }}</p>
                             </div>
                         </div>  
@@ -272,9 +272,9 @@
                         <div 
                                 v-if="shouldDisplayItemSingleAttachments"
                                 class="section-label">
-                            <label slot="header">
+                            <label>
                                 <span class="icon has-text-gray4">
-                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments"/>
+                                    <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-attachments" />
                                 </span>
                                 <span>
                                     {{ collection && collection.item_attachment_label ? collection.item_attachment_label : $i18n.get('label_attachments') }}&nbsp;
@@ -284,7 +284,7 @@
                                         ({{ totalAttachments }})
                                     </span>
                                 </span>
-                            </label> 
+                            </label>
                         </div>   
                         <div 
                                 v-if="item != undefined && item.id != undefined && !isLoading && shouldDisplayItemSingleAttachments"
@@ -300,7 +300,7 @@
                             <div
                                     id="view-item-end-left"
                                     class="form-hook-region"
-                                    v-html="getEndLeftForm"/>
+                                    v-html="getEndLeftForm" />
                         </template>
 
                     </div>
@@ -322,11 +322,11 @@
                                 <span class="icon has-text-gray4">
                                     <i 
                                             v-if="itemVisibility == 'open_access'"
-                                            class="tainacan-icon tainacan-icon-see"/>
+                                            class="tainacan-icon tainacan-icon-see" />
                                     <i
+                                            v-else
                                             class="tainacan-icon tainacan-icon-svg"
-                                            style="display: flex;"
-                                            v-else>
+                                            style="display: flex;">
                                         <svg 
                                                 xmlns:svg="http://www.w3.org/2000/svg"
                                                 xmlns="http://www.w3.org/2000/svg"
@@ -337,9 +337,9 @@
                                                     id="layer1"
                                                     transform="translate(-71.664352,-160.89128)">
                                                 <path
+                                                        id="path5508"
                                                         style="fill:var(--tainacan-gray4);fill-opacity:1;stroke:none;stroke-width:0.332731"
-                                                        d="m 74.839398,162.85685 c 0.09358,0 0.181945,0.0178 0.265146,0.052 0.08321,0.0356 0.153355,0.0831 0.213173,0.14544 0.06238,0.0624 0.110471,0.13511 0.145584,0.21852 0.03768,0.0806 0.05718,0.16896 0.05718,0.26522 0,0.0973 -0.0196,0.18714 -0.05718,0.2702 -0.03494,0.0806 -0.08321,0.14936 -0.145584,0.20783 -0.05978,0.0599 -0.129971,0.10801 -0.213173,0.14544 -0.08321,0.0356 -0.171572,0.052 -0.265146,0.052 -0.09358,0 -0.181945,-0.0179 -0.265146,-0.052 -0.08061,-0.0378 -0.150755,-0.0859 -0.213173,-0.14544 -0.06238,-0.0585 -0.11179,-0.12726 -0.145585,-0.20783 -0.03494,-0.083 -0.05198,-0.17289 -0.05198,-0.2702 0,-0.0962 0.01675,-0.18466 0.05198,-0.26522 0.03386,-0.0831 0.08321,-0.15578 0.145585,-0.21852 0.06238,-0.0624 0.132573,-0.11051 0.213173,-0.14544 0.08321,-0.0321 0.171571,-0.052 0.265146,-0.052 z"
-                                                        id="path5508" />
+                                                        d="m 74.839398,162.85685 c 0.09358,0 0.181945,0.0178 0.265146,0.052 0.08321,0.0356 0.153355,0.0831 0.213173,0.14544 0.06238,0.0624 0.110471,0.13511 0.145584,0.21852 0.03768,0.0806 0.05718,0.16896 0.05718,0.26522 0,0.0973 -0.0196,0.18714 -0.05718,0.2702 -0.03494,0.0806 -0.08321,0.14936 -0.145584,0.20783 -0.05978,0.0599 -0.129971,0.10801 -0.213173,0.14544 -0.08321,0.0356 -0.171572,0.052 -0.265146,0.052 -0.09358,0 -0.181945,-0.0179 -0.265146,-0.052 -0.08061,-0.0378 -0.150755,-0.0859 -0.213173,-0.14544 -0.06238,-0.0585 -0.11179,-0.12726 -0.145585,-0.20783 -0.03494,-0.083 -0.05198,-0.17289 -0.05198,-0.2702 0,-0.0962 0.01675,-0.18466 0.05198,-0.26522 0.03386,-0.0831 0.08321,-0.15578 0.145585,-0.21852 0.06238,-0.0624 0.132573,-0.11051 0.213173,-0.14544 0.08321,-0.0321 0.171571,-0.052 0.265146,-0.052 z" />
                                                 <path
                                                         id="path5461"
                                                         style="fill:var(--tainacan-gray4);fill-opacity:1;stroke:none;stroke-width:0.332732"
@@ -364,7 +364,7 @@
                         class="column is-narrow">
                     <div class="section-label">
                         <span class="icon has-text-gray4">
-                            <i class="tainacan-icon tainacan-icon-comment"/>
+                            <i class="tainacan-icon tainacan-icon-comment" />
                         </span>
                         <label>{{ $i18n.get('label_comments') }}</label>
                     </div>
@@ -374,12 +374,12 @@
                                 <span
                                         v-if="item.comment_status != 'open'"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-close"/>
+                                    <i class="tainacan-icon tainacan-icon-close" />
                                 </span>
                                 <span
                                         v-if="item.comment_status == 'open'"
                                         class="icon">
-                                    <i class="tainacan-icon tainacan-icon-approved"/>
+                                    <i class="tainacan-icon tainacan-icon-approved" />
                                 </span>
                                 {{ item.comment_status == 'open' ? $i18n.get('label_allowed') : $i18n.get('label_not_allowed') }}
                             </span>
@@ -405,7 +405,7 @@
                             :disabled="isLoading"
                             @click="openActivitiesModal()">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_activity_logs') }}</span>
                     </button>
@@ -416,7 +416,7 @@
                             :disabled="isLoading"
                             @click="openExposersModal()">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-viewas" />
                         </span>
                         <span class="is-hidden-touch">{{ $i18n.get('label_view_as') }}</span>
                     </button>
@@ -425,7 +425,7 @@
                             class="button sequence-button is-pulled-right"
                             :href="item.url">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                         </span>
                         <span>{{ $i18n.get('label_item_page_on_website') }}</span>
                     </a>
@@ -434,7 +434,7 @@
                             class="button is-secondary"
                             :to="{ path: $routerHelper.getItemEditPath(collectionId, itemId)}">
                         <span class="icon is-large">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                         </span>
                         <span>{{ $i18n.getFrom('items','edit_item') }}</span>
                     </router-link>
@@ -464,13 +464,14 @@
         mixins: [formHooks],
         data() {
             return {
-                collectionId: Number,
+                collectionId: [String, Number],
                 itemId: Number,
                 itemRequestCancel: undefined,
                 isLoading: false,
                 isLoadingMetadataSections: false,
                 open: true,
                 urls_open: false,
+                entityName: 'item',
                 activeTab: 'metadata'
             }
         },
@@ -573,7 +574,7 @@
             })
             .then((resp) => {
                 resp.request.then((item) => {
-                    this.$root.$emit('onCollectionBreadCrumbUpdate', [
+                    this.$emitter.emit('onCollectionBreadCrumbUpdate', [
                         {path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items')},
                         {path: '', label: item.title}
                     ]);
@@ -764,7 +765,7 @@
                     .field {
                         padding: 1em 0.75em;
                         
-                        /deep/ .collapse-handle {
+                        :deep(.collapse-handle) {
                             font-size: 1em;
                             margin-left: 0;
                             margin-right: 22px;
@@ -808,7 +809,7 @@
         }
 
         @media screen and (max-width: 769px) {
-            /deep/ .section-attachments .table-container {
+            :deep(.section-attachments) .table-container {
                 padding-left: 0;
                 padding-right: 0;
             }
@@ -892,51 +893,49 @@
             &.document-field-content--text {
                 padding-bottom: 2rem;
 
-                /deep/ article {
+                :deep(article) {
                     max-height: calc(32vh - 2rem);
                     overflow-y: auto;
                 }
             }
 
-            /deep/ img,
-            /deep/ video,
-            /deep/ figure {
+            :deep(img),
+            :deep(video),
+            :deep(figure) {
                 max-width: 100%;
                 max-height: 32vh;
                 width: auto;
                 margin: 0;
             }
-            /deep/ img {
+            :deep(img) {
                 width: auto !important;
             }
-            /deep/ a {
+            :deep(a) {
                 min-height: 60px;
                 display: block;
             }
-            /deep/ audio,
-            /deep/ iframe,
-            /deep/ blockquote {
+            :deep(audio),
+            :deep(iframe),
+            :deep(blockquote) {
                 max-width: 100%;
                 max-height: 32vh;
                 width: 100%;
                 margin: 0;
                 min-height: 150px;
             }
-            /deep/ audio {
+            :deep(audio) {
                 min-height: 80px;
             }
 
             @media screen and (max-height: 760px) {
                 max-height: 25vh;
 
-                /deep/ img,
-                /deep/ video,
-                /deep/ figure {
-                    max-height: 25vh;
-                }
-                /deep/ audio,
-                /deep/ iframe,
-                /deep/ blockquote {
+                :deep(img),
+                :deep(video),
+                :deep(figure),
+                :deep(audio),
+                :deep(iframe),
+                :deep(blockquote) {
                     max-height: 25vh;
                 }
             }

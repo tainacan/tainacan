@@ -1,11 +1,9 @@
 <template>
     <div>
         <b-datepicker
+                v-model="dateInit"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
-                v-model="dateInit"
-                @focus="isTouched = true"
-                @input="($event) => { resetPage(); validadeValues($event) }"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -20,18 +18,18 @@
                     $i18n.get('datepicker_short_thursday'),
                     $i18n.get('datepicker_short_friday'),
                     $i18n.get('datepicker_short_saturday'),
-                ]"/>
+                ]"
+                @focus="isTouched = true"
+                @update:model-value="($event) => { resetPage(); validadeValues($event) }" />
         <p 
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">
             {{ $i18n.get('label_until') }}
         </p>  
         <b-datepicker
+                v-model="dateEnd"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('label_selectbox_init')"
-                v-model="dateEnd"
-                @input="validadeValues()"
-                @focus="isTouched = true"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -46,20 +44,24 @@
                     $i18n.get('datepicker_short_thursday'),
                     $i18n.get('datepicker_short_friday'),
                     $i18n.get('datepicker_short_saturday'),
-                ]"/>
+                ]"
+                @update:model-value="validadeValues()"
+                @focus="isTouched = true" />
     </div>
 </template>
 
 <script>
-    import { wpAjax, dateInter } from "../../../js/mixins";
+    import { dateInter } from "../../../js/mixins";
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     import moment from 'moment';
 
     export default {
-        mixins: [ 
-            wpAjax,
+        mixins: [
             dateInter, 
             filterTypeMixin
+        ],
+        emits: [
+            'input',
         ],
         data(){
             return {
@@ -76,8 +78,11 @@
               if ( val && this.dateEnd === null)
                   this.dateEnd =  new Date();
             },
-            'query'() {
-                this.updateSelectedValues();
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true
             }
         },
         mounted() {

@@ -9,32 +9,31 @@
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox 
-                            @click.native="selectAllOnPage()" 
-                            :native-value="allOnPageSelected">
+                            :model-value="allOnPageSelected" 
+                            @update:model-value="selectAllOnPage()">
                         {{ $i18n.get('label_select_all_taxonomies_page') }}
                     </b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
                 <b-dropdown
+                        id="bulk-actions-dropdown"
                         position="is-bottom-left"
                         :disabled="!isSelecting"
-                        id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button> 
-
+                    <template #trigger>
+                        <button class="button is-white">
+                            <span>{{ $i18n.get('label_bulk_actions') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button> 
+                    </template>
                     <b-dropdown-item
                             id="item-delete-selected-items"
-                            @click="deleteSelected()"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="deleteSelected()">
                         {{ $i18n.get('label_delete_selected_taxonomies') }}
                     </b-dropdown-item>
                     <b-dropdown-item 
@@ -52,7 +51,7 @@
                         <!-- Checking list -->
                         <th v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')">
                             &nbsp;
-                            <!-- nothing to show on header -->
+                        <!-- nothing to show on header -->
                         </th>
                         <!-- Status icon -->
                         <th v-if="isOnAllTaxonomiesTab">
@@ -60,41 +59,49 @@
                         </th>
                         <!-- Name -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_name') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_name') }}
+                            </div>
                         </th>
                         <!-- Description -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_description') }}
+                            </div>
                         </th>
                         <!-- Collections -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_collections_using') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_collections_using') }}
+                            </div>
                         </th>
                         <!-- Total Items -->
                         <th v-if="!isOnTrash">
-                            <div class="th-wrap total-terms-header">{{ $i18n.get('label_total_terms') }}</div>
+                            <div class="th-wrap total-terms-header">
+                                {{ $i18n.get('label_total_terms') }}
+                            </div>
                         </th>
                         <!-- Actions -->
                         <th 
                                 v-if="taxonomies.findIndex((taxonomy) => taxonomy.current_user_can_edit || taxonomy.current_user_can_delete) >= 0"
                                 class="actions-header">
                             &nbsp;
-                            <!-- nothing to show on header for actions cell-->
+                        <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr     
-                            :class="{ 'selected-row': selected[index] }"
+                            v-for="(taxonomy, index) of taxonomies"
                             :key="index"
-                            v-for="(taxonomy, index) of taxonomies">
+                            :class="{ 'selected-row': selected[index] }">
                         <!-- Checking list -->
                         <td 
                                 v-if="$userCaps.hasCapability('tnc_rep_delete_taxonomies')"
                                 :class="{ 'is-selecting': isSelecting }"
                                 class="checkbox-cell">
                             <b-checkbox 
-                                    v-model="selected[index]"/> 
+                                    v-model="selected[index]" /> 
                         </td>
                         <!-- Status icon -->
                         <td 
@@ -102,25 +109,25 @@
                                 class="status-cell">
                             <span 
                                     v-if="$statusHelper.hasIcon(taxonomy.status)"
-                                    class="icon has-text-gray"
                                     v-tooltip="{
                                         content: $i18n.get('status_' + taxonomy.status),
                                         autoHide: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
-                                    }">
+                                    }"
+                                    class="icon has-text-gray">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(taxonomy.status)"
-                                        />
+                                    />
                             </span>
                         </td>
                         <!-- Name -->
                         <td 
                                 class="column-default-width column-main-content"
-                                @click="onClickTaxonomy($event, taxonomy.id, index)"
-                                :label="$i18n.get('label_name')" 
-                                :aria-label="$i18n.get('label_name') + ': ' + taxonomy.name">
+                                :label="$i18n.get('label_name')"
+                                :aria-label="$i18n.get('label_name') + ': ' + taxonomy.name" 
+                                @click="onClickTaxonomy($event, taxonomy.id, index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -137,9 +144,9 @@
                         <!-- Description -->
                         <td
                                 class="column-large-width" 
-                                @click="onClickTaxonomy($event, taxonomy.id, index)"
-                                :label="$i18n.get('label_description')" 
-                                :aria-label="$i18n.get('label_description') + ': ' + taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`">
+                                :label="$i18n.get('label_description')"
+                                :aria-label="$i18n.get('label_description') + ': ' + taxonomy.description != undefined && taxonomy.description != '' ? taxonomy.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" 
+                                @click="onClickTaxonomy($event, taxonomy.id, index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -160,7 +167,6 @@
                                 :label="$i18n.get('label_collections_using')" 
                                 :aria-label="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? taxonomy.collections.toString() : $i18n.get('label_no_collections_using_taxonomy')">
                             <p
-                                    @click.self="onClickTaxonomy($event, taxonomy.id, index)"
                                     v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -172,15 +178,16 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }"
+                                    @click.self="onClickTaxonomy($event, taxonomy.id, index)"
                                     v-html="(taxonomy.collections != undefined && taxonomy.collections.length != undefined && taxonomy.collections.length > 0) ? renderListOfCollections(taxonomy.collections, taxonomy.metadata_by_collection) : $i18n.get('label_no_collections_using_taxonomy')" />
                         </td>
                         <!-- Total terms -->
                         <td
-                                @click.self="onClickTaxonomy($event, taxonomy.id, index)"
+                                v-if="taxonomy.total_terms != undefined"
                                 class="column-small-width column-align-right" 
                                 :label="$i18n.get('label_total_terms')" 
-                                v-if="taxonomy.total_terms != undefined"
-                                :aria-label="$i18n.get('label_total_terms') + ': ' + taxonomy.total_terms['total']">
+                                :aria-label="$i18n.get('label_total_terms') + ': ' + taxonomy.total_terms['total']"
+                                @click.self="onClickTaxonomy($event, taxonomy.id, index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -198,14 +205,14 @@
                         <!-- Actions -->
                         <td 
                                 v-if="taxonomy.current_user_can_edit || taxonomy.current_user_can_delete"
-                                @click="onClickTaxonomy($event, taxonomy.id, index)"
                                 class="column-default-width"
-                                :class="{ 'actions-cell': taxonomy.current_user_can_edit || taxonomy.current_user_can_delete }" 
-                                :label="$i18n.get('label_actions')">
+                                :class="{ 'actions-cell': taxonomy.current_user_can_edit || taxonomy.current_user_can_delete }"
+                                :label="$i18n.get('label_actions')" 
+                                @click="onClickTaxonomy($event, taxonomy.id, index)">
                             <div class="actions-container">
                                 <a 
-                                        id="button-edit" 
-                                        v-if="taxonomy.current_user_can_edit"
+                                        v-if="taxonomy.current_user_can_edit" 
+                                        id="button-edit"
                                         :aria-label="$i18n.getFrom('taxonomies','edit_item')" 
                                         @click="onClickTaxonomy($event, taxonomy.id, index)">
                                     <span
@@ -216,12 +223,12 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon">
-                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                                        <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a 
-                                        id="button-delete" 
-                                        v-if="taxonomy.current_user_can_delete"
+                                        v-if="taxonomy.current_user_can_delete" 
+                                        id="button-delete"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneTaxonomy(taxonomy.id)">
                                     <span
@@ -234,16 +241,16 @@
                                             class="icon">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                                class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                                                class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
                                     </span>
                                 </a>
                                 <a 
                                         v-if="!isOnTrash"
                                         id="button-open-external" 
                                         :aria-label="$i18n.getFrom('taxonomies','view_item')"
-                                        @click.stop="" 
-                                        target="_blank"
-                                        :href="themeTaxonomiesURL + taxonomy.slug">                      
+                                        target="_blank" 
+                                        :href="themeTaxonomiesURL + taxonomy.slug"
+                                        @click.stop="">                      
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('label_taxonomy_page_on_website'),
@@ -253,7 +260,7 @@
                                                 html: true
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
                             </div>
@@ -270,7 +277,7 @@
     import CustomDialog from '../other/custom-dialog.vue';
 
     export default {
-        name: 'List',
+        name: 'TaxonomiesList',
         props: {
             isLoading: false,
             total: 0,
@@ -297,23 +304,28 @@
             }
         },
         watch: {
-            taxonomies() {
-                this.selected = [];
-                for (let i = 0; i < this.taxonomies.length; i++)
-                    this.selected.push(false);    
+            taxonomies: {
+                handler() {
+                    this.selected = [];
+                    for (let i = 0; i < this.taxonomies.length; i++)
+                        this.selected.push(false);   
+                } 
             },
-            selected() {
-                let allSelected = true;
-                let isSelecting = false;
-                for (let i = 0; i < this.selected.length; i++) {
-                    if (this.selected[i] == false) {
-                        allSelected = false;
-                    } else {
-                        isSelecting = true;
+            selected: {
+                handler() {
+                    let allSelected = true;
+                    let isSelecting = false;
+                    for (let i = 0; i < this.selected.length; i++) {
+                        if (this.selected[i] == false) {
+                            allSelected = false;
+                        } else {
+                            isSelecting = true;
+                        }
                     }
-                }
-                this.allOnPageSelected = allSelected;
-                this.isSelecting = isSelecting;
+                    this.allOnPageSelected = allSelected;
+                    this.isSelecting = isSelecting;
+                },
+                deep: true
             }
         },
         methods: {
@@ -408,11 +420,10 @@
                 });
             },
             onClickTaxonomy($event, taxonomyId, index) {
-                if ($event.ctrlKey) {
-                    this.$set(this.selected, index, !this.selected[index]); 
-                } else {
+                if ($event.ctrlKey)
+                    Object.assign( this.selected, { [index]: !this.selected[index] }); 
+                else
                     this.$router.push(this.$routerHelper.getTaxonomyEditPath(taxonomyId));
-                }
             },
             renderListOfCollections(collections, metadata) {
                 let htmlList = '';

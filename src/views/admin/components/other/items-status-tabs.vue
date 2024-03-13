@@ -2,13 +2,13 @@
     <div class="tabs">
         <ul>               
             <li 
-                    @click="onChangeTab('')"
-                    :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,draft' }"
                     v-tooltip="{
                         content: $i18n.get('info_items_tab_all'),
                         autoHide: true,
                         placement: 'auto',
-                    }">
+                    }"
+                    :class="{ 'is-active': status == undefined || status == '' || status == 'publish,private,draft' }"
+                    @click="onChangeTab('')">
                 <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                     {{ $i18n.get('label_all_items') }}
                     <span 
@@ -18,19 +18,20 @@
                     </span>
                 </a>
             </li>
-            <template v-for="(statusOption, index) of $statusHelper.getStatuses()">
+            <template
+                    v-for="(statusOption, index) of $statusHelper.getStatuses()"
+                    :key="index">
                 <li 
                         v-if="(isRepositoryLevel || statusOption.slug != 'private') || (statusOption.slug == 'private' && collection && collection.current_user_can_read_private_items)"
-                        :key="index"
-                        @click="onChangeTab(statusOption.slug)"
-                        :class="{ 'is-active': status == statusOption.slug}"
-                        :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
                         v-tooltip="{
                             content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('items')]),
                             autoHide: true,
                             placement: 'auto',
                             popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : '']
-                        }">
+                        }"
+                        :class="{ 'is-active': status == statusOption.slug}"
+                        :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
+                        @click="onChangeTab(statusOption.slug)">
                     <a>
                         <span 
                                 v-if="$statusHelper.hasIcon(statusOption.slug)"
@@ -38,7 +39,7 @@
                             <i 
                                     class="tainacan-icon tainacan-icon-1-125em"
                                     :class="$statusHelper.getIcon(statusOption.slug)"
-                                    />
+                                />
                         </span>
                         {{ statusOption.name }}
                         <span 

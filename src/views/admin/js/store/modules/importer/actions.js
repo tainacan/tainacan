@@ -4,7 +4,7 @@ import axios from '../../../axios';
 export const fetchAvailableImporters = ({ commit }) => {
     return new Promise((resolve, reject) => {
 
-        axios.tainacan.get('importers/available')
+        axios.tainacanApi.get('importers/available')
         .then((res) => {
             let availableImporters = res.data;
             commit('setAvailableImporters', availableImporters);
@@ -19,7 +19,7 @@ export const fetchAvailableImporters = ({ commit }) => {
 export const fetchImporter = ( { commit }, importerId ) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.get('importers/session/' +  importerId)
+        axios.tainacanApi.get('importers/session/' +  importerId)
             .then( res => {
                 let importer = res.data;
                 commit('setImporter', importer);
@@ -34,7 +34,7 @@ export const fetchImporter = ( { commit }, importerId ) => {
 export const sendImporter = ( { commit }, importerTypeSlug) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.post('importers/session/', {
+        axios.tainacanApi.post('importers/session/', {
             importer_slug: importerTypeSlug
         })
             .then( res => {
@@ -51,7 +51,7 @@ export const sendImporter = ( { commit }, importerTypeSlug) => {
 export const updateImporter = ( { commit }, { sessionId, options }) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.put('importers/session/' + sessionId, options)
+        axios.tainacanApi.put('importers/session/' + sessionId, options)
             .then( res => {
                 let importer = res.data;
                 commit('setImporter', importer);
@@ -65,7 +65,7 @@ export const updateImporter = ( { commit }, { sessionId, options }) => {
 
 export const updateImporterCollection = ( { commit }, { sessionId, collection }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.put('importers/session/' + sessionId, {
+        axios.tainacanApi.put('importers/session/' + sessionId, {
             collection: collection
         })
             .then( res => {
@@ -81,7 +81,7 @@ export const updateImporterCollection = ( { commit }, { sessionId, collection })
 
 export const updateImporterURL = ( { commit }, { sessionId, url }) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.put('importers/session/' + sessionId, {
+        axios.tainacanApi.put('importers/session/' + sessionId, {
             url: url
         })
             .then( res => {
@@ -98,7 +98,7 @@ export const updateImporterURL = ( { commit }, { sessionId, url }) => {
 export const updateImporterOptions = ( { commit }, { sessionId, options }) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.put('importers/session/' + sessionId, {
+        axios.tainacanApi.put('importers/session/' + sessionId, {
             options
         })
             .then( res => {
@@ -118,7 +118,7 @@ export const updateImporterFile = ( { commit }, { sessionId, file }) => {
         let formData = new FormData();
         formData.append('file', file)
 
-        axios.tainacan.post('importers/session/' + sessionId + '/file', formData, {
+        axios.tainacanApi.post('importers/session/' + sessionId + '/file', formData, {
                 headers: { 
                     'Content-Type': 'multipart/form-data;', 
                     'Content-Disposition': 'form-data; filename=' + file.name + '; filesize=' + file.size}, 
@@ -136,7 +136,7 @@ export const updateImporterFile = ( { commit }, { sessionId, file }) => {
 
 export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/importers/session/' + sessionId + '/source_info')
+        axios.tainacanApi.get('/importers/session/' + sessionId + '/source_info')
         .then((res) => {
             let importerSourceInfo = res.data;
             commit('setImporterSourceInfo', importerSourceInfo);
@@ -151,7 +151,7 @@ export const fetchImporterSourceInfo = ({ commit }, sessionId ) => {
 export const runImporter = ( { dispatch } , importerId ) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.post('importers/session/' + importerId + '/run')
+        axios.tainacanApi.post('importers/session/' + importerId + '/run')
             .then( res => {
                 let backgroundProcessId = res.data;
                 dispatch('bgprocess/fetchProcesses', { }, { root: true });
@@ -166,7 +166,7 @@ export const runImporter = ( { dispatch } , importerId ) => {
 export const fetchMappingImporter = ( { commit }, { sessionId, collection } ) => {
     return new Promise(( resolve, reject ) => {
 
-        axios.tainacan.get('importers/session/' +  sessionId + '/get_mapping/' + collection)
+        axios.tainacanApi.get('importers/session/' +  sessionId + '/get_mapping/' + collection)
             .then( res => {
                 let mapping = res.data;
                 commit('setMappingImporter', mapping);

@@ -2,8 +2,8 @@
     <div>
         <div class="table-container">
             <b-loading
-                    is-full-page="false" 
-                    :active.sync="displayLoading" />
+                    v-model="displayLoading" 
+                    :is-full-page="false" />
             <div class="table-wrapper">
                 <div class="related-items-list">
                     <div 
@@ -16,7 +16,7 @@
                                     <div class="field has-addons">
                                         <span>
                                             <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-collection"/>
+                                                <i class="tainacan-icon tainacan-icon-collection" />
                                             </span>
                                             {{ relatedItemGroup.collection_name ? relatedItemGroup.collection_name : '' }}
                                         </span>
@@ -28,7 +28,7 @@
                                     <div class="field has-addons">
                                         <span>
                                             <span class="icon">
-                                                <i class="tainacan-icon tainacan-icon-metadata"/>
+                                                <i class="tainacan-icon tainacan-icon-metadata" />
                                             </span>
                                             {{ relatedItemGroup.metadata_name ? relatedItemGroup.metadata_name : '' }}
                                         </span>
@@ -62,17 +62,17 @@
                                         @click="openItemOnNewTab(relatedItem)">
                                     <span 
                                             v-if="$statusHelper.hasIcon(relatedItem.status)"
-                                            class="icon has-text-gray"
                                             v-tooltip="{
                                                 content: $i18n.get('status_' + relatedItem.status),
                                                 autoHide: true,
                                                 placement: 'top',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
-                                            }">
+                                            }"
+                                            class="icon has-text-gray">
                                         <i 
                                                 class="tainacan-icon tainacan-icon-1em"
                                                 :class="$statusHelper.getIcon(relatedItem.status)"
-                                                />
+                                            />
                                     </span>
                                 </div>
                                 <div @click="openItemOnNewTab(relatedItem)">
@@ -84,12 +84,12 @@
                                                 :src="$thumbHelper.getSrc(relatedItem['thumbnail'], 'tainacan-small', relatedItem.document_mimetype)"
                                                 :alt="relatedItem.thumbnail_alt ? relatedItem.thumbnail_alt : $i18n.get('label_thumbnail')"
                                                 :transition-duration="500"
-                                        />
+                                            />
                                     </span>
                                 </div>
                                 <div 
-                                        @click="openItemOnNewTab(relatedItem)"
-                                        style="width: 100%">
+                                        style="width: 100%"
+                                        @click="openItemOnNewTab(relatedItem)">
                                     <p
                                             v-tooltip="{
                                                 delay: {
@@ -102,7 +102,7 @@
                                                 placement: 'top',
                                                 popperClass: ['tainacan-tooltip', 'tooltip']
                                             }"
-                                            v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`"/>
+                                            v-html="(relatedItem.title != undefined && relatedItem.title != '') ? relatedItem.title : `<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`" />
                                 </div>
                                 <div 
                                         v-if="isEditable && relatedItem.current_user_can_edit"
@@ -112,11 +112,11 @@
                                         <a
                                                 v-if="!relatedItem.status != 'trash'"
                                                 id="button-edit"
-                                                @click.prevent.stop="setItemForEdit(relatedItem, relatedItemGroup)"
-                                                :aria-label="$i18n.getFrom('items','edit_item')">
+                                                :aria-label="$i18n.getFrom('items','edit_item')"
+                                                @click.prevent.stop="setItemForEdit(relatedItem, relatedItemGroup)">
                                             <span
                                                     v-tooltip="{
-                                                         delay: {
+                                                        delay: {
                                                             shown: 500,
                                                             hide: 100,
                                                         },
@@ -136,11 +136,11 @@
                     </div>
                 </div>
                 <b-modal 
+                        v-model="editItemModal"
                         :width="1200"
-                        :active.sync="editItemModal"
-                        @after-leave="reloadRelatedItems"
                         custom-class="tainacan-modal"
-                        :close-button-aria-label="$i18n.get('close')">
+                        :close-button-aria-label="$i18n.get('close')"
+                        @after-leave="reloadRelatedItems">
                     <iframe 
                             width="100%"
                             :style="{ height: (isMobileScreen ? '100vh' : '85vh') }"
@@ -160,7 +160,7 @@
             isLoading: Boolean,
             isEditable: Boolean,
             itemId: String,
-            collectionId: String,
+            collectionId: [String, Number],
             isMobileScreen: Boolean
         },
         data() {

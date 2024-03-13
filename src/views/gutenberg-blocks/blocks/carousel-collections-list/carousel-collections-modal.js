@@ -1,4 +1,4 @@
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
 const { __ } = wp.i18n;
@@ -120,7 +120,7 @@ export default class CollectionsModal extends React.Component {
             modalCollections: currentModalCollections,
         });
 
-        tainacan.get(endpoint)
+        tainacanApi.get(endpoint)
             .then(response => {
 
                 for (let collection of response.data) {
@@ -164,7 +164,7 @@ export default class CollectionsModal extends React.Component {
         if (name != undefined && name != '')
             endpoint += '&search=' + name;
 
-        tainacan.get(endpoint, { cancelToken: aCollectionRequestSource.token })
+        tainacanApi.get(endpoint, { cancelToken: aCollectionRequestSource.token })
             .then(response => {
 
                 let someCollections = this.state.collections;

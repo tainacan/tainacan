@@ -8,7 +8,7 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
         body['parent_meta_id'] = parent_meta_id;
         
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch(`/item/${item_id}/metadata/${metadatum_id}`, body)
+        axios.tainacanApi.patch(`/item/${item_id}/metadata/${metadatum_id}`, body)
             .then( res => {
                 let itemMetadatum = res.data;
                 commit('setSingleMetadatum', itemMetadatum);
@@ -28,7 +28,7 @@ export const updateItemMetadatum = ({ commit }, { item_id, metadatum_id, values,
 export const fetchItemMetadata = ({ commit }, item_id) => {
     commit('cleanItemMetadata');
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/item/' + item_id + '/metadata')
+        axios.tainacanApi.get('/item/' + item_id + '/metadata')
         .then(res => {
             let itemMetadata = res.data;
             commit('setItemMetadata', itemMetadata);
@@ -45,7 +45,7 @@ export const fetchItemMetadata = ({ commit }, item_id) => {
 export const fetchCompoundFirstParentMetaId = ({ commit }, { item_id, metadatum_id }) => {
    
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch(`/item/${item_id}/metadata/${metadatum_id}`, { value: [] })
+        axios.tainacanApi.patch(`/item/${item_id}/metadata/${metadatum_id}`, { value: [] })
             .then( res => {
                 const parentMetaId = res.data.parent_meta_id;
                 resolve(parentMetaId);
@@ -64,7 +64,7 @@ export const fetchCompoundFirstParentMetaId = ({ commit }, { item_id, metadatum_
 export const deleteItemMetadataGroup = ({ commit }, { item_id, metadatum_id, parent_meta_id }) => {
         
     return new Promise((resolve) => {
-        axios.tainacan.delete(`/item/${item_id}/metadata/${metadatum_id}`, { data: { parent_meta_id: parent_meta_id } })
+        axios.tainacanApi.delete(`/item/${item_id}/metadata/${metadatum_id}`, { data: { parent_meta_id: parent_meta_id } })
             .then( (res) => {
                 commit('deleteChildItemMetadata', { parentMetadatumId: metadatum_id, parentMetaId: parent_meta_id });
                 commit('setLastUpdated');
@@ -101,7 +101,7 @@ export const fetchItem = ({ commit }, { itemId, contextEdit, fetchOnly } ) => {
         
     return Object({ 
         request: new Promise((resolve, reject) => {
-            axios.tainacan.get(endpoint,{
+            axios.tainacanApi.get(endpoint,{
                 cancelToken: source.token
             })
                 .then(res => {
@@ -128,7 +128,7 @@ export const replaceItem = ({ commit }, item) => {
 export const fetchItemTitle = ({ commit }, id) => {
     commit('cleanItemTitle');
     return new Promise((resolve, reject) =>{ 
-        axios.tainacan.get('/items/' + id + '?fetch_only=title')
+        axios.tainacanApi.get('/items/' + id + '?fetch_only=title')
         .then(res => {
             let itemTitle = res.data;
             commit('setItemTitle', itemTitle.title);
@@ -142,7 +142,7 @@ export const fetchItemTitle = ({ commit }, id) => {
 
 export const sendItem = ( { commit }, item) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.post('/collection/'+ item.collection_id + '/items/', item)
+        axios.tainacanApi.post('/collection/'+ item.collection_id + '/items/', item)
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');
@@ -157,7 +157,7 @@ export const sendItem = ( { commit }, item) => {
 export const updateItem = ({ commit }, item) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/items/' + item.id, item)
+        axios.tainacanApi.patch('/items/' + item.id, item)
             .then( res => {
                 commit('setItem', res.data);
                 commit('setLastUpdated');
@@ -172,7 +172,7 @@ export const updateItem = ({ commit }, item) => {
 export const duplicateItem = ({ commit }, { collectionId, itemId, copies }) => {
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.post('/collection/' + collectionId + '/items/' + itemId + '/duplicate', { copies: new Number(copies) })
+        axios.tainacanApi.post('/collection/' + collectionId + '/items/' + itemId + '/duplicate', { copies: new Number(copies) })
             .then( res => {
                 resolve( res.data.items );
             }).catch( error => { 
@@ -191,7 +191,7 @@ export const updateItemDocument = ({ commit }, { item_id, document, document_typ
         params['document_options'] = document_options;
         
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/items/' + item_id, params).then( res => {
+        axios.tainacanApi.patch('/items/' + item_id, params).then( res => {
             let item = res.data;
 
             commit('setItem', item);
@@ -214,7 +214,7 @@ export const fetchOnlyRelatedItems = ({ commit }, { itemId, contextEdit } ) => {
     endpoint += '&fetch_only=related_items'
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let relatedItems = res.data && res.data.related_items ? res.data.related_items : [];
                 commit('setOnlyRelatedItemsToItem', {itemId: itemId, relatedItems: relatedItems });
@@ -228,7 +228,7 @@ export const fetchOnlyRelatedItems = ({ commit }, { itemId, contextEdit } ) => {
 export const sendAttachment = ( { commit }, { item_id, file }) => {
     commit('cleanAttachment');
     return new Promise(( resolve, reject ) => {
-        axios.wp.post('/media/?post=' + item_id, file, {
+        axios.wpApi.post('/media/?post=' + item_id, file, {
             headers: { 'Content-Disposition': 'attachment; filename=' + file.name },
         })
             .then( res => {
@@ -246,7 +246,7 @@ export const sendAttachment = ( { commit }, { item_id, file }) => {
 export const removeAttachmentFromItem = ( { commit }, attachmentId) => {
     commit('cleanAttachment');
     return new Promise(( resolve, reject ) => {
-        axios.wp.patch('/media/' + attachmentId, {
+        axios.wpApi.patch('/media/' + attachmentId, {
             post: 0
         })
             .then( res => {
@@ -263,7 +263,7 @@ export const removeAttachmentFromItem = ( { commit }, attachmentId) => {
 
 export const deletePermanentlyAttachment = ( { commit }, attachmentId) => {
     return new Promise(( resolve, reject ) => {
-        axios.wp.delete('/media/' + attachmentId + '?force=true')
+        axios.wpApi.delete('/media/' + attachmentId + '?force=true')
             .then( res => {
                 let attachment = res.data;
                 resolve( attachment );
@@ -285,13 +285,13 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
         endpoint += '&exclude=' + excludeThumbnailId;
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
         .then(res => {
             let attachments = res.data;
             let total =  res.headers['x-wp-total'];
 
             commit('setAttachments', attachments);
-            commit('setTotalAttachments', total);
+            commit('setTotalAttachments', isNaN(total) ? 0 : Number(total));
 
             resolve( {
                 attachments: attachments,
@@ -306,7 +306,7 @@ export const fetchAttachments = ({ commit }, { page, attachmentsPerPage, itemId,
 
 export const updateThumbnail = ({ commit }, { itemId, thumbnailId, thumbnailAlt }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/items/' + itemId, {
+        axios.tainacanApi.patch('/items/' + itemId, {
             _thumbnail_id: thumbnailId
         }).then( res => {
             let item = res.data
@@ -322,7 +322,7 @@ export const updateThumbnail = ({ commit }, { itemId, thumbnailId, thumbnailAlt 
 
 export const updateThumbnailAlt = ({ commit }, { thumbnailId, thumbnailAlt }) => {
     return new Promise((resolve, reject) => {
-        axios.wp.patch('/media/' + thumbnailId + '?force=true', {
+        axios.wpApi.patch('/media/' + thumbnailId + '?force=true', {
             alt_text: thumbnailAlt
         }).then( res => {
             let thumbnail = res.data;
@@ -375,7 +375,7 @@ export const submitItemSubmission = ({ commit }, { itemSubmission, itemSubmissio
         if (captchaResponse)
             item['g-recaptcha-response'] = captchaResponse;
 
-        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission', {...item, metadata: itemSubmissionMetadata } )
+        axios.tainacanApi.post('/collection/' + itemSubmission.collection_id + '/items/submission', {...item, metadata: itemSubmissionMetadata } )
             .then( res => {
                 resolve( res.data.id );
             }).catch( error => { 
@@ -402,7 +402,7 @@ export const finishItemSubmission = ({ commit }, { itemSubmission, fakeItemId })
                     formData.append(key + '[' + i + ']', itemSubmission[key][i]);
             }
         }
-        axios.tainacan.post('/collection/' + itemSubmission.collection_id + '/items/submission/' + fakeItemId + '/finish', formData, config )
+        axios.tainacanApi.post('/collection/' + itemSubmission.collection_id + '/items/submission/' + fakeItemId + '/finish', formData, config )
             .then( res => {
                 resolve( res.data );
             }).catch( error => {

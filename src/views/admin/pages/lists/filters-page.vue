@@ -1,6 +1,6 @@
 <template>
     <div :class="{ 'repository-level-page page-container': isRepositoryLevel }">
-        <tainacan-title :bread-crumb-items="[{ path: '', label: $i18n.get('filters') }]"/>
+        <tainacan-title :bread-crumb-items="[{ path: '', label: $i18n.get('filters') }]" />
         
         <template v-if="isRepositoryLevel">
             <p>{{ $i18n.get('info_repository_filters_inheritance') }}</p>
@@ -8,13 +8,13 @@
         </template>
                         
         <div class="filters-list-page">
-            <b-loading :active.sync="isLoadingMetadatumTypes"/>
+            <b-loading v-model="isLoadingMetadatumTypes" />
             
             <div
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
+                    ref="filterEditionPageColumns"
                     :style="{ height: activeFiltersList.length <= 0 && !isLoadingFilters ? 'auto' : 'calc(100vh - 6px - ' + columnsTopY + 'px)'}"
-                    class="columns"
-                    ref="filterEditionPageColumns">
+                    class="columns">
                 <div class="column">
 
                     <div class="tainacan-form sub-header">
@@ -24,8 +24,8 @@
                                 
                             <b-field class="header-item">
                                 <b-input 
-                                        :placeholder="$i18n.get('instruction_type_search_filter_filter')"
                                         v-model="filterNameFilterString"
+                                        :placeholder="$i18n.get('instruction_type_search_filter_filter')"
                                         icon="magnify"
                                         size="is-small"
                                         icon-right="close-circle"
@@ -41,7 +41,7 @@
                         <div class="content has-text-gray has-text-centered">
                             <p>
                                 <span class="icon is-large">
-                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters"/>
+                                    <i class="tainacan-icon tainacan-icon-36px tainacan-icon-filters" />
                                 </span>
                             </p>
                             <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>  
@@ -49,176 +49,182 @@
                         </div>
                     </section>
 
-                    <draggable
+                    <sortable
+                            :list="activeFiltersList"
+                            item-key="id"
                             class="active-filters-area"
-                            @change="handleChangeOnFilter"
-                            :class="{'filters-area-receive': isDraggingFromAvailable}" 
-                            v-model="activeFiltersList"
-                            :group="{ name:'filters', pull: false, put: true }"
-                            :sort="(openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel"
-                            :handle="'.handle'" 
-                            ghost-class="sortable-ghost"
-                            filter=".not-sortable-item"
-                            :prevent-on-filter="false"
-                            :animation="250">
-                        <div
-                                class="active-filter-item" 
-                                :class="{
-                                    'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || filterNameFilterString != ''),
-                                    'not-focusable-item': openedFilterId == filter.id, 
-                                    'disabled-filter': filter.enabled == false,
-                                    'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
-                                }" 
-                                v-for="(filter, index) in activeFiltersList" 
-                                :key="filter.id"
-                                v-show="filterNameFilterString == '' || filter.name.toString().toLowerCase().indexOf(filterNameFilterString.toString().toLowerCase()) >= 0">
-                            <div class="handle">
-                                <span
-                                        v-if="!isRepositoryLevel"
-                                        class="sorting-buttons">
-                                    <button 
-                                            :disabled="index == 0"
-                                            class="link-button"
-                                            @click="moveFilterUpViaButton(index)"
-                                            :aria-label="$i18n.get('label_move_up')">
-                                        <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
-                                        </span>
-                                    </button>
-                                    <button 
-                                            :disabled="index == activeFiltersList.length - 1"
-                                            class="link-button"
-                                            @click="moveFilterDownViaButton(index)"
-                                            :aria-label="$i18n.get('label_move_down')">
-                                        <span class="icon">
-                                            <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
-                                        </span>
-                                    </button>
-                                </span>
-                                <span 
-                                        :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel || filterNameFilterString != '') ? '1.0' : '0.0' }"
-                                        v-tooltip="{
-                                            content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
-                                            autoHide: true,
-                                            popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                            placement: 'auto-start'
-                                        }"
-                                        class="icon grip-icon">
-                                    <svg 
-                                            xmlns="http://www.w3.org/2000/svg" 
-                                            height="24px"
-                                            viewBox="0 0 24 24"
-                                            width="24px"
-                                            fill="currentColor">
-                                        <path
-                                                d="M0 0h24v24H0V0z"
-                                                fill="transparent"/>
-                                        <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-                                    </svg>
-                                </span>
-                                <span 
-                                        class="filter-name"
-                                        :class="{'is-danger': formWithErrors == filter.id }">
-                                        {{ filter.name }}
-                                </span>
-                                <span   
-                                        v-if="filter.filter_type_object != undefined"
-                                        class="label-details">  
-                                    ({{ filter.filter_type_object.name }}) 
-                                    <!-- <em v-if="filter.inherited">{{ $i18n.get('label_inherited') }}</em>  -->
-                                    <span 
-                                            class="not-saved" 
-                                            v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'"> 
-                                        {{ $i18n.get('info_not_saved') }}
-                                    </span>
-                                    <span 
-                                            v-if="filter.status == 'private'"
-                                            class="icon"
-                                            v-tooltip="{
-                                                content: $i18n.get('status_private'),
-                                                autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                                placement: 'auto-start'
-                                            }">
-                                        <i class="tainacan-icon tainacan-icon-private"/>
-                                    </span>
-                                    <span 
-                                            v-tooltip="{
-                                                content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
-                                                autoHide: true,
-                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                                placement: 'auto-start'
-                                            }"
-                                            class="icon icon-level-identifier">
-                                        <i 
-                                            :class="{ 
-                                                'tainacan-icon-collection': filter.collection_id == collectionId, 
-                                                'tainacan-icon-repository': filter.collection_id != collectionId,
-                                                'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
-                                                'has-text-blue5': filter.enabled && filter.collection_id == 'default',
-                                                'has-text-gray3': !filter.enabled  
-                                            }"
-                                            class="tainacan-icon" />
-                                    </span> 
-                                </span>
-                                <span 
-                                        class="loading-spinner" 
-                                        v-if="filter.id == undefined"/>
-                                <span 
-                                        class="controls" 
-                                        v-if="filter.filter_type != undefined">
-                                    <b-switch
+                            :class="{ 'filters-area-receive': isDraggingFromAvailable }"
+                            :options="{
+                                group: { name:'filters', pull: false, put: true },
+                                sort: (openedFilterId == '' || openedFilterId == undefined) && !isRepositoryLevel,
+                                handle: '.handle',
+                                hostClass: 'sortable-ghost',
+                                filter: '.not-sortable-item',
+                                preventOnFilter: false,
+                                animation: 250
+                            }"
+                            @update="handleChangeOnFilter"
+                            @add="handleChangeOnFilter" 
+                            @remove="handleChangeOnFilter">
+                        <template #item="{ element: filter, index }">
+                            <div
+                                    v-show="filterNameFilterString == '' || filter.name.toString().toLowerCase().indexOf(filterNameFilterString.toString().toLowerCase()) >= 0" 
+                                    class="active-filter-item" 
+                                    :class="{
+                                        'not-sortable-item': (isRepositoryLevel || isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || filterNameFilterString != ''),
+                                        'not-focusable-item': openedFilterId == filter.id, 
+                                        'disabled-filter': filter.enabled == false,
+                                        'inherited-filter': filter.collection_id != collectionId || isRepositoryLevel
+                                    }">
+                                <div class="handle">
+                                    <span
                                             v-if="!isRepositoryLevel"
-                                            :disabled="isUpdatingFiltersOrder" 
-                                            size="is-small" 
-                                            :value="filter.enabled" 
-                                            @input="onChangeEnable($event, index)"/>
-                                    <a 
-                                            v-if="filter.current_user_can_delete"
-                                            :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
-                                            @click.prevent="toggleFilterEdition(filter.id)">
+                                            class="sorting-buttons">
+                                        <button 
+                                                :disabled="index == 0"
+                                                class="link-button"
+                                                :aria-label="$i18n.get('label_move_up')"
+                                                @click="moveFilterUpViaButton(index)">
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-previous tainacan-icon-rotate-90" />
+                                            </span>
+                                        </button>
+                                        <button 
+                                                :disabled="index == activeFiltersList.length - 1"
+                                                class="link-button"
+                                                :aria-label="$i18n.get('label_move_down')"
+                                                @click="moveFilterDownViaButton(index)">
+                                            <span class="icon">
+                                                <i class="tainacan-icon tainacan-icon-next tainacan-icon-rotate-90" />
+                                            </span>
+                                        </button>
+                                    </span>
+                                    <span 
+                                            v-tooltip="{
+                                                content: (isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true) ? $i18n.get('info_not_allowed_change_order_filters') : $i18n.get('instruction_drag_and_drop_filter_sort'),
+                                                autoHide: true,
+                                                popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                placement: 'auto-start'
+                                            }"
+                                            :style="{ opacity: !(isSelectingFilterType || filter.id == undefined || openedFilterId != '' || choosenMetadatum.name == filter.name || isUpdatingFiltersOrder == true || isRepositoryLevel || filterNameFilterString != '') ? '1.0' : '0.0' }"
+                                            class="icon grip-icon">
+                                        <svg 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                height="24px"
+                                                viewBox="0 0 24 24"
+                                                width="24px"
+                                                fill="currentColor">
+                                            <path
+                                                    d="M0 0h24v24H0V0z"
+                                                    fill="transparent" />
+                                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                                        </svg>
+                                    </span>
+                                    <span 
+                                            class="filter-name"
+                                            :class="{'is-danger': formWithErrors == filter.id }">
+                                        {{ filter.name }}
+                                    </span>
+                                    <span   
+                                            v-if="filter.filter_type_object != undefined"
+                                            class="label-details">  
+                                        ({{ filter.filter_type_object.name }}) 
+                                        <!-- <em v-if="filter.inherited">{{ $i18n.get('label_inherited') }}</em>  -->
+                                        <span 
+                                                v-if="(editForms[filter.id] != undefined && editForms[filter.id].saved != true) ||filter.status == 'auto-draft'" 
+                                                class="not-saved"> 
+                                            {{ $i18n.get('info_not_saved') }}
+                                        </span>
+                                        <span 
+                                                v-if="filter.status == 'private'"
+                                                v-tooltip="{
+                                                    content: $i18n.get('status_private'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                    placement: 'auto-start'
+                                                }"
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-private" />
+                                        </span>
                                         <span 
                                                 v-tooltip="{
-                                                    content: $i18n.get('edit'),
+                                                    content: filter.collection_id != collectionId ? $i18n.get('label_repository_filter') : $i18n.get('label_collection_filter'),
                                                     autoHide: true,
                                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                                    placement: 'bottom'
+                                                    placement: 'auto-start'
                                                 }"
-                                                class="icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
-                                        </span>
-                                    </a>
-                                    <a 
-                                            v-if="filter.current_user_can_delete"
-                                            :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel ? 'hidden' : 'visible' }"
-                                            @click.prevent="removeFilter(filter)">
-                                        <span
-                                                v-tooltip="{
-                                                    content: $i18n.get('delete'),
-                                                    autoHide: true,
-                                                    popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
-                                                    placement: 'bottom'
-                                                }"
-                                                class="icon">
-                                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
-                                        </span>
-                                    </a>
-                                </span>
+                                                class="icon icon-level-identifier">
+                                            <i 
+                                                    :class="{ 
+                                                        'tainacan-icon-collection': filter.collection_id == collectionId, 
+                                                        'tainacan-icon-repository': filter.collection_id != collectionId,
+                                                        'has-text-turquoise5': filter.enabled && filter.collection_id != 'default', 
+                                                        'has-text-blue5': filter.enabled && filter.collection_id == 'default',
+                                                        'has-text-gray3': !filter.enabled  
+                                                    }"
+                                                    class="tainacan-icon" />
+                                        </span> 
+                                    </span>
+                                    <span 
+                                            v-if="filter.id == undefined" 
+                                            class="loading-spinner" />
+                                    <span 
+                                            v-if="filter.filter_type != undefined" 
+                                            class="controls">
+                                        <b-switch
+                                                v-if="!isRepositoryLevel"
+                                                :disabled="isUpdatingFiltersOrder" 
+                                                size="is-small" 
+                                                :model-value="filter.enabled" 
+                                                @update:model-value="onChangeEnable($event, index)" />
+                                        <a 
+                                                v-if="filter.current_user_can_edit"
+                                                :style="{ visibility: filter.collection_id != collectionId && !isRepositoryLevel? 'hidden' : 'visible' }"
+                                                @click.prevent="toggleFilterEdition(filter.id)">
+                                            <span 
+                                                    v-tooltip="{
+                                                        content: $i18n.get('edit'),
+                                                        autoHide: true,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
+                                            </span>
+                                        </a>
+                                        <a 
+                                                v-if="filter.current_user_can_delete"
+                                                :style="{ visibility: (filter.collection_id != collectionId && !isRepositoryLevel) || (filter.id == openedFilterId) ? 'hidden' : 'visible' }"
+                                                @click.prevent="removeFilter(filter)">
+                                            <span
+                                                    v-tooltip="{
+                                                        content: $i18n.get('delete'),
+                                                        autoHide: true,
+                                                        popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
+                                                        placement: 'bottom'
+                                                    }"
+                                                    class="icon">
+                                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
+                                            </span>
+                                        </a>
+                                    </span>
+                                </div>
+                                <transition name="form-collapse">
+                                    <b-field v-if="openedFilterId == filter.id">
+                                        <filter-edition-form
+                                                :is-repository-level="isRepositoryLevel"
+                                                :index="index"
+                                                :original-filter="filter"
+                                                :edited-filter="editForms[openedFilterId]"
+                                                @on-edition-finished="onEditionFinished()"
+                                                @on-edition-canceled="onEditionCanceled()"
+                                                @on-error-found="formWithErrors = filter.id"
+                                                @on-update-saved-state="(state) => editForms[filter.id].saved = state" />
+                                    </b-field>
+                                </transition>
                             </div>
-                            <transition name="form-collapse">
-                                <b-field v-if="openedFilterId == filter.id">
-                                    <filter-edition-form
-                                            @onEditionFinished="onEditionFinished()"
-                                            @onEditionCanceled="onEditionCanceled()"
-                                            @onErrorFound="formWithErrors = filter.id"
-                                            @onUpdateSavedState="(state) => editForms[filter.id].saved = state"
-                                            :index="index"
-                                            :original-filter="filter"
-                                            :edited-filter="editForms[openedFilterId]"/>
-                                </b-field>
-                            </transition>
-                        </div>
-                    </draggable>
+                        </template>
+                    </sortable>
                 </div>
                 <div 
                         v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters') || !isRepositoryLevel)"
@@ -230,8 +236,8 @@
                                 
                             <b-field class="header-item">
                                 <b-input 
-                                        :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                         v-model="metadatumNameFilterString"
+                                        :placeholder="$i18n.get('instruction_type_search_metadata_filter')"
                                         icon="magnify"
                                         size="is-small"
                                         icon-right="close-circle"
@@ -240,27 +246,33 @@
                             </b-field>
                         </template>
                     </div>
-                    <div class="field" >
-
-                        <draggable
-                                @change="handleChangeOnMetadata"
+                    <div class="field">
+                        
+                        <sortable
                                 v-if="availableMetadata.length > 0 && !isLoadingMetadatumTypes"
-                                v-model="availableMetadata"
-                                :sort="false"
-                                filter=".not-sortable-item"
-                                :prevent-on-filter="false" 
-                                :group="{ name:'filters', pull: !isSelectingFilterType, put: false, revertClone: true }"
-                                drag-class="sortable-drag">
-                            <template v-for="(metadatum, index) in availableMetadata">
+                                :list="availableMetadata"
+                                item-key="id"
+                                :options="{
+                                    group: {
+                                        name:'filters',
+                                        pull: !isSelectingFilterType, 
+                                        put: false, revertClone: true
+                                    },
+                                    sort: false,
+                                    filter: '.not-sortable-item',
+                                    preventOnFilter: false,
+                                    dragClass: 'sortable-drag'
+                                }"
+                                @change="handleChangeOnMetadata">
+                            <template #item="{ element: metadatum, index }">
                                 <div 
+                                        v-if="metadatum.enabled"
+                                        v-show="metadatumNameFilterString == '' || metadatum.name.toString().toLowerCase().indexOf(metadatumNameFilterString.toString().toLowerCase()) >= 0"
                                         class="available-metadatum-item"
                                         :class="{
                                             'inherited-metadatum': metadatum.inherited || isRepositoryLevel,
                                             'disabled-metadatum': isSelectingFilterType
                                         }"
-                                        v-if="metadatum.enabled"
-                                        v-show="metadatumNameFilterString == '' || metadatum.name.toString().toLowerCase().indexOf(metadatumNameFilterString.toString().toLowerCase()) >= 0"
-                                        :key="index"
                                         @click.prevent="addMetadatumViaButton(metadatum, index)">
                                     <span 
                                             v-tooltip="{
@@ -279,8 +291,8 @@
                                                 fill="currentColor">
                                             <path
                                                     d="M0 0h24v24H0V0z"
-                                                    fill="transparent"/>
-                                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                                                    fill="transparent" />
+                                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
                                         </svg>
                                     </span> 
                                     <span 
@@ -293,10 +305,21 @@
                                             class="metadatum-name">
                                         {{ metadatum.name }}
                                         <span   
-                                            v-if="metadatum.parent_name"
-                                            class="label-details"
-                                            style="font-size: 0.875em;"> 
+                                                v-if="metadatum.parent_name"
+                                                class="label-details"
+                                                style="font-size: 0.875em;"> 
                                             <em>{{ '(' + $i18n.get('info_child_of') + ' ' + metadatum.parent_name + ')' }}</em>
+                                        </span>
+                                        <span 
+                                                v-if="metadatum.status === 'private'"
+                                                v-tooltip="{
+                                                    content: $i18n.get('status_private'),
+                                                    autoHide: true,
+                                                    popperClass: ['tainacan-tooltip', 'tooltip'],
+                                                    placement: 'auto-start'
+                                                }"
+                                                class="icon">
+                                            <i class="tainacan-icon tainacan-icon-private" />
                                         </span>
                                     </span>
                                     <span 
@@ -308,15 +331,15 @@
                                             }"
                                             class="icon icon-level-identifier">
                                         <i 
-                                            :class="{   
-                                                'tainacan-icon-collection has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
-                                                'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
-                                            }"
-                                            class="tainacan-icon" />
+                                                :class="{   
+                                                    'tainacan-icon-collection has-text-turquoise5': metadatum.collection_id == collectionId && !isRepositoryLevel, 
+                                                    'tainacan-icon-repository has-text-blue5': isRepositoryLevel || metadatum.collection_id != collectionId 
+                                                }"
+                                                class="tainacan-icon" />
                                     </span> 
                                 </div>
                             </template>
-                        </draggable>   
+                        </sortable>   
                     
                         <section 
                                 v-if="availableMetadata.length <= 0 && !isLoadingMetadatumTypes"
@@ -324,16 +347,23 @@
                             <div class="content has-text-gray has-text-centered">
                                 <p>
                                     <span class="icon is-large">
-                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                                     </span>
                                 </p>
                                 <p>{{ $i18n.get('info_there_is_no_metadatum' ) }}</p>
                                 <router-link
-                                        id="button-create-metadatum"
+                                        v-slot="{ navigate }"
                                         :to="isRepositoryLevel ? $routerHelper.getNewMetadatumPath() : $routerHelper.getNewCollectionMetadatumPath(collectionId)"
-                                        tag="button" 
-                                        class="button is-secondary is-centered">
-                                    {{ $i18n.getFrom('metadata', 'new_item') }}</router-link>
+                                        custom>
+                                    <button
+                                            id="button-create-metadatum" 
+                                            role="link"
+                                            ttype="button" 
+                                            class="button is-secondary is-centered"
+                                            @click="navigate()">
+                                        {{ $i18n.getFrom('metadata', 'new_item') }}
+                                    </button>
+                                </router-link>
                             </div>
                         </section>
                     </div>
@@ -346,18 +376,17 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-filters" />
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_can_not_edit_filters') }}</p>
                 </div>
             </section>
 
-
             <b-modal 
                     ref="filterTypeModal"
+                    v-model="isSelectingFilterType"
                     :width="680"
-                    :active.sync="isSelectingFilterType"
                     trap-focus
                     aria-modal
                     aria-role="dialog"
@@ -384,10 +413,10 @@
                                         <p>{{ $i18n.get('instruction_click_to_select_a_filter_type') }}</p>
                                         <br>
                                         <div
-                                                role="listitem"
-                                                class="filter-type"
                                                 v-for="(filterType, index) in allowedFilterTypes"
                                                 :key="index"
+                                                role="listitem"
+                                                class="filter-type"
                                                 @click="onFilterTypeSelected(filterType)"
                                                 @mouseover="currentFilterTypePreview = { name: filterType.name, template: filterType.preview_template }"
                                                 @mouseleave="currentFilterTypePreview = { name: filterType.name, template: filterType.preview_template }">
@@ -405,13 +434,13 @@
                                                 class="field">
                                             <span class="collapse-handle">
                                                 <span class="icon">
-                                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
+                                                    <i class="has-text-secondary tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
                                                 </span> 
                                                 <label class="label has-tooltip">
                                                     {{ currentFilterTypePreview.name }}
                                                 </label>
                                             </span>
-                                            <div v-html="currentFilterTypePreview.template"/>
+                                            <div v-html="currentFilterTypePreview.template" />
                                         </div>
                                         <span 
                                                 v-else
@@ -423,7 +452,7 @@
                             </div>
                         </form>
 
-                    <footer class="field is-grouped form-submit">
+                        <footer class="field is-grouped form-submit">
                             <div class="control">
                                 <button 
                                         class="button is-outlined" 
@@ -434,19 +463,23 @@
                     </section>
                 </div>
             </b-modal>
-        </div> 
+        </div>
     </div>
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { mapActions, mapGetters } from 'vuex';
+
 import FilterEditionForm from '../../components/edition/filter-edition-form.vue';
 import CustomDialog from '../../components/other/custom-dialog.vue';
+import { Sortable } from "sortablejs-vue3";
 
 export default {
     name: 'FiltersPage',
     components: {
-        FilterEditionForm
+        FilterEditionForm,
+        Sortable
     },
     beforeRouteLeave ( to, from, next ) {
         let hasUnsavedForms = false;
@@ -525,7 +558,8 @@ export default {
                         this.editFilter(this.activeFiltersList[existingFilterIndex])                        
                 }
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     created() {
@@ -534,9 +568,9 @@ export default {
     mounted() {
 
         if (!this.isRepositoryLevel)
-            this.$root.$emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
+            this.$emitter.emit('onCollectionBreadCrumbUpdate', [{ path: '', label: this.$i18n.get('filter') }]);
 
-        this.$nextTick(() => { 
+        nextTick(() => { 
             this.columnsTopY = this.$refs.filterEditionPageColumns ? this.$refs.filterEditionPageColumns.getBoundingClientRect().top : 0;
         });
 
@@ -569,7 +603,7 @@ export default {
         }
         
     },
-    beforeDestroy() {
+    beforeUnmount() {
         // Cancels previous filters Request
         if (this.filtersSearchCancel != undefined)
             this.filtersSearchCancel.cancel('Metadata search Canceled.');
@@ -602,14 +636,26 @@ export default {
         ...mapGetters('collection', [
             'getCollection',
         ]),
-        handleChangeOnFilter($event) {     
-            if ($event.added) {
-                this.prepareFilterTypeSelection($event.added.element, $event.added.newIndex);    
-            } else if ($event.removed) {
-                this.removeFilter($event.removed.element);
-            } else if ($event.moved) {
-                if (!this.isRepositoryLevel)
-                    this.updateFiltersOrder(); 
+        handleChangeOnFilter($event) {
+            switch( $event.type ) {
+                case 'add':
+                    this.prepareFilterTypeSelection(this.availableMetadata[$event.oldIndex], $event.newIndex);
+                    break;
+                case 'remove':
+                    this.removeFilter(this.activeFiltersList[$event.oldIndex]);
+                    break;
+                case 'update': {
+                    const newActiveFiltersList = JSON.parse(JSON.stringify(this.activeFiltersList));
+                    const element = newActiveFiltersList.splice($event.oldIndex, 1)[0];
+                    newActiveFiltersList.splice($event.newIndex, 0, element);
+                    
+                    this.updateFilters(newActiveFiltersList);
+                    
+                    if (!this.isRepositoryLevel)
+                        this.updateFiltersOrder();
+
+                    break;
+                }
             }
         },
         prepareFilterTypeSelection(choosenMetadatum, newFilterIndex) {
@@ -618,7 +664,6 @@ export default {
 
             this.allowedFilterTypes = [];
             this.selectedFilterType = {};
-
             for (let filter of this.filterTypes) {
                 for (let supportedType of filter['supported_types']) {
                     if (choosenMetadatum.metadata_type_object.primitive_type == supportedType)
@@ -681,6 +726,7 @@ export default {
         },
         updateListOfMetadata() {
             const availableMetadata = JSON.parse(JSON.stringify(this.getMetadata()));
+
             const availableMetadataNames = {};
             let lastParentName = '';
 
@@ -732,7 +778,7 @@ export default {
             })
             .then((filter) => {
 
-                if (!this.isRepositoryLevel)
+                if ( !this.isRepositoryLevel )
                     this.updateFiltersOrder();
 
                 this.newFilterIndex = 0;
@@ -780,7 +826,7 @@ export default {
         },
         toggleFilterEdition(filterId) {
             // Closing collapse
-            if (this.openedFilterId == filterId) {
+            if ( this.openedFilterId == filterId ) {
                 this.openedFilterId = '';
                 this.$router.push({ query: {}});
 
@@ -1058,6 +1104,7 @@ export default {
                 .grip-icon { 
                     color: var(--tainacan-gray3);
                     position: relative;
+                    flex-shrink: 0;
                 }
                 .filter-name {
                     text-overflow: ellipsis;
@@ -1137,6 +1184,10 @@ export default {
                 }
 
             }
+            .available-metadatum-item:not(.sortable-ghost):not(.disabled-metadatum) {
+                display: none;
+                visibility: hidden;
+            }
             .sortable-ghost {
                 border: 1px dashed var(--tainacan-gray2);
                 background: var(--tainacan-white);
@@ -1196,6 +1247,7 @@ export default {
                 .grip-icon { 
                     color: var(--tainacan-gray3);
                     position: relative;
+                    flex-shrink: 0;
                 }
                 .icon-level-identifier {
                     position: relative;

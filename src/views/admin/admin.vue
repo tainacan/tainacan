@@ -13,14 +13,14 @@
             <primary-menu
                     v-if="!$adminOptions.hidePrimaryMenu" 
                     :active-route="activeRoute"
-                    :is-menu-compressed="isMenuCompressed"/>
+                    :is-menu-compressed="isMenuCompressed" />
             <button 
                     v-if="!$adminOptions.hidePrimaryMenu && !$adminOptions.hidePrimaryMenuCompressButton" 
-                    class="is-hidden-mobile"
                     id="menu-compress-button"
+                    class="is-hidden-mobile"
                     :style="{ top: menuCompressButtonTop }"
-                    @click="isMenuCompressed = !isMenuCompressed"      
-                    :aria-label="$i18n.get('label_shrink_menu')">    
+                    :aria-label="$i18n.get('label_shrink_menu')"      
+                    @click="isMenuCompressed = !isMenuCompressed">    
                 <span
                         v-tooltip="{
                             content: $i18n.get('label_shrink_menu'),
@@ -31,14 +31,14 @@
                         class="icon">
                     <i 
                             :class="{ 'tainacan-icon-arrowleft' : !isMenuCompressed, 'tainacan-icon-arrowright' : isMenuCompressed }"
-                            class="tainacan-icon tainacan-icon-1-25em"/>
+                            class="tainacan-icon tainacan-icon-1-25em" />
                 </span>
             </button>
             <tainacan-header v-if="!$adminOptions.hideTainacanHeader" />
             <tainacan-repository-subheader
                     v-if="!$adminOptions.hideRepositorySubheader" 
                     :is-repository-level="isRepositoryLevel"
-                    :is-menu-compressed="isMenuCompressed"/>
+                    :is-menu-compressed="isMenuCompressed" />
             <div 
                     id="repository-container"
                     class="column is-main-content"
@@ -54,7 +54,6 @@
     import TainacanHeader from './components/navigation/tainacan-header.vue';
     import TainacanRepositorySubheader from './components/navigation/tainacan-repository-subheader.vue';
     import CustomDialog from './components/other/custom-dialog.vue';
-    import "floating-vue/dist/style.css";
 
     export default { 
         name: "AdminPage",
@@ -63,6 +62,10 @@
             TainacanHeader,
             TainacanRepositorySubheader
         },
+        emits: [
+            'onCollectionBreadCrumbUpdate',
+            'openProcessesPopup'
+        ],
         data(){
             return {
                 isMenuCompressed: false,
@@ -92,10 +95,13 @@
             }
         },
         watch: {
-            '$route' (to) {
-                this.isMenuCompressed = (to.params.collectionId != undefined);
-                this.activeRoute = to.name;
-                this.isRepositoryLevel = this.$route.params.collectionId == undefined;
+            '$route': {
+                handler(to) {
+                    this.isMenuCompressed = (to.params.collectionId != undefined);
+                    this.activeRoute = to.name;
+                    this.isRepositoryLevel = this.$route.params.collectionId == undefined;
+                },
+                deep: true
             }
         },
         created() {
@@ -139,6 +145,7 @@
 </script>
 
 <style lang="scss">
+    @import url('floating-vue/dist/style.css');
 
     .is-fullheight {
         height: 100%;

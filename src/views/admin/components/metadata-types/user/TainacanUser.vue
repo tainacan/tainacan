@@ -1,14 +1,12 @@
 <template>
     <div :class="{ 'is-flex': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-taginput
+                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 expanded
                 :disabled="disabled"
-                :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                 size="is-small"
                 icon="account"
-                :value="selected"
-                @input="onInput"
-                @blur="onBlur"
+                :model-value="selected"
                 :data="options"
                 :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                 autocomplete
@@ -22,12 +20,14 @@
                 :aria-close-label="$i18n.get('remove_value')"
                 :class="{'has-selected': selected != undefined && selected != []}"
                 field="name"
+                check-infinite-scroll
+                :has-counter="false"
+                @update:model-value="onInput"
+                @blur="onBlur"
                 @typing="search"
                 @focus="onMobileSpecialFocus"
-                check-infinite-scroll
-                @infinite-scroll="searchMore"
-                :has-counter="false">
-            <template slot-scope="props">
+                @infinite-scroll="searchMore">
+            <template #default="props">
                 <div class="media">
                     <div
                             v-if="props.option.avatar_urls && props.option.avatar_urls['24']"
@@ -43,7 +43,7 @@
             </template>
             <template 
                     v-if="!isLoading"
-                    slot="empty">
+                    #empty>
                 {{ $i18n.get('info_no_user_found') }}
             </template>
         </b-taginput>
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { wp as wpAxios } from '../../../js/axios';
+import { wpApi } from '../../../js/axios';
 import { mapActions } from 'vuex';
 import qs from 'qs';
     
@@ -63,6 +63,11 @@ export default {
         allowNew: true,
         isLastMetadatum: false
     },
+    emits: [
+        'update:value',
+        'blur',
+        'mobile-special-focus'
+    ],
     data() {
         return {
             selected:[],
@@ -93,7 +98,7 @@ export default {
         ]),
         onInput(newSelected) {
             this.selected = newSelected;
-            this.$emit('input', newSelected.map((user) => user.id || user.value));
+            this.$emit('update:value', newSelected.map((user) => user.id || user.value));
         },
         onBlur() {
             this.$emit('blur');
@@ -105,7 +110,7 @@ export default {
                 let query = qs.stringify({ include: this.itemMetadatum.value });
                 let endpoint = '/users/';
 
-                wpAxios.get(endpoint + '?' + query)
+                wpApi.get(endpoint + '?' + query)
                     .then((res) => {
                         for (let user of res.data) {
                             this.selected.push({
@@ -175,7 +180,7 @@ export default {
             this.search(this.usersSearchQuery)
         }, 250),
         onMobileSpecialFocus() {
-            this.$emit('mobileSpecialFocus');
+            this.$emit('mobile-special-focus');
         }
     }
 }

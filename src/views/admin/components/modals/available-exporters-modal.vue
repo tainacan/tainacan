@@ -1,12 +1,12 @@
 <template>
     <form 
+            ref="availableExportersModal"
             action=""
             autofocus
             role="dialog"
             class="tainacan-modal-content"
             tabindex="-1"
-            aria-modal
-            ref="availableExportersModal">
+            aria-modal>
         <div style="width: auto">
             <header class="tainacan-modal-title">
                 <h2>{{ $i18n.get('exporters') }}</h2>
@@ -18,12 +18,13 @@
                 <div 
                         role="list"
                         class="exporter-types-container">
-                    <template v-for="exporterType in availableExporters">
+                    <template 
+                            v-for="exporterType in availableExporters"
+                            :key="exporterType.slug">
                         <div
+                                v-if="!(hideWhenManualCollection && !exporterType.manual_collection)"
                                 role="listitem"
                                 class="exporter-type"
-                                :key="exporterType.slug"
-                                v-if="!(hideWhenManualCollection && !exporterType.manual_collection)"
                                 @click="onSelectExporter(exporterType)">
                             <h4>{{ exporterType.name }}</h4>
                             <p>{{ exporterType.description }}</p>
@@ -36,14 +37,14 @@
                                 id="button-cancel-exporter-selection"
                                 class="button is-outlined"
                                 type="button"
-                                @click="$parent.close();">
+                                @click="$emit('close');">
                             {{ $i18n.get('cancel') }}</button>
                     </div>
                 </footer>
 
                 <b-loading
-                        :active.sync="isLoading"
-                        :can-cancel="false"/>
+                        v-model="isLoading"
+                        :can-cancel="false" />
             </section>
         </div>
     </form>
@@ -55,9 +56,12 @@
     export default {
         name: 'AvailableExportersModal',
         props: {
-            sourceCollection: String,
+            sourceCollection: [Number,String],
             hideWhenManualCollection: false
         },
+        emits: [
+            'close'
+        ],   
         data(){
             return {
                 availableExporters: [],
@@ -84,7 +88,7 @@
             ]),
             onSelectExporter(exporterType) {
                 this.$router.push({ path: this.$routerHelper.getExporterEditionPath(exporterType.slug), query: { sourceCollection: this.sourceCollection } });
-                this.$parent.close();
+                this.$emit('close');
             }
         }
     }

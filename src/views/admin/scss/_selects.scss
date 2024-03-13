@@ -30,9 +30,10 @@
         &:not(.is-danger):active {
             box-shadow: none !important;
             text-decoration: none !important;
-            border: 1px solid var(--tainacan-secondary) !important;
+            border-color: var(--tainacan-secondary) !important;
         }
-        &[disabled=disabled] {
+        &[disabled=disabled],
+        &:disabled {
             background: var(--tainacan-gray1) !important;
         }
         &:hover,
@@ -40,7 +41,7 @@
             color: var(--tainacan-input-color) !important;
         }
         &:hover {
-            border: 1px solid var(--tainacan-input-color) !important;
+            border-color: var(--tainacan-input-color) !important;
         }
         
     }

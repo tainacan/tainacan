@@ -1,21 +1,23 @@
 <template>
     <form
+            id="termEditForm"
             autofocus
             role="dialog"
             tabindex="-1"
             aria-modal
-            id="termEditForm"
             class="tainacan-form tainacan-modal-content"
             @submit.prevent="saveEdition(form)">
         <header
                 class="tainacan-page-title tainacan-modal-title">
-            <h2 style="width: 60%">{{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}</h2>
+            <h2 style="width: 60%">
+                {{ form & form.id && form.id != 'new' ? $i18n.get("title_term_edit") : $i18n.get("title_term_creation") }}
+            </h2>
             <a
                     v-if="form && form.url != undefined && form.url!= ''"
                     target="_blank"
                     :href="form.url">
                 <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl"/>
+                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-openurl" />
                 </span>
                 <span class="menu-text">{{ $i18n.get('label_term_page_on_website') }}</span>
             </a>
@@ -24,8 +26,8 @@
     
         <div class="modal-card-body">
             <b-loading
-                    :is-full-page="false"
-                    :active.sync="isLoading" />
+                    v-model="isLoading"
+                    :is-full-page="false" />
 
             <!-- Name -------------- -->
             <b-field
@@ -41,19 +43,19 @@
                             extra-classes="tainacan-repository-tooltip" /> 
                 </label>
                 <b-input
-                        :placeholder="$i18n.get('label_term_without_name')"
                         v-model="form.name"
+                        :placeholder="$i18n.get('label_term_without_name')"
                         name="name"
-                        @focus="clearErrors({ name: 'name', repeated: 'repeated' })"/>
+                        @focus="clearErrors({ name: 'name', repeated: 'repeated' })" />
             </b-field>
 
             <!-- Hook for extra Form options -->
             <template 
                     v-if="hasBeginLeftForm">  
                 <form 
-                    id="form-term-begin-left"
-                    class="form-hook-region"
-                    v-html="getBeginLeftForm"/>
+                        id="form-term-begin-left"
+                        class="form-hook-region"
+                        v-html="getBeginLeftForm" />
             </template>
 
             <div class="columns is-gapless image-and-description-area">
@@ -74,8 +76,8 @@
                             </figure>
                             <div class="thumbnail-buttons-row">
                                 <a
-                                        class="button is-rounded is-secondary"
                                         id="button-edit-header"
+                                        class="button is-rounded is-secondary"
                                         :aria-label="$i18n.get('label_button_edit_header_image')"
                                         @click="headerImageMediaFrame.openFrame($event)">
                                     <span 
@@ -86,12 +88,12 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-edit"/>
+                                        <i class="tainacan-icon tainacan-icon-edit" />
                                     </span>
                                 </a>
                                 <a
-                                        class="button is-rounded is-secondary"
                                         id="button-delete-header"
+                                        class="button is-rounded is-secondary"
                                         :aria-label="$i18n.get('label_button_delete_thumb')"
                                         @click="deleteHeaderImage()">
                                     <span 
@@ -102,7 +104,7 @@
                                                 placement: 'bottom'
                                             }"
                                             class="icon is-small">
-                                        <i class="tainacan-icon tainacan-icon-delete"/>
+                                        <i class="tainacan-icon tainacan-icon-delete" />
                                     </span>
                                 </a>
                             </div>
@@ -121,13 +123,13 @@
                             <help-button
                                     :title="$i18n.get('label_description')"
                                     :message="$i18n.get('info_help_term_description')"
-                                    extra-classes="tainacan-repository-tooltip"/>
+                                    extra-classes="tainacan-repository-tooltip" />
                         </label>
                         <b-input
+                                v-model="form.description"
                                 type="textarea"
                                 name="description"
-                                v-model="form.description"
-                                @focus="clearErrors('description')"/>
+                                @focus="clearErrors('description')" />
                     </b-field>
                 </div>
             </div>
@@ -138,34 +140,34 @@
                     :addons="false"
                     :type="((formErrors.parent !== '' || formErrors.repeated !== '') && (formErrors.parent !== undefined || formErrors.repeated !== undefined )) ? 'is-danger' : ''"
                     :message="formErrors.parent ? formErrors : formErrors.repeated">
-            <label class="label is-inline">
+                <label class="label is-inline">
                     {{ $i18n.get('label_parent_term') }}
                     <b-switch
-                            @input="onToggleSwitch()"
-                            id="tainacan-checkbox-has-parent" 
+                            id="tainacan-checkbox-has-parent"
+                            v-model="hasParent" 
                             size="is-small"
-                            v-model="hasParent" />
+                            @update:model-value="onToggleSwitch()" />
                     <help-button
                             :title="$i18n.get('label_parent_term')"
                             :message="$i18n.get('info_help_parent_term')"
-                            extra-classes="tainacan-repository-tooltip"/>
+                            extra-classes="tainacan-repository-tooltip" />
                 </label>
                 <b-autocomplete
                         id="tainacan-add-parent-field"
+                        v-model="parentTermName"
                         :placeholder="$i18n.get('instruction_parent_term')"
                         :data="parentTerms"
                         field="name"
                         clearable
-                        v-model="parentTermName"
-                        @select="onSelectParentTerm($event)"
                         :loading="isFetchingParentTerms"
-                        @input="fetchParentTerms"
-                        @focus="clearErrors('parent');"
                         :disabled="!hasParent"
                         :append-to-body="true"
                         check-infinite-scroll
+                        @select="onSelectParentTerm($event)"
+                        @update:model-value="fetchParentTerms"
+                        @focus="clearErrors('parent');"
                         @infinite-scroll="fetchMoreParentTerms">
-                    <template slot-scope="props">
+                    <template #default="props">
                         <div class="media">
                             <div 
                                     v-if="props.option.header_image"
@@ -179,12 +181,14 @@
                             </div>
                         </div>
                     </template>
-                    <template slot="empty">{{ $i18n.get('info_no_parent_term_found') }}</template>
+                    <template #empty>
+                        {{ $i18n.get('info_no_parent_term_found') }}
+                    </template>
                 </b-autocomplete>
                 <transition name="fade">
                     <p
-                            class="checkboxes-warning"
-                            v-show="isTermInsertionFlow != true && showCheckboxesWarning == true">
+                            v-show="isTermInsertionFlow != true && showCheckboxesWarning == true"
+                            class="checkboxes-warning">
                         {{ $i18n.get('info_warning_changing_parent_term') }}
                     </p>
                 </transition>
@@ -193,9 +197,9 @@
             <!-- Hook for extra Form options -->
             <template v-if="hasEndLeftForm">  
                 <form 
-                    id="form-term-end-left"
-                    class="form-hook-region"
-                    v-html="getEndLeftForm"/>
+                        id="form-term-end-left"
+                        class="form-hook-region"
+                        v-html="getEndLeftForm" />
             </template>
 
             <!-- Submit buttons -------------- -->
@@ -204,8 +208,7 @@
                     <button
                             type="button"
                             class="button is-outlined"
-                            @click.prevent="cancelEdition()"
-                            slot="trigger">
+                            @click.prevent="cancelEdition()">
                         {{ $i18n.get('cancel') }}
                     </button>
                 </div>
@@ -222,6 +225,7 @@
 </template>
 
 <script>
+    import { nextTick } from 'vue';
     import { formHooks } from "../../js/mixins";
     import { mapActions } from 'vuex';
     import wpMediaFrames from '../../js/wp-media-frames';
@@ -237,6 +241,10 @@
             metadatumId: [String, Number],
             itemId: [String, Number]
         },
+        emits: [
+            'on-edition-finished',
+            'close'
+        ],
         data() {
             return {
                 formErrors: {},
@@ -262,7 +270,7 @@
         mounted() {
 
             // Fills hook forms with it's real values 
-            this.$nextTick()
+            nextTick()
                 .then(() => {
                     this.updateExtraFormData(this.form);
                     document.getElementById('termEditForm').scrollIntoView({ behavior: 'smooth' });
@@ -315,18 +323,18 @@
                         itemId: this.itemId
                     })
                         .then((term) => {
-                            this.$emit('onEditionFinished', {term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
+                            this.$emit('on-edition-finished', {term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
                             this.form = {};
                             this.formErrors = {};
                             this.isLoading = false;
-                            this.$parent.close();
+                            this.$emit('close');
                         })
                         .catch((errors) => {
                             this.isLoading = false;
 
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)) {
-                                    this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
+                                   Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n' });
                                 }
                             }
                         });
@@ -352,13 +360,13 @@
                     })
                         .then((term) => {
                             this.formErrors = {};
-                            this.$emit('onEditionFinished', { term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
-                            this.$parent.close();
+                            this.$emit('on-edition-finished', { term: term, hasChangedParent: this.hasChangedParent, initialParent: this.initialParentId });
+                            this.$emit('close');
                         })
                         .catch((errors) => {
                             for (let error of errors.errors) {
                                 for (let metadatum of Object.keys(error)) {
-                                    this.$set(this.formErrors, metadatum, (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n');
+                                    Object.assign( this.formErrors, { [metadatum]: (this.formErrors[metadatum] !== undefined ? this.formErrors[metadatum] : '') + error[metadatum] + '\n' });
                                 }
                             }
                             this.isLoading = false;
@@ -366,7 +374,7 @@
                 }
             },
             cancelEdition() {
-                this.$parent.close();
+                this.$emit('close');
             },
             deleteHeaderImage() {
                 this.form = Object.assign({},

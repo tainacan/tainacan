@@ -10,24 +10,24 @@
                     v-if="isLoading"                  
                     class="tainacan-list-container">
                 <div 
-                        :key="item"
                         v-for="item in 12"
+                        :key="item"
                         style="min-height: 200px"
                         class="skeleton tainacan-list" />
             </div>
             
             <!-- LIST VIEW MODE -->
             <div
-                    role="list"
                     v-if="!isLoading && items.length > 0"
+                    role="list"
                     class="tainacan-list-container">
                 <div
+                        v-for="(item, index) of items"
+                        :key="index"
                         role="listitem"
                         :aria-setsize="totalItems"
                         :aria-posinset="getPosInSet(index)"
                         :data-tainacan-item-id="item.id"
-                        :key="index"
-                        v-for="(item, index) of items"
                         class="tainacan-list">
                     <a :href="getItemLink(item.url, index)">
 
@@ -40,6 +40,7 @@
                         <!-- Title -->
                         <div class="metadata-title">
                             <p 
+                                    v-if="collectionId && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -51,9 +52,9 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    v-if="collectionId && titleItemMetadatum"
                                     v-html="item.metadata != undefined ? renderMetadata(item, titleItemMetadatum) : ''" />                 
                             <p 
+                                    v-if="!collectionId && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -65,7 +66,6 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    v-if="!collectionId && titleItemMetadatum"
                                     v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />
                             <span 
                                     v-if="isSlideshowViewModeEnabled"
@@ -78,9 +78,9 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"          
-                                    @click.prevent="starSlideshowFromHere(index)"
-                                    class="icon slideshow-icon">
-                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                    class="icon slideshow-icon"
+                                    @click.prevent="starSlideshowFromHere(index)">
+                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
                             </span> 
                         </div>
 
@@ -88,8 +88,8 @@
                         <!-- Remaining metadata -->  
                         <div class="media">
                             <div 
-                                    class="tainacan-list-thumbnail"
-                                    v-if="item.thumbnail != undefined">
+                                    v-if="item.thumbnail != undefined"
+                                    class="tainacan-list-thumbnail">
                                 <blur-hash-image
                                         v-if="item.thumbnail != undefined"
                                         class="tainacan-list-item-thumbnail"
@@ -106,15 +106,16 @@
                                         :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)">   -->
                             </div>
                             <div class="list-metadata media-body">
-                                <template v-for="(column, metadatumIndex) in displayedMetadata">
+                                <template 
+                                        v-for="(column, metadatumIndex) in displayedMetadata"
+                                        :key="metadatumIndex">
                                     <span 
-                                            :key="metadatumIndex"
-                                            :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
-                                            v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                            v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')"
+                                            :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <p      
-                                                v-html="renderMetadata(item, column)"
-                                                class="metadata-value"/>
+                                                class="metadata-value"
+                                                v-html="renderMetadata(item, column)" />
                                     </span>
                                 </template>
                             </div>

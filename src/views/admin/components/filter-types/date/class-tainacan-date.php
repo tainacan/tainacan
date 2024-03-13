@@ -13,11 +13,7 @@ class Date extends Filter_Type {
 		$this->set_name( __('Date', 'tainacan') );
 		$this->set_supported_types(['date']);
 		$this->set_component('tainacan-filter-date');
-		// $this->set_form_component('tainacan-filter-form-date');
 		$this->set_use_max_options(false);
-		// $this->set_default_options([
-		//     'type' => 'day'
-		// ]);
 		$this->set_preview_template('
 			<div>
 				<div>
@@ -60,18 +56,6 @@ class Date extends Filter_Type {
 			</div>
 		');
 	}
-
-	// /**
-	//  * @inheritdoc
-	//  */
-	// public function get_form_labels(){
-	//     return [
-	//         'type' => [
-	//             'title' => __( 'Type', 'tainacan' ),
-	//             'description' => __( 'The type of the date picker, may be for day, month or year.', 'tainacan' ),
-	//         ]
-	//     ];
-	// }
 
 }
 

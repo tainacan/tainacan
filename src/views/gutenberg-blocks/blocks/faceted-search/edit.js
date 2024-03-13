@@ -89,7 +89,7 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
 
     if ( enabledViewModes === null || !enabledViewModes.length )
         enabledViewModes = Object.keys(tainacan_plugin.registered_view_modes);
-
+    console.log('edit', collectionOrderByMeta);
     const fontSizes = [
         {
             name: __( 'Tiny', 'tainacan' ),
@@ -986,9 +986,8 @@ export default function({ attributes, setAttributes, isSelected, clientId }) {
                         collectionEnabledViewModes = collectionEnabledViewModes && collectionEnabledViewModes.length ? collectionEnabledViewModes : enabledViewModes;
                         order = collectionDefaultOrder ? collectionDefaultOrder : 'ASC';
                         collectionOrderBy = collectionDefaultOrderBy ? collectionDefaultOrderBy : 'date';
-                        collectionOrderByMeta = collectionDefaultOrderByMeta ? collectionDefaultOrderByMeta : '';
+                        collectionOrderByMeta = collectionDefaultOrderByMeta ? collectionDefaultOrderByMeta + '' : '';
                         collectionOrderByType = collectionDefaultOrderByType ? collectionDefaultOrderByType : '';
-                        console.log(collectionDefaultOrderByMeta)
                         setAttributes({
                             collectionId: collectionId, 
                             collectionDefaultViewMode: collectionDefaultViewMode,

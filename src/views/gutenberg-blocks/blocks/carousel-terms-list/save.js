@@ -26,23 +26,22 @@ export default function({ attributes }) {
     return <div 
                 { ...blockProps }
                 data-module="carousel-terms-list"
-                selected-terms={ JSON.stringify(selectedTerms.map((term) => { return term.id; })) }
-                arrows-position={ arrowsPosition }
-                auto-play={ '' + autoPlay }
-                auto-play-speed={ autoPlaySpeed }
-                loop-slides={ '' + loopSlides }
-                hide-name={ '' + hideName }
-                large-arrows={ '' + largeArrows }
-                arrows-style={ arrowsStyle }
-                image-size={ imageSize }
-                max-terms-number={ maxTermsNumber }
-                max-terms-per-screen={ maxTermsPerScreen }
-                space-between-terms={ spaceBetweenTerms }
-                space-around-carousel={ spaceAroundCarousel }
-                taxonomy-id={ taxonomyId }
-                tainacan-api-root={ tainacan_blocks.root }
-                tainacan-base-url={ tainacan_blocks.base_url }
-                show-term-thumbnail={ '' + showTermThumbnail }
+                data-selected-terms={ JSON.stringify(selectedTerms.map((term) => { return term.id; })) }
+                data-arrows-position={ arrowsPosition }
+                data-auto-play={ '' + autoPlay }
+                data-auto-play-speed={ autoPlaySpeed }
+                data-loop-slides={ '' + loopSlides }
+                data-hide-name={ '' + hideName }
+                data-large-arrows={ '' + largeArrows }
+                data-arrows-style={ arrowsStyle }
+                data-image-size={ imageSize }
+                data-max-terms-number={ maxTermsNumber }
+                data-max-terms-per-screen={ maxTermsPerScreen }
+                data-space-between-terms={ spaceBetweenTerms }
+                data-space-around-carousel={ spaceAroundCarousel }
+                data-taxonomy-id={ taxonomyId }
+                data-tainacan-api-root={ tainacan_blocks.root }
+                data-show-term-thumbnail={ '' + showTermThumbnail }
                 id={ 'wp-block-tainacan-carousel-terms-list_' + blockId }>
                     { content }
             </div>

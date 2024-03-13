@@ -13,8 +13,8 @@
                     }"
                     class="tainacan-masonry-container--skeleton">
                 <div 
-                        :key="item"
                         v-for="item in 12"
+                        :key="item"
                         :style="{'min-height': randomHeightForMasonryItem() + 'px' }"
                         class="skeleton" />
             </div>
@@ -27,11 +27,11 @@
                     }"
                     class="tainacan-masonry-container">
                 <li
+                        v-for="(item, index) of items"
+                        :key="index"
                         :data-tainacan-item-id="item.id"
                         :aria-setsize="totalItems"
                         :aria-posinset="getPosInSet(index)"
-                        :key="index"
-                        v-for="(item, index) of items"
                         :class="{ 'tainacan-masonry-grid-sizer': index == 0 }">
                     <a 
                             
@@ -58,9 +58,9 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"          
-                                    @click.prevent="starSlideshowFromHere(index)"
-                                    class="icon slideshow-icon">
-                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                    class="icon slideshow-icon"
+                                    @click.prevent="starSlideshowFromHere(index)">
+                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
                             </span>
                         </div>
 
@@ -68,8 +68,8 @@
                         <blur-hash-image
                                 v-if="item.thumbnail != undefined"
                                 class="tainacan-masonry-item-thumbnail"
-                                :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 280)"
-                                :height="$thumbHelper.getHeight(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 280)"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 320)"
+                                :height="$thumbHelper.getHeight(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', 320)"
                                 :hash="$thumbHelper.getBlurhashString(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full')"
                                 :src="$thumbHelper.getSrc(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
                                 :srcset="$thumbHelper.getSrcSet(item['thumbnail'], shouldUseLegacyMasonyCols ? 'tainacan-medium-full' : 'tainacan-large-full', item.document_mimetype)"
@@ -90,6 +90,7 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { viewModesMixin } from '../js/view-modes-mixin.js';
 import Masonry from 'masonry-layout';
 
@@ -108,7 +109,7 @@ export default {
         isLoading: { 
             handler() {
                 if (this.items && this.items.length > 0 && !this.isLoading) {
-                    this.$nextTick(() => {
+                    nextTick(() => {
                         if (this.masonry !== false)
                             this.masonry.destroy();
                         
@@ -127,7 +128,7 @@ export default {
     created() {
         this.shouldUseLegacyMasonyCols = wp !== undefined && wp.hooks !== undefined && wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.masonry !== false)
             this.masonry.destroy();
     },

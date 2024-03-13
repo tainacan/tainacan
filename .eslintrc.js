@@ -2,29 +2,32 @@ module.exports = {
     extends: [
         // add more generic rulesets here, such as:
         'eslint:recommended',
-        'plugin:vue/recommended'
+        'plugin:vue/vue3-recommended'
     ],
     parserOptions: {
-        'ecmaVersion': 2018
+        'ecmaVersion': 2020
     },
     rules: {
-        // override/add rules settings here, such as:
-        'vue/no-unused-vars': 'error',
+        /* Override/add rules settings here, such as: */
+        // Basic rules that we want to receive a warning instead of error
         'no-console': 'warn',
         'no-unused-vars': 'warn',
         'no-undef': 'warn',
+        // Tainacan relies a lot in v-html and v-text, so we can't disable them
         'vue/no-v-html': 'off',
-        'vue/html-indent': 'off',
-        'vue/attributes-order': 'off',
-        'vue/html-closing-bracket-spacing': 'off',
-        'vue/html-closing-bracket-newline': 'off',
+        'vue/no-v-text-v-html-on-component': 'off',
+        // Formating that is hard to disable as would require significant refactoring. Autofix don't solve it well and it reflects stylistic decisions from the team.
+        'vue/html-indent': [
+            'warn', 4, { 
+                'attribute': 2,
+                'closeBracket': 1 
+            }
+        ],
+        'vue/html-closing-bracket-newline': 'off',          
+        'vue/multiline-html-element-content-newline': 'off', // Should we? It's a stylistic decision.
+        // These have impact on how some props that are passed and we have mixed types, such as collectionId as a string or number... would require careful refactoring.
         'vue/require-prop-type-constructor': 'off',
-        'vue/singleline-html-element-content-newline': 'off',
-        'vue/multiline-html-element-content-newline': 'off',
-        'vue/prop-name-casing': 'off',
-        'vue/multi-word-component-names': 'off',
-        'vue/require-default-prop': 'off',
-        'vue/no-v-text-v-html-on-component': 'off'
+        'vue/require-default-prop': 'off'
     },
     globals: {
         'wp': true,

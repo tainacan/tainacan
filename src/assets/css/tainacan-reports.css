@@ -154,5 +154,7 @@
   #tainacan-reports-app .apexcharts-legend-series {
     display: flex;
     align-items: center; }
+  #tainacan-reports-app #current-page-selector {
+    min-width: 48px; }
 
 /*# sourceMappingURL=tainacan-reports.css.map */

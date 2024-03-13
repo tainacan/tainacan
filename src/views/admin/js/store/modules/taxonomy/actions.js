@@ -4,7 +4,7 @@ import qs from 'qs'
 // TAXONOMIES
 export const createTaxonomy = ({commit}, taxonomy) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.post('/taxonomies', taxonomy)
+        axios.tainacanApi.post('/taxonomies', taxonomy)
             .then( res => {
                 let taxonomy = res.data;
                 commit('setTaxonomy', taxonomy);
@@ -19,7 +19,7 @@ export const createTaxonomy = ({commit}, taxonomy) => {
 
 export const deleteTaxonomy = ({ commit }, { taxonomyId, isPermanently }) => {
   return new Promise(( resolve, reject ) => {
-      axios.tainacan.delete(`/taxonomies/${taxonomyId}?permanently=` + (isPermanently ? '1' : '0'))
+      axios.tainacanApi.delete(`/taxonomies/${taxonomyId}?permanently=` + (isPermanently ? '1' : '0'))
           .then(res => {
               commit('deleteTaxonomy', res.data);
 
@@ -33,7 +33,7 @@ export const deleteTaxonomy = ({ commit }, { taxonomyId, isPermanently }) => {
 
 export const updateTaxonomy = ({ commit }, taxonomy) => {
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch(`/taxonomies/${taxonomy.taxonomyId}`, taxonomy)
+        axios.tainacanApi.patch(`/taxonomies/${taxonomy.taxonomyId}`, taxonomy)
             .then( res => {
                 let taxonomy = res.data;
                 commit('setTaxonomy', taxonomy);
@@ -60,7 +60,7 @@ export const fetch = ({ commit }, { page, taxonomiesPerPage, status, order, orde
         if (search != undefined && search != '')
             endpoint = endpoint + '&search=' + search;
 
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let taxonomies = res.data;
 
@@ -91,7 +91,7 @@ export const fetchTaxonomy = ({ commit }, { taxonomyId, isContextEdit }) => {
         endpoint += '?context=edit'
 
     return new Promise((resolve, reject) => {
-       axios.tainacan.get(endpoint)
+       axios.tainacanApi.get(endpoint)
            .then(res => {
                let taxonomy = res.data;
 
@@ -109,7 +109,7 @@ export const fetchTaxonomy = ({ commit }, { taxonomyId, isContextEdit }) => {
 
 export const fetchTaxonomyName = ({ commit }, taxonomyId) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/taxonomies/${taxonomyId}?fetch_only=name`)
+        axios.tainacanApi.get(`/taxonomies/${taxonomyId}?fetch_only=name`)
             .then(res => {
                 let name = res.data;
 
@@ -152,7 +152,7 @@ export const fetchTerms = ({}, {taxonomyId, fetchOnly, search, all, order, offse
         query += '&' + qs.stringify({ include: include });
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(`/taxonomy/${taxonomyId}/terms${query}`)
+        axios.tainacanApi.get(`/taxonomy/${taxonomyId}/terms${query}`)
             .then(res => {
                 resolve({ terms: res.data, total: res.headers['x-wp-total'] });
             })
@@ -171,7 +171,7 @@ export const sendChildTerm = ({ commit }, { taxonomyId, term, itemId, metadatumI
         term['metadatum_id'] = metadatumId;
 
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.post(`/taxonomy/${taxonomyId}/terms/`, term)
+        axios.tainacanApi.post(`/taxonomy/${taxonomyId}/terms/`, term)
             .then( res => {
                 const newTerm = res.data;
                 resolve( newTerm );
@@ -191,7 +191,7 @@ export const updateTerm = ({}, { taxonomyId, term, itemId, metadatumId }) => {
         term['metadatum_id'] = metadatumId;
 
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/${term.id}`, term)
+        axios.tainacanApi.patch(`/taxonomy/${taxonomyId}/terms/${term.id}`, term)
             .then( res => {
                const updatedTerm = res.data;
                resolve( updatedTerm );
@@ -209,7 +209,7 @@ export const deleteTerm = ({}, { taxonomyId, termId, deleteChildTerms = false })
         query += `&delete_child_terms=${deleteChildTerms}`;
 
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/${termId}?${query}`)
+        axios.tainacanApi.delete(`/taxonomy/${taxonomyId}/terms/${termId}?${query}`)
             .then(res => {
                 const term = res.data;
                 resolve( term );
@@ -233,7 +233,7 @@ export const deleteTerms = ({}, { taxonomyId, terms, parent, deleteChildTerms = 
         query += `&delete_child_terms=${deleteChildTerms}`;
 
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.delete(`/taxonomy/${taxonomyId}/terms/?${query}`)
+        axios.tainacanApi.delete(`/taxonomy/${taxonomyId}/terms/?${query}`)
             .then(res => {
                 const terms = res.data;
                 resolve( terms );
@@ -254,7 +254,7 @@ export const changeTermsParent = ({}, { taxonomyId, newParentTerm, terms, parent
         query += `&include=${terms}`;
 
     return new Promise(( resolve, reject ) => {
-        axios.tainacan.patch(`/taxonomy/${taxonomyId}/terms/newparent/${newParentTerm}?${query}`)
+        axios.tainacanApi.patch(`/taxonomy/${taxonomyId}/terms/newparent/${newParentTerm}?${query}`)
             .then(res => {
                 const terms = res.data;
                 resolve( terms );
@@ -276,7 +276,7 @@ export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, searc
         endpoint += '&offset=' + offset;
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
         .then(res => {
             let parentTerms = res.data;
 
@@ -296,7 +296,7 @@ export const fetchPossibleParentTerms = ({ commit }, { taxonomyId, termId, searc
 
 export const fetchParentName = ({ commit }, { taxonomyId, parentId } ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/taxonomy/' + taxonomyId + '/terms/' + parentId + '?fetch_only=name')
+        axios.tainacanApi.get('/taxonomy/' + taxonomyId + '/terms/' + parentId + '?fetch_only=name')
         .then(res => {
             let parentName = res.data.name;
             resolve( parentName );
@@ -316,7 +316,7 @@ export const multipleTermsInsertion = ({}, { taxonomyId, parent, termNames } ) =
     });
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.post('/taxonomy/' + taxonomyId + '/terms/bulkinsert', terms )
+        axios.tainacanApi.post('/taxonomy/' + taxonomyId + '/terms/bulkinsert', terms )
         .then(res => {
             resolve( res.data );
         })

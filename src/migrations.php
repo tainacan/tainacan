@@ -1,8 +1,6 @@
 <?php
 namespace Tainacan;
 
-
-
 class Migrations {
 
 
@@ -509,6 +507,18 @@ class Migrations {
 		);
 	}
 
+	static function update_plugin_url_metadata_type_slug_to_core() {
+		global $wpdb;
+		// Brings plugin metadata type url to core
+		$wpdb->update($wpdb->postmeta,
+	        	['meta_value' => 'Tainacan\Metadata_Types\URL'],
+	        	['meta_value' => 'TAINACAN_URL_Plugin_Metadata_Type'],
+	        	'%s', '%s'
+		);
+
+		if ( function_exists('deactivate_plugins') )
+			\deactivate_plugins( 'tainacan-url-metadata-type/tainacan-metadata-type-url.php' );
+	}
 
 	static function alter_table_tnc_bg_process_add_uuid() {
 		global $wpdb;
@@ -524,7 +534,5 @@ class Migrations {
 		}
 	}
 }
-
-
 
 ?>

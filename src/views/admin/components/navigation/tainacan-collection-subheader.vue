@@ -6,13 +6,19 @@
         <div class="back-button is-hidden-mobile">
             <router-link
                     v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
+                    v-slot="{ navigate }" 
                     :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
-                    class="button is-turquoise4"
-                    tag="button"
-                    :aria-label="$i18n.get('back')">
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-previous"/>
-                </span>
+                    custom>
+                <button 
+                        role="link"
+                        :aria-label="$i18n.get('back')"
+                        type="button"
+                        class="button is-turquoise4"
+                        @click="navigate()">
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-previous" />
+                    </span>
+                </button>
             </router-link>
         </div>
         <div class="level">      
@@ -20,13 +26,19 @@
                 <div class="back-button is-hidden-tablet level-item">
                     <router-link
                             v-if="activeRoute == 'ItemPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage'"
-                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
-                            class="button is-turquoise4"
-                            tag="button"
-                            :aria-label="$i18n.get('back')">
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-previous"/>
-                        </span>
+                            v-slot="{ navigate }" 
+                            :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }"
+                            custom>
+                        <button 
+                                role="link"
+                                :aria-label="$i18n.get('back')"
+                                type="button"
+                                class="button is-turquoise4"
+                                @click="navigate()">
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-previous" />
+                            </span>
+                        </button>
                     </router-link>
                 </div>
             </div>
@@ -35,12 +47,11 @@
                 <li     
                         :class="activeRoute == 'ItemPage' || activeRoute == 'CollectionItemsPage' || activeRoute == 'ItemEditionForm' || activeRoute == 'ItemCreatePage' ? 'is-active':''" 
                         class="level-item">
-                    <router-link 
-                            tag="a" 
+                    <router-link  
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionItemsPath(collection.id, '') : '', query: activeRoute == 'CollectionItemsPage' ? $route.query : '' }" 
                             :aria-label="$i18n.get('label_collection_items')">               
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-items" />
                         </span>
                         <span class="menu-text">{{ $i18n.get('items') }}</span>
                     </router-link>
@@ -50,14 +61,13 @@
                         :class="activeRoute == 'CollectionEditionForm' ? 'is-active':''" 
                         class="level-item">
                     <router-link
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionEditPath(collection.id) : '' }" 
                             :aria-label="$i18n.get('label_settings')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings" />
                         </span>
                     
-                    <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
+                        <span class="menu-text">{{ $i18n.get('label_settings') }}</span>
                     </router-link>
                 </li>
                 <li 
@@ -65,13 +75,12 @@
                         :class="activeRoute == 'CollectionMetadataPage' ? 'is-active':''"
                         class="level-item">
                     <router-link  
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionMetadataPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_metadata')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-metadata" />
                         </span>
-                    <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
+                        <span class="menu-text">{{ $i18n.getFrom('metadata', 'name') }}</span>
                     </router-link>
                 </li>
                 <li 
@@ -79,13 +88,12 @@
                         :class="activeRoute == 'CollectionFiltersPage' ? 'is-active':''" 
                         class="level-item">
                     <router-link 
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionFiltersPath(collection.id) : ''}" 
                             :aria-label="$i18n.get('label_collection_filters')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
                         </span>
-                    <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
+                        <span class="menu-text">{{ $i18n.getFrom('filters', 'name') }}</span>
                     </router-link>
                 </li>
                 <li 
@@ -93,11 +101,10 @@
                         :class="activeRoute == 'CollectionActivitiesPage' ? 'is-active':''"
                         class="level-item">
                     <router-link 
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionActivitiesPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_activities')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-activities" />
                         </span>
                         <span class="menu-text">{{ $i18n.get('activities') }}</span>
                     </router-link>                
@@ -107,11 +114,10 @@
                         :class="activeRoute == 'CollectionCapabilitiesPage' ? 'is-active':''"
                         class="level-item is-hidden-mobile">
                     <router-link 
-                            tag="a" 
                             :to="{ path: collection && collection.id ? $routerHelper.getCollectionCapabilitiesPath(collection.id) : '' }"
                             :aria-label="$i18n.get('label_collection_capabilities')">
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-capability"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-capability" />
                         </span>
                         <span class="menu-text">{{ $i18n.get('capabilities') }}</span>
                     </router-link>                
@@ -140,11 +146,14 @@ export default {
         }
     },
     watch: {
-        '$route' (to, from) {
-            if (to.path != from.path) {
-                this.activeRoute = to.name;
-                this.pageTitle = this.$route.meta.title;
-            }
+        '$route': {
+            handler(to, from) {
+                if (to.path != from.path) {
+                    this.activeRoute = to.name;
+                    this.pageTitle = this.$route.meta.title;
+                }
+            },
+            deep: true
         }
     },
     created() {

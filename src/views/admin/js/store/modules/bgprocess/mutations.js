@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 export const setProcesses = ( state, processes ) => {
     state.bg_processes = processes;
@@ -11,7 +11,7 @@ export const cleanProcesses = ( state ) => {
 export const setProcess = ( state, bgProcess ) => {
     let index = state.bg_processes.findIndex(newProcess => newProcess.ID == bgProcess.ID);
     if ( index >= 0){
-        Vue.set(state.bg_processes, index, bgProcess);
+        Object.assign(state.bg_processes, { [index]: bgProcess });
     } else {
         state.bg_processes.push(bgProcess);
     }

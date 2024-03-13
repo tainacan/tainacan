@@ -1,12 +1,12 @@
 <template>
     <div 
+            ref="bulkEditionModal"
             aria-labelledby="alert-dialog-title"
             autofocus
             role="alertdialog"
             tabindex="-1"
             aria-modal
-            class="tainacan-modal-content this-tainacan-modal-content"
-            ref="bulkEditionModal">
+            class="tainacan-modal-content this-tainacan-modal-content">
         <header class="tainacan-modal-title">
             <h2>{{ modalTitle }}
                 <small class="tainacan-total-objects-info">
@@ -30,21 +30,24 @@
                                 :disabled="!!bulkEditionProcedures[criterion].metadatum || metadataIsLoading"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                 :placeholder="$i18n.get('instruction_select_a_metadatum')"
-                                @input="addToBulkEditionProcedures($event, 'metadatum', criterion)">
-                            <template v-for="(metadatum, index) in metadata">
+                                inherit-attrs="false"
+                                @update:model-value="addToBulkEditionProcedures($event, 'metadatum', criterion)">
+                            <template 
+                                    v-for="(metadatum, index) in metadata"
+                                    :key="index">
                                 <option
-                                        :key="index"
+                                        
                                         v-if="metadatum.id && metadatum.metadata_type_object.component !== 'tainacan-compound' && metadatum.parent <= 0"
                                         :value="metadatum">
                                     {{ metadatum.name }}
                                 </option>
                                 <optgroup 
                                         v-if="metadatum.id && metadatum.metadata_type_object.component === 'tainacan-compound' && metadatum.multiple !== 'yes'"
-                                        :key="index"
                                         :label="metadatum.name">
-                                    <template v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects">
+                                    <template 
+                                            v-for="(childMetadatum, childIndex) of metadatum.metadata_type_options.children_objects"
+                                            :key="childIndex">
                                         <option 
-                                                :key="childIndex"
                                                 v-if="childMetadatum.id"
                                                 :value="childMetadatum">
                                             {{ childMetadatum.name }}
@@ -64,15 +67,15 @@
                         <b-select
                                 :class="{'is-field-history': bulkEditionProcedures[criterion].isDone, 'hidden-select-arrow': !!bulkEditionProcedures[criterion].action }"
                                 :disabled="!!bulkEditionProcedures[criterion].action || !bulkEditionProcedures[criterion].metadatum"
-                                :value="bulkEditionProcedures[criterion].action ? bulkEditionProcedures[criterion].action : undefined"
+                                :model-value="bulkEditionProcedures[criterion].action ? bulkEditionProcedures[criterion].action : undefined"
                                 class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                 :placeholder="$i18n.get('instruction_select_a_action')"
-                                @input="addToBulkEditionProcedures($event, 'action', criterion)">
+                                @update:model-value="addToBulkEditionProcedures($event, 'action', criterion)">
                             <template v-if="bulkEditionProcedures[criterion].metadatum">
                                 <option
                                         v-for="(edtAct, key) in getValidEditionActions(bulkEditionProcedures[criterion].metadatum)"
-                                        :value="edtAct"
-                                        :key="key">
+                                        :key="key"
+                                        :value="edtAct">
                                     {{ edtAct }}
                                 </option>
                             </template>
@@ -84,8 +87,8 @@
                                 
                                 <!-- This has do be a 'div' as the transition animation only renders one child -->
                                 <div 
-                                        style="margin-left: 12px; display: flex;"
-                                        v-if="bulkEditionProcedures[criterion].action == editionActions.replace">
+                                        v-if="bulkEditionProcedures[criterion].action == editionActions.replace"
+                                        style="margin-left: 12px; display: flex;">
                                     
                                     <component
                                             :is="bulkEditionProcedures[criterion].metadatum.metadata_type_object.component"
@@ -97,7 +100,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field"
                                             @input="addToBulkEditionProcedures($event, 'oldValue', criterion)"
-                                    />
+                                        />
 
                                     <div class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last tainacan-by-text">
                                         <small>
@@ -115,7 +118,7 @@
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                             :disabled="bulkEditionProcedures[criterion].isDone"  
                                             @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
-                                    />
+                                        />
                                 </div>
 
                                 <template
@@ -125,7 +128,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_status2')"
-                                            @input="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-value="addToBulkEditionProcedures($event, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $statusHelper.getStatuses().filter(option => { return option.value != 'trash' })"
                                                 :key="index"
@@ -141,7 +144,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_comments_status')"
-                                            @input="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-value="addToBulkEditionProcedures($event, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $commentsStatusHelper.getStatuses()"
                                                 :key="index"
@@ -158,22 +161,22 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom || metadataIsLoading"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_metadatum')"
-                                            @input="addToBulkEditionProcedures($event, 'metadatumIdCopyFrom', criterion)">
+                                            @update:model-value="addToBulkEditionProcedures($event, 'metadatumIdCopyFrom', criterion)">
                                         <template 
-                                                v-for="(metadatumForCopy, index) in getAllowedMetadataForCopy(criterion)">
+                                                v-for="(metadatumForCopy, index) in getAllowedMetadataForCopy(criterion)"
+                                                :key="index">
                                             <option
-                                                    :key="index"
                                                     v-if="metadatumForCopy.id && metadatumForCopy.metadata_type_object.component !== 'tainacan-compound' && metadatumForCopy.parent <= 0"
                                                     :value="metadatumForCopy.id">
                                                 {{ metadatumForCopy.name }}
                                             </option>
                                             <optgroup 
                                                     v-if="metadatumForCopy.id && metadatumForCopy.metadata_type_object.component === 'tainacan-compound'"
-                                                    :key="index"
                                                     :label="metadatumForCopy.name">
-                                                <template v-for="(childmetadatumForCopy, childIndex) of metadatumForCopy.metadata_type_options.children_objects">
+                                                <template
+                                                        v-for="(childmetadatumForCopy, childIndex) of metadatumForCopy.metadata_type_options.children_objects"
+                                                        :key="childIndex">
                                                     <option 
-                                                            :key="childIndex"
                                                             v-if="childMetadatumForCopy.id"
                                                             :value="childMetadatumForCopy.id">
                                                         {{ childMetadatumForCopy.name }}
@@ -200,7 +203,7 @@
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
                                             @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
-                                    />
+                                        />
                                 </template>
                             </template>
                         </transition> 
@@ -214,8 +217,8 @@
 
                             <button
                                     v-if="!bulkEditionProcedures[criterion].isDone && !bulkEditionProcedures[criterion].isExecuting"
-                                    @click="removeThis(criterion)"
-                                    class="button is-white is-pulled-right">
+                                    class="button is-white is-pulled-right"
+                                    @click="removeThis(criterion)">
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('remove_bulk_edit'),
@@ -224,14 +227,14 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon">
-                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel"/>
+                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-cancel" />
                                 </span>
                             </button>
 
                             <div
                                     v-if="bulkEditionProcedures[criterion].isDone"
-                                    @mouseover="$set(bulkEditionProcedures[criterion], 'tooltipShow', !bulkEditionProcedures[criterion].tooltipShow)"
-                                    class="is-pulled-right">
+                                    class="is-pulled-right"
+                                    @mouseover="Object.assign( bulkEditionProcedures[criterion], { 'tooltipShow': !bulkEditionProcedures[criterion].tooltipShow })">
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('info_bulk_edit_process_added'),
@@ -242,19 +245,19 @@
                                             shown: bulkEditionProcedures[criterion].tooltipShow
                                         }"
                                         class="icon">
-                                    <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle"/>
+                                    <i class="has-text-success tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                                 </span>
                             </div>
 
                             <button
-                                    :disabled="!groupId"
                                     v-if="!bulkEditionProcedures[criterion].isDone &&
                                         !bulkEditionProcedures[criterion].isExecuting &&
                                         bulkEditionProcedures[criterion].metadatum &&
                                         bulkEditionProcedures[criterion].action && 
                                         (bulkEditionProcedures[criterion].action != editionActions.copy || (bulkEditionProcedures[criterion].action == editionActions.copy && !!bulkEditionProcedures[criterion].metadatumIdCopyFrom))"
-                                    @click="executeBulkEditionProcedure(criterion)"
-                                    class="button is-white is-pulled-right">
+                                    :disabled="!groupId"
+                                    class="button is-white is-pulled-right"
+                                    @click="executeBulkEditionProcedure(criterion)">
                                 <span 
                                         v-tooltip="{
                                             content: $i18n.get('label_apply_changes'),
@@ -263,7 +266,7 @@
                                             popperClass: ['tainacan-tooltip', 'tooltip']
                                         }"
                                         class="icon">
-                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-play"/>
+                                    <i class="has-text-gray4 tainacan-icon tainacan-icon-1-25em tainacan-icon-play" />
                                 </span>
                             </button>
 
@@ -275,10 +278,10 @@
                 </transition-group>
                 <a 
                         :disabled="dones.every((item) => item === true) === false"
-                        @click="addEditionCriterion()"
-                        class="has-text-right is-inline-block add-link">
+                        class="has-text-right is-inline-block add-link"
+                        @click="addEditionCriterion()">
                     <span class="icon is-small">
-                        <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                        <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                     </span>
                     &nbsp;{{ $i18n.get('new_bulk_edit_criterion') }}
                 </a>
@@ -287,11 +290,11 @@
             <footer class="field is-grouped form-submit">
                 <p class="control">
                     <button
-                            @click="$eventBusSearch.loadItems(); $parent.close()"
                             :disabled="(Object.keys(bulkEditionProcedures).length &&
                                 bulkEditionProcedures[editionCriteria[editionCriteria.length-1]].isExecuting) || false"
                             type="button"
-                            class="button is-outlined">
+                            class="button is-outlined"
+                            @click="$eventBusSearch.loadItems(); $emit('close')">
                         {{ $i18n.get('close') }}
                     </button>
                 </p>
@@ -300,7 +303,7 @@
                             :disabled="dones.every((item) => item === true) === false"
                             class="button is-success"
                             type="button"
-                            @click="$root.$emit('openProcessesPopup'); $eventBusSearch.loadItems(); $parent.close();">
+                            @click="$emitter.emit('openProcessesPopup'); $eventBusSearch.loadItems(); $emit('close');">
                         {{ $i18n.get('finish') }}
                     </button>
                 </p>
@@ -311,16 +314,33 @@
 
 <script>
     import { mapActions, mapGetters } from 'vuex';
+    import { defineAsyncComponent } from 'vue';
 
     export default {
         name: "BulkEditionModal",
+        components:{
+            TainacanText: defineAsyncComponent(() => import('../metadata-types/text/TainacanText.vue')),
+            TainacanTextarea: defineAsyncComponent(() => import('../metadata-types/textarea/TainacanTextarea.vue')),
+            TainacanSelectbox: defineAsyncComponent(() => import('../metadata-types/selectbox/TainacanSelectbox.vue')),
+            TainacanNumeric: defineAsyncComponent(() => import('../metadata-types/numeric/TainacanNumeric.vue')),
+            TainacanDate: defineAsyncComponent(() => import('../metadata-types/date/TainacanDate.vue')),
+            TainacanRelationship: defineAsyncComponent(() => import('../metadata-types/relationship/TainacanRelationship.vue')),
+            TainacanTaxonomy: defineAsyncComponent(() => import('../metadata-types/taxonomy/TainacanTaxonomy.vue')),
+            TainacanCompound: defineAsyncComponent(() => import('../metadata-types/compound/TainacanCompound.vue')),
+            TainacanUser: defineAsyncComponent(() => import('../metadata-types/user/TainacanUser.vue')),
+            TainacanGeocoordinate: defineAsyncComponent(() => import('../metadata-types/geocoordinate/TainacanGeoCoordinate.vue')),
+            TainacanURL: defineAsyncComponent(() => import('../metadata-types/url/TainacanURL.vue'))
+        },
         props: {
             modalTitle: String,
-            totalItems: Array,
+            totalItems: Number,
             objectType: String,
             selectedForBulk: Object,
-            collectionId: Number
+            collectionId: [String, Number]
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 editionCriteria: [1],
@@ -391,7 +411,7 @@
             if (this.$refs.bulkEditionModal)
                 this.$refs.bulkEditionModal.focus();
         },
-        beforeDestroy() {
+        beforeUnmount() {
             // Cancels previous Request
             if (this.metadataSearchCancel != undefined)
                 this.metadataSearchCancel.cancel('Metadata search Canceled.');
@@ -421,17 +441,17 @@
             ]),
             finalizeProcedure(criterion){
 
-                this.$set(this.bulkEditionProcedures[criterion], 'isDone', true);
+                Object.assign(this.bulkEditionProcedures[criterion], { 'isDone': true });
 
                 this.dones[this.editionCriteria.indexOf(criterion)] = true;
  
-                this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', false);
+                Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': false });
             },
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
 
                 if (procedure.action === this.editionActions.redefine) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     if (procedure.metadatum.id === 'status'){
                         this.setStatusInBulk({
@@ -462,7 +482,7 @@
                         });
                     }
                 } else if (procedure.action === this.editionActions.add) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.addValueInBulk({
                         collectionId: this.collectionId,
@@ -475,7 +495,7 @@
                         this.finalizeProcedure(criterion);
                     });
                 } else if (procedure.action === this.editionActions.replace) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.replaceValueInBulk({
                         collectionId: this.collectionId,
@@ -489,7 +509,7 @@
                         this.finalizeProcedure(criterion);
                     });
                 } else if (procedure.action === this.editionActions.remove) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.removeValueInBulk({
                         collectionId: this.collectionId,
@@ -502,7 +522,7 @@
                         this.finalizeProcedure(criterion);
                     });
                 } else if (procedure.action === this.editionActions.clear) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.clearValuesInBulk({
                         collectionId: this.collectionId,
@@ -514,7 +534,7 @@
                         this.finalizeProcedure(criterion);
                     });
                 } else if (procedure.action === this.editionActions.copy) {
-                    this.$set(this.bulkEditionProcedures[criterion], 'isExecuting', true);
+                    Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
                     this.copyValuesInBulk({
                         collectionId: this.collectionId,
@@ -624,7 +644,7 @@
                 if (Array.isArray(value))
                     value = value[0];
 
-                this.$set(this.bulkEditionProcedures[criterion], `${key}`, value);
+                Object.assign( this.bulkEditionProcedures[criterion], { [`${key}`]: value });
             }
         }
     }
@@ -784,21 +804,23 @@
                 padding-left: 13px;
             }
 
-            /deep/ .is-special-hidden-for-mobile,
-            /deep/ .is-special-hidden-for-mobile:focus,
-            /deep/ .is-special-hidden-for-mobile:focus-visible {
-                opacity: 0;
-                width: 0;
-                height: 0 !important;
-                min-height: 0;
-                min-width: 0;
-                padding: 0 !important;
-                line-height: 0px !important;
-                border: none !important;
-                border-color: transparent !important;
-                border-width: 0px !important;
-                font-size: 0px !important;
-                display: block !important;
+            :deep(.is-special-hidden-for-mobile) {
+                &,
+                &:focus,
+                &:focus-visible {
+                    opacity: 0;
+                    width: 0;
+                    height: 0 !important;
+                    min-height: 0;
+                    min-width: 0;
+                    padding: 0 !important;
+                    line-height: 0px !important;
+                    border: none !important;
+                    border-color: transparent !important;
+                    border-width: 0px !important;
+                    font-size: 0px !important;
+                    display: block !important;
+                }
             }
         }
 

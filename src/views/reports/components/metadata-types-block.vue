@@ -6,8 +6,8 @@
             <label>{{ $i18n.get('metadata_types') }}&nbsp;</label>
             <div class="graph-mode-switch">
                 <button 
-                        @click="metadataTypeChartMode = 'bar'"
-                        :class="{ 'current': metadataTypeChartMode == 'bar' }">
+                        :class="{ 'current': metadataTypeChartMode == 'bar' }"
+                        @click="metadataTypeChartMode = 'bar'">
                     <span class="screen-reader-text">
                         {{ $i18n.get('label_bar_chart') }}
                     </span>
@@ -16,8 +16,8 @@
                     </span>
                 </button>
                 <button 
-                        @click="metadataTypeChartMode = 'circle'"
-                        :class="{ 'current': metadataTypeChartMode == 'circle' }">
+                        :class="{ 'current': metadataTypeChartMode == 'circle' }"
+                        @click="metadataTypeChartMode = 'circle'">
                     <span class="screen-reader-text">
                         {{ $i18n.get('label_pie_chart') }}
                     </span>
@@ -32,9 +32,9 @@
                     :options="chartOptions" />
         </div>
         <div 
-            v-else
-            style="min-height: 390px"
-            class="skeleton postbox" />
+                v-else
+                style="min-height: 390px"
+                class="skeleton postbox" />
         <slot />
     </div>
 </template>
@@ -65,7 +65,8 @@ export default {
                 if (this.chartData && this.chartData.totals)
                     this.buildMetadataTypeChart();
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     methods: {

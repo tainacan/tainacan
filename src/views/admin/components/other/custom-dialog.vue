@@ -1,11 +1,11 @@
 <template>
     <div 
+            ref="customDialog"
             aria-labelledby="alert-dialog-title"
             aria-modal
             autofocus
             role="alertdialog"
-            class="tainacan-form tainacan-dialog dialog"
-            ref="customDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -16,7 +16,7 @@
                     <i 
                             :style="{ color: icon == 'alert' ? 'var(--tainacan-red2)' : ( icon == 'approved' ? '#1a745c' : 'inherit' ) }"
                             :class="'tainacan-icon-' + icon"
-                            class="tainacan-icon"/>
+                            class="tainacan-icon" />
                 </span>
             </div>
             <section 
@@ -33,8 +33,8 @@
                 <span v-html="message" />
                 <div v-if="showNeverShowAgainOption">
                     <b-checkbox
-                            @input="changeNeverShowMessageAgain($event)"
-                            :native-value="neverShowAgain">
+                            :native-value="neverShowAgain"
+                            @update:model-value="changeNeverShowMessageAgain($event)">
                         {{ $i18n.get('instruction_never_show_message_again') }}
                     </b-checkbox>
                 </div>
@@ -44,13 +44,13 @@
                         v-if="!hideCancel"
                         class="button is-outlined" 
                         type="button"
-                        @click="$parent.close()">
+                        @click="$emit('close')">
                     {{ $i18n.get('cancel') }}
                 </button>
                 <button 
                         type="submit"
                         class="button is-success"
-                        @click="onConfirm(); $parent.close();">
+                        @click="onConfirm(); $emit('close');">
                     {{ $i18n.get('continue') }}
                 </button>
             </footer>
@@ -80,6 +80,9 @@
             },
             messageKeyForUserPrefs: ''
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 neverShowAgain: false

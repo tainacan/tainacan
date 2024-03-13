@@ -1,22 +1,24 @@
 <template>
     <div class="metadata-mappers-area">
         <b-loading
+                v-model="isLoadingMetadatumMappers"
                 :can-cancel="false"
-                :is-full-page="false"
-                :active.sync="isLoadingMetadatumMappers"/>
+                :is-full-page="false" />
         <b-loading
+                v-model="isLoadingMetadata"
                 :can-cancel="false"
-                :is-full-page="false"
-                :active.sync="isLoadingMetadata"/>
+                :is-full-page="false" />
 
         <b-field>
-            <p style="line-height: 2em;">{{ $i18n.get('info_metadata_mapper_helper') }}</p>
+            <p style="line-height: 2em;">
+                {{ $i18n.get('info_metadata_mapper_helper') }}
+            </p>
             <b-select
                     id="mappers-options-dropdown"
                     size="is-small"
                     :placeholder="$i18n.get('instruction_select_a_mapper')"
-                    :value="mapper"
-                    @input="onSelectMetadataMapper($event)">
+                    :model-value="mapper"
+                    @update:model-value="onSelectMetadataMapper($event)">
                 <option
                         v-for="metadatumMapper in metadatumMappers"
                         :key="metadatumMapper.slug"
@@ -33,7 +35,7 @@
             <div class="content has-text-gray has-text-centered">
                 <p>
                     <span class="icon is-large">
-                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata"/>
+                        <i class="tainacan-icon tainacan-icon-36px tainacan-icon-metadata" />
                     </span>
                 </p>
                 <p>{{ $i18n.get('info_there_is_no_metadatum') }}</p>
@@ -42,8 +44,8 @@
 
         <!-- Mapping list -->
         <form 
-                class="tainacan-form"
-                v-else>
+                v-else
+                class="tainacan-form">
 
             <div class="mapping-control">
                 <div
@@ -54,15 +56,15 @@
                             class="is-inline is-pulled-right add-link"
                             @click="onNewMetadataMapperMetadata()">
                         <span class="icon is-small">
-                            <i class="tainacan-icon tainacan-icon-add"/>
+                            <i class="tainacan-icon tainacan-icon-add" />
                         </span>
                         {{ $i18n.get('label_add_more_mapper_metadata') }}
                     </a>
                 </div>
             </div>
             <div 
-                    class="mapping-header"
-                    v-if="mapperMetadata.length > 0">
+                    v-if="mapperMetadata.length > 0"
+                    class="mapping-header">
                 <p>{{ $i18n.get('label_from_source_mapper') }}</p>
                 <hr>
                 <span class="icon">
@@ -78,18 +80,18 @@
                     class="source-metadatum">
                 
                 <b-select
-                        :name="'mappers-metadatum-select-' + mapperMetadatum.slug"
                         v-model="mapperMetadatum.selected"
-                        @input="onSelectMetadatumForMapperMetadata">
+                        :name="'mappers-metadatum-select-' + mapperMetadatum.slug"
+                        @update:model-value="onSelectMetadatumForMapperMetadata">
                     <option
                             value="">
                         {{ $i18n.get('instruction_select_a_metadatum') }}
                     </option>
                     <option
-                        v-for="(metadatum, metadatumIndex) in activeMetadatumList"
-                        :key="metadatumIndex"
-                        :value="metadatum.id"
-                        :disabled="isMetadatumSelected(metadatum.id)">
+                            v-for="(metadatum, metadatumIndex) in activeMetadatumList"
+                            :key="metadatumIndex"
+                            :value="metadatum.id"
+                            :disabled="isMetadatumSelected(metadatum.id)">
                         {{ metadatum.name }}
                     </option>
                 </b-select>
@@ -98,9 +100,9 @@
                     {{ mapperMetadatum.label }}
                     <a 
                             :style="{ visibility: 
-                                    mapperMetadatum.isCustom
+                                mapperMetadatum.isCustom
                                     ? 'visible' : 'hidden'
-                                }" 
+                            }" 
                             @click.prevent="editMetadatumCustomMapper(mapperMetadatum)">
                         <span
                                 v-tooltip="{
@@ -110,14 +112,14 @@
                                     placement: 'auto-start'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-edit" />
                         </span>
                     </a>
                     <a 
                             :style="{ visibility: 
-                                    mapperMetadatum.isCustom
+                                mapperMetadatum.isCustom
                                     ? 'visible' : 'hidden'
-                                }" 
+                            }" 
                             @click.prevent="removeMetadatumCustomMapper(mapperMetadatum)">
                         <span
                                 v-tooltip="{
@@ -127,13 +129,13 @@
                                     placement: 'auto-start'
                                 }"
                                 class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete"/>
+                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-delete" />
                         </span>
                     </a>
                 </p>
             </div>
 
-             <div 
+            <div 
                     v-if="mapper != '' && !isLoadingMetadatumMappers"
                     class="field is-grouped form-submit fixed-form-submit">
                 <div class="control">
@@ -144,22 +146,22 @@
                 </div>
                 <div class="control">
                     <button
-                            @click.prevent="onUpdateMetadataMapperMetadataClick"
                             :class="{ 'is-loading': isMapperMetadataLoading }"
-                            class="button is-success">{{ $i18n.get('save') }}</button>
+                            class="button is-success"
+                            @click.prevent="onUpdateMetadataMapperMetadataClick">{{ $i18n.get('save') }}</button>
                 </div>
             </div>
             
         </form>
 
         <b-modal
-                @close="onCancelNewMetadataMapperMetadata"
-                :active.sync="isMapperMetadataCreating"
+                v-model="isMapperMetadataCreating"
                 trap-focus
                 aria-modal
                 aria-role="dialog"
                 custom-class="tainacan-modal"
-                :close-button-aria-label="$i18n.get('close')">
+                :close-button-aria-label="$i18n.get('close')"
+                @close="onCancelNewMetadataMapperMetadata">
             <div 
                     autofocus
                     role="dialog"
@@ -174,14 +176,14 @@
                     <b-input
                             v-model="newMetadataLabel"
                             required
-                            :placeholder="$i18n.get('label_name')"/>
+                            :placeholder="$i18n.get('label_name')" />
                 </b-field>
                 <b-field>
                     <b-input
+                            v-model="newMetadataUri"
                             placeholder="URI"
                             type="url"
-                            required
-                            v-model="newMetadataUri"/>
+                            required />
                 </b-field>
                 <div class="field is-grouped form-submit">
                     <div class="control">
@@ -193,9 +195,9 @@
                     <div class="control">
                         <button
                                 :class="{ 'is-loading': isMapperMetadataLoading, 'is-success': !isMapperMetadataLoading }"
-                                @click.prevent="onSaveNewMetadataMapperMetadata"
                                 :disabled="isNewMetadataMapperMetadataDisabled || isMapperMetadataLoading"
-                                class="button">{{ $i18n.get('save') }}
+                                class="button"
+                                @click.prevent="onSaveNewMetadataMapperMetadata">{{ $i18n.get('save') }}
                         </button>
                     </div>
                 </div>

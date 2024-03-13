@@ -5,7 +5,8 @@
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/dist/photoswipe.css';
-import Swiper, { Navigation, A11y, Thumbs, Pagination } from 'swiper';
+import Swiper from 'swiper';
+import { Navigation, A11y, Thumbs, Pagination } from 'swiper/modules';
 
 const { __ } = wp.i18n;
 
@@ -223,9 +224,9 @@ tainacan_plugin.classes.TainacanMediaGallery = class TainacanMediaGallery {
                 let currentURL = window.location.toString();
                 if (currentURL.indexOf("#") > 0) {
                     currentURL = currentURL.substring(0, currentURL.indexOf("#"));
-                    window.history.replaceState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));
+                    window.history.replaceState(window.history.state, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));
                 } else {
-                    window.history.pushState({}, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));  
+                    window.history.pushState(window.history.state, '', currentURL + '#gid=' + this.options.media_id + '&pid=' + (self.lightbox.pswp.currIndex + 1));  
                 } 
             }
         });

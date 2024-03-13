@@ -30,7 +30,7 @@ export const fetchFilters = ({ commit }, { collectionId, isRepositoryLevel, isCo
                 endpoint += '&' + qs.stringify(postin);
             }
 
-            axios.tainacan.get(endpoint, { cancelToken: source.token })
+            axios.tainacanApi.get(endpoint, { cancelToken: source.token })
                 .then((res) => {
                     let filters= res.data;
                     commit('setFilters', filters);
@@ -56,7 +56,7 @@ export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filte
         else
             endpoint = '/filters/';
 
-        axios.tainacan.post(endpoint + '?context=edit', {
+        axios.tainacanApi.post(endpoint + '?context=edit', {
             filter_type: filterType, 
             filter: {
                 name: name,
@@ -66,7 +66,7 @@ export const sendFilter = ( { commit }, { collectionId, metadatumId, name, filte
         })
             .then( res => {
                 let filter = res.data;
-                commit('setSingleFilter', { filter: filter , index: newIndex});
+                commit('addSingleFilter', { filter: filter , index: newIndex});
                 resolve( filter );
             })
             .catch(error => {
@@ -86,14 +86,14 @@ export const updateFilter = ( { commit }, { filterId, index, options }) => {
         let endpoint = '/filters/' + filterId;
         options['context'] = 'edit';
 
-        axios.tainacan.put(endpoint, options)
+        axios.tainacanApi.put(endpoint, options)
             .then( res => {
                 let filter = res.data;
                 commit('setSingleFilter', { filter: filter, index: index });
                 resolve( filter );
             })
-            .catch(error => {
-                console.log(error);
+            .catch( (error) => {
+                console.log(JSON.parse(JSON.stringify(error)));
                 reject({ error_message: error['response']['data'].error_message, errors: error['response']['data'].errors });
             });
     });
@@ -107,7 +107,7 @@ export const deleteFilter = ({ commit }, filterId ) => {
     let endpoint = '/filters/' + filterId;
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.delete(endpoint, { data:{ is_permanently: false }})
+        axios.tainacanApi.delete(endpoint, { data:{ is_permanently: false }})
         .then( res => {
             commit('deleteFilter', res.data );
             resolve( res.data );
@@ -128,7 +128,7 @@ export const addTemporaryFilter = ({ commit }, filter ) => {
 
 export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filtersOrder }) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.patch('/collections/' + collectionId + '/filters_order?context=edit', {
+        axios.tainacanApi.patch('/collections/' + collectionId + '/filters_order?context=edit', {
             filters_order: filtersOrder
         }).then( res => {
             commit('collection/setCollection', res.data, { root: true });
@@ -143,7 +143,7 @@ export const updateCollectionFiltersOrder = ({ commit }, { collectionId, filters
 
 export const fetchFilterTypes = ({ commit} ) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.get('/filter-types')
+        axios.tainacanApi.get('/filter-types')
             .then((res) => {
                 let filterTypes = res.data;
                 commit('setFilterTypes', filterTypes);
@@ -181,7 +181,7 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
 
                                 // First, we add repository level filters
                                 promises.push(
-                                    axios.tainacan.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false')
+                                    axios.tainacanApi.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false')
                                         .then((resp) => { return { filters: resp.data, collectionId: 'default' } }) 
                                         .catch((error) => {
                                             reject(error);
@@ -191,7 +191,7 @@ export const fetchRepositoryCollectionFilters = ({ dispatch, commit } ) => {
                                 // Then we add collection level filters
                                 collections.forEach(collection => {
                                     promises.push(
-                                        axios.tainacan.get('/collection/' + collection.id + '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&metaquery[0][key]=collection_id&metaquery[0][value]=default&metaquery[0][compare]=!=&metaquery[1][key]=display_in_repository_level_lists&metaquery[1][value]=no&metaquery[1][compare]=!=')
+                                        axios.tainacanApi.get('/collection/' + collection.id + '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&metaquery[0][key]=collection_id&metaquery[0][value]=default&metaquery[0][compare]=!=&metaquery[1][key]=display_in_repository_level_lists&metaquery[1][value]=no&metaquery[1][compare]=!=')
                                             .then((resp) => { return { filters: resp.data, collectionId: collection.id } }) 
                                             .catch((error) => {
                                                 reject(error);
@@ -243,7 +243,7 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, { taxonomyId, collect
 
                     // First, we add reporitory level search
                     promises.push(
-                        axios.tainacan.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false')
+                        axios.tainacanApi.get('/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false')
                             .then((resp) => { return { filters: resp.data, collectionId: 'default' } }) 
                             .catch((error) => {
                                 reject(error);
@@ -254,7 +254,7 @@ export const fetchTaxonomyFilters = ({ dispatch, commit }, { taxonomyId, collect
                     const collectionsToSearch = collectionsIds.length ? collectionsIds : taxonomy.collections_ids
                     collectionsToSearch.forEach(collectionId => {
                         promises.push(
-                            axios.tainacan.get('/collection/' + collectionId + '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&metaquery[0][key]=collection_id&metaquery[0][value]=default&metaquery[0][compare]=!=&metaquery[1][key]=display_in_repository_level_lists&metaquery[1][value]=no&metaquery[1][compare]=!=')
+                            axios.tainacanApi.get('/collection/' + collectionId + '/filters/?include_control_metadata_types=true&nopaging=1&include_disabled=false&metaquery[0][key]=collection_id&metaquery[0][value]=default&metaquery[0][compare]=!=&metaquery[1][key]=display_in_repository_level_lists&metaquery[1][value]=no&metaquery[1][compare]=!=')
                                 .then((resp) => { return { filters: resp.data, collectionId: collectionId } }) 
                                 .catch((error) => {
                                     reject(error);

@@ -12,8 +12,8 @@
                     v-if="isLoading"
                     class="tainacan-records-container--skeleton">
                 <div 
-                        :key="item"
                         v-for="item in 12"
+                        :key="item"
                         :style="{'min-height': randomHeightForRecordsItem() + 'px' }"
                         class="skeleton" />
             </div>
@@ -23,12 +23,12 @@
                     v-if="!isLoading"
                     class="tainacan-records-container">
                 <li
+                        v-for="(item, index) of items"
+                        :key="index"
                         role="listitem"
                         :aria-setsize="totalItems"
                         :aria-posinset="getPosInSet(index)"
                         :data-tainacan-item-id="item.id"
-                        :key="index"
-                        v-for="(item, index) of items"
                         :class="{ 'tainacan-records-grid-sizer': index == 0 }">
                     <a 
                             :href="getItemLink(item.url, index)"
@@ -43,6 +43,7 @@
                         <!-- Title -->
                         <div class="metadata-title">
                             <p 
+                                    v-if="collectionId && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -54,9 +55,9 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    v-if="collectionId && titleItemMetadatum"
                                     v-html="item.metadata != undefined ? renderMetadata(item, titleItemMetadatum) : ''" />                 
                             <p 
+                                    v-if="!collectionId && titleItemMetadatum"
                                     v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -68,7 +69,6 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"
-                                    v-if="!collectionId && titleItemMetadatum"
                                     v-html="item.title != undefined ? item.title : (`<span class='has-text-gray3 is-italic'>` + $i18n.get('label_value_not_provided') + `</span>`)" />               
                             <span 
                                     v-if="isSlideshowViewModeEnabled"
@@ -81,9 +81,9 @@
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
                                     }"          
-                                    @click.prevent="starSlideshowFromHere(index)"
-                                    class="icon slideshow-icon">
-                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em"/>
+                                    class="icon slideshow-icon"
+                                    @click.prevent="starSlideshowFromHere(index)">
+                                <i class="tainacan-icon tainacan-icon-viewgallery tainacan-icon-1-125em" />
                             </span> 
                         </div>
 
@@ -91,11 +91,9 @@
                         <div class="media">
                             <div class="list-metadata media-body">
                                 <div 
-                                        class="tainacan-record-thumbnail"
-                                        v-if="item.thumbnail != undefined">
+                                        v-if="item.thumbnail != undefined"
+                                        class="tainacan-record-thumbnail">
                                     <blur-hash-image
-                                            @click.left="onClickItem($event, item)"
-                                            @click.right="onRightClickItem($event, item)"
                                             v-if="item.thumbnail != undefined"
                                             class="tainacan-record-item-thumbnail"
                                             :width="$thumbHelper.getWidth(item['thumbnail'], 'tainacan-medium-full', 120)"
@@ -105,6 +103,7 @@
                                             :srcset="$thumbHelper.getSrcSet(item['thumbnail'], 'tainacan-medium-full', item.document_mimetype)"
                                             :alt="item.thumbnail_alt ? item.thumbnail_alt : $i18n.get('label_thumbnail')"
                                             :transition-duration="500"
+                                            @click.left="onClickItem($event, item)"
                                         />
                                     <div 
                                             :style="{ 
@@ -112,15 +111,16 @@
                                                 marginTop: '-' + getItemImageHeight(item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][1] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[1] : 120), item['thumbnail']['tainacan-medium-full'] ? item['thumbnail']['tainacan-medium-full'][2] : (item['thumbnail'].medium_large ? item['thumbnail'].medium_large[2] : 120)) + 'px'
                                             }" />
                                 </div>
-                                <template v-for="(column, metadatumIndex) in displayedMetadata">
+                                <template 
+                                        v-for="(column, metadatumIndex) in displayedMetadata"
+                                        :key="metadatumIndex">
                                     <span 
-                                            :key="metadatumIndex"
-                                            :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }"
-                                            v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')">
+                                            v-if="renderMetadata(item, column) != '' && column.display && column.slug != 'thumbnail' && column.metadata_type_object != undefined && (column.metadata_type_object.related_mapped_prop != 'title')"
+                                            :class="{ 'metadata-type-textarea': column.metadata_type_object.component == 'tainacan-textarea' }">
                                         <h3 class="metadata-label">{{ column.name }}</h3>
                                         <p      
-                                                v-html="renderMetadata(item, column)"
-                                                class="metadata-value"/>
+                                                class="metadata-value"
+                                                v-html="renderMetadata(item, column)" />
                                     </span>
                                 </template>
                             </div>
@@ -139,6 +139,7 @@
 </template>
 
 <script>
+import { nextTick } from 'vue';
 import { viewModesMixin } from '../js/view-modes-mixin.js';
 import Masonry from 'masonry-layout';
 
@@ -161,7 +162,7 @@ export default {
         isLoading: { 
             handler() {
                 if (this.items && this.items.length > 0 && !this.isLoading) {
-                    this.$nextTick(() => {
+                    nextTick(() => {
                         if (this.masonry !== false)
                             this.masonry.destroy();
                         
@@ -177,7 +178,7 @@ export default {
             immediate: true
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.masonry !== false)
             this.masonry.destroy();
     },

@@ -1,27 +1,27 @@
 <template>
     <div>
         <b-numberinput
+                v-model="valueInit"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
-                @input="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"
-                v-model="valueInit"
-                />
+                @update:model-value="($event) => { resetPage(); validadeValues($event) }"
+            />
         <p 
                 style="font-size: 0.75em; margin-bottom: 0.125em;"
                 class="has-text-centered is-marginless">
             {{ $i18n.get('label_until') }}
         </p>
         <b-numberinput
+                v-model="valueEnd"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
-                @input="($event) => { resetPage(); validadeValues($event) }"
                 :step="filterTypeOptions.step"
-                v-model="valueEnd"/>
+                @update:model-value="($event) => { resetPage(); validadeValues($event) }" />
         
     </div>
 </template>
@@ -30,6 +30,9 @@
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     export default {
         mixins: [ filterTypeMixin ],
+        emits: [
+            'input',
+        ],
         data(){
             return {
                 valueInit: null,
@@ -37,9 +40,12 @@
             }
         },
         watch: {
-            'query'() {
-                this.updateSelectedValues();
-            },
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true
+            }
         },
         mounted() {
             this.updateSelectedValues();

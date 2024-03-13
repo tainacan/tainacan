@@ -1,21 +1,17 @@
 <template>
     <div :class="{ 'is-flex is-flex-wrap-wrap': itemMetadatum.metadatum.multiple != 'yes' || maxtags != undefined }">
         <b-tabs
+                v-model="activeTab"
                 size="is-small"
-                animated
-                v-model="activeTab">
+                animated>
             <b-tab-item :label="$i18n.get('label_insert_items')">
                 <b-taginput
+                        :id="relationshipInputId"
                         expanded
                         :disabled="disabled"
-                        :id="relationshipInputId"
                         size="is-small"
                         icon="magnify"
-                        :value="selected"
-                        @input="onInput"
-                        @blur="onBlur"
-                        @add="onAdd"
-                        @remove="onRemove"
+                        :model-value="selected"
                         :data="options"
                         :maxtags="maxtags != undefined ? maxtags : (itemMetadatum.metadatum.multiple == 'yes' || allowNew === true ? (maxMultipleValues !== undefined ? maxMultipleValues : null) : '1')"
                         autocomplete
@@ -27,12 +23,14 @@
                         :aria-close-label="$i18n.get('remove_value')"
                         :class="{ 'has-selected': selected != undefined && selected != [] }"
                         field="label"
-                        @typing="search"
                         check-infinite-scroll
-                        @infinite-scroll="searchMore"
                         :has-counter="false"
+                        @update:model-value="onInput"
+                        @blur="onBlur"
+                        @typing="search"
+                        @infinite-scroll="searchMore"
                         @focus="onMobileSpecialFocus">
-                    <template slot-scope="props">
+                    <template #default="props">
                         <div 
                                 v-if="!isDisplayingRelatedItemMetadata"
                                 class="media">
@@ -55,12 +53,12 @@
                     </template>
                     <template 
                             v-if="!isLoading"
-                            slot="empty">
+                            #empty>
                         {{ isAcceptingOnlyItemsAuthoredByCurrentUser ? $i18n.get('info_no_item_authored_by_you_found') : $i18n.get('info_no_item_found') }}
                     </template>
                     <template
                             v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)" 
-                            slot="footer">
+                            #footer>
                         <a @click="editItemModalOpen = true">
                             {{ $i18n.get('label_create_new_item') + ' "' + searchQuery + '"' }}
                         </a>
@@ -82,15 +80,15 @@
                             <div v-html="itemValue.valuesAsHtml" />
                             <a 
                                     v-if="currentUserCanEditItems && (!$adminOptions.itemEditionMode || $adminOptions.allowItemEditionModalInsideModal)"
-                                    @click="editSelected(itemValue.value)"
-                                    class="relationship-value-button--edit">
+                                    class="relationship-value-button--edit"
+                                    @click="editSelected(itemValue.value)">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-edit" />
                                 </span>
                             </a>
                             <a 
-                                    @click="removeFromSelected(itemValue.value)"
-                                    class="relationship-value-button--remove">
+                                    class="relationship-value-button--remove"
+                                    @click="removeFromSelected(itemValue.value)">
                                 <span class="icon">
                                     <i class="tainacan-icon tainacan-icon-close" />
                                 </span>
@@ -116,18 +114,18 @@
                     itemMetadatum.item.id">
             <a
                     v-if="(maxMultipleValues === undefined || maxMultipleValues > selected.length) &&
-                            (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
+                        (itemMetadatum.metadatum.multiple === 'yes' || !selected.length )"
                     :disabled="$adminOptions.itemEditionMode && !$adminOptions.allowItemEditionModalInsideModal"
-                    @click="editItemModalOpen = !editItemModalOpen"
-                    class="add-link">
+                    class="add-link"
+                    @click="editItemModalOpen = !editItemModalOpen">
                 <span class="icon is-small">
-                    <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                    <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                 </span>
                 &nbsp;{{ $i18n.get('label_create_new_item') }}
             </a>
             <b-modal 
+                    v-model="editItemModalOpen"
                     :width="1200"
-                    :active.sync="editItemModalOpen"
                     :custom-class="'tainacan-modal' + (collection && collection.id ? ' tainacan-modal-item-edition--collection-' + collection.id : '')"
                     :close-button-aria-label="$i18n.get('close')">
                 <iframe 
@@ -141,7 +139,7 @@
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios';
     import { mapGetters } from 'vuex';
     import qs from 'qs';
 
@@ -154,6 +152,11 @@
             isLastMetadatum: false,
             isMobileScreen: false
         },
+        emits: [
+            'update:value',
+            'blur',
+            'mobile-special-focus'    
+        ],
         data() {
             return {
                 selected:[],
@@ -240,7 +243,7 @@
                 if ( this.isAcceptingDraftItems )
                     query['status'] = ['publish','private','draft'];
 
-                axios.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
+                tainacanApi.get('/collection/' + this.collectionId + '/items?' + qs.stringify(query) )
                     .then( res => {
                         if (res.data.items) {
                             for (let item of res.data.items) {
@@ -262,7 +265,7 @@
             if (this.collection && this.collection.id == this.collectionId)
                 this.currentUserCanEditItems = this.collection.current_user_can_edit_items;
             else {
-                axios.get('/collections/' + this.collectionId + '?fetch_only=name,url,allow_comments&context=edit')
+                tainacanApi.get('/collections/' + this.collectionId + '?fetch_only=name,url,allow_comments&context=edit')
                     .then(res => this.currentUserCanEditItems = res.data.current_user_can_edit_items )
                     .catch(() => this.currentUserCanEditItems = false );
             }
@@ -276,7 +279,7 @@
                 this.search('');
 
                 this.selected = newSelected;
-                this.$emit('input', newSelected.map((item) => item.value));
+                this.$emit('update:value', newSelected.map((item) => item.value));
             },
             onBlur() {
                 this.$emit('blur');
@@ -308,7 +311,7 @@
                 if (this.searchQuery !== '') {
                     this.isLoading = true;
 
-                    axios.get('/collection/' + this.collectionId + '/items?' + this.getQueryString(this.searchQuery))
+                    tainacanApi.get('/collection/' + this.collectionId + '/items?' + this.getQueryString(this.searchQuery))
                         .then( res => {
 
                             if (res.data.items) {
@@ -505,7 +508,7 @@
                 }
             },
             onMobileSpecialFocus() {
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             }
         }
     }
@@ -522,17 +525,17 @@
         margin-bottom: 0;
         width: 100%;
     }
-    /deep/ .b-tabs .tab-content {
+    :deep(.b-tabs) .tab-content {
         padding: 0.5em 0px !important;
     }
-    /deep/ .tabs {
+    :deep(.tabs) {
         margin-bottom: 0 !important;
 
         ul {
             padding: 0;
         }
     }
-    /deep/ .tainacan-relationship-results-container {
+    :deep(.tainacan-relationship-results-container) {
         border: 1px solid var(--tainacan-gray1);
         background-color: var(--tainacan-white);
         margin-top: calc(-1 * (0.5em + 1px));
@@ -570,7 +573,7 @@
             }
         }
     }
-    /deep/ .tainacan-relationship-group {
+    :deep(.tainacan-relationship-group) {
         width: 100%;
         .tainacan-relationship-metadatum {
             .label {
@@ -602,8 +605,8 @@
             top: 0px;
         }
     }
-    /deep/ .relationship-value-button--edit,
-    /deep/ .relationship-value-button--remove {
+    :deep(.relationship-value-button--edit),
+    :deep(.relationship-value-button--remove) {
         right: 4px;
         background-color: var(--tainacan-white);
         border-radius: 100%;
@@ -613,7 +616,7 @@
             background-color: var(--tainacan-gray0);
         }
     }
-    /deep/ .relationship-value-button--edit {
+    :deep(.relationship-value-button--edit) {
         right: 34px;
     }
 </style>

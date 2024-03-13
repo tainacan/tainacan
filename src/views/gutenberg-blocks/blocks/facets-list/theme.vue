@@ -1,88 +1,116 @@
 <template>
     <div
-            :style="customStyle"
-            :class="className + ' has-mounted'">
-        <div
-                v-if="showSearchBar"
-                class="facets-search-bar"> 
-            <button
-                    :label="$root.__('Search', 'tainacan')"
-                    class="search-button">
-                <span class="icon">
-                    <i>
-                        <svg    
-                                width="24"
-                                height="24"
-                                viewBox="-2 -2 20 20">
-                            <path
-                                    class="st0"
-                                    d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
-                                    c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
-                                    c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
-                                    c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
-                                    C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
-                                    c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
-                                    c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z"/>       
-                        </svg>
-                    </i>
-                </span>
-            </button>
-            <input
-                    :value="searchString"
-                    @input="(value) => applySearchString(value)"
-                    type="text">
-        </div>
-        <template v-if="isLoading">
-            <ul
-                    v-if="layout !== 'list'"
-                    :style="{
-                        gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
-                        marginTop: showSearchBar ? '1.5em' : '4px'
-                    }"
-                    class="facets-list"
-                    :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+            v-if="showSearchBar"
+            class="facets-search-bar"> 
+        <button
+                :label="wpI18n('Search', 'tainacan')"
+                class="search-button">
+            <span class="icon">
+                <i>
+                    <svg    
+                            width="24"
+                            height="24"
+                            viewBox="-2 -2 20 20">
+                        <path
+                                class="st0"
+                                d="M0,5.8C0,5,0.2,4.2,0.5,3.5s0.7-1.3,1.2-1.8s1.1-0.9,1.8-1.2C4.2,0.1,5,0,5.8,0S7.3,0.1,8,0.5
+                                c0.7,0.3,1.3,0.7,1.8,1.2s0.9,1.1,1.2,1.8c0.5,1.2,0.5,2.5,0.2,3.7c0,0.2-0.1,0.4-0.2,0.6c0,0.1-0.2,0.6-0.2,0.6
+                                c0.6,0.6,1.3,1.3,1.9,1.9c0.7,0.7,1.3,1.3,2,2c0,0,0.3,0.2,0.3,0.3c0,0.3-0.1,0.7-0.3,1c-0.2,0.6-0.8,1-1.4,1.2
+                                c-0.1,0-0.6,0.2-0.6,0.1c0,0-4.2-4.2-4.2-4.2c0,0-0.8,0.3-0.8,0.4c-1.3,0.4-2.8,0.5-4.1-0.1c-0.7-0.3-1.3-0.7-1.8-1.2
+                                C1.2,9.3,0.8,8.7,0.5,8S0,6.6,0,5.8z M1.6,5.8c0,0.4,0.1,0.9,0.2,1.3C2.1,8.2,3,9.2,4.1,9.6c0.5,0.2,1,0.3,1.6,0.3
+                                c0.6,0,1.1-0.1,1.6-0.3C8.7,9,9.7,7.6,9.8,6c0.1-1.5-0.6-3.1-2-3.9c-0.9-0.5-2-0.6-3-0.4C4.6,1.8,4.4,1.9,4.1,2
+                                c-0.5,0.2-1,0.5-1.4,0.9C2,3.7,1.6,4.7,1.6,5.8z" />       
+                    </svg>
+                </i>
+            </span>
+        </button>
+        <input
+                :value="searchString"
+                type="text"
+                @input="(value) => applySearchString(value)">
+    </div>
+    <template v-if="isLoading">
+        <ul
+                v-if="layout !== 'list'"
+                :style="{
+                    gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
+                    marginTop: showSearchBar ? '1.5em' : '4px'
+                }"
+                class="facets-list"
+                :class="'facets-layout-' + layout + 'facets-list-without-margin' + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+            <li
+                    v-for="facet in Number(maxFacetsNumber)"
+                    :key="facet"
+                    class="facet-list-item skeleton"
+                    :style="{ 
+                        marginBottom: layout == 'grid' && ((isMetadatumTypeRelationship || isMetadatumTypeTaxonomy) && showImage) ? gridMargin + 'px' : '',
+                        minHeight: getSkeletonHeight()
+                    }" />      
+        </ul>
+        <ul
+                v-else
+                :style="{
+                    marginTop: showSearchBar ? '1.5em' : '4px'
+                }"
+                class="facets-list"
+                :class="'facets-layout-' + layout + ' facets-list-without-margin' + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+            <div
+                    v-for="column in Number(maxColumnsCount)" 
+                    :key="column"
+                    style="margin: 2px 6px">
                 <li
+                        v-for="facet in Math.ceil(maxFacetsNumber/maxColumnsCount)"
                         :key="facet"
-                        v-for="facet in Number(maxFacetsNumber)"
                         class="facet-list-item skeleton"
                         :style="{ 
-                            marginBottom: layout == 'grid' && ((isMetadatumTypeRelationship || isMetadatumTypeTaxonomy) && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
+                            marginBottom: layout == 'grid' && ((isMetadatumTypeRelationship || isMetadatumTypeTaxonomy) && showImage) ? gridMargin + 'px' : '',
                             minHeight: getSkeletonHeight()
-                        }" />      
-            </ul>
-            <ul
-                    v-else
-                    :style="{
-                        marginTop: showSearchBar ? '1.5em' : '4px'
-                    }"
-                    class="facets-list"
-                    :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
-                <div
-                        style="margin: 2px 6px" 
-                        v-for="column in Number(maxColumnsCount)"
-                        :key="column">
-                    <li
-                            v-for="facet in Math.ceil(maxFacetsNumber/maxColumnsCount)"
-                            :key="facet"
-                            class="facet-list-item skeleton"
-                            :style="{ 
-                                marginBottom: layout == 'grid' && ((isMetadatumTypeRelationship || isMetadatumTypeTaxonomy) && showImage) ? (showName ? gridMargin + 12 : gridMargin) + 'px' : '',
-                                minHeight: getSkeletonHeight()
-                            }" />    
-                </div>  
-            </ul>
-        </template>
-        <div v-else>
-            <ul 
-                    v-if="facets.length > 0 && layout != 'list'"
-                    :style="{
-                        gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
-                        marginTop: showSearchBar ? '1.5em' : '0px'
-                    }"
-                    class="facets-list"
-                    :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+                        }" />    
+            </div>  
+        </ul>
+    </template>
+    <div v-else>
+        <ul 
+                v-if="facets.length > 0 && layout != 'list'"
+                :style="{
+                    gridGap: layout == 'grid' ? (gridMargin + 'px') : 'inherit',
+                    marginTop: showSearchBar ? '1.5em' : '0px'
+                }"
+                class="facets-list"
+                :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+            <facets-list-theme-unit
+                    v-for="(facet, index) of facets"
+                    :key="index"
+                    :show-search-bar="showSearchBar"
+                    :show-image="showImage"
+                    :name-inside-image="nameInsideImage"
+                    :child-facets-object="childFacetsObject"
+                    :append-child-terms="appendChildTerms"
+                    :facet="facet"
+                    :image-size="imageSize"
+                    :cloud-rate="cloudRate"
+                    :items-count-style="itemsCountStyle"
+                    :layout="layout"
+                    :metadatum-type="metadatumType"
+                    :show-items-count="showItemsCount"
+                    :is-loading-child-terms="isloadingChildTerms"
+                    :link-term-facets-to-term-page="linkTermFacetsToTermPage"
+                    :is-metadatum-type-taxonomy="isMetadatumTypeTaxonomy"
+                    :is-metadatum-type-relationship="isMetadatumTypeRelationship"
+                    @on-display-child-terms="displayChildTerms" />
+        </ul>
+        <ul 
+                v-if="facets.length > 0 && layout == 'list'"
+                :style="{
+                    marginTop: showSearchBar ? '1.5em' : '0px'
+                }"
+                class="facets-list"
+                :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+            <div 
+                    v-for="column in Number(maxColumnsCount)"
+                    :key="column">
                 <facets-list-theme-unit
-                        v-for="(facet, index) of facets"
+                        v-for="(facet, index) of facets.slice((column - 1) * Math.ceil(facets.length/maxColumnsCount), column * Math.ceil(facets.length/maxColumnsCount))"
                         :key="index"
                         :show-search-bar="showSearchBar"
                         :show-image="showImage"
@@ -93,7 +121,6 @@
                         :image-size="imageSize"
                         :cloud-rate="cloudRate"
                         :items-count-style="itemsCountStyle"
-                        :tainacan-base-url="tainacanBaseUrl"
                         :layout="layout"
                         :metadatum-type="metadatumType"
                         :show-items-count="showItemsCount"
@@ -102,66 +129,33 @@
                         :is-metadatum-type-taxonomy="isMetadatumTypeTaxonomy"
                         :is-metadatum-type-relationship="isMetadatumTypeRelationship"
                         @on-display-child-terms="displayChildTerms" />
-            </ul>
-            <ul 
-                    v-if="facets.length > 0 && layout == 'list'"
-                    :style="{
-                        marginTop: showSearchBar ? '1.5em' : '0px'
-                    }"
-                    class="facets-list"
-                    :class="'facets-layout-' + layout + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
-                <div 
-                        v-for="column in Number(maxColumnsCount)"
-                        :key="column">
-                    <facets-list-theme-unit
-                            v-for="(facet, index) of facets.slice((column - 1) * Math.ceil(facets.length/maxColumnsCount), column * Math.ceil(facets.length/maxColumnsCount))"
-                            :key="index"
-                            :show-search-bar="showSearchBar"
-                            :show-image="showImage"
-                            :name-inside-image="nameInsideImage"
-                            :child-facets-object="childFacetsObject"
-                            :append-child-terms="appendChildTerms"
-                            :facet="facet"
-                            :image-size="imageSize"
-                            :cloud-rate="cloudRate"
-                            :items-count-style="itemsCountStyle"
-                            :tainacan-base-url="tainacanBaseUrl"
-                            :layout="layout"
-                            :metadatum-type="metadatumType"
-                            :show-items-count="showItemsCount"
-                            :is-loading-child-terms="isloadingChildTerms"
-                            :link-term-facets-to-term-page="linkTermFacetsToTermPage"
-                            :is-metadatum-type-taxonomy="isMetadatumTypeTaxonomy"
-                            :is-metadatum-type-relationship="isMetadatumTypeRelationship"
-                            @on-display-child-terms="displayChildTerms" />
-                </div>
-            </ul>
-
-            <button
-                    v-if="showLoadMore && facets.length > 0 && (facets.length < totalFacets || lastTerm != '')"
-                    @click="loadMore()"
-                    class="show-more-button"
-                    :label="$root.__('Show more', 'tainacan')">
-                <span class="icon">
-                    <i>
-                        <svg
-                                width="24"
-                                height="24"
-                                viewBox="4 3 24 24">
-                            <path d="M 7.41,8.295 6,9.705 l 6,6 6,-6 -1.41,-1.41 -4.59,4.58 z"/>
-                            <path
-                                    d="M0 0h24v24H0z"
-                                    fill="none"/>                        
-                        </svg>
-                    </i>
-                </span>
-            </button>
-            <div
-                    v-else
-                    class="spinner-container"
-                    :style="{ display: facets.length > 0 ? 'none' : 'flex'}">
-                {{ $root.__('Nothing found.', 'tainacan') }}
             </div>
+        </ul>
+
+        <button
+                v-if="showLoadMore && facets.length > 0 && (facets.length < totalFacets || lastTerm != '')"
+                class="show-more-button"
+                :label="wpI18n('Show more', 'tainacan')"
+                @click="loadMore()">
+            <span class="icon">
+                <i>
+                    <svg
+                            width="24"
+                            height="24"
+                            viewBox="4 3 24 24">
+                        <path d="M 7.41,8.295 6,9.705 l 6,6 6,-6 -1.41,-1.41 -4.59,4.58 z" />
+                        <path
+                                d="M0 0h24v24H0z"
+                                fill="none" />                        
+                    </svg>
+                </i>
+            </span>
+        </button>
+        <div
+                v-else
+                class="spinner-container"
+                :style="{ display: facets.length > 0 ? 'none' : 'flex'}">
+            {{ wpI18n('Nothing found.', 'tainacan') }}
         </div>
     </div>
 </template>
@@ -176,7 +170,7 @@ export default {
     props: {
         metadatumId: String,  
         metadatumType: String,  
-        collectionId: String,  
+        collectionId: [String, Number],  
         collectionSlug: String,
         parentTermId: String,
         showImage: Boolean,
@@ -193,10 +187,7 @@ export default {
         maxFacetsNumber: Number,
         maxColumnsCount: Number,
         tainacanApiRoot: String,
-        tainacanBaseUrl: String,
         tainacanSiteUrl: String,
-        className: String,
-        customStyle: String,
         imageSize: String
     },
     data() {
@@ -221,10 +212,10 @@ export default {
     },
     computed: {
         isMetadatumTypeRelationship() {
-            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Relationship') || (this.metadatumType == this.$root.__('Relationship', 'tainacan')) || (this.metadatumType == 'Relationship');
+            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Relationship') || (this.metadatumType == this.wpI18n('Relationship', 'tainacan')) || (this.metadatumType == 'Relationship');
         },
         isMetadatumTypeTaxonomy() {
-            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Taxonomy') || (this.metadatumType == this.$root.__('Taxonomy', 'tainacan')) || (this.metadatumType == 'Taxonomy');
+            return (this.metadatumType == 'Tainacan\\Metadata_Types\\Taxonomy') || (this.metadatumType == this.wpI18n('Taxonomy', 'tainacan')) || (this.metadatumType == 'Taxonomy');
         }
     },
     created() {
@@ -244,10 +235,13 @@ export default {
     mounted() {
         this.$el.addEventListener('tainacan-blocks-facets-list-update', this.receiveSearchString);
     },
-    beforeDestroy() {
+    beforeUnmount() {
         this.$el.removeEventListener('tainacan-blocks-facets-list-update', this.receiveSearchString);
     },
     methods: {
+        wpI18n(string, context) {
+            return wp && wp.i18n ? wp.i18n.__(string, context) : string;
+        },
         receiveSearchString(event) {
             if (event.detail) {
                 this.applySearchString({ target: { value: event.detail.searchString }});
@@ -398,10 +392,14 @@ export default {
                         }, facet));
                     }
 
-                    this.$set(this.childFacetsObject, parentTermId, {
-                        facets: childFacets,
-                        visible: true
-                    });
+                    Object.assign(
+                        this.childFacetsObject,
+                        {
+                            [parentTermId]: {
+                                facets: childFacets,
+                                visible: true
+                            }
+                        });
                     this.isloadingChildTerms = null;
                     
                 }).catch(() => { 
@@ -410,9 +408,9 @@ export default {
                 });
         },
         displayChildTerms(parentTermId) {
-            if (this.childFacetsObject[parentTermId]) {
-                this.$set(this.childFacetsObject[parentTermId], 'visible', !this.childFacetsObject[parentTermId].visible);
-            } else
+            if (this.childFacetsObject[parentTermId])
+                Object.assign( this.childFacetsObject[parentTermId], { 'visible': !this.childFacetsObject[parentTermId].visible });
+            else
                 this.fetchChildTerms(parentTermId)
         },
         getSkeletonHeight() {

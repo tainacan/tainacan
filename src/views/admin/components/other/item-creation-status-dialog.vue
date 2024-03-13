@@ -1,12 +1,12 @@
 <template>
     <div 
+            ref="itemCreationStatusDialog"
             aria-labelledby="alert-dialog-title"
             autofocus
             role="alertdialog"
             tabindex="-1"
             aria-modal
-            class="tainacan-form tainacan-dialog dialog"
-            ref="itemCreationStatusDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -16,7 +16,7 @@
                 <span class="icon is-large">
                     <i 
                             :class="'tainacan-icon-' + icon"
-                            class="tainacan-icon"/>
+                            class="tainacan-icon" />
                 </span>
             </div>
             <section 
@@ -35,14 +35,14 @@
                 <!-- Status -------------------------------- --> 
                 <div class="status-radios">
                     <b-radio
-                            v-model="selectedStatus"
                             v-for="(statusOption, index) of availableStatus"
                             :key="index"
+                            v-model="selectedStatus"
                             :native-value="statusOption.slug">
                         <span class="icon has-text-gray">
                             <i 
-                                class="tainacan-icon tainacan-icon-18px"
-                                :class="$statusHelper.getIcon(statusOption.slug)"/>
+                                    class="tainacan-icon tainacan-icon-18px"
+                                    :class="$statusHelper.getIcon(statusOption.slug)" />
                         </span>
                         {{ statusOption.name }}
                     </b-radio>
@@ -53,13 +53,13 @@
                         type="button"
                         style="margin-right: auto"
                         class="button is-outlined"
-                        @click="$parent.close();">
+                        @click="$emit('close');">
                     {{ $i18n.get('cancel') }}
                 </button>
                 <button 
                         type="submit"
                         class="button is-success"
-                        @click="onConfirm(selectedStatus); $parent.close();">
+                        @click="onConfirm(selectedStatus); $emit('close');">
                     {{ $i18n.get('label_create_item') }}
                 </button>
             </footer>
@@ -78,6 +78,9 @@
                 default: () => {}
             }
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 selectedStatus: !this.$adminOptions.hideItemEditionStatusPublishOption ? 'publish' : 'private'
@@ -127,7 +130,7 @@
         display: flex;
         font-size: 1.125em;
     }
-    .status-radios /deep/ .b-radio {
+    .status-radios :deep(.b-radio) {
         margin-bottom: 0px !important;
     }
     .modal-card-foot {

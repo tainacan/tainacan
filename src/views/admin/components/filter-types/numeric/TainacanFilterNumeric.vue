@@ -1,21 +1,22 @@
 <template>
     <div class="numeric-filter-container">
-         <b-dropdown
+        <b-dropdown
                 :mobile-modal="true"
-                @input="($event) => { resetPage(); onChangeComparator($event) }"
                 aria-role="list"
-                trap-focus>
-            <button
-                    :aria-label="$i18n.get('label_comparator')"
-                    class="button is-white"
-                    slot="trigger">
-                <span class="icon is-small">
-                    <i v-html="comparatorSymbol" />
-                </span>
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                </span>
-            </button>
+                trap-focus
+                @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
+            <template #trigger>
+                <button
+                        :aria-label="$i18n.get('label_comparator')"
+                        class="button is-white">
+                    <span class="icon is-small">
+                        <i v-html="comparatorSymbol" />
+                    </span>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                    </span>
+                </button>
+            </template>
             <b-dropdown-item
                     role="button"
                     :class="{ 'is-active': comparator == '=' }"
@@ -61,13 +62,13 @@
         </b-dropdown>
 
         <b-numberinput
+                v-model="value"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :aria-minus-label="$i18n.get('label_decrease')"
                 :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
                 :step="Number(filterTypeOptions.step)"
-                @input="($event) => { resetPage($event); emit($event); }"
-                v-model="value"/>
+                @update:model-value="($event) => { resetPage($event); emit($event); }" />
     </div>
 </template>
 
@@ -77,6 +78,9 @@
     export default {
         mixins: [
             filterTypeMixin
+        ],
+        emits: [
+            'input',
         ],
         data(){
             return {
@@ -99,8 +103,11 @@
             }
         },
         watch: {
-            'query'() {
-                this.updateSelectedValues();
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true
             }
         },
         mounted() {

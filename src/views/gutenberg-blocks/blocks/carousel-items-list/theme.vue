@@ -1,169 +1,165 @@
 <template>
-    <div 
-            :style="customStyle"
-            :class="className + ' has-mounted'">
-        <div v-if="showCollectionHeader">
+    <div v-if="showCollectionHeader">
+        <div
+                v-if="isLoadingCollection"
+                class="carousel-items-collection-header skeleton" 
+                :style="{ height: '165px' }" />
+        <a
+                v-else
+                :href="collection.url ? collection.url : ''"
+                class="carousel-items-collection-header">
             <div
-                    v-if="isLoadingCollection"
-                    class="carousel-items-collection-header skeleton" 
-                    :style="{ height: '165px' }"/>
-            <a
-                    v-else
-                    :href="collection.url ? collection.url : ''"
-                    class="carousel-items-collection-header">
-                <div
-                        :style="{
-                            backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
-                            paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
-                            paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1em' : '',
-                            width: collection && collection.header_image ? '' : '100%'
-                        }"
-                        :class="
-                            'collection-name ' + 
+                    :style="{
+                        backgroundColor: collectionBackgroundColor ? collectionBackgroundColor : '', 
+                        paddingRight: collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium']) ? '' : '20px',
+                        paddingTop: (!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) ? '1em' : '',
+                        width: collection && collection.header_image ? '' : '100%'
+                    }"
+                    :class="
+                        'collection-name ' + 
                             ((!collection || !collection.thumbnail || (!collection.thumbnail['tainacan-medium'] && !collection.thumbnail['medium'])) && (!collection || !collection.header_image) ? 'only-collection-name' : '') 
-                        ">
-                    <h3 :style="{ color: collectionTextColor ? collectionTextColor : '' }">
-                        <span
-                                v-if="showCollectionLabel"
-                                class="label">
-                            {{ $root.__('Collection', 'tainacan') }}
-                            <br>
-                        </span>
-                        {{ collection && collection.name ? collection.name : '' }}
-                    </h3>
-                </div>
-                <div
+                    ">
+                <h3 :style="{ color: collectionTextColor ? collectionTextColor : '' }">
+                    <span
+                            v-if="showCollectionLabel"
+                            class="label">
+                        {{ wpI18n('Collection', 'tainacan') }}
+                        <br>
+                    </span>
+                    {{ collection && collection.name ? collection.name : '' }}
+                </h3>
+            </div>
+            <div
                     v-if="collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])"   
                     class="collection-thumbnail"
                     :style="{ 
                         backgroundImage: 'url(' + (collection.thumbnail['tainacan-medium'] != undefined ? (collection.thumbnail['tainacan-medium'][0]) : (collection.thumbnail['medium'][0])) + ')',
-                    }"/>
-                <div
-                        class="collection-header-image"
-                        :style="{
-                            backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
-                            minHeight: collection && collection.header_image ? '' : '80px',
-                            display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
-                        }"/>
-            </a>   
+                    }" />
+            <div
+                    class="collection-header-image"
+                    :style="{
+                        backgroundImage: collection.header_image ? 'url(' + collection.header_image + ')' : '',
+                        minHeight: collection && collection.header_image ? '' : '80px',
+                        display: !(collection && collection.thumbnail && (collection.thumbnail['tainacan-medium'] || collection.thumbnail['medium'])) ? collection && collection.header_image ? '' : 'none' : ''  
+                    }" />
+        </a>   
+    </div>
+    <div  
+            v-if="items.length > 0 || isLoading"
+            :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
+            :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }">
+        <div 
+                :id="blockId + '-carousel'"
+                class="swiper">
+            <ul 
+                    v-if="isLoading"
+                    role="list"
+                    class="swiper-wrapper"
+                    :style="{
+                        marginTop: showCollectionHeader ? '1.35em' : '0px'
+                    }">
+                <li 
+                        v-for="index in 18"
+                        :key="index"
+                        role="listitem"
+                        class="swiper-slide collection-list-item skeleton">
+                    <a>
+                        <img>
+                        <span v-if="!hideTitle" />
+                    </a>
+                </li>
+            </ul>
+            <ul 
+                    v-else
+                    role="list"
+                    class="swiper-wrapper"
+                    :style="{
+                        marginTop: showCollectionHeader ? '1.35em' : '0px'
+                    }">
+                <li
+                        v-for="(item, index) of items"
+                        :key="index"
+                        role="listitem"
+                        class="swiper-slide item-list-item"
+                        :class="{ 'is-forced-square': ['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 }">
+                    <a 
+                            :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
+                            :href="item.url">
+                        <blur-hash-image
+                                :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
+                                :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
+                                :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
+                                :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
+                                :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : wpI18n( 'Thumbnail', 'tainacan' ))"
+                                :transition-duration="500" />
+                        <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
+                    </a>
+                </li>
+            </ul>
         </div>
-        <div  
-                :class="'tainacan-carousel ' + (arrowsPosition ? ' has-arrows-' + arrowsPosition : '') + (largeArrows ? ' has-large-arrows' : '') "
-                :style="{ '--spaceAroundCarousel': !isNaN(spaceAroundCarousel) ? (spaceAroundCarousel + 'px') : '50px' }"
-                v-if="items.length > 0 || isLoading">
-            <div 
-                    class="swiper"
-                    :id="blockId + '-carousel'">
-                <ul 
-                        v-if="isLoading"
-                        role="list"
-                        class="swiper-wrapper"
-                        :style="{
-                            marginTop: showCollectionHeader ? '1.35em' : '0px'
-                        }">
-                    <li 
-                            role="listitem"
-                            :key="index"
-                            v-for="index in 18"
-                            class="swiper-slide collection-list-item skeleton">
-                        <a>
-                            <img>
-                            <span v-if="!hideName" />
-                        </a>
-                    </li>
-                </ul>
-                <ul 
+        <button 
+                :id="blockId + '-prev'" 
+                class="swiper-button-prev" 
+                :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+            <svg
+                    :width="largeArrows ? 60 : 42"
+                    :height="largeArrows ? 60 : 42"
+                    viewBox="0 0 24 24">
+                <path
+                        v-if="arrowsStyle === 'type-2'"
+                        d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z" />
+                <path 
                         v-else
-                        role="list"
-                        class="swiper-wrapper"
-                        :style="{
-                            marginTop: showCollectionHeader ? '1.35em' : '0px'
-                        }">
-                    <li
-                            role="listitem"
-                            :key="index"
-                            v-for="(item, index) of items"
-                            class="swiper-slide item-list-item"
-                            :class="{ 'is-forced-square': ['tainacan-medium', 'tainacan-small'].indexOf(imageSize) > -1 }">
-                        <a 
-                                :id="isNaN(item.id) ? item.id : 'item-id-' + item.id"
-                                :href="item.url">
-                            <blur-hash-image
-                                    :height="$thumbHelper.getHeight(item['thumbnail'], imageSize)"
-                                    :width="$thumbHelper.getWidth(item['thumbnail'], imageSize)"
-                                    :src="$thumbHelper.getSrc(item['thumbnail'], imageSize, item['document_mimetype'])"
-                                    :srcset="$thumbHelper.getSrcSet(item['thumbnail'], imageSize, item['document_mimetype'])"
-                                    :hash="$thumbHelper.getBlurhashString(item['thumbnail'], imageSize)"
-                                    :alt="item.thumbnail_alt ? item.thumbnail_alt : (item && item.title ? item.title : $root.__( 'Thumbnail', 'tainacan' ))"
-                                    :transition-duration="500" />
-                            <span v-if="!hideTitle">{{ item.title ? item.title : '' }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <button 
-                    class="swiper-button-prev" 
-                    :id="blockId + '-prev'" 
-                    slot="button-prev"
-                    :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
-                <svg
-                        :width="largeArrows ? 60 : 42"
-                        :height="largeArrows ? 60 : 42"
-                        viewBox="0 0 24 24">
-                    <path
-                            v-if="arrowsStyle === 'type-2'"
-                            d="M 10.694196,6 12.103795,7.4095983 8.5000002,11.022321 H 19.305804 v 1.955358 H 8.5000002 L 12.103795,16.590402 10.694196,18 4.6941962,12 Z"/>
-                    <path 
-                            v-else
-                            d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-                    <path
-                            d="M0 0h24v24H0z"
-                            fill="none"/>
-                </svg>
-            </button>
-            <button 
-                    class="swiper-button-next" 
-                    :id="blockId + '-next'" 
-                    slot="button-next"
-                    :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
-                <svg
-                        :width="largeArrows ? 60 : 42"
-                        :height="largeArrows ? 60 : 42"
-                        viewBox="0 0 24 24">
-                    <path
-                            v-if="arrowsStyle === 'type-2'"
-                            d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z"/>
-                    <path 
-                            v-else
-                            d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-                    <path
-                            d="M0 0h24v24H0z"
-                            fill="none"/>
-                </svg>
-            </button>
-        </div>
-        <div
-                v-else-if="items.length <= 0 && !isLoading"
-                class="spinner-container">
-            {{ $root.__('No items found.', 'tainacan') }}
-        </div>
+                        d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                <path
+                        d="M0 0h24v24H0z"
+                        fill="none" />
+            </svg>
+        </button>
+        <button 
+                :id="blockId + '-next'" 
+                class="swiper-button-next"
+                :style="hideTitle ? 'top: calc(50% - 21px)' : 'top: calc(50% - ' + (largeArrows ? '60' : '42') + 'px)'">
+            <svg
+                    :width="largeArrows ? 60 : 42"
+                    :height="largeArrows ? 60 : 42"
+                    viewBox="0 0 24 24">
+                <path
+                        v-if="arrowsStyle === 'type-2'"
+                        d="M 13.305804,6 11.896205,7.4095983 15.5,11.022321 H 4.6941964 v 1.955358 H 15.5 L 11.896205,16.590402 13.305804,18 l 6,-6 z" />
+                <path 
+                        v-else
+                        d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                <path
+                        d="M0 0h24v24H0z"
+                        fill="none" />
+            </svg>
+        </button>
+    </div>
+    <div
+            v-else-if="items.length <= 0 && !isLoading"
+            class="spinner-container">
+        {{ wpI18n('No items found.', 'tainacan') }}
     </div>
 </template>
  
 <script>
+import { nextTick } from 'vue';
 import axios from 'axios';
 import qs from 'qs';
 import 'swiper/css';
 import 'swiper/css/a11y';
 import 'swiper/css/autoplay';
 import 'swiper/css/navigation';
-import Swiper, { Autoplay, Navigation, A11y } from 'swiper';
+import Swiper from 'swiper';
+import { Autoplay, Navigation, A11y } from 'swiper/modules';
 
 export default {
     name: "CarouselItemsListTheme",
     props: {
         blockId: String,
-        collectionId: String,  
+        collectionId: [String, Number],  
         searchURL: String,
         selectedItems: Array,
         loadStrategy: String,
@@ -183,10 +179,7 @@ export default {
         showCollectionLabel: Boolean,
         collectionBackgroundColor: String,
         collectionTextColor: String,
-        tainacanApiRoot: String,
-        tainacanBaseUrl: String,
-        className: String,
-        customStyle: String
+        tainacanApiRoot: String
     },
     data() {
         return {
@@ -218,17 +211,20 @@ export default {
 
         this.fetchItems();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (typeof this.swiper.destroy == 'function')
             this.swiper.destroy();
     },
     methods: {
+        wpI18n(string, context) {
+            return wp && wp.i18n ? wp.i18n.__(string, context) : string;
+        },
         fetchItems() {
  
             this.isLoading = true;
             this.errorMessage = 'No items found.';
 
-            this.$nextTick(() => {
+            nextTick(() => {
                 this.mountCarousel();
             });
             
@@ -245,7 +241,7 @@ export default {
                     this.isLoading = false;
                     this.totalItems = this.items.length;
 
-                    this.$nextTick(() => {
+                    nextTick(() => {
                         this.mountCarousel();
                     });
 
@@ -261,7 +257,7 @@ export default {
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
 
-                        this.$nextTick(() => {
+                        nextTick(() => {
                             this.mountCarousel();
                         });
 
@@ -311,7 +307,7 @@ export default {
                         this.isLoading = false;
                         this.totalItems = response.headers['x-wp-total'];
 
-                        this.$nextTick(() => {
+                        nextTick(() => {
                             this.mountCarousel();
                         });
 
@@ -371,10 +367,10 @@ export default {
                 autoplay: self.autoPlay ? { delay: self.autoPlaySpeed*1000 } : false,
                 loop: self.loopSlides ? self.loopSlides : false,
                 a11y: {
-                    prevSlideMessage: self.$root.__( 'Previous slide', 'tainacan'),
-                    nextSlideMessage: self.$root.__( 'Next slide', 'tainacan'),
-                    firstSlideMessage: self.$root.__('This is the first slide', 'tainacan'),
-                    lastSlideMessage: self.$root.__('This is the last slide', 'tainacan')
+                    prevSlideMessage: wp.i18n.__( 'Previous slide', 'tainacan'),
+                    nextSlideMessage: wp.i18n.__( 'Next slide', 'tainacan'),
+                    firstSlideMessage: wp.i18n.__('This is the first slide', 'tainacan'),
+                    lastSlideMessage: wp.i18n.__('This is the last slide', 'tainacan')
                 },
                 modules: [Autoplay, Navigation, A11y]
             });

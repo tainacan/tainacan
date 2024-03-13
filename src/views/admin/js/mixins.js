@@ -1,31 +1,22 @@
-import axios from 'axios';
-import qs from  'qs';
+import { wpAjax } from './axios';
+import qs from 'qs';
 import moment from 'moment';
 
-export const wpAjax = {
-    data(){
-      return {
-          axiosWPAjax: {},
-      }
-    },
-    created(){
-        this.axiosWPAjax = axios.create({
-            baseURL: tainacan_plugin.wp_ajax_url,
-        });
-    },
+/* Used by Collection and Taxonomy forms to generate slug from title */
+export const permalinkGetter = {
     methods: {
-        getSamplePermalink(id, newTitle, newSlug){
-            return this.axiosWPAjax.post('', qs.stringify({
-                    action: 'tainacan-sample-permalink',
-                    post_id: id,
-                    new_title: newTitle,
-                    new_slug: newSlug,
-                    nonce: tainacan_plugin.nonce,
-                }));
+        getSamplePermalink(id, newTitle, newSlug) {
+            return wpAjax.post('', qs.stringify({
+                action: 'tainacan-sample-permalink',
+                post_id: id,
+                new_title: newTitle,
+                new_slug: newSlug,
+            }));
         }
     }
 };
 
+/* Used by date metadata and filter fields */
 export const dateInter = {
     created() {
         let locale = navigator.language;
@@ -34,7 +25,7 @@ export const dateInter = {
 
         let localeData = moment.localeData();
         this.dateFormat = localeData.longDateFormat('L') ? localeData.longDateFormat('L') : (localeData._abbr == 'pt_BR' ? 'DD/MM/YYYY' : 'YYYY-MM-DD');
-        this.dateMask = this.dateFormat.replace(/[\w]/g, '#');
+        this.dateMask = this.dateFormat.replace(/[\w]/g, '0');
     },
     data() {
         return {
@@ -46,7 +37,7 @@ export const dateInter = {
         parseDateToNavigatorLanguage(date) {
             date = new Date(date.replace(/-/g, '/'));
             return moment(date, moment.ISO_8601).format(this.dateFormat);  
-        },
+        }
     }
 };
 

@@ -5,7 +5,7 @@
                 'page-container': isRepositoryLevel
             }">
         <tainacan-title 
-                :bread-crumb-items="[{ path: '', label: $i18n.get('capabilities') }]"/>
+                :bread-crumb-items="[{ path: '', label: $i18n.get('capabilities') }]" />
 
         <div class="sub-header">
             <b-field 
@@ -13,8 +13,8 @@
                     class="header-item">
                 <div class="control has-icons-right  is-small is-clearfix">
                     <b-autocomplete
-                            clearable
                             v-model="filteredRole"
+                            clearable
                             :data="filteredRoles"
                             :placeholder="$i18n.get('instruction_type_search_roles_filter')"
                             keep-first
@@ -27,21 +27,21 @@
         </div>
         <div>
             <b-loading
+                    v-model="isLoading" 
                     :is-full-page="true" 
-                    :active.sync="isLoading" 
-                    :can-cancel="false"/>
+                    :can-cancel="false" />
 
             <capabilities-list
                     v-if="(isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_users')) || (!isRepositoryLevel && collection && collection.current_user_can_edit_users)"
                     :is-loading="isLoading || isFetchingRoles"
-                    :capabilities="capabilities"/>
+                    :capabilities="capabilities" />
                         
             <template v-else-if="(isRepositoryLevel && !$userCaps.hasCapability('tnc_rep_edit_users')) || (!isRepositoryLevel && collection && !collection.current_user_can_edit_users)">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user" />
                             </span>
                         </p>
                         <p>{{ $i18n.get('info_can_not_edit_capabilities') }}</p>
@@ -55,7 +55,7 @@
                     <div class="content has-text-grey has-text-centered">
                         <p>
                             <span class="icon is-medium">
-                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user"/>
+                                <i class="tainacan-icon tainacan-icon-30px tainacan-icon-user" />
                             </span>
                         </p>
                         <p>
@@ -66,15 +66,15 @@
             </div>
             <!-- Footer -->
             <div 
-                    class="pagination-area" 
-                    v-if="capabilities.length > 0">
+                    v-if="capabilities.length > 0" 
+                    class="pagination-area">
                 <div class="shown-items">
                     {{
                         $i18n.get('info_showing_capabilities') +
-                        (capabilitiesPerPage * (page - 1) + 1) +
-                        $i18n.get('info_to') +
-                        capabilities.length + 
-                        $i18n.get('info_of') + total + '.'
+                            (capabilitiesPerPage * (page - 1) + 1) +
+                            $i18n.get('info_to') +
+                            capabilities.length + 
+                            $i18n.get('info_of') + total + '.'
                     }}
                 </div>
             </div>

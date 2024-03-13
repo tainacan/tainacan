@@ -1,28 +1,29 @@
 <template>
     <form 
+            ref="availableImportersModal"
             action=""
             autofocus
             role="dialog"
             class="tainacan-modal-content"
             tabindex="-1"
-            aria-modal
-            ref="availableImportersModal">
+            aria-modal>
         <div style="width: auto">
             <header class="tainacan-modal-title">
                 <h2>{{ $i18n.get('importers') }}</h2>
                 <hr>
             </header>
             <section class="tainacan-form">
-                 <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
+                <p>{{ $i18n.get('instruction_select_an_importer_type') }}</p>
                 <div 
                         role="list"
                         class="importer-types-container">
-                    <template v-for="importerType in availableImporters">
+                    <template 
+                            v-for="importerType in availableImporters"
+                            :key="importerType.slug">
                         <div
+                                v-if="!(hideWhenManualCollection && !importerType.manual_collection)"
                                 role="listitem"
                                 class="importer-type"
-                                :key="importerType.slug"
-                                v-if="!(hideWhenManualCollection && !importerType.manual_collection)"
                                 @click="onSelectImporter(importerType)">
                             <h4>{{ importerType.name }}</h4>
                             <p>{{ importerType.description }}</p>            
@@ -30,17 +31,17 @@
                     </template>
 
                     <b-loading 
-                        :is-full-page="false"
-                        :active.sync="isLoading" 
-                        :can-cancel="false"/>
+                            v-model="isLoading"
+                            :is-full-page="false" 
+                            :can-cancel="false" />
                 </div>
                 
-               <footer class="field is-grouped form-submit">
+                <footer class="field is-grouped form-submit">
                     <div class="control">
                         <button 
                                 class="button is-outlined" 
                                 type="button" 
-                                @click="$parent.close()">Close</button>
+                                @click="$emit('close')">Close</button>
                     </div>
                     <!-- <div class="control">
                         <button class="button is-success">Confirm</button>
@@ -60,6 +61,9 @@ export default {
         targetCollection: Number,
         hideWhenManualCollection: false
     },
+    emits: [
+        'close'
+    ],
     data(){
         return {
             availableImporters: [],
@@ -86,7 +90,7 @@ export default {
         ]),
         onSelectImporter(importerType) {
             this.$router.push({ path: this.$routerHelper.getImporterEditionPath(importerType.slug), query: { targetCollection: this.targetCollection } });
-            this.$parent.close();
+            this.$emit('close');
         }
     }
 }

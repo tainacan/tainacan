@@ -4,31 +4,31 @@
                 v-if="!getDisplayAutocomplete"
                 class="control is-clearfix">
             <input  
+                    :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
+                    v-imask="getMask"
                     class="input"
                     :disabled="disabled"
-                    :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
                     :value="value"
                     :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                     @focus="onMobileSpecialFocus"
-                    v-imask="getMask"
                     @complete="($event) => getMask ? onInput($event.detail.value) : null"
                     @input="($event) => getMask ? null : onInput($event.target.value)"
-                    @blur="onBlur" >
+                    @blur="onBlur">
         </div>
         <b-autocomplete
                 v-else
-                :disabled="disabled"
                 :id="'tainacan-item-metadatum_id-' + itemMetadatum.metadatum.id + (itemMetadatum.parent_meta_id ? ('_parent_meta_id-' + itemMetadatum.parent_meta_id) : '')"
-                :value="value"
-                @blur="onBlur"
+                :disabled="disabled"
+                :model-value="value"
                 :data="options"
                 :loading="isLoadingOptions"
-                @input="($event) => { search($event); }"
                 field="label"
-                @select="onSelect"
                 clearable
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ''"
                 check-infinite-scroll
+                @blur="onBlur"
+                @update:model-value="($event) => { search($event); }"
+                @select="onSelect"
                 @infinite-scroll="searchMore"
                 @focus="onMobileSpecialFocus">
             <template #header>
@@ -36,7 +36,7 @@
                     {{ $i18n.get('info_metadata_autocomplete_suggestions') }}
                 </span>
             </template>
-            <template slot-scope="props">
+            <template #default="props">
                 <div class="media">
                     <div class="media-content">
                         <span class="ellipsed-text">{{ props.option.label }}</span>
@@ -62,6 +62,11 @@
             value: [String, Number, Array],
             disabled: false
         },
+        emits: [
+            'update:value',
+            'blur',
+            'mobile-special-focus'
+        ],
         data() {
             return {
                 selected:'',
@@ -100,7 +105,7 @@
         },
         methods: {
             onInput(value) {
-                this.$emit('input', value);
+                this.$emit('update:value', value);
             },
             onBlur() {
                 this.$emit('blur');
@@ -182,7 +187,7 @@
                 this.search(this.searchQuery);
             }, 250),
             onMobileSpecialFocus() {
-                this.$emit('mobileSpecialFocus');
+                this.$emit('mobile-special-focus');
             }
         }
     }

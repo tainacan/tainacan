@@ -1,11 +1,6 @@
 import qs from 'qs';
-import axios from 'axios';
-
-const wpApi = axios.create({
-    baseURL: tainacan_plugin.wp_api_url
-});
-
-wpApi.defaults.headers.common['X-WP-Nonce'] = tainacan_plugin.nonce;
+import axios from './axios';
+import CustomDialog from '../components/other/custom-dialog.vue'
 
 const tainacanSanitize = function(htmlString) {
     return htmlString.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;')
@@ -13,9 +8,9 @@ const tainacanSanitize = function(htmlString) {
 
 // HTML SANITIZE PLUGIN - Helps sanitizing html string from javascript.
 export const HtmlSanitizerPlugin = {};
-HtmlSanitizerPlugin.install = function (Vue, options = {}) {
+HtmlSanitizerPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$htmlSanitizer = {
+    app.config.globalProperties.$htmlSanitizer = {
         sanitize(htmlString) {
             return tainacanSanitize(htmlString);
         }
@@ -24,13 +19,13 @@ HtmlSanitizerPlugin.install = function (Vue, options = {}) {
 
 // CONSOLE PLUGIN - Allows custom use of console functions and avoids eslint warnings.
 export const ConsolePlugin = {};
-ConsolePlugin.install = function (Vue, options = { visual: false }) {
+ConsolePlugin.install = function (app, options = { visual: false }) {
     
-    Vue.prototype.$console = {
+    app.config.globalProperties.$console = {
         log(something) {
             if (options.visual) {
-                Vue.prototype.$buefy.snackbar.open({
-                    message: htmlString(something),
+                app.config.globalProperties.$buefy.snackbar.open({
+                    message: tainacanSanitize(something),
                     type: 'is-secondary',
                     position: 'is-bottom-right',
                     indefinite: true,
@@ -42,7 +37,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         },
         info(someInfo) {
             if (options.visual) {
-                Vue.prototype.$buefy.snackbar.open({
+                app.config.globalProperties.$buefy.snackbar.open({
                     message: tainacanSanitize(someInfo),
                     type: 'is-primary',
                     position: 'is-bottom-right',
@@ -55,7 +50,7 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
         },
         error(someError) {
             if (options.visual) {
-                Vue.prototype.$buefy.snackbar.open({
+                app.config.globalProperties.$buefy.snackbar.open({
                     message: tainacanSanitize(someError),
                     type: 'is-danger',
                     position: 'is-bottom-right',
@@ -69,14 +64,18 @@ ConsolePlugin.install = function (Vue, options = { visual: false }) {
     }
 };
 
+const i18nGet = function (key) {
+    let string = tainacan_plugin.i18n[key];
+    return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
+};
+
 // I18N PLUGIN - Allows access to Wordpress translation file.
 export const I18NPlugin = {};
-I18NPlugin.install = function (Vue, options = {}) {
+I18NPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$i18n = {
+    app.config.globalProperties.$i18n = {
         get(key) {
-            let string = tainacan_plugin.i18n[key];
-            return (string != undefined && string != null && string != '' ) ? string : "Invalid i18n key: " + tainacan_plugin.i18n[key];
+            return i18nGet(key);
         },
         getFrom(entity, key) {
             if (entity == 'taxonomies') // Temporary hack, while we decide this terminology...
@@ -138,9 +137,9 @@ I18NPlugin.install = function (Vue, options = {}) {
 
 // USER PREFERENCES - Used to save key-value information for user settings of plugin
 export const UserPrefsPlugin = {};
-UserPrefsPlugin.install = function (Vue, options = {}) {
+UserPrefsPlugin.install = function (app, options = {}) {
 
-    Vue.prototype.$userPrefs = {
+    app.config.globalProperties.$userPrefs = {
         
         tainacanPrefs: {
             'items_per_page': 12,
@@ -165,7 +164,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
                 let data = {'meta': {'tainacan_prefs': JSON.stringify(this.tainacanPrefs)} };
 
                 if (tainacan_plugin.nonce) {
-                    wpApi.post('/users/me/', qs.stringify(data))
+                    axios.wpApi.post('/users/me/', qs.stringify(data))
                         .then( updatedRes => {
                             let prefs = JSON.parse(updatedRes.data.meta['tainacan_prefs']);
                             this.tainacanPrefs = prefs;
@@ -187,7 +186,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
 
             if (tainacan_plugin.nonce) {
                 return new Promise(( resolve, reject ) => {
-                    wpApi.post('/users/me/', qs.stringify(data))
+                    axios.wpApi.post('/users/me/', qs.stringify(data))
                         .then( res => {
                             let prefs = JSON.parse(res.data.meta['tainacan_prefs']);
                             this.tainacanPrefs[key] = prefs[key];
@@ -209,7 +208,7 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
         clean() {
             let data = {'meta': {'tainacan_prefs': ''} };
             if (tainacan_plugin.nonce)
-                wpApi.post('/users/me/', qs.stringify(data));
+                axios.wpApi.post('/users/me/', qs.stringify(data));
         }
     }
 
@@ -217,9 +216,9 @@ UserPrefsPlugin.install = function (Vue, options = {}) {
 
 // ROUTER HELPER PLUGIN - Allows easy access to URL paths for entities
 export const RouterHelperPlugin = {};
-RouterHelperPlugin.install = function (Vue, options = {}) {
+RouterHelperPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$routerHelper = {
+    app.config.globalProperties.$routerHelper = {
         // Lists
         getCollectionsPath(query) {
             return '/collections/?' + qs.stringify(query);
@@ -367,9 +366,9 @@ RouterHelperPlugin.install = function (Vue, options = {}) {
 
 // USER CAPABILITIES PLUGIN - Allows easy checking of user capabilities.
 export const UserCapabilitiesPlugin = {};
-UserCapabilitiesPlugin.install = function (Vue, options = {}) {
+UserCapabilitiesPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$userCaps = {
+    app.config.globalProperties.$userCaps = {
         hasCapability(key) {
             return tainacan_plugin.user_caps[key];
         }
@@ -378,9 +377,9 @@ UserCapabilitiesPlugin.install = function (Vue, options = {}) {
 
 // STATUS ICONS PLUGIN - Sets icon for status option
 export const StatusHelperPlugin = {};
-StatusHelperPlugin.install = function (Vue, options = {}) {
+StatusHelperPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$statusHelper = {
+    app.config.globalProperties.$statusHelper = {
         statuses: [
             { name: tainacan_plugin.i18n['status_publish'], slug: 'publish' },
             { name: tainacan_plugin.i18n['status_private'], slug: 'private' },
@@ -403,35 +402,35 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
             return  this.statuses;
         },
         loadStatuses() {
-            wpApi.get('/statuses/')
-                    .then( res => {
-                        let loadedStatus = res.data;
-                        this.statuses = [];
+            axios.wpApi.get('/statuses/')
+                .then( res => {
+                    let loadedStatus = res.data;
+                    this.statuses = [];
 
-                        if (loadedStatus['publish'] != undefined)
-                            this.statuses.push(loadedStatus['publish']);
-                        
-                        this.statuses.concat(Object.values(loadedStatus).filter((status) => {
-                            return !['publish','private', 'draft', 'trash'].includes(status.slug); 
-                        }));
+                    if (loadedStatus['publish'] != undefined)
+                        this.statuses.push(loadedStatus['publish']);
+                    
+                    this.statuses.concat(Object.values(loadedStatus).filter((status) => {
+                        return !['publish','private', 'draft', 'trash'].includes(status.slug); 
+                    }));
 
-                        // We always show private, draft and trash
-                        this.statuses.push({
-                            name: tainacan_plugin.i18n['status_private'],
-                            slug: 'private'
-                        });
-                        this.statuses.push({
-                            name: tainacan_plugin.i18n['status_draft'],
-                            slug: 'draft'
-                        });
-                        this.statuses.push({
-                            name: tainacan_plugin.i18n['status_trash'],
-                            slug: 'trash'}
-                        );
-                    })
-                    .catch(error => {
-                        console.error( error );
+                    // We always show private, draft and trash
+                    this.statuses.push({
+                        name: tainacan_plugin.i18n['status_private'],
+                        slug: 'private'
                     });
+                    this.statuses.push({
+                        name: tainacan_plugin.i18n['status_draft'],
+                        slug: 'draft'
+                    });
+                    this.statuses.push({
+                        name: tainacan_plugin.i18n['status_trash'],
+                        slug: 'trash'}
+                    );
+                })
+                .catch(error => {
+                    console.error( error );
+                });
         }
     }
 
@@ -440,9 +439,9 @@ StatusHelperPlugin.install = function (Vue, options = {}) {
 
 // COMMENTS STATUS PLUGIN - 
 export const CommentsStatusHelperPlugin = {};
-CommentsStatusHelperPlugin.install = function (Vue, options = {}) {
+CommentsStatusHelperPlugin.install = function (app, options = {}) {
     
-    Vue.prototype.$commentsStatusHelper = {
+    app.config.globalProperties.$commentsStatusHelper = {
         statuses: [
             { name: tainacan_plugin.i18n['comments_status_open'], slug: 'open' },
             { name: tainacan_plugin.i18n['comments_status_closed'], slug: 'closed' }
@@ -454,9 +453,56 @@ CommentsStatusHelperPlugin.install = function (Vue, options = {}) {
 
 };
 
+export const AxiosErrorHandlerPlugin = {};
+AxiosErrorHandlerPlugin.install = function (app, options = {}) {
+    
+    const tainacanVisualErrorHandler = function({ error, errorMessage, errorMessageDetail }) {
+
+        if (errorMessage) {
+            app.config.globalProperties.$buefy.snackbar.open({
+                message: tainacanSanitize(errorMessage),
+                type: 'is-danger',
+                duration: 5000,
+                actionText: errorMessageDetail ? i18nGet('label_know_more') : null,
+                onAction: () => {
+                    app.config.globalProperties.$buefy.modal.open({
+                        component: CustomDialog,
+                        props: {
+                            title: i18nGet('label_error') + ' ' + error.response.status + '!',
+                            message: errorMessageDetail,
+                            hideCancel: true
+                        },
+                        ariaRole: 'alertdialog',
+                        ariaModal: true,
+                        customClass: 'tainacan-modal',
+                        closeButtonAriaLabel: i18nGet('close')
+                    });
+                }
+            });
+        }
+    }
+
+    axios.tainacanApi.interceptors.response.use(
+        (response) => response,
+        (error) => {
+            // Sends only necessary parts from error object, since we already used errorMessage
+            tainacanVisualErrorHandler(error)
+            return Promise.reject(error.error ? error.error : error);
+        }
+    );
+    axios.wpApi.interceptors.response.use(
+        (response) => response,
+        (error) =>  {
+            tainacanVisualErrorHandler(error)
+            // Sends only necessary parts from error object, since we already used errorMessage
+            return Promise.reject(error.error ? error.error : error);  
+        }
+    );
+}
+
 // ADMIN OPTIONS HELPER PLUGIN - Stores options passed to the data-options in the admin div.
 export const AdminOptionsHelperPlugin = {};
-AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
+AdminOptionsHelperPlugin.install = function (app, options = {}) {
 
     // Passes options to global variable
     try {
@@ -470,10 +516,10 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
                     objectOptions[key] = false;
             }
         }
-        Vue.prototype.$adminOptions = objectOptions;
+        app.config.globalProperties.$adminOptions = objectOptions;
 
     } catch(e) {
-        Vue.prototype.$adminOptions = {};
+        app.config.globalProperties.$adminOptions = {};
     }
 
     // Declares common 'modes', which group certain admin options
@@ -556,12 +602,44 @@ AdminOptionsHelperPlugin.install = function (Vue, options = {}) {
     }
     for (let adminSpecialMode in adminSpecialModes) {
 
-        if (Vue.prototype.$adminOptions[adminSpecialMode]) {
+        if (app.config.globalProperties.$adminOptions[adminSpecialMode]) {
 
             console.log('Tainacan Admin loaded in ' + adminSpecialMode);
 
+            // Under these special modes, several routes do not need to exist
+            if (
+                adminSpecialMode === 'itemsMultipleSelectionMode' ||
+                adminSpecialMode === 'itemsSingleSelectionMode' ||
+                adminSpecialMode === 'itemsSearchSelectionMode' ||
+                adminSpecialMode === 'itemEditionMode'
+            ) {
+                app.config.globalProperties.$router.removeRoute('HomePage');
+                app.config.globalProperties.$router.removeRoute('CollectionsPage');
+                app.config.globalProperties.$router.removeRoute('CollectionCreationForm');
+                app.config.globalProperties.$router.removeRoute('CollectionItemBulkAddPage');
+                app.config.globalProperties.$router.removeRoute('CollectionEditionForm');
+                app.config.globalProperties.$router.removeRoute('CollectionMetadataPage');
+                app.config.globalProperties.$router.removeRoute('CollectionFiltersPage');
+                app.config.globalProperties.$router.removeRoute('CollectionActivitiesPage');
+                app.config.globalProperties.$router.removeRoute('CollectionCapabilitiesPage');
+                app.config.globalProperties.$router.removeRoute('MappedCollectionCreationForm');
+                app.config.globalProperties.$router.removeRoute('FiltersPage');
+                app.config.globalProperties.$router.removeRoute('MetadataPage');
+                app.config.globalProperties.$router.removeRoute('TaxonomyPage');
+                app.config.globalProperties.$router.removeRoute('TaxonomyCreationForm');
+                app.config.globalProperties.$router.removeRoute('TaxonomyEditionForm');
+                app.config.globalProperties.$router.removeRoute('ActivitiesPage');
+                app.config.globalProperties.$router.removeRoute('CapabilitiesPage');
+                app.config.globalProperties.$router.removeRoute('AvailableImportersPage');
+                app.config.globalProperties.$router.removeRoute('ImporterEditionForm');
+                app.config.globalProperties.$router.removeRoute('ImporterCreationForm');
+                app.config.globalProperties.$router.removeRoute('ImporterMappingForm');
+                app.config.globalProperties.$router.removeRoute('ExportersPage');
+                app.config.globalProperties.$router.removeRoute('ExporterEditionForm');
+            }
+
             for (let option in adminSpecialModes[adminSpecialMode])
-                Vue.prototype.$adminOptions[option] = adminSpecialModes[adminSpecialMode][option];
+                app.config.globalProperties.$adminOptions[option] = adminSpecialModes[adminSpecialMode][option];
         }
     }
     

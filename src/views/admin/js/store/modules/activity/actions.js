@@ -25,7 +25,7 @@ export const fetchActivities = ({ commit }, { page, activitiesPerPage, search, s
         endpoint += '&authorid=' + authorId;
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let activities = res.data;
 
@@ -64,7 +64,7 @@ export const fetchCollectionActivities = ({ commit }, { page, activitiesPerPage,
         endpoint += '&authorid=' + authorId;
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let activities = res.data;
 
@@ -103,7 +103,7 @@ export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemI
     }
 
     return new Promise((resolve, reject) => {
-        axios.tainacan.get(endpoint)
+        axios.tainacanApi.get(endpoint)
             .then(res => {
                 let activities = res.data;
 
@@ -121,7 +121,7 @@ export const fetchItemActivities = ({ commit }, { page, activitiesPerPage, itemI
 export const fetchActivity = ({ commit }, activityId) => {
     commit('clearActivity');
     return new Promise((resolve, reject) => {
-       axios.tainacan.get(`/logs/${activityId}?context=edit`)
+       axios.tainacanApi.get(`/logs/${activityId}?context=edit`)
            .then(res => {
                let activity = res.data;
 
@@ -137,7 +137,7 @@ export const fetchActivity = ({ commit }, activityId) => {
 
 export const fetchActivityTitle = ({ commit }, activityId) => {
   return new Promise((resolve, reject) => {
-      axios.tainacan.get(`/logs/${activityId}?fetch_only=title`)
+      axios.tainacanApi.get(`/logs/${activityId}?fetch_only=title`)
           .then(res => {
               let eventTitle = res.data;
 
@@ -151,7 +151,7 @@ export const fetchActivityTitle = ({ commit }, activityId) => {
 
 export const approve = ({commit}, activityId) => {
     return new Promise((resolve, reject) => {
-        axios.tainacan.post(`/logs/${activityId}/approve`)
+        axios.tainacanApi.post(`/logs/${activityId}/approve`)
             .then(res => {
                 let activity = res.data;
 
@@ -179,7 +179,7 @@ export const fetchUsers = ({ commit }, { search, page, exclude }) => {
        params.exclude = exclude;
        
     return new Promise((resolve, reject) => {
-        axios.wp.get(endpoint + '?' + qs.stringify(params))
+        axios.wpApi.get(endpoint + '?' + qs.stringify(params))
             .then(res => {
                 resolve({ users: res.data, totalUsers: res.headers['x-wp-total'] } );
             })
@@ -192,7 +192,7 @@ export const fetchUsers = ({ commit }, { search, page, exclude }) => {
 // Single user for core author metadata
 export const fetchUser = ({ commit }, userId) => {
     return new Promise((resolve, reject) => {
-        axios.wp.get('/users/' + userId)
+        axios.wpApi.get('/users/' + userId)
             .then(res => {
                 resolve({ user: res.data });
             })

@@ -12,7 +12,7 @@
                     name="maxlength"
                     step="1"
                     min="0"
-                    @input="onUpdateMaxlength"/>
+                    @update:model-value="onUpdateMaxlength" />
         </b-field>
     </section>
 </template>
@@ -22,6 +22,10 @@
         props: {
             value: [ String, Object, Array ]
         },
+        emits: [
+            'update:value',
+            'close'
+        ],
         data() {
             return {
                 maxlength: [Number, null]
@@ -34,7 +38,7 @@
             onUpdateMaxlength(value) {
                 if (value == 0) value = null;
 
-                this.$emit('input', { maxlength: value });
+                this.$emit('update:value', { maxlength: value });
             }
         }
     }

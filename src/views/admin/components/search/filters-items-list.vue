@@ -3,30 +3,30 @@
             aria-labelledby="filters-label-landmark"
             :aria-busy="isLoadingFilters">
         <b-loading
-                :is-full-page="false"
-                :active.sync="isLoadingFilters"/>
+                v-model="isLoadingFilters"
+                :is-full-page="false" />
 
         <h3 
                 id="filters-label-landmark"
                 class="has-text-weight-semibold">
             <span class="gray-icon is-hidden">
-                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters"/>
+                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-filters" />
             </span>
             <span>{{ $i18n.get('filters') }}</span>
         </h3>
 
         <button
-                aria-controls="filters-items-list"
-                :aria-expanded="!collapseAll"
                 v-if="!isLoadingFilters &&
                     ((filters.length >= 0 &&
-                    isRepositoryLevel) || filters.length > 0)"
+                        isRepositoryLevel) || filters.length > 0)"
+                aria-controls="filters-items-list"
+                :aria-expanded="!collapseAll"
                 class="link-style collapse-all"
                 @click="collapseAll = !collapseAll">
             <span class="icon">
                 <i 
                         :class="{ 'tainacan-icon-arrowdown' : !collapseAll, 'tainacan-icon-arrowright' : collapseAll }"
-                        class="has-text-secondary tainacan-icon tainacan-icon-1-125em"/>
+                        class="has-text-secondary tainacan-icon tainacan-icon-1-125em" />
             </span>
             <span class="collapse-all__text">
                 {{ !collapseAll ? $i18n.get('label_collapse_all') : $i18n.get('label_expand_all') }}
@@ -36,9 +36,9 @@
         <br>
 
         <filters-tags-list
+                v-if="filtersAsModal && hasFiltered"
                 style="padding: 1em 0;"
-                class="filter-tags-list"
-                v-if="filtersAsModal && hasFiltered" />
+                class="filter-tags-list" />
 
         <br v-if="filtersAsModal && hasFiltered">
         <div
@@ -48,11 +48,12 @@
 
             <!--  TAXONOMY TERM ITEMS FILTERS -->
             <template v-if="taxonomy && taxonomyFilters">
-                <template v-for="(taxonomyFilter, key, index) of taxonomyFilters">
-                    <div 
-                            v-if="key == 'repository-filters'"
-                            :key="index">
+                <template 
+                        v-for="(taxonomyFilter, key, index) of taxonomyFilters"
+                        :key="index">
+                    <div v-if="key == 'repository-filters'">
                         <div 
+                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
                                         shown: 500,
@@ -62,8 +63,7 @@
                                     autoHide: false,
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
-                                }" 
-                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
+                                }"
                                 class="collection-name">
                             {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
                         </div>
@@ -78,25 +78,25 @@
                         </div>
                         <template v-if="taxonomyFilter.length > 0">
                             <tainacan-filter-item
-                                    :is-loading-items="isLoadingItems"
-                                    v-show="!isMenuCompressed"        
-                                    :query="getQuery"
                                     v-for="(filter, filterIndex) in taxonomyFilter"
                                     :key="filterIndex"
+                                    :is-loading-items="isLoadingItems"
+                                    :query="getQuery"
                                     :filter="filter"
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
                                     :filters-as-modal="filtersAsModal"
-                                    :is-mobile-screen="isMobileScreen"/>
+                                    :is-mobile-screen="isMobileScreen" />
                         </template>
                         <hr v-if="taxonomyFilter.length > 1">
                     </div>
                 </template>
-                <template v-for="(taxonomyFilter, key, index) of taxonomyFilters">
-                    <div 
-                            v-if="key != 'repository-filters'"
-                            :key="index">
+                <template 
+                        v-for="(taxonomyFilter, key, index) of taxonomyFilters"
+                        :key="index">
+                    <div v-if="key != 'repository-filters'">
                         <div 
+                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
                                         shown: 500,
@@ -106,8 +106,7 @@
                                     autoHide: false,
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
-                                }" 
-                                v-if="taxonomyFilter.length > 0 && taxonomyFiltersCollectionNames != undefined && taxonomyFiltersCollectionNames[key] != undefined"
+                                }"
                                 class="collection-name">
                             {{ $i18n.get('label_filters_from') + " " + taxonomyFiltersCollectionNames[key] + ": " }}
                         </div>
@@ -122,11 +121,10 @@
                         </div>
                         <template v-if="taxonomyFilter.length > 0">
                             <tainacan-filter-item
-                                    :is-loading-items="isLoadingItems"
-                                    v-show="!isMenuCompressed"        
-                                    :query="getQuery"
-                                    v-for="(filter, filterIndex) in taxonomyFilter"
+                                    v-for="(filter, filterIndex) in taxonomyFilter" 
                                     :key="filterIndex"
+                                    :is-loading-items="isLoadingItems"
+                                    :query="getQuery"
                                     :filter="filter"
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
@@ -140,11 +138,12 @@
 
             <!-- REPOSITORY ITEMS FILTERS -->
             <template v-else-if="isRepositoryLevel && !taxonomy">
-                <template v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters">
-                    <div 
-                            v-if="key == 'repository-filters'"
-                            :key="index">
+                <template 
+                        v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
+                        :key="index">
+                    <div v-if="key == 'repository-filters'">
                         <div 
+                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
                                         shown: 500,
@@ -154,8 +153,7 @@
                                     autoHide: false,
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
-                                }" 
-                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"
+                                }"
                                 class="collection-name">
                             {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
                         </div>
@@ -170,11 +168,10 @@
                         </div>
                         <template v-if="repositoryCollectionFilter.length > 0">
                             <tainacan-filter-item
-                                    :is-loading-items="isLoadingItems"
-                                    v-show="!isMenuCompressed"        
-                                    :query="getQuery"
-                                    v-for="(filter, filterIndex) in repositoryCollectionFilter"
+                                    v-for="(filter, filterIndex) in repositoryCollectionFilter"   
                                     :key="filterIndex"
+                                    :is-loading-items="isLoadingItems"
+                                    :query="getQuery"
                                     :filter="filter"
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
@@ -184,11 +181,12 @@
                         <hr v-if="repositoryCollectionFilters.length > 1">
                     </div>
                 </template>
-                <template v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters">
-                    <div 
-                            v-if="key != 'repository-filters'"
-                            :key="index">
+                <template 
+                        v-for="(repositoryCollectionFilter, key, index) of repositoryCollectionFilters"
+                        :key="index">
+                    <div v-if="key != 'repository-filters'">
                         <div 
+                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined" 
                                 v-tooltip="{
                                     delay: {
                                         shown: 500,
@@ -198,8 +196,7 @@
                                     autoHide: false,
                                     popperClass: ['tainacan-tooltip', 'tooltip', isRepositoryLevel ? 'tainacan-repository-tooltip' : ''],
                                     placement: 'auto-start'
-                                }" 
-                                v-if="repositoryCollectionFilter.length > 0 && repositoryCollectionNames != undefined && repositoryCollectionNames[key] != undefined"
+                                }"
                                 class="collection-name">
                             {{ $i18n.get('label_filters_from') + " " + repositoryCollectionNames[key] + ": " }}
                         </div>
@@ -214,11 +211,10 @@
                         </div>
                         <template v-if="repositoryCollectionFilter.length > 0">
                             <tainacan-filter-item
-                                    :is-loading-items="isLoadingItems"
-                                    v-show="!isMenuCompressed"        
-                                    :query="getQuery"
-                                    v-for="(filter, filterIndex) in repositoryCollectionFilter"
+                                    v-for="(filter, filterIndex) in repositoryCollectionFilter"       
                                     :key="filterIndex"
+                                    :is-loading-items="isLoadingItems"
+                                    :query="getQuery"
                                     :filter="filter"
                                     :expand-all="!collapseAll"
                                     :is-repository-level="key == 'repository-filters'"
@@ -233,11 +229,10 @@
             <!-- COLLECTION ITEMS FILTERS -->
             <template v-else>
                 <tainacan-filter-item
-                        :is-loading-items="isLoadingItems"
-                        v-show="!isMenuCompressed"        
-                        :query="getQuery"
                         v-for="(filter, index) in filters"
                         :key="index"
+                        :is-loading-items="isLoadingItems"
+                        :query="getQuery"
                         :filter="filter"
                         :expand-all="!collapseAll"
                         :is-repository-level="isRepositoryLevel"
@@ -259,14 +254,22 @@
                     </span>
                 </p>
                 <p>{{ $i18n.get('info_there_is_no_filter' ) }}</p>
-                <p v-if="isRepositoryLevel && $route.name != null">{{ $i18n.get('info_collection_filter_on_repository_level') }}</p>
+                <p v-if="isRepositoryLevel && $route.name != null">
+                    {{ $i18n.get('info_collection_filter_on_repository_level') }}
+                </p>
                 <router-link
                         v-if="!$adminOptions.hideItemsListFilterCreationButton && $route.name != null && ((isRepositoryLevel && $userCaps.hasCapability('tnc_rep_edit_filters')) || (!isRepositoryLevel && collection && collection.current_user_can_edit_filters))"
-                        id="button-create-filter"
+                        v-slot="{ navigate }"
                         :to="isRepositoryLevel && $routerHelper ? $routerHelper.getNewFilterPath() : $routerHelper.getNewCollectionFilterPath(collectionId)"
-                        tag="button"
-                        class="button is-secondary is-centered">
-                    {{ $i18n.getFrom('filters', 'new_item') }}
+                        custom>
+                    <button
+                            id="button-create-filter"
+                            type="button"
+                            role="button"
+                            class="button is-secondary is-centered"
+                            @click="navigate()">         
+                        {{ $i18n.getFrom('filters', 'new_item') }}
+                    </button>
                 </router-link>
             </div>
         </section>
@@ -284,7 +287,7 @@
             FiltersTagsList
         },
         props: {
-            collectionId: String,
+            collectionId: [String, Number],
             isRepositoryLevel: Boolean,
             taxonomy: String,
             filtersAsModal: Boolean,
@@ -292,6 +295,9 @@
             isLoadingItems: Boolean,
             isMobileScreen: false
         },
+        emits: [
+            'update-is-loading-items-state'
+        ],
         data() {
             return {
                 isLoadingFilters: false,
@@ -326,45 +332,51 @@
             }
         },
         watch: {
-            taxonomyFilters() {
-                if ( this.taxonomyFilters != undefined && Object.keys(this.taxonomyFilters).length ) {
-                    
-                    this.$set(this.taxonomyFiltersCollectionNames, 'repository-filters', this.$i18n.get('repository'));
-                                                    
-                    // Cancels previous collection name Request
-                    if (this.collectionNameSearchCancel != undefined)
-                        this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
-                    let collectionIds = JSON.parse(JSON.stringify(Object.keys(this.taxonomyFilters)));
-    
-                    this.fetchAllCollectionNames( collectionIds.filter(aCollectionId => aCollectionId !== 'repository-filters') )
-                        .then((resp) => {
-                            resp.request
-                                .then((collections) => {
-                                    for (let collection of collections)
-                                        this.$set(this.taxonomyFiltersCollectionNames, '' + collection.id, collection.name);
-                                });
-                            // Search Request Token for cancelling
-                            this.collectionNameSearchCancel = resp.source;     
-                        });
-                }
+            taxonomyFilters: {
+                handler() {
+                    if ( this.taxonomyFilters != undefined && Object.keys(this.taxonomyFilters).length ) {
+                        
+                        Object.assign( this.taxonomyFiltersCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
+                                                        
+                        // Cancels previous collection name Request
+                        if (this.collectionNameSearchCancel != undefined)
+                            this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
+                        let collectionIds = JSON.parse(JSON.stringify(Object.keys(this.taxonomyFilters)));
+        
+                        this.fetchAllCollectionNames( collectionIds.filter(aCollectionId => aCollectionId !== 'repository-filters') )
+                            .then((resp) => {
+                                resp.request
+                                    .then((collections) => {
+                                        for (let collection of collections)
+                                            Object.assign( this.taxonomyFiltersCollectionNames, { [collection.id]: collection.name });
+                                    });
+                                // Search Request Token for cancelling
+                                this.collectionNameSearchCancel = resp.source;     
+                            });
+                    }
+                },
+                deep: true
             },
-            repositoryCollectionFilters() {
-                if ( this.repositoryCollectionFilters != undefined && Object.keys(this.repositoryCollectionFilters).length ) {
-                    
-                    this.$set(this.repositoryCollectionNames, 'repository-filters', this.$i18n.get('repository'));
-                    
-                    for ( let collection of this.getCollections() )
-                        this.$set(this.repositoryCollectionNames, '' + collection.id, collection.name);
-                }                
+            repositoryCollectionFilters: {
+                handler() {
+                    if ( this.repositoryCollectionFilters != undefined && Object.keys(this.repositoryCollectionFilters).length ) {
+                        
+                        Object.assign( this.repositoryCollectionNames, { 'repository-filters': this.$i18n.get('repository') });
+                        
+                        for ( let collection of this.getCollections() )
+                            Object.assign( this.repositoryCollectionNames, { [collection.id]: collection.name });
+                    }
+                },
+                deep: true                
             }
         },
         mounted() {
             this.prepareFilters();
 
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$on('isLoadingItems', this.updateIsLoadingItems);
+                this.$eventBusSearchEmitter.on('isLoadingItems', this.updateIsLoadingItems);
         },
-        beforeDestroy() {
+        beforeUnmount() {
             // Cancels previous collection name Request
             if (this.collectionNameSearchCancel != undefined)
                 this.collectionNameSearchCancel.cancel('Collection name search Canceled.');
@@ -378,7 +390,7 @@
                 this.filtersSearchCancel.cancel('Filters search Canceled.');
 
             if (this.isUsingElasticSearch)
-                this.$eventBusSearch.$off('isLoadingItems', this.updateIsLoadingItems);
+                this.$eventBusSearchEmitter.off('isLoadingItems', this.updateIsLoadingItems);
      
         },
         methods: {
@@ -465,7 +477,7 @@
 
             },
             updateIsLoadingItems(isLoadingItems) {
-                this.$emit('updateIsLoadingItemsState', isLoadingItems); 
+                this.$emit('update-is-loading-items-state', isLoadingItems); 
             }
         }
     }

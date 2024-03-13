@@ -1,20 +1,20 @@
 // General Post Queries
-export const set_postquery_attribute = ({ commit }, filter, value ) => {
+export const setPostQueryAttribute = ({ commit }, filter, value ) => {
     commit('setPostQueryAttribute', {  attr: filter, value: value } );
 };
 
-export const set_postquery = ({ commit }, postquery ) => {
+export const setPostQuery = ({ commit }, postquery ) => {
     commit('setPostQuery', postquery );
 };
 
-export const set_advanced_query = ({commit}, advancedSearchQuery) => {
+export const setAdvancedQuery = ({commit}, advancedSearchQuery) => {
     commit('removePostQueryAttribute', 'search');
     commit('removePostQueryAttribute', 's');
     commit('setAdvancedSearchQuery', advancedSearchQuery);
 };
 
 // Meta Queries from filters
-export const add_metaquery = ( { commit }, filter ) => {
+export const addMetaquery = ( { commit }, filter ) => {
     if (filter && (filter.value === undefined || filter.value === null || filter.value.length === 0 || filter.value === '')) {
         commit('removeMetaQuery', filter  );
     } else {
@@ -23,23 +23,23 @@ export const add_metaquery = ( { commit }, filter ) => {
 };
 
 // Fetch Only for item attributes limiting on results
-export const add_fetch_only = ( { commit }, metadatum ) => {
+export const addFetchOnly = ( { commit }, metadatum ) => {
     commit('addFetchOnly', metadatum );
 };
-export const remove_fetch_only = ( { commit }, metadatum ) => {
+export const removeFetchOnly = ( { commit }, metadatum ) => {
     commit('removeFetchOnly', metadatum );
 };
 
 // Fetch Only for metadata limiting on results
-export const add_fetch_only_meta = ( { commit }, metadatum ) => {
+export const addFetchOnlyMeta = ( { commit }, metadatum ) => {
     commit('addFetchOnlyMeta', metadatum );
 };
-export const remove_fetch_only_meta = ( { commit }, metadatum ) => {
+export const removeFetchOnlyMeta = ( { commit }, metadatum ) => {
     commit('removeFetchOnlyMeta', metadatum );
 };
 
 // Tax Queries from filters
-export const add_taxquery = ( { commit }, filter  ) => {
+export const addTaxquery = ( { commit }, filter  ) => {
     if (filter && (filter.terms === undefined || filter.terms === null || filter.terms === '' || filter.terms.length === 0 )) {
         commit('removeTaxQuery', filter  );
     } else {
@@ -47,15 +47,15 @@ export const add_taxquery = ( { commit }, filter  ) => {
     }
 };
 
-export const remove_metaquery = ( { commit }, filter  ) => {
+export const removeMetaQuery = ( { commit }, filter  ) => {
     commit('removeMetaQuery', filter  );
 };
 
-export const remove_taxquery = ( { commit }, filter  ) => {
+export const removeTaxQuery = ( { commit }, filter  ) => {
     commit('removeTaxQuery', filter  );
 };
 
-export const remove_postin = ( { commit }  ) => {
+export const removePostIn = ( { commit }  ) => {
     commit('removePostIn');
 };
 

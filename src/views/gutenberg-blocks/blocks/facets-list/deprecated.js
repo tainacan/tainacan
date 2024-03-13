@@ -1,6 +1,196 @@
 const { useBlockProps } = (tainacan_blocks.wp_version < '5.2' ? wp.editor : wp.blockEditor );
 
 export default [
+    /* Deprecated during Vue 3 migration to prepend attributes with data- */
+    {
+        "attributes": {
+            "content": {
+                "type": "array",
+                "source": "children",
+                "selector": "div"
+            },
+            "collectionId": {
+                "type": "string",
+                "default": ""
+            },
+            "collectionSlug": {
+                "type": "string",
+                "default": ""
+            },
+            "facets": {
+                "type": "array",
+                "default": []
+            },
+            "facetsObject": {
+                "type": "array",
+                "default": []
+            },
+            "showImage": {
+                "type": "boolean",
+                "default": true
+            },
+            "nameInsideImage": {
+                "type": "boolean",
+                "default": false
+            },
+            "showItemsCount": {
+                "type": "boolean",
+                "default": true
+            },
+            "showLoadMore": {
+                "type": "boolean",
+                "default": false
+            },
+            "showSearchBar": {
+                "type": "boolean",
+                "value": false
+            },
+            "layout": {
+                "type": "string",
+                "default": "grid"
+            },
+            "cloudRate": {
+                "type": "number",
+                "default": 1
+            },
+            "isModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "gridMargin": {
+                "type": "number",
+                "default": 24
+            },
+            "metadatumId": {
+                "type": "string",
+                "default": ""
+            },
+            "metadatumType": {
+                "type": "string",
+                "default": ""
+            },
+            "facetsRequestSource": {
+                "type": "string",
+                "default": ""
+            },
+            "maxFacetsNumber": {
+                "type": "number",
+                "value": 12
+            },
+            "isLoading": {
+                "type": "boolean",
+                "value": false
+            },
+            "isLoadingCollection": {
+                "type": "boolean",
+                "value": false
+            },
+            "collection": {
+                "type": "object",
+                "value": {}
+            },
+            "searchstring": {
+                "type": "string",
+                "default": ""
+            },
+            "blockId": {
+                "type": "string",
+                "default": ""
+            },
+            "parentTerm": {
+                "type": "number",
+                "default": null
+            },
+            "isParentTermModalOpen": {
+                "type": "boolean",
+                "default": false
+            },
+            "maxColumnsCount": {
+                "type": "number",
+                "default": 5
+            },
+            "appendChildTerms": {
+                "type": "boolean",
+                "default": false
+            },
+            "childFacetsObject": {
+                "type": "object",
+                "default": {}
+            },
+            "linkTermFacetsToTermPage": {
+                "type": "boolean",
+                "default": true
+            },
+            "isLoadingChildTerms": {
+                "type": "number",
+                "default": null
+            },
+            "itemsCountStyle": {
+                "type": "string",
+                "default": "default"
+            },
+            "imageSize": {
+                "type": "string",
+                "default": "tainacan-medium"
+            }
+        },
+        save: function({ attributes }) {
+            const {
+                content, 
+                blockId,
+                collectionId,  
+                collectionSlug,
+                parentTerm,  
+                showImage,
+                nameInsideImage,
+                showItemsCount,
+                showLoadMore,
+                layout,
+                cloudRate,
+                gridMargin,
+                metadatumId,
+                metadatumType,
+                maxFacetsNumber,
+                maxColumnsCount,
+                showSearchBar,
+                linkTermFacetsToTermPage,
+                appendChildTerms,
+                itemsCountStyle,
+                imageSize
+            } = attributes;
+        
+            // Gets attributes such as style, that are automatically added by the editor hook
+            const blockProps = useBlockProps.save();
+            return <div 
+                        { ...blockProps }
+                        data-module="facets-list"
+                        metadatum-id={ metadatumId }
+                        metadatum-type={ metadatumType }
+                        collection-id={ collectionId }  
+                        collection-slug={ collectionSlug }
+                        parent-term-id={ parentTerm ? parentTerm.id : undefined }  
+                        show-image={ '' + showImage }
+                        name-inside-image={ nameInsideImage === true ? 'true' : 'false' }
+                        show-items-count={ '' + showItemsCount }
+                        show-search-bar={ '' + showSearchBar }
+                        show-load-more={ '' + showLoadMore }
+                        image-size={ imageSize }
+                        append-child-terms={ (appendChildTerms === true ? 'true' : 'false') }
+                        link-term-facets-to-term-page={ linkTermFacetsToTermPage === false ? 'false' : 'true' }
+                        layout={ layout }
+                        items-count-style={ itemsCountStyle }
+                        cloud-rate={ cloudRate }
+                        grid-margin={ gridMargin }
+                        max-facets-number={ maxFacetsNumber }
+                        max-columns-count={ maxColumnsCount }
+                        tainacan-api-root={ tainacan_blocks.root }
+                        tainacan-base-url={ tainacan_blocks.base_url }
+                        tainacan-site-url={ tainacan_blocks.site_url }
+                        id={ 'wp-block-tainacan-facets-list_' + blockId }>
+                            { content }
+                    </div>
+        }
+    },
     /* Deprecated on Tainacan 0.20.1 to add imageSize */
     {
         "attributes": {

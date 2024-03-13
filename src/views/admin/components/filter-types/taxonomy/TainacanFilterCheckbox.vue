@@ -15,9 +15,9 @@
                             class="b-checkbox checkbox is-small">
                         <input 
                                 v-model="selected"
-                                @input="resetPage"
                                 :value="option.value"
-                                type="checkbox"> 
+                                type="checkbox"
+                                @input="resetPage"> 
                         <span class="check" /> 
                         <span class="control-label">
                             <span class="checkbox-label-text">{{ option.label }}</span> 
@@ -27,8 +27,8 @@
                         </span>
                     </label>
                     <button
-                            class="view-all-button link-style"
                             v-if="option.showViewAllButton"
+                            class="view-all-button link-style"
                             @click="openCheckboxModal(option.parent)"> 
                         {{ $i18n.get('label_view_all') }}
                     </button>
@@ -44,28 +44,28 @@
             <checkbox-radio-filter-input
                     :is-modal="false" 
                     :filter="filter"
-                    :taxonomy_id="taxonomyId"
+                    :taxonomy-id="taxonomyId"
                     :selected="selected"
+                    :metadatum-id="metadatumId"
+                    :taxonomy="taxonomy"
+                    :collection-id="collectionId"
+                    :is-taxonomy="true"
+                    :query="query"
+                    :current-collection-id="currentCollectionId"
                     @input="(newSelected) => {
                         const existingValue = selected.indexOf(newSelected); 
                         if (existingValue >= 0)
                             selected.splice(existingValue, 1);
                         else
                             selected.push(newSelected);
-                    }"
-                    :metadatum-id="metadatumId"
-                    :taxonomy="taxonomy"
-                    :collection-id="collectionId"
-                    :is-taxonomy="true"
-                    :query="query"
-                    :current-collection-id="currentCollectionId" />
+                    }" />
         </template>
     </div>
 </template>
 
 <script>
     import qs from 'qs';
-    import { tainacan as axios, CancelToken, isCancel } from '../../../js/axios';
+    import { tainacanApi, CancelToken, isCancel } from '../../../js/axios';
     import { mapGetters } from 'vuex';
     import CheckboxRadioFilterInput from '../../../components/other/checkbox-radio-filter-input.vue';
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
@@ -75,9 +75,12 @@
         mixins: [ filterTypeMixin ],
         props: {
             isRepositoryLevel: Boolean,
-            currentCollectionId: String,
             filtersAsModal: Boolean
         },
+        emits: [
+            'input',
+            'update-parent-collapse'
+        ],
         data(){
             return {
                 isLoadingOptions: true,
@@ -94,19 +97,23 @@
             }
         },
         watch: {
-            selected(newVal, oldVal) {
-                const isEqual = (Array.isArray(newVal) && Array.isArray(oldVal) && (newVal.length == oldVal.length)) && newVal.every((element, index) => {
-                    return element === oldVal[index]; 
-                });
-                if (!isEqual)
-                    this.onSelect();
+            selected: {
+                handler(newVal, oldVal) {
+                    const isEqual = (Array.isArray(newVal) && Array.isArray(oldVal) && (newVal.length == oldVal.length)) && newVal.every((element, index) => {
+                        return element === oldVal[index]; 
+                    });
+                    if (!isEqual)
+                        this.onSelect();
+                },
+                deep: true
             },
             facetsFromItemSearch: {
                 handler() {
                     if (this.isUsingElasticSearch)
                         this.loadOptions();
                 },
-                immediate: true
+                immediate: true,
+                deep:true
             },                
             isLoadingItems: {
                 handler() {
@@ -125,19 +132,19 @@
                     this.taxonomyId = this.filter.metadatum.metadata_type_object.options.taxonomy_id;
                     this.taxonomy = this.filter.metadatum.metadata_type_object.options.taxonomy;
                 }
-            this.$eventBusSearch.$on('has-to-reload-facets', this.reloadOptions); 
+            this.$eventBusSearchEmitter.on('hasToReloadFacets', this.reloadOptions); 
         },
         mounted(){
             if (!this.isUsingElasticSearch)
                 this.loadOptions();
         },
-        beforeDestroy() {
+        beforeUnmount() {
             
             // Cancels previous Request
             if (this.getOptionsValuesCancel != undefined)
                 this.getOptionsValuesCancel.cancel('Facet search Canceled.');
 
-            this.$eventBusSearch.$off('has-to-reload-facets', this.reloadOptions); 
+            this.$eventBusSearchEmitter.off('hasToReloadFacets', this.reloadOptions); 
         }, 
         methods: {
             ...mapGetters('search', [
@@ -175,7 +182,7 @@
                     promise = new Object({
                         request:
                             new Promise((resolve, reject) => {
-                                axios.get(route, { cancelToken: source.token})
+                                tainacanApi.get(route, { cancelToken: source.token})
                                     .then( res => {
                                         resolve(res)
                                     })
@@ -191,7 +198,7 @@
                             this.prepareOptionsForTaxonomy(res.data.values ? res.data.values : res.data);
 
                             if (res && res.data && res.data.values)
-                                this.$emit('updateParentCollapse', res.data.values.length > 0 );
+                                this.$emit('update-parent-collapse', res.data.values.length > 0 );
                         })
                         .catch( error => {
                             if (isCancel(error)) {
@@ -210,10 +217,10 @@
                         if (facet == this.filter.id) {
                             if (Array.isArray(this.facetsFromItemSearch[facet])) {
                                 this.prepareOptionsForTaxonomy(this.facetsFromItemSearch[facet]);
-                                this.$emit('updateParentCollapse', this.facetsFromItemSearch[facet].length > 0 );
+                                this.$emit('update-parent-collapse', this.facetsFromItemSearch[facet].length > 0 );
                             } else {
                                 this.prepareOptionsForTaxonomy(Object.values(this.facetsFromItemSearch[facet]));
-                                this.$emit('updateParentCollapse', Object.values(this.facetsFromItemSearch[facet]).length > 0 );
+                                this.$emit('update-parent-collapse', Object.values(this.facetsFromItemSearch[facet]).length > 0 );
                             }
                         }    
                     }
@@ -244,7 +251,7 @@
                     props: {
                         parent: parent,
                         filter: this.filter,
-                        taxonomy_id: this.taxonomyId,
+                        taxonomyId: this.taxonomyId,
                         selected: this.selected,
                         metadatumId: this.metadatumId,
                         taxonomy: this.taxonomy,

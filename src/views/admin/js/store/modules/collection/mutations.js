@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 export const setRepositoryTotalCollections = (state, repositoryTotalCollections) => {
     state.repositoryTotalCollections = repositoryTotalCollections;
@@ -38,7 +38,7 @@ export const setCollectionTaxonomies = (state, collectionTaxonomies) => {
 }
 
 export const setCollectionTaxonomiesTerms = (state, { taxonomy, terms }) => {
-    Vue.set(state.collectionTaxonomies[taxonomy], 'terms', terms);
+    Object.assign(state.collectionTaxonomies[taxonomy], { 'terms': terms });
 }
 
 export const cleanCollections = (state) => {
@@ -57,7 +57,7 @@ export const setSingleAttachment = ( state, attachment ) => {
     let index = state.attachments.findIndex(newAttachment => newAttachment.id === attachment.id);
     if ( index >= 0){
         //state.metadatum[index] = metadatum;
-        Vue.set( state.attachments, index, attachment );
+        Object.assign(state.attachments, { [index]: attachment });
     } else {
         state.attachments.push( attachment );
     }
@@ -67,7 +67,7 @@ export const setSingleFile = ( state, file ) => {
     let index = state.files.findIndex(newfile => newfile.id === file.id);
     if ( index >= 0){
         //state.metadatum[index] = metadatum;
-        Vue.set( state.files, index, file );
+        Object.assign(state.files, { [index]: file });
     } else {
         state.files.push( file );
     }

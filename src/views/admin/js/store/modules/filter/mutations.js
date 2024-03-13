@@ -1,4 +1,4 @@
-import Vue from 'vue';
+
 
 // FILTERS ------------------------------------------------------------------------
 export const deleteFilter = ( state, filter ) => {
@@ -17,7 +17,11 @@ export const deleteTemporaryFilter = ( state, index) => {
 }
 
 export const setSingleFilter = (state, { filter, index}) => {
-    Vue.set( state.filters, index, filter );
+    Object.assign(state.filters, { [index]: filter });
+}
+
+export const addSingleFilter = (state, { filter, index}) => {
+    state.filters.splice( index, 0, filter );
 }
 
 export const setFilters = (state, filters) => {

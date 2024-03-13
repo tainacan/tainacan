@@ -1,12 +1,12 @@
 <template>
     <form 
+            ref="collectionsModal"
             action=""
             autofocus
             role="dialog"
             class="tainacan-modal-content"
             tabindex="-1"
-            aria-modal
-            ref="collectionsModal">
+            aria-modal>
         <div 
                 class="tainacan-modal-content" 
                 style="width: auto">
@@ -15,15 +15,16 @@
                 <hr>
             </header>
             <section class="tainacan-form">
-                 <p>{{ $i18n.get('instruction_select_a_target_collection') }}</p>
+                <p>{{ $i18n.get('instruction_select_a_target_collection') }}</p>
                 <div 
                         v-if="!isLoading" 
                         class="collection-types-container">
-                    <template v-for="(collection, index) in collections">
+                    <template
+                            v-for="(collection, index) in collections"
+                            :key="index">
                         <div
-                                class="collection-type"
-                                :key="index"
                                 v-if="collection && collection.current_user_can_edit_items"
+                                class="collection-type"
                                 @click="onSelectCollection(collection)">
                             <h4>{{ collection.name }}</h4>
                             <p>{{ collection.description.length > 200 ? (collection.description.substring(0,197) + '...') : collection.description }}</p>            
@@ -38,16 +39,16 @@
                     </div>
                 </div>
                 <b-loading 
-                        :is-full-page="false"
-                        :active.sync="isLoading" 
-                        :can-cancel="false"/>
+                        v-model="isLoading"
+                        :is-full-page="false" 
+                        :can-cancel="false" />
                 
-                 <footer class="field is-grouped form-submit">
+                <footer class="field is-grouped form-submit">
                     <div class="control">
                         <button 
                                 class="button is-outlined" 
                                 type="button" 
-                                @click="$parent.close()">Close</button>
+                                @click="$emit('close')">Close</button>
                     </div>
                 </footer>
             </section>
@@ -60,6 +61,9 @@ import { mapActions } from 'vuex';
 
 export default {
     name: 'CollectionsModal',
+    emits: [
+        'close'
+    ],
     data() {
         return {
             collections: [],
@@ -91,7 +95,7 @@ export default {
         ]),
         onSelectCollection(collection) {
             this.$router.push(this.$routerHelper.getNewItemPath(collection.id));
-            this.$parent.close();
+            this.$emit('close');
         }
     }
 }

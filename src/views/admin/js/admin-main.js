@@ -3,7 +3,7 @@
 //window.underscore = _.noConflict();
 
 // Main imports
-import Vue from 'vue';
+import { createApp, h } from 'vue';
 import {
     Field,
     Input,
@@ -28,43 +28,10 @@ import {
     Snackbar,
     Toast,
     Numberinput
-} from 'buefy';
-import VTooltip from 'floating-vue';
-import draggable from 'vuedraggable';
-import VueTheMask from 'vue-the-mask';
+} from '@ntohq/buefy-next';
+import FloatingVue from 'floating-vue';
 import cssVars from 'css-vars-ponyfill';
-import VueBlurHash from 'vue-blurhash';
-
-// Metadata Types
-import Text from '../components/metadata-types/text/Text.vue';
-import Textarea from '../components/metadata-types/textarea/Textarea.vue';
-import Selectbox from '../components/metadata-types/selectbox/Selectbox.vue';
-import Numeric from '../components/metadata-types/numeric/Numeric.vue';
-import Date from '../components/metadata-types/date/Date.vue';
-import Relationship from '../components/metadata-types/relationship/Relationship.vue';
-import Taxonomy from '../components/metadata-types/taxonomy/Taxonomy.vue';
-import Compound from '../components/metadata-types/compound/Compound.vue';
-import User from '../components/metadata-types/user/User.vue';
-import GeoCoordinate from '../components/metadata-types/geocoordinate/GeoCoordinate.vue'
-
-import FormText from '../components/metadata-types/text/FormText.vue';
-import FormTextarea from '../components/metadata-types/textarea/FormTextarea.vue';
-import FormRelationship from '../components/metadata-types/relationship/FormRelationship.vue';
-import FormTaxonomy from '../components/metadata-types/taxonomy/FormTaxonomy.vue';
-import FormSelectbox from '../components/metadata-types/selectbox/FormSelectbox.vue';
-import FormNumeric from '../components/metadata-types/numeric/FormNumeric.vue';
-import FormUser from '../components/metadata-types/user/FormUser.vue';
-import FormGeoCoordinate from '../components/metadata-types/geocoordinate/FormGeoCoordinate.vue';
-
-// Term edition form must be imported here so that it is not necessary on item-submission bundle
-import TermEditionForm from '../components/edition/term-edition-form.vue';
-
-import FormFilterNumeric from '../components/filter-types/numeric/FormNumeric.vue';
-import FormFilterNumericInterval from '../components/filter-types/numeric-interval/FormNumericInterval.vue';
-import FormFilterNumericListInterval from '../components/filter-types/numeric-list-interval/FormNumericListInterval.vue';
-// import FormDate from '../../../classes/filter-types/date/FormDate.vue';
-
-import TainacanFormItem from '../components/metadata-types/tainacan-form-item.vue';
+import VueBlurHash from 'another-vue3-blurhash';
 
 // Remaining imports
 import AdminPage from '../admin.vue'
@@ -73,7 +40,6 @@ import TainacanTitle from '../components/navigation/tainacan-title.vue';
 import store from './store/store';
 import router from './router';
 import eventBusSearch from './event-bus-search';
-import eventBusMetadataList from './event-bus-metadata-list.js';
 import { 
     I18NPlugin,
     UserPrefsPlugin,
@@ -83,17 +49,38 @@ import {
     StatusHelperPlugin,
     CommentsStatusHelperPlugin,
     AdminOptionsHelperPlugin,
-    HtmlSanitizerPlugin 
+    HtmlSanitizerPlugin,
+    AxiosErrorHandlerPlugin 
 } from './admin-utilities';
 import { 
     ThumbnailHelperPlugin,
     OrderByHelperPlugin
 } from './utilities';
+import mitt from 'mitt';
+
+// import { configureCompat } from 'vue';
+// configureCompat({
+//     COMPONENT_V_MODEL: false,
+//     ATTR_FALSE_VALUE: false,
+//     RENDER_FUNCTION: false,
+//     MODE: 3
+// })
+
+function copyAppContext(src, dest) {
+    // replacing _context won't work because methods of app bypasses app._context
+    const { _context: srcContext } = src
+    const { _context: destContext } = dest
+    destContext.config = srcContext.config
+    destContext.mixins = srcContext.mixins
+    destContext.components = srcContext.components
+    destContext.directives = srcContext.directives
+    destContext.provdes = srcContext.provides
+    destContext.optionsCache = srcContext.optionsCache
+    destContext.propsCache = srcContext.propsCache
+    destContext.emitsCache = srcContext.emitsCache
+}
 
 export default (element) => {
-
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
 
     function renderTainacanAdminPage() {
 
@@ -103,37 +90,50 @@ export default (element) => {
         // Mount only if the div exists and it is not already mounted
         if ( pageElement && pageElement.classList && !pageElement.classList.contains('has-mounted') ) {
 
+            const app = createApp({
+                el: '#tainacan-admin-app',
+                render: () => h(AdminPage)
+            });
+            
+            app.use(router);
+            app.use(store);
+
+            const emitter = mitt();
+            app.config.globalProperties.$emitter = emitter;
+
             /* Registers Extra Vue Plugins passed to the window.tainacan_extra_plugins  */
             if (typeof window.tainacan_extra_plugins != "undefined") {
-                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins))
-                    Vue.use(extraVuePluginObject);
+                for (let [extraVuePluginName, extraVuePluginObject] of Object.entries(window.tainacan_extra_plugins)) {
+                    const aPlugin = app.use(extraVuePluginObject);
+                    //copyAppContext(app, aPlugin);
+                }
             }
 
             // Configure and Register Plugins
-            Vue.use(Field);
-            Vue.use(Input);
-            Vue.use(Autocomplete);
-            Vue.use(Taginput);
-            Vue.use(Collapse);
-            Vue.use(Button); 
-            Vue.use(Datepicker);
-            Vue.use(Select);
-            Vue.use(Switch);
-            Vue.use(Upload);
-            Vue.use(Icon);
-            Vue.use(Pagination);
-            Vue.use(Checkbox);
-            Vue.use(Radio);
-            Vue.use(Tag);
-            Vue.use(Tabs);
-            Vue.use(Loading);
-            Vue.use(Dropdown);
-            Vue.use(Modal);
-            Vue.use(Dialog);
-            Vue.use(Snackbar);
-            Vue.use(Toast);
-            Vue.use(Numberinput);
-            Vue.use(VTooltip, {
+            app.use(Field);
+            app.use(Input);
+            app.use(Autocomplete);
+            app.use(Taginput);
+            app.use(Collapse);
+            app.use(Button); 
+            app.use(Datepicker);
+            app.use(Select);
+            app.use(Switch);
+            app.use(Upload);
+            app.use(Icon);
+            app.use(Pagination);
+            app.use(Checkbox);
+            app.use(Radio);
+            app.use(Tag);
+            app.use(Tabs);
+            app.use(Loading);
+            app.use(Dropdown);
+            app.use(Modal);
+            app.use(Dialog);
+            app.use(Snackbar);
+            app.use(Toast);
+            app.use(Numberinput);
+            app.use(FloatingVue, {
                 popperTriggers: ['hover', 'touch'],
                 themes: {
                     'taianacan-tooltip': {
@@ -148,14 +148,14 @@ export default (element) => {
                         autoHide: true,
                         html: true,
                     },
-                    'tainacan-repository-tooltip': {
-                        '$extend': 'tainacan-header-tooltip',
+                    'tainacan-header-tooltip': {
+                        '$extend': 'tainacan-tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,
                         html: true,
                     },
-                    'tainacan-repository-tooltip': {
-                        '$extend': 'tainacan-repository-header-tooltip',
+                    'tainacan-repository-header-tooltip': {
+                        '$extend': 'tainacan-repository-tooltip',
                         triggers: ['hover', 'focus', 'touch'],
                         autoHide: true,
                         html: true,
@@ -168,69 +168,35 @@ export default (element) => {
                     }
                 }
             });
-            Vue.use(VueBlurHash);
-            Vue.use(I18NPlugin);
-            Vue.use(UserPrefsPlugin);
-            Vue.use(RouterHelperPlugin);
-            Vue.use(UserCapabilitiesPlugin);
-            Vue.use(ThumbnailHelperPlugin);
-            Vue.use(OrderByHelperPlugin);
-            Vue.use(StatusHelperPlugin);
-            Vue.use(HtmlSanitizerPlugin);
-            Vue.use(ConsolePlugin, {visual: false});
-            Vue.use(VueTheMask);
-            Vue.use(CommentsStatusHelperPlugin);
-            Vue.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
+            app.use(VueBlurHash);
+            app.use(I18NPlugin);
+            app.use(UserPrefsPlugin);
+            app.use(RouterHelperPlugin);
+            app.use(UserCapabilitiesPlugin);
+            app.use(ThumbnailHelperPlugin);
+            app.use(OrderByHelperPlugin);
+            app.use(StatusHelperPlugin);
+            app.use(HtmlSanitizerPlugin);
+            app.use(ConsolePlugin, {visual: false});
+            app.use(CommentsStatusHelperPlugin);
+            app.use(AxiosErrorHandlerPlugin);
+            app.use(AdminOptionsHelperPlugin, pageElement.dataset['options']);
 
 
             /* Registers Extra Vue Components passed to the window.tainacan_extra_components  */
             if (typeof window.tainacan_extra_components != "undefined") {
                 for (let [extraVueComponentName, extraVueComponentObject] of Object.entries(window.tainacan_extra_components)) {
-                    Vue.component(extraVueComponentName, extraVueComponentObject);
+                    const aComponent = app.component(extraVueComponentName, extraVueComponentObject);
+                    ///copyAppContext(app, aComponent);
                 }
             }
 
-            /* Metadata */
-            Vue.component('tainacan-text', Text);
-            Vue.component('tainacan-textarea', Textarea);
-            Vue.component('tainacan-selectbox', Selectbox);
-            Vue.component('tainacan-numeric', Numeric);
-            Vue.component('tainacan-date', Date);
-            Vue.component('tainacan-relationship', Relationship);
-            Vue.component('tainacan-taxonomy', Taxonomy);
-            Vue.component('tainacan-compound', Compound);
-            Vue.component('tainacan-user', User);
-            Vue.component('tainacan-geocoordinate', GeoCoordinate);
-            
-
-            /* Metadata Option forms */
-            Vue.component('tainacan-form-text', FormText);
-            Vue.component('tainacan-form-textarea', FormTextarea);
-            Vue.component('tainacan-form-relationship', FormRelationship);
-            Vue.component('tainacan-form-taxonomy', FormTaxonomy);
-            Vue.component('tainacan-form-selectbox', FormSelectbox);
-            Vue.component('tainacan-form-numeric', FormNumeric);
-            Vue.component('tainacan-form-user', FormUser);
-            Vue.component('term-edition-form', TermEditionForm);
-            Vue.component('tainacan-form-geocoordinate', FormGeoCoordinate);
-
-            /* Filter Metadata Option forms */
-            Vue.component('tainacan-filter-form-numeric', FormFilterNumeric);
-            Vue.component('tainacan-filter-form-numeric-interval', FormFilterNumericInterval);
-            Vue.component('tainacan-filter-form-numeric-list-interval', FormFilterNumericListInterval);
-            // Vue.component('tainacan-filter-form-date', FormDate);
-
-            // Metadadum parent containers
-            Vue.component('tainacan-form-item', TainacanFormItem);
-
             /* Others */
-            Vue.component('help-button', HelpButton);
-            Vue.component('draggable', draggable);
-            Vue.component('tainacan-title', TainacanTitle);
-
+            app.component('help-button', HelpButton);
+            app.component('tainacan-title', TainacanTitle);
+            
             // Event bus are needed to facilate comunication between child-parent-child components
-            Vue.use(eventBusMetadataList, {});
-            Vue.use(eventBusSearch, { store: store, router: router});
+            app.use(eventBusSearch);
 
             // Changing title of pages
             router.beforeEach((to, from, next) => {
@@ -239,12 +205,7 @@ export default (element) => {
                     next();
             });
 
-            new Vue({
-                el: '#tainacan-admin-app',
-                store,
-                router,
-                render: h => h(AdminPage)
-            });
+            app.mount('#tainacan-admin-app');
 
             // Initialize Ponyfill for Custom CSS properties
             cssVars({

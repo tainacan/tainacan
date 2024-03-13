@@ -1,11 +1,11 @@
 <template>
     <div 
+            ref="termParentSelectionDialog"
             aria-labelledby="alert-dialog-title"
             aria-modal
             autofocus
             role="alertdialog"
-            class="tainacan-form tainacan-dialog dialog"
-            ref="termParentSelectionDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -14,7 +14,7 @@
                 <span class="icon is-large">
                     <i 
                             style="color: var(--tainacan-blue5);"
-                            class="tainacan-icon tainacan-icon-taxonomies"/>
+                            class="tainacan-icon tainacan-icon-taxonomies" />
                 </span>
             </div>
             <section 
@@ -32,30 +32,30 @@
                 <!-- Parent -------------- -->
                 <div class="parent-term-options">
                     <b-radio 
-                            :native-value="false"
-                            v-model="hasParent">
+                            v-model="hasParent"
+                            :native-value="false">
                         {{ $i18n.get('label_no_parent_root_term') }}
                     </b-radio>
                     <b-radio 
-                            :native-value="true"
-                            v-model="hasParent">
+                            v-model="hasParent"
+                            :native-value="true">
                         {{ $i18n.get('instruction_select_a_parent_term') }}
                     </b-radio>
                     <b-autocomplete
                             id="tainacan-add-parent-field"
+                            v-model="parentTermName"
                             :placeholder="$i18n.get('instruction_parent_term')"
                             :data="parentTerms"
                             field="name"
                             clearable
-                            v-model="parentTermName"
-                            @select="onSelectParentTerm($event)"
                             :loading="isFetchingParentTerms"
-                            @input="fetchParentTerms"
                             :disabled="!hasParent"
                             check-infinite-scroll
                             :append-to-body="true"
+                            @select="onSelectParentTerm($event)"
+                            @update:model-value="fetchParentTerms"
                             @infinite-scroll="fetchMoreParentTerms">
-                        <template slot-scope="props">
+                        <template #default="props">
                             <div class="media">
                                 <div 
                                         v-if="props.option.header_image_id"
@@ -69,7 +69,9 @@
                                 </div>
                             </div>
                         </template>
-                        <template slot="empty">{{ $i18n.get('info_no_parent_term_found') }}</template>
+                        <template #empty>
+                            {{ $i18n.get('info_no_parent_term_found') }}
+                        </template>
                     </b-autocomplete>
                 </div>
             </section>
@@ -78,14 +80,14 @@
                         v-if="!hideCancel"
                         class="button is-outlined" 
                         type="button"
-                        @click="$parent.close()">
+                        @click="$emit('close')">
                     {{ $i18n.get('cancel') }}
                 </button>
                 <button 
                         type="submit"
                         class="button is-success"
                         :disabled="hasParent ? !selectedParentTerm : false"
-                        @click="onConfirm(hasParent ? selectedParentTerm : 0); $parent.close();">
+                        @click="onConfirm(hasParent ? selectedParentTerm : 0); $emit('close');">
                     {{ $i18n.get('continue') }}
                 </button>
             </footer>
@@ -111,6 +113,9 @@
             taxonomyId: '',
             excludeTree: ''
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 hasParent: false,

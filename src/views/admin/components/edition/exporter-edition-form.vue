@@ -4,15 +4,15 @@
                 :bread-crumb-items="[
                     { path: $routerHelper.getAvailableExportersPath(), label: $i18n.get('exporters') },
                     { path: '', label: exporterType != undefined ? (exporterName != undefined ? exporterName : exporterType) : $i18n.get('title_exporter_page') }
-                ]"/>
+                ]" />
         <b-loading
-                :active.sync="isLoading"
-                :can-cancel="false"/>
+                v-model="isLoading"
+                :can-cancel="false" />
         <form
-                @click="formErrorMessage = ''"
-                label-width="120px"
                 v-if="exporterSession"
-                class="tainacan-form">
+                label-width="120px"
+                class="tainacan-form"
+                @click="formErrorMessage = ''">
             <div class="columns">
 
                 <div class="column is-gapless">
@@ -22,7 +22,7 @@
                 </div>
                 <div
                         style="max-width: var(--tainacan-one-column);"
-                        class="column is-gapless"/>
+                        class="column is-gapless" />
                 <div class="column is-gapless">
                     <b-field
                             v-if="exporterSession.manual_collection"
@@ -31,41 +31,41 @@
                         <help-button
                                 :title="$i18n.get('label_source_collection')"
                                 :message="$i18n.get('info_source_collection_helper')"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <br>
                         <b-select
-                                @input="formErrorMessage = null"
-                                expanded
                                 v-model="selectedCollection"
+                                expanded
                                 :loading="isFetchingCollections"
-                                :placeholder="$i18n.get('instruction_select_a_collection')">
+                                :placeholder="$i18n.get('instruction_select_a_collection')"
+                                @update:model-value="formErrorMessage = null">
                             <option
                                     v-for="collection in collections"
-                                    :value="collection.id"
-                                    :key="collection.id">
+                                    :key="collection.id"
+                                    :value="collection.id">
                                 {{ collection.name }}
                             </option>
                         </b-select>
                     </b-field>
 
                     <b-field
-                            class="is-block"
                             v-if="Object.keys(exporterSession).length &&
                                 Object.keys(exporterSession.mapping_accept).length &&
                                 exporterSession.mapping_list.length"
+                            class="is-block"
                             :label="$i18n.get('mapping')">
                         <b-select
-                                @input="formErrorMessage = null"
-                                expanded
                                 v-model="selectedMapping"
-                                :placeholder="$i18n.get('instruction_select_a_mapper')">
+                                expanded
+                                :placeholder="$i18n.get('instruction_select_a_mapper')"
+                                @update:model-value="formErrorMessage = null">
                             <option 
                                     v-if="exporterSession.accept_no_mapping"
                                     :value="''">{{ $i18n.get('label_no_mapping') }}</option>
                             <option
                                     v-for="(mapping) in exporterSession.mapping_list"
-                                    :value="mapping"
-                                    :key="mapping">
+                                    :key="mapping"
+                                    :value="mapping">
                                 {{ mapping.replace(/-/, ' ') }}
                             </option>
                         </b-select>
@@ -77,12 +77,12 @@
                         <help-button
                                 :title="$i18n.get('label_send_email')"
                                 :message="'<span>' + $i18n.get('info_send_email') + `&nbsp;<a href='` + adminFullURL + $routerHelper.getProcessesPage() + `'>` + $i18n.get('activities') + ` ` + $i18n.get('label_page') + '</a></span>'"
-                                extra-classes="tainacan-repository-tooltip"/>
+                                extra-classes="tainacan-repository-tooltip" />
                         <b-checkbox
+                                v-model="sendEmail"
                                 true-value="1"
                                 false-value="0"
-                                v-model="sendEmail"
-                                @input="formErrorMessage = null">
+                                @update:model-value="formErrorMessage = null">
                             {{ $i18n.get('label_yes') }}
                         </b-checkbox>
                     </b-field>
@@ -93,17 +93,17 @@
 
                 <div class="column">
                     <button
-                            @click.prevent="$router.go(-1)"
-                            class="button is-pulled-left is-outlined">
+                            class="button is-pulled-left is-outlined"
+                            @click.prevent="$router.go(-1)">
                         {{ $i18n.get('cancel') }}
                     </button>
                 </div>
                 <div class="column">
                     <button
                             :class="{'is-loading': runButtonLoading}"
-                            @click.prevent="runExporter()"
                             :disabled="!formIsValid()"
-                            class="button is-pulled-right is-success">
+                            class="button is-pulled-right is-success"
+                            @click.prevent="runExporter()">
                         {{ $i18n.get('run') }}
                     </button>
                 </div>

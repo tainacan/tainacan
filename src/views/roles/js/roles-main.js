@@ -1,17 +1,21 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import store from '../../admin/js/store/store';
 import router from './roles-router';
-import VTooltip from 'floating-vue';
-import { Snackbar, Modal } from 'buefy';
+import FloatingVue from 'floating-vue';
+import { Snackbar, Modal } from '@ntohq/buefy-next';
 
 import { I18NPlugin } from './wp-i18n-plugin';
 
 import RolesPage from '../roles.vue';
 
-export default (element) => {
+// import { configureCompat } from 'vue'
+// configureCompat({
+//     COMPONENT_V_MODEL: false,
+//     RENDER_FUNCTION: false,
+//     MODE: 3
+// })
 
-    // Vue Dev Tools!
-    Vue.config.devtools = TAINACAN_ENV === 'development';
+export default (element) => {
 
     function renderTainacanRolePage() {
 
@@ -21,20 +25,21 @@ export default (element) => {
         // Mount only if the div exists and it is not already mounted
         if ( pageElement && pageElement.classList && !pageElement.classList.contains('has-mounted') ) {
 
-            Vue.use(I18NPlugin);
-            Vue.use(VTooltip, {
+            const VueRoles = createApp(RolesPage);
+
+            VueRoles.use(I18NPlugin);
+            VueRoles.use(FloatingVue, {
                 popperTriggers: ['hover'],
                 themes: {
                     'taianacan-tooltip': {
-                        '$extend': 'tooltip',
+                        $extend: 'tooltip',
                         triggers: ['hover', 'focus', 'touch'],
-                        autoHide: true,
                         html: true,
                     }
                 }
             });
-            Vue.use(Snackbar);
-            Vue.use(Modal);
+            VueRoles.use(Snackbar);
+            VueRoles.use(Modal);
             
             // Changing title of pages
             router.beforeEach((to, from, next) => {
@@ -43,12 +48,10 @@ export default (element) => {
                     next();
             });
             
-            new Vue({
-                el: '#tainacan-roles-app',
-                store,
-                router,
-                render: h => h(RolesPage)
-            });
+            VueRoles.use(router);
+            VueRoles.use(store);
+
+            VueRoles.mount('#tainacan-roles-app');
         };
     };
 

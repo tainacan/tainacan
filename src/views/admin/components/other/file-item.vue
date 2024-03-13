@@ -19,15 +19,15 @@
                 <div
                         v-if="file.media_type == 'image'" 
                         class="image"
-                        :style="{ 'background-image': 'url(' + (file.thumbnails['tainacan-medium'] ? file.thumbnails['tainacan-medium'][0] : file.thumbnails['medium'][0]) + ')' }"/>
+                        :style="{ 'background-image': 'url(' + (file.thumbnails['tainacan-medium'] ? file.thumbnails['tainacan-medium'][0] : file.thumbnails['medium'][0]) + ')' }" />
                 <div
-                        :style="{ 'background-color': 'var(--tainacan-gray1)' }"
-                        v-else 
+                        v-else
+                        :style="{ 'background-color': 'var(--tainacan-gray1)' }" 
                         class="file-placeholder">
                     <span class="icon is-large">
                         <i 
                                 :class="'tainacan-icon-' + getIconForMimeType(file.mime_type)"
-                                class="has-text-gray tainacan-icon tainacan-icon-36px"/>
+                                class="has-text-gray tainacan-icon tainacan-icon-36px" />
                     </span>
                 </div>
             </div>

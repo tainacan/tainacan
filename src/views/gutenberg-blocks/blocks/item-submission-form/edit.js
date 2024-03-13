@@ -17,7 +17,7 @@ const {
 const { useEffect } = wp.element;
 const { InspectorControls, BlockControls, RichText, useBlockProps } = wp.blockEditor;
 
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import CollectionModal from '../faceted-search/collection-modal.js';
 import TainacanBlocksCompatToolbar from '../../js/compatibility/tainacan-blocks-compat-toolbar.js';
 
@@ -106,8 +106,9 @@ export default function ({ attributes, setAttributes }) {
 
     // Fill the enabledMetadata object with the metadata that are enabled initially
     useEffect(() => {
-        if ( collectionId && collectionId != 'preview' )
+        if ( collectionId && collectionId != 'preview' ) {
             loadCollectionMetadata(collectionId)
+        }
     }, []);
 
     function openCollectionModal() {
@@ -128,12 +129,15 @@ export default function ({ attributes, setAttributes }) {
         isLoadingCollectionMetadata = true;
         setAttributes({ isLoadingCollectionMetadata, isLoadingCollectionMetadata });
 
-        tainacan.get('/collection/' + selectedCollectionId + '/metadata/?nopaging=1&include_disabled=false&parent=0')
+        tainacanApi.get('/collection/' + selectedCollectionId + '/metadata/?nopaging=1&include_disabled=false&parent=0')
             .then(response => {
+                if ( Array.isArray(enabledMetadata) && enabledMetadata.length == 0 )
+                    enabledMetadata = {};
+                
                 collectionMetadata = response.data;
                 collectionMetadata.forEach(aMetadatum => {
-                    if ( enabledMetadata[aMetadatum.id] === undefined )
-                        enabledMetadata[aMetadatum.id] = true;
+                    if ( enabledMetadata['' + aMetadatum.id] === undefined )
+                        enabledMetadata['' + aMetadatum.id] = true;
                 });
                 isLoadingCollectionMetadata = false;
                 setAttributes({

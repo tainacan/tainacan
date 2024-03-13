@@ -9,7 +9,7 @@ const { useBlockProps, InnerBlocks, BlockControls, AlignmentControl, InspectorCo
 
 import SingleItemModal from '../../js/selection/single-item-modal.js';
 import getCollectionIdFromPossibleTemplateEdition from '../../js/template/tainacan-blocks-single-item-template-mode.js';
-import tainacan from '../../js/axios.js';
+import tainacanApi from '../../js/axios.js';
 import axios from 'axios';
 
 export default function ({ attributes, setAttributes, isSelected }) {
@@ -56,7 +56,7 @@ export default function ({ attributes, setAttributes, isSelected }) {
 
             let endpoint = '/collection/'+ collectionId + '/metadata-sections';
 
-            tainacan.get(endpoint, { cancelToken: metadataSectionsRequestSource.token })
+            tainacanApi.get(endpoint, { cancelToken: metadataSectionsRequestSource.token })
                 .then(response => {
 
                     metadataSections = response.data ? response.data : [];

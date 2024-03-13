@@ -18,7 +18,9 @@
                     &nbsp;{{ $i18n.get('collections') }}
                 </p>
                 <br>
-                <p class="subtitle is-6">{{ $i18n.get('info_no_collection_created') }}</p>
+                <p class="subtitle is-6">
+                    {{ $i18n.get('info_no_collection_created') }}
+                </p>
             </div>
         </div>
         <div 
@@ -45,7 +47,8 @@ export default {
             handler() {
                 this.buildCollectionsList();
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     methods: {

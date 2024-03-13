@@ -18,7 +18,9 @@
                     &nbsp;{{ $i18n.get('taxonomies') }}
                 </p>
                 <br>
-                <p class="subtitle is-6">{{ $i18n.get('info_no_taxonomy_created') }}</p>
+                <p class="subtitle is-6">
+                    {{ $i18n.get('info_no_taxonomy_created') }}
+                </p>
             </div>
         </div>
         <div 
@@ -49,7 +51,8 @@ export default {
             handler() {
                 this.buildTaxonomiesList();
             },
-            immediate: true
+            immediate: true,
+            deep: true
         }
     },
     methods: {

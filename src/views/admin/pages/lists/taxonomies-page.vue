@@ -2,7 +2,7 @@
     <div>
         <div class="repository-level-page page-container">
             <tainacan-title 
-                    :bread-crumb-items="[{ path: '', label: $i18n.get('taxonomies') }]"/>
+                    :bread-crumb-items="[{ path: '', label: $i18n.get('taxonomies') }]" />
             <div class="sub-header">
 
                 <!-- New Taxonomy Button ----  -->
@@ -10,11 +10,17 @@
                         v-if="$userCaps.hasCapability('tnc_rep_edit_taxonomies')"
                         class="header-item">
                     <router-link
-                            id="button-create-taxonomy" 
-                            tag="button" 
-                            class="button is-secondary"
-                            :to="{ path: $routerHelper.getNewTaxonomyPath() }">
-                        {{ $i18n.getFrom('taxonomies', 'new_item') }}
+                            v-slot="{ navigate }"
+                            :to="{ path: $routerHelper.getNewTaxonomyPath() }"
+                            custom>
+                        <button 
+                                id="button-create-taxonomy"
+                                type="button"
+                                role="link" 
+                                class="button is-secondary"
+                                @click="navigate()">
+                            {{ $i18n.getFrom('taxonomies', 'new_item') }}
+                        </button>
                     </router-link>
                 </div>
 
@@ -24,24 +30,25 @@
                     <b-dropdown
                             :mobile-modal="true"
                             :disabled="taxonomies.length <= 0 || isLoading"
-                            @input="onChangeOrder"
                             aria-role="list"
-                            trap-focus>
-                        <button
-                                :aria-label="$i18n.get('label_sorting_direction')"
-                                class="button is-white"
-                                slot="trigger">
-                            <span 
-                                    style="margin-top: -2px;"
-                                    class="icon is-small gray-icon">
-                                <i 
-                                        :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
-                                        class="tainacan-icon tainacan-icon-1-125em"/>
-                            </span>
-                            <span class="icon">
-                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                            </span>
-                        </button>
+                            trap-focus
+                            @update:model-value="onChangeOrder">
+                        <template #trigger>
+                            <button
+                                    :aria-label="$i18n.get('label_sorting_direction')"
+                                    class="button is-white">
+                                <span 
+                                        style="margin-top: -2px;"
+                                        class="icon is-small gray-icon">
+                                    <i 
+                                            :class="order == 'desc' ? 'tainacan-icon-sortdescending' : 'tainacan-icon-sortascending'"
+                                            class="tainacan-icon tainacan-icon-1-125em" />
+                                </span>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                                </span>
+                            </button>
+                        </template>
                         <b-dropdown-item
                                 aria-controls="items-list-results"
                                 role="button"
@@ -50,7 +57,7 @@
                                 aria-role="listitem"
                                 style="padding-bottom: 0.45em">
                             <span class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortdescending" />
                             </span>
                             {{ $i18n.get('label_descending') }}
                         </b-dropdown-item>
@@ -62,7 +69,7 @@
                                 aria-role="listitem"
                                 style="padding-bottom: 0.45em">
                             <span class="icon is-small gray-icon">
-                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending"/>
+                                <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-sortascending" />
                             </span>
                             {{ $i18n.get('label_ascending') }}
                         </b-dropdown-item>
@@ -75,13 +82,13 @@
                     <b-select
                             class="sorting-select"
                             :disabled="taxonomies.length <= 0"
-                            @input="onChangeOrderBy($event)"
-                            :value="orderBy"
-                            :label="$i18n.get('label_sorting')">
+                            :model-value="orderBy"
+                            :label="$i18n.get('label_sorting')"
+                            @update:model-value="onChangeOrderBy($event)">
                         <option
                                 v-for="(option, index) in sortingOptions"
-                                :value="option.value"
-                                :key="index">
+                                :key="index"
+                                :value="option.value">
                             {{ option.label }}
                         </option>
                     </b-select>
@@ -90,35 +97,35 @@
                 <!-- Textual Search -------------->
                 <b-field class="header-item">
                     <b-input 
+                            v-model="searchQuery"
                             :placeholder="$i18n.get('instruction_search')"
                             type="search"
                             size="is-small"
                             :aria-label="$i18n.get('instruction_search') + ' ' + $i18n.get('taxonomies')"
                             autocomplete="on"
-                            v-model="searchQuery"
-                            @keyup.enter.native="searchTaxonomies()"
                             icon-right="magnify"
                             icon-right-clickable
+                            @keyup.enter="searchTaxonomies()"
                             @icon-right-click="searchTaxonomies()" />
                 </b-field>
             </div>
 
             <div class="above-subheader">
                 <b-loading
+                        v-model="isLoading" 
                         :is-full-page="true" 
-                        :active.sync="isLoading" 
-                        :can-cancel="false"/>
+                        :can-cancel="false" />
                 <div class="tabs">
                     <ul>
                         <li 
-                                @click="onChangeTab('')"
-                                :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,draft'}"
                                 v-tooltip="{
                                     content: $i18n.get('info_taxonomies_tab_all'),
                                     autoHide: true,
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                                }">
+                                }"
+                                :class="{ 'is-active': status == undefined || status == ''|| status == 'publish,private,draft'}"
+                                @click="onChangeTab('')">
                             <a :style="{ fontWeight: 'bold', color: 'var(--tainacan-gray5) !important' }">
                                 {{ `${$i18n.get('label_all_taxonomies')}` }}
                                 <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${Number(repositoryTotalTaxonomies.private) + Number(repositoryTotalTaxonomies.publish) + Number(repositoryTotalTaxonomies.draft)})` : '' }}</span>
@@ -127,15 +134,15 @@
                         <li 
                                 v-for="(statusOption, index) of statusOptionsForTaxonomies"
                                 :key="index"
-                                @click="onChangeTab(statusOption.slug)"
-                                :class="{ 'is-active': status == statusOption.slug}"
-                                :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
                                 v-tooltip="{
                                     content: $i18n.getWithVariables('info_%s_tab_' + statusOption.slug,[$i18n.get('taxonomies')]),
                                     autoHide: true,
                                     placement: 'auto',
                                     popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip']
-                                }">
+                                }"
+                                :class="{ 'is-active': status == statusOption.slug}"
+                                :style="{ marginRight: statusOption.slug == 'draft' ? 'auto' : '', marginLeft: statusOption.slug == 'trash' ? 'auto' : '' }"
+                                @click="onChangeTab(statusOption.slug)">
                             <a>
                                 <span 
                                         v-if="$statusHelper.hasIcon(statusOption.slug)"
@@ -143,7 +150,7 @@
                                     <i 
                                             class="tainacan-icon tainacan-icon-1-125em"
                                             :class="$statusHelper.getIcon(statusOption.slug)"
-                                            />
+                                        />
                                 </span>
                                 {{ statusOption.name }}
                                 <span class="has-text-gray">&nbsp;{{ repositoryTotalTaxonomies ? `(${repositoryTotalTaxonomies[statusOption.slug]})` : '' }}</span>
@@ -158,7 +165,7 @@
                             :status="status"
                             :page="page"
                             :taxonomies-per-page="taxonomiesPerPage"
-                            :taxonomies="taxonomies"/>
+                            :taxonomies="taxonomies" />
                     
                     <!-- Empty state image -->
                     <div v-if="taxonomies.length <= 0 && !isLoading">
@@ -166,35 +173,43 @@
                             <div class="content has-text-grey has-text-centered">
                                 <p>
                                     <span class="icon is-medium">
-                                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms"/>
+                                        <i class="tainacan-icon tainacan-icon-30px tainacan-icon-terms" />
                                     </span>
                                 </p>
-                                <p v-if="status == undefined || status == ''">{{ $i18n.get('info_no_taxonomy_created') }}</p>
+                                <p v-if="status == undefined || status == ''">
+                                    {{ $i18n.get('info_no_taxonomy_created') }}
+                                </p>
                                 <p v-else>
                                     {{ $i18n.get('info_no_taxonomies_' + status) }}
                                 </p>
                                 <router-link
                                         v-if="status == undefined || status == ''"
-                                        id="button-create-taxonomy"
-                                        tag="button"
-                                        class="button is-secondary"
-                                        :to="{ path: $routerHelper.getNewTaxonomyPath() }">
-                                    {{ $i18n.getFrom('taxonomies', 'new_item') }}
+                                        v-slot="{ navigate }"
+                                        :to="{ path: $routerHelper.getNewTaxonomyPath() }"
+                                        custom>
+                                    <button
+                                            id="button-create-taxonomy"
+                                            role="link"
+                                            type="button"
+                                            class="button is-secondary"
+                                            @click="navigate()">
+                                        {{ $i18n.getFrom('taxonomies', 'new_item') }}
+                                    </button>
                                 </router-link>
                             </div>
                         </section>
                     </div>
                     <!-- Footer -->
                     <div 
-                            class="pagination-area" 
-                            v-if="taxonomies.length > 0">
+                            v-if="taxonomies.length > 0" 
+                            class="pagination-area">
                         <div class="shown-items">
                             {{
                                 $i18n.get('info_showing_taxonomies') + ' ' +
-                                (taxonomiesPerPage * (page - 1) + 1) +
-                                $i18n.get('info_to') +
-                                getLastTaxonomyNumber() +
-                                $i18n.get('info_of') + total + '.'
+                                    (taxonomiesPerPage * (page - 1) + 1) +
+                                    $i18n.get('info_to') +
+                                    getLastTaxonomyNumber() +
+                                    $i18n.get('info_of') + total + '.'
                             }}
                         </div>
                         <div class="items-per-page">
@@ -202,28 +217,36 @@
                                     horizontal 
                                     :label="$i18n.get('label_taxonomies_per_page')">
                                 <b-select
-                                        :value="taxonomiesPerPage"
-                                        @input="onChangePerPage"
-                                        :disabled="taxonomies.length <= 0">
-                                    <option value="12">12</option>
-                                    <option value="24">24</option>
-                                    <option value="48">48</option>
-                                    <option :value="maxTaxonomiesPerPage">{{ maxTaxonomiesPerPage }}</option>
+                                        :model-value="taxonomiesPerPage"
+                                        :disabled="taxonomies.length <= 0"
+                                        @update:model-value="onChangePerPage">
+                                    <option value="12">
+                                        12
+                                    </option>
+                                    <option value="24">
+                                        24
+                                    </option>
+                                    <option value="48">
+                                        48
+                                    </option>
+                                    <option :value="maxTaxonomiesPerPage">
+                                        {{ maxTaxonomiesPerPage }}
+                                    </option>
                                 </b-select>
                             </b-field>
                         </div>
                         <div class="pagination">
                             <b-pagination
-                                    @change="onPageChange"
+                                    v-model="page"
                                     :total="total"
-                                    :current.sync="page"
                                     order="is-centered"
                                     size="is-small"
                                     :per-page="taxonomiesPerPage"
                                     :aria-next-label="$i18n.get('label_next_page')"
                                     :aria-previous-label="$i18n.get('label_previous_page')"
                                     :aria-page-label="$i18n.get('label_page')"
-                                    :aria-current-label="$i18n.get('label_current_page')"/>
+                                    :aria-current-label="$i18n.get('label_current_page')"
+                                    @change="onPageChange" />
                        
                         </div>
                     </div>

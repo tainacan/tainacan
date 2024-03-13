@@ -1,23 +1,23 @@
 <template>
     <b-field
+            :ref="isHighlightedMetadatum ? 'highlighted-metadatum': 'null'"
             :class="metadatumFormClasses"
-            :ref="isHighlightedMetadatum ? 'hightlighted-metadatum': 'null'"
             :addons="false"
             :message="errorMessage"
             :type="errorMessage ? 'is-danger' : ''">
         <span   
                 class="collapse-handle"
-                @click="(!hideCollapses && !isMetadataNavigation) ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
+                @click="(!hideCollapses && !isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''">
             <span 
                     v-if="!hideCollapses"
                     class="icon"
-                    @click="(!hideCollapses && isMetadataNavigation) ? $emit('changeCollapse', errorMessage ? true : !isCollapsed ) : ''">
+                    @click="(!hideCollapses && isMetadataNavigation) ? $emit('change-collapse', errorMessage ? true : !isCollapsed ) : ''">
                 <i 
                         :class="{
                             'tainacan-icon-arrowdown' : isCollapsed || errorMessage,
                             'tainacan-icon-arrowright' : !(isCollapsed || errorMessage)
                         }"
-                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em"/>
+                        class="has-text-secondary tainacan-icon tainacan-icon-1-25em" />
             </span>
             <label class="label">
                 <span
@@ -53,59 +53,63 @@
                     v-show="hideCollapses || isCollapsed || !!errorMessage"
                     v-if="isTextInputComponent">
                 <p
-                        class="metadatum-description-help-info"
                         v-if="itemMetadatum.metadatum &&
                             itemMetadatum.metadatum.description &&
                             (
                                 (!hideHelpButtons && helpInfoBellowLabel) ||
                                 (itemMetadatum.metadatum.description_bellow_name === 'yes')
-                            )">
+                            )"
+                        class="metadatum-description-help-info">
                     {{ itemMetadatum.metadatum.description }}
                 </p>
                 <component 
                         :is="metadatumComponent"
-                        v-model="values[0]" 
+                        v-model:value="values[0]" 
                         :item-metadatum="itemMetadatum"
-                        @input="changeValue"
-                        @blur="performValueChange"
+                        :disabled="false"
                         :metadata-name-filter-string="metadataNameFilterString"
                         :hide-collapses="hideCollapses"
                         :hide-metadata-types="hideMetadataTypes"
                         :hide-help-buttons="hideHelpButtons"
                         :help-info-bellow-label="helpInfoBellowLabel"
                         :is-mobile-screen="isMobileScreen"
-                        @mobileSpecialFocus="onMobileSpecialFocus"
                         :is-focused="isFocused"
-                        :is-metadata-navigation="isMetadataNavigation" />
+                        :is-metadata-navigation="isMetadataNavigation"
+                        @update:value="changeValue"
+                        @blur="performValueChange"
+                        @mobile-special-focus="onMobileSpecialFocus" />
                 <template v-if="isMultiple && values.length > 1">
                     <transition-group
+                            tag="div"
                             name="filter-item"
                             class="multiple-inputs">
-                        <template v-for="(value, index) of values">
+                        <template 
+                                v-for="(value, index) of values"
+                                :key="index">
                             <component 
-                                    v-if="index > 0"
-                                    :key="index"
                                     :is="metadatumComponent"
-                                    v-model="values[index]" 
+                                    v-if="index > 0"
+                                    v-model:value="values[index]" 
                                     :item-metadatum="itemMetadatum"
-                                    @input="changeValue"
-                                    @blur="performValueChange"
+                                    :disabled="false"
                                     :metadata-name-filter-string="metadataNameFilterString"
                                     :hide-collapses="hideCollapses"
                                     :hide-metadata-types="hideMetadataTypes"
                                     :hide-help-buttons="hideHelpButtons"
                                     :help-info-bellow-label="helpInfoBellowLabel"
                                     :is-mobile-screen="isMobileScreen"
-                                    @mobileSpecialFocus="onMobileSpecialFocus"
                                     :is-focused="isFocused"
-                                    :is-metadata-navigation="isMetadataNavigation" />
+                                    :is-metadata-navigation="isMetadataNavigation"
+                                    @update:value="changeValue"
+                                    @blur="performValueChange"
+                                    @mobile-special-focus="onMobileSpecialFocus" />
                             <a 
                                     v-if="index > 0" 
-                                    @click="removeValue(index)"
+                                    :key="index"
                                     class="add-link"
-                                    :key="index">
+                                    @click="removeValue(index)">
                                 <span class="icon is-small">
-                                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove"/>
+                                    <i class="tainacan-icon has-text-secondary tainacan-icon-remove" />
                                 </span>
                                 &nbsp;{{ $i18n.get('label_remove_value') }}
                             </a>
@@ -114,10 +118,10 @@
                 </template>
                 <template v-if="isMultiple && (maxMultipleValues === undefined || maxMultipleValues === 0 || (maxMultipleValues !== 1 && maxMultipleValues > values.length))">
                     <a 
-                            @click="addValue"
-                            class="is-inline-block add-link">
+                            class="is-inline-block add-link"
+                            @click="addValue">
                         <span class="icon is-small">
-                            <i class="tainacan-icon has-text-secondary tainacan-icon-add"/>
+                            <i class="tainacan-icon has-text-secondary tainacan-icon-add" />
                         </span>
                         &nbsp;{{ $i18n.get('label_add_value') }}
                     </a>
@@ -129,21 +133,20 @@
                     v-show="hideCollapses || isCollapsed"
                     v-else>
                 <p
-                        class="metadatum-description-help-info"
                         v-if="itemMetadatum.metadatum &&
                             itemMetadatum.metadatum.description &&
                             (
                                 (!hideHelpButtons && helpInfoBellowLabel) ||
                                 (itemMetadatum.metadatum.description_bellow_name === 'yes')
-                            )">
+                            )"
+                        class="metadatum-description-help-info">
                     {{ itemMetadatum.metadatum.description }}
                 </p>
                 <component
                         :is="metadatumComponent"
-                        v-model="values"
+                        v-model:value="values"
                         :item-metadatum="itemMetadatum"
-                        @input="changeValue"
-                        @blur="performValueChange"
+                        :disabled="false"
                         :is-last-metadatum="isLastMetadatum"
                         :hide-collapses="hideCollapses"
                         :hide-metadata-types="hideMetadataTypes"
@@ -151,20 +154,35 @@
                         :help-info-bellow-label="helpInfoBellowLabel"
                         :is-mobile-screen="isMobileScreen"
                         :metadata-name-filter-string="metadataNameFilterString"
-                        @mobileSpecialFocus="onMobileSpecialFocus"
                         :is-focused="isFocused"
                         :is-metadata-navigation="isMetadataNavigation"
-                        :enumerate-metadatum="enumerateMetadatum" />
+                        :enumerate-metadatum="enumerateMetadatum"
+                        @update:value="changeValue"
+                        @blur="performValueChange"
+                        @mobile-special-focus="onMobileSpecialFocus" />
             </div>
         </transition>
     </b-field>
 </template>
 
 <script>
-    import { eventBusItemMetadata } from '../../js/event-bus-item-metadata';
+    import { nextTick, defineAsyncComponent } from 'vue';
 
     export default {
         name: 'TainacanFormItem',
+        components:{
+            TainacanText: defineAsyncComponent(() => import('./text/TainacanText.vue')),
+            TainacanTextarea: defineAsyncComponent(() => import('./textarea/TainacanTextarea.vue')),
+            TainacanSelectbox: defineAsyncComponent(() => import('./selectbox/TainacanSelectbox.vue')),
+            TainacanNumeric: defineAsyncComponent(() => import('./numeric/TainacanNumeric.vue')),
+            TainacanDate: defineAsyncComponent(() => import('./date/TainacanDate.vue')),
+            TainacanRelationship: defineAsyncComponent(() => import('./relationship/TainacanRelationship.vue')),
+            TainacanTaxonomy: defineAsyncComponent(() => import('./taxonomy/TainacanTaxonomy.vue')),
+            TainacanCompound: defineAsyncComponent(() => import('./compound/TainacanCompound.vue')),
+            TainacanUser: defineAsyncComponent(() => import('./user/TainacanUser.vue')),
+            TainacanGeocoordinate: defineAsyncComponent(() => import('./geocoordinate/TainacanGeoCoordinate.vue')),
+            TainacanURL: defineAsyncComponent(() => import('./url/TainacanURL.vue'))
+        },
         props: {
             itemMetadatum: Object,
             isCollapsed: true,
@@ -179,6 +197,11 @@
             isMetadataNavigation: false,
             enumerateMetadatum: [String, Boolean]
         },
+        emits: [
+            'input',
+            'change-collapse',
+            'mobile-special-focus'
+        ],
         data(){
             return {
                 values: [],
@@ -209,7 +232,7 @@
             metadatumFormClasses() {
                 return '' + 
                     (this.hideCollapses ? ' has-collapses-hidden' : '') + 
-                    (this.isHighlightedMetadatum ? ' hightlighted-metadatum' : '') + 
+                    (this.isHighlightedMetadatum ? ' highlighted-metadatum' : '') + 
                     (this.metadatumComponent ? ' tainacan-metadatum-component--' + this.metadatumComponent : '') +
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.placeholder ? ' has-placeholder' : '') +  
                     (this.itemMetadatum && this.itemMetadatum.metadatum && this.itemMetadatum.metadatum.description ? ' has-description' : '') +  
@@ -219,7 +242,7 @@
         },
         created() {
             this.setInitialValues();
-            eventBusItemMetadata.$on('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id), (errors) => {    
+            this.$emitter.on('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id), (errors) => {    
                 let updatedErrorMessage = '';
                 if (errors && errors.errors && this.itemMetadatum && this.itemMetadatum.metadatum && (this.itemMetadatum.parent_meta_id ? (this.itemMetadatum.parent_meta_id == errors.parent_meta_id && this.itemMetadatum.metadatum.id == errors.metadatum_id) : this.itemMetadatum.metadatum.id == errors.metadatum_id)) {
                     for (let error of errors.errors) { 
@@ -230,9 +253,9 @@
                 this.errorMessage = updatedErrorMessage;
             }); 
         },
-        beforeDestroy() {
+        beforeUnmount() {
             if (this.itemMetadatum && this.itemMetadatum.metadatum) {
-                eventBusItemMetadata.$off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
+                this.$emitter.off('updateErrorMessageOf#' + (this.itemMetadatum.parent_meta_id ? this.itemMetadatum.metadatum.id + '-' + this.itemMetadatum.parent_meta_id : this.itemMetadatum.metadatum.id));
             }
         },
         mounted () {
@@ -241,8 +264,8 @@
 
                 if (this.isHighlightedMetadatum) {
                     
-                    this.$nextTick(() => {
-                        let highlightedMetadatum = this.$refs['hightlighted-metadatum'];
+                    nextTick(() => {
+                        let highlightedMetadatum = this.$refs['highlighted-metadatum'];
                         if (highlightedMetadatum && highlightedMetadatum.$el && highlightedMetadatum.$el.scrollIntoView)
                             setTimeout(() => highlightedMetadatum.$el.scrollIntoView(), 500);
                     });
@@ -315,7 +338,7 @@
                 }
                 
                 // If none is the case, the value is update request is sent to the API
-                eventBusItemMetadata.$emit('input', {
+                this.$emit('input', {
                     itemId: this.itemMetadatum.item.id,
                     metadatumId: this.itemMetadatum.metadatum.id,
                     values: this.values ? this.values : '',
@@ -333,7 +356,7 @@
             },
             onMobileSpecialFocus() {
                 if (this.isMobileScreen)
-                    this.$emit('mobileSpecialFocus');
+                    this.$emit('mobile-special-focus');
             }
         }
     }
@@ -348,9 +371,9 @@
         justify-content: space-between;
     }
 
-    /deep/ .is-special-hidden-for-mobile,
-    /deep/ .is-special-hidden-for-mobile:focus,
-    /deep/ .is-special-hidden-for-mobile:focus-visible {
+    :deep(.is-special-hidden-for-mobile),
+    :deep(.is-special-hidden-for-mobile:focus),
+    :deep(.is-special-hidden-for-mobile:focus-visible) {
         opacity: 0;
         width: 0;
         height: 0 !important;
@@ -369,7 +392,7 @@
         border-bottom: 1px solid var(--tainacan-input-border-color);
         padding: 10px var(--tainacan-container-padding);
 
-        &.hightlighted-metadatum {
+        &.highlighted-metadatum {
             background-color: var(--tainacan-white);
             transition: background-color 0.8s; 
             animation-name: metadatum-highlight;

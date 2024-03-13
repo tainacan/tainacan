@@ -16,16 +16,14 @@
                 :type="optionType"
                 :message="optionMessage">
             <label class="label is-inline">
-                {{ $i18n.getHelperTitle('tainacan-selectbox', 'options') }}<span :class="optionType" >&nbsp;*&nbsp;</span>
+                {{ $i18n.getHelperTitle('tainacan-selectbox', 'options') }}<span :class="optionType">&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-selectbox', 'options')"
-                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')"/>
+                        :message="$i18n.getHelperMessage('tainacan-selectbox', 'options')" />
             </label>
 
             <b-taginput
                     v-model="options"
-                    @input="emitValues()"
-                    @focus="clear()"
                     attached
                     :confirm-keys="optionsSeparator"
                     :on-paste-separators="optionsSeparator"
@@ -33,17 +31,19 @@
                     :aria-close-label="$i18n.get('remove_value')"
                     class="tainacan-selectbox-metadata-type--taginput"
                     :class="{'has-selected': options != undefined && options != []}"
-                    :placeholder="$i18n.get('new') + ', ...'" />
+                    :placeholder="$i18n.get('new') + ', ...'"
+                    @update:model-value="emitValues()"
+                    @focus="clear()" />
             <div class="separator-options">
                 <label class="label is-inline">{{ $i18n.getHelperTitle('tainacan-selectbox', 'options_separator') }}</label>
                 <b-checkbox
                         v-for="separator of ['Enter', 'Tab', ',', ';', '|']"
                         :key="separator"
-                        name="metadata_type_selectbox[options_separator]"
-                        @input="emitValues()"
                         v-model="optionsSeparator"
+                        name="metadata_type_selectbox[options_separator]"
                         :native-value="separator"
-                        :disabled="separator == 'Enter'">
+                        :disabled="separator == 'Enter'"
+                        @update:model-value="emitValues()">
                     <kbd>{{ separator }}</kbd>
                 </b-checkbox>
             </div>
@@ -58,6 +58,7 @@
             metadatum: [ String, Object ],
             errors: [ String, Object, Array ]
         },
+        emits: ['update:value'],
         data() {
             return {
                 optionType: '',
@@ -88,7 +89,7 @@
                 this.optionMessage = '';
             },
             emitValues() {
-                this.$emit('input', {
+                this.$emit('update:value', {
                     options: ( this.options.length > 0 ) ? this.options.join('\n') : '',
                     options_separator: JSON.stringify(this.optionsSeparator)
                 })
@@ -129,14 +130,14 @@
             width: 100%;
         }
     }
-    .tainacan-selectbox-metadata-type--taginput /deep/ {
-        .tag,
-        .tags {
+    .tainacan-selectbox-metadata-type--taginput {
+        :deep(.tag),
+        :deep(.tags) {
             white-space: normal !important;
             min-height: calc(2em - 1px) !important;
             height: auto !important;
         }
-        .tag.is-delete {
+        :deep(.tag.is-delete) {
             min-width: calc(2em - 1px) !important;
         }
     }

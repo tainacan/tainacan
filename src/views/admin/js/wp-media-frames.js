@@ -61,8 +61,8 @@ export default {
 							uploadedTo: wp.media.view.settings.post.id,
 							orderby: 'menuOrder',
 							order: 'ASC',
-	 						posts_per_page: -1,
-			 				query: true
+							posts_per_page: -1,
+							query: true
 						}),
 						toolbar: 'main-gallery',
 						autoSelect: true,
@@ -70,7 +70,7 @@ export default {
 						filterable: 'unattached',
 					})
 				]
-			});
+			}).open();
 
 			this.frame.on( 'toolbar:create:main-gallery', this.galleryToolbar, this.frame );
 
@@ -173,7 +173,8 @@ export default {
 						control: this
 					})
 				]
-			});
+			}).open();
+
 			this.frame.$el.addClass( 'tainacan-thumbnail-modal' );
 			this.frame.on( 'select', this.onSelect, this );
 			this.frame.on( 'cropped', this.onCropped, this );
@@ -272,13 +273,14 @@ export default {
 						control: this
 					})
 				]
-			});
+			}).open();
 
 			//this.frame.state('cropper').set( 'canSkipCrop', true );
 			this.frame.$el.addClass( 'tainacan-header-image-modal' );
 			this.frame.on( 'select', this.onSelect, this );
 			this.frame.on( 'cropped', this.onCropped, this );
 			this.frame.on( 'skippedcrop', this.onSkippedCrop, this );
+			
 		},
 		// Called on both skippedcrop and cropped states
 		setImageFromAttachment: function( attachment ) {
@@ -314,8 +316,8 @@ export default {
 							uploadedTo: wp.media.view.settings.post.id,
 							orderby: 'menuOrder',
 							order: 'ASC',
-	 						posts_per_page: -1,
-			 				query: true
+							posts_per_page: -1,
+							query: true
 						}),
 						autoSelect: true,
 						multiple:  false,
@@ -325,7 +327,8 @@ export default {
 						uploadedTo: this.params.relatedPostId
 					})
 				]
-			});
+			}).open();
+
 			this.frame.$el.addClass( 'tainacan-document-modal' );
 			// When a file is selected, run a callback.
 			this.frame.on( 'select', () => {

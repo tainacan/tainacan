@@ -1,11 +1,11 @@
 <template>
     <div 
+            ref="termDeletionDialog"
             aria-labelledby="alert-dialog-title"
             aria-modal
             autofocus
             role="alertdialog"
-            class="tainacan-form tainacan-dialog dialog"
-            ref="termDeletionDialog">
+            class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
                 style="width: auto">
@@ -13,7 +13,7 @@
                 <span class="icon is-large">
                     <i 
                             style="color: var(--tainacan-red2);"
-                            class="tainacan-icon tainacan-icon-alert"/>
+                            class="tainacan-icon tainacan-icon-alert" />
                 </span>
             </div>
             <section 
@@ -32,13 +32,13 @@
                         v-if="showDescendantsDeleteButton"
                         class="type-of-deletion-options">
                     <b-radio 
-                            native-value="selected"
-                            v-model="typeOfDelete">
+                            v-model="typeOfDelete"
+                            native-value="selected">
                         {{ amountOfTerms > 1 ? $i18n.get('label_remove_selected_terms') : $i18n.get('label_remove_selected_term') }}
                     </b-radio>
                     <b-radio 
-                            native-value="descendants"
-                            v-model="typeOfDelete">
+                            v-model="typeOfDelete"
+                            native-value="descendants">
                         {{ amountOfTerms > 1 ? $i18n.get('label_remove_terms_and_descendants') : $i18n.get('label_remove_term_and_descendants') }}
                     </b-radio>
                 </div>
@@ -48,13 +48,13 @@
                         v-if="!hideCancel"
                         class="button is-outlined" 
                         type="button"
-                        @click="$parent.close()">
+                        @click="$emit('close')">
                     {{ $i18n.get('cancel') }}
                 </button>
                 <button 
                         type="submit"
                         class="button is-success"
-                        @click="onConfirm(typeOfDelete); $parent.close();">
+                        @click="onConfirm(typeOfDelete); $emit('close');">
                     {{ $i18n.get('continue') }}
                 </button>
             </footer>
@@ -86,6 +86,9 @@
                 default: 1
             },
         },
+        emits: [
+            'close'
+        ],
         data() {
             return {
                 typeOfDelete: 'selected'

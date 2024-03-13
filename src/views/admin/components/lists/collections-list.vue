@@ -8,32 +8,31 @@
             <div class="field select-all is-pulled-left">
                 <span>
                     <b-checkbox 
-                            @click.native="selectAllCollectionsOnPage()" 
-                            :native-value="allCollectionsOnPageSelected">
+                            :model-value="allCollectionsOnPageSelected" 
+                            @update:model-value="selectAllCollectionsOnPage()">
                         {{ $i18n.get('label_select_all_collections_page') }}
                     </b-checkbox>
                 </span>
             </div>
             <div class="field is-pulled-right">
                 <b-dropdown
+                        id="bulk-actions-dropdown"
                         position="is-bottom-left"
                         :disabled="!isSelectingCollections"
-                        id="bulk-actions-dropdown"
                         aria-role="list"
                         trap-focus>
-                    <button
-                            class="button is-white"
-                            slot="trigger">
-                        <span>{{ $i18n.get('label_bulk_actions') }}</span>
-                        <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown"/>
-                        </span>
-                    </button> 
-
+                    <template #trigger>
+                        <button class="button is-white">
+                            <span>{{ $i18n.get('label_bulk_actions') }}</span>
+                            <span class="icon">
+                                <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                            </span>
+                        </button> 
+                    </template>
                     <b-dropdown-item
                             id="item-delete-selected-items"
-                            @click="deleteSelectedCollections()"
-                            aria-role="listitem">
+                            aria-role="listitem"
+                            @click="deleteSelectedCollections()">
                         {{ $i18n.get('label_delete_selected_collections') }}
                     </b-dropdown-item>
                     <!-- <b-dropdown-item 
@@ -52,37 +51,37 @@
 
                 <!-- Backdrop for escaping context menu -->
                 <div 
-                    @click.left="clearContextMenu()"
-                    @click.right="clearContextMenu()"
-                    class="context-menu-backdrop" /> 
+                        class="context-menu-backdrop"
+                        @click.left="clearContextMenu()"
+                        @click.right="clearContextMenu()" /> 
 
                 <b-dropdown 
                         inline
                         :style="{ top: cursorPosY + 'px', left: cursorPosX + 'px' }"
                         trap-focus>
                     <b-dropdown-item
-                            @click="openCollection()" 
-                            v-if="!isOnTrash">
+                            v-if="!isOnTrash" 
+                            @click="openCollection()">
                         {{ $i18n.getFrom('collections', 'view_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            @click="openCollectionOnNewTab()"
-                            v-if="!isOnTrash">
+                            v-if="!isOnTrash"
+                            @click="openCollectionOnNewTab()">
                         {{ $i18n.get('label_open_collection_new_tab') }}
                     </b-dropdown-item>
                     <b-dropdown-item 
-                            @click="selectCollection()"
-                            v-if="contextMenuIndex != null">
+                            v-if="contextMenuIndex != null"
+                            @click="selectCollection()">
                         {{ !selectedCollections[contextMenuIndex] ? $i18n.get('label_select_collection') : $i18n.get('label_unselect_collection') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            @click="goToCollectionEditPage(contextMenuCollection)"
-                            v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_edit)">
+                            v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_edit)"
+                            @click="goToCollectionEditPage(contextMenuCollection)">
                         {{ $i18n.getFrom('collections', 'edit_item') }}
                     </b-dropdown-item>
                     <b-dropdown-item
-                            @click="deleteOneCollection(contextMenuCollection)"
-                            v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_delete)">
+                            v-if="contextMenuCollection != null && (collections[contextMenuIndex] && collections[contextMenuIndex].current_user_can_delete)"
+                            @click="deleteOneCollection(contextMenuCollection)">
                         {{ $i18n.get('label_delete_collection') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -93,7 +92,7 @@
                         <!-- Checking list -->
                         <th v-if="$userCaps.hasCapability('tnc_rep_delete_collections')">
                             &nbsp;
-                            <!-- nothing to show on header -->
+                        <!-- nothing to show on header -->
                         </th>
                         <!-- Status icon -->
                         <th v-if="isOnAllCollectionsTab">
@@ -101,51 +100,65 @@
                         </th>
                         <!-- Thumbnail -->
                         <th class="thumbnail-cell">
-                            <div class="th-wrap">{{ $i18n.get('label_thumbnail') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_thumbnail') }}
+                            </div>
                         </th>
                         <!-- Name -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_name') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_name') }}
+                            </div>
                         </th>
                         <!-- Description -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_description') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_description') }}
+                            </div>
                         </th>
                         <!-- Modification Date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_modification_date') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_modification_date') }}
+                            </div>
                         </th>
                         <!-- Creation Date -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_creation_date') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_creation_date') }}
+                            </div>
                         </th>
                         <!-- Created By -->
                         <th>
-                            <div class="th-wrap">{{ $i18n.get('label_created_by') }}</div>
+                            <div class="th-wrap">
+                                {{ $i18n.get('label_created_by') }}
+                            </div>
                         </th>
                         <!-- Total Items -->
                         <th v-if="!isOnTrash">
-                            <div class="th-wrap total-items-header">{{ $i18n.get('label_total_items') }}</div>
+                            <div class="th-wrap total-items-header">
+                                {{ $i18n.get('label_total_items') }}
+                            </div>
                         </th>
                         <th 
                                 v-if="collections.findIndex((collection) => collection.current_user_can_edit || collection.current_user_can_delete) >= 0"
                                 class="actions-header">
                             &nbsp;
-                            <!-- nothing to show on header for actions cell-->
+                        <!-- nothing to show on header for actions cell-->
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr     
-                            :class="{ 'selected-row': selectedCollections[index] }"
+                            v-for="(collection, index) of collections"
                             :key="index"
-                            v-for="(collection, index) of collections">
+                            :class="{ 'selected-row': selectedCollections[index] }">
                         <!-- Checking list -->
                         <td 
                                 v-if="$userCaps.hasCapability('tnc_rep_delete_collections')"
                                 :class="{ 'is-selecting': isSelectingCollections }"
                                 class="checkbox-cell">
-                            <b-checkbox v-model="selectedCollections[index]"/> 
+                            <b-checkbox v-model="selectedCollections[index]" /> 
                         </td>
                         <!-- Status icon -->
                         <td 
@@ -153,27 +166,27 @@
                                 class="status-cell">
                             <span 
                                     v-if="$statusHelper.hasIcon(collection.status)"
-                                    class="icon has-text-gray"
                                     v-tooltip="{
                                         content: $i18n.get('status_' + collection.status),
                                         autoHide: true,
                                         html: true,
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
-                                    }">
+                                    }"
+                                    class="icon has-text-gray">
                                 <i 
                                         class="tainacan-icon tainacan-icon-1em"
                                         :class="$statusHelper.getIcon(collection.status)"
-                                        />
+                                    />
                             </span>
                         </td>
                         <!-- Thumbnail -->
                         <td 
                                 class="thumbnail-cell column-default-width"
-                                @click.left="onClickCollection($event, collection.id, index)"
-                                @click.right="onRightClickCollection($event, collection.id, index)"
-                                :label="$i18n.get('label_thumbnail')" 
-                                :aria-label="$i18n.get('label_thumbnail')">
+                                :label="$i18n.get('label_thumbnail')"
+                                :aria-label="$i18n.get('label_thumbnail')"
+                                @click.left="onClickCollection($event, collection.id, index)" 
+                                @click.right="onRightClickCollection($event, collection.id, index)">
                             <span>
                                 <img 
                                         :alt="$i18n.get('label_thumbnail')"
@@ -184,10 +197,10 @@
                         <!-- Name -->
                         <td 
                                 class="column-default-width column-main-content"
-                                @click.left="onClickCollection($event, collection.id, index)"
-                                @click.right="onRightClickCollection($event, collection.id, index)"
-                                :label="$i18n.get('label_name')" 
-                                :aria-label="$i18n.get('label_name') + ': ' + collection.name">
+                                :label="$i18n.get('label_name')"
+                                :aria-label="$i18n.get('label_name') + ': ' + collection.name"
+                                @click.left="onClickCollection($event, collection.id, index)" 
+                                @click.right="onRightClickCollection($event, collection.id, index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -205,10 +218,10 @@
                         <!-- Description -->
                         <td
                                 class="column-large-width" 
-                                @click.left="onClickCollection($event, collection.id, index)"
-                                @click.right="onRightClickCollection($event, collection.id, index)"
-                                :label="$i18n.get('label_description')" 
-                                :aria-label="$i18n.get('label_description') + ': ' + (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`">
+                                :label="$i18n.get('label_description')"
+                                :aria-label="$i18n.get('label_description') + ': ' + (collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"
+                                @click.left="onClickCollection($event, collection.id, index)" 
+                                @click.right="onRightClickCollection($event, collection.id, index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -221,15 +234,15 @@
                                         popperClass: ['tainacan-tooltip', 'tooltip', 'tainacan-repository-tooltip'],
                                         placement: 'auto-start'
                                     }" 
-                                    v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`"/>
+                                    v-html="(collection.description != undefined && collection.description != '') ? collection.description : `<span class='has-text-gray is-italic'>` + $i18n.get('label_description_not_provided') + `</span>`" />
                         </td>
                         <!-- Modification Date -->
                         <td
-                                @click.left="onClickCollection($event, collection.id, index)"
-                                @click.right="onRightClickCollection($event, collection.id, index)"
-                                class="table-modification column-default-width" 
-                                :label="$i18n.get('label_modification_date')" 
-                                :aria-label="$i18n.get('label_modification_date') + ': ' + collection.modification_date">
+                                class="table-modification column-default-width"
+                                :label="$i18n.get('label_modification_date')"
+                                :aria-label="$i18n.get('label_modification_date') + ': ' + collection.modification_date" 
+                                @click.left="onClickCollection($event, collection.id, index)" 
+                                @click.right="onRightClickCollection($event, collection.id, index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -246,11 +259,11 @@
                         </td>
                         <!-- Creation Date -->
                         <td
-                                @click.left="onClickCollection($event, collection.id, index)"
-                                @click.right="onRightClickCollection($event, collection.id, index)"
-                                class="table-creation column-default-width" 
-                                :label="$i18n.get('label_creation_date')" 
-                                :aria-label="$i18n.get('label_creation_date') + ': ' + collection.creation_date">
+                                class="table-creation column-default-width"
+                                :label="$i18n.get('label_creation_date')"
+                                :aria-label="$i18n.get('label_creation_date') + ': ' + collection.creation_date" 
+                                @click.left="onClickCollection($event, collection.id, index)" 
+                                @click.right="onRightClickCollection($event, collection.id, index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -267,11 +280,11 @@
                         </td>
                         <!-- Created by -->
                         <td
-                                @click.left="onClickCollection($event, collection.id, index)"
-                                @click.right="onRightClickCollection($event, collection.id, index)"
-                                class="table-creation column-default-width" 
-                                :label="$i18n.get('label_created_by')" 
-                                :aria-label="$i18n.get('label_created_by') + ': ' + collection.author_name">
+                                class="table-creation column-default-width"
+                                :label="$i18n.get('label_created_by')"
+                                :aria-label="$i18n.get('label_created_by') + ': ' + collection.author_name" 
+                                @click.left="onClickCollection($event, collection.id, index)" 
+                                @click.right="onRightClickCollection($event, collection.id, index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -288,12 +301,12 @@
                         </td>
                         <!-- Total items -->
                         <td
-                                @click.left="onClickCollection($event, collection.id, index)"
-                                @click.right="onRightClickCollection($event, collection.id, index)"
-                                class="column-small-width column-align-right" 
-                                :label="$i18n.get('label_total_items')" 
                                 v-if="collection.total_items != undefined"
-                                :aria-label="$i18n.get('label_total_items') + ': ' + getTotalItems(collection.total_items)">
+                                class="column-small-width column-align-right"
+                                :label="$i18n.get('label_total_items')" 
+                                :aria-label="$i18n.get('label_total_items') + ': ' + getTotalItems(collection.total_items)" 
+                                @click.left="onClickCollection($event, collection.id, index)"
+                                @click.right="onRightClickCollection($event, collection.id, index)">
                             <p
                                     v-tooltip="{
                                         delay: {
@@ -311,14 +324,14 @@
                         <!-- Actions -->
                         <td  
                                 v-if="collection.current_user_can_edit || collection.current_user_can_delete"
-                                @click="onClickCollection($event, collection.id, index)"
                                 class="column-default-width"
-                                :class="{ 'actions-cell': collection.current_user_can_edit || collection.current_user_can_delete }"  
-                                :label="$i18n.get('label_actions')">
+                                :class="{ 'actions-cell': collection.current_user_can_edit || collection.current_user_can_delete }"
+                                :label="$i18n.get('label_actions')"  
+                                @click="onClickCollection($event, collection.id, index)">
                             <div class="actions-container">
                                 <a 
-                                        id="button-edit" 
-                                        v-if="collection.current_user_can_edit"
+                                        v-if="collection.current_user_can_edit" 
+                                        id="button-edit"
                                         :aria-label="$i18n.getFrom('collections','edit_item')" 
                                         @click.prevent.stop="goToCollectionEditPage(collection.id)">                      
                                     <span 
@@ -330,12 +343,12 @@
                                                 html: true
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings"/>
+                                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-settings" />
                                     </span>
                                 </a>
                                 <a 
-                                        id="button-delete"
                                         v-if="collection.current_user_can_delete"
+                                        id="button-delete"
                                         :aria-label="$i18n.get('label_button_delete')" 
                                         @click.prevent.stop="deleteOneCollection(collection.id)">
                                     <span 
@@ -348,15 +361,15 @@
                                             class="icon">
                                         <i 
                                                 :class="{ 'tainacan-icon-delete': !isOnTrash, 'tainacan-icon-deleteforever': isOnTrash }"
-                                                class="tainacan-icon tainacan-icon-1-25em"/>
+                                                class="tainacan-icon tainacan-icon-1-25em" />
                                     </span>
                                 </a>
                                 <a 
                                         id="button-open-external" 
                                         :aria-label="$i18n.getFrom('collections','view_item')"
-                                        @click.stop="" 
-                                        target="_blank"
-                                        :href="collection.url">                      
+                                        target="_blank" 
+                                        :href="collection.url"
+                                        @click.stop="">                      
                                     <span 
                                             v-tooltip="{
                                                 content: $i18n.get('label_view_collection_on_website'),
@@ -366,7 +379,7 @@
                                                 html: true
                                             }"
                                             class="icon">
-                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl"/>
+                                        <i class="tainacan-icon tainacan-icon-1-125em tainacan-icon-openurl" />
                                     </span>
                                 </a>
                             </div>
@@ -412,23 +425,29 @@ export default {
         }
     },
     watch: {
-        collections() {
-            this.selectedCollections = [];
-            for (let i = 0; i < this.collections.length; i++)
-                this.selectedCollections.push(false);    
+        collections: {
+            handler() {
+                this.selectedCollections = [];
+                for (let i = 0; i < this.collections.length; i++)
+                    this.selectedCollections.push(false);    
+            },
+            deep: true
         },
-        selectedCollections() {
-            let allSelected = true;
-            let isSelecting = false;
-            for (let i = 0; i < this.selectedCollections.length; i++) {
-                if (this.selectedCollections[i] == false) {
-                    allSelected = false;
-                } else {
-                    isSelecting = true;
+        selectedCollections: {
+            handler() {
+                let allSelected = true;
+                let isSelecting = false;
+                for (let i = 0; i < this.selectedCollections.length; i++) {
+                    if (this.selectedCollections[i] == false) {
+                        allSelected = false;
+                    } else {
+                        isSelecting = true;
+                    }
                 }
-            }
-            this.allCollectionsOnPageSelected = allSelected;
-            this.isSelectingCollections = isSelecting;
+                this.allCollectionsOnPageSelected = allSelected;
+                this.isSelectingCollections = isSelecting;
+            },
+            deep: true
         }
     },
     methods: {
@@ -539,17 +558,16 @@ export default {
             this.clearContextMenu();
         },
         selectCollection() {
-            if (this.contextMenuIndex != null) {
-                this.$set(this.selectedCollections, this.contextMenuIndex, !this.selectedCollections[this.contextMenuIndex]);
-            }
+            if (this.contextMenuIndex != null)
+                Object.assign( this.selectedCollections, { [this.contextMenuIndex]: !this.selectedCollections[this.contextMenuIndex] });
+            
             this.clearContextMenu();
         },
         onClickCollection($event, collectionId, index) {
-            if ($event.ctrlKey) {
-                this.$set(this.selectedCollections, index, !this.selectedCollections[index]); 
-            } else {
+            if ($event.ctrlKey)
+                Object.assign( this.selectedCollections, { [index]: !this.selectedCollections[index] }); 
+            else
                 this.$router.push(this.$routerHelper.getCollectionPath(collectionId));
-            }
         },
         goToCollectionEditPage(collectionId) {
             this.$router.push(this.$routerHelper.getCollectionEditPath(collectionId));

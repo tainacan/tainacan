@@ -16,7 +16,7 @@
                     :class="{
                         'page-container-small': !$adminOptions.hideRepositorySubheader && !$adminOptions.hideCollectionSubheader,
                         'is-loading-collection-basics': isLoadingCollectionBasics
-                    }"/>
+                    }" />
         </section>
     </div>
 </template>
@@ -32,34 +32,36 @@ export default {
     },
     data() {
         return {
-            collectionId: Number,
+            collectionId: [String, Number],
             isLoadingCollectionBasics: Boolean
         }
     },
     watch: {
-        '$route' (to, from) {
-            if (!this.isRepositoryLevel &&
-                (from != undefined) &&
-                (from.path != undefined) &&
-                (to.path != from.path) &&
-                (this.collectionId != this.$route.params.collectionId)
-            ) {
-                this.isLoadingCollectionBasics = true;
-                this.collectionId = this.$route.params.collectionId;
-                this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
-                    .then(() => {
-                        this.isLoadingCollectionBasics = false;
-                    })
-                    .catch((error) => {
-                        this.$console.error(error);
-                        this.isLoadingCollectionBasics = false;
-                    });
-            }
+        '$route': {
+            handler(to, from) {
+                if (!this.isRepositoryLevel &&
+                    (from != undefined) &&
+                    (from.path != undefined) &&
+                    (to.path != from.path) &&
+                    (this.collectionId != this.$route.params.collectionId)
+                ) {
+                    this.isLoadingCollectionBasics = true;
+                    this.collectionId = Number(this.$route.params.collectionId);
+                    this.fetchCollectionBasics({ collectionId: this.collectionId, isContextEdit: true })
+                        .then(() => {
+                            this.isLoadingCollectionBasics = false;
+                        })
+                        .catch((error) => {
+                            this.$console.error(error);
+                            this.isLoadingCollectionBasics = false;
+                        });
+                }
+            },
+            deep: true
         }
     },
     created() {
-        this.collectionId = this.$route.params.collectionId;
-        
+        this.collectionId = Number(this.$route.params.collectionId);
         this.$eventBusSearch.setCollectionId(this.collectionId);
 
         // Loads to store basic collection info such as name, url, current_user_can_edit... etc.

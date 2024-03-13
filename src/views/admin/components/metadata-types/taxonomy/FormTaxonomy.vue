@@ -7,24 +7,26 @@
                 :type="taxonomyType"
                 :message="taxonomyMessage">
             <label class="label is-inline">
-                {{ $i18n.get('label_select_taxonomy') }}<span :class="taxonomyType" >&nbsp;*&nbsp;</span>
+                {{ $i18n.get('label_select_taxonomy') }}<span :class="taxonomyType">&nbsp;*&nbsp;</span>
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-taxonomy', 'taxonomy_id')"
-                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'taxonomy_id')"/>
+                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'taxonomy_id')" />
             </label>
             <b-select
+                    v-model="taxonomy_id"
                     name="field_type_options[taxonomy_id]"
                     placeholder="Select the taxonomy"
-                    v-model="taxonomy_id"
-                    @input="emitValues()"
-                    @focus="clear"
                     :loading="loading"
-                    expanded>
-                <option value="">{{ $i18n.get('label_selectbox_init') }}...</option>
+                    expanded
+                    @update:model-value="emitValues()"
+                    @focus="clear">
+                <option value="">
+                    {{ $i18n.get('label_selectbox_init') }}...
+                </option>
                 <option
                         v-for="option in taxonomies"
-                        :value="option.id"
-                        :key="option.id">
+                        :key="option.id"
+                        :value="option.id">
                     {{ option.name }}
                 </option>
             </b-select>
@@ -35,34 +37,34 @@
                 {{ $i18n.get('label_select_taxonomy_input_type') }}
                 <help-button
                         :title="$i18n.getHelperTitle('tainacan-taxonomy', 'input_type')"
-                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'input_type')"/>
+                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'input_type')" />
             </label>
             <b-select
                     v-if="listInputType"
+                    v-model="input_type"
                     name="metadata_type_options[component_type]"
                     placeholder="Select the input type for the taxonomy metadatum"
-                    @input="emitValues()"
-                    v-model="input_type"
-                    expanded>
+                    expanded
+                    @update:model-value="emitValues()">
                 <option
                         v-for="(option, index) in single_types"
-                        :value="index"
-                        :key="index">
+                        :key="index"
+                        :value="index">
                     {{ option }}
                 </option>
             </b-select>
 
             <b-select
+                    v-else
+                    v-model="input_type"
                     name="metadata_type_options[input_type]"
                     placeholder="Select the input type for the taxonomy metadatum"
-                    v-model="input_type"
-                    @input="emitValues()"
-                    v-else
-                    expanded>
+                    expanded
+                    @update:model-value="emitValues()">
                 <option
                         v-for="(option, index) in multiple_types"
-                        :value="index"
-                        :key="index">
+                        :key="index"
+                        :value="index">
                     {{ option }}
                 </option>
             </b-select>
@@ -74,12 +76,12 @@
                 :label="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="visible_options_list"
-                    @input="emitValues()" />
+                    v-model="visible_options_list" 
+                    size="is-small"
+                    @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'visible_options_list')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')"/>
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'visible_options_list')" />
         </b-field>
         <b-field
                 v-if="taxonomy_id && taxonomies.length && isTermCreationAllowedOnCurrentTaxonomy" 
@@ -87,14 +89,14 @@
                 :label="$i18n.get('label_taxonomy_allow_new_terms')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="allow_new_terms"
-                    @input="emitValues()"
+                    v-model="allow_new_terms" 
+                    size="is-small"
                     true-value="yes"
-                    false-value="no" />
+                    false-value="no"
+                    @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'allow_new_terms')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')"/>
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'allow_new_terms')" />
         </b-field>
         <b-field
                 v-if="taxonomy_id && taxonomies.length" 
@@ -102,39 +104,39 @@
                 :label="$i18n.getHelperTitle('tainacan-taxonomy', 'do_not_dispaly_term_as_link')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="do_not_dispaly_term_as_link"
-                    @input="emitValues()"
+                    v-model="do_not_dispaly_term_as_link" 
+                    size="is-small"
                     true-value="yes"
-                    false-value="no" />
+                    false-value="no"
+                    @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'do_not_dispaly_term_as_link')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'do_not_dispaly_term_as_link')"/>
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'do_not_dispaly_term_as_link')" />
         </b-field>
         <b-field :addons="false">
             <label class="label">
                 {{ $i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections') }}
                 <help-button
-                    :title="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')"/>
+                        :title="$i18n.getHelperTitle('tainacan-taxonomy', 'link_filtered_by_collections')"
+                        :message="$i18n.getHelperMessage('tainacan-taxonomy', 'link_filtered_by_collections')" />
             </label>
             <b-taginput
-                    :value="getSelectedTaxonomyCollections()"
+                    :model-value="getSelectedTaxonomyCollections()"
                     autocomplete
                     :open-on-focus="true"
                     :data="collections.filter((collection) => !link_filtered_by_collections.includes(collection.id) && (collectionSearchString ? (collection.name.toLowerCase().indexOf(collectionSearchString.toLowerCase()) >= 0) : true) )"
                     field="name"
-                    @input="updateSelectedCollections"
-                    @focus="clear()"
                     attached
                     :disabled="do_not_dispaly_term_as_link == 'yes'"
                     :remove-on-keys="[]"
                     :aria-close-label="$i18n.get('remove_value')"
                     :class="{'has-selected': link_filtered_by_collections != undefined && link_filtered_by_collections != []}"
                     :placeholder="$i18n.get('instruction_select_one_or_more_collections')"
-                    @typing="filterCollections"
-                    :loading="loadingCollections">
-                <template slot-scope="props">
+                    :loading="loadingCollections"
+                    @update:model-value="updateSelectedCollections"
+                    @focus="clear()"
+                    @typing="filterCollections">
+                <template #default="props">
                     <div class="media">
                         <div
                                 v-if="props.option.thumbnail && props.option.thumbnail['tainacan-small'] && props.option.thumbnail['tainacan-small']"
@@ -142,14 +144,14 @@
                             <img 
                                     width="24"
                                     :alt="$i18n.get('label_thumbnail')"
-                                    :src="$thumbHelper.getSrc(props.option['thumbnail'], 'tainacan-small')" >
+                                    :src="$thumbHelper.getSrc(props.option['thumbnail'], 'tainacan-small')">
                         </div>
                         <div class="media-content">
                             {{ props.option.name }}
                         </div>
                     </div>
                 </template>
-                <template slot="empty">
+                <template #empty>
                     {{ $i18n.get('info_no_options_found') }}
                 </template>
             </b-taginput>
@@ -159,21 +161,21 @@
                 :label="$i18n.getHelperTitle('tainacan-taxonomy', 'hide_hierarchy_path')">
                 &nbsp;
             <b-switch
-                    size="is-small" 
-                    v-model="hide_hierarchy_path"
-                    @input="emitValues()"
+                    v-model="hide_hierarchy_path" 
+                    size="is-small"
                     true-value="yes"
-                    false-value="no" />
+                    false-value="no"
+                    @update:model-value="emitValues()" />
             <help-button
                     :title="$i18n.getHelperTitle('tainacan-taxonomy', 'hide_hierarchy_path')"
-                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'hide_hierarchy_path')"/>
+                    :message="$i18n.getHelperMessage('tainacan-taxonomy', 'hide_hierarchy_path')" />
         </b-field>
 
     </section>
 </template>
 
 <script>
-    import { tainacan as axios } from '../../../js/axios';
+    import { tainacanApi } from '../../../js/axios';
 
     export default {
         props: {
@@ -181,6 +183,7 @@
             metadatum: [ String, Object ],
             errors: [ String, Object, Array ]
         },
+        emits: ['input'],
         data(){
             return {
                 isReady: false,
@@ -293,7 +296,7 @@
             fetchCollections() {
                 this.loadingCollections = true;
 
-                return axios.get('/collections?nopaging=1&context=edit&nopaging=1&fetch_only=name,id,thumbnail')
+                return tainacanApi.get('/collections?nopaging=1&context=edit&nopaging=1&fetch_only=name,id,thumbnail')
                     .then(res => {
                         this.collections = res.data ? res.data : [];
                         this.loadingCollections = false;
@@ -306,7 +309,7 @@
             fetchTaxonomies(){
                 this.loading = true;
 
-                return axios.get('/taxonomies?nopaging=1&order=asc&orderby=title')
+                return tainacanApi.get('/taxonomies?nopaging=1&order=asc&orderby=title')
                     .then(res => {
                         this.taxonomies = res.data ? res.data : [];
                         this.loading = false;

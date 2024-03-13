@@ -30,7 +30,8 @@
             margin-left: 0 !important;
             height: 185px !important;
 
-            img { 
+            img,
+            canvas { 
                 height: 185px !important;
                 margin-bottom: 0px !important;
             }
@@ -61,7 +62,8 @@
                 display: block;
             }
 
-            img {
+            img,
+            canvas {
                 height: auto;
                 width: 185px;
                 min-width: 185px;
@@ -126,7 +128,7 @@
 
             li.collection-list-item { 
                 width: 100%;
-                img { width: 100%; }
+                img,canvas { width: 100%; }
             }
         }
     }
@@ -157,7 +159,8 @@
                 word-break: break-word;
             }
 
-            img {
+            img,
+            canvas {
                 height: auto;
                 width: 54px;
                 min-width: 54px;
@@ -166,7 +169,8 @@
             }
 
 
-            a.collection-without-image img {
+            a.collection-without-image img,
+            a.collection-without-image canvas {
                 display: none;
             }
 

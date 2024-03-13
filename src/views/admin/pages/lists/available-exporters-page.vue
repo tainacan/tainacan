@@ -7,9 +7,9 @@
         <p>{{ $i18n.get('instruction_select_an_exporter_type') }}</p>
         <div class="exporter-types-container">
             <div
-                    class="exporter-type"
                     v-for="exporterType in availableExporters"
                     :key="exporterType.slug"
+                    class="exporter-type"
                     @click="onSelectExporter(exporterType)">
                 <h4>{{ exporterType.name }}</h4>
                 <p>{{ exporterType.description }}</p>
@@ -18,8 +18,8 @@
         </div>
 
         <b-loading
-                :active.sync="isLoading"
-                :can-cancel="false"/>
+                v-model="isLoading"
+                :can-cancel="false" />
     </div>
 </template>
 

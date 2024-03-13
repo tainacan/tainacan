@@ -5,21 +5,21 @@
         <a 
                 :id="isNaN(facetId) ? facetId : 'facet-id-' + facetId"
                 :href="isCollapseInsteadOfLink(facet) ? null : ((linkTermFacetsToTermPage && isMetadatumTypeTaxonomy) ? facet.term_url : facet.url)"
-                @click="() => { isCollapseInsteadOfLink(facet) ? displayChildTerms(facetId) : null }"
-                :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}">
+                :style="{ fontSize: layout == 'cloud' && facet.total_items ? + (1 + (cloudRate/4) * Math.log(facet.total_items)) + 'em' : ''}"
+                @click="() => { isCollapseInsteadOfLink(facet) ? displayChildTerms(facetId) : null }">
             <img
-                :src=" 
-                    facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
-                        ?
-                    facet.entity.thumbnail[imageSize][0] 
-                        :
-                    (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
-                        ?    
-                    facet.entity.thumbnail['thumbnail'][0] 
-                        : 
-                    `${tainacanBaseUrl}/assets/images/placeholder_square.png`)
-                "
-                :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : $root.__('Thumbnail', 'tainacan'))">
+                    :src=" 
+                        facet.entity.thumbnail && facet.entity.thumbnail[imageSize][0] && facet.entity.thumbnail[imageSize][0] 
+                            ?
+                                facet.entity.thumbnail[imageSize][0] 
+                            :
+                                (facet.entity.thumbnail && facet.entity.thumbnail['thumbnail'][0] && facet.entity.thumbnail['thumbnail'][0]
+                                    ?    
+                                        facet.entity.thumbnail['thumbnail'][0] 
+                                    : 
+                                        $thumbHelper.getEmptyThumbnailPlaceholder('empty', imageSize))
+                    "
+                    :alt="facet.thumbnail_alt ? facet.thumbnail_alt : (facet.label ? facet.label : wpI18n('Thumbnail', 'tainacan'))">
             <div :class=" 'facet-label-and-count' + (itemsCountStyle === 'below' ? ' is-style-facet-label-and-count--below' : '')">
                 <span>{{ facet.label ? facet.label : '' }}</span>
                 <span 
@@ -27,7 +27,7 @@
                         class="facet-item-count"
                         :style="{ display: !showItemsCount ? 'none' : '' }">
                     <template v-if="itemsCountStyle === 'below'">
-                        {{ facet.total_items != 1 ? (facet.total_items + ' ' + $root.__('items', 'tainacan' )) : (facet.total_items + ' ' + $root.__('item', 'tainacan' )) }}
+                        {{ facet.total_items != 1 ? (facet.total_items + ' ' + wpI18n('items', 'tainacan' )) : (facet.total_items + ' ' + wpI18n('item', 'tainacan' )) }}
                     </template>
                     <template v-else>
                         &nbsp;({{ facet.total_items }})
@@ -65,16 +65,16 @@
                         marginTop: showSearchBar ? '1.5em' : '4px'
                     }"
                     class="facets-list"
-                    :class="'facets-layout-' + layout + (!showName ? ' facets-list-without-margin' : '') + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
+                    :class="'facets-layout-' + layout + ' facets-list-without-margin' + (maxColumnsCount ? ' max-columns-count-' + maxColumnsCount : '')">
                 <li
-                        :key="childFacet"
                         v-for="childFacet in Number(facet.total_children)"
+                        :key="childFacet"
                         class="facet-list-item skeleton"
                         :style="{ 
                             minHeight: getSkeletonHeight(),
                             marginTop: layout == 'list' ? '4px' : '',
                             marginLeft: layout == 'list' ? '7px' : '',
-                            marginBottom: layout == 'grid' && showImage ? (showName ? gridMargin + 12 : gridMargin) + 'px' : ''
+                            marginBottom: layout == 'grid' && showImage ? gridMargin + 'px' : ''
                         }" />
             </ul>
             <template v-else>
@@ -91,7 +91,6 @@
                                     :child-facets-object="childFacetsObject"
                                     :facet="aChildTermFacet"
                                     :cloud-rate="cloudRate"
-                                    :tainacan-base-url="tainacanBaseUrl"
                                     :layout="layout"
                                     :append-child-terms="appendChildTerms"
                                     :metadatum-type="metadatumType"
@@ -105,7 +104,7 @@
                         <p 
                                 v-else 
                                 class="no-child-facet-found">
-                            {{ $root.__( 'The child terms of this facet do not contain items.', 'tainacan' ) }}
+                            {{ wpI18n( 'The child terms of this facet do not contain items.', 'tainacan' ) }}
                         </p>
                     </ul>
                 </transition>
@@ -119,7 +118,6 @@ export default {
     props: {
         appendChildTerms: Boolean,
         facet: Object,
-        tainacanBaseUrl: String,
         showImage: Boolean,
         showItemsCount: Boolean,
         showSearchBar: Boolean,
@@ -135,14 +133,20 @@ export default {
         itemsCountStyle: String,
         imageSize: String
     },
+    emits: [
+        'onDisplayChildTerms'
+    ],
     computed:{
         facetId() {
             return (this.facet.id != undefined ? this.facet.id : this.facet.value);
         }
     },
     methods: {
+        wpI18n(string, context) {
+            return wp && wp.i18n ? wp.i18n.__(string, context) : string;
+        },
         displayChildTerms(facetId) {
-            this.$emit('on-display-child-terms', facetId)
+            this.$emit('onDisplayChildTerms', facetId)
         },
         isCollapseInsteadOfLink(facet) {
             return (this.appendChildTerms && facet.total_children > 0 && (!this.childFacetsObject[facet.id != undefined ? facet.id : facet.value] || this.childFacetsObject[facet.id != undefined ? facet.id : facet.value].facets.length) );

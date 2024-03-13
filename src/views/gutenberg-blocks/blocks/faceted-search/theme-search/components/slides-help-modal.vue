@@ -21,7 +21,7 @@
                         id="button-close-slides-modal"
                         class="button is-outlined"
                         type="button"
-                        @click="$parent.close();">
+                        @click="$emit('close');">
                     {{ $i18n.get('close') }}</button>
             </div>
         </footer>

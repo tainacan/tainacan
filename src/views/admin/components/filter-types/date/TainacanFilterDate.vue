@@ -1,21 +1,22 @@
 <template>
     <div class="date-filter-container">
-         <b-dropdown
+        <b-dropdown
                 :mobile-modal="true"
-                @input="($event) => { resetPage(); onChangeComparator($event) }"
                 aria-role="list"
-                trap-focus>
-            <button
-                    :aria-label="$i18n.get('label_comparator')"
-                    class="button is-white"
-                    slot="trigger">
-                <span class="icon is-small">
-                    <i v-html="comparatorSymbol" />
-                </span>
-                <span class="icon">
-                    <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
-                </span>
-            </button>
+                trap-focus
+                @update:model-value="($event) => { resetPage(); onChangeComparator($event) }">
+            <template #trigger>
+                <button
+                        :aria-label="$i18n.get('label_comparator')"
+                        class="button is-white">
+                    <span class="icon is-small">
+                        <i v-html="comparatorSymbol" />
+                    </span>
+                    <span class="icon">
+                        <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-arrowdown" />
+                    </span>
+                </button>
+            </template>
             <b-dropdown-item
                     role="button"
                     :class="{ 'is-active': comparator == '=' }"
@@ -67,14 +68,13 @@
                 :aria-plus-label="$i18n.get('label_increase')"
                 size="is-small"
                 step="1"
-                @input="emitOnlyYear($event)"
+                @update:model-value="emitOnlyYear($event)"
                 v-model="yearsOnlyValue"/> -->
         <b-datepicker
+                v-model="value"
                 position="is-bottom-right"
                 :aria-labelledby="'filter-label-id-' + filter.id"
                 :placeholder="$i18n.get('instruction_select_a_date')"
-                v-model="value"
-                @input="($event) => { resetPage(); emit($event); }"
                 editable
                 :trap-focus="false"
                 :date-formatter="(date) => dateFormatter(date)"
@@ -103,7 +103,8 @@
                     $i18n.get('datepicker_month_october'),
                     $i18n.get('datepicker_month_november'),
                     $i18n.get('datepicker_month_december')
-                ]" />
+                ]"
+                @update:model-value="($event) => { resetPage(); emit($event); }" />
                 <!-- filterTypeOptions FOR TYPE 
                     v-else
                     :type="filterTypeOptions.type == 'month' ? 'month' : null" 
@@ -113,15 +114,17 @@
 </template>
 
 <script>
-    import { wpAjax, dateInter } from "../../../js/mixins";
+    import { dateInter } from "../../../js/mixins";
     import { filterTypeMixin } from '../../../js/filter-types-mixin';
     import moment from 'moment';
 
     export default {
         mixins: [
-            wpAjax,
             dateInter,
             filterTypeMixin
+        ],
+        emits: [
+            'input',
         ],
         data(){
             return {
@@ -146,8 +149,11 @@
             }
         },
         watch: {
-            'query'() {
-                this.updateSelectedValues();
+            'query': {
+                handler() {
+                    this.updateSelectedValues();
+                },
+                deep: true,
             },
         },
         mounted() {

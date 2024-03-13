@@ -1,8 +1,8 @@
 @import '../../scss/gutenberg-blocks-variables.scss';
 @import '../../../../../node_modules/swiper/swiper.scss';
-@import '../../../../../node_modules/swiper/modules/navigation/navigation.scss';
-@import '../../../../../node_modules/swiper/modules/a11y/a11y.scss';
-@import '../../../../../node_modules/swiper/modules/autoplay/autoplay.scss';
+@import '../../../../../node_modules/swiper/modules/navigation.scss';
+@import '../../../../../node_modules/swiper/modules/a11y.scss';
+@import '../../../../../node_modules/swiper/modules/autoplay.scss';
 
 .components-panel__body .collection-carousel-view-modes {
     display: flex;
@@ -158,7 +158,8 @@
                 line-height: 1.2em;
                 word-break: break-word;
             }
-            a>img {
+            a>img,
+            a>canvas {
                 width: 100%;
                 height: auto;
             }
@@ -169,7 +170,8 @@
                 display: block;
             }
 
-            .swiper-slide-duplicate img {
+            .swiper-slide-duplicate img,
+            .swiper-slide-duplicate canvas {
                 display: initial !important;
             }
 
@@ -191,7 +193,7 @@
                     &>*:first-of-type {
                         flex-basis: 100%;
                         @include grid-child(1, 3, 1, 3);
-                        padding-bottom: 100% !important;
+                        // padding-bottom: 100% !important;
                     }
     
                     &>* {
@@ -199,12 +201,14 @@
                         width: 100%;
                         height: auto;
                         margin-bottom: 0px; 
-                        padding-bottom: 100% !important;
+                        // padding-bottom: 100% !important;
                     }
 
-                    img {
+                    img,
+                    canvas {
                         object-fit: cover;
                         object-position: center;
+                        width: 100%;
                     }
                 }    
             }
@@ -343,7 +347,8 @@
                 }
             }
 
-            img {
+            img,
+            canvas {
                 height: auto;
                 padding: 0px;
                 margin-bottom: 0.5em;

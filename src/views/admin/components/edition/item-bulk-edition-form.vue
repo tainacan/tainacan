@@ -1,16 +1,16 @@
 <template>
     <div>
         <b-loading
+                v-model="isLoading"
                 :is-full-page="false"
-                :active.sync="isLoading"
-                :can-cancel="false"/>
+                :can-cancel="false" />
         <div 
                 v-if="!$adminOptions.hideBulkEditionPageTitle"
                 class="tainacan-page-title">
             <h1>{{ $i18n.get('add_items_bulk') }}</h1>
             <a 
-                    @click="$router.go(-1)"
-                    class="back-link has-text-secondary">
+                    class="back-link has-text-secondary"
+                    @click="$router.go(-1)">
                 {{ $i18n.get('back') }}
             </a>
             <hr>
@@ -25,18 +25,18 @@
                 <label class="label">{{ $i18n.get('label_documents_upload') }}</label>
                 <br>
                 <b-upload
-                        native
                         v-model="submitedFileList"
+                        native
                         drag-drop
                         multiple
-                        @input="uploadFiles()"
-                        class="source-file-upload">
+                        class="source-file-upload"
+                        @update:model-value="uploadFiles()">
                     <section class="drop-inner">
                         <div class="content has-text-centered">
                             <p>
-                                <b-icon
-                                        icon="upload"
-                                        size="is-large"/>
+                                <span class="icon">
+                                    <i class="tainacan-icon tainacan-icon-30px tainacan-icon-upload" />
+                                </span>
                             </p>
                             <p>{{ $i18n.get('instruction_drop_file_or_click_to_upload') }}</p>
                         </div>
@@ -50,13 +50,13 @@
                 <div class="sequence-progress-info">
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length != amountFinished">
                         <span class="icon is-small has-text-secondary">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-updating" />
                         </span>
                         {{ $i18n.get('label_upload_file_prepare_items') }}
                     </p>
                     <p v-if="uploadedItems.length > 0 && uploadedItems.length == amountFinished">
                         <span class="icon is-small has-text-success">
-                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle"/>
+                            <i class="tainacan-icon tainacan-icon-18px tainacan-icon-approvedcircle" />
                         </span>
                         {{ $i18n.get('label_process_completed') }}
                     </p>
@@ -76,25 +76,25 @@
                 <div 
                         v-if="uploadedItems.length > 0"
                         :style="{ width: (amountFinished/uploadedItems.length)*100 + '%' }"
-                        class="sequence-progress"/>
+                        class="sequence-progress" />
                 <div    
                         v-if="uploadedItems.length > 0"
-                        class="sequence-progress-background"/>
+                        class="sequence-progress-background" />
                 
                 <!-- Uploaded Items -->
                 <transition-group name="item-appear">
                     <div 
-                            class="document-item"
                             v-for="(item, index) of uploadedItems"
-                            :key="item.id">
+                            :key="item.id"
+                            class="document-item">
                         <img 
                                 v-if="item.document != undefined && item.document != '' && item.document_type != 'empty'"
                                 class="document-thumb"
                                 :alt="$i18n.get('label_thumbnail') + ': ' + item.title"
-                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)" > 
+                                :src="$thumbHelper.getSrc(item['thumbnail'], 'tainacan-small', item.document_mimetype)"> 
                         <span 
-                            class="document-name"
-                            v-html="item.title" />                            
+                                class="document-name"
+                                v-html="item.title" />                            
                         <span 
                                 v-if="item.errorMessage != undefined" 
                                 class="help is-danger">
@@ -108,7 +108,6 @@
                             </span>  
                             <span 
                                     v-if="item.document != '' && item.document_type != 'empty'"
-                                    class="icon has-text-success"
                                     v-tooltip="{
                                         delay: {
                                             shown: 500,
@@ -118,7 +117,8 @@
                                         autoHide: false,
                                         placement: 'auto-start',
                                         popperClass: ['tainacan-tooltip', 'tooltip']
-                                    }">
+                                    }"
+                                    class="icon has-text-success">
                                 <i class="tainacan-icon tainacan-icon-1-25em tainacan-icon-approvedcircle" />
                             </span>  
                         </div>   
@@ -138,7 +138,7 @@
                                     }"
                                     class="icon has-text-secondary action-icon"
                                     @click="deleteOneItem(item.id, index)">
-                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-delete"/>
+                                <i class="tainacan-icon tainacan-icon-18px tainacan-icon-delete" />
                             </span>
                         </div>                 
                     </div>
@@ -150,8 +150,9 @@
                         <button 
                                 type="button"
                                 class="button is-outlined" 
-                                @click.prevent="$router.go(-1)" 
-                                slot="trigger">{{ $i18n.get('cancel') }}</button>
+                                @click.prevent="$router.go(-1)">
+                            {{ $i18n.get('cancel') }}
+                        </button>
                     </div>
                     <div 
                             style="margin-left: auto;"
@@ -160,15 +161,17 @@
                                 :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished)"
                                 class="button is-secondary" 
                                 :class="{'is-loading': isCreatingSequenceEditGroup }"
-                                @click.prevent="sequenceEditGroup()"
-                                type="submit">{{ $i18n.get('label_sequence_edit_items') }}</button>
+                                type="submit"
+                                @click.prevent="sequenceEditGroup()">
+                            {{ $i18n.get('label_sequence_edit_items') }}
+                        </button>
                     </div>
                     <div class="control">
                         <button 
                                 :disabled="!(uploadedItems.length > 0 && uploadedItems.length == amountFinished)"
                                 class="button is-secondary" 
-                                @click.prevent="openBulkEditionModal()"
-                                type="submit">{{ $i18n.get('label_bulk_edit_items') }}</button>
+                                type="submit"
+                                @click.prevent="openBulkEditionModal()">{{ $i18n.get('label_bulk_edit_items') }}</button>
                     </div>
                 </div>
             </footer>
@@ -178,7 +181,7 @@
                 <div class="content has-text-grey has-text-centered">
                     <p>
                         <span class="icon">
-                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection"/>
+                            <i class="tainacan-icon tainacan-icon-30px tainacan-icon-collection" />
                         </span>
                     </p>
                     <p>{{ $i18n.get('info_can_not_bulk_edit_items_collection') }}</p>
@@ -220,7 +223,7 @@ export default {
         this.cleanFiles();
 
         // Updates Collection BreadCrumb
-        this.$root.$emit('onCollectionBreadCrumbUpdate', [
+        this.$emitter.emit('onCollectionBreadCrumbUpdate', [
             { path: this.$routerHelper.getCollectionPath(this.collectionId), label: this.$i18n.get('items') },
             { path: '', label: this.$i18n.get('add_items_bulk') }
         ]);
@@ -257,7 +260,7 @@ export default {
 
                         let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
                         if ( index >= 0)
-                            this.$set( this.uploadedItems, index, item );
+                            Object.assign(this.uploadedItems, { [index]: item });
                         else 
                             this.uploadedItems.push( item );
                         
@@ -276,7 +279,7 @@ export default {
 
                                         let index = this.uploadedItems.findIndex(existingItem => existingItem.id === item.id);
                                         if ( index >= 0)
-                                            this.$set( this.uploadedItems, index, item);
+                                            Object.assign(this.uploadedItems, { [index]: item });
                                         else 
                                             this.uploadedItems.unshift( item );
                                     })
