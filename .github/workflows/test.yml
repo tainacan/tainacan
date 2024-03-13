@@ -74,7 +74,7 @@ jobs:
         run: php -v
 
       - name: install tools deps
-        run: apt install mariadb-client -y
+        run: sudo apt install mariadb-client -y
 
       - name: Add bootstrap-config
         run: |
