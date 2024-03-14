@@ -148,7 +148,7 @@
             metadatum: [ String, Object ],
             errors: [ String, Object, Array ]
         },
-        emits: ['input'],
+        emits: ['update:value'],
         data(){
             return {
                 icon: '',
@@ -296,7 +296,7 @@
                 this.collectionMessage = '';
             },
             emitValues(){
-                this.$emit('input',{
+                this.$emit('update:value',{
                     collection_id: this.collection,
                     search: this.modelSearch,
                     display_in_related_items: this.modelDisplayInRelatedItems,

@@ -76,7 +76,7 @@
         props: {
             value: [ String, Object, Array ]
         },
-        emits: ['input'],
+        emits: ['update:value'],
         data() {
             return {
                 mapProvider: String,
@@ -96,7 +96,7 @@
         },
         methods: {
             emitValues(){
-                this.$emit('input',{
+                this.$emit('update:value',{
                     map_provider: this.mapProvider,
                     attribution: this.attribution,
                     initial_zoom: this.initialZoom,

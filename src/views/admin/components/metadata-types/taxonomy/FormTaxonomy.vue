@@ -183,7 +183,7 @@
             metadatum: [ String, Object ],
             errors: [ String, Object, Array ]
         },
-        emits: ['input'],
+        emits: ['update:value'],
         data(){
             return {
                 isReady: false,
@@ -211,7 +211,6 @@
                 if ( this.metadatum && this.metadatum.multiple === 'no' ) {
                     let types = Object.keys( this.single_types );
                     let hasValue = this.value && this.value.input_type && types.indexOf( this.value.input_type ) >= 0;
-                    
                     if (hasValue)
                         this.setInputType(this.value.input_type)
                     else {
@@ -327,7 +326,7 @@
                 this.taxonomyMessage = '';
             },
             emitValues(){
-                this.$emit('input',{
+                this.$emit('update:value',{
                     taxonomy_id: this.taxonomy_id,
                     input_type: this.input_type,
                     allow_new_terms: this.allow_new_terms,
