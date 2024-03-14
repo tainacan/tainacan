@@ -286,7 +286,6 @@
                 this.performValueChange();
             }, 800),
             performValueChange() {
-
                 // Compound metadata do not emit values, only their children.
                 if (this.metadatumComponent == 'tainacan-compound')
                     return;
@@ -326,7 +325,10 @@
                         
                         // A single term value
                         case 'Object':
-                            if (this.values.length && this.values[0] == this.itemMetadatum.value.id)
+                            if (
+                                ( Array.isArray(this.values) && this.values.length && this.values[0] == this.itemMetadatum.value.id ) ||
+                                ( this.values == this.itemMetadatum.value.id )
+                            ) 
                                 return;
                             break;
 
