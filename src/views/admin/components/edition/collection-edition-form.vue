@@ -1308,7 +1308,7 @@ export default {
                 this.form.default_view_mode = this.collection.default_view_mode;
                 this.form.default_order = this.collection.default_order;
                 this.form.default_orderby = this.collection.default_orderby;
-                this.form.enabled_view_modes = [];
+                this.form.enabled_view_modes = this.collection.enabled_view_modes;
                 this.form.allow_comments = this.collection.allow_comments;
                 this.form.allows_submission = this.collection.allows_submission;
                 this.form.submission_anonymous_user = this.collection.submission_anonymous_user;
