@@ -31,7 +31,6 @@
 <script>
 
 export default {
-    name: 'TainacanMetadataTypeURL',
     props: {
         itemMetadatum: Object,
         value: [String, Number, Array],

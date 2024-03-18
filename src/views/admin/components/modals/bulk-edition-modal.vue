@@ -329,7 +329,7 @@
             TainacanCompound: defineAsyncComponent(() => import('../metadata-types/compound/TainacanCompound.vue')),
             TainacanUser: defineAsyncComponent(() => import('../metadata-types/user/TainacanUser.vue')),
             TainacanGeocoordinate: defineAsyncComponent(() => import('../metadata-types/geocoordinate/TainacanGeoCoordinate.vue')),
-            TainacanURL: defineAsyncComponent(() => import('../metadata-types/url/TainacanURL.vue'))
+            TainacanUrl: defineAsyncComponent(() => import('../metadata-types/url/TainacanUrl.vue'))
         },
         props: {
             modalTitle: String,

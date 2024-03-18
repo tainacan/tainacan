@@ -181,7 +181,7 @@
             TainacanCompound: defineAsyncComponent(() => import('./compound/TainacanCompound.vue')),
             TainacanUser: defineAsyncComponent(() => import('./user/TainacanUser.vue')),
             TainacanGeocoordinate: defineAsyncComponent(() => import('./geocoordinate/TainacanGeoCoordinate.vue')),
-            TainacanURL: defineAsyncComponent(() => import('./url/TainacanURL.vue'))
+            TainacanUrl: defineAsyncComponent(() => import('./url/TainacanUrl.vue'))
         },
         props: {
             itemMetadatum: Object,

@@ -407,7 +407,7 @@
     import FormNumeric from '../metadata-types/numeric/FormNumeric.vue';
     import FormUser from '../metadata-types/user/FormUser.vue';
     import FormGeoCoordinate from '../metadata-types/geocoordinate/FormGeoCoordinate.vue';
-    import FormURL from '../metadata-types/url/FormURL.vue';
+    import FormUrl from '../metadata-types/url/FormUrl.vue';
 
     export default {
         name: 'MetadatumEditionForm',
@@ -420,7 +420,7 @@
             'tainacan-form-numeric': FormNumeric,
             'tainacan-form-user': FormUser,
             'tainacan-form-geocoordinate': FormGeoCoordinate,
-            'tainacan-form-url': FormURL
+            'tainacan-form-url': FormUrl
         },
         mixins: [ formHooks ],
         props: {
