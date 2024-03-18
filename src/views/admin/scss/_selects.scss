@@ -43,7 +43,11 @@
         &:hover {
             border-color: var(--tainacan-input-color) !important;
         }
-        
+        &.has-placeholder-selected,
+        &.has-placeholder-selected:hover,
+        &.has-placeholder-selected:focus {
+            color: var(--tainacan-info-color) !important;
+        }
     }
     &:not(.is-loading)::after {
         content: "arrowdown" !important;

@@ -12,6 +12,7 @@
                 :disabled="disabled"
                 :placeholder="itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : $i18n.get('label_selectbox_init')"
                 :model-value="value"
+                :class="{ 'has-placeholder-selected': value === '' }"
                 @update:model-value="onSelected($event)">
             <option value="">
                 {{ itemMetadatum.metadatum.placeholder ? itemMetadatum.metadatum.placeholder : ($i18n.get('label_selectbox_init') + '...') }}
