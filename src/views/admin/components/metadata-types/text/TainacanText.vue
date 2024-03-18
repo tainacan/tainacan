@@ -43,6 +43,9 @@
                     </div>
                 </div>
             </template>
+            <template #empty>
+                {{ $i18n.get('info_nothing_like_this_so_far') }}
+            </template>
         </b-autocomplete>
     </div>
 </template>
