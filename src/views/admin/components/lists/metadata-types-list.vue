@@ -19,6 +19,7 @@
                             put: false,
                             revertClone: true
                         },
+                        draggable: '.available-metadatum-item',
                         sort: false,
                         dragClass: 'sortable-drag'
                     }">
@@ -27,7 +28,7 @@
                             :id="metadatum.component"
                             class="available-metadatum-item"
                             :class="{ 'highlighted-metadatum' : highlightedMetadatum == metadatum.name, 'inherited-metadatum': metadatum.inherited || isRepositoryLevel }"
-                            @click.prevent.once="addMetadatumViaButton(metadatum)">
+                            @click.prevent="addMetadatumViaButton(metadatum)">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),
@@ -84,6 +85,7 @@
                             put: false,
                             revertClone: true
                         },
+                        draggable: '.available-metadatum-item',
                         sort: false,
                         dragClass: 'sortable-drag'
                     }">
@@ -91,7 +93,7 @@
                     <div 
                             :id="metadataSection.id"
                             class="available-metadata-section-item"
-                            @click.prevent="addMetadataSectionViaButton()">
+                            @click="addMetadataSectionViaButton()">
                         <span
                                 v-tooltip="{
                                     content: $i18n.get('instruction_click_or_drag_metadatum_create'),

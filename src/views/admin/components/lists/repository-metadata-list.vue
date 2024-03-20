@@ -90,6 +90,7 @@
                     class="active-metadata-area"
                     :options="{
                         group: { name:'metadata', pull: false, put: true },
+                        sort: false,
                         handle: '.handle',
                         ghostClass: 'sortable-ghost',
                         chosenClass: 'sortable-chosen',
@@ -362,12 +363,16 @@ export default {
             'cleanMetadata'    
         ]),
         ...mapGetters('metadata',[
-            'getMetadata'
+            'getMetadata',
+            'getMetadatumTypes'
         ]),
         handleChange($event) {
             switch ($event.type) {
                 case 'add':
-                    this.addNewMetadatum(this.activeMetadatumList[$event.oldIndex], $event.newIndex);
+                    if ( !$event.from.classList.contains('active-metadata-area') ) {
+                        this.addNewMetadatum(this.getMetadatumTypes()[$event.oldIndex], $event.newIndex);
+                        $event.originalTarget.removeChild($event.item);
+                    }
                     break;
                 case 'remove':
                     this.removeMetadatum(this.activeMetadatumList[$event.oldIndex]);
