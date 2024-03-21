@@ -3,9 +3,11 @@ import { mapActions } from 'vuex';
 export const itemMetadataMixin = {
     created() {
         this.$emitter.on('removeCompoundGroup', this.removeItemMetadataGroup);
+        this.$emitter.on('updateValueFromCompound', this.updateItemMetadataValue);
     },
     beforeDestroy() {
         this.$emitter.off('removeCompoundGroup', this.removeItemMetadataGroup);
+        this.$emitter.off('updateValueFromCompound', this.updateItemMetadataValue);
     },
     data () {
         return {
@@ -33,11 +35,11 @@ export const itemMetadataMixin = {
             'deleteItemMetadataGroup',
             'deleteGroupFromItemSubmissionMetadatum'
         ]),
-        updateItemMetadataValue({ itemId, metadatumId, values, parentMetaId, parentId }){
+        updateItemMetadataValue({ itemId, metadatumId, values, parentMetaId, parentId }) {
             
             if (itemId) {
 
-                this.isUpdatingValues = true;;
+                this.isUpdatingValues = true;
 
                 if (values.length > 0 && values[0] && values[0].value) {
                     let onlyValues = values.map((aValueObject) => aValueObject.value);
@@ -94,7 +96,7 @@ export const itemMetadataMixin = {
                 // In the item submission, we don't want to block submission or clear errors before a re-submission is performed,
                 // as the validation depends on a single server-side request. Thus, we do not update error arary here.
 
-                this.isUpdatingValues = false;;
+                this.isUpdatingValues = false;
             }
 
             /** 
@@ -115,7 +117,7 @@ export const itemMetadataMixin = {
         },
         removeItemMetadataGroup({ itemId, metadatumId, parentMetaId, parentMetadatum }) {
             
-            this.isUpdatingValues = true;;
+            this.isUpdatingValues = true;
             
             if (itemId && metadatumId && parentMetaId) {
                 

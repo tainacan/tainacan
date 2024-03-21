@@ -223,7 +223,7 @@
                                 </a>
                                 <a 
                                         v-if="metadataSection.current_user_can_delete"
-                                        :disabled="metadataSection.metadata_object_list.length"
+                                        :disabled="metadataSection.metadata_object_list.length > 0"
                                         :style="{ visibility: metadataSection.collection_id != collectionId || metadataSection.id === 'default_section' || metadataSection.metadata_object_list.length ? 'hidden' : 'visible' }"
                                         @click.prevent="removeMetadataSection(metadataSection)">
                                     <span

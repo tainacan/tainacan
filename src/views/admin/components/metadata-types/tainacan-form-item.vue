@@ -286,6 +286,7 @@
                 this.performValueChange();
             }, 800),
             performValueChange() {
+
                 // Compound metadata do not emit values, only their children.
                 if (this.metadatumComponent == 'tainacan-compound')
                     return;
@@ -305,7 +306,7 @@
                                 currentValues = this.values.map(term => term.value)
                             else
                                 currentValues = this.values;
-                                
+                             
                             if (Array.isArray(currentValues)) {
                                 for (let value of currentValues) {
                                     let foundIndex = this.itemMetadatum.value.findIndex(element => value == element.id);
@@ -338,7 +339,6 @@
                                 return;
                     }
                 }
-                
                 // If none is the case, the value is update request is sent to the API
                 this.$emit('input', {
                     itemId: this.itemMetadatum.item.id,

@@ -75,6 +75,7 @@
                             :is-focused="(focusedGroupMetadatum === groupIndex) && (focusedChildMetadatum === childIndex)"
                             :is-metadata-navigation="isMetadataNavigation"
                             :enumerate-metadatum="enumerateMetadatum ? ( enumerateMetadatum + ( childItemMetadataGroups.length > 1 ? ( '.' + (Number(groupIndex) + 1) ) : '' ) + '.' + (Number(childIndex) + 1) ) : false"
+                            @input="($event) => $emitter.emit('updateValueFromCompound', $event)"
                             @change-collapse="onChangeCollapse($event, groupIndex, childIndex)"
                             @touchstart="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }): ''"
                             @mousedown="isMetadataNavigation ? setMetadatumChildFocus({ groupIndex: groupIndex, childIndex: childIndex, scrollIntoView: false }) : ''"
