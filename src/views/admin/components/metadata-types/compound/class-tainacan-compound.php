@@ -260,16 +260,22 @@ class Compound extends Metadata_Type {
 
 	private function get_meta_html(Item_Metadata_Entity $meta) {
 		$html = '';
+
 		if ($meta instanceof Item_Metadata_Entity && !empty($meta->get_value_as_html())) {
 			ob_start();
 			?>
 				<div class="tainacan-metadatum metadata-type-<?php echo $meta->get_metadatum()->get_metadata_type_object()->get_slug(); ?> metadata-slug-<?php echo $meta->get_metadatum()->get_slug(); ?>">
-					<h4 class="label">
-						<?php echo esc_html($meta->get_metadatum()->get_name()); ?>
-					</h4>
-					<p>
-						<?php echo wp_kses_tainacan($meta->get_value_as_html()); ?>
-					</p>
+					<?php
+						$child_label = $meta->get_metadatum()->get_name();
+						$child_label_before = apply_filters('tainacan-get-child-item-metadatum-as-html-before-label', '<h4 class="label child-metadatum-label">', $meta);
+						$child_label_after = apply_filters('tainacan-get-child-item-metadatum-as-html-after-label', '</h4>', $meta);
+						echo $child_label_before . esc_html($child_label) . $child_label_after;
+
+						$child_value = $meta->get_value_as_html();
+						$child_value_before = apply_filters('tainacan-get-child-item-metadatum-as-html-before-value', '<p class="child-metadatum-value">', $meta);
+						$child_value_after = apply_filters('tainacan-get-child-item-metadatum-as-html-after-value', '</p>', $meta);
+						echo $child_value_before . wp_kses_tainacan($child_value) . $child_value_after;
+					?>
 				</div>
 			<?php
 			$html = ob_get_contents();
