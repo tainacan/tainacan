@@ -269,7 +269,6 @@
                     this.isTermCreationPanelOpen = true;
                 else
                     this.isTermCreationModalOpen = true;
-                console.log(this.isTermCreationModalOpen)
             },
             onMobileSpecialFocus() {
                 this.$emit('mobile-special-focus');
