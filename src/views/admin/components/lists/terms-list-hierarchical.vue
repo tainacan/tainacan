@@ -293,7 +293,7 @@ export default {
         TermEditionForm: defineAsyncComponent(() => import('../edition/term-edition-form.vue'))
     },
     props: {
-        taxonomyId: String,
+        taxonomyId: [ String, Number ],
         currentUserCanEditTaxonomy: Boolean,
         selected: Array,
         selectedColumnIndex: Number,
