@@ -92,14 +92,14 @@
                     <b-dropdown-item
                             id="item-delete-selected-terms"
                             aria-role="listitem"
-                            @click="$emit('deleteSelectedTerms')">
+                            @click="$emitter.emit('deleteSelectedTerms')">
                         {{ $i18n.get('label_delete_permanently') }}
                     </b-dropdown-item>
                     <b-dropdown-item
                             v-if="isHierarchical"
                             id="item-update-selected-terms"
                             aria-role="listitem"
-                            @click="$emit('updateSelectedTermsParent')">
+                            @click="$emitter.emit('updateSelectedTermsParent')">
                         {{ $i18n.get('label_update_parent') }}
                     </b-dropdown-item>
                 </b-dropdown>
@@ -133,10 +133,6 @@ export default {
         currentUserCanEditTaxonomy: Boolean,
         isHierarchical: Boolean
     },
-    emits: [
-        'deleteSelectedTerms',
-        'updateSelectedTermsParent'
-    ],
     data() {
         return {
             searchString: '',

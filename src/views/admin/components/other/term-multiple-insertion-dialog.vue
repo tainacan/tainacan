@@ -139,6 +139,10 @@
                 type: Function,
                 default: () => {}
             },
+            hideCancel: {
+                type: Boolean,
+                default: false,
+            },
             taxonomyId: '',
             excludeTree: '',
             isHierarchical: Boolean,

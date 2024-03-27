@@ -8,7 +8,7 @@
             class="tainacan-form tainacan-dialog dialog">
         <div    
                 class="modal-card" 
-                style="width: auto">
+                style="width: auto; max-width: 560px;">
             <div class="modal-custom-icon">
                 <span class="icon is-large">
                     <i 
