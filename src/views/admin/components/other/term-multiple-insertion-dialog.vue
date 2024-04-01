@@ -146,7 +146,7 @@
             taxonomyId: '',
             excludeTree: '',
             isHierarchical: Boolean,
-            initialTermParent: String,
+            initialTermParent: [ String, Number ],
             initialTermParentName: String
         },
         emits: [

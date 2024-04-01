@@ -117,7 +117,7 @@
                                             :class="{'is-field-history': bulkEditionProcedures[criterion].isDone}"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-not-last"
                                             :disabled="bulkEditionProcedures[criterion].isDone"  
-                                            @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
+                                            @input="addToBulkEditionProcedures($event.target.value, 'newValue', criterion)"
                                         />
                                 </div>
 
@@ -128,7 +128,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_status2')"
-                                            @update:model-value="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-value="addToBulkEditionProcedures($event.target.value, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $statusHelper.getStatuses().filter(option => { return option.value != 'trash' })"
                                                 :key="index"
@@ -144,7 +144,7 @@
                                             :disabled="bulkEditionProcedures[criterion].isDone"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :placeholder="$i18n.get('instruction_select_a_comments_status')"
-                                            @update:model-value="addToBulkEditionProcedures($event, 'newValue', criterion)">
+                                            @update:model-value="addToBulkEditionProcedures($event.target.value, 'newValue', criterion)">
                                         <option
                                                 v-for="(statusOption, index) of $commentsStatusHelper.getStatuses()"
                                                 :key="index"
@@ -202,7 +202,7 @@
                                             :class="{ 'is-field-history': bulkEditionProcedures[criterion].isDone }"
                                             class="tainacan-bulk-edition-field tainacan-bulk-edition-field-last"
                                             :disabled="bulkEditionProcedures[criterion].isDone || bulkEditionProcedures[criterion].isExecuting"
-                                            @input="addToBulkEditionProcedures($event, 'newValue', criterion)"
+                                            @input="addToBulkEditionProcedures($event.target.value, 'newValue', criterion)"
                                         />
                                 </template>
                             </template>
@@ -449,7 +449,7 @@
             },
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
-
+  
                 if (procedure.action === this.editionActions.redefine) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 
