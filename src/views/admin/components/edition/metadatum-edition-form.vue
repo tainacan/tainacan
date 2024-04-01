@@ -97,7 +97,7 @@
                         </b-field>
 
                         <b-field
-                                v-if="form.metadata_type_object.component != 'tainacan-compound'"
+                                v-if="form.metadata_type_object.component != 'tainacan-geocoordinate' && form.metadata_type_object.component != 'tainacan-compound'"
                                 :addons="false"
                                 :type="formErrors['placeholder'] != undefined ? 'is-danger' : ''"
                                 :message="formErrors['placeholder'] != undefined ? formErrors['placeholder'] : ''">
