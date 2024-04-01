@@ -449,7 +449,7 @@
             },
             executeBulkEditionProcedure(criterion){
                 let procedure = this.bulkEditionProcedures[criterion];
-                console.log(procedure.newValue)
+                
                 if (procedure.action === this.editionActions.redefine) {
                     Object.assign(this.bulkEditionProcedures[criterion], { 'isExecuting': true });
 

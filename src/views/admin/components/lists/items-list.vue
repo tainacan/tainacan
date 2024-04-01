@@ -2276,10 +2276,6 @@ export default {
             deep: true
         }
     },
-    mounted() {
-        if (this.highlightsItem)
-            setTimeout(() => this.$eventBusSearch.highlightsItem(null), 3000);
-    },
     created() {
         this.shouldUseLegacyMasonyCols = wp !== undefined && wp.hooks !== undefined && wp.hooks.hasFilter('tainacan_use_legacy_masonry_view_mode_cols') && wp.hooks.applyFilters('tainacan_use_legacy_masonry_view_mode_cols', false);
     },
@@ -2513,7 +2509,17 @@ export default {
             });
         },
         filterBySelectedItems() {
-            this.$eventBusSearch.filterBySelectedItems(this.selectedItems);
+            let newQuery = {
+                postin: JSON.parse(JSON.stringify(this.selectedItems)),
+            }
+
+            if ( this.$route.query['fetch_only'] )
+                newQuery['fetch_only'] =  this.$route.query['fetch_only'];
+
+            if ( this.$route.query['fetch_only_meta'] )
+                newQuery['fetch_only_meta'] =  this.$route.query['fetch_only_meta'];
+
+            this.$router.replace({ path: this.$route.path, query: newQuery });
         },
         openItem() {
             if (this.contextMenuItem != null) {

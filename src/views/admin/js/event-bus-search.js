@@ -187,13 +187,6 @@ export default {
             cleanSelectedItems() {
                 app.config.globalProperties.$store.dispatch('search/cleanSelectedItems');
             },
-            async filterBySelectedItems(selectedItems) {
-                await app.config.globalProperties.$router.replace({ path: app.config.globalProperties.$route.path, query: { postin: selectedItems } });
-            },
-            highlightsItem(itemId) {
-                app.config.globalProperties.$store.dispatch('search/highlightsItem', itemId);
-                this.updateURLQueries();
-            },
             exitViewModeWithoutPagination() {
                 app.config.globalProperties.$eventBusSearchEmitter.emit( 'exitViewModeWithoutPagination', true);
             },
@@ -251,6 +244,7 @@ export default {
                 app.config.globalProperties.$store.dispatch('search/cleanFilterTags');
                 app.config.globalProperties.$store.dispatch('search/cleanMetaQueries', { keepCollections: true });
                 app.config.globalProperties.$store.dispatch('search/cleanTaxQueries');
+                app.config.globalProperties.$store.dispatch('search/removePostIn');
                 this.updateURLQueries();
             }
         }
