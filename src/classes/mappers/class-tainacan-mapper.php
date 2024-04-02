@@ -66,4 +66,5 @@ abstract class Mapper {
 		return $url;
 	}
 	
+	function __construct() {}
 }
